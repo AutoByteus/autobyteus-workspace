@@ -28,19 +28,23 @@ type MigrationStatus = {
   attempts: number;
   startedAt: string | null;
   completedAt: string | null;
-  summary: {
-    scannedCount: number;
-    migratedCount: number;
-    skippedCount: number;
-    failedCount: number;
-    details: Array<{
-      itemId: string;
-      status: string;
-      message: string | null;
-      filePath?: string | null;
-    }>;
-  } | null;
+  summary: string | null;
   errorMessage: string | null;
+  logPath: string | null;
+};
+
+type ExecutionCounts = {
+  scannedCount: number;
+  migratedCount: number;
+  skippedCount: number;
+  failedCount: number;
+};
+
+type AttemptLogDetail = {
+  itemId: string;
+  status: string;
+  message: string | null;
+  filePath?: string | null;
 };
 
 type ProviderSettingsResult = {
@@ -246,6 +250,7 @@ const seedTokenRow = async (
   identifier = OLD_IDENTIFIER,
 ): Promise<string> => {
   const usageEventId = `readable-migration-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const runId = 'readable-migration-run';
   const prisma = new PrismaClient({ datasources: { db: { url: database.databaseUrl } } });
   try {
     await prisma.tokenUsageLedgerEvent.create({
@@ -253,7 +258,7 @@ const seedTokenRow = async (
         usageEventId,
         idempotencyKey: `${usageEventId}:idempotency`,
         observedAt: new Date('2048-08-03T00:00:00.000Z'),
-        runId: 'readable-migration-run',
+        runId,
         runtimeKind: 'autobyteus',
         modelProvider: 'OPENAI_COMPATIBLE',
         providerName: null,
@@ -268,13 +273,18 @@ const seedTokenRow = async (
   } finally {
     await prisma.$disconnect();
   }
-  return usageEventId;
+  return runId;
 };
 
-const readTokenRow = async (database: DatabaseLocation, usageEventId: string) => {
+const readTokenRow = async (database: DatabaseLocation, runId: string) => {
   const prisma = new PrismaClient({ datasources: { db: { url: database.databaseUrl } } });
   try {
-    return await prisma.tokenUsageLedgerEvent.findUniqueOrThrow({ where: { usageEventId } });
+    const row = await prisma.tokenUsageRunRecord.findUniqueOrThrow({ where: { runId } });
+    return {
+      providerName: row.latestProviderName,
+      modelIdentifier: row.latestModelIdentifier,
+      modelValue: row.latestModelValue,
+    };
   } finally {
     await prisma.$disconnect();
   }
@@ -344,6 +354,7 @@ const migrationStatuses = async (serverUrl: string): Promise<MigrationStatus[]> 
         completedAt
         summary
         errorMessage
+        logPath
       }
     }
   `);
@@ -354,6 +365,28 @@ const statusFor = (statuses: MigrationStatus[], migrationId: string): MigrationS
   const status = statuses.find((candidate) => candidate.migrationId === migrationId);
   if (!status) throw new Error(`MIGRATION_STATUS_MISSING:${migrationId}`);
   return status;
+};
+
+const readAttemptLog = (status: MigrationStatus): {
+  counts: ExecutionCounts;
+  details: AttemptLogDetail[];
+} => {
+  expect(status.summary).toMatch(/^Scanned \d+; migrated \d+; skipped \d+; failed \d+\.$/);
+  expect(status.logPath).toEqual(expect.any(String));
+  const lines = fs.readFileSync(status.logPath!, 'utf8').trimEnd().split('\n');
+  const statusLine = lines.find((line) => line.startsWith('statusSummary='));
+  if (!statusLine) throw new Error('APP_DATA_MIGRATION_STATUS_SUMMARY_MISSING_FROM_LOG');
+  const detailsIndex = lines.indexOf('details=');
+  if (detailsIndex < 0) throw new Error('APP_DATA_MIGRATION_DETAILS_MARKER_MISSING_FROM_LOG');
+  const counts = JSON.parse(statusLine.slice('statusSummary='.length)) as ExecutionCounts;
+  expect(status.summary).toBe(
+    `Scanned ${counts.scannedCount}; migrated ${counts.migratedCount}; skipped ${counts.skippedCount}; failed ${counts.failedCount}.`,
+  );
+  return {
+    counts,
+    details: lines.slice(detailsIndex + 1).filter(Boolean).map((line) =>
+      JSON.parse(line) as AttemptLogDetail),
+  };
 };
 
 const providerSettings = (serverUrl: string): Promise<ProviderSettingsResult> =>
@@ -494,16 +527,17 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     )).toBe(false);
 
     const firstStatuses = await migrationStatuses(first.serverUrl);
-    expect(statusFor(firstStatuses, V1_MIGRATION_ID)).toMatchObject({
+    const v1Status = statusFor(firstStatuses, V1_MIGRATION_ID);
+    expect(v1Status).toMatchObject({
       status: 'SUCCEEDED_WITH_WARNINGS',
       attempts: 1,
-      summary: {
-        details: [expect.objectContaining({
-          itemId: 'custom-provider-v1',
-          message: 'CUSTOM_PROVIDER_V1_RECONFIGURATION_REQUIRED',
-        })],
-      },
     });
+    expect(readAttemptLog(v1Status).details).toEqual([
+      expect.objectContaining({
+        itemId: 'custom-provider-v1',
+        message: 'CUSTOM_PROVIDER_V1_RECONFIGURATION_REQUIRED',
+      }),
+    ]);
     expect(statusFor(firstStatuses, READABLE_MIGRATION_ID)).toMatchObject({
       status: 'SUCCEEDED',
       attempts: 1,
@@ -531,7 +565,7 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     await materializeOwnedRuntime(target.runtimeRoot, target.database);
     writeV2(target.runtimeRoot);
     const paths = writeSelectorFixture(target.runtimeRoot);
-    const usageEventId = await seedTokenRow(target.database);
+    const tokenRunId = await seedTokenRow(target.database);
     const legacySecret = `readable-v2-old-secret-${Date.now()}`;
     await seedLegacySecret({
       runtimeRoot: target.runtimeRoot,
@@ -556,10 +590,11 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     }
     const readable = statusFor(statuses, READABLE_MIGRATION_ID);
     expect(readable).toMatchObject({ status: 'SUCCEEDED', attempts: 1 });
-    const resetDetailIndex = readable.summary!.details.findIndex(
+    const readableDetails = readAttemptLog(readable).details;
+    const resetDetailIndex = readableDetails.findIndex(
       ({ message }) => message === 'CUSTOM_PROVIDER_READABLE_ID_EMPTY_V3_PUBLISHED',
     );
-    const cleanupDetailIndex = readable.summary!.details.findIndex(
+    const cleanupDetailIndex = readableDetails.findIndex(
       ({ message }) => message === 'CUSTOM_PROVIDER_READABLE_ID_OLD_SECRET_REMOVED',
     );
     expect(resetDetailIndex).toBeGreaterThanOrEqual(0);
@@ -567,16 +602,15 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
 
     expect(readJson(customProviderPath(target.runtimeRoot))).toEqual({ version: 3, providers: [] });
     expect(listSecretIds(target.database.databasePath)).not.toContain(LEGACY_SECRET_ID);
-    const tokenRow = await readTokenRow(target.database, usageEventId);
+    const tokenRow = await readTokenRow(target.database, tokenRunId);
     expect(tokenRow).toMatchObject({
       providerName: PROVIDER_NAME,
       modelIdentifier: OLD_IDENTIFIER,
       modelValue: MODEL_SUFFIX,
     });
-    expect(statusFor(statuses, TOKEN_NAME_MIGRATION_ID)).toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 1 },
-    });
+    const tokenNameStatus = statusFor(statuses, TOKEN_NAME_MIGRATION_ID);
+    expect(tokenNameStatus.status).toBe('SUCCEEDED');
+    expect(readAttemptLog(tokenNameStatus).counts.migratedCount).toBe(1);
 
     const agent = readJson(paths.agentConfig);
     const binding = readJson(paths.bindings)[0];
@@ -700,10 +734,11 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
 
     const readable = statusFor(await migrationStatuses(server.serverUrl), READABLE_MIGRATION_ID);
     expect(readable.status).toBe('SUCCEEDED_WITH_WARNINGS');
-    expect(readable.summary!.details).toEqual(expect.arrayContaining([
+    const readableDetails = readAttemptLog(readable).details;
+    expect(readableDetails).toEqual(expect.arrayContaining([
       expect.objectContaining({ message: 'CUSTOM_PROVIDER_READABLE_ID_MAPPING_INVALID' }),
     ]));
-    const messages = readable.summary!.details.map(({ message }) => message);
+    const messages = readableDetails.map(({ message }) => message);
     const resetIndex = messages.indexOf('CUSTOM_PROVIDER_READABLE_ID_EMPTY_V3_PUBLISHED');
     const removalIndexes = messages
       .map((message, index) => message === 'CUSTOM_PROVIDER_READABLE_ID_OLD_SECRET_REMOVED' ? index : -1)

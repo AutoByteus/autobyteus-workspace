@@ -267,7 +267,6 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
           displayName: teamRunV1Status?.displayName ?? null,
           status: teamRunV1Status?.status ?? "MISSING",
           attempts: teamRunV1Status?.attempts ?? null,
-          failedCount: teamRunV1Status?.summary?.failedCount ?? null,
           errorMessage: teamRunV1Status?.errorMessage ?? null,
           logPath: teamRunV1Status?.logPath ?? null,
         })}`,

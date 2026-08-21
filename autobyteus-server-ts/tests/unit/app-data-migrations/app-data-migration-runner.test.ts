@@ -35,7 +35,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
       attempts: (previous?.attempts ?? 0) + 1,
       startedAt: input.startedAt,
       completedAt: null,
-      summaryJson: null,
+      summary: null,
       errorMessage: null,
       logPath: null,
     };
@@ -48,7 +48,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
     displayName: string;
     status: "SUCCEEDED" | "FAILED" | "SUCCEEDED_WITH_WARNINGS";
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string | null;
     logPath: string | null;
   }) {
@@ -60,7 +60,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
       attempts: previous?.attempts ?? 1,
       startedAt: previous?.startedAt ?? null,
       completedAt: input.completedAt,
-      summaryJson: input.summaryJson,
+      summary: input.summary,
       errorMessage: input.errorMessage,
       logPath: input.logPath,
     };
@@ -72,7 +72,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
     migrationId: string;
     displayName: string;
     completedAt: Date;
-    summaryJson: string;
+    summary: string;
     errorMessage: string;
     logPath: string | null;
   }) {
@@ -102,6 +102,7 @@ const summary = {
   failedCount: 0,
   details: [],
 };
+const persistedSummary = "Scanned 0; migrated 0; skipped 0; failed 0.";
 
 describe("AppDataMigrationRunner", () => {
   beforeEach(async () => {
@@ -147,7 +148,7 @@ describe("AppDataMigrationRunner", () => {
       attempts: 1,
       startedAt: new Date(Date.now() - 10_000),
       completedAt: null,
-      summaryJson: null,
+      summary: null,
       errorMessage: null,
       logPath: null,
     });
@@ -175,7 +176,7 @@ describe("AppDataMigrationRunner", () => {
       attempts: 1,
       startedAt: new Date(),
       completedAt: null,
-      summaryJson: null,
+      summary: null,
       errorMessage: null,
       logPath: null,
     });
@@ -226,7 +227,7 @@ describe("AppDataMigrationRunner", () => {
       attempts: 1,
       startedAt,
       completedAt: status === "RUNNING" ? null : new Date(),
-      summaryJson: null,
+      summary: null,
       errorMessage: null,
       logPath: null,
     });
@@ -352,7 +353,7 @@ describe("AppDataMigrationRunner", () => {
         attempts: 1,
         startedAt: new Date(Date.now() - 10_000),
         completedAt: status === "FAILED" ? new Date() : null,
-        summaryJson: null,
+        summary: null,
         errorMessage: status === "FAILED" ? "prior startup failed" : null,
         logPath: null,
       });
@@ -396,7 +397,7 @@ describe("AppDataMigrationRunner", () => {
       attempts: 1,
       startedAt: new Date(),
       completedAt: new Date(),
-      summaryJson: JSON.stringify(summary),
+      summary: persistedSummary,
       errorMessage: "bounded terminal warning",
       logPath: null,
     });
@@ -508,7 +509,7 @@ describe("AppDataMigrationRunner", () => {
         attempts: 1,
         startedAt: new Date(),
         completedAt: new Date(),
-        summaryJson: JSON.stringify(summary),
+        summary: persistedSummary,
         errorMessage: null,
         logPath: null,
       });
@@ -542,7 +543,7 @@ describe("AppDataMigrationRunner", () => {
           attempts: 1,
           startedAt: new Date(),
           completedAt: status === "RUNNING" ? null : new Date(),
-          summaryJson: null,
+          summary: null,
           errorMessage: null,
           logPath: null,
         });
@@ -597,7 +598,7 @@ describe("AppDataMigrationRunner", () => {
         attempts: 1,
         startedAt: new Date(),
         completedAt: new Date(),
-        summaryJson: JSON.stringify(summary),
+        summary: persistedSummary,
         errorMessage: null,
         logPath: null,
       });
@@ -654,6 +655,90 @@ describe("AppDataMigrationRunner", () => {
       canRetry: false,
       attempts: 2,
     });
+  });
+
+  it("persists only the canonical summary while preserving the full attempt log", async () => {
+    const executionSummary = {
+      scannedCount: 158_025,
+      migratedCount: 1_283,
+      skippedCount: 17,
+      failedCount: 2,
+      details: [
+        {
+          itemId: "item-1",
+          filePath: "/source/item-1.json",
+          status: "MIGRATED" as const,
+          message: "Migrated item",
+        },
+        {
+          itemId: "item-2",
+          status: "FAILED" as const,
+          message: "Could not migrate item",
+          backupPath: "/backup/item-2.json",
+        },
+      ],
+    };
+    const repository = new InMemoryMigrationRepository();
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("fan-out", async () => ({
+          status: "SUCCEEDED_WITH_WARNINGS",
+          summary: executionSummary,
+          errorMessage: "two items need review",
+        })),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    const result = await runner.runMigration("fan-out");
+    const record = await repository.getRecord("fan-out");
+    const log = await fs.readFile(result.logPath!, "utf-8");
+
+    expect(record?.summary).toBe(
+      "Scanned 158025; migrated 1283; skipped 17; failed 2.",
+    );
+    expect(result.summary).toBe(record?.summary);
+    expect(log).toBe([
+      "migrationId=fan-out",
+      "displayName=Migration fan-out",
+      'statusSummary={"scannedCount":158025,"migratedCount":1283,"skippedCount":17,"failedCount":2}',
+      "error=two items need review",
+      "details=",
+      JSON.stringify(executionSummary.details[0]),
+      JSON.stringify(executionSummary.details[1]),
+      "",
+    ].join("\n"));
+  });
+
+  it("stores and logs the canonical zero-count summary for a thrown failure", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("throws", async () => {
+          throw new Error("definition crashed");
+        }),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    const result = await runner.runMigration("throws");
+    const log = await fs.readFile(result.logPath!, "utf-8");
+
+    expect(result).toMatchObject({
+      status: "FAILED",
+      summary: persistedSummary,
+      errorMessage: "definition crashed",
+    });
+    expect(log).toBe([
+      "migrationId=throws",
+      "displayName=Migration throws",
+      'statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}',
+      "error=definition crashed",
+      "details=",
+      "",
+    ].join("\n"));
   });
 
 });

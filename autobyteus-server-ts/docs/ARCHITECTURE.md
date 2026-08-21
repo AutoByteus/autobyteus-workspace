@@ -93,6 +93,12 @@ Persistence is subsystem-owned rather than selected through a global mode.
   current schema with incomplete history gates historical reads and old-run
   restore while allowing new current-only work; a missing required current
   schema may stop startup.
+- App-data migration records keep compact status evidence: one nullable
+  runner-formatted `Scanned N; migrated N; skipped N; failed N.` summary plus
+  status, attempts, timestamps, concise error, and the referenced attempt-log
+  path. Full per-item diagnostics remain only in that filesystem log; current
+  database, GraphQL, and Settings paths do not carry or decode the released
+  detail-bearing `summary_json` shape.
 
 Normal server shutdown first stops dependent delivery runtimes, then quiesces
 the token transformers. Token persistence is awaited inside the event pipeline,

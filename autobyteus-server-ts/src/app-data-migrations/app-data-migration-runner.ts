@@ -14,6 +14,7 @@ import {
   AppDataMigrationRecoveryAction,
   AppDataMigrationRestartRequiredError,
 } from "./domain/app-data-migration-types.js";
+import { formatAppDataMigrationSummary } from "./domain/app-data-migration-summary-formatter.js";
 import {
   AppDataMigrationRegistry,
   getAppDataMigrationRegistry,
@@ -32,22 +33,6 @@ const emptySummary = (): AppDataMigrationSummary => ({
   failedCount: 0,
   details: [],
 });
-
-const parseSummary = (summaryJson: string | null): AppDataMigrationSummary | null => {
-  if (!summaryJson) return null;
-  try {
-    const parsed = JSON.parse(summaryJson) as Partial<AppDataMigrationSummary>;
-    return {
-      scannedCount: Number(parsed.scannedCount ?? 0),
-      migratedCount: Number(parsed.migratedCount ?? 0),
-      skippedCount: Number(parsed.skippedCount ?? 0),
-      failedCount: Number(parsed.failedCount ?? 0),
-      details: Array.isArray(parsed.details) ? parsed.details as AppDataMigrationSummary["details"] : [],
-    };
-  } catch {
-    return null;
-  }
-};
 
 export class AppDataMigrationRunner {
   private readonly inFlight = new Map<string, Promise<AppDataMigrationRecordSnapshot>>();
@@ -194,14 +179,14 @@ export class AppDataMigrationRunner {
 
     try {
       const result = await definition.execute();
-      const summaryJson = JSON.stringify(result.summary);
+      const summary = formatAppDataMigrationSummary(result.summary);
       const logPath = await this.writeLog(definition, result.summary, result.errorMessage ?? null);
       return await this.repository.complete({
         migrationId: definition.id,
         displayName: definition.displayName,
         status: result.status,
         completedAt: new Date(),
-        summaryJson,
+        summary,
         errorMessage: result.errorMessage ?? null,
         logPath,
       });
@@ -213,7 +198,7 @@ export class AppDataMigrationRunner {
         migrationId: definition.id,
         displayName: definition.displayName,
         completedAt: new Date(),
-        summaryJson: JSON.stringify(summary),
+        summary: formatAppDataMigrationSummary(summary),
         errorMessage: message,
         logPath,
       });
@@ -235,8 +220,7 @@ export class AppDataMigrationRunner {
       attempts: record?.attempts ?? 0,
       startedAt: record?.startedAt ?? null,
       completedAt: record?.completedAt ?? null,
-      summaryJson: record?.summaryJson ?? null,
-      summary: parseSummary(record?.summaryJson ?? null),
+      summary: record?.summary ?? null,
       errorMessage: record?.errorMessage ?? null,
       logPath: record?.logPath ?? null,
       recoveryAction,

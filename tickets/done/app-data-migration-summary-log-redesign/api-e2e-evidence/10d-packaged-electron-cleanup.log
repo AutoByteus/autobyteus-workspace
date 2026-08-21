@@ -1,0 +1,8 @@
+$ packaged artifact
+PASS executable exists
+$ launcher-owned root cleanup
+PASS owned root removed
+$ selected port cleanup
+PASS no listener remains
+$ packaged process cleanup
+PASS no packaged process remains

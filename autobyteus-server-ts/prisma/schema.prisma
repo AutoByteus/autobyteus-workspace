@@ -179,7 +179,7 @@ model AppDataMigrationRecord {
   attempts     Int       @default(0)
   startedAt    DateTime? @map("started_at")
   completedAt  DateTime? @map("completed_at")
-  summaryJson  String?   @map("summary_json")
+  summary      String?
   errorMessage String?   @map("error_message")
   logPath      String?   @map("log_path")
   createdAt    DateTime  @default(now()) @map("created_at")

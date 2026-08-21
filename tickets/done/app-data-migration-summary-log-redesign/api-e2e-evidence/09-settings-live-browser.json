@@ -1,0 +1,48 @@
+{
+  "result": "Pass",
+  "scenarioId": "AE2E-BROWSER-001",
+  "backendUrl": "http://127.0.0.1:59862",
+  "frontendUrl": "http://127.0.0.1:59861",
+  "settingsUrl": "http://127.0.0.1:59861/settings?section=server-settings&mode=migrations",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "graphql": {
+    "recordCount": 16,
+    "summarizedCount": 16,
+    "allSummariesAreCanonicalStrings": true,
+    "displayedRecord": {
+      "migrationId": "20260727_custom_provider_v1_secret_migration",
+      "displayName": "Custom provider credential migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 0; migrated 0; skipped 1; failed 0.",
+      "errorMessage": null,
+      "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-server-ts/tests/.tmp/api-e2e-browser-48232-1787258783845/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-08-20T20-46-26-022Z.log",
+      "recoveryAction": "NONE",
+      "canRetry": false
+    },
+    "refreshStatus": 200
+  },
+  "dom": {
+    "migrationsHeadingVisible": true,
+    "migrationIdVisible": true,
+    "exactSummaryVisible": true,
+    "logPathVisible": true,
+    "detailsElementCount": 0,
+    "refreshPreservedSummary": true
+  },
+  "failedRequests": [],
+  "browserConsole": [],
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/09-settings-live-browser.png",
+  "cleanup": {
+    "browserClosed": true,
+    "frontendStopped": true,
+    "backendStopped": true,
+    "runtimeRemoved": true
+  },
+  "backendOutputTail": "Discovering LM Studio models from host: http://localhost:1234\nFinished LM Studio discovery. Total models registered: 15\nSuccessfully fetched 46 models from LLMFactory.\nLLM models cache populated with 46 items.\nPre-loaded 46 LLM models into cache.\nPopulating Image models cache for the first time...\nFetching list of available Image models from ImageClientFactory...\nSuccessfully fetched 7 image models from ImageClientFactory.\nImage models by provider: OPENAI=2, GEMINI=5\nImage models by runtime: api=7\nImage models cache populated with 7 items.\nPre-loaded 7 image models into cache.\nPopulating Audio models cache for the first time...\nFetching list of available Audio models from AudioClientFactory...\nSuccessfully fetched 4 audio models from AudioClientFactory.\nAudio models by provider: OPENAI=1, GEMINI=3\nAudio models by runtime: api=4\nAudio models cache populated with 4 items.\nPre-loaded 4 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nPopulating Video models cache for the first time...\nFetching list of available Video models from VideoClientFactory...\nSuccessfully fetched 1 video models from VideoClientFactory.\nVideo models by provider: GEMINI=1\nVideo models by runtime: api=1\nVideo models cache populated with 1 items.\n[2026-08-20T20:46:39.579Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...\n[2026-08-20T20:46:39.689Z] [INFO] [server.runtime] Server closed cleanly.\n",
+  "frontendOutputTail": "\n> autobyteus@1.4.52 dev /Users/normy/autobyteus_org/autobyteus-worktrees/app-data-migration-summary-log-redesign/autobyteus-web\n> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 59861\n\n│\n●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)\n\n  ➜ Local:    http://127.0.0.1:59861/\n  ➜ Network:  use --host to expose\n\nisElectronBuild false\n[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron\n✔ Vite client built in 44ms\n\n WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\n\n✔ Vite server built in 637ms\n[nitro] ✔ Nuxt Nitro server built in 532ms\nℹ Vite client warmed up in 1ms\n"
+}

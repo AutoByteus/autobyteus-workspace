@@ -28,21 +28,29 @@ type MigrationStatus = {
   recoveryAction: "MANUAL_RETRY" | "RESTART_TO_RETRY" | "NONE";
   canRetry: boolean;
   attempts: number;
-  summary: {
-    scannedCount: number;
-    migratedCount: number;
-    skippedCount: number;
-    failedCount: number;
-    details: Array<{ itemId: string; status: string; message: string | null }>;
-  } | null;
+  summary: string | null;
   errorMessage: string | null;
   logPath: string | null;
+};
+
+type ExecutionCounts = {
+  scannedCount: number;
+  migratedCount: number;
+  skippedCount: number;
+  failedCount: number;
+};
+
+type AttemptLogDetail = {
+  itemId: string;
+  status: string;
+  message: string | null;
 };
 
 const FINAL_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
+const SUMMARY_SCHEMA_MIGRATION_ID = "20260820090000_redesign_app_data_migration_summary";
 const PRODUCTION_PROFILE = path.resolve(process.env.HOME ?? "", ".autobyteus/server-data");
 const WITHDRAWN_AUDIT_BOUND_BYTES = 64 * 1024;
 
@@ -105,19 +113,43 @@ const deploySchema = (database: DatabaseLocation): void => runMigrations({
   databaseUrl: database.databaseUrl,
 });
 
+const formatSummary = (counts: ExecutionCounts): string =>
+  `Scanned ${counts.scannedCount}; migrated ${counts.migratedCount}; skipped ${counts.skippedCount}; failed ${counts.failedCount}.`;
+
+const prepareReleasedSummarySchema = (database: DatabaseLocation): void => {
+  deploySchema(database);
+  const sqlite = new DatabaseSync(database.databasePath);
+  try {
+    sqlite.exec("BEGIN IMMEDIATE");
+    sqlite.exec(
+      `ALTER TABLE app_data_migration_records RENAME COLUMN summary TO summary_json`,
+    );
+    const removed = sqlite.prepare(
+      `DELETE FROM _prisma_migrations WHERE migration_name = ?`,
+    ).run(SUMMARY_SCHEMA_MIGRATION_ID);
+    expect(removed.changes).toBe(1);
+    sqlite.exec("COMMIT");
+  } catch (error) {
+    sqlite.exec("ROLLBACK");
+    throw error;
+  } finally {
+    sqlite.close();
+  }
+};
+
 const seedReleasedLedger = async (
   database: DatabaseLocation,
   runtimeRoot: string,
 ): Promise<{
   migrationId: string;
-  summary: MigrationStatus["summary"];
+  summary: string;
+  legacySummaryJson: string;
   logPath: string;
   logBytes: Buffer;
 }> => {
-  const prisma = new PrismaClient({ datasources: { db: { url: database.databaseUrl } } });
-  const startedAt = new Date("2026-08-17T09:00:00.000Z");
-  const completedAt = new Date("2026-08-17T09:00:01.000Z");
-  const historicalSummary: NonNullable<MigrationStatus["summary"]> = {
+  const startedAt = "2026-08-17T09:00:00.000Z";
+  const completedAt = "2026-08-17T09:00:01.000Z";
+  const historicalSummary = {
     scannedCount: 1,
     migratedCount: 1,
     skippedCount: 0,
@@ -135,50 +167,55 @@ const seedReleasedLedger = async (
   );
   fs.mkdirSync(path.dirname(historicalLogPath), { recursive: true, mode: 0o700 });
   fs.writeFileSync(historicalLogPath, historicalLogBytes, { mode: 0o600 });
+  const sqlite = new DatabaseSync(database.databasePath);
   try {
+    const insert = sqlite.prepare(`
+      INSERT INTO app_data_migration_records (
+        migration_id, display_name, status, attempts, started_at, completed_at,
+        summary_json, error_message, log_path
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
     for (const [migrationId, status] of RELEASED_COHORT) {
       const isHistoricalAuditSentinel = migrationId === HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID;
-      await prisma.appDataMigrationRecord.create({
-        data: {
-          migrationId,
-          displayName: `Released ${migrationId}`,
-          status,
-          attempts: 1,
-          startedAt,
-          completedAt,
-          summaryJson: JSON.stringify(isHistoricalAuditSentinel ? historicalSummary : {
-            scannedCount: 1,
-            migratedCount: status === "SUCCEEDED" ? 1 : 0,
-            skippedCount: 0,
-            failedCount: status === "SUCCEEDED_WITH_WARNINGS" ? 1 : 0,
-            details: [{ itemId: `released:${migrationId}`, status: status === "SUCCEEDED" ? "MIGRATED" : "FAILED", message: "synthetic released cohort evidence" }],
-          }),
-          errorMessage: status === "SUCCEEDED_WITH_WARNINGS" ? "synthetic released warning" : null,
-          logPath: isHistoricalAuditSentinel
-            ? historicalLogPath
-            : `/synthetic/released/${migrationId}.log`,
-        },
-      });
-    }
-    await prisma.appDataMigrationRecord.create({
-      data: {
-        migrationId: REMOVED_CANONICAL_MIGRATION_ID,
-        displayName: "Removed canonical identity migration",
-        status: "FAILED",
-        attempts: 6,
+      insert.run(
+        migrationId,
+        `Released ${migrationId}`,
+        status,
+        1,
         startedAt,
         completedAt,
-        summaryJson: JSON.stringify({ scannedCount: 1, migratedCount: 0, skippedCount: 0, failedCount: 1, details: [] }),
-        errorMessage: "historical unpublished failure remains inert",
-        logPath: "/synthetic/released/removed-canonical.log",
-      },
-    });
+        JSON.stringify(isHistoricalAuditSentinel ? historicalSummary : {
+          scannedCount: 1,
+          migratedCount: status === "SUCCEEDED" ? 1 : 0,
+          skippedCount: 0,
+          failedCount: status === "SUCCEEDED_WITH_WARNINGS" ? 1 : 0,
+          details: [{ itemId: `released:${migrationId}`, status: status === "SUCCEEDED" ? "MIGRATED" : "FAILED", message: "synthetic released cohort evidence" }],
+        }),
+        status === "SUCCEEDED_WITH_WARNINGS" ? "synthetic released warning" : null,
+        isHistoricalAuditSentinel
+          ? historicalLogPath
+          : `/synthetic/released/${migrationId}.log`,
+      );
+    }
+    insert.run(
+      REMOVED_CANONICAL_MIGRATION_ID,
+      "Removed canonical identity migration",
+      "FAILED",
+      6,
+      startedAt,
+      completedAt,
+      JSON.stringify({ scannedCount: 1, migratedCount: 0, skippedCount: 0, failedCount: 1, details: [] }),
+      "historical unpublished failure remains inert",
+      "/synthetic/released/removed-canonical.log",
+    );
   } finally {
-    await prisma.$disconnect();
+    sqlite.close();
   }
+  const legacySummaryJson = JSON.stringify(historicalSummary);
   return {
     migrationId: HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID,
-    summary: historicalSummary,
+    summary: formatSummary(historicalSummary),
+    legacySummaryJson,
     logPath: historicalLogPath,
     logBytes: historicalLogBytes,
   };
@@ -187,9 +224,14 @@ const seedReleasedLedger = async (
 const readMigrationLedger = (databasePath: string): Array<Record<string, unknown>> => {
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
+    const columns = database.prepare(`PRAGMA table_info('app_data_migration_records')`)
+      .all() as unknown as Array<{ name: string }>;
+    const summaryColumn = columns.some(({ name }) => name === "summary")
+      ? "summary"
+      : "summary_json";
     return database.prepare(`
       SELECT migration_id, display_name, status, attempts, started_at, completed_at,
-             summary_json, error_message, log_path, created_at, updated_at
+             ${summaryColumn} AS summary, error_message, log_path, created_at, updated_at
         FROM app_data_migration_records
        ORDER BY id ASC
     `).all() as unknown as Array<Record<string, unknown>>;
@@ -371,7 +413,7 @@ const readCurrentSyntheticTokenRows = (databasePath: string): Array<Record<strin
 
 const seedScenario = async (target: ReturnType<typeof makeTarget>, warning: boolean) => {
   fs.mkdirSync(target.isolatedHome, { recursive: true, mode: 0o700 });
-  deploySchema(target.database);
+  prepareReleasedSummarySchema(target.database);
   const historicalAudit = await seedReleasedLedger(target.database, target.runtimeRoot);
   const rootTeamRunId = warning ? "team-v1-warning-root" : "team-v1-supported-root";
   const supported = writeSupportedPredecessor(target.runtimeRoot, rootTeamRunId);
@@ -439,6 +481,30 @@ const finalStatus = async (serverUrl: string): Promise<MigrationStatus> => {
   return status;
 };
 
+const readAttemptLog = (logPath: string): {
+  counts: ExecutionCounts;
+  details: AttemptLogDetail[];
+} => {
+  const lines = fs.readFileSync(logPath, "utf8").trimEnd().split("\n");
+  const statusLine = lines.find((line) => line.startsWith("statusSummary="));
+  if (!statusLine) throw new Error("APP_DATA_MIGRATION_STATUS_SUMMARY_MISSING_FROM_LOG");
+  const detailsIndex = lines.indexOf("details=");
+  if (detailsIndex < 0) throw new Error("APP_DATA_MIGRATION_DETAILS_MARKER_MISSING_FROM_LOG");
+  return {
+    counts: JSON.parse(statusLine.slice("statusSummary=".length)) as ExecutionCounts,
+    details: lines.slice(detailsIndex + 1).filter(Boolean).map((line) =>
+      JSON.parse(line) as AttemptLogDetail),
+  };
+};
+
+const expectSummaryMatchesAttemptLog = (status: MigrationStatus): ReturnType<typeof readAttemptLog> => {
+  expect(status.summary).toMatch(/^Scanned \d+; migrated \d+; skipped \d+; failed \d+\.$/);
+  expect(status.logPath).toEqual(expect.any(String));
+  const log = readAttemptLog(status.logPath!);
+  expect(status.summary).toBe(formatSummary(log.counts));
+  return log;
+};
+
 const tokenConsolidationStatus = async (serverUrl: string): Promise<MigrationStatus> => {
   const statuses = await migrationStatuses(serverUrl);
   const status = statuses.find(({ migrationId }) => migrationId === TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID);
@@ -446,7 +512,7 @@ const tokenConsolidationStatus = async (serverUrl: string): Promise<MigrationSta
   return status;
 };
 
-const expectHistoricalAuditUnchanged = async (
+const expectHistoricalAuditTransitioned = async (
   serverUrl: string,
   databasePath: string,
   scenario: Awaited<ReturnType<typeof seedScenario>>,
@@ -461,11 +527,16 @@ const expectHistoricalAuditUnchanged = async (
     summary: scenario.historicalAudit.summary,
     logPath: scenario.historicalAudit.logPath,
   });
-  expect(Buffer.byteLength(JSON.stringify(status!.summary), "utf8"))
+  expect(Buffer.byteLength(scenario.historicalAudit.legacySummaryJson, "utf8"))
     .toBeGreaterThan(WITHDRAWN_AUDIT_BOUND_BYTES);
+  expect(Buffer.byteLength(status!.summary!, "utf8")).toBeLessThan(128);
+  expect(status!.summary).not.toContain("accepted-historical-audit-sentinel");
   expect(readMigrationLedger(databasePath)
     .find(({ migration_id }) => migration_id === scenario.historicalAudit.migrationId))
-    .toEqual(scenario.historicalAudit.record);
+    .toEqual({
+      ...scenario.historicalAudit.record,
+      summary: scenario.historicalAudit.summary,
+    });
   expect(fs.readFileSync(scenario.historicalAudit.logPath))
     .toEqual(scenario.historicalAudit.logBytes);
 };
@@ -613,9 +684,27 @@ const assertLedgerTransition = (
   databasePath: string,
   beforeRows: Array<Record<string, unknown>>,
 ): Array<Record<string, unknown>> => {
+  const database = new DatabaseSync(databasePath, { readOnly: true });
+  try {
+    const columns = database.prepare(`PRAGMA table_info('app_data_migration_records')`)
+      .all() as unknown as Array<{ name: string }>;
+    expect(columns.map(({ name }) => name)).toContain("summary");
+    expect(columns.map(({ name }) => name)).not.toContain("summary_json");
+    const migration = database.prepare(
+      `SELECT COUNT(*) AS count FROM _prisma_migrations WHERE migration_name = ? AND finished_at IS NOT NULL`,
+    ).get(SUMMARY_SCHEMA_MIGRATION_ID) as { count: number };
+    expect(Number(migration.count)).toBe(1);
+  } finally {
+    database.close();
+  }
   const afterRows = readMigrationLedger(databasePath);
   expect(afterRows).toHaveLength(beforeRows.length + 2);
-  expect(afterRows.slice(0, beforeRows.length)).toEqual(beforeRows);
+  const transitionedBeforeRows = beforeRows.map((row) => {
+    if (typeof row.summary !== "string") return row;
+    const legacy = JSON.parse(row.summary) as ExecutionCounts;
+    return { ...row, summary: formatSummary(legacy) };
+  });
+  expect(afterRows.slice(0, beforeRows.length)).toEqual(transitionedBeforeRows);
   expect(afterRows.slice(beforeRows.length)).toEqual(expect.arrayContaining([
     expect.objectContaining({ migration_id: FINAL_MIGRATION_ID, attempts: 1 }),
     expect.objectContaining({
@@ -828,7 +917,7 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(first.serverUrl);
     const status = await finalStatus(first.serverUrl);
     expect(status).toMatchObject({ status: "SUCCEEDED", attempts: 1, errorMessage: null });
-    expect(status.summary?.failedCount).toBe(0);
+    expect(expectSummaryMatchesAttemptLog(status).counts.failedCount).toBe(0);
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertConvertedPackage(scenario);
@@ -870,7 +959,7 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
     await expectHealthy(first.serverUrl);
     const status = await finalStatus(first.serverUrl);
     expect(status).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1 });
-    expect(status.summary?.details).toEqual(expect.arrayContaining([
+    expect(expectSummaryMatchesAttemptLog(status).details).toEqual(expect.arrayContaining([
       expect.objectContaining({
         itemId: "team-root:team-v1-preserved-warning-root",
         status: "FAILED",
@@ -943,7 +1032,8 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
       attempts: 1,
       errorMessage: expect.stringContaining("blank canonical run ID"),
     });
-    await expectHistoricalAuditUnchanged(first.serverUrl, target.database.databasePath, scenario);
+    expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(first.serverUrl));
+    await expectHistoricalAuditTransitioned(first.serverUrl, target.database.databasePath, scenario);
     await expectTokenHistoryUnavailable(first.serverUrl);
     const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
     expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
@@ -990,7 +1080,8 @@ describe("TeamRun V1 released-shape production upgrade through actual startup", 
       attempts: 2,
       errorMessage: null,
     });
-    await expectHistoricalAuditUnchanged(second.serverUrl, target.database.databasePath, scenario);
+    expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(second.serverUrl));
+    await expectHistoricalAuditTransitioned(second.serverUrl, target.database.databasePath, scenario);
     expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
     const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
     expect(restored.restoreAgentTeamRun).toMatchObject({

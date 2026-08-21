@@ -1,5 +1,4 @@
 import { Arg, Field, Mutation, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
-import { GraphQLJSON } from "graphql-scalars";
 import {
   AppDataMigrationDuplicateRunError,
   AppDataMigrationRecoveryAction,
@@ -67,8 +66,8 @@ class AppDataMigrationRecordObject {
   @Field(() => Date, { nullable: true })
   completedAt?: Date | null;
 
-  @Field(() => GraphQLJSON, { nullable: true })
-  summary?: unknown | null;
+  @Field(() => String, { nullable: true })
+  summary?: string | null;
 
   @Field(() => String, { nullable: true })
   errorMessage?: string | null;

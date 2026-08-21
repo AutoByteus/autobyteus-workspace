@@ -1,0 +1,241 @@
+# API/E2E Execution Coverage Report
+
+## Execution Round Meta
+
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/code-review-revision-record.md`
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`; round 2 ran against its integrated current-base worktree before finalization.
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: `2`
+- Trigger: Explicit user request on 2026-08-21 for the README-documented packaged Electron check after round-1 `Pass / 97.7%`.
+- Prior Round Reviewed: Round 1 in this report and `API-REV-001`; its durable E2E edits subsequently passed proportional review at `CRR-002`.
+- Latest Authoritative Round: Round 2, this report.
+
+## Investigation And Execution Basis
+
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-coverage-investigation.md`
+- Investigation completed before durable coverage changes or final execution: `Yes`
+- Investigation plan followed: `Yes` — round 1 updated the two existing actual-startup E2Es and ran browser validation. Round 2 investigated the packaged launcher before execution, attempted the exact README command, recorded its host-build entrypoint failure, then used the repository's explicit macOS build plus the same isolated Playwright launcher with `--skip-build`.
+- Existing coverage decisions revised during execution, with evidence: Round 1 corrected the stale current-base token-ledger assertion and temporary browser literal. Round 2 revised only the executable setup decision: the advertised default launcher build targets `ALL` on this host, so the explicit `build:electron:mac` path was required. No durable coverage changed.
+- Reroute required before or during execution: `No`
+- Notes: All ticket-critical focused checks, live browser journey, host-native package build, packaged bundled-server readiness, and first-window launch pass. The default packaged command's host-build mismatch and four unrelated broad-server-suite failures remain disclosed rather than represented as passed.
+
+## Compatibility / Legacy Scope Check
+
+- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
+- Compatibility-only or legacy-retention behavior observed in implementation: `No`
+- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`
+- Durable coverage added or retained only for compatibility-only behavior: `No`; historical `summary_json` exists only inside the released-schema test fixture and timestamped migration boundary.
+- If compatibility-related invalid scope was observed, reroute classification used: `N/A`
+- Upstream recipient notified: `N/A`
+
+## Changed Boundary And Evidence Matrix
+
+| Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
+| --- | --- | --- | --- | --- | --- | --- |
+| `AE2E-UNIT-001` | `REQ-001`–`REQ-013`, `REQ-019`; `AC-001`–`AC-013`, `AC-019` | Formatter, runner, repository, GraphQL type, runtime gate | Focused Vitest unit suite | Durable | Pass — 5 files / 34 tests | `api-e2e-evidence/01-focused-server-unit.log` |
+| `AE2E-MIG-001` | `REQ-014`–`REQ-018`; `AC-014`–`AC-018` | Released `summary_json` persisted-data transition | Real Prisma/SQLite integration | Durable | Pass — 1 file / 7 tests | `api-e2e-evidence/02-prisma-migration-integration.log` |
+| `AE2E-001` | `AC-001`–`AC-019` | Released ledger -> actual startup deploy -> runner/repository/GraphQL/log -> relaunch | Built-server process E2E | Durable / Live | Pass — included in 1 file / 4 tests | `api-e2e-evidence/04a-team-run-production-upgrade-e2e.log` |
+| `AE2E-002` | `REQ-003`, `REQ-007`, `REQ-010`–`REQ-013`, `REQ-019` | Warning/failure/prerequisite/restart recovery with scalar summaries and attempt logs | Built-server process E2E | Durable / Live | Pass — included in 1 file / 4 tests | `api-e2e-evidence/04a-team-run-production-upgrade-e2e.log` |
+| `AE2E-003` | `AC-007`, `AC-010`, `AC-011`, `AC-019` | Current GraphQL scalar/log path and readable provider identity after consolidation | Built-server process E2E | Durable / Live | Pass — 1 file / 4 tests on corrected rerun | `api-e2e-evidence/04c-custom-provider-startup-e2e-rerun.log` |
+| `AE2E-WEB-001` | `REQ-007`–`REQ-009`; `AC-007`–`AC-009` | Generated/client store -> Settings component | Focused Nuxt tests plus production build | Durable | Pass — 2 files / 5 tests; build complete | `api-e2e-evidence/06-focused-web.log`, `07-web-build.log` |
+| `AE2E-BROWSER-001` | `REQ-007`–`REQ-013`; `AC-007`–`AC-013` | Actual GraphQL -> Nuxt proxy/Apollo/store -> Settings DOM | Chrome/Playwright against owned built backend and Nuxt | Temporary / Live / Browser | Pass on corrected rerun | `api-e2e-evidence/09-settings-live-browser.json`, `.png`, `09b-settings-live-browser-rerun.log` |
+| `AE2E-ELECTRON-DEFAULT-ENTRY` | Supplemental packaging confidence | README default packaged build entrypoint | `test:e2e:electron --adapter playwright` | Temporary / Desktop | Fail before launch — current `build:electron` reaches the build tool's `ALL` default and rejects Linux packaging on Darwin | `api-e2e-evidence/10-packaged-electron-playwright.log` |
+| `AE2E-ELECTRON-001` | Supplemental packaging, embedded-server, and Electron-shell confidence | Host package -> Electron main/preload/renderer -> bundled backend -> first window | Explicit macOS package build; checked-in isolated Playwright launcher with `--skip-build` | Temporary / Live / Desktop | Pass | `api-e2e-evidence/10b-packaged-electron-mac-build.log`, `10c-packaged-electron-playwright-skip-build.log`, `10-packaged-electron-result.json` |
+| `AE2E-BROAD-BASELINE` | Broader regression outside ticket scope | Full server E2E tree | `pnpm test:e2e` | Durable | Fail outside changed surface — 4 files failed, 47 passed, 14 skipped; relevant ticket E2Es pass | `api-e2e-evidence/05-full-deterministic-server-e2e.log` |
+
+## Additional Repository Coverage Execution
+
+| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
+| --- | --- | --- | --- | --- | --- |
+| 10a | `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter playwright` | `autobyteus-web`; launcher default build | Advertised build-and-launch entrypoint | Fail before package launch: default build attempted unsupported Linux target on Darwin | `api-e2e-evidence/10-packaged-electron-playwright.log` |
+| 10b | `env -u ELECTRON_RUN_AS_NODE pnpm build:electron:mac` | `autobyteus-web`; Darwin/arm64 | Host package, bundled server/resources, native rebuild, renderer/main/preload, DMG/ZIP | Pass | `api-e2e-evidence/10b-packaged-electron-mac-build.log` |
+| 10c | `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter playwright` | `autobyteus-web`; checked-in launcher-owned free port/root | Packaged bundled-server health and first Electron window | Pass | `api-e2e-evidence/10c-packaged-electron-playwright-skip-build.log` |
+| 10d | Executable/root/port/process verification | Worktree root | Artifact presence and owned cleanup | Pass | `api-e2e-evidence/10d-packaged-electron-cleanup.log` |
+
+## Validation Confidence Scorecard (Mandatory)
+
+| Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
+| --- | --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 98% | 98% | 0 | Browser confirms the user-facing portion of the already-direct requirement map. | Approved log-size and SQLite-file-size residuals only. |
+| Changed-boundary execution directness | 98% | 98% | 0 | Actual startup, GraphQL, and now browser execution cover each material owner. | None material. |
+| Cross-boundary integration realism and mock gap | 94% | 98% | +4 | Live built server -> GraphQL -> Nuxt proxy/Apollo/store -> DOM and Refresh. | No material mock gap remains. |
+| Environment, configuration, identity, and fixture fidelity | 97% | 97% | 0 | Owned browser and packaged-launch roots/free ports, real package/bundled server, and complete cleanup. | Default packaged build entrypoint currently selects `ALL`; explicit host build is required. User production data is intentionally not used. |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | 98% | 0 | Invalid rollback matrix, warnings, prerequisite failure, restart retry, relaunch/idempotence all pass. | Four unrelated broad-suite current-base failures remain. |
+| User-surface, browser, and desktop-shell confidence | 90% | 99% | +9 | Semantic live-browser assertions plus host-native packaged Electron first-window creation and bundled-backend readiness through Playwright. | Packaged smoke does not navigate the Migrations table; the browser journey remains the ticket-specific UI proof. |
+| Durable regression coverage quality and relevance | 97% | 97% | 0 | Existing expensive startup scenarios were corrected in place, pass, and completed proportional review at `CRR-002`. | No durable coverage changed in round 2. |
+
+- Overall post-repository confidence: `96.0%` (`672 / 7`)
+- Overall final confidence: `97.9%` (`685 / 7`)
+- Calculation method: Simple average of seven applicable categories; no weak category is hidden.
+- Confidence change produced by broader validation: `+1.9 percentage points` from the post-repository gate: `+1.7` from the live browser join and `+0.2` from the packaged Electron supplemental round.
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: The advertised default packaged command cannot build host-native on this Darwin host because its unflagged build targets `ALL`; the explicit macOS build and isolated launch pass. Attempt logs may remain cardinality-sized; SQLite physical files may not immediately shrink without `VACUUM`; and the broad server suite has four unrelated current-base failures. These do not contradict ticket acceptance criteria.
+
+## Broader Validation Decision And Execution
+
+- Decision and selected execution mode from the coverage investigation: `Required — Browser`
+- Material deviation from the planned mode or rationale: No material deviation. The project-supported backend/Nuxt configuration ran on verified free loopback ports rather than fixed 8000/3000 because those ports belonged to unrelated processes and could not safely be stopped.
+- Confidence gap or residual risk actually addressed: The real scalar GraphQL response had not yet traversed Nuxt proxying, Apollo, Pinia normalization, route selection, and Settings rendering.
+- If `Not Required`, direct evidence that made broader validation unnecessary: `N/A`
+- If `Blocked`, exact unavailable dependency or access and attempted alternatives: `N/A`
+- Startup order, commands, and readiness results: Temporary Node/Playwright probe called `startBuiltTestServer()` over a unique test-safe DB/runtime, waited for built-server readiness, launched `pnpm dev --host 127.0.0.1 --port <free>` with the documented backend endpoint variables, waited for frontend HTTP success, queried GraphQL, then launched Chrome. All readiness steps passed.
+- Environment choices that materially affected the run: `APP_ENV=test` owned backend, SQLite, sanitized backend environment, free ports 59862/59861, Nuxt development proxy, Chrome headless, 1440x1000, `en-US`; no credentials or user profile.
+- Seed data, fixtures, identities, authentication, permissions, or session state: Normal clean startup produced 16 deterministic current migration records and logs. No authentication, external account, secret, or user state was required.
+
+Round 2 added the user-requested packaged mode. The exact default command failed before launch because its build entrypoint selected all platforms. The safe repository-supported continuation built Darwin/arm64 explicitly, then reused that exact artifact through the same Playwright launcher. The launcher selected port 49629 and an owned temporary data root, observed bundled-server health and the first Electron window, and cleaned both process tree and root.
+
+| Scenario / Journey Step | Expected Observable Result | Actual Observable Result | DOM / Screenshot / Log / API / Process Evidence | Result |
+| --- | --- | --- | --- | --- |
+| Start owned system | Built backend and Nuxt become ready without touching occupied/default or user resources | Built server ready at 59862; Nuxt ready at 59861 | `09b-settings-live-browser-rerun.log`; structured URLs in JSON | Pass |
+| Query current API | Every non-null summary is a scalar exact canonical string | 16 records, 16 summarized; every summary matches `Scanned N; migrated N; skipped N; failed N.` | `09-settings-live-browser.json` | Pass |
+| Open Settings Migrations | Exact live summary, migration ID, status metadata, and log path render | Selected custom-provider summary and log path visible in Migrations table | Semantic assertions and `09-settings-live-browser.png` | Pass |
+| Reject obsolete disclosure | No rich-details expander or API object leaks into UI | DOM `<details>` count is zero; exact scalar text shown | JSON DOM result and screenshot | Pass |
+| Refresh | Refresh performs successful current GraphQL query and preserves scalar UI | GraphQL response 200; exact summary remains visible | JSON `refreshStatus: 200`, DOM assertion | Pass |
+| Client health | No target request failures or browser console problems | Empty target failed-request list and empty browser console list | `09-settings-live-browser.json` | Pass |
+
+## Desktop Application Validation (When Applicable)
+
+- Validation approach executed and any deviation from the investigation: Round 1 used browser-first web-equivalent validation. Round 2 additionally built the host-native packaged app and launched it with the checked-in Playwright Electron adapter. The default build-and-launch command required the repository's explicit macOS build because its unflagged build currently targets `ALL`.
+- Browser-tested web-equivalent behavior and evidence: Settings route selection, actual migration fetch, scalar summary/log-path/status rendering, no detail expansion, Refresh.
+- Shell-specific or lifecycle behavior and evidence: Darwin/arm64 Electron package creation, renderer/main/preload generation, bundled native server resources, E2E launch profile, bundled-server readiness, first-window creation, and owned cleanup passed.
+- Effect on any already-running desktop application: `None`; no existing process was stopped and no packaged/user profile was touched.
+- Behavior not directly proven and confidence consequence: The packaged smoke does not navigate/assert the Settings Migrations route. That ticket-specific journey is directly proven by `AE2E-BROWSER-001`; package/shell startup is directly proven by `AE2E-ELECTRON-001`.
+
+## Platform / Runtime Targets
+
+- Operating system / platform: macOS Darwin 25.5.0, arm64.
+- Runtime and relevant framework versions: Node 22.23.1; pnpm 10.28.2; server 0.1.1; Prisma/@prisma-client 5.22.0; Vitest 4.0.18; web 1.4.52; Nuxt 3.21.1; Playwright Core 1.58.2.
+- Browser / engine and version, when applicable: Google Chrome 151.0.7922.170.
+- Device, viewport, locale, timezone, or accessibility settings, when applicable: Headless desktop viewport 1440x1000; `en-US`; host timezone Europe/Berlin. No special accessibility emulation.
+
+## Lifecycle / Upgrade / Restart / Persisted-Data Checks
+
+- Approved persisted-data decision: `Migration Required`
+- Representative existing data exercised: Released `summary_json` rows with all four counts, a cardinality-sized details payload larger than 64 KiB, null/fresh cases, preserved status/attempt/timestamps/error/log path, and invalid wrong-type/negative/fraction/missing/malformed inputs.
+- Direct-use, discard/rebuild, or migration result and evidence: Actual timestamped migration rewrote valid released JSON to compact strings, renamed the column, preserved non-summary fields and historical log bytes, removed source details from current database/API, and exposed current data after startup.
+- Migration completion/recovery evidence, only when `Migration Required`: Real-Prisma seven-case matrix proves transactional rollback/source preservation; built-server E2E proves deploy-before-runtime, one migration-history application, relaunch idempotence, warnings, startup prerequisite failure, and restart retry.
+- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
+- Residual untested persisted-data risk: Immediate physical SQLite file shrink is intentionally not guaranteed; real user data is intentionally not used.
+
+## Tests Implemented Or Updated
+
+| Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` / `AE2E-001`, `AE2E-002` | Updated | Released schema -> startup transition -> current DB/API/log/lifecycle | Pass — 4 tests focused and within broad run | Replaces obsolete rich API/DB assertions; retains operational journey. |
+| `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts` / `AE2E-003` | Updated | Current GraphQL scalar/log path and post-consolidation identity | Pass — 4 tests on corrected rerun and within broad run | Reads current run-record identity rather than consumed legacy event. |
+
+## Tests Removed As Stale Or Obsolete
+
+No file or operational scenario was removed. Obsolete rich database/API assertions were replaced at the current scalar/log boundary inside the two existing E2E files.
+
+## Durable Coverage Changed In The Codebase
+
+- Repository-resident durable coverage added, updated, or removed this round: `No` in round 2. Round 1 updated the following paths, which already passed proportional review at `CRR-002`:
+- Prior-round paths added or updated:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts`
+- Paths removed: `None`
+- Added or updated paths attached for proportional test-code review: Round 2 `Not Applicable`; no durable test changed. Round 1 `Yes` and review completed.
+- Diff or repository evidence supplied for removed paths: `N/A`
+
+## Other Execution Artifacts
+
+| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
+| --- | --- | --- | --- |
+| `tickets/in-progress/app-data-migration-summary-log-redesign/api-e2e-evidence/01-focused-server-unit.log` | Focused backend result | Retained evidence | 5 files / 34 tests pass. |
+| `.../02-prisma-migration-integration.log` | Real migration matrix | Retained evidence | 1 file / 7 tests pass. |
+| `.../03-server-build.log` | Production server build | Retained evidence | Build/Prisma/bootstrap smoke pass. |
+| `.../04a-team-run-production-upgrade-e2e.log` | Actual upgrade/relaunch E2E | Retained evidence | 1 file / 4 tests pass. |
+| `.../04b-custom-provider-startup-e2e.log` | First-run stale-test finding | Retained evidence | 3 pass / 1 stale token-event assertion fail. |
+| `.../04c-custom-provider-startup-e2e-rerun.log` | Corrected startup E2E | Retained evidence | 1 file / 4 tests pass. |
+| `.../05-full-deterministic-server-e2e.log` | Broad regression suite | Retained evidence | Four unrelated current-base file failures disclosed. |
+| `.../06-focused-web.log`, `.../07-web-build.log`, `.../08-hygiene.log` | Frontend and hygiene | Retained evidence | Focused tests/build/diff/scan pass. |
+| `.../09-settings-live-browser.png`, `.json`, `09b-settings-live-browser-rerun.log` | Live browser evidence | Retained evidence | Semantic and visual proof plus cleanup record. |
+| `.../10-packaged-electron-playwright.log` | Default packaged entrypoint evidence | Retained evidence | Fails before launch because unflagged build selects `ALL` and Linux is rejected on Darwin. |
+| `.../10b-packaged-electron-mac-build.log` | Host-native package build evidence | Retained evidence | Darwin/arm64 server/resources/native modules/renderer/main/preload/DMG/ZIP pass. |
+| `.../10c-packaged-electron-playwright-skip-build.log`, `10-packaged-electron-result.json` | Packaged launch/readiness evidence | Retained evidence | Bundled server healthy and first Electron window observed at an owned E2E profile. |
+| `.../10d-packaged-electron-cleanup.log` | Cleanup verification | Retained evidence | Owned root, listener, and process tree absent after launch. |
+
+All abbreviated paths above are rooted at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/api-e2e-evidence`.
+
+## Temporary Execution Methods / Scaffolding
+
+| Path / Method | Why Needed | Result / Evidence | Cleanup Result |
+| --- | --- | --- | --- |
+| `api-e2e-evidence/09-settings-live-browser-probe.mjs` | No general durable Settings-live-backend browser harness exists; a ticket-specific join probe was the narrowest way to close the material mock gap | Corrected rerun Pass; structured JSON, screenshot, and log retained | Browser closed; Nuxt process group stopped; backend stopped cleanly; unique runtime/DB/key/sidecars removed; no owned listener remains. |
+| Checked-in `scripts/run-electron-e2e.mjs` with explicit host build | User requested more production-like packaged evidence | Explicit macOS package build and `--skip-build --adapter playwright` launch Pass | Launcher-owned data root removed; packaged process tree stopped; port released. Build artifacts retained. |
+
+## Dependencies Mocked Or Emulated
+
+| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
+| --- | --- | --- | --- |
+| External model/search providers | Not invoked; deterministic local startup data | No external integration or credential behavior changed | None for ticket scope. |
+| Released production database contents | Synthetic released-schema SQLite fixture in test-owned path | User production data must not be touched; fixture covers valid, large, null, fresh, and invalid shapes | Negligible; actual Prisma migration and built runtime are used. |
+| Unit-test repositories/clients | Existing focused mocks | Owner-level deterministic proof | Closed at material boundary by actual-process SQLite/GraphQL E2Es and live browser. |
+
+## Result Summary
+
+| Result | Scenario IDs | Summary / Reason |
+| --- | --- | --- |
+| Pass | `AE2E-UNIT-001`, `AE2E-MIG-001`, `AE2E-001`, `AE2E-002`, `AE2E-003`, `AE2E-WEB-001`, `AE2E-BROWSER-001`, `AE2E-ELECTRON-001` | All critical ticket requirements plus host-native packaged Electron build/readiness/first-window evidence pass; final confidence 97.9%. |
+| Fail — existing packaging-tooling residual | `AE2E-ELECTRON-DEFAULT-ENTRY` | README default command fails before launch because `build:electron` reaches an `ALL` target on Darwin. Explicit `build:electron:mac` plus the same `--skip-build` Playwright launcher passes. |
+| Fail — unrelated current-base residual | `AE2E-BROAD-BASELINE` | Aggregate server E2E reports missing Codex bootstrap module, incomplete media app-config mock, stale workspace-history GraphQL selection, and workspace-removal expectation mismatch. Ticket E2Es pass in that run; no failing file overlaps the diff. |
+| Out Of Scope | Packaged navigation to Settings Migrations, external providers, user profile | The packaged smoke stops after first-window readiness; direct ticket-specific UI assertions remain in the live browser journey. No external/profile boundary changed. |
+
+## Cleanup Performed
+
+| Resource / Process / Data | Ownership | Cleanup Action | Result |
+| --- | --- | --- | --- |
+| Chrome context/process | Probe-owned | `browser.close()` in `finally` | Clean |
+| Nuxt development process group | Probe-owned, free port 59861 | `SIGTERM`, bounded `SIGKILL` fallback not needed | Clean; no listener remains |
+| Built server | Project helper-owned, free port 59862 | `server.stop()` | Clean shutdown logged; no listener remains |
+| Runtime directory, SQLite DB, secret key, sidecars | Unique probe-owned test-safe roots | `removeOwnedTestRuntime()` | Removed; no matching residue found |
+| Fixed-port processes on 8000/3000 | Unrelated ownership | Not touched | Preserved |
+| Packaged Electron process tree | Checked-in launcher-owned | Graceful cleanup with bounded escalation contract | Clean; no matching process remains |
+| Packaged E2E data root | Launcher-owned `/private/.../autobyteus-e2e-vsutRR` | Launcher disposal after process-tree confirmation | Removed |
+| Packaged bundled-server listener | Launcher-selected port 49629 | Closed with packaged process cleanup | Clean; no listener remains |
+| Darwin package artifacts | Build output | Intentionally retained under `electron-dist` | Executable, DMG, ZIP and block maps retained |
+
+## Preliminary Classification
+
+- Overall ticket result: `Pass`.
+- Bounded first-run issues: `Local Fix` owned by API/E2E — stale current-base token-event test assertion and temporary browser heading literal; both were recorded before correction and pass on rerun.
+- Packaged-entrypoint residual: `Local Fix / existing packaging-launcher configuration mismatch`; README/launcher promise a host-native default build, while `build:electron` invokes the build tool's `ALL` default. It does not originate in the migration-summary change. The host-specific package and launch pass.
+- Broad-suite residual: unrelated current-base coverage/test failures, not an implementation or ticket-coverage failure.
+
+## Recommended Recipient
+
+`/code_reviewer` for round-2 intake and routing. No durable coverage changed in round 2, so proportional test-code review is `Not Applicable`; round-1 durable coverage already passed `CRR-002`. The implementation scorecard should not be reopened.
+
+## Evidence / Notes
+
+- `git diff --check` passes.
+- Current app-data runtime/API/web paths contain no legacy `summaryJson`/`summary_json` field. Remaining `summary_json` references in the updated production-upgrade E2E are deliberately confined to the released-schema fixture and post-transition absence assertion.
+- The first browser attempt is retained as evidence rather than hidden; it found the exact live summary and failed only on a ticket-local non-catalog heading string. The corrected rerun has no browser console or target request failures.
+- The packaged command's first failure is also retained. The explicit macOS build and isolated Playwright reuse of that exact artifact passed, returned `electron-e2e-ready`, and cleaned all launcher-owned runtime resources.
+
+## Latest Authoritative Result
+
+- Result: `Pass`
+- Final validation confidence: `97.9%`
+- Default `95%` confidence target met: `Yes`
+- Any final applicable confidence category below `90%`: `No`
+- Broader validation decision: Required browser passed in round 1; user-requested packaged Electron supplement passed in round 2 through explicit host build plus isolated Playwright launch.
+- Critical acceptance criteria lacking direct proof: `None`
+- Required next recipient: `/code_reviewer` for round-2 intake; durable-test review `Not Applicable` this round.
+- Notes: No durable coverage changed in round 2. The default package-build entrypoint mismatch and four unrelated broad-suite current-base failures remain explicitly disclosed.

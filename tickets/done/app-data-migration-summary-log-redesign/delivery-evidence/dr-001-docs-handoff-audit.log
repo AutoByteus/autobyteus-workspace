@@ -1,0 +1,111 @@
+Delivery revision: DR-001
+Recorded at: 2026-08-20T21:01:58Z
+
+== integrated state ==
+branch=codex/app-data-migration-summary-log-redesign
+HEAD=6c45846863c4980e9c5ecc6dba915be10205b808
+origin/personal=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+merge-base=dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91
+ahead-behind=2	0
+
+== artifact existence ==
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/delivery-evidence/dr-001-initial-integration-refresh.log
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/delivery-evidence/dr-001-post-integration-team-run-upgrade-e2e.log
+PASS nonempty tickets/in-progress/app-data-migration-summary-log-redesign/delivery-evidence/dr-001-post-integration-web-focused.log
+PASS nonempty autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+PASS nonempty autobyteus-server-ts/docs/ARCHITECTURE.md
+PASS nonempty autobyteus-web/docs/settings.md
+
+== required handoff facts ==
+tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md:7:  `API-REV-001` Pass at `97.7%` final confidence, and proportional durable
+tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md:12:  `dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`, merged without conflict into the
+tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md:13:  ticket branch as `6c45846863c4980e9c5ecc6dba915be10205b808` after checkpoint
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:6:- Current delivery revision: `DR-001`.
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:12:  pending explicit user verification.`
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:21:- Current delivery revision ID: `DR-001`
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:30:  `origin/personal@dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:37:  `6c45846863c4980e9c5ecc6dba915be10205b808`, no conflicts
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:52:- Renewed verification required after later re-integration: `No` at DR-001; it
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:98:- Repository finalization status: `Held pending explicit user verification`
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:141:- Approved persisted-data decision: `Migration Required`
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:142:- Delivery action required: `Migration Required` — automatically executed by
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:164:| Upstream requirement/API/browser coverage | Pass; `API-REV-001`, 97.7% | `api-e2e-execution-coverage-report.md` |
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:168:The aggregate deterministic server E2E command retains four unrelated
+tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md:189:finalization intentionally waiting for explicit user verification.`
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:15:  `dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:19:  `6c45846863c4980e9c5ecc6dba915be10205b808`
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:50:- API/E2E: `API-REV-001` — Pass at `97.7%` final confidence.
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:83:- Approved persisted-data decision: `Migration Required`.
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:126:- The aggregate deterministic server E2E command still exits 1 on four unrelated
+tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md:139:- Current status: `Ready for explicit user verification`.
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:11:| `DR-001` | `/code_reviewer` handoff after `CRR-002` proportional durable-test pass | `N/A` | `Pass — latest base integrated, post-integration checks passed, docs synchronized, user handoff ready; finalization held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-001-*`, three long-lived docs |
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:15:### DR-001 — Integrated concise migration-summary delivery baseline
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:19:  passed at `97.7%`, and proportional review `CRR-002` passed both changed
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:36:  — ready for explicit user verification.
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:44:    `dbd00e789cf9e2ae7aaa995b60a181d5e6c3bf91`.
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:48:    `6c45846863c4980e9c5ecc6dba915be10205b808`.
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:62:  `DR-001` authority against the integrated current-base state and prevent a
+tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md:70:  - Aggregate server E2E retains four unrelated current-base failing files while
+
+== durable documentation facts ==
+autobyteus-server-ts/docs/ARCHITECTURE.md:97:  runner-formatted `Scanned N; migrated N; skipped N; failed N.` summary plus
+autobyteus-server-ts/docs/ARCHITECTURE.md:98:  status, attempts, timestamps, concise error, and the referenced attempt-log
+autobyteus-server-ts/docs/ARCHITECTURE.md:101:  detail-bearing `summary_json` shape.
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:158:`Scanned N; migrated N; skipped N; failed N.`
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:165:opaque text; they must not parse it back into domain data or add separate
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:169:attempt-log writer. The referenced filesystem log owns the full count/detail
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:173:limit, keeps database and API outcome size independent of source cardinality.
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:178:Released `summary_json` records are transitioned by timestamped Prisma
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:273:not grow with source cardinality.
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:330:  while full item diagnostics remain in the referenced attempt log?
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md:331:- Is released `summary_json` knowledge confined to the timestamped schema
+autobyteus-web/docs/settings.md:118:canonical form `Scanned N; migrated N; skipped N; failed N.` together with its
+autobyteus-web/docs/settings.md:122:The table renders that summary as opaque text; it does not parse counts, accept
+autobyteus-web/docs/settings.md:123:the released `summary_json` shape, or expose expandable item details. The
+autobyteus-web/docs/settings.md:127:table stay independent of source cardinality. The displayed `logPath` is a
+
+== post-integration command results ==
+
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 12513ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  3861ms
+     ✓ isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available  3353ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  3411ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  1887ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  22:56:04
+   Duration  16.81s (transform 2.54s, setup 16ms, import 3.70s, tests 12.51s, environment 0ms)
+
+stdout | components/settings/__tests__/ServerMigrationsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/appDataMigrationsStore.spec.ts (2 tests) 4ms
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (3 tests) 33ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  22:56:29
+   Duration  4.85s (transform 2.53s, setup 8.24s, collect 212ms, tests 37ms, environment 427ms, prepare 264ms)
+
+
+== diff hygiene ==
+PASS git diff --check
+
+== worktree state ==
+## codex/app-data-migration-summary-log-redesign...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+ M autobyteus-web/docs/settings.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/delivery-evidence/
+?? tickets/in-progress/app-data-migration-summary-log-redesign/delivery-revision-record.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/docs-sync-report.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/handoff-summary.md
+?? tickets/in-progress/app-data-migration-summary-log-redesign/release-deployment-report.md
+
+AUDIT RESULT: PASS

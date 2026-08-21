@@ -59,25 +59,7 @@
               </div>
             </td>
             <td class="px-5 py-4 text-sm text-slate-700">
-              <div v-if="migration.summary">
-                {{ $t('settings.components.settings.ServerMigrationsManager.counts', {
-                  scanned: migration.summary.scannedCount,
-                  migrated: migration.summary.migratedCount,
-                  skipped: migration.summary.skippedCount,
-                  failed: migration.summary.failedCount,
-                }) }}
-                <details v-if="migration.summary.details.length > 0" class="mt-2">
-                  <summary class="cursor-pointer text-blue-700">{{ $t('settings.components.settings.ServerMigrationsManager.showDetails') }}</summary>
-                  <ul class="mt-2 max-h-52 space-y-1 overflow-auto pr-2 text-xs text-slate-600">
-                    <li v-for="detail in migration.summary.details" :key="`${detail.itemId}-${detail.status}`" class="rounded bg-slate-50 p-2">
-                      <span class="font-semibold">{{ detail.status }}</span>
-                      <span> · {{ detail.itemId }}</span>
-                      <div>{{ detail.message }}</div>
-                      <div v-if="detail.filePath" class="break-all text-slate-500">{{ detail.filePath }}</div>
-                    </li>
-                  </ul>
-                </details>
-              </div>
+              <div v-if="migration.summary" class="break-words">{{ migration.summary }}</div>
               <span v-else class="text-slate-500">{{ $t('settings.components.settings.ServerMigrationsManager.noSummary') }}</span>
             </td>
             <td class="px-5 py-4 text-sm text-slate-600">
