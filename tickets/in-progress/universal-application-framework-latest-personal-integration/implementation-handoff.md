@@ -24,31 +24,39 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-002-source-review.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-002-focused-validation.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-002-readonly-event-journal-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-004-failure-origin-focused.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-001-socratic-target-failure.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-001-socratic-standalone.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-001-standalone-manager-stack-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-001-source-correlation.log`
 
 ## Current Implementation Summary
 
-The implementation performs the reviewed history-preserving semantic merge of finalized feature input `a5ffd289aa58293574e44dfa8b38ed8b1978ffd0` into latest-Personal input `8ef282ba77705180d985e7000d801f0e0068cdc1`. It retains current Personal lifecycle, activation/provisioning, rooted run identity, provider/model, persistence, and contract authorities while incorporating the explicit Studio/standalone application platform, SDKs, devkit workflow, maintained applications, scoped application sessions/publication, sparse launch overrides, and clean generated-output policy. Required server tools have one composition-owned memoized readiness path with Core first, five non-Search units next, and provisioned Search last. IR-002 additionally restores standalone lifecycle phases 5–10 with exact current-schema/degraded/catalog/readable-provider semantics and makes launch override reads use existing read-only SQLite state without preparing or repairing schema. IR-003 reconciles that read-only existing-state boundary with event-journal recovery: pending-event inspection now returns empty state when its journal/cursor is absent and leaves initialization to explicit journal mutation.
+The implementation performs the reviewed history-preserving semantic merge of finalized feature input `a5ffd289aa58293574e44dfa8b38ed8b1978ffd0` into latest-Personal input `8ef282ba77705180d985e7000d801f0e0068cdc1`. It retains current Personal lifecycle, activation/provisioning, rooted run identity, provider/model, persistence, and contract authorities while incorporating the explicit Studio/standalone application platform, SDKs, devkit workflow, maintained applications, scoped application sessions/publication, sparse launch overrides, and clean generated-output policy. Required server tools have one composition-owned memoized readiness path with Core first, five non-Search units next, and provisioned Search last. IR-002 restores standalone lifecycle phases 5–10 and genuinely read-only launch override reads. IR-003 reconciles that read-only boundary with pending-event recovery. IR-004 corrects the two API-REV-001 defects: Socratic target derivation now selects the configured `/tutor` binding member and forwards its exact `agentRunId`, while migration/history and process run-file location readers use an explicit stored-history-only service so only `GeneralProcessRunSupervisor` initializes the exact process `AgentRunManager`/`AgentTeamRunManager` family.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-003`
+- Triggering finding IDs: `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Integrate the finalized feature onto latest Personal while retaining both immutable histories. | Two-parent semantic merge; dispositions from `integration-path-inventory.txt`; composition/runtime resolution under `autobyteus-server-ts/src/compositions/`, `src/application-platform/`, and `src/server-runtime.ts`. | Implemented with latest Personal as first parent and finalized feature as second parent; all 177 textual conflicts resolved semantically and no unmerged path remains. |
-| BEH-002 | Run real application commands from maintained application folders using canonical source and build-once packages. | `autobyteus-application-devkit/src/`; `applications/brief-studio/`; `applications/socratic-math-teacher/`; application SDK contract packages. | Native `dev`, `dev:studio`, `build`, `validate`, and build-free `start` workflow retained. Dynamic watcher replacement is atomic; macOS uses polling because native add events were not delivered reliably in the implementation environment. |
-| BEH-003 | Preserve current Personal run/team lifecycle and rooted identity while using exact application-scoped session, publication, and cleanup authorities. | `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`; `src/application-platform/runtime/`; `src/agent-execution/`; `src/agent-team-execution/`; `src/agent-tools/mcp/`; `src/application-orchestration/`; Brief backend launch/reconciliation services. | Integrated current managers, rooted addresses, activation state, scoped MCP sessions, artifact publication, lifecycle recovery, and stop cleanup without restoring retired global/default paths. Standalone now asserts current token schema before vault, derives token readiness from the single app-data status list, rebuilds the TeamRun V1 catalog, applies strict-admission warnings, and enforces only the exact readable-provider gate before run-owner construction. Same-data lifecycle and reentry recovery inspect existing execution-event journal/cursor state through read-only SQLite, return no pending work when state is absent, and never perform DDL or cursor seeding from a read. |
+| BEH-002 | Run real application commands from maintained application folders using canonical source and build-once packages. | `autobyteus-application-devkit/src/`; `applications/brief-studio/`; `applications/socratic-math-teacher/`; application SDK contract packages; `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`. | Native `dev`, `dev:studio`, `build`, `validate`, and build-free `start` workflow retained. Migration/history construction and the supervisor-owned run-file dependency no longer claim a default team manager before standalone process-owner initialization. Dynamic watcher replacement remains atomic. |
+| BEH-003 | Preserve current Personal run/team lifecycle and rooted identity while using exact application-scoped session, publication, and cleanup authorities. | `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`; `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`; `src/application-platform/runtime/`; `src/agent-execution/`; `src/agent-team-execution/`; `src/run-history/services/team-run-execution-tree-location-service.ts`; `src/agent-tools/mcp/`; `src/application-orchestration/`. | Socratic resolves the configured `/tutor` member from `binding.runtime.members` and passes its exact current `agentRunId` to the SDK target builder. Passive migration/history reads and the general process run-file dependency use stored history without acquiring the process singleton; `GeneralProcessRunSupervisor` remains the sole exclusive manager-family owner and releases its agent owner if team initialization fails. Existing scoped session, publication, recovery, and cleanup behavior is preserved. |
 | BEH-004 | Preserve package defaults and sparse Studio overrides while honoring current provider/model availability and contract values. | `autobyteus-server-ts/src/application-platform/launch-configuration/`; `src/application-orchestration/stores/application-launch-override-store.ts`; `src/application-storage/stores/application-platform-state-store.ts`; REST/GraphQL application surfaces; `autobyteus-web/components/applications/`; maintained application manifests/configs. | One current-rooted sparse override store remains authoritative. Get/list open only existing platform state through a read-only SQLite handle and return empty state when the DB/table is absent; they never create, alter, seed, or repair schema. Explicit Save creates the current table as needed; explicit Reset mutates only existing state. |
 | BEH-005 | Resolve source overlaps semantically and remove/regenerate derived or obsolete output. | Repository-wide merge guided by conflict/overlap/path inventories; maintained source packages and build configurations. | Semantic resolutions replace whole-side selection. 656 generated/mirrored paths and obsolete wrappers were removed rather than hand-merged; generated outputs created during checks were cleaned. |
-| BEH-006 | Prepare the integrated candidate for independent complete review and execution. | Architecture checks, focused unit/component checks, builds/typechecks, application build/validation, source-size and legacy-path audits recorded below. | Implementation-scoped validation passes. Full real host/browser, recovery, cleanup, package-parity, and Electron execution remains downstream API/E2E/delivery work. |
+| BEH-006 | Prepare the integrated candidate for independent complete review and execution. | Architecture checks, focused unit/component checks, builds/typechecks, application build/validation, source-size and legacy-path audits recorded below. | IR-004 focused identity and process-owner checks pass. The API-REV-001 real Socratic target/start scenarios must be rerun after source review; full real host/browser, recovery, cleanup, package-parity, and Electron execution remain downstream work. |
 
 ## Key Files Or Areas
 
@@ -56,10 +64,11 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 - `autobyteus-server-ts/src/application-platform/`: explicit runtime graph, lifecycle projections, launch configuration, package registry/commands, reconciliation, and scoped run authorities.
 - `autobyteus-server-ts/src/startup/agent-tool-loader.ts`: sole memoized seven-unit registration authority and ordered Search provisioning.
 - `autobyteus-server-ts/src/agent-execution/`, `src/agent-team-execution/`, and `src/agent-tools/mcp/`: current rooted identities, activation/session ownership, publication, messaging, recovery, and cleanup.
+- `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts` and `src/run-history/services/team-run-execution-tree-location-service.ts`: exact process-manager ownership plus explicit passive stored-history lookup for migration and run-file dependencies.
 - `autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts`: explicit journal mutation setup and non-mutating existing-state recovery inspection.
 - `autobyteus-application-sdk-contracts/`, `autobyteus-application-backend-sdk/`, `autobyteus-application-frontend-sdk/`: current application contracts.
 - `autobyteus-application-devkit/`: native command/build/watch/atomic package workflow.
-- `applications/brief-studio/` and `applications/socratic-math-teacher/`: maintained canonical sources and exact configurations.
+- `applications/brief-studio/` and `applications/socratic-math-teacher/`: maintained canonical sources and exact configurations, including exact bound Socratic `/tutor` runtime identity projection.
 - `autobyteus-web/components/applications/`, application stores/composables/utilities: Studio launch/setup and embedded application behavior.
 - `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`: current structural boundary enforcement.
 
@@ -73,17 +82,17 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 ## Known Risks
 
 - The broad server unit/architecture characterization still contains pre-existing latest-Personal failures. The integrated candidate improved the result from the exact Personal baseline (`54` failed files / `166` failed tests) to `44` failed files / `147` failed tests, with zero candidate-only failing files. This is baseline debt, not a claim of full-suite success.
-- Real Studio and standalone host commands, browser journeys, current/degraded token readiness under actual migrations, worker recovery, scoped session/publication/message behavior, full-process persistence across restart, and cleanup require independent downstream execution against the integrated candidate. Focused real-SQLite lifecycle/reentry recovery is now locally covered.
+- API-REV-001 failed the real Socratic exact-target and standalone-start scenarios before IR-004. Their source origins are corrected and locally covered, but the exact real commands must be rerun after source review. Real Studio/Brief journeys, worker recovery, scoped session/publication/message behavior, full-process persistence across restart, and cleanup remain downstream work.
 - macOS watcher correctness is locally covered with polling and focused devkit tests, but real edit/rebuild/reload behavior remains a downstream journey.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Refactor` / integration of a completed larger requirement.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue` and `Legacy Or Compatibility Pressure`.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`, bounded to activation/session/publication construction, identity adaptation, and required-tool readiness ownership.
+- Reviewed change posture: completed integration plus bounded `Local Fix` rework.
+- Reviewed root-cause classification: `Local Implementation Defect` for the Socratic identity argument and `Boundary Or Ownership Issue` for passive/default dependencies acquiring the exclusive process team-manager boundary.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`, bounded to explicit non-owning history dependencies while retaining the reviewed supervisor owner.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: the integrated graph uses a narrow activation registry and explicit scoped dependencies to avoid cyclic construction; `AgentToolRegistryReadiness` is the sole ordered application-host registration owner. No generalized runtime framework or public SDK expansion was introduced.
+- Evidence / notes: the target builder retains exact SDK validation and now supplies the existing binding identity rather than synthesizing or relaxing it. A narrow stored-history-only location factory removes both eager team-singleton paths; no fallback, proxy, manager alias, or weakened exclusive initialization was introduced.
 
 ## Legacy / Compatibility Removal Check
 
@@ -93,7 +102,7 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: obsolete dev-server/frontend-startup/application-engine-host paths and generated/mirrored package trees were removed. IR-002 removes request-time `ALTER TABLE` compatibility repair and ordinary-read table creation from the launch override store. IR-003 removes journal/cursor setup from pending-event read paths without adding an alias, fallback, or repair path. `application-launch-configuration-service.ts` was split into focused execution-resource reference and stored-override reader modules and is exactly 500 effective non-empty lines; no changed production source file exceeds 500 effective non-empty lines.
+- Notes: obsolete dev-server/frontend-startup/application-engine-host paths and generated/mirrored package trees were removed. IR-002 removes request-time `ALTER TABLE` compatibility repair and ordinary-read table creation from the launch override store. IR-003 removes journal/cursor setup from pending-event read paths. IR-004 keeps SDK identity validation and exclusive manager initialization unchanged while replacing only the two owning default dependencies with explicit passive stored-history lookup. No changed production source file exceeds 500 effective non-empty lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -112,6 +121,11 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 
 ## Local Implementation Checks Run
 
+- IR-004 affected server selection: `7` files / `53` tests passed, covering exact Socratic target projection, migration-to-supervisor ownership, supervisor failure unwind/restart, run-file changes, agent-memory locations, migration execution, and all `15` application-framework architecture checks.
+- IR-004 direct new regressions: `2` files / `4` tests passed. They prove `/tutor` selects its exact bound `agentRunId`, missing configuration fails explicitly, app-data migration registry construction is passive, the supervisor initializes exactly one process manager family, close is idempotent/restart-safe, and an agent owner is released after team-owner initialization failure.
+- IR-004 backend SDK exact target-address contract: `1` file / `6` tests passed.
+- IR-004 server build-config TypeScript no-emit, full production build (including sanitized built-in-agent bootstrap smoke), and Socratic backend typecheck passed.
+- An adjacent broad migration selection retained two latest-Personal baseline failures in `remove-external-runtime-working-context-snapshots-migration.test.ts`; both concern invalid future/mismatched metadata diagnostics and do not traverse the corrected manager-ownership or Socratic target paths.
 - IR-003 affected selection: `8` files / `50` tests passed, including `15` architecture checks, `5` real-SQLite absent/existing journal plus lifecycle/reentry recovery cases, and all retained CR-001/CR-002 focused checks.
 - IR-003 direct recovery regression: `1` file / `5` tests passed. It proves absent state creates no DB, an existing no-journal DB remains byte-for-byte unchanged, an appended journal is read through a new read-only store without changing bytes, and lifecycle/reentry recovery reaches ready/active and dispatches the retained event.
 - IR-003 server build-config TypeScript no-emit and full production build passed, including the sanitized built-in-agent bootstrap smoke.
@@ -142,6 +156,7 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 
 ## Frontend Rendered-Result Check (When Applicable)
 
+- IR-004 current rework: `Not Applicable` for rendered inspection. It changes backend target projection and server construction dependencies only; no Vue/template/style/interaction source changed.
 - Affected surfaces / journeys: Studio application launch/setup, package/selected-resource defaults, sparse overrides, readiness, and embedded application entry/remount behavior.
 - Approved UI/UX, interaction, requirement, or design references: BEH-002, BEH-004, DS-002, DS-009, `requirements.md`, `design-spec.md`, and `integration-runtime-contracts.md`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: existing application setup panels, agent/team/member editors, runtime-scoped model selection, application shell, and related Nuxt stores/composables.
@@ -152,6 +167,8 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- First rerun the corrected Socratic target projection and real maintained `pnpm start` path, then exercise Start Lesson through the mounted application and confirm the returned target carries the binding member's exact `agentRunId`.
+- Prove Studio and standalone each initialize one exact general-process manager family only after migrations, retain passive history/run-file lookup, and release manager ownership on normal close and startup failure.
 - Execute real `dev`, `dev:studio`, `build`, `validate`, and build-free `start` from both maintained application folders, including repeated watched edits and manifest/config identity changes.
 - Exercise Studio package import/refresh, setup/save/reset, iframe mount/remount, real Brief and Socratic runs, provider/model availability, and package-default/sparse-override behavior.
 - Exercise standalone static/SPA/origin behavior, scoped Agent Tools route authentication, publication, recipient-name messaging, and absence of the Studio-only external gateway.
@@ -161,4 +178,4 @@ The implementation performs the reviewed history-preserving semantic merge of fi
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. This handoff records implementation-scoped checks only. The API/E2E engineer must investigate current durable coverage against the merged latest-Personal state, reconcile stale fixtures where warranted, execute the real Studio/standalone command and browser journeys, validate recovery/cleanup/parity, and produce independent evidence before delivery.
+Yes. API-REV-001 ended `Fail / 73%` and its durable package remains preserved. After source review passes IR-004, API/E2E must rerun `APIE2E-SOCRATIC-001` and `APIE2E-STANDALONE-001` first, then resume the complete Studio/standalone, provider, recovery, cleanup, parity, browser, and Electron-preparation matrix. This handoff claims implementation-scoped validation only.

@@ -3,6 +3,7 @@ import path from "node:path";
 import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { fromTeamRunRuntimeKind } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
   runtimeKindFromString,
@@ -73,7 +74,10 @@ export class RuntimeMemoryLocationClassifier {
   constructor(private readonly memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
     this.runMetadataStore = new AgentRunMetadataStore(memoryDir);
-    this.locationService = new AgentMemoryLocationService({ memoryDir });
+    this.locationService = new AgentMemoryLocationService({
+      memoryDir,
+      locationService: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+    });
   }
 
   async classify(): Promise<RuntimeMemoryLocationClassification> {

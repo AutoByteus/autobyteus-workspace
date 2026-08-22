@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`, `SR-002`, `SR-003`, `ARCH-REV-003`; `CRR-*`, `API-REV-*`, `DR-*`: `N/A` | Ready for source review |
 | IR-002 | `code_reviewer`; `code-review-report.md`; `CRR-001` | `CR-001`, `CR-002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-001`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
 | IR-003 | `code_reviewer`; `code-review-report.md`; `CRR-002` | `CR-003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-002`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
+| IR-004 | `code_reviewer`; `code-review-report.md`; `CRR-004` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-004`, `API-REV-001`; `DR-*`: `N/A` | Ready for source re-review |
 
 ## Revision Entries
 
@@ -71,3 +72,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: direct recovery regression `1` file / `5` tests passed; affected implementation selection `8` files / `50` tests passed; server build-config TypeScript no-emit passed; full production build and sanitized built-in-agent bootstrap smoke passed; architecture `15/15`, current-delta diff, read-only-consumer, and changed-source size audits passed.
 - Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E.
 - Remaining limitations or risks: full-process Studio/standalone same-data restart, real pending-event relay, browser journeys, and cleanup remain downstream API/E2E work after source Pass. No API/E2E sign-off is claimed.
+
+### IR-004 — Restore exact Socratic target identity and process run ownership
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`; `CRR-004` failure-origin review of `API-REV-001`.
+- Triggering finding IDs: `CR-004`, `CR-005`; `APIE2E-SOCRATIC-001` / `APIE2E-F001`; `APIE2E-STANDALONE-001` / `APIE2E-F002`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-004 — Fail / Local Fix`; triggering execution `API-REV-001 — Fail / 73%`.
+- Current authoritative result: `Ready for source re-review`.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-004` (with `CRR-001`–`CRR-003` retained as prior history).
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: corrects the two source defects exposed by the first real API/E2E round without changing the approved current identity contract, migration-before-owner startup order, or exclusive process-manager authority.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-006`; `REQ-003`–`REQ-005`; `AC-003`, `AC-005`, `AC-007`–`AC-009`, `AC-011`.
+- Implementation delta: Socratic target derivation now resolves the configured `/tutor` member from the attached binding and passes that member's exact `agentRunId` into the current SDK builder. `TeamRunExecutionTreeLocationService` now exposes an explicit stored-history-only construction path; runtime-memory migration classification and the supervisor-owned `RunFileChangeService` use it, so passive lookup cannot call `AgentTeamRunManager.getInstance()`. `GeneralProcessRunSupervisor` remains the sole initializer of the process `AgentRunManager`/`AgentTeamRunManager` family and retains failure unwind plus idempotent close/restart behavior.
+- Changed files or areas: `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`; `autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts`; `src/agent-memory/services/runtime-memory-location-classifier.ts`; `src/agent-execution/runtime/general-process-run-supervisor.ts`; focused tests at `tests/unit/application-backend/socratic-lesson-target-address.test.ts` and `tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts`; implementation handoff and this record.
+- Local validation and result: affected server selection `7` files / `53` tests passed, including all `15` application-framework architecture checks; direct new regressions `2` files / `4` tests passed; backend SDK exact target contract `1` file / `6` tests passed; server build-config TypeScript no-emit, full production build, sanitized bootstrap smoke, and Socratic backend typecheck passed. An adjacent broad migration selection retained two unrelated latest-Personal baseline metadata-diagnostic failures and is not claimed as passing.
+- Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
+- Remaining limitations or risks: the exact maintained Socratic `pnpm start`, mounted Start Lesson target, Studio startup, complete provider/publication/recovery/parity matrix, and proportional review of API/E2E-owned dirty tests remain downstream responsibilities after source Pass. No API/E2E sign-off is claimed.

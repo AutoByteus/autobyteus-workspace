@@ -21,6 +21,8 @@ import {
 import {
   MemberTeamContextBuilder,
 } from "../../agent-team-execution/services/member-team-context-builder.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 
 export class GeneralProcessRunSupervisor {
   private readonly agentRunManager: AgentRunManager;
@@ -51,6 +53,9 @@ export class GeneralProcessRunSupervisor {
       claudeBackendFactory: new ClaudeAgentRunBackendFactory(
         claudeSessionManager,
       ),
+      runFileChangeService: new RunFileChangeService({
+        teamLocations: createStoredTeamRunExecutionTreeLocationService(),
+      }),
       agentToolMcpSessionManager: agentToolsSessionManager,
     });
     const memberTeamContextBuilder =
