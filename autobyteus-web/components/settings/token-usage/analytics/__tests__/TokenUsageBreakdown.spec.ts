@@ -64,6 +64,9 @@ describe('TokenUsageBreakdown', () => {
     expect(text).not.toContain('$0.00');
     expect(text).toContain('Captured API cost status');
     expect(text).toContain('local_no_api_bill');
+    expect(wrapper.get('canvas').attributes()).toMatchObject({ role: 'img', tabindex: '0' });
+    expect(wrapper.get('.overflow-x-auto').exists()).toBe(true);
+    expect(wrapper.get('table').classes()).toContain('min-w-[1250px]');
   });
 
   it('marks local cost share not comparable and includes share/quality/status/currency in tooltip evidence', async () => {

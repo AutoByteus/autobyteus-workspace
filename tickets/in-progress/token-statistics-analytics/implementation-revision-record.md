@@ -8,6 +8,7 @@
 | IR-002 | Code reviewer / `code-review-report.md` / round 1 | F-001, F-002, F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001` | Preserved mixed-run identity, elapsed pace alignment, and exact chart/table/CSV evidence corrected; ready for code-review round 2. |
 | IR-003 | Code reviewer / `code-review-report.md` / round 2 | F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-002` | Cumulative pace quality now follows canonical COMPLETE + LOCAL precedence; ready for code-review round 3. |
 | IR-004 | Code reviewer / `code-review-report.md` / API/E2E failure-origin round | F-004, API-F-001/API-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-004`, `API-REV-001` | Empty no-usage buckets are neutral during known-cost reconciliation without losing null semantics; ready for source re-review. |
+| IR-005 | Code reviewer / `code-review-report.md` / field failure-origin round | F-005 / FIELD-F-001 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-008`, `API-REV-004`, `DR-001`–`DR-002` | Both selected view tabs match the approved transparent blue-underlined prototype and retain semantics/focus; ready for source re-review. |
 
 ## Revision Entries
 
@@ -90,3 +91,23 @@
 - Local validation and result: backend production build passed; focused aggregation-policy Vitest passed 1 file / 4 tests after all 24 migrations applied; `git diff --check` passed. This is implementation-scoped validation, not an API/E2E rerun or sign-off.
 - Next recipient or routing: `/code_reviewer` for source re-review; after Pass, API/E2E resumes `API-F-001` / `API-003` first.
 - Remaining limitations or risks: `API-REV-001` remains failed until independent rerun; API-004/API-005/WEB-001–WEB-003 and the associated contention, SafeInt, identity/cardinality, lifecycle, and full rendered-state matrix remain downstream.
+
+### IR-005 — Restore approved Analytics/Run-details selected-tab treatment
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; packaged-field failure-origin review `CRR-008`
+- Triggering finding IDs: `F-005` / `FIELD-F-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-004` at commit `9dc755431`; source/API/E2E/test review later passed through `CRR-007` and delivery reached `DR-002`, then packaged/current-frontend field evidence produced `API-REV-004` Fail and `CRR-008` identified selected-tab prototype drift.
+- Current authoritative result: Analytics and Run details both use the approved transparent active background, blue active text, and blue bottom border; inactive styling, tab roles, `aria-selected`, keyboard focus visibility, Tab traversal, and Enter activation remain correct.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-008`
+- Related API/E2E revision IDs: `API-REV-004`
+- Related delivery revision IDs: `DR-001`, `DR-002`
+- Why this baseline or implementation revision is recorded: records the bounded prototype-fidelity correction for F-005 and the earlier source/visual-review gap without absorbing the independently routed F-006 requirement gap.
+- Approved behavior or requirement IDs affected: `BEH-001`, `REQ-001`; approved `ui-ux-spec.md`, `prototype.html`, and prototype evidence
+- Implementation delta: replaced the dark rounded selected pills with the prototype's transparent border-tab treatment for both buttons, matched the 28px tab gap and lighter divider, retained semantic roles/selection, added explicit button type, and preserved a visible blue focus ring.
+- Changed files or areas: `autobyteus-web/components/settings/TokenUsageStatistics.vue`; focused `components/settings/__tests__/TokenUsageStatistics.spec.ts`; implementation handoff/revision artifacts; four rendered screenshots and computed-style/focus evidence JSON.
+- Local validation and result: focused component Vitest passed 1 file / 1 test; frontend production build passed; compiled renderer inspection passed at 1440×1000 and 390×844 for Analytics and Run details. Both selected states computed transparent / blue-700 / 2px blue-600; keyboard Tab/Enter and `aria-selected` were verified; no viewport overflow or page error occurred.
+- Next recipient or routing: `/code_reviewer` for source re-review. F-006 remains with `/solution_designer`; delivery remains blocked.
+- Remaining limitations or risks: `API-REV-004` remains the latest Fail until both independent workstreams complete and downstream validation resumes. No historical backfill, polling, refresh behavior, or existing-data policy was changed in IR-005.

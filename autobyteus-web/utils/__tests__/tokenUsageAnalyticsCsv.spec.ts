@@ -25,4 +25,53 @@ describe('serializeTokenUsageAnalyticsCsv', () => {
     expect(row?.[header!.indexOf('currency')]).toBe('');
     expect(filename).toBe('token-usage-analytics_2026-01-31_2026-08-31.csv');
   });
+
+  it('quotes commas, quotes, and newlines while preserving exact range, filters, grouping, and filename', () => {
+    const result = analyticsResult({
+      appliedRange: {
+        preset: 'CUSTOM',
+        startTime: '2026-08-01T00:00:00.000Z',
+        endTimeExclusive: '2026-08-23T00:00:00.000Z',
+        granularity: 'DAY',
+      },
+      coverage: { status: 'PARTIAL', coverageStart: '2026-08-10T12:34:56.000Z' },
+      appliedFilters: {
+        runtimeKind: 'codex_app_server',
+        providerKey: 'v1:provider',
+        modelKey: 'v1:model',
+      },
+      breakdownRows: [{
+        rowKey: 'row,"one"', identityKey: 'identity', providerKey: 'v1:provider', modelKey: 'v1:model',
+        runtimeKind: 'codex_app_server', modelProvider: 'OPENAI', providerName: 'OpenAI, "Primary"',
+        providerDisplayName: 'OpenAI, "Primary"', modelIdentifier: 'gpt\nmodel', modelValue: null,
+        modelDisplayName: 'gpt\nmodel',
+        aggregate: aggregate({
+          grossInputTokens: 1_000,
+          standardInputTokens: 200,
+          cacheReadInputTokens: 800,
+          outputTokens: 200,
+          reasoningOutputTokens: 100,
+          totalTokens: 1_200,
+          estimatedApiTotalCost: 1.2,
+          currency: 'USD',
+          apiCostStatus: 'partial_price_missing',
+          missingPriceDimensions: ['cache,write', 'output"price'],
+          usageReportCount: 3,
+        }),
+        costQuality: { kind: 'PARTIAL', currency: 'USD', missingPriceDimensions: ['cache,write', 'output"price'] },
+      }],
+    } as any);
+
+    const { csv, filename } = serializeTokenUsageAnalyticsCsv(result, 'PROVIDER');
+
+    expect(filename).toBe('token-usage-analytics_2026-08-01_2026-08-22.csv');
+    expect(csv).toContain('"2026-08-01T00:00:00.000Z","2026-08-23T00:00:00.000Z","2026-08-10T12:34:56.000Z","PARTIAL","PROVIDER"');
+    expect(csv).toContain('"codex_app_server","v1:provider","v1:model"');
+    expect(csv).toContain('"row,""one"""');
+    expect(csv).toContain('"OpenAI, ""Primary"""');
+    expect(csv).toContain('"gpt\nmodel"');
+    expect(csv).toContain('"partial_price_missing","PARTIAL","cache,write|output""price","3"');
+    expect(csv.endsWith('\r\n')).toBe(false);
+    expect(csv.split('\r\n')).toHaveLength(2);
+  });
 });

@@ -68,13 +68,17 @@ Current task groups include:
 
 Persistence is subsystem-owned rather than selected through a global mode.
 
-- Token usage is persisted through `TokenUsageRunStore` and
-  `TokenUsageRunAccumulator` into `token_usage_run_records`.
-  - The authoritative subject is one cumulative row per canonical AgentRun ID.
-  - Observations for one run are serialized and folded inside a SQLite
-    transaction through `SqlTokenUsageRunRepository`.
-  - Legacy ledger tables and decoders are migration-only; current runtime and
-    GraphQL paths do not read or write them.
+- Token usage has separate lifetime and observation-time projections.
+  - `TokenUsageRunStore` / `TokenUsageRunAccumulator` keep the lifetime authority
+    as one cumulative `token_usage_run_records` row per canonical AgentRun ID.
+  - A `CHANGED` fold saves that row and increments the matching compact UTC daily
+    analytics facet inside the same SQLite transaction; suppressed observations
+    advance neither projection and any facet failure rolls back both.
+  - `TokenUsageAnalyticsProvider` reads the daily projection plus immutable
+    tracking coverage to serve filtered UTC period analytics without fabricating
+    history from lifetime records.
+  - Legacy ledger tables and decoders are migration-only; current runtime,
+    analytics, and GraphQL paths do not read or write them.
 - Encrypted secret persistence uses separate `SecretEntry` and
   `SecretEncryptionMetadata` model repositories behind the vault persistence
   coordinator. The coordinator alone opens option-aware implicit transactions;

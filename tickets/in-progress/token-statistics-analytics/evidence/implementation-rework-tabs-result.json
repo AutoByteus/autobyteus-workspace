@@ -1,0 +1,214 @@
+{
+  "desktop": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "analyticsSelected": {
+      "analytics": {
+        "text": "Analytics",
+        "ariaSelected": "true",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(29, 78, 216)",
+        "borderBottomColor": "rgb(37, 99, 235)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 280,
+          "y": 32,
+          "width": 66.53125,
+          "height": 36,
+          "top": 32,
+          "right": 346.53125,
+          "bottom": 68,
+          "left": 280
+        }
+      },
+      "runs": {
+        "text": "Run details",
+        "ariaSelected": "false",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(71, 85, 105)",
+        "borderBottomColor": "rgba(0, 0, 0, 0)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 374.53125,
+          "y": 32,
+          "width": 79.09375,
+          "height": 36,
+          "top": 32,
+          "right": 453.625,
+          "bottom": 68,
+          "left": 374.53125
+        }
+      }
+    },
+    "runsSelected": {
+      "analytics": {
+        "text": "Analytics",
+        "ariaSelected": "false",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(71, 85, 105)",
+        "borderBottomColor": "rgba(0, 0, 0, 0)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 280,
+          "y": 32,
+          "width": 66.53125,
+          "height": 36,
+          "top": 32,
+          "right": 346.53125,
+          "bottom": 68,
+          "left": 280
+        }
+      },
+      "runs": {
+        "text": "Run details",
+        "ariaSelected": "true",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(29, 78, 216)",
+        "borderBottomColor": "rgb(37, 99, 235)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "solid",
+        "rect": {
+          "x": 374.53125,
+          "y": 32,
+          "width": 79.09375,
+          "height": 36,
+          "top": 32,
+          "right": 453.625,
+          "bottom": 68,
+          "left": 374.53125
+        }
+      }
+    },
+    "keyboardFocusBeforeActivation": {
+      "text": "Run details",
+      "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(59, 130, 246) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "focusedAfterActivation": {
+      "text": "Run details",
+      "ariaSelected": "true"
+    },
+    "tablistRect": {
+      "x": 280,
+      "y": 32,
+      "width": 1120,
+      "height": 36,
+      "top": 32,
+      "right": 1400,
+      "bottom": 68,
+      "left": 280
+    },
+    "documentScrollWidth": 1440,
+    "errors": []
+  },
+  "mobile": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "analyticsSelected": {
+      "analytics": {
+        "text": "Analytics",
+        "ariaSelected": "true",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(29, 78, 216)",
+        "borderBottomColor": "rgb(37, 99, 235)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 32,
+          "y": 344.71875,
+          "width": 66.53125,
+          "height": 36,
+          "top": 344.71875,
+          "right": 98.53125,
+          "bottom": 380.71875,
+          "left": 32
+        }
+      },
+      "runs": {
+        "text": "Run details",
+        "ariaSelected": "false",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(71, 85, 105)",
+        "borderBottomColor": "rgba(0, 0, 0, 0)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 126.53125,
+          "y": 344.71875,
+          "width": 79.09375,
+          "height": 36,
+          "top": 344.71875,
+          "right": 205.625,
+          "bottom": 380.71875,
+          "left": 126.53125
+        }
+      }
+    },
+    "runsSelected": {
+      "analytics": {
+        "text": "Analytics",
+        "ariaSelected": "false",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(71, 85, 105)",
+        "borderBottomColor": "rgba(0, 0, 0, 0)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "none",
+        "rect": {
+          "x": 32,
+          "y": 344.71875,
+          "width": 66.53125,
+          "height": 36,
+          "top": 344.71875,
+          "right": 98.53125,
+          "bottom": 380.71875,
+          "left": 32
+        }
+      },
+      "runs": {
+        "text": "Run details",
+        "ariaSelected": "true",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(29, 78, 216)",
+        "borderBottomColor": "rgb(37, 99, 235)",
+        "borderBottomWidth": "2px",
+        "outlineStyle": "solid",
+        "rect": {
+          "x": 126.53125,
+          "y": 344.71875,
+          "width": 79.09375,
+          "height": 36,
+          "top": 344.71875,
+          "right": 205.625,
+          "bottom": 380.71875,
+          "left": 126.53125
+        }
+      }
+    },
+    "keyboardFocusBeforeActivation": {
+      "text": "Run details",
+      "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(59, 130, 246) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+    },
+    "focusedAfterActivation": {
+      "text": "Run details",
+      "ariaSelected": "true"
+    },
+    "tablistRect": {
+      "x": 32,
+      "y": 344.71875,
+      "width": 326,
+      "height": 36,
+      "top": 344.71875,
+      "right": 358,
+      "bottom": 380.71875,
+      "left": 32
+    },
+    "documentScrollWidth": 390,
+    "errors": []
+  }
+}

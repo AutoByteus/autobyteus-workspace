@@ -10,6 +10,10 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 2 / `IR-002` | Fail — Local Fix | Fail — Local Fix | F-003 |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 3 / `IR-003` | Fail — Local Fix | Pass | None |
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001`, API-F-001/API-003 | Pass | Fail — Local Fix | F-004 |
+| CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 5 / `IR-004` | Fail — Local Fix | Pass | F-004 |
+| CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-002` | Pass — source review and API/E2E | Fail — Local Fix | TR-F-001 |
+| CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | API/E2E Test-Code Re-review / `API-REV-003` | Fail — Local Fix | Pass | TR-F-001 |
+| CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-004`, FIELD-F-001/FIELD-F-002 | Pass | Fail — split rework | F-005, F-006 |
 
 ## Revision Entries
 
@@ -114,3 +118,102 @@ None.
 - Material score or classification changes: no full scorecard was repeated. The prior Pass is superseded by a failure-origin `Fail`; CRR-003's API/E2E-readiness and runtime-correctness rationale is reopened only for F-004. Classification is `Local Fix`.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: after source correction/re-review, API/E2E must recheck API-F-001/API-003 first and then execute the still-pending API-004/API-005/WEB-001–WEB-003 matrix. Successful-run proportional review of the three durable tests remains pending.
+
+### CRR-005 — Sparse-bucket correction resolves F-004 and returns to API/E2E
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `5`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-handoff.md`; `IR-004`; `F-004`, `API-F-001` / `API-003`
+- Relevant solution revision IDs: `SR-001`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` — Local Fix, F-004
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reconciliation now excludes only buckets whose aggregate has zero reports and zero tokens before known-cost null checking and summation. Returned empty buckets remain `NO_USAGE`/null; usage-bearing null-cost buckets still fail. The focused migrated test passes all four policy scenarios.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-004 | Open | Resolved | IR-004, CRR-004, API-REV-001 | Source filters only truly empty bucket aggregates; reviewer rerun passes 1 file / 4 tests after 24 migrations, including explicit empty `NO_USAGE`/null preservation and companion usage-bearing null rejection. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: full implementation score returns to `9.4/10 (94/100)` and the decision changes from `Fail — Local Fix` to `Pass`; F-001–F-003 remain resolved.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API-REV-001 remains failed until API-F-001/API-003 is independently rechecked; API-004/API-005/WEB-001–WEB-003 and later successful-run proportional review of durable API/E2E test changes remain required.
+
+### CRR-006 — Proportional test review finds over-broad contention rejection assertion
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `1`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`; `API-REV-002`; API-001–API-005 and WEB-001–WEB-003
+- Relevant solution revision IDs: `SR-001`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` — CRR-005 source review and API-REV-002 API/E2E execution
+- Current authoritative result: `Fail` — `Local Fix` to `/api_e2e_engineer`
+- What changed in the review result and why: proportional review of ten durable test paths found that API-004 accepts any `Error` for rejected concurrent writes even though the governing coverage decision permits specifically bounded SQLite contention/timeouts and the evidence identifies `P1008`. This can hide unrelated transaction or programming failures. The other durable tests are coherent, deterministic, and requirement-aligned.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: `TR-F-001`
+- Material score or classification changes: no implementation scorecard or execution-confidence score was reopened. The separate durable-test review result is `Fail — Local Fix`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: enumerate/assert the governed SQLite contention rejection code(s), rerun the focused integration and affected combined backend set, and return for proportional test-code re-review before delivery.
+
+### CRR-007 — Exact P1008 assertion resolves TR-F-001
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Re-review`, round `2`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`; `API-REV-003`; `TR-F-001` / API-004
+- Relevant solution revision IDs: `SR-001`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` — Local Fix, TR-F-001
+- Current authoritative result: `Pass`
+- What changed in the review result and why: API-004 now requires every rejected concurrent promise to be an `Error` with exact Prisma code `P1008`. The variable contention outcome and exact reconciliation for all committed writes remain unchanged, so unrelated errors can no longer satisfy the governed residual. Focused integration and affected backend-matrix reruns pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-F-001 | Open | Resolved | CRR-006, API-REV-003 | Corrected lines 147–150 assert `Error` plus exact `code: "P1008"`; focused API-004 passes 1 file/3 tests and combined API-001–API-005 passes 5 files/18 tests. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: the separate proportional test-review decision changes from `Fail — Local Fix` to `Pass`; the implementation scorecard and API/E2E confidence remain unchanged.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: only the bounded, already documented operational/product residuals in API-REV-003 remain; no test-review blocker remains.
+
+### CRR-008 — Packaged field report splits prototype fix from first-upgrade requirement reset
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer` after user packaged-Electron field report; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`; `API-REV-004`; `FIELD-F-001`, `FIELD-F-002`
+- Relevant solution revision IDs: `SR-001`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` — CRR-007 with API-REV-003 Pass/96.6%
+- Current authoritative result: `Fail` — split rework: Local Fix for F-005 and Requirement Gap for F-006
+- What changed in the review result and why: the real packaged surface and independent current-frontend execution prove that the selected Analytics/Run-details tab uses a dark filled style contrary to the approved transparent blue-underlined prototype. Production data also proves the locked no-backfill behavior works as designed, but the user now explicitly rejects the initially empty first-upgrade experience despite extensive retained lifetime data. Later live GraphQL/current-frontend data is populated, so no current backend aggregation defect was reproduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001–F-004 | Resolved | Remain resolved | IR-002–IR-004, CRR-002–CRR-005, API-REV-004 | Field evidence does not reopen mixed Run-details identity, pace/evidence, cumulative quality, or sparse-bucket reconciliation; live API remains coherent. |
+| TR-F-001 | Resolved | Remains resolved | API-REV-003, CRR-007 | Round 4 changed no durable test and produced no contrary contention evidence. |
+
+- New or remaining finding IDs: `F-005` / FIELD-F-001; `F-006` / FIELD-F-002.
+- Material score or classification changes: no scorecard was repeated. The latest result changes from Pass to Fail; F-005 is `Local Fix` implementation and F-006 is `Requirement Gap`. The possible stale mounted-result subtype remains `Unclear` and does not drive a finding or prescription.
+- Recommended recipients: `/implementation_engineer` for F-005; `/solution_designer` for F-006.
+- Remaining risks or uncertainty: solution design must define a truthful immediately useful existing-data experience and refresh semantics before implementation; delivery remains blocked.
