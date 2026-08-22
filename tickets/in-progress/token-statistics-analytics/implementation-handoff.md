@@ -9,30 +9,30 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-revision-record.md`
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-revision-record.md`
 
 ## Current Implementation Summary
 
-The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one numeric/cost authority while its run adapter preserves the established `Mixed` identity-summary contract. Pace points use elapsed UTC-day coordinates and merge server-derived bucket quality with canonical provider precedence, including `COMPLETE` remote plus `LOCAL` no-bill as `COMPLETE`; charts and exact tables expose range/share/currency/quality/captured-status evidence; local usage cannot render as invented USD; and CSV separates captured API cost status from derived analytics quality.
+The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one numeric/cost authority while its run adapter preserves the established `Mixed` identity-summary contract. Pace points use elapsed UTC-day coordinates and merge server-derived bucket quality with canonical provider precedence, including `COMPLETE` remote plus `LOCAL` no-bill as `COMPLETE`; charts and exact tables expose range/share/currency/quality/captured-status evidence; local usage cannot render as invented USD; and CSV separates captured API cost status from derived analytics quality. Sparse ranges retain empty buckets as `NO_USAGE` with null cost while cost reconciliation treats only those empty buckets as neutral and still rejects null cost on usage-bearing buckets.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`–`CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `F-003` (remaining finding from `CRR-002`; `F-001` and `F-002` are verified resolved)
+- Triggering finding IDs: `F-004`, `API-F-001`, `API-003` (`F-001`–`F-003` remain resolved)
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Analytics defaults; Run details preserves created-run/lifetime semantics | `TokenUsageStatistics.vue`, `TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`, `tokenUsageRunAggregate`, run/analytics stores | Separate tabs/stores/queries remain; `IR-002` restores the established run-specific `['Mixed']` distinct identity summary while retaining shared numeric/cost aggregation. |
-| BEH-002 | Coherent summary, chronological trend, aligned pace, ranked attribution/share, exact rows | `token-usage/analytics/*`, `tokenUsageAnalyticsPresentation.ts`, `TokenUsageAnalyticsProvider` | One result drives cards/charts/table; pace uses explicit elapsed-day coordinates across unequal bucket counts and exact provider-precedence merging of server-derived bucket qualities; tooltips/text alternatives include exact range/value/share/currency/quality/captured status. |
-| BEH-003 | Observation-time daily projection and explicit coverage without backfill | Prisma migration/models, `SqlTokenUsageAnalyticsRepository`, range policy/provider, analytics GraphQL resolver | Persisted singleton coverage starts after schema verification; full/partial/unavailable is server-owned; no lifetime-row reconstruction. |
-| BEH-004 | One SafeInt/null/mixed/local cost aggregation authority | `token-usage-accounting-summary.ts`, `token-usage-cost-summary-aggregate.ts`, `token-usage-analytics-aggregation-policy.ts`, `mergeTokenUsageAnalyticsCostQualities` | Run and analytics reuse the same aggregate builder; mixed currencies remain uncombined, exact rows are partitioned, and cumulative pace treats local/no-bill as non-missing under the canonical cost-quality precedence. |
+| BEH-002 | Coherent summary, chronological trend, aligned pace, ranked attribution/share, exact rows | `token-usage/analytics/*`, `tokenUsageAnalyticsPresentation.ts`, `TokenUsageAnalyticsProvider` | One result drives cards/charts/table; pace uses explicit elapsed-day coordinates across unequal bucket counts and exact provider-precedence merging of server-derived bucket qualities; contiguous sparse buckets reconcile without fabricating empty-bucket costs; tooltips/text alternatives include exact range/value/share/currency/quality/captured status. |
+| BEH-003 | Observation-time daily projection and explicit coverage without backfill | Prisma migration/models, `SqlTokenUsageAnalyticsRepository`, range/aggregation policy/provider, analytics GraphQL resolver | Persisted singleton coverage starts after schema verification; full/partial/unavailable is server-owned; no lifetime-row reconstruction; covered no-usage days remain explicit `NO_USAGE`/null buckets. |
+| BEH-004 | One SafeInt/null/mixed/local cost aggregation authority | `token-usage-accounting-summary.ts`, `token-usage-cost-summary-aggregate.ts`, `token-usage-analytics-aggregation-policy.ts`, `mergeTokenUsageAnalyticsCostQualities` | Run and analytics reuse the same aggregate builder; mixed currencies remain uncombined, exact rows are partitioned, cumulative pace treats local/no-bill as non-missing, and known-cost reconciliation sums usage-bearing buckets while retaining strict rejection of usage-bearing null cost. |
 | BEH-005 | Deterministic local exact CSV export | `tokenUsageAnalyticsCsv.ts`, `TokenUsageAnalyticsView.vue` | Deterministic inclusive-date filename, escaped exact rows and selection/coverage metadata; exports `captured_api_cost_status` separately from `derived_cost_quality`; local browser download only. |
 | BEH-006 | Only authoritative CHANGED contributions atomically update analytics | `TokenUsageRunAccumulator`, `TokenUsageAnalyticsProjectionWriter`, contribution projector, SQL repository | Projection increment executes after run save inside the same Prisma transaction; suppressed folds do not write; facet upsert is one SQL statement. |
 
@@ -93,6 +93,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 ## Local Implementation Checks Run
 
 - `pnpm build` in `autobyteus-server-ts`: passed, including Prisma generation, TypeScript build, built-in bootstrap smoke, and sanitized bootstrap smoke.
+- `IR-004` focused aggregation-policy Vitest: 1 file / 4 tests passed after all 24 migrations applied. The sparse daily regression explicitly retains the empty bucket as `NO_USAGE` with null estimated cost and reconciles successfully; a companion assertion proves a usage-bearing null-cost bucket still fails reconciliation.
 - Targeted backend Vitest for run fold, accumulator, pricing summary, and model display: 4 files / 18 tests passed; clean test DB applied all 24 migrations including analytics. The added run regression proves mixed runtime records return `['Mixed']` while totals still use the shared aggregate.
 - Narrow provider/repository check against a migrated local SQLite database: 240,000 tokens, 3 exact breakdown rows, 22 daily buckets, `PARTIAL` coverage, and `MIXED_CURRENCY` reconciled successfully.
 - `pnpm build` in `autobyteus-web`: passed production Nuxt build/prerender.
@@ -109,7 +110,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Project development / preview instructions and rendered surface used: root `pnpm dev`; browser renderer at `http://127.0.0.1:3000/settings` against the real local server and migrated SQLite projection.
 - States, layouts, viewports, and interactions inspected: populated partial coverage; mixed USD/EUR/local pricing; token charts; cost-chart explanatory state; exact token share; explicit quality/captured-status/currency columns; local no-bill cost text and incomparable monetary share; corrected 4-row CSV; tab switch to preserved Run details; 1440×1000 and 390×844 layouts; no document horizontal overflow at narrow width.
 - Visual or interaction issues found and corrected: initial formatter issue plus `CRR-001` evidence defects and the remaining `CRR-002` cumulative quality mismatch; exact breakdown was extracted to keep chart logic readable, local cost no longer falls back to USD, and status/share headers remain accessible within contained horizontal table scrolling.
-- Supporting evidence and remaining unverified states or limitations: original implementation evidence plus `evidence/implementation-rework-desktop.png`; `IR-003` changes no layout, and its exact rendered endpoint row was exercised in the mounted pace component regression (`Complete estimate`, `mixed`, `USD`). Full/unavailable/empty/error states were not all visually forced and remain for downstream investigation. This is implementation self-validation, not API/E2E sign-off.
+- Supporting evidence and remaining unverified states or limitations: original implementation evidence plus `evidence/implementation-rework-desktop.png`; `IR-003` changes no layout, and its exact rendered endpoint row was exercised in the mounted pace component regression (`Complete estimate`, `mixed`, `USD`). `IR-004` is backend-only and changes no rendered layout, so no additional frontend render was required. Full/unavailable/empty/error states were not all visually forced and remain for downstream investigation. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -117,9 +118,9 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Stress concurrent different-run increments into the same SQLite facet and validate totals/count/latest timestamp.
 - Cover custom provider/model null/whitespace/collision cases and versioned opaque digest stability/cardinality.
 - Exercise exact SafeInt boundary/overflow through provider/GraphQL and cost-quality combinations: complete, partial, missing, local, mixed currency.
-- Exercise preset/custom UTC boundaries, leap/month clipping, comparisons, filter coherence, bucket/exact-row reconciliation, and coverage boundaries.
+- Resume `API-F-001` / `API-003` first and prove sparse daily ranges retain `NO_USAGE`/null empty buckets while usage-bearing costs reconcile; then continue preset/custom UTC boundaries, leap/month clipping, comparisons, filter coherence, exact-row reconciliation, and coverage boundaries.
 - Render and interact with full, partial, unavailable, empty, loading, error/retry, stale-response suppression, mixed cost charts, mobile table scrolling, keyboard/focus, and CSV escaping/filename.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. No downstream API/E2E coverage investigation or execution sign-off is claimed by this implementation handoff.
+Required. `API-REV-001` remains a failed result at `API-F-001` / `API-003`; after source review passes, API/E2E must resume with those same IDs before continuing the deferred matrix. No downstream API/E2E execution sign-off is claimed by this implementation handoff.

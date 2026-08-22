@@ -7,6 +7,7 @@
 | IR-001 | Architecture reviewer / `design-review-report.md` / initial implementation | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001` | Reviewed analytics design implemented and locally validated; ready for code review. |
 | IR-002 | Code reviewer / `code-review-report.md` / round 1 | F-001, F-002, F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001` | Preserved mixed-run identity, elapsed pace alignment, and exact chart/table/CSV evidence corrected; ready for code-review round 2. |
 | IR-003 | Code reviewer / `code-review-report.md` / round 2 | F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-002` | Cumulative pace quality now follows canonical COMPLETE + LOCAL precedence; ready for code-review round 3. |
+| IR-004 | Code reviewer / `code-review-report.md` / API/E2E failure-origin round | F-004, API-F-001/API-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-004`, `API-REV-001` | Empty no-usage buckets are neutral during known-cost reconciliation without losing null semantics; ready for source re-review. |
 
 ## Revision Entries
 
@@ -69,3 +70,23 @@
 - Local validation and result: frontend production build passed; the full targeted frontend set passed 8 files / 17 tests; the focused rework subset passed 3 files / 6 tests. The added mounted regression proves separate COMPLETE/USD/estimated and LOCAL/null/local-no-bill buckets end as COMPLETE/USD, matching `selectedCostQuality`, while captured status remains `mixed` in exact evidence.
 - Next recipient or routing: `/code_reviewer` for round 3
 - Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, cost-quality combinations, and the full state/render matrix.
+
+### IR-004 — Reconcile sparse known-cost ranges without fabricating empty-bucket cost
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; API/E2E failure-origin review `CRR-004`
+- Triggering finding IDs: `F-004`; `API-F-001` / scenario `API-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-003` at commit `9b8846a12`; source review `CRR-003` passed, then `API-REV-001` failed on sparse daily bucket reconciliation and `CRR-004` confirmed implementation origin.
+- Current authoritative result: empty `NO_USAGE` buckets retain null estimated cost and are neutral during known-cost reconciliation; usage-bearing bucket costs alone reconcile to the range aggregate, and any usage-bearing null cost remains a hard failure.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the bounded source correction for the reachable ordinary sparse-range failure without weakening null-cost evidence or changing the approved contract.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-004`; `REQ-007`; `AC-010`, `AC-012`
+- Implementation delta: cost reconciliation filters out only buckets whose aggregate has neither reports nor tokens before checking/summing costs; it does not mutate returned buckets or coerce null to zero. The durable API-003 policy regression now explicitly asserts the empty day is `NO_USAGE`/null and succeeds, with a companion strict usage-bearing null-cost rejection case.
+- Changed files or areas: `autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts`; `autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts`; implementation handoff/revision artifacts; cumulative API/E2E and code-review artifacts from the triggering round.
+- Local validation and result: backend production build passed; focused aggregation-policy Vitest passed 1 file / 4 tests after all 24 migrations applied; `git diff --check` passed. This is implementation-scoped validation, not an API/E2E rerun or sign-off.
+- Next recipient or routing: `/code_reviewer` for source re-review; after Pass, API/E2E resumes `API-F-001` / `API-003` first.
+- Remaining limitations or risks: `API-REV-001` remains failed until independent rerun; API-004/API-005/WEB-001–WEB-003 and the associated contention, SafeInt, identity/cardinality, lifecycle, and full rendered-state matrix remain downstream.
