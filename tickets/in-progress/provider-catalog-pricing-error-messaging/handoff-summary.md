@@ -34,8 +34,7 @@
 - Delivery docs/handoff checkpoint: `d7ae16ca5`
 - Delivery revision checkpoint: `025a7ee56`
 - Current ticket branch: `codex/provider-catalog-pricing-error-messaging`
-- Current HEAD: `025a7ee56`
-- Divergence from latest tracked base: `6 ahead / 0 behind`
+- Current branch state: `origin/personal` is an ancestor; no behind commits or unmerged paths; delivery checkpoints remain local-only.
 - Integration method: `Merge --no-ff origin/personal`
 - Conflicts/unmerged paths: `None`
 - Delivery edits began after integration: `Yes`
