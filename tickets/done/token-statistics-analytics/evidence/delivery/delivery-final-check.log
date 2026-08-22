@@ -1,0 +1,6 @@
+$ git diff --check
+git diff --check: PASS
+$ git rev-list --left-right --count HEAD...origin/personal
+10	0
+$ git merge-base HEAD origin/personal
+14c08eeb458ff440123ca53d11192c2cb1a0216c

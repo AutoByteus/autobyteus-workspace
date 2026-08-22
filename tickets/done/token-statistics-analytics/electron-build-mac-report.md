@@ -4,7 +4,7 @@
 
 - Delivery revision: `DR-003` (supersedes the package result recorded by `DR-002`).
 - Trigger: rebuild the README-guided Electron package after the reviewed `IR-005` selected-tab correction and the superseding `SR-002` / `ARCH-REV-002` / `CRR-010` / `API-REV-006` / `CRR-012` package.
-- Source state: ticket branch `codex/token-statistics-analytics`, implementation `HEAD` `7a21d59238e89d70747be49214503240da0560c4`, plus the reviewed uncommitted `CRR-012` durable assertion correction.
+- Source state: ticket branch `codex/token-statistics-analytics`; reviewed feature source at `7a21d59238e89d70747be49214503240da0560c4`; `CRR-012` assertion checkpointed; latest source-bearing base `201eddc452a7b9b5b3220e8238373b04c1423c0f` integrated before this build. The later base `14c08eeb458ff440123ca53d11192c2cb1a0216c` changed only unrelated archived delivery docs and was followed by a focused post-integration test.
 - Host: macOS Darwin 25.5.0, Apple Silicon `arm64`.
 - Guidance reviewed: root `README.md` (`Build examples`, packaged Electron testing) and `autobyteus-web/README.md` (`Desktop Application Build`, integrated backend).
 - Command: `pnpm -C autobyteus-web build:electron:mac`
@@ -22,8 +22,8 @@ This current package contains the reviewed transparent selected-tab treatment fo
 - DMG (442 MiB): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
 - ZIP (437 MiB): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
 - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG SHA-256: `d51940cfdfb665e10f6e172507a59bd1f73f0b40d7afa0e2af6571457cb03d6f`
-- ZIP SHA-256: `2de61a03a3572c20ebf88f9b003f833c8797325217fde96fc9e226aba25a7437`
+- DMG SHA-256: `60893fa5e646b1116569e67da456834a7c80d409775b5705215bb7bbba585e26`
+- ZIP SHA-256: `f65c9950b62bfbcf29097c159c4bf5acd7cb9e6ff2af119be9ec4afa617b5116`
 
 ## Integrity Evidence
 
@@ -31,8 +31,8 @@ This current package contains the reviewed transparent selected-tab treatment fo
 - `unzip -tq`: passed; no compressed-data errors.
 - Packaged executable: Mach-O 64-bit `arm64`.
 - Bundled server directory and `Resources/server/prisma/schema.prisma`: present.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-mac-current.log`
-- Integrity log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-integrity-current.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/done/token-statistics-analytics/evidence/delivery/electron-build-mac-current.log`
+- Integrity log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/done/token-statistics-analytics/evidence/delivery/electron-build-integrity-current.log`
 
 ## Supersession And Limits
 

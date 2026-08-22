@@ -6,9 +6,9 @@
 - Current delivery revision: `DR-003`
 - Trigger: delivery re-entry after `SR-002` / `ARCH-REV-002`, source review `CRR-010` Pass at 9.4/10, API/E2E `API-REV-006` Pass at 97.7%, and durable-test review `CRR-012` Pass.
 - Base refresh: `git fetch origin --prune` on 2026-08-22.
-- Bootstrap and latest tracked base: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- Candidate implementation `HEAD`: `7a21d59238e89d70747be49214503240da0560c4`; six commits ahead, zero behind; merge base equals the tracked base.
-- Integration result: `Already current`. No base commit was integrated, so no checkpoint or base-triggered executable rerun was needed. The superseding `API-REV-006` / `CRR-012` evidence remains applicable.
+- Bootstrap base: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`; latest tracked base before handoff: `origin/personal@14c08eeb458ff440123ca53d11192c2cb1a0216c`.
+- Reviewed feature implementation: `7a21d59238e89d70747be49214503240da0560c4`; final integrated delivery `HEAD`: `c002654df2562023558ea806a192aa9e0cae29d3`, ten commits ahead and zero behind.
+- Integration result: `Merged`. Delivery checkpointed the reviewed candidate, merged the three source/test/docs commits through `201eddc452a7b9b5b3220e8238373b04c1423c0f`, rebuilt Electron, then merged the later unrelated archived-docs commit `14c08eeb458ff440123ca53d11192c2cb1a0216c`. The final focused TokenUsageStatistics test passed 1 file/1 test; `API-REV-006` / `CRR-012` remains applicable.
 
 ## Result
 
@@ -41,6 +41,13 @@
 ## Delivery Continuation
 
 - Current package build and integrity checks: `Pass`.
-- Documentation whitespace check: `git diff --check` must pass in the final DR-003 delivery check.
+- Documentation whitespace check: `git diff --check` passed in the final DR-003 delivery check.
 - Next action: obtain renewed explicit user verification of the rebuilt package before archival, commit/push, target merge, release, deployment, or cleanup.
 - Blocked/escalated follow-up: none; the verification hold is a required workflow gate, not a defect.
+
+## DR-004 Finalization Follow-Up
+
+- User acceptance/finalization changes no product, runtime, API, packaging, or operator contract.
+- Long-lived documentation impact: `No additional change`; the DR-003 sync remains authoritative.
+- Delivery records and archive paths are reconciled to `tickets/done/token-statistics-analytics`.
+- Release documentation action: release notes retained as historical/prepared material; no version or release is created by explicit user scope.
