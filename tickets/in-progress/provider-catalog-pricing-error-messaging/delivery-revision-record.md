@@ -4,10 +4,22 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-003 | Code-review downstream closure for `API-REV-006` | `DR-002` Pass; explicit user verification pending | Pass reaffirmed — `CRR-002` remains Pass at 9.4/10, `CRR-006` and `CRR-009` remain authoritative, no durable coverage changes were retained, and the integrated handoff remains current; finalization/release/deployment remain held | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-002 | API/E2E Round 6 feature-specific Pass; latest-base delivery refresh; docs sync | `DR-001` initial baseline with latest-base integration pending | Pass — latest tracked `origin/personal` integrated without conflicts, focused post-integration checks passed, durable docs synchronized, and user-verification handoff prepared; finalization/release/deployment held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `delivery-evidence/post-integration-focused-check.log` |
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-003 — Downstream review closure reaffirmed
+
+- Trigger: code-review downstream closure for `API-REV-006` received after the integrated delivery handoff was prepared.
+- Review state: `CRR-002` source review remains Pass at `9.4/10`; `CRR-006` proportional durable test/test-support review remains Pass; `CRR-009` remains the historical failure-origin review for the explicitly non-gating DeepSeek/Kimi/LM Studio capability residuals.
+- Scope state: no Round 6 durable test or test-support changes were retained. No implementation finding was reopened, and the ticket-specific API/E2E Pass remains authoritative.
+- Base state: delivery fetched `origin/personal` again; it remains `8ef282ba77705180d985e7000d801f0e0068cdc1`, an ancestor of the ticket branch, with no unmerged paths. No integration or additional executable rerun was required because no source, durable coverage, or effective behavior changed after DR-002; the prior post-integration evidence remains applicable.
+- Documentation state: no new durable behavior or documentation impact was introduced. The DR-002 docs sync remains authoritative.
+- Residual state: broader confidence remains `89%` only as non-gating context. DeepSeek/Kimi live body fidelity, MiniMax/Gemini AI Studio capability, Docker identity, browser DOM, LM Studio compactor leaf evidence, and live recovery remain explicit residuals and are not claimed as Pass.
+- Current result: `Pass reaffirmed — delivery handoff remains ready for explicit user verification; repository finalization, release, deployment, archival, and cleanup remain held.`
+- Next action: user verification/completion. After that signal, refresh the finalization target again before any terminal action.
 
 ### DR-002 — Integrated and documentation-synchronized verification handoff
 
