@@ -5,7 +5,7 @@ FEATURE origin/codex/universal-application-framework-proposal-analysis
 # Counts below are target dispositions derived from the raw branch evidence.
 # Feature-only paths explicitly rejected by the target are omitted.
 
-[ADD_OR_ADAPT_CANONICAL] 108
+[ADD_OR_ADAPT_CANONICAL] 109
 applications/brief-studio/.gitignore
 applications/brief-studio/autobyteus-app.config.mjs
 applications/brief-studio/frontend-src/icon.svg
@@ -110,6 +110,7 @@ autobyteus-server-ts/tests/unit/application-platform/application-platform-runtim
 autobyteus-server-ts/tests/unit/application-platform/application-portable-launch-config-policy.test.ts
 autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
 autobyteus-server-ts/tests/unit/application-platform/application-run-shutdown-coordinator.test.ts
+autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts
 autobyteus-web/composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
 autobyteus-web/composables/useApplicationLaunchSelectionPreviews.ts
 autobyteus-web/composables/useApplicationLaunchSetupPresentation.ts
@@ -882,6 +883,21 @@ autobyteus-server-ts/src/token-usage/providers/token-usage-migration-readiness.t
 autobyteus-server-ts/src/run-history/services/team-run-v1-package-catalog.ts
 autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts
 autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+
+[TARGET_INTEGRATION_ONLY_MODIFY] 9
+autobyteus-server-ts/src/agent-tools/search/register-search-tool.ts
+autobyteus-server-ts/src/startup/agent-tool-loader.ts
+autobyteus-server-ts/src/startup/background-runner.ts
+autobyteus-server-ts/src/startup/index.ts
+autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts
+autobyteus-ts/src/agent/factory/agent-factory.ts
+autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts
+
+[TARGET_EXPLICIT_RETAIN_DEPENDENCY] 2
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+autobyteus-ts/src/tools/register-tools.ts
 
 [TARGET_EXPLICIT_DO_NOT_ADD] 3
 autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts

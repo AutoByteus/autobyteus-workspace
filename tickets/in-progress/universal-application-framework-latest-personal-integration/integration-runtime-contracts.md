@@ -2,9 +2,9 @@
 
 ## Status And Authority
 
-- Status: Design-ready supplement for `SR-002`.
-- Purpose: Close `AR-001`–`AR-003` with the exact host lifecycle allocation, run activation/provisioning contract, construction obligations, file dispositions, and launch-override direct-use proof required for implementation.
-- Related behavior and requirements: BEH-003–BEH-004; REQ-004–REQ-006; AC-005–AC-010.
+- Status: Design-ready supplement for `SR-003`.
+- Purpose: Preserve the resolved `AR-002`–`AR-003` contracts and close the remaining bounded `AR-001` required-tool-readiness gap with a source-backed group set, one registration owner, exact ordering, file dispositions, and proof obligations.
+- Related behavior and requirements: BEH-003–BEH-006; REQ-004–REQ-007; AC-005–AC-011.
 - Scope: Internal integration behavior only. This supplement does not add a host, route, migration, compatibility path, or product workflow.
 - Governing rule: latest Personal owns evolved process/data/provider/run/team semantics; the finalized feature owns the dual-host boundary, shared application lifecycle, scoped publication/session behavior, and launch baseline/override/readiness model.
 
@@ -43,7 +43,7 @@ There is no `buildServer(mode)`, generic process lifecycle, or second copy of an
 | 13 | Construct package/catalog/definition/application services and Fastify routes | Explicit host builder | Yes | Yes | A | Studio constructs package registry/commands/catalog refresh/definitions/application platform, Fastify logging/access policy, internal Agent Tools, external Studio MCP gateway, CORS, multipart limits, WebSocket, remote-access policy, mobile static, REST, WebSocket, and GraphQL. Standalone constructs selected definitions/platform plus Fastify logging/access policy, WebSocket, selected-app REST/realtime, internal Agent Tools, and selected static routes; it has no CORS/multipart/mobile/GraphQL/external gateway unless already part of the approved standalone inventory (they are not). Failure closes Fastify if built, then application and process resources. |
 | 14 | Prepare workspace runtime: load workspaces, then ensure temp workspace | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A, ordered | Fatal application readiness failure. This removes Personal's post-listen temp-workspace duplicate and the background workspace loader. |
 | 15 | Load agent customizations | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after 14 | Fatal. Removed from Studio background tasks. |
-| 16 | Register exactly seven required tool groups once: Skills, Browser, Task Delegation, Agent Communication, Published Artifact, Media, Search | `AgentToolRegistryReadiness` called by `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after vault and customization | Any missing module/export/registration fails readiness with aggregate diagnostics. Search receives the prepared vault-backed provisioning dependency. Remove hidden `buildApp()` Search registration and background `loadAllAgentTools`. |
+| 16 | Register exactly seven required tool units once: Core, Browser, Task Delegation, Agent Communication, Published Artifact, Media, Search | `AgentToolRegistryReadiness` called only by `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after vault and customization | Core registration is awaited first; the five server-owned non-Search groups register next; provisioned Search registers last, after the vault is ready and after Core has installed the base catalog. A missing module/export or registrar failure rejects readiness with the unit name. Remove the hidden `buildApp()` Search call, the background Agent Tools task, `loadAllAgentTools`, Search-to-Core chaining, and `AgentFactory` registration side effect. |
 | 17 | Assert application-scoped Agent Tools session runtime ready | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | S after 16 | Fatal. Does not expose Studio `/mcp/gateway` to standalone. |
 | 18 | Materialize bundle catalog and validate selected application(s) | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A | Studio accepts catalog diagnostics per application; standalone selected-package absence/diagnostic is fatal. |
 | 19 | Bootstrap built-in agents | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after catalog | Fatal. Remove Personal's pre-builder duplicate. |
@@ -55,6 +55,64 @@ There is no `buildServer(mode)`, generic process lifecycle, or second copy of an
 | 25 | Startup gate, known-app lookup, binding recovery, availability reconciliation/quarantine, per-ready-app pending-event recovery | `ApplicationPlatformLifecycle.recoverAfterListen` | Yes | Yes | A, ordered | Fatal recovery failure closes the listening server and all application/process/repository resources. Standalone filters to its selected application; Studio covers its catalog. |
 | 26 | Enter application lifecycle `ready` | `ApplicationPlatformLifecycle` | Yes | Yes | S | Only now may REST/realtime business launch boundaries report ready. Construction and readiness create no agent/team business run. |
 | 27 | Schedule noncritical process background work | Studio `scheduleStudioBackgroundTasks`: cache preload, external MCP registration, memory-sync worker | Yes | No | BG after ready | Module/load/run errors are logged and never change ready state. Workspaces, customizations, required Agent Tools, and Search are absent from this background list because phases 14–16 own them. |
+
+### 1.2.1 Required tool readiness contract
+
+The truthful seven-unit set is:
+
+| Order | Unit key / display name | Existing source registrar | Target meaning |
+| ---: | --- | --- | --- |
+| 1 | `core` / Core Tools | `autobyteus-ts/src/tools/register-tools.ts::registerTools` | Installs the AutoByteus core file, terminal, basic Search, media, and URL definitions into the process registry. This is the source-backed seventh unit; it is not called Skills. |
+| 2 | `browser` / Browser Tools | `registerBrowserTools` | Installs server-owned browser tools. |
+| 3 | `task_delegation` / Task Delegation Tools | `registerTaskDelegationTools` | Installs server-owned task-delegation tools. |
+| 4 | `agent_communication` / Agent Communication Tools | `registerAgentCommunicationTools` | Installs server-owned agent/team communication tools. |
+| 5 | `published_artifact` / Published Artifact Tools | `registerPublishedArtifactTools` | Installs the provider bound to the exact application publication service. |
+| 6 | `media` / Media Tools | `registerMediaTools` | Installs server-owned media tools. |
+| 7 | `search` / Search Tools | `registerProvisionedSearchTool` | Replaces the Core Search definition with the host-provisioned Search definition only after the secret vault is ready. |
+
+The successful return shape is exact and ordered:
+
+```ts
+type RequiredAgentToolUnitKey =
+  | "core"
+  | "browser"
+  | "task_delegation"
+  | "agent_communication"
+  | "published_artifact"
+  | "media"
+  | "search";
+
+type AgentToolUnitReadinessResult = {
+  key: RequiredAgentToolUnitKey;
+  displayName: string;
+  status: "registered";
+};
+```
+
+The returned array contains exactly one result for each key in table order. Readiness has no `skipped` or best-effort success state.
+
+Skills are not a tool-registration unit. Global customization processors are phase 15, while package/user skills are discovered by the existing skill owners and per-agent `SkillRegistry`; no independent Skills registrar exists.
+
+`AgentToolRegistryReadiness` owns one memoized state transition:
+
+```text
+idle -> registering Core
+     -> registering Browser/Task Delegation/Agent Communication/Published Artifact/Media
+     -> registering provisioned Search
+     -> ready
+
+any failure -> failed (same rejection returned to all later/concurrent callers)
+```
+
+- `registerRequiredGroups()` creates its promise once. Concurrent or repeated calls await the same promise; no registrar runs twice and a failed partial registration is not retried in-process.
+- Each explicit host composition constructs exactly one `ApplicationPlatformRuntime`, which owns exactly one readiness instance. Composition/lifecycle tests assert that supported Studio and standalone startup each reach that instance once; no process singleton or global readiness accessor is introduced.
+- Core must succeed before any server-owned unit. The five independent server-owned non-Search units may register concurrently, but their results are returned in the table order and all failures are named. Search runs only after those units succeed.
+- The Search registrar no longer calls `registerTools()`; it owns only the provisioned Search replacement. The vault is already initialized at phase 6, so the replacement's `SearchProvisioningService` can resolve host configuration/secrets when a Search tool is created.
+- `AgentFactory` construction remains responsible for agent instances and logging only. It no longer mutates `defaultToolRegistry`. Its current agent-creation behavior is unchanged because callers supply resolved tool instances; server catalog/tool resolution occurs only after lifecycle readiness.
+- `server-runtime.ts`, `background-runner.ts`, and `startup/index.ts` expose no second registration trigger. Tests use `AgentToolRegistryReadiness` directly rather than an empty `loadAllAgentTools` compatibility wrapper.
+- A readiness failure prevents `waiting_for_listener`; the host uses the phase-16 fatal/reject and reverse-unwind policy. No partially registered process may listen or accept a business run.
+
+This is a clean-cut ownership correction, not a new product feature. It preserves the same tool definitions and Search provisioning behavior while making their existing startup requirement explicit and deterministic.
 
 ### 1.3 Ordered host spines
 
@@ -113,6 +171,27 @@ general-process run supervisor -> process Agent Tools MCP runtime
 
 Every close path is idempotent. Each stage runs in `finally`/aggregate-error style so a failure does not skip later cleanup. A startup failure uses the same reverse ownership order for only the resources whose construction began. Studio converts the final failure to its existing fatal code; standalone rejects its start call. Signal handling calls `app.close()` once and exits `0` only after a clean close, otherwise `1`.
 
+### 1.5 Required-tool file disposition
+
+| Path | Disposition | Exact target responsibility |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/startup/agent-tool-loader.ts` | Modify | Implement the memoized seven-unit readiness sequence and result/error contract; remove `loadAllAgentTools`. |
+| `autobyteus-server-ts/src/startup/index.ts` | Modify | Stop exporting `loadAllAgentTools`; keep only real startup entrypoints. |
+| `autobyteus-server-ts/src/startup/background-runner.ts` | Modify to the finalized Studio-only set | Schedule cache preload, external MCP registration, and memory sync only; no workspace/customization/Agent Tools task. |
+| `autobyteus-server-ts/src/server-runtime.ts` | Modify (already changed-both) | Remove the direct `registerProvisionedSearchTool()` call; use the shared lifecycle readiness only. |
+| `autobyteus-server-ts/src/agent-tools/search/register-search-tool.ts` | Modify | Register only the provisioned Search definition; do not call Core registration. |
+| `autobyteus-ts/src/tools/register-tools.ts` | Retain and call explicitly | Remain the idempotent Core registrar; it has no host/lifecycle policy. |
+| `autobyteus-ts/src/agent/factory/agent-factory.ts` | Modify | Remove import-time/construction-time Core registration; retain factory behavior and the existing `defaultAgentFactory` instance without registry mutation. |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | Retain | May continue resolving the same `defaultAgentFactory`; importing that instance is registry-pure after the factory-side correction. |
+| `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts` | Add/Adapt | Construct the exact `AgentToolRegistryReadiness` used by lifecycle phase 16 with the application publication dependency. |
+| `autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts` | Add/Adapt | Await the readiness owner exactly once before session/catalog/definition readiness. |
+| `autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts` | Add | Prove seven result keys/order, Core-before-server/Search-last ordering, memoized concurrency/repeat behavior, named failure, missing export, no Search after prerequisite failure, and no retry after failure. |
+| `autobyteus-server-ts/tests/unit/application-platform/application-platform-lifecycle.test.ts` | Add/Adapt | Prove the lifecycle awaits phase 16 once, blocks listening state on failure, and preserves preparation order. |
+| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Add/Adapt | Enumerate production call sites: only the readiness owner may call `registerTools`; forbid `loadAllAgentTools`, direct host Search registration, Search-to-Core chaining, and AgentFactory Core registration. |
+| `autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts` | Modify | Prove constructing/importing `AgentFactory` does not register or mutate the tool catalog. |
+| `autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts`, `.../mixed-task-delegation.e2e.test.ts`, `tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts` | Modify | Replace direct Core plus `loadAllAgentTools` setup with the single readiness owner while retaining their behavior assertions. |
+| `autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts` | Modify (already changed-both) | Remove the obsolete direct Search mock/assertion and retain host phase-order/failure proof. |
+
 ## 2. Current Activation, Provisioning, And Scoped-Resource Contract
 
 ### 2.1 Target construction DAG
@@ -141,7 +220,7 @@ current application definition/workspace/history stores
 | --- | --- | --- |
 | Durable PREPARED row, TTL, identity allocation, stale-prepared cleanup | Current `AgentRunProvisioningService` | Validate input -> allocate `runId` -> build current `AgentRunConfig` including application context -> write prepared metadata before activation. Application construction supplies manager, metadata/history, workspace, allocator explicitly. |
 | Deduplicated activation/restore attempts and durable metadata commit | Current `StandaloneAgentRunActivationService` | Preserve attempt map/quarantine map, token readiness, provider identity checks, metadata-before-publication, retryable unchanged-prepared outcome, indeterminate-commit quarantine, and publication-failure abort. Application construction supplies all dependencies explicitly. |
-| Public private-candidate handle | Current `AgentRunActivationCandidate` | Remains the only pre-publication handle; exposes identity plus `commitPublication()`/idempotent `abort()`, never raw run/input/backend. States remain `PREPARED -> PUBLISHED` or `PREPARED -> ABORTING -> ABORTED|QUARANTINED`. |
+| Public private-candidate handle | Current `AgentRunActivationCandidate` | Remains the only pre-publication handle; exposes identity plus `commitPublication()`/idempotent `abort()`, never raw run/input/backend. States remain `PREPARED -> PUBLISHED` or `PREPARED -> ABORTING -> ABORTED\|QUARANTINED`. |
 | Claim and active-map state | New `AgentRunActivationRegistry` adapted to Personal | Owns `constructing`, `prepared`, `quarantined` claims; active run lookup; claim-token and expected-run checks; stop admission. It does not construct/terminate backends. |
 | File/artifact/memory attachments and application session revocation | Adapted `AgentRunResourceManager` | Attach file-change -> artifact-relay -> memory observers before the candidate is returned; rollback partial attachment in reverse. Release by `(runId, expectedRun)` once: delete ownership, revoke exact sessions, then detach memory -> artifact -> file observers. Return structured errors/counts. Uses exact application session scope, never `getAgentToolMcpSessionService()`. |
 | Backend/run construction, candidate callbacks, termination, cleanup-result consumption | Current `AgentRunManager` | Claim before first backend await, construct privately, attach, return candidate, synchronously publish after metadata commit, terminate and identity-remove, quarantine uncertain private termination, await in-flight preparation during stop. |
@@ -430,7 +509,9 @@ This is `Directly Usable — No Migration` because current valid Personal rows a
 
 - Studio and standalone order assertions cover every row in section 1.2.
 - Failure injection at each owned phase proves correct fatal/reject outcome and reverse unwind.
-- Assert each shared readiness phase runs once, including exactly seven required tool groups.
+- Assert each shared readiness phase runs once, including the exact seven result keys `core`, `browser`, `task_delegation`, `agent_communication`, `published_artifact`, `media`, and `search`.
+- Prove Core runs first, provisioned Search runs last after vault readiness, each successful registrar runs once under concurrent/repeated calls, the failure is sticky, and missing/rejected registrars prevent lifecycle readiness.
+- Prove there is no production `registerTools()` caller outside `AgentToolRegistryReadiness`, no Search-to-Core call, no AgentFactory registry mutation, no direct Studio Search registration, and no background/compatibility registration entrypoint.
 - Prove Studio process transports/background work are absent from standalone.
 - Prove lifecycle stop precedes process owner/vault/Prisma close in both hosts.
 

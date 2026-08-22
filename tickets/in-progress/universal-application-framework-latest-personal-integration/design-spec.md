@@ -8,6 +8,7 @@ Two valid but divergent states must be combined.
 - **Finalized feature** (`a5ffd28...`) has 115 commits after the merge base and owns the proven Universal Application Dual-Host Foundation: one package in Studio and standalone, explicit host builders, one shared application platform boundary with four projections, standalone ingress, devkit workflow, package launch defaults/overrides/readiness, application-scoped Agent Tools publication, package-source cleanup, and real dual-host/Electron evidence.
 - Latest Personal does not contain the dual-host foundation. Conversely, the feature's execution construction targets older run/team owners and cannot replace Personal's current implementations wholesale.
 - A real isolated merge produced 177 conflicts. 139 are generated/derived or obsolete builders; about 38 are source/test conflicts. Seventy-seven canonical files changed on both sides and require semantic audit even where Git auto-merged them.
+- The finalized required-tool loader has six server specs but labels them seven. The actual seventh source-backed unit is Core `registerTools()`, currently reached early through both provisioned Search and eager `defaultAgentFactory` construction; no independent Skills tool registrar exists.
 
 The task pressure is therefore an **integration boundary problem**, not evidence that either whole branch is wrong. The target must preserve both behavior authorities and adapt only the intersecting construction/identity seams.
 
@@ -45,8 +46,8 @@ No production file is changed during solution design. Implementation begins only
 - Current design issue found: `Yes`, only at the branch-intersection boundary.
 - Root cause classification: `Boundary Or Ownership Issue` and `Legacy Or Compatibility Pressure`.
 - Refactor needed now: `Yes`, bounded to current activation/session/publication construction and identity adaptation.
-- Evidence: directly selecting feature execution managers regresses Personal; using Personal defaults loses application-scoped publisher/session identity; the construction order otherwise cycles.
-- Design response: keep current domain owners, extract one concrete activation-state owner required for acyclic application construction, and explicitly inject scoped dependencies.
+- Evidence: directly selecting feature execution managers regresses Personal; using Personal defaults loses application-scoped publisher/session identity; the construction order otherwise cycles. Separately, the feature readiness owner labels six server registrars as seven while Core is triggered through Search and eager factory construction before lifecycle readiness.
+- Design response: keep current domain owners, extract one concrete activation-state owner required for acyclic application construction, explicitly inject scoped dependencies, and make `AgentToolRegistryReadiness` the sole application-host registration owner with Core first and provisioned Search last.
 - Refactor rationale: the application publisher must validate against the exact active run before provider factories and the full run manager exist. A narrow activation registry is the smallest truthful early owner.
 - Intentional deferrals: no generalized runtime framework, no repository-wide execution rewrite, no public SDK expansion, and no application-owned external MCP provisioning. These are not needed for the integration.
 
@@ -158,7 +159,8 @@ Reads never write. Explicit Studio Save is the only upsert path; explicit Reset 
 | --- | --- | --- |
 | Studio host starter / `buildStudioServer` assembly root | Starter owns Personal process prerequisites, post-listen Studio transports/background/fatal translation; builder owns registry/import, iframe-facing APIs, external gateway, process/application construction, routes/hooks | Application business logic, standalone mode switches, shared application readiness implementation |
 | Standalone host starter / `buildStandaloneApplicationServer` assembly root | Starter owns selected package/root, Personal process prerequisites, listener/recovery/returned close; builder owns loopback/static/bootstrap/internal routes/hooks | Studio registry, iframe, external gateway, duplicated shared readiness |
-| `ApplicationPlatformLifecycle` | workspace/customization/seven-tool/session/catalog/built-in/definition readiness, application recovery, ordered application stop | process DB/vault/migrations, process transports/background work, package registry, host UI |
+| `ApplicationPlatformLifecycle` | workspace/customization/Core-plus-six-server-tool/session/catalog/built-in/definition readiness, application recovery, ordered application stop | process DB/vault/migrations, process transports/background work, package registry, host UI |
+| `AgentToolRegistryReadiness` | one memoized process registration of Core, Browser, Task Delegation, Agent Communication, Published Artifact, Media, then provisioned Search | Skills, external MCP registration, AgentFactory construction, background retries, or business-run creation |
 | Runtime projections | exact REST, realtime, lifecycle, host-management contracts | private stores/managers or a 19-field service bag |
 | `ApplicationLaunchOverrideStore` | one physical table-row owner; safe parse and explicit upsert/delete only | baseline/overlay/readiness policy or read-time repair |
 | `ApplicationLaunchConfigurationService` | package and selected-resource baselines, current-rooted sparse override validation, effective profile, readiness/provenance, explicit Save/Reset | UI-side definition traversal, second store, read-time rewrite, package mutation |
@@ -187,6 +189,9 @@ Reads never write. Explicit Studio Save is the only upsert path; explicit Reset 
 | --- | --- | --- | --- | --- |
 | `applications/*/scripts/build-package.mjs` | custom duplicated pack logic | devkit config/commands | In this change | removal wins despite changed-both classification |
 | maintained `applications/*/ui`, `backend`, `dist` copies | generated/mirrored output | `frontend-src`, `backend-src`, build output | In this change | regenerate only |
+| direct `server-runtime.ts` Search registration and background Agent Tools task | create hidden/pre-readiness duplicate registration paths | lifecycle-owned `AgentToolRegistryReadiness` | In this change | Studio and standalone use the same awaited owner |
+| `loadAllAgentTools` export/wrapper | empty second entrypoint around the readiness owner | direct `AgentToolRegistryReadiness` use | In this change | update the three current E2E setup callers; no compatibility alias |
+| Search-to-Core chaining and `AgentFactory` Core-registration side effect | allow registry mutation before lifecycle readiness and obscure ownership | explicit Core unit first in `AgentToolRegistryReadiness`; Search-only replacement last | In this change | retain the existing Core registrar and AgentFactory behavior apart from the unrelated side effect |
 | feature-era `active-agent-run-registry.ts` copied verbatim | active-only shape omits Personal pending claim/candidate state | current-state `agent-run-activation-registry.ts` plus adapted resource manager | In this change | preserve current candidate/provisioning invariants, not obsolete code |
 | feature `mixed-persistent-member-registry.ts` and `mixed-task-agent-instance-registry.ts` | current Personal replaced their identity/lifecycle roles | current `mixed-configured-member-registry.ts`, `mixed-task-agent-execution-registry.ts`, and `mixed-task-team-execution-registry.ts` | In this change | these paths are explicitly removed from the target add/modify inventory |
 | Personal `application-execution-resource-configuration-store.ts`, service, and launch-profile normalizer | compete with the launch service/store over the same table and full-profile semantics | one `ApplicationLaunchConfigurationService` + `ApplicationLaunchOverrideStore` using current rooted sparse shape | In this change | no dual reader/writer |
@@ -224,7 +229,7 @@ The registry owns tokenized `constructing|prepared|quarantined` claim state, act
 
 ### Application lifecycle
 
-`host process prerequisites -> application prepare(workspace/customizations/seven tool groups/scoped session/catalog/built-ins/definitions) -> listen -> host post-listen work -> application recovery -> READY -> business demand`.
+`host process prerequisites -> application prepare(workspace/customizations/Core + six server tool units/scoped session/catalog/built-ins/definitions) -> listen -> host post-listen work -> application recovery -> READY -> business demand`.
 
 Stop is `application stop accepting/drain/workers/runs/sessions/streaming -> host process transports/general runs/pipeline/vault/Prisma`. Exact Studio/standalone phase, failure, background, unwind, and close allocation is normative in [integration-runtime-contracts.md](integration-runtime-contracts.md), section 1.
 
@@ -337,6 +342,7 @@ Forbidden:
 | Git/task integration | merge classification/resolution | DS-001, DS-007 | implementation/delivery | Extend | one merge commit |
 | Server compositions | host-specific process/assembly | DS-002, DS-003, DS-008 | two host starters + two server builders | Extend | exact process/app phase split; no mode switch |
 | Application platform | shared projections/lifecycle | DS-002–DS-005, DS-008 | runtime builder/lifecycle | Reuse/adapt | four fields; exact shared readiness/recovery/stop only |
+| Required tool readiness | process tool-catalog bootstrap used by both application hosts | DS-002, DS-003, DS-008 | `AgentToolRegistryReadiness` | Refine | Core is the source-backed seventh unit; one awaited owner replaces Search/factory/background side effects |
 | Agent execution | current run state/lifecycle | DS-004, DS-006 | manager + activation registry | Extend | preserve candidate semantics |
 | Team execution | RootTeamRun/member identity | DS-004–DS-006 | current managers | Reuse | no old registry resurrection |
 | Agent Tools MCP | route/session/provider | DS-005, DS-006 | process runtime + scoped manager | Reuse/adapt | route in both hosts |
@@ -353,6 +359,8 @@ Forbidden:
 | current activation candidate/provisioning/activation/run service files | agent execution | current lifecycle collaborators | private handle, durable PREPARED state, metadata commit/quarantine, public run service | existing current owners remain distinct | exact application dependencies |
 | `.../application-platform/runtime/create-application-run-services.ts` | application platform | application assembly | explicit acyclic construction | exact assembly root for scoped family | runtime contracts |
 | `.../compositions/build-*.ts` | compositions | host roots | distinct host assembly | host-specific lifecycle | runtime projections |
+| `.../startup/agent-tool-loader.ts` | startup readiness | required tool owner | memoized Core-first/Search-last registration and diagnostics | one concrete readiness policy | Skills, background retries, or a compatibility wrapper |
+| `autobyteus-ts/src/agent/factory/agent-factory.ts` | agent execution | agent factory | agent construction without tool-registry mutation | factory concern stays separate from process startup | hidden Core registration |
 | `.../agent-tools/mcp/*` | MCP | process/scoped owners | shared route mechanics + exact publisher | existing capability area | session identity |
 | `.../application-platform/launch-configuration/*` | launch config | resolver | baseline/override/readiness | cohesive policy area | provenance/issue shapes |
 | `.../application-orchestration/stores/application-launch-override-store.ts` | launch persistence | one store | safe JSON cells plus explicit upsert/delete over current table | physical persistence concern separate from policy | current-rooted sparse override |
@@ -384,9 +392,11 @@ The exhaustive target inventory is `integration-path-inventory.txt`. Raw Git evi
 
 | Disposition | Exact Files / Patterns | Target Responsibility |
 | --- | --- | --- |
-| Add/adapt | 108 `[ADD_OR_ADAPT_CANONICAL]` paths, notably both compositions, `application-platform/**`, standalone host, devkit/startup providers, `agent-run-activation-registry.ts`, resource manager, application session scope/scoped manager, and one launch override store | Bring forward finalized dual-host behavior while updating every interaction to current Personal owners/contracts |
+| Add/adapt | 109 `[ADD_OR_ADAPT_CANONICAL]` paths, notably both compositions, `application-platform/**`, standalone host, devkit/startup providers, `agent-run-activation-registry.ts`, resource manager, application session scope/scoped manager, one launch override store, and the required-tool readiness unit test | Bring forward finalized dual-host behavior while updating every interaction to current Personal owners/contracts |
 | Modify semantically | all 75 `[MODIFY_BOTH_CANONICAL]` paths after removing the two rejected feature member registries | Three-way audit using authority matrix; record resolution owner and protected IDs |
 | Modify Personal-only | 12 `[TARGET_PERSONAL_ONLY_MODIFY]` paths, including current candidate/provisioning/activation/run services, current mixed registries, and process migration/readiness owners | Preserve current behavior while making the application construction and lifecycle allocation exact |
+| Modify integration-only | 9 `[TARGET_INTEGRATION_ONLY_MODIFY]` paths that neither raw changed-both list captured nor the feature could resolve alone: tool readiness/background/index, Search registration, AgentFactory, and their direct test callers | Establish one lifecycle-owned registration path and remove the hidden/empty alternatives |
+| Retain as explicit dependency | 2 `[TARGET_EXPLICIT_RETAIN_DEPENDENCY]` paths: the unchanged AutoByteus backend factory import edge and `autobyteus-ts/src/tools/register-tools.ts` | Keep the backend's default-factory identity while making that eager instance registry-pure; retain `registerTools` as the idempotent Core registrar called only by readiness in repository production paths |
 | Add | `autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts` and adapted resource manager/test | Current Personal pending/active identity owner and exact resource release required for acyclic application construction |
 | Modify | `agent-run-manager.ts`, current Codex/Claude factories/bootstrap/session files, current mixed-team managers/handles/definition context, MCP session/runtime, publication/relay | Exact application scope over current Personal lifecycle/identity; named general process remains separate; all obligations follow supplement section 2.5 |
 | Modify | Brief/Socratic `package.json`, devkit config, canonical source, manifests/definitions | native commands, current contracts, Codex/Luna complete defaults |
@@ -411,6 +421,7 @@ The exhaustive target inventory is `integration-path-inventory.txt`. Raw Git evi
 | `server-runtime.ts` and `.../standalone-application-host/start-standalone-application-host.ts` | Files | host process coordinators | exact process prerequisites, listener/post-listen work, fatal/reject/unwind, outer close | host policy differs and remains explicit | shared application readiness duplicated inline |
 | `autobyteus-server-ts/src/compositions/` | Folder | server assembly | two explicit builders, routes/hooks, process/general construction | top-level wiring | migrations, business rules, mode switch |
 | `.../application-platform/runtime/` | Folder | shared application lifecycle/boundary | runtime contracts/build plus exact application prepare/recovery/stop | platform-owned shared host layer | DB/vault/process transports/background, host UI |
+| `.../startup/agent-tool-loader.ts` | File | required tool readiness | one memoized seven-unit process registration, Core first and provisioned Search last | existing startup capability with real order/failure policy | Skills, general MCP registration, AgentFactory construction, or background retry |
 | `.../application-platform/launch-configuration/` | Folder | launch resolver | defaults/overrides/readiness/validation | one policy owner | UI rendering |
 | `.../application-orchestration/stores/application-launch-override-store.ts` | File | launch persistence | safe parse and explicit row upsert/delete over existing table | physical store concern | baseline/readiness or read-time rewrite |
 | `.../agent-execution/runtime/` | Folder | live run state | activation registry and general supervisor | runtime state depth | application package logic |
@@ -478,7 +489,7 @@ Dependencies point inward. Return events flow outward through explicit publisher
 2. Capture parents/conflicts; classify every path using the retained inventories.
 3. Resolve/delete derived output and obsolete custom builders/mirrors first so they cannot influence source decisions.
 4. Resolve contracts/SDK/devkit with current numeric values and unversioned in-scope symbols.
-5. Reconcile Studio and standalone startup exactly by `integration-runtime-contracts.md` section 1: process prerequisites/status policies in each host starter; shared workspace/customization/seven-tool/session/catalog/built-in/definition readiness and recovery/stop in `ApplicationPlatformLifecycle`; remove duplicates before advancing.
+5. Reconcile Studio and standalone startup exactly by `integration-runtime-contracts.md` section 1: process prerequisites/status policies in each host starter; shared workspace/customization/Core-plus-six-server-tool/session/catalog/built-in/definition readiness and recovery/stop in `ApplicationPlatformLifecycle`; remove duplicates before advancing.
 6. Bring forward the two explicit host builders, standalone routes/static/bootstrap, frontend startup normalization, and four runtime projections; implement the exact post-listen, failure-unwind, and close sequences.
 7. Add the early application session scope, adapted resource manager, and current-state activation registry; update current `AgentRunManager` while retaining current candidate, provisioning, activation, durable commit, provider identity, and quarantine semantics.
 8. Construct application publication/scoped MCP/provider factories/current manager/services through the exact DAG and obligations in supplement section 2; preserve the named process assembly and only its enumerated exemptions.
@@ -498,6 +509,7 @@ No temporary compatibility seam is retained after step 14.
 - A merge commit is less linear than rebase, but preserves the finalized checkpoint and reduces conflict handling to one auditable point.
 - Extracting activation state adds one concrete type, but removes a real construction cycle and prevents application-to-global fallback. Folding everything into the manager would require a later-bound publisher or default singleton.
 - Retaining an early session ownership scope plus separate resource manager adds two narrowly owned collaborators, but each owns real state/cleanup and makes publisher/session/manager construction acyclic. Neither is a pass-through facade.
+- Removing Core registration from `AgentFactory` makes process readiness explicit instead of preserving a surprising construction side effect. The factory still creates the same agents from resolved tool instances; the existing public `registerTools()` remains the direct bootstrap API for non-server library callers that need the global catalog.
 - Treating obsolete/legacy-only launch rows as explicit invalid saved state is stricter than read-time conversion, but it honors the clean-current-contract rule, prevents hidden writes, and preserves explicit Reset. Valid current Personal rows require no migration.
 - Deleting generated artifacts creates a large apparent diff, but avoids parallel source truth and makes future application development simpler.
 - Re-running complete dual-host/Electron validation costs time, but the combined state has no prior proof.
@@ -508,6 +520,7 @@ No temporary compatibility seam is retained after step 14.
 - Personal's current lifecycle may have additional invariants not obvious from conflict paths. Mitigation: preserve current files as authority and run affected Personal suites.
 - Identity conversion can mix old and current member keys. Mitigation: one rooted identity and removal of parallel representation.
 - Lifecycle reconciliation can skip or double-run a current phase. Mitigation: normative per-phase allocation and once/order/failure/unwind tests from supplement section 1.
+- Core or provisioned Search can register early, twice, or in the wrong order through legacy side effects. Mitigation: remove every alternate caller, memoize one readiness promise, assert the seven ordered unit keys, and scan production call sites.
 - A parent factory can be explicit while a nested defaulting provider/team owner still falls back globally. Mitigation: every nested application obligation and exact general-process exemption is listed and omission-tested.
 - Generated outputs may hide stale imports. Mitigation: build only after source compiles and compare deterministic package contents.
 - Personal may advance again. Mitigation: delivery refresh and repeat classification.
@@ -522,6 +535,7 @@ No temporary compatibility seam is retained after step 14.
 - Do not port old feature run/team manager source verbatim.
 - Make application-scoped dependencies required in the application assembly. Preserve general-process defaults only in named process factories.
 - Implement every host phase, transition method/result, constructor obligation, store behavior, and file disposition exactly as specified in `integration-runtime-contracts.md`; do not summarize that supplement into a looser implementation.
+- For phase 16, use Core as the source-backed seventh unit, keep Skills outside tool registration, remove `loadAllAgentTools` and every early/duplicate registration side effect, and preserve Core-first/Search-last ordering.
 - Keep `AgentRunActivationCandidate`, `AgentRunProvisioningService`, and `StandaloneAgentRunActivationService` current. The new registry does not replace their responsibilities.
 - Keep `ApplicationLaunchOverrideStore` as the only row owner. Reading/evaluating an override must be side-effect free; only explicit Save/Reset writes.
 - Keep construction free of business run creation.

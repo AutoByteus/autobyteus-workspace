@@ -8,6 +8,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 | --- | --- | --- | --- | --- |
 | SR-001 | User request and isolated merge investigation / baseline | N/A | Initial Baseline | Design-ready semantic integration package prepared for architecture review |
 | SR-002 | Architecture reviewer / `design-review-report.md` / `ARCH-REV-001` | AR-001–AR-003 | Design Impact | Exact lifecycle, activation/provisioning/construction, inventory, and launch direct-use contracts added; ready for re-review |
+| SR-003 | Architecture reviewer / `design-review-report.md` / `ARCH-REV-002` | AR-001 | Design Impact | Required-tool readiness corrected to one source-backed Core-plus-six-server-unit owner with exact removal and proof inventory |
 
 ## Revision Entries
 
@@ -43,3 +44,21 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: the implementation engineer receives no handoff until this revision passes architecture review. When passed, implementation must consume the target inventory and supplement section 4 verification delta.
 - Next recipient or routing: `/architecture_reviewer`.
 - Remaining gaps or risks: the architecture reviewer must validate the exact state/result and store contracts; delivery must still refresh Personal if the remote advances.
+
+### SR-003 — Source-backed required-tool readiness correction
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `design-review-report.md`; `ARCH-REV-002`.
+- Triggering finding IDs: remaining bounded branch of `AR-001`.
+- Prior authoritative result: `Fail — Design Impact`; `AR-002` and `AR-003` resolved, `AR-001` open only for required-tool identity/ownership/order/inventory.
+- Current authoritative result: Design-ready bounded correction prepared for architecture re-review; implementation remains blocked until review passes.
+- Resolution:
+  - replaced the unsupported Skills label with the source-backed Core registrar as the seventh required unit;
+  - assigned one memoized `AgentToolRegistryReadiness` path to lifecycle phase 16 with Core first, five independent server-owned units next, and provisioned Search last after vault readiness;
+  - removed from the target every competing trigger: direct Studio Search registration, background/wrapper loading, Search-to-Core chaining, and `AgentFactory` registry mutation;
+  - specified sticky failure/once semantics, exact ordered result keys, file dispositions, current-tree call-site assertions, and dedicated success/concurrency/order/failure/missing-export/no-retry tests;
+  - expanded the target inventory with 109 Add/Adapt paths, 9 integration-only modifications, and 2 explicit retained dependencies (Core registrar and registry-pure AutoByteus default-factory edge).
+- Approved behavior or requirement IDs affected: BEH-003, BEH-006; REQ-005–REQ-007; AC-007, AC-009, AC-011. No product behavior, host, route, persistence, migration, or tool capability changed.
+- Canonical artifacts and sections updated: `requirements.md` REQ-005/AC-007; `investigation-notes.md` source/call-graph evidence and reviewer note; `design-spec.md` ownership/removal/file/sequence/proof mapping; `integration-strategy-analysis.md`; `integration-runtime-contracts.md` sections 1.2.1/1.5/4; `integration-path-inventory.txt`; this record.
+- Downstream and architecture-review impact: implementation remains paused. On a Pass, implementation must perform the one semantic merge and apply the exact phase-16 clean-cut correction without restoring the removed wrapper or adding compatibility behavior.
+- Next recipient or routing: `/architecture_reviewer`.
+- Remaining gaps or risks: architecture must validate that the one owner, result set, order, and test inventory fully close `AR-001`; delivery must still refresh Personal if the remote advances.

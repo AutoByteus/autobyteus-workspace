@@ -7,7 +7,7 @@
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
 - Scope: REQ-001–REQ-007 and AC-001–AC-011.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
-- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) fixes the exact lifecycle, activation/provisioning, construction, persisted-row, and proof contracts for SR-002.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) fixes the exact lifecycle, Core-plus-six-server-tool readiness, activation/provisioning, construction, persisted-row, and proof contracts for SR-003.
 
 ## Executive Decision
 
@@ -172,7 +172,7 @@ The registry exposes the exact claim/prepare/publish/abort/remove/stop operation
 
 1. Resolve application canonical source using Personal's current app logic plus the feature's host-neutral contracts and Codex/Luna defaults.
 2. Resolve SDK/devkit schemas using Personal serialized values and the feature's developer workflow/unversioned naming.
-3. Bring forward explicit host builders, four runtime projections, standalone host, launch configuration, and scoped MCP behavior; allocate every process/application lifecycle phase by the normative lifecycle table.
+3. Bring forward explicit host builders, four runtime projections, standalone host, launch configuration, and scoped MCP behavior; allocate every process/application lifecycle phase by the normative lifecycle table. Phase 16 uses one memoized `AgentToolRegistryReadiness`: Core first, five server-owned non-Search units, and provisioned Search last. Remove the direct Search call, background/wrapper entrypoint, Search-to-Core call, and AgentFactory registration side effect.
 4. Adapt those additions to current Personal candidate/provisioning/activation/team identity through the exact construction DAG and constructor obligation table; retain current configured/task registries and reject the feature-era ones.
 5. Select one launch store, remove the Personal configuration store/service, use current rooted persisted identity, and resolve web launch editors as sparse baseline/override UI plus Personal unavailable-model retention/warnings without read-time rewrite/fallback.
 6. Port durable assertions from deleted seams to current production owners; never restore removed source to make a test compile.
@@ -198,9 +198,11 @@ For every path in `[MODIFY_BOTH_CANONICAL]`:
 
 `integration-path-inventory.txt` is the exact target inventory derived from the raw Git evidence:
 
-- `ADD_OR_ADAPT_CANONICAL` — 108 paths to introduce/adapt; the rejected active-only and feature member-registry paths are not target additions.
+- `ADD_OR_ADAPT_CANONICAL` — 109 paths to introduce/adapt, including the dedicated required-tool readiness unit test; the rejected active-only and feature member-registry paths are not target additions.
 - `MODIFY_BOTH_CANONICAL` — 75 paths requiring three-way semantic audit after removing those two rejected member registries.
 - `TARGET_PERSONAL_ONLY_MODIFY` — 12 current Personal owners that the semantic integration must modify even though they are not a changed-both Git class.
+- `TARGET_INTEGRATION_ONLY_MODIFY` — 9 shared/feature-changed source and test paths whose target change is required only by the combined readiness boundary: loader/background/index, Search, AgentFactory, and their direct tests.
+- `TARGET_EXPLICIT_RETAIN_DEPENDENCY` — the unchanged Core `register-tools.ts` registrar plus the AutoByteus backend factory edge to the now registry-pure `defaultAgentFactory`.
 - `REMOVE_LEGACY_CANONICAL` — 17 obsolete paths, now including the Personal configuration store. Two custom builders appear in both raw modify/remove evidence because both branches changed them before deletion; **removal is authoritative**.
 - `TARGET_EXPLICIT_DO_NOT_ADD` — the feature active-only registry and two old member registries.
 - `REGENERATE_OR_REMOVE_DERIVED` — 656 paths that must not become manually maintained merge resolutions.
@@ -230,6 +232,7 @@ The implementation engineer may refine the exact list when current source owners
 - `git diff --check`;
 - deleted/generated/mirrored path audit;
 - all 77 overlap decisions accounted for.
+- production call-site proof that only `AgentToolRegistryReadiness` invokes Core registration, Search owns only its provisioned replacement, AgentFactory construction is registry-pure, and no background/wrapper path remains.
 
 ### Architecture and construction
 
@@ -237,6 +240,7 @@ The implementation engineer may refine the exact list when current source owners
 - synthetic omission/null/undefined cases for every application-scoped constructor/factory obligation, including nested Codex/Claude bootstrap/session inputs;
 - general-process exemption remains exact and named;
 - no application path process/global fallback.
+- exact required-tool unit keys and Core-first/Search-last order; concurrent/repeated once semantics; sticky failure; missing-export and registrar-failure omission cases.
 
 ### Package/developer workflow
 
