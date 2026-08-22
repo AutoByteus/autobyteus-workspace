@@ -367,7 +367,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     );
   });
 
-  it("posts application team input with exact member-address target identity", async () => {
+  it("posts addressed application team input with the exact bound agentRunId", async () => {
     const binding = buildTeamBinding();
     const postMessage = vi.fn(async () => ({ accepted: true }));
     const hostService = new ApplicationOrchestrationHostService({
@@ -404,7 +404,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
 
     expect(postMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: "please research" }),
-      "/Researcher",
+      "researcher-member-run-1",
     );
   });
 

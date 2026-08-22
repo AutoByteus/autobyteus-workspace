@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | `code_reviewer`; `code-review-report.md`; `CRR-002` | `CR-003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-002`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
 | IR-004 | `code_reviewer`; `code-review-report.md`; `CRR-004` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-004`, `API-REV-001`; `DR-*`: `N/A` | Ready for source re-review |
 | IR-005 | `code_reviewer`; `code-review-report.md`; `CRR-006` | `CR-006`; `APIE2E-F003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-006`, `API-REV-002`; `DR-*`: `N/A` | Ready for source re-review |
+| IR-006 | `code_reviewer`; `code-review-report.md`; `CRR-008` | `CR-007`; `APIE2E-F004` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-008`, `API-REV-003`; `DR-*`: `N/A` | Ready for source re-review |
 
 ## Revision Entries
 
@@ -113,3 +114,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: affected selection `6` files / `42` tests passed, including all `15` application-framework architecture checks; direct lifecycle regression `1` file / `4` tests passed; server build-config TypeScript no-emit and full production build plus sanitized bootstrap smoke passed. Fresh-root coverage proves the exact canonical runtime path exists when the real provider credential adapter acquires/releases its client, neither application nor platform SQLite is created, dormant applications are not prepared in standalone selection, preparation failure skips definition readiness, and normal stop cleanup remains available.
 - Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
 - Remaining limitations or risks: API/E2E must rerun the exact authenticated fresh-root maintained Socratic command first and then validate shared Studio fresh-root behavior plus the remaining provider/publication/recovery/parity/browser/cleanup matrix. Its dirty durable package remains preserved and is not claimed as reviewed or passing here.
+
+### IR-006 — Preserve exact team-member identity through application input dispatch
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`; `CRR-008` failure-origin review of `API-REV-003`.
+- Triggering finding IDs: `CR-007`; `APIE2E-SOCRATIC-002` / `APIE2E-F004`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-008 — Fail / Local Fix`; triggering execution `API-REV-003 — Fail / 93% validation confidence`.
+- Current authoritative result: `Ready for source re-review`.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-008` (with `CRR-001`–`CRR-007` retained as prior history).
+- Related API/E2E revision IDs: `API-REV-003`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: corrects the deterministic identity mismatch exposed by the maintained Socratic immediate exact-member input without changing rooted identity, binding durability, lazy activation, provider activation, or subscribe-before-input ordering.
+- Approved behavior or requirement IDs affected: `BEH-003`, `BEH-006`; `REQ-003`–`REQ-005`; `AC-003`, `AC-007`, `AC-009`, `AC-011`.
+- Implementation delta: addressed application team input now forwards the authorized binding-owned `agentRunId` directly into `RootTeamRun.postMessage`. Initial `targetMemberAddress` remains a public logical address, is normalized and validated, then resolves through the exact binding member projection to its `agentRunId`; an address absent from the binding is rejected before runtime lookup. Coordinator targeting remains `null`. The misleading internal target-selector name is replaced with the precise target-address name, with no alias or fallback.
+- Changed files or areas: `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`; `src/application-orchestration/services/application-runtime-input-normalizer.ts`; corrected focused assertion in `tests/unit/application-orchestration/application-orchestration-host-service.test.ts`; new real-root regression `tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts`; implementation handoff and this record.
+- Local validation and result: direct identity selection `3` files / `12` tests passed, including four real `RootTeamRun` dispatch/rejection cases; application-framework architecture suite `1` file / `15` tests passed; server build-config TypeScript no-emit and full production build plus sanitized built-in-agent bootstrap smoke passed; scoped `git diff --check` passed. The broader package `typecheck` command retains the repository's pre-existing `TS6059` rootDir/include mismatch for tests and is not used as the source check.
+- Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
+- Remaining limitations or risks: API/E2E must rerun F004 first through the mounted maintained Socratic Studio path, then resume the remaining dual-host/provider/publication/recovery/parity/browser/cleanup matrix. Its dirty durable tests, reports, and evidence remain preserved and are not claimed as reviewed or passing here.

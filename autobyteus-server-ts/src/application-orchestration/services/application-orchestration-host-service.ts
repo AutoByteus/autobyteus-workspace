@@ -26,7 +26,6 @@ import type { ApplicationRunBindingStore } from "../stores/application-run-bindi
 import type { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 import type { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
-import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   ApplicationAgentTargetAuthorizationService,
   type ApplicationAgentTargetAuthorizationLease,
@@ -35,7 +34,7 @@ import {
   ApplicationRunBindingTerminalTransitionService,
 } from "./application-run-binding-terminal-transition-service.js";
 import {
-  buildApplicationRuntimeInputTargetSelector,
+  buildApplicationRuntimeInputTargetAddress,
   buildRuntimeInputMessage,
   rejectUnsupportedApplicationAgentInput,
   rejectUnsupportedApplicationRuntimeTargetName,
@@ -424,11 +423,18 @@ export class ApplicationOrchestrationHostService {
       return;
     }
 
+    const targetMemberAddress = buildApplicationRuntimeInputTargetAddress(input);
+    const targetAgentRunId = targetMemberAddress
+      ? binding.runtime.members.find((member) => member.memberAddress === targetMemberAddress)?.agentRunId ?? null
+      : null;
+    if (targetMemberAddress && !targetAgentRunId) {
+      throw new Error("Application runtime input target does not belong to the bound team runtime.");
+    }
     const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
     if (!run) {
       throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
     }
-    const result = await run.postMessage(message, buildApplicationRuntimeInputTargetSelector(input));
+    const result = await run.postMessage(message, targetAgentRunId);
     if (!result.accepted) {
       throw new Error(result.message ?? "Application runtime rejected the input.");
     }
@@ -454,17 +460,13 @@ export class ApplicationOrchestrationHostService {
     if (address.target.kind === "AGENT_RUN") {
       throw new Error("Application agent input target does not match the bound runtime.");
     }
-    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
-    if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
     const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
-    const targetMember = targetAgentRunId
-      ? binding.runtime.members.find((member) => member.agentRunId === targetAgentRunId) ?? null
-      : null;
-    if (address.target.kind === "AGENT_TEAM_MEMBER" && !targetMember) {
+    if (targetAgentRunId && !binding.runtime.members.some((member) => member.agentRunId === targetAgentRunId)) {
       throw new Error("Application agent input target does not belong to the bound team runtime.");
     }
-    const targetMemberAddress = targetMember ? assertAgentTeamAddress(targetMember.memberAddress) : null;
-    const result = await run.postMessage(message, targetMemberAddress);
+    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
+    if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
+    const result = await run.postMessage(message, targetAgentRunId);
     if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
   }
 }

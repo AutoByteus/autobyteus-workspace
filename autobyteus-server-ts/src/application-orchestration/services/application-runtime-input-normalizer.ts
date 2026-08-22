@@ -35,7 +35,7 @@ export const buildRuntimeInputMessage = (
     input.metadata ?? {},
   );
 
-export const buildApplicationRuntimeInputTargetSelector = (
+export const buildApplicationRuntimeInputTargetAddress = (
   input: ApplicationRuntimeInput,
 ): AgentTeamAddress | null => input.targetMemberAddress?.trim()
   ? assertAgentTeamAddress(input.targetMemberAddress)
