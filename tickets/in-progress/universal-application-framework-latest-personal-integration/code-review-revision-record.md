@@ -12,6 +12,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` |
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `CR-005` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-006`; `APIE2E-F003` |
+| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-006` |
 
 ## Revision Entries
 
@@ -175,3 +176,33 @@ None.
 - Failure-origin attribution: implementation defect. The reviewed architecture already assigns the two existing owners; missing precondition ordering/wiring is bounded. This was a reasonably detectable source-review gap because the path-only resolver, client spawn, and absent pre-listen directory preparation are statically traceable.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Studio shares the readiness construction; all later real provider/publication/recovery/remount/parity/cleanup/Electron-preparation scenarios remain Not Tested. The cumulative API/E2E durable-test delta awaits proportional review only after a later API/E2E Pass.
+
+### CRR-007 — Fresh-root runtime workspace preparation verified
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-005`, addressing `CR-006` / `APIE2E-F003` in `APIE2E-STANDALONE-001` / `APIE2E-CODEX-CWD-001`.
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-005`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-006 — Fail / Local Fix`
+- Current authoritative result: `Pass / 93`
+- What changed in the review result and why: IR-005 adds one narrow storage-lifecycle operation that validates the cataloged application and materializes only its canonical runtime directory. The platform lifecycle invokes that same graph-local owner for selected catalog applications after catalog validation and before definition/provider readiness. Provider/path/launch-query behavior is unchanged, no application or platform database is created, and preparation failure still enters the existing failed state with normal stop/unwind available.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-005` | Standalone prerequisite sequencing is unchanged except for the required runtime-directory precondition; lifecycle and standalone selections pass. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-005` | Runtime preparation performs only canonical filesystem directory creation. Fresh-state coverage proves `app.sqlite` and `platform.sqlite` remain absent, and launch no-write coverage passes. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `IR-005` | Event-journal existing-state recovery remains non-mutating and passes its real-SQLite lifecycle/reentry coverage. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-005` | Socratic exact bound-member identity behavior is outside this delta and remains unchanged. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-005` | General-process exclusive run-owner construction is outside this delta; the standalone lifecycle selection remains passing. |
+| `CR-006` | Open — Major | Resolved | `IR-005`, `CRR-007`; `BEH-002`, `BEH-003`, `BEH-006`; `APIE2E-F003` | `ApplicationPlatformLifecycle` now calls the injected graph-local storage owner after catalog validation and before definition/provider readiness. `ApplicationStorageLifecycleService` validates the bundle and creates only the canonical `runtimeDir`; the actual readiness adapter receives that existing exact cwd. Reviewer validation passes 6 files / 42 tests plus build-config TypeScript no-emit. |
+
+- New or remaining finding IDs: none.
+- Material score or classification changes: the focused failure-origin `Fail` is cleared; the complete implementation scorecard returns to `93/100`, every category is at least `9.0`, and no Major or Critical finding remains.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must rerun the exact authenticated fresh-root standalone failure first and validate the shared Studio path before the complete provider/publication/handoff/recovery/restart/remount/browser/package-parity/cleanup matrix. Its cumulative durable-test update/removal remains preserved for proportional review only after a later Pass; downstream Electron execution remains delivery-owned.
