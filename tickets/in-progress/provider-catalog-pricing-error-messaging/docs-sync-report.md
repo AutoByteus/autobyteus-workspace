@@ -58,9 +58,16 @@
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: Prepare the integrated-state handoff and wait for explicit user verification/completion.
-- Notes: Feature-specific API/E2E is Pass. DeepSeek/Kimi live body-fidelity, unavailable providers, Docker identity, browser DOM, LM Studio compactor leaf evidence, and live recovery remain explicit non-gating residuals. No release, deployment, archival, push, or target-branch finalization is authorized before user verification.
+- Result: `Blocked`
+- Next delivery action: Await focused/proportional code review of the API-REV-007 durable test-support delta, then the corresponding API/E2E execution result and any required re-review.
+- Notes: The prior DR-002/DR-003 documentation sync remains accurate for reviewed production behavior, but the new durable test-support delta is not yet a delivery-ready state. No release, deployment, archival, push, target-branch finalization, or user-verification claim is authorized for the superseded handoff.
+
+## Delivery Re-entry After API-REV-007 Delta
+
+- The latest tracked base advanced to `origin/personal@201eddc452a7b9b5b3220e8238373b04c1423c0f` and was merged cleanly as `a810e3c230` after safety checkpoint `e6ba62846`.
+- `test-support/live-e2e/live-e2e-harness.ts` contains a durable scenario-order change that is pending focused/proportional review.
+- `api-e2e-coverage-investigation.md` records API-REV-007; `api-e2e-execution-coverage-report.md` remains API-REV-006 until the new execution is complete.
+- No new long-lived documentation edit is appropriate until the current durable coverage state is reviewed and validated.
 
 ## Blocked Or Escalated Follow-Up
 

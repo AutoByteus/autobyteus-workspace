@@ -4,11 +4,23 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-004 | API/E2E Round 7 durable test-support delta discovered after the DR-003 closure | `DR-003` Pass reaffirmed; user verification pending | Blocked — the new `test-support/live-e2e/live-e2e-harness.ts` delta and API-REV-007 investigation must complete the required focused/proportional code review and API/E2E execution before delivery can resume | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-003 | Code-review downstream closure for `API-REV-006` | `DR-002` Pass; explicit user verification pending | Pass reaffirmed — `CRR-002` remains Pass at 9.4/10, `CRR-006` and `CRR-009` remain authoritative, no durable coverage changes were retained, and the integrated handoff remains current; finalization/release/deployment remain held | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-002 | API/E2E Round 6 feature-specific Pass; latest-base delivery refresh; docs sync | `DR-001` initial baseline with latest-base integration pending | Pass — latest tracked `origin/personal` integrated without conflicts, focused post-integration checks passed, durable docs synchronized, and user-verification handoff prepared; finalization/release/deployment held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `delivery-evidence/post-integration-focused-check.log` |
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-004 — Post-closure durable test-support delta blocks delivery re-entry
+
+- Trigger: the current worktree contained an API/E2E Round 7 coverage investigation and a durable `test-support/live-e2e/live-e2e-harness.ts` scenario-order change after the DR-003 downstream closure. This supersedes the prior user-verification handoff until the new delta is reviewed and executed.
+- Safety checkpoint: delivery committed the unreviewed delta at `e6ba62846` before refreshing the advanced base. This is a delivery-safety checkpoint only, not a final or reviewed result.
+- Latest-base refresh: `origin/personal` advanced to `201eddc452a7b9b5b3220e8238373b04c1423c0f`; delivery merged it with `--no-ff` as `a810e3c230`, without conflicts or unmerged paths. The latest tracked base remains an ancestor.
+- Review gate: per team rules, repository-resident durable coverage/test-support changes made after the initial code review must return through `/code_reviewer` before delivery. The cumulative package and current changed paths were routed for focused/proportional review.
+- API/E2E state: `api-e2e-coverage-investigation.md` now records `API-REV-007` and a bounded LM Studio probe plan. The current execution report remains `API-REV-006`; no API-REV-007 execution result is authoritative yet.
+- Documentation state: prior DR-002 documentation sync remains accurate for the reviewed production behavior, but no new delivery claim is made for the unreviewed test-support delta.
+- Current result: `Blocked — review and subsequent API/E2E execution are required before a new delivery handoff can be prepared.`
+- Next action: await `/code_reviewer` review; if accepted, receive the API/E2E execution result and any required proportional re-review before returning to delivery.
 
 ### DR-003 — Downstream review closure reaffirmed
 

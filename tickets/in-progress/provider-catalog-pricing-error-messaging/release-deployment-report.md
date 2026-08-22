@@ -9,7 +9,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-004`
 - Notes: Handoff is current with the integrated, checked branch and calls out all non-gating residuals explicitly.
 
 ## Initial Delivery Integration Refresh
@@ -38,9 +38,20 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - `CRR-006`: Pass; no additional durable test/test-support review required.
 - `CRR-009`: Historical failure-origin review remains applicable to explicitly non-gating provider/environment residuals.
 - Round 6 durable coverage changes retained: `None`.
-- Latest-base refresh after handoff: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`, unchanged and still an ancestor.
-- Additional executable rerun: `Not needed` — no source, durable coverage, or effective behavior changed after DR-002; prior post-integration checks remain applicable.
-- Delivery result: `Pass reaffirmed`; user verification, finalization, release, deployment, archival, and cleanup remain held.
+- Latest-base refresh after handoff: superseded by the current re-entry refresh to `origin/personal@201eddc452a7b9b5b3220e8238373b04c1423c0f`, merged as `a810e3c230`.
+- Additional executable rerun: `Held` — the new durable test-support delta must first pass focused/proportional code review; API/E2E execution follows that review.
+- Delivery result: `Blocked pending re-review`; the prior DR-003 user-verification handoff is superseded.
+
+## Current Re-entry Blocker
+
+- Trigger: Post-closure API/E2E Round 7 durable test-support delta.
+- Safety checkpoint: `e6ba62846`.
+- Latest-base integration: `origin/personal@201eddc452a7b9b5b3220e8238373b04c1423c0f` merged cleanly as `a810e3c230`.
+- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` (`API-REV-007`).
+- Last authoritative execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` (`API-REV-006`).
+- Required review route: `/code_reviewer`, then `/api_e2e_engineer` for execution/coverage completion as applicable.
+- Current result: `Blocked — the DR-003 user-verification handoff is superseded until the durable test-support delta is reviewed and validated.`
 
 ## User Verification
 
