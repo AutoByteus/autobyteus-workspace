@@ -1,43 +1,6 @@
 import gql from 'graphql-tag';
 
-export const TOKEN_USAGE_COST_SUMMARY_AGGREGATE_FIELDS = gql`
-  fragment TokenUsageCostSummaryAggregateFields on TokenUsageCostSummaryAggregateGraphql {
-    grossInputTokens
-    standardInputTokens
-    cacheMissInputTokens
-    cacheReadInputTokens
-    cacheCreationInputTokens
-    cacheCreation5mInputTokens
-    cacheCreation1hInputTokens
-    outputTokens
-    reasoningOutputTokens
-    billableOutputTokens
-    totalTokens
-    cacheReadInputTokenRate
-    standardInputTokenRate
-    cacheCreationInputTokenRate
-    cacheState
-    estimatedApiInputCost
-    estimatedApiStandardInputCost
-    estimatedApiCacheReadInputCost
-    estimatedApiCacheCreationInputCost
-    estimatedApiCacheCreation5mInputCost
-    estimatedApiCacheCreation1hInputCost
-    estimatedApiOutputCost
-    estimatedApiReasoningOutputCost
-    estimatedApiTotalCost
-    currency
-    apiCostStatus
-    missingPriceDimensions
-    pricingPolicyKey
-    selectedPricingTierId
-    usageReportCount
-    updatedAt
-    observedRuntimeKinds
-    observedModelIdentifiers
-    observedModelProviders
-  }
-`;
+import { TOKEN_USAGE_COST_SUMMARY_AGGREGATE_FIELDS } from './token_usage_cost_summary_fragment';
 
 export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
   ${TOKEN_USAGE_COST_SUMMARY_AGGREGATE_FIELDS}

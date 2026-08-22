@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.54 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts > TokenUsageTrendChart > exposes a keyboard-reachable named canvas plus exact dated/status/currency table evidence 76ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts > TokenUsageTrendChart > does not plot a false combined monetary series for mixed currencies 3ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:44:26
+   Duration  4.80s (transform 2.64s, setup 4.17s, collect 98ms, tests 80ms, environment 126ms, prepare 119ms)

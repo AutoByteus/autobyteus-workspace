@@ -83,6 +83,15 @@ const resolveProviderLabel = (
   return UNKNOWN_PROVIDER;
 };
 
+export const resolveTokenUsageProviderDisplayName = (
+  event: Pick<TokenUsageUpdatedPayload, "model_provider" | "provider_name" | "model_identifier" | "model_value">,
+  context: TokenUsageModelDisplayContext = EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
+): string => {
+  const composite = parseTokenUsageCompositeModelValue(event.model_identifier)
+    ?? parseTokenUsageCompositeModelValue(event.model_value);
+  return resolveProviderLabel(composite?.providerId ?? null, event.model_provider, event.provider_name, context);
+};
+
 const resolveAutobyteusDisplayName = (
   event: Pick<TokenUsageUpdatedPayload, "model_provider" | "provider_name" | "model_identifier" | "model_value">,
   context: TokenUsageModelDisplayContext,

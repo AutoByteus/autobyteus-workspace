@@ -1,0 +1,32 @@
+=== artifacts ===
+-rw-r--r--@ 1 normy  staff   442M Aug 22 18:47 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+-rw-r--r--@ 1 normy  staff   473K Aug 22 18:47 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   437M Aug 22 18:49 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+-rw-r--r--@ 1 normy  staff   461K Aug 22 18:49 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip.blockmap
+=== sha256 ===
+b18f59252f9e9ad7def9568b8820c6ce1255fa389eb6809d994baaa4288f8631  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+9601d6acd2c23edf075600c2d2803c744d13af6b5c047e1ad5b401e4ea131207  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+=== dmg verify ===
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $E45E08C4
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $2DA20F1C
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $1F7E70BF
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $FCF82CD9
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $1F7E70BF
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $5DD51BE4
+Die überprüfte CRC32-Prüfsumme ist $E25D314D
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg" is VALID
+=== zip integrity ===
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip.
+=== app executable ===
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+=== packaged resources ===
+server bundle and Prisma schema present

@@ -201,7 +201,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
-import type { TokenUsageSortDirection, TokenUsageTaskSortKey, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageStatistics';
+import type { TokenUsageSortDirection, TokenUsageTaskSortKey, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageRunStatistics';
 import TokenUsageCostBreakdown from './TokenUsageCostBreakdown.vue';
 import { createTokenUsageStatisticsFormatter, shortId } from './tokenUsageStatisticsUi';
 

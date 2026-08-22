@@ -4,7 +4,7 @@ import {
   mergeDistinctValue,
   unknownDistinctValue,
 } from "../domain/token-usage-distinct-value-summary.js";
-import type { TokenUsagePricingSummary } from "../domain/token-usage-run-record.js";
+import type { TokenUsagePricingSummary } from "../domain/token-usage-accounting-summary.js";
 import type {
   TokenUsageUnitPrices,
   TokenUsageUnitPriceSummary,

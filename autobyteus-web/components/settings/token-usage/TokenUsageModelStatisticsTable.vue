@@ -38,53 +38,19 @@
         </tbody>
       </table>
     </div>
-    <div class="mt-6 h-[400px]">
-      <BarChart
-        :labels="chartLabels"
-        :data="chartData"
-        :dataset-label="chartDatasetLabel"
-        :x-axis-label="chartXAxisLabel"
-        :y-axis-label="chartYAxisLabel"
-        :tooltip-labels="chartTooltipLabels"
-      />
-    </div>
-    <p v-if="hasOmittedUnpricedChartCosts" class="mt-2 text-sm text-gray-500">
-      {{ $t('shell.tokenUsage.unpricedCostChartNote') }}
-    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
-import BarChart from '~/components/common/BarChart.vue';
-import type { TokenUsageRuntimeModelStatisticsRow } from '~/types/tokenUsageStatistics';
+import type { TokenUsageRuntimeModelStatisticsRow } from '~/types/tokenUsageRunStatistics';
 import { createTokenUsageStatisticsFormatter } from './tokenUsageStatisticsUi';
 
-const props = defineProps<{
+defineProps<{
   rows: TokenUsageRuntimeModelStatisticsRow[];
 }>();
 
 const { t: $t } = useLocalization();
 const formatter = createTokenUsageStatisticsFormatter($t);
 
-const chartLabels = computed(() => props.rows.map((row) => `${formatter.formatRuntimeKind(row.runtimeKind)} · ${row.modelDisplayName}`));
-const chartData = computed(() => props.rows.map((row) => row.aggregate.estimatedApiTotalCost));
-const chartTooltipLabels = computed(() => props.rows.map((row) => (
-  formatter.formatCostCell(row.aggregate.estimatedApiTotalCost, row.aggregate.currency, row.aggregate.apiCostStatus)
-)));
-const hasOmittedUnpricedChartCosts = computed(() => chartData.value.some((value) => value === null));
-const chartDatasetLabel = computed(() => $t('settings.components.settings.TokenUsageStatistics.total_cost'));
-const chartXAxisLabel = computed(() => $t('settings.components.settings.TokenUsageStatistics.runtimeModel'));
-const chartCurrency = computed(() => {
-  const currencies = new Set(
-    props.rows
-      .filter((row) => row.aggregate.estimatedApiTotalCost !== null && row.aggregate.currency)
-      .map((row) => row.aggregate.currency as string),
-  );
-  return currencies.size === 1 ? [...currencies][0] : null;
-});
-const chartYAxisLabel = computed(() => chartCurrency.value
-  ? `${chartDatasetLabel.value} (${chartCurrency.value})`
-  : chartDatasetLabel.value);
 </script>

@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.54 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/settings/__tests__/TokenUsageStatistics.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (1 test) 13ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:44:33
+   Duration  6.92s (transform 3.69s, setup 5.90s, collect 307ms, tests 13ms, environment 234ms, prepare 171ms)
+

@@ -1,0 +1,134 @@
+# Implementation Revision Record
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | Architecture reviewer / `design-review-report.md` / initial implementation | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001` | Reviewed analytics design implemented and locally validated; ready for code review. |
+| IR-002 | Code reviewer / `code-review-report.md` / round 1 | F-001, F-002, F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001` | Preserved mixed-run identity, elapsed pace alignment, and exact chart/table/CSV evidence corrected; ready for code-review round 2. |
+| IR-003 | Code reviewer / `code-review-report.md` / round 2 | F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-002` | Cumulative pace quality now follows canonical COMPLETE + LOCAL precedence; ready for code-review round 3. |
+| IR-004 | Code reviewer / `code-review-report.md` / API/E2E failure-origin round | F-004, API-F-001/API-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-004`, `API-REV-001` | Empty no-usage buckets are neutral during known-cost reconciliation without losing null semantics; ready for source re-review. |
+| IR-005 | Code reviewer / `code-review-report.md` / field failure-origin round | F-005 / FIELD-F-001 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-008`, `API-REV-004`, `DR-001`–`DR-002` | Both selected view tabs match the approved transparent blue-underlined prototype and retain semantics/focus; ready for source re-review. |
+| IR-006 | Architecture reviewer / `design-review-report.md` / round 2 | F-006 / FIELD-F-002 | `No Implementation Change` | `SR-002`, `ARCH-REV-002`, `CRR-009`, `API-REV-004` | Mistaken first-run premise is withdrawn; IR-005 code and approved no-backfill/Run-details behavior remain authoritative and ready for source re-review. |
+
+## Revision Entries
+
+### IR-001 — Initial token usage analytics implementation baseline
+
+- Triggering role, report path, and round: Architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-review-report.md`; initial implementation
+- Triggering finding IDs: `N/A`
+- Classification: `Initial Baseline`
+- Prior authoritative result: `N/A`
+- Current authoritative result: persisted daily analytics projection, server GraphQL analytics result, separate Analytics/Run details frontend, exact CSV, clean removal, local checks, and rendered frontend evidence are complete and ready for code review.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `N/A`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: establishes the first complete implementation handoff against the passing reviewed design.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-025`; `AC-001`–`AC-035`
+- Implementation delta: added additive projection schema/coverage, canonical facet projection and atomic write, shared accounting aggregation, analytics range/read/API, generated client operation, Analytics components/store/CSV/localization; split preserved Run details; removed the superseded common/embedded chart.
+- Changed files or areas: `autobyteus-server-ts/prisma`, backend token-usage domain/projections/repositories/services/provider/GraphQL/startup, and `autobyteus-web` token-usage settings/query/store/types/components/localization/generated GraphQL/CSV.
+- Local validation and result: backend and frontend production builds passed; targeted backend 15/15 and frontend 11/11 unit checks passed; boundary/localization guards passed; migrated SQLite/provider narrow check reconciled; desktop/narrow browser rendering and interactions passed without page/console errors after the formatter fix.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: independent API/E2E coverage investigation remains required, especially cross-run SQLite contention, SafeInt extremes, digest/cardinality cases, and full state/render matrix.
+
+### IR-002 — Restore preserved run semantics and exact analytics evidence
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; code-review round 1
+- Triggering finding IDs: `F-001`, `F-002`, `F-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-001` at commit `f5be85b04`; code review `CRR-001` failed with bounded source defects.
+- Current authoritative result: run-specific mixed identity summaries are preserved; pace is plotted by elapsed UTC days with exact point evidence; trend/breakdown tooltips and tables expose quality/captured status/currency/share; local cost has no invented currency; CSV status columns are unambiguous.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the bounded local-fix delta requested by code-review round 1 without changing the approved design.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `BEH-004`, `BEH-005`; `REQ-008`, `REQ-010`, `REQ-012`, `REQ-019`, `REQ-022`–`REQ-025`; `AC-006`, `AC-011`–`AC-012`, `AC-024`, `AC-027`–`AC-031`, `AC-034`
+- Implementation delta: the run aggregate overlays its established distinct-value summary on the shared numeric/cost result; pace series use `{x: elapsedDays, y: cumulative}` points and exact current/prior tables; trend/breakdown evidence is complete; breakdown share is metric/comparability aware; local formatting is currency-safe; CSV exports captured and derived statuses separately.
+- Changed files or areas: backend run aggregate and focused fold regression; frontend pace/trend/breakdown/exact-table components, analytics presentation utility, CSV serializer, localization, and focused component/serializer fixtures/tests.
+- Local validation and result: backend/frontend production builds passed; backend focused tests 18/18; frontend focused tests 16/16; guards/audit passed; elapsed 8-vs-7 bucket endpoints both reconcile to day 213; shorter prior month remains day 28 versus current day 31; development renderer/CSV checks passed without console/page errors.
+- Next recipient or routing: `/code_reviewer` for round 2
+- Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, and the full state/render matrix.
+
+### IR-003 — Align cumulative pace quality with canonical local/no-bill policy
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; code-review round 2
+- Triggering finding IDs: `F-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-002` at commit `ea55b27bd`; code review `CRR-002` verified F-001/F-002 and narrowed F-003 to cumulative quality merging.
+- Current authoritative result: cumulative pace quality applies the canonical provider precedence, so completely priced remote usage plus explicitly local/no-bill usage remains `COMPLETE` and matches `selectedCostQuality` at the endpoint.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the final bounded F-003 policy correction requested by code-review round 2 without changing the approved server contract or design.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-004`; `REQ-012`, `REQ-022`–`REQ-023`; `AC-027`–`AC-029`, `AC-034`
+- Implementation delta: extracted one reusable cumulative merge for server-derived bucket qualities with provider-equivalent precedence; `LOCAL` is non-missing unless all contributions are local, while missing/partial and mixed-currency cases retain their established precedence. Pace points now consume that merged result for quality, currency, and missing dimensions.
+- Changed files or areas: `autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts`; focused pace component regression in `components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts`; implementation handoff/revision artifacts.
+- Local validation and result: frontend production build passed; the full targeted frontend set passed 8 files / 17 tests; the focused rework subset passed 3 files / 6 tests. The added mounted regression proves separate COMPLETE/USD/estimated and LOCAL/null/local-no-bill buckets end as COMPLETE/USD, matching `selectedCostQuality`, while captured status remains `mixed` in exact evidence.
+- Next recipient or routing: `/code_reviewer` for round 3
+- Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, cost-quality combinations, and the full state/render matrix.
+
+### IR-004 — Reconcile sparse known-cost ranges without fabricating empty-bucket cost
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; API/E2E failure-origin review `CRR-004`
+- Triggering finding IDs: `F-004`; `API-F-001` / scenario `API-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-003` at commit `9b8846a12`; source review `CRR-003` passed, then `API-REV-001` failed on sparse daily bucket reconciliation and `CRR-004` confirmed implementation origin.
+- Current authoritative result: empty `NO_USAGE` buckets retain null estimated cost and are neutral during known-cost reconciliation; usage-bearing bucket costs alone reconcile to the range aggregate, and any usage-bearing null cost remains a hard failure.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-004`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the bounded source correction for the reachable ordinary sparse-range failure without weakening null-cost evidence or changing the approved contract.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-004`; `REQ-007`; `AC-010`, `AC-012`
+- Implementation delta: cost reconciliation filters out only buckets whose aggregate has neither reports nor tokens before checking/summing costs; it does not mutate returned buckets or coerce null to zero. The durable API-003 policy regression now explicitly asserts the empty day is `NO_USAGE`/null and succeeds, with a companion strict usage-bearing null-cost rejection case.
+- Changed files or areas: `autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts`; `autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts`; implementation handoff/revision artifacts; cumulative API/E2E and code-review artifacts from the triggering round.
+- Local validation and result: backend production build passed; focused aggregation-policy Vitest passed 1 file / 4 tests after all 24 migrations applied; `git diff --check` passed. This is implementation-scoped validation, not an API/E2E rerun or sign-off.
+- Next recipient or routing: `/code_reviewer` for source re-review; after Pass, API/E2E resumes `API-F-001` / `API-003` first.
+- Remaining limitations or risks: `API-REV-001` remains failed until independent rerun; API-004/API-005/WEB-001–WEB-003 and the associated contention, SafeInt, identity/cardinality, lifecycle, and full rendered-state matrix remain downstream.
+
+### IR-005 — Restore approved Analytics/Run-details selected-tab treatment
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; packaged-field failure-origin review `CRR-008`
+- Triggering finding IDs: `F-005` / `FIELD-F-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-004` at commit `9dc755431`; source/API/E2E/test review later passed through `CRR-007` and delivery reached `DR-002`, then packaged/current-frontend field evidence produced `API-REV-004` Fail and `CRR-008` identified selected-tab prototype drift.
+- Current authoritative result: Analytics and Run details both use the approved transparent active background, blue active text, and blue bottom border; inactive styling, tab roles, `aria-selected`, keyboard focus visibility, Tab traversal, and Enter activation remain correct.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-008`
+- Related API/E2E revision IDs: `API-REV-004`
+- Related delivery revision IDs: `DR-001`, `DR-002`
+- Why this baseline or implementation revision is recorded: records the bounded prototype-fidelity correction for F-005 and the earlier source/visual-review gap without absorbing the independently routed F-006 requirement gap.
+- Approved behavior or requirement IDs affected: `BEH-001`, `REQ-001`; approved `ui-ux-spec.md`, `prototype.html`, and prototype evidence
+- Implementation delta: replaced the dark rounded selected pills with the prototype's transparent border-tab treatment for both buttons, matched the 28px tab gap and lighter divider, retained semantic roles/selection, added explicit button type, and preserved a visible blue focus ring.
+- Changed files or areas: `autobyteus-web/components/settings/TokenUsageStatistics.vue`; focused `components/settings/__tests__/TokenUsageStatistics.spec.ts`; implementation handoff/revision artifacts; four rendered screenshots and computed-style/focus evidence JSON.
+- Local validation and result: focused component Vitest passed 1 file / 1 test; frontend production build passed; compiled renderer inspection passed at 1440×1000 and 390×844 for Analytics and Run details. Both selected states computed transparent / blue-700 / 2px blue-600; keyboard Tab/Enter and `aria-selected` were verified; no viewport overflow or page error occurred.
+- Next recipient or routing: `/code_reviewer` for source re-review. F-006 remains with `/solution_designer`; delivery remains blocked.
+- Remaining limitations or risks: `API-REV-004` remains the latest Fail until both independent workstreams complete and downstream validation resumes. No historical backfill, polling, refresh behavior, or existing-data policy was changed in IR-005.
+
+### IR-006 — Reconcile no-op first-run lifecycle clarification
+
+- Triggering role, report path, and round: Architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-review-report.md`; architecture re-review round 2
+- Triggering finding IDs: `F-006` / `FIELD-F-002`
+- Classification: `No Implementation Change`
+- Prior authoritative result: `IR-005` at commit `0e571644f7d87fb6309add1d83bebee33c138da8`; `CRR-009` passed the bounded F-005 source correction while leaving F-006 upstream, and `API-REV-004` remained the latest executable Fail.
+- Current authoritative result: `SR-002` / `ARCH-REV-002` resolves F-006 as a mistaken-premise requirement gap with no design or implementation impact. The existing IR-005 implementation remains authoritative and is ready to return through source review and then API/E2E revalidation.
+- Related solution revision IDs: `SR-002` (with `SR-001` retained)
+- Related architecture-review revision IDs: `ARCH-REV-002` (with `ARCH-REV-001` retained)
+- Related code-review revision IDs: `CRR-009`
+- Related API/E2E revision IDs: `API-REV-004`
+- Related delivery revision IDs: `DR-001`, `DR-002`
+- Why this baseline or implementation revision is recorded: records the reviewed no-op resolution so downstream reviewers do not infer a missing implementation step or reintroduce the withdrawn lifetime/backfill/refresh proposal.
+- Approved behavior or requirement IDs affected: clarifies `BEH-003`, `REQ-013`–`REQ-018`, and `AC-017`–`AC-023` without changing observable behavior.
+- Implementation delta: none. The initial empty view occurred before any admitted post-coverage contribution; later supported contributions populated the approved daily facet. Pre-coverage lifetime rows remain intentionally excluded from period Analytics and remain available through Run details. No retained-lifetime snapshot/table, dynamic lifetime section, historical backfill, polling, refresh spine, or alternate existing-data policy was added.
+- Changed files or areas: implementation handoff and revision artifacts only for this round; current solution/design/review artifacts record the upstream clarification and passing architecture re-review. No source, test, schema, generated contract, or rendered-frontend file changed.
+- Local validation and result: inspected the implementation tree and confirmed no backend/frontend source delta from IR-005; reconciled the handoff against SR-002, ARCH-REV-002, CRR-009, and API-REV-004; artifact whitespace validation passed. No executable implementation test or render was rerun because this round intentionally changes no implementation behavior.
+- Next recipient or routing: `/code_reviewer` for source re-review of the integrated no-op outcome; after Pass, `/api_e2e_engineer` resumes independent verification with API-REV-004 as the prior result.
+- Remaining limitations or risks: `API-REV-004` remains the latest authoritative executable Fail until downstream revalidation supersedes it. Pre-coverage monthly distribution remains unknowable and must remain labeled unavailable/partial rather than zero; existing cardinality, SafeInt, contention, and cost-quality residuals remain unchanged.

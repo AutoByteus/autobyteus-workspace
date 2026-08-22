@@ -1,0 +1,10 @@
+$ git rev-parse HEAD
+c002654df2562023558ea806a192aa9e0cae29d3
+$ git rev-parse origin/personal
+14c08eeb458ff440123ca53d11192c2cb1a0216c
+$ git merge-base HEAD origin/personal
+14c08eeb458ff440123ca53d11192c2cb1a0216c
+$ git rev-list --left-right --count HEAD...origin/personal
+10	0
+$ git branch --show-current
+codex/token-statistics-analytics
