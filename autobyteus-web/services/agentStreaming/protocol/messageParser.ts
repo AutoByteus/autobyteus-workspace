@@ -36,6 +36,11 @@ const validOptionalBoolean = (payload: Record<string, unknown>, key: string): bo
   !hasOwn(payload, key) || typeof payload[key] === 'boolean';
 const validOptionalNullableString = (payload: Record<string, unknown>, key: string): boolean =>
   !hasOwn(payload, key) || payload[key] === null || typeof payload[key] === 'string';
+const validOptionalProviderStatus = (payload: Record<string, unknown>): boolean =>
+  !hasOwn(payload, 'provider_status')
+  || payload.provider_status === null
+  || (typeof payload.provider_status === 'number' && Number.isFinite(payload.provider_status))
+  || (typeof payload.provider_status === 'string' && payload.provider_status.trim().length > 0);
 
 const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   if (!isRecord(payload)) throw new Error(`${type} payload must be an object`);
@@ -67,8 +72,12 @@ const validateCanonicalBoundary = (type: string, payload: unknown): void => {
       throw new Error('Invalid canonical SEGMENT_END payload');
     }
   } else if (type === 'ERROR') {
-    if (!exactKeys(payload, ['code', 'message', 'error_scope', 'error_effect', 'turn_id']) ||
-      !nonEmpty(payload.code) || typeof payload.message !== 'string' ||
+    if (!exactKeys(payload, ['code', 'message', 'details', 'provider_status', 'provider_code', 'provider_request_id', 'error_scope', 'error_effect', 'turn_id']) ||
+      !nonEmpty(payload.code) || !nonEmpty(payload.message) ||
+      !validOptionalNullableString(payload, 'details') ||
+      !validOptionalProviderStatus(payload) ||
+      !validOptionalNullableString(payload, 'provider_code') ||
+      !validOptionalNullableString(payload, 'provider_request_id') ||
       !(payload.turn_id === null || nonEmpty(payload.turn_id)) ||
       !(
         (payload.error_scope === null && payload.error_effect === null && payload.turn_id === null) ||

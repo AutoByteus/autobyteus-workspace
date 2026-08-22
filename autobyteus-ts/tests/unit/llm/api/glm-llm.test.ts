@@ -19,9 +19,9 @@ vi.mock('openai', () => {
 });
 
 const buildModel = () => new LLMModel({
-  name: 'glm-5.2',
-  value: 'glm-5.2',
-  canonicalName: 'glm-5.2',
+  name: 'glm-5.3',
+  value: 'glm-5.3',
+  canonicalName: 'glm-5.3',
   provider: LLMProvider.GLM,
 });
 
@@ -44,7 +44,7 @@ describe('GlmLLM', () => {
     });
   });
 
-  it('defaults to glm-5.2', async () => {
+  it('defaults to glm-5.3', async () => {
     const llm = new GlmLLM();
 
     await llm.sendMessages([
@@ -54,7 +54,7 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2'
+      model: 'glm-5.3'
     });
   });
 
@@ -73,7 +73,7 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2',
+      model: 'glm-5.3',
       thinking: { type: 'enabled' },
       reasoning_effort: 'max'
     });
@@ -95,11 +95,12 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2',
-      thinking: { type: 'disabled' }
+      model: 'glm-5.3',
+      thinking: { type: 'enabled' },
+      reasoning_effort: 'max'
     });
     expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('thinking_type');
-    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('reasoning_effort');
+    expect(mockCreate.mock.calls[0]?.[0]).toHaveProperty('reasoning_effort', 'max');
   });
 
 
@@ -120,7 +121,7 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2',
+      model: 'glm-5.3',
       thinking: { type: 'enabled' },
       reasoning_effort: 'max'
     });
@@ -144,11 +145,12 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2',
-      thinking: { type: 'disabled' }
+      model: 'glm-5.3',
+      thinking: { type: 'enabled' },
+      reasoning_effort: 'max'
     });
     expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('thinking_type');
-    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('reasoning_effort');
+    expect(mockCreate.mock.calls[0]?.[0]).toHaveProperty('reasoning_effort', 'max');
   });
 
 
@@ -173,10 +175,11 @@ describe('GlmLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'glm-5.2',
-      thinking: { type: 'disabled' }
+      model: 'glm-5.3',
+      thinking: { type: 'enabled' },
+      reasoning_effort: 'max'
     });
     expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('thinking_type');
-    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('reasoning_effort');
+    expect(mockCreate.mock.calls[0]?.[0]).toHaveProperty('reasoning_effort', 'max');
   });
 });

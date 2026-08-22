@@ -43,6 +43,10 @@ export type ResolvedTokenPricingPolicy = {
   effective_from: string | null;
   effective_to: string | null;
   version: string | null;
+  pricing_schedule_id: string | null;
+  pricing_schedule_period_id: string | null;
+  pricing_schedule_effective_from: string | null;
+  pricing_schedule_timezone: string | null;
 };
 
 export type SelectedTokenPricingPolicy = ResolvedTokenPricingPolicy & {

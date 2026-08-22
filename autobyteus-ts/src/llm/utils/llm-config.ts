@@ -2,6 +2,8 @@
  * LLM Configuration classes.
  */
 
+import type { TokenPricingSchedule } from './token-pricing-schedule.js';
+
 export interface TokenPricingConfigData {
   input_token_pricing?: number;
   output_token_pricing?: number;
@@ -13,6 +15,7 @@ export interface TokenPricingConfigData {
   pricing_source?: string;
   pricing_effective_date?: string;
   input_token_pricing_tiers?: TokenPricingTierData[];
+  pricing_schedule?: TokenPricingSchedule;
 }
 
 export interface TokenPricingConfigInput {
@@ -26,6 +29,7 @@ export interface TokenPricingConfigInput {
   pricingSource?: string;
   pricingEffectiveDate?: string;
   inputTokenPricingTiers?: TokenPricingTierInput[];
+  pricingSchedule?: TokenPricingSchedule;
 }
 
 export interface TokenPricingTierData {
@@ -116,6 +120,7 @@ export class TokenPricingConfig {
   public pricingSource: string | null;
   public pricingEffectiveDate: string | null;
   public inputTokenPricingTiers: TokenPricingTierInput[];
+  public pricingSchedule: TokenPricingSchedule | null;
 
   constructor(data: TokenPricingConfigInput = {}) {
     this.inputTokenPricingTrusted = hasOwn(data, 'inputTokenPricing');
@@ -143,6 +148,7 @@ export class TokenPricingConfig {
     this.pricingSource = data.pricingSource?.trim() || null;
     this.pricingEffectiveDate = data.pricingEffectiveDate?.trim() || null;
     this.inputTokenPricingTiers = (data.inputTokenPricingTiers ?? []).map(normalizeTierInput);
+    this.pricingSchedule = data.pricingSchedule ?? null;
   }
 
   get hasTrustedPricing(): boolean {
@@ -185,6 +191,9 @@ export class TokenPricingConfig {
         .filter((tier): tier is TokenPricingTierData => Boolean(tier) && typeof tier === 'object' && !Array.isArray(tier))
         .map(normalizeTierInput);
     }
+    if (data.pricing_schedule && typeof data.pricing_schedule === 'object') {
+      input.pricingSchedule = data.pricing_schedule as TokenPricingConfigInput['pricingSchedule'];
+    }
     return new TokenPricingConfig(input);
   }
 
@@ -214,6 +223,7 @@ export class TokenPricingConfig {
     if (this.inputTokenPricingTiers.length > 0) {
       data.input_token_pricing_tiers = this.inputTokenPricingTiers.map(tierToDict);
     }
+    if (this.pricingSchedule) data.pricing_schedule = this.pricingSchedule;
     return data;
   }
 
@@ -236,6 +246,7 @@ export class TokenPricingConfig {
     this.pricingSource = override.pricingSource;
     this.pricingEffectiveDate = override.pricingEffectiveDate;
     this.inputTokenPricingTiers = override.inputTokenPricingTiers.map((tier) => ({ ...tier }));
+    this.pricingSchedule = override.pricingSchedule;
   }
 }
 

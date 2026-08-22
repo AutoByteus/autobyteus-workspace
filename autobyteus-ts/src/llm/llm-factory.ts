@@ -19,61 +19,13 @@ import {
 } from './openai-compatible-endpoint-provider.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
+import { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
+import type { ModelPricingInfo, ModelPricingTierInfo, PricingStatus } from './model-pricing-types.js';
+
+export type { ModelPricingInfo, ModelPricingTierInfo, PricingStatus } from './model-pricing-types.js';
+export { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 
 export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
-
-export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
-
-export type ModelPricingTierInfo = {
-  tier_id: string | null;
-  max_input_tokens: number | null;
-  input_price_per_million: number | null;
-  output_price_per_million: number | null;
-  cached_input_read_price_per_million: number | null;
-  cached_input_write_price_per_million: number | null;
-  cached_input_write_5m_price_per_million: number | null;
-  cached_input_write_1h_price_per_million: number | null;
-  trusted_dimensions: {
-    input: boolean;
-    output: boolean;
-    cached_input_read: boolean;
-    cached_input_write: boolean;
-    cached_input_write_5m: boolean;
-    cached_input_write_1h: boolean;
-  };
-};
-
-export type ModelPricingInfo = {
-  model_identifier: string | null;
-  model_value: string | null;
-  canonical_name: string | null;
-  model_provider: string | null;
-  pricing_status: PricingStatus;
-  pricing_source: 'autobyteus_model_catalog' | string | null;
-  price_config_id: string | null;
-  currency: string | null;
-  input_price_per_million: number | null;
-  output_price_per_million: number | null;
-  cached_input_read_price_per_million: number | null;
-  cached_input_write_price_per_million: number | null;
-  cached_input_write_5m_price_per_million: number | null;
-  cached_input_write_1h_price_per_million: number | null;
-  input_price_tiers: ModelPricingTierInfo[];
-  trusted_dimensions: {
-    input: boolean;
-    output: boolean;
-    cached_input_read: boolean;
-    cached_input_write: boolean;
-    cached_input_write_5m: boolean;
-    cached_input_write_1h: boolean;
-  };
-  missing_reason?:
-    | 'model_not_found'
-    | 'pricing_config_absent'
-    | 'constructor_default_zero'
-    | 'placeholder_price'
-    | 'dimension_missing';
-};
 
 export type ModelPricingLookupInput = {
   modelIdentifier?: string | null;
@@ -295,6 +247,15 @@ export class LLMFactory {
     throw new Error(`Model with identifier '${modelIdentifier}' not found.`);
   }
 
+  /** Exact membership guard for persisted/direct AutoByteus catalog selections. */
+  static async requireCurrentModelIdentifier(modelIdentifier: string): Promise<void> {
+    await LLMFactory.ensureInitialized();
+    const normalized = typeof modelIdentifier === 'string' ? modelIdentifier.trim() : '';
+    if (!normalized || !LLMFactory.modelsByIdentifier.has(normalized)) {
+      throw new CurrentModelSelectionRequiredError(normalized || String(modelIdentifier));
+    }
+  }
+
   static async listAvailableModels(): Promise<ModelInfo[]> {
     await LLMFactory.ensureInitialized();
     const models = Array.from(LLMFactory.modelsByIdentifier.values()).sort((a, b) =>
@@ -376,6 +337,7 @@ export class LLMFactory {
         cached_input_write_5m_price_per_million: null,
         cached_input_write_1h_price_per_million: null,
         input_price_tiers: [],
+        pricing_schedule: null,
         trusted_dimensions: {
           input: false,
           output: false,
@@ -446,6 +408,7 @@ export class LLMFactory {
         ? pricingConfig.cachedInputWrite1hTokenPricing
         : null,
       input_price_tiers: status === 'trusted' ? tierInfos : [],
+      pricing_schedule: pricingConfig.pricingSchedule,
       trusted_dimensions: {
         input: inputTrusted,
         output: outputTrusted,
@@ -478,6 +441,7 @@ export class LLMFactory {
       cached_input_write_5m_price_per_million: null,
       cached_input_write_1h_price_per_million: null,
       input_price_tiers: [],
+      pricing_schedule: null,
       trusted_dimensions: {
         input: false,
         output: false,

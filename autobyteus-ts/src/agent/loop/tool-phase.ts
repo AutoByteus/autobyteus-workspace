@@ -108,7 +108,7 @@ export class ToolPhase {
         turn_id: activeTurnId
       });
       notifier?.notifyAgentErrorOutputGeneration({
-        source: `ToolExecution.ToolNotFound.${toolName}`,
+        code: `ToolExecution.ToolNotFound.${toolName}`,
         message: errorMessage,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
       });
@@ -199,7 +199,7 @@ export class ToolPhase {
         turn_id: activeTurnId
       });
       notifier?.notifyAgentErrorOutputGeneration({
-        source: `ToolExecution.Exception.${toolName}`,
+        code: `ToolExecution.Exception.${toolName}`,
         message: errorMessage,
         details: errorDetails,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
@@ -238,7 +238,7 @@ export class ToolPhase {
         turn_id: toolInvocation.turnId ?? turn.turnId
       });
       notifier?.notifyAgentErrorOutputGeneration({
-        source: `ToolExecution.Prepare.${toolInvocation.name}`,
+        code: `ToolExecution.Prepare.${toolInvocation.name}`,
         message: errorMessage,
         details: errorDetails,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: toolInvocation.turnId ?? turn.turnId }
@@ -317,7 +317,7 @@ export class ToolPhase {
     });
     if (message.error) {
       notifier?.notifyAgentErrorOutputGeneration({
-        source: `ToolExecution.ExternalResult.${toolName}`,
+        code: `ToolExecution.ExternalResult.${toolName}`,
         message: message.error,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: message.turnId ?? turn.turnId }
       });

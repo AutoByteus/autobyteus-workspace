@@ -64,11 +64,12 @@ describe("ApplicationAgentStreamEventProjector", () => {
     [AgentRunEventType.TURN_STARTED, { type: "TURN_STARTED" }],
     [AgentRunEventType.TURN_COMPLETED, { type: "TURN_COMPLETED" }],
     [AgentRunEventType.TURN_INTERRUPTED, { type: "TURN_INTERRUPTED" }],
-    [AgentRunEventType.ERROR, { type: "ERROR", message: "The agent response failed." }],
+    [AgentRunEventType.ERROR, { type: "ERROR", message: "provider-error-message" }],
   ])("projects %s to its exact closed event", (eventType, expected) => {
     const actual = projector.project(event(eventType, {
       turnId: "provider-turn-secret",
       reason: "provider-reason-secret",
+      message: "provider-error-message",
       error: { message: "provider-error-secret", stack: "stack-secret" },
     }));
     expect(actual).toEqual(expected);

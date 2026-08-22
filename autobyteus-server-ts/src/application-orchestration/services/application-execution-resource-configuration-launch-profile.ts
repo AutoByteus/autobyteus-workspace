@@ -17,6 +17,7 @@ import type {
 import type { TeamLeafAgentMember } from "../../agent-team-execution/services/team-definition-traversal-service.js";
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { LegacyApplicationConfiguredLaunchDefaults } from "../stores/application-execution-resource-configuration-store.js";
+import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 
 const AGENT_LAUNCH_PROFILE_KEYS = new Set(["kind", "llmModelIdentifier", "runtimeKind", "workspaceRootPath"]);
 const TEAM_LAUNCH_PROFILE_KEYS = new Set(["kind", "defaults", "memberProfiles"]);
@@ -33,6 +34,14 @@ export class LaunchProfileValidationError extends Error {
     this.name = "LaunchProfileValidationError";
   }
 }
+
+export type EffectiveRuntimeModelSelection = Readonly<{
+  runtimeKind: RuntimeKind;
+  llmModelIdentifier: string;
+}>;
+
+export const normalizeEffectiveRuntimeKind = (value: unknown): RuntimeKind =>
+  runtimeKindFromString(value, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS;
 
 const normalizeOptionalString = (value: unknown): string | null => {
   if (typeof value !== "string") {
@@ -412,6 +421,31 @@ export const normalizeConfiguredLaunchProfile = (input: {
     );
   }
   return normalizeTeamLaunchProfile(input.slot, input.launchProfile, input.currentTeamMembers);
+};
+
+export const expandEffectiveRuntimeModelSelections = (
+  launchProfile: ApplicationConfiguredLaunchProfile,
+): EffectiveRuntimeModelSelection[] => {
+  if (launchProfile.kind === "AGENT") {
+    const model = normalizeOptionalString(launchProfile.llmModelIdentifier);
+    return model
+      ? [{
+          runtimeKind: normalizeEffectiveRuntimeKind(launchProfile.runtimeKind),
+          llmModelIdentifier: model,
+        }]
+      : [];
+  }
+
+  const defaultModel = normalizeOptionalString(launchProfile.defaults?.llmModelIdentifier);
+  const defaultRuntime = launchProfile.defaults?.runtimeKind;
+  return launchProfile.memberProfiles.flatMap((member) => {
+    const model = normalizeOptionalString(member.llmModelIdentifier) ?? defaultModel;
+    if (!model) return [];
+    return [{
+      runtimeKind: normalizeEffectiveRuntimeKind(member.runtimeKind ?? defaultRuntime),
+      llmModelIdentifier: model,
+    }];
+  });
 };
 
 export const buildLegacyLaunchProfile = (input: {

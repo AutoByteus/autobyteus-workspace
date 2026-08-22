@@ -19,7 +19,6 @@ import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-reso
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
-  minimal: 0,
   low: 1024,
   medium: 4096,
   high: 16384
@@ -71,7 +70,7 @@ export class GeminiLLM extends BaseLLM {
 
   private buildGenerationConfig(tools?: Array<Record<string, unknown>>): Record<string, unknown> {
     const extraParams = { ...(this.config.extraParams ?? {}) };
-    const thinkingLevel = extraParams.thinking_level ?? 'minimal';
+    const thinkingLevel = extraParams.thinking_level ?? 'medium';
     const includeThoughts = Boolean(extraParams.include_thoughts ?? false);
     delete extraParams.thinking_level;
     delete extraParams.include_thoughts;

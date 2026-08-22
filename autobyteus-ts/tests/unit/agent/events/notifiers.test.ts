@@ -88,7 +88,7 @@ describe('AgentExternalEventNotifier', () => {
     });
 
     notifier.notifyAgentErrorOutputGeneration({
-      source: 'ToolPhase',
+      code: 'TOOL_PHASE_ERROR',
       message: 'recoverable',
       details: 'detail',
       classification: {
@@ -99,7 +99,7 @@ describe('AgentExternalEventNotifier', () => {
     });
 
     expect(receivedPayload).toEqual({
-      source: 'ToolPhase',
+      code: 'TOOL_PHASE_ERROR',
       message: 'recoverable',
       details: 'detail',
       error_scope: 'turn',

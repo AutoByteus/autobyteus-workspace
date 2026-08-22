@@ -22,9 +22,9 @@ const tools = [
 ];
 
 const buildModel = () => new LLMModel({
-  name: 'grok-4.5',
-  value: 'grok-4.5',
-  canonicalName: 'grok-4.5',
+  name: 'grok-4.6',
+  value: 'grok-4.6',
+  canonicalName: 'grok-4.6',
   provider: LLMProvider.GROK,
 });
 
@@ -94,7 +94,7 @@ describe('GrokLLM request policy', () => {
 
     for (const payload of [...syncPayloads, ...streamPayloads]) {
       expect(payload).toMatchObject({
-        model: 'grok-4.5',
+        model: 'grok-4.6',
         temperature: 0,
         reasoning_effort: 'low',
         tools,

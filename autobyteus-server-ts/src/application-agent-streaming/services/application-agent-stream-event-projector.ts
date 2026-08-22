@@ -17,10 +17,11 @@ export class ApplicationAgentStreamEventProjector {
         return { type: "TURN_COMPLETED" };
       case AgentRunEventType.TURN_INTERRUPTED:
         return { type: "TURN_INTERRUPTED" };
-      case AgentRunEventType.ERROR:
-        return this.isDiagnostic(resolveAgentRunErrorEvidence(event)?.kind)
-          ? null
-          : { type: "ERROR", message: "The agent response failed." };
+      case AgentRunEventType.ERROR: {
+        if (this.isDiagnostic(resolveAgentRunErrorEvidence(event)?.kind)) return null;
+        const message = this.requiredErrorMessage(event.payload.message);
+        return { type: "ERROR", message };
+      }
       default:
         return null;
     }
@@ -34,9 +35,10 @@ export class ApplicationAgentStreamEventProjector {
         : null;
       case "TURN_COMPLETED": return { type: "TURN_COMPLETED" };
       case "TURN_INTERRUPTED": return { type: "TURN_INTERRUPTED" };
-      case "ERROR": return event.details.errorEffect === "diagnostic"
-        ? null
-        : { type: "ERROR", message: "The agent response failed." };
+      case "ERROR": {
+        if (event.details.errorEffect === "diagnostic") return null;
+        return { type: "ERROR", message: this.requiredErrorMessage(event.details.message) };
+      }
       default: return null;
     }
   }
@@ -52,5 +54,10 @@ export class ApplicationAgentStreamEventProjector {
 
   private isDiagnostic(kind: string | undefined): boolean {
     return kind === "TURN_DIAGNOSTIC";
+  }
+
+  private requiredErrorMessage(value: unknown): string {
+    if (typeof value === "string" && value.trim()) return value;
+    throw new ApplicationAgentStreamProjectionError("Invalid error message.");
   }
 }

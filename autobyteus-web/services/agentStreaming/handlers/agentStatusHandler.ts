@@ -125,7 +125,15 @@ export function handleError(
 ): RecentEventMonitorEffect {
   if (payload.error_effect === 'diagnostic') {
     const aiMessage = findOrCreateAIMessage(context);
-    aiMessage.segments.push({ type: 'error', source: payload.code, message: payload.message });
+    aiMessage.segments.push({
+      type: 'error',
+      code: payload.code,
+      message: payload.message,
+      ...(payload.details !== undefined ? { details: payload.details } : {}),
+      ...(payload.provider_status !== undefined ? { providerStatus: payload.provider_status } : {}),
+      ...(payload.provider_code !== undefined ? { providerCode: payload.provider_code } : {}),
+      ...(payload.provider_request_id !== undefined ? { providerRequestId: payload.provider_request_id } : {}),
+    });
     return 'STRUCTURAL';
   }
   const toolErrorInfo = parseToolExecutionError(payload.message);
@@ -140,8 +148,12 @@ export function handleError(
 
   const errorSegment: ErrorSegment = {
     type: 'error',
-    source: payload.code,
+    code: payload.code,
     message: payload.message,
+    ...(payload.details !== undefined ? { details: payload.details } : {}),
+    ...(payload.provider_status !== undefined ? { providerStatus: payload.provider_status } : {}),
+    ...(payload.provider_code !== undefined ? { providerCode: payload.provider_code } : {}),
+    ...(payload.provider_request_id !== undefined ? { providerRequestId: payload.provider_request_id } : {}),
   };
 
   aiMessage.segments.push(errorSegment);
