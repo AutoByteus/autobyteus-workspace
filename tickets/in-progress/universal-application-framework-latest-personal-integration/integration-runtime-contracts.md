@@ -1,0 +1,453 @@
+# Integration Runtime Contracts — Latest Personal + Universal Application Framework
+
+## Status And Authority
+
+- Status: Design-ready supplement for `SR-002`.
+- Purpose: Close `AR-001`–`AR-003` with the exact host lifecycle allocation, run activation/provisioning contract, construction obligations, file dispositions, and launch-override direct-use proof required for implementation.
+- Related behavior and requirements: BEH-003–BEH-004; REQ-004–REQ-006; AC-005–AC-010.
+- Scope: Internal integration behavior only. This supplement does not add a host, route, migration, compatibility path, or product workflow.
+- Governing rule: latest Personal owns evolved process/data/provider/run/team semantics; the finalized feature owns the dual-host boundary, shared application lifecycle, scoped publication/session behavior, and launch baseline/override/readiness model.
+
+## 1. Exact Process And Application Lifecycle Allocation
+
+### 1.1 Ownership rule
+
+The two host starters remain explicit process coordinators:
+
+- `server-runtime.ts` owns Studio process prerequisites, listener start, Studio-only process transports/background work, fatal-code translation, and signal-driven close.
+- `start-standalone-application-host.ts` owns standalone configuration/package validation, its isolated data root, process prerequisites, listener start, returned close handle, and thrown startup errors.
+- `ApplicationPlatformLifecycle` owns only the application-shared readiness, recovery, and ordered application shutdown phases listed below.
+- `buildStudioServer.ts` and `build-standalone-application-server.ts` assemble Fastify/routes/hooks. They do not run database migrations, register required tool groups, bootstrap definitions, recover applications, or start business runs.
+
+There is no `buildServer(mode)`, generic process lifecycle, or second copy of any readiness phase. Small existing low-level functions may remain shared, but the two host starters keep their different failure surfaces explicit.
+
+### 1.2 Ordered phase allocation
+
+`A` means awaited before advancing. `S` means synchronous. `BG` means scheduled without delaying readiness. A fatal Studio failure is translated through `exitWithEmbeddedServerPlatformFatal`; the same standalone failure closes every resource already opened and rejects `startStandaloneApplicationHost`.
+
+| Order | Current Personal / feature phase | Target owner and file | Studio | Standalone | Await / background | Failure, unwind, and cleanup policy |
+| ---: | --- | --- | --- | --- | --- | --- |
+| 0 | Resolve host input | `server-runtime.ts` consumes configured host/port; `start-standalone-application-host.ts` resolves and materializes the selected package/data-root config | Yes | Yes | S/A | Invalid standalone package/config rejects before DB/runtime construction. Studio configuration errors use the existing embedded fatal surface. |
+| 1 | Runtime logging bootstrap and application logger | Each host starter | Yes | Yes | S | Studio: `RUNTIME_LOGGING_INITIALIZATION_FAILED`. Standalone: reject. No later resource exists yet. |
+| 2 | Core operational DB migrations | Each host starter via current `runMigrations` | Yes | Yes | S | Studio: `DATABASE_MIGRATION_FAILED`. Standalone: reject. |
+| 3 | Protect DB, root key, WAL, SHM, and journal from file tools | Each host starter via current `configureFileToolDeniedPaths` | Yes | Yes | S, before Prisma | This ordering is mandatory. Failure uses the host startup failure surface. |
+| 4 | Prisma initialize | Each host starter | Yes | Yes | A | Studio: `APPLICATION_DATABASE_INITIALIZATION_FAILED`. Standalone: close Prisma if initialization began, then reject. |
+| 5 | Assert current token-usage schema; initialize readiness as current-schema/degraded-not-run | Each host starter via `assertTokenUsageCurrentSchema` and `configureTokenUsageMigrationReadiness` | Yes | Yes | A | Failure sets `CRITICAL_CURRENT_SCHEMA_FAILURE`; Studio emits `TOKEN_USAGE_CURRENT_SCHEMA_INVALID`; standalone unwinds and rejects. |
+| 6 | Secret vault initialize | Each host starter | Yes | Yes | A | Studio: `SECRET_VAULT_INITIALIZATION_FAILED`. Standalone: close vault then Prisma. |
+| 7 | Run current required app-data migrations once | Each host starter via current `AppDataMigrationRunner.runPending` | Yes | Yes | A | One status list feeds phases 8–10. Runner exceptions are fatal. No second standalone-only migration pass. |
+| 8 | Set token-usage migration readiness | Each host starter from `TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID` result | Yes | Yes | S after 7 | Success/warnings -> `READY`; otherwise `CURRENT_SCHEMA_DEGRADED` with status/log. Degraded migration is nonfatal because phase 5 proved the usable current schema. |
+| 9 | Rebuild TeamRun V1 package catalog and apply strict admission warning | Each host starter via current `TeamRunV1PackageCatalog` | Yes | Yes | A | Catalog rebuild exception is fatal. A migration result other than clean `SUCCEEDED` logs the current warning and continues under strict current-package admission. |
+| 10 | Enforce readable-provider migration gate | Each host starter from `CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID` result | Yes | Yes | S after 7–9 | Only `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` passes. Studio: `APP_DATA_STARTUP_GATE_FAILED`; standalone unwinds and rejects. Earlier required migration failures remain represented through the current runner/prerequisite chain; no new blanket policy is invented. |
+| 11 | Reset default run-event pipeline | Standalone host starter only, before process/application run owners | No | Yes | A | Reject and unwind repository resources on failure. Studio retains its normal process pipeline lifecycle. |
+| 12 | Construct process Agent Tools runtime and named general-process run supervisor | `buildStudioServer.ts` for Studio; standalone starter before application platform construction | Yes | Yes | S | Construction failure closes whichever process owner exists, then repository resources. General-process defaults are permitted only inside the named general-process assembly. |
+| 13 | Construct package/catalog/definition/application services and Fastify routes | Explicit host builder | Yes | Yes | A | Studio constructs package registry/commands/catalog refresh/definitions/application platform, Fastify logging/access policy, internal Agent Tools, external Studio MCP gateway, CORS, multipart limits, WebSocket, remote-access policy, mobile static, REST, WebSocket, and GraphQL. Standalone constructs selected definitions/platform plus Fastify logging/access policy, WebSocket, selected-app REST/realtime, internal Agent Tools, and selected static routes; it has no CORS/multipart/mobile/GraphQL/external gateway unless already part of the approved standalone inventory (they are not). Failure closes Fastify if built, then application and process resources. |
+| 14 | Prepare workspace runtime: load workspaces, then ensure temp workspace | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A, ordered | Fatal application readiness failure. This removes Personal's post-listen temp-workspace duplicate and the background workspace loader. |
+| 15 | Load agent customizations | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after 14 | Fatal. Removed from Studio background tasks. |
+| 16 | Register exactly seven required tool groups once: Skills, Browser, Task Delegation, Agent Communication, Published Artifact, Media, Search | `AgentToolRegistryReadiness` called by `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after vault and customization | Any missing module/export/registration fails readiness with aggregate diagnostics. Search receives the prepared vault-backed provisioning dependency. Remove hidden `buildApp()` Search registration and background `loadAllAgentTools`. |
+| 17 | Assert application-scoped Agent Tools session runtime ready | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | S after 16 | Fatal. Does not expose Studio `/mcp/gateway` to standalone. |
+| 18 | Materialize bundle catalog and validate selected application(s) | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A | Studio accepts catalog diagnostics per application; standalone selected-package absence/diagnostic is fatal. |
+| 19 | Bootstrap built-in agents | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A after catalog | Fatal. Remove Personal's pre-builder duplicate. |
+| 20 | Prepare current agent/team definition runtime and calculate ready/quarantined application set | `ApplicationPlatformLifecycle.prepareBeforeListen` | Yes | Yes | A | Fatal for lifecycle construction; per-application definition diagnostics quarantine the affected application as already designed. No business run is started. |
+| 21 | Enter `waiting_for_listener` and call Fastify `listen` | Lifecycle then host starter | Yes | Yes | A | Listen failure closes Fastify, application lifecycle, process owners, vault, and Prisma. Studio reports `HTTP_SERVER_INITIALIZATION_FAILED`; standalone rejects. |
+| 22 | Start process transports | Studio starter: channel output and gateway callback runtimes | Yes | No | S immediately after listen | A thrown start failure is a startup failure and runs full close. These transports are not application lifecycle concerns and are not started by standalone. |
+| 23 | Derive internal base URL | Each host starter | Yes | Yes | S/A before application recovery | Studio retains Personal's best-effort log/delete-env behavior. Standalone treats failure as fatal because same-origin application Agent Tools descriptors require the selected listener address. |
+| 24 | Restore managed messaging gateway if enabled | Studio starter | Yes | No | A, best effort | Error is logged and startup continues, matching Personal. This is separate from application team messaging and standalone MCP. |
+| 25 | Startup gate, known-app lookup, binding recovery, availability reconciliation/quarantine, per-ready-app pending-event recovery | `ApplicationPlatformLifecycle.recoverAfterListen` | Yes | Yes | A, ordered | Fatal recovery failure closes the listening server and all application/process/repository resources. Standalone filters to its selected application; Studio covers its catalog. |
+| 26 | Enter application lifecycle `ready` | `ApplicationPlatformLifecycle` | Yes | Yes | S | Only now may REST/realtime business launch boundaries report ready. Construction and readiness create no agent/team business run. |
+| 27 | Schedule noncritical process background work | Studio `scheduleStudioBackgroundTasks`: cache preload, external MCP registration, memory-sync worker | Yes | No | BG after ready | Module/load/run errors are logged and never change ready state. Workspaces, customizations, required Agent Tools, and Search are absent from this background list because phases 14–16 own them. |
+
+### 1.3 Ordered host spines
+
+Studio:
+
+```text
+logging -> core migration -> protected paths -> Prisma -> token schema -> vault
+-> app-data statuses -> token readiness -> TeamRun catalog -> readable-provider gate
+-> process MCP/general-run owners -> Studio/application assembly -> application prepare
+-> listen -> channel/gateway transports -> internal URL -> managed messaging
+-> application recovery -> READY -> Studio-only background scheduling
+```
+
+Standalone:
+
+```text
+resolve/validate package -> materialize isolated root -> logging -> core migration
+-> protected paths -> Prisma -> token schema -> vault -> app-data statuses
+-> token readiness -> TeamRun catalog -> readable-provider gate -> reset run pipeline
+-> process MCP/general-run owners -> selected application assembly -> application prepare
+-> listen -> internal URL -> selected application recovery -> READY
+```
+
+### 1.4 Stop and startup-unwind order
+
+Fastify `onClose` first awaits the shared application lifecycle in both hosts:
+
+```text
+block new application MCP sessions
+-> stop application event dispatch
+-> close application agent communication
+-> close backend gateway and backend WebSocket sessions
+-> close notification clients
+-> stop artifact intake and await delivery drain
+-> detach run observers
+-> stop application workers
+-> stop team runs, then residual agent runs
+-> close application-scoped MCP sessions
+-> stop application streaming
+```
+
+After that, Studio closes process owners in this order:
+
+```text
+memory-sync worker -> general-process run supervisor -> process Agent Tools MCP runtime
+-> channel output runtime -> gateway callback runtime -> managed messaging
+-> default run-event pipeline -> secret vault -> Prisma
+```
+
+Standalone closes:
+
+```text
+general-process run supervisor -> process Agent Tools MCP runtime
+-> default run-event pipeline -> secret vault -> Prisma
+```
+
+Every close path is idempotent. Each stage runs in `finally`/aggregate-error style so a failure does not skip later cleanup. A startup failure uses the same reverse ownership order for only the resources whose construction began. Studio converts the final failure to its existing fatal code; standalone rejects its start call. Signal handling calls `app.close()` once and exits `0` only after a clean close, otherwise `1`.
+
+## 2. Current Activation, Provisioning, And Scoped-Resource Contract
+
+### 2.1 Target construction DAG
+
+```text
+current application definition/workspace/history stores
+  -> ApplicationAgentToolMcpSessionScope (early ownership/revocation index)
+  -> application run-file, artifact-relay, and memory observers
+  -> AgentRunResourceManager
+  -> AgentRunActivationRegistry
+  -> PublishedArtifactPublicationService(active lookup = exact registry, awaited pipeline)
+  -> ScopedAgentToolMcpSessionManager(scope + exact publisher)
+  -> current Codex/Claude/AutoByteus bootstrappers and backend factories
+  -> current AgentRunManager(registry + resource manager + exact factories)
+  -> AgentRunProvisioningService + StandaloneAgentRunActivationService
+  -> AgentRunService
+  -> current MixedTeamRunBackendFactory/current registries/current handles
+  -> AgentTeamRunManager -> application launch/orchestration/engine/projections
+```
+
+`ApplicationAgentToolMcpSessionScope` is constructed early because it only records and revokes application-owned session identities. It does not dispatch tools or publish artifacts. This breaks the construction cycle without a late-binding proxy. Session creation and route dispatch still use the same process `AgentToolsMcpRuntime`; application sessions select the application publisher and record ownership in this scope.
+
+### 2.2 Exact activation owner split
+
+| Concern | Exact target owner | Contract |
+| --- | --- | --- |
+| Durable PREPARED row, TTL, identity allocation, stale-prepared cleanup | Current `AgentRunProvisioningService` | Validate input -> allocate `runId` -> build current `AgentRunConfig` including application context -> write prepared metadata before activation. Application construction supplies manager, metadata/history, workspace, allocator explicitly. |
+| Deduplicated activation/restore attempts and durable metadata commit | Current `StandaloneAgentRunActivationService` | Preserve attempt map/quarantine map, token readiness, provider identity checks, metadata-before-publication, retryable unchanged-prepared outcome, indeterminate-commit quarantine, and publication-failure abort. Application construction supplies all dependencies explicitly. |
+| Public private-candidate handle | Current `AgentRunActivationCandidate` | Remains the only pre-publication handle; exposes identity plus `commitPublication()`/idempotent `abort()`, never raw run/input/backend. States remain `PREPARED -> PUBLISHED` or `PREPARED -> ABORTING -> ABORTED|QUARANTINED`. |
+| Claim and active-map state | New `AgentRunActivationRegistry` adapted to Personal | Owns `constructing`, `prepared`, `quarantined` claims; active run lookup; claim-token and expected-run checks; stop admission. It does not construct/terminate backends. |
+| File/artifact/memory attachments and application session revocation | Adapted `AgentRunResourceManager` | Attach file-change -> artifact-relay -> memory observers before the candidate is returned; rollback partial attachment in reverse. Release by `(runId, expectedRun)` once: delete ownership, revoke exact sessions, then detach memory -> artifact -> file observers. Return structured errors/counts. Uses exact application session scope, never `getAgentToolMcpSessionService()`. |
+| Backend/run construction, candidate callbacks, termination, cleanup-result consumption | Current `AgentRunManager` | Claim before first backend await, construct privately, attach, return candidate, synchronously publish after metadata commit, terminate and identity-remove, quarantine uncertain private termination, await in-flight preparation during stop. |
+| Root/subteam/task execution and current rooted identity | Current `AgentTeamRunManager`, `MixedTeamRunBackendFactory`, `MixedTeamManager`, current configured/task registries and handles | Preserve `RootTeamRun`, execution tree, `memberAddress`, `agentRunId`, `teamRunId`, current delivery and termination semantics; propagate the exact application manager/session/context dependencies through every root/subteam/task leaf. |
+
+### 2.3 Activation registry interfaces and transition results
+
+The target types are concrete and internal:
+
+```ts
+type AgentRunActivationClaim = Readonly<{ runId: string; token: symbol }>;
+type AgentRunActivationClaimState = "constructing" | "prepared" | "quarantined";
+
+type AgentRunRemovalReason =
+  | "inactive_discovery"
+  | "explicit_termination"
+  | "inactive_replacement"
+  | "stop_all"
+  | "registration_rollback";
+
+type AgentRunRemovalResult =
+  | { kind: "removed"; run: AgentRun; reason: AgentRunRemovalReason;
+      resources: AgentRunResourceReleaseResult }
+  | { kind: "not_found"; runId: string; reason: AgentRunRemovalReason }
+  | { kind: "identity_mismatch"; runId: string; expectedRun: AgentRun;
+      currentRun: AgentRun; reason: AgentRunRemovalReason };
+```
+
+| Operation | Preconditions / state | Exact effect and result | Consuming caller |
+| --- | --- | --- | --- |
+| `claim(runId)` | Registry open; no active run; no pending claim | Prunes an inactive exact active run first; creates tokenized `constructing` claim. Existing active/preparing throws `AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT`; quarantined throws `AGENT_RUN_ACTIVATION_CLEANUP_FAILED`. | `AgentRunManager.prepare*` before awaiting backend creation |
+| `markPrepared(claim, run)` | Exact token, `constructing`, run identity matches | Calls `resourceManager.attach(run)` then records exact run and state `prepared`. Attach rollback releases partial resources. | `AgentRunManager` after backend/run construction |
+| `publish(claim, run)` | Exact token/run, `prepared`, run active, no active replacement | Synchronously inserts active run and removes pending claim; returns the run. Claim/identity invariant failure quarantines and throws. | Candidate `commitPublication`, only after activation service proves durable started metadata |
+| `releaseClaim(claim)` | Exact `constructing` claim without run | Removes the claim; mismatch returns false and cannot affect another attempt. | Unsupported runtime or failure before a run exists |
+| `releasePrepared(claim, run)` | Exact pending claim/run | Releases resources once and leaves claim available for manager's private termination result. Returns structured resource result. | Candidate abort or failed preparation |
+| `completeAbort(claim, run, result)` | Exact pending claim | `aborted` removes claim; uncertain/active cleanup moves it to `quarantined` with error. | `AgentRunManager` after private run/backend termination |
+| `getActiveRun(runId)` | Any | Returns active exact run. If inactive, identity-removes it with reason `inactive_discovery`, releases resources once, and returns null; cleanup errors are surfaced/logged through current manager policy. | Publication lookup, services, manager |
+| `removeIfCurrent({runId, expectedRun, reason})` | Any | Never removes a replacement. Returns `removed`, `not_found`, or `identity_mismatch`; `removed` includes exact resource release result. | Explicit termination, inactive discovery/replacement, rollback, stop |
+| `blockNewClaims()` | Open | Rejects later claims. Existing construction attempts remain owned until their tracked promise settles. | Manager `stopAll` |
+| `snapshotForStop()` | Claims blocked | Returns exact active and prepared private run records without invoking manager callbacks. | Manager `stopAll` |
+
+`AgentRunManager` tracks its in-flight `prepareCandidate` promises. `stopAll()` blocks new claims, awaits those promises to settle, obtains the final registry snapshot, terminates prepared private runs and active runs, and applies identity-checked removal/resource release exactly once. It aggregates termination/resource errors and completes registry stop. No registry-to-manager callback, generic event bus, or deferred container exists.
+
+### 2.4 Supported transition traces
+
+Fresh create:
+
+```text
+AgentRunProvisioningService validates + allocates -> records PREPARED metadata
+-> StandaloneAgentRunActivationService asserts token schema -> manager claims before await
+-> backend/run private construction -> resources attach -> candidate returned
+-> provider identity validation -> durable recordRunStarted
+-> candidate.commitPublication() -> exact active map -> command-ready run
+```
+
+Restore:
+
+```text
+read started metadata -> assert existing-run restore readiness
+-> validate persisted external provider ID when applicable
+-> claim -> restore backend -> attach -> private candidate
+-> exact runtime/provider identity check -> confirm durable metadata
+-> synchronous publication
+```
+
+Abort/quarantine:
+
+```text
+metadata failure or identity mismatch -> candidate.abort()
+-> release exact resources -> terminate private run/backend
+-> confirmed inactive => remove claim / aborted
+-> indeterminate cleanup or durable commit => retain quarantined claim/error until restart
+```
+
+Explicit termination/inactive discovery:
+
+```text
+lookup exact active run -> terminate -> verify inactive
+-> removeIfCurrent(expectedRun) -> revoke exact application sessions
+-> detach memory/artifact/file observers once -> return result
+```
+
+### 2.5 Required application construction inputs and exact general-process exemptions
+
+Every row marked **Required** is non-null in application assembly and receives omission/null/undefined architecture fixtures. Reusable constructors may retain defaults for ordinary Personal/general-process callers, but the governed application factory cannot omit them.
+
+| Target / nested owner | Application input obligation | General-process exemption |
+| --- | --- | --- |
+| `AgentRunResourceManager` | **Required:** application session scope, run-file service, application artifact relay, memory recorder | Named `createGeneralProcessRunSupervisor` may use current process owners. |
+| `AgentRunActivationRegistry` | **Required:** exact application resource manager | No application fallback. General process creates its own registry/manager family. |
+| `PublishedArtifactPublicationService` | **Required:** exact activation-registry lookup, application relay/event pipeline | `getGeneralProcessPublishedArtifactPublisher` only inside named process assembly. |
+| `ScopedAgentToolMcpSessionManager` | **Required:** exact application session scope and application publisher/provider family | Process session manager belongs to `AgentToolsMcpRuntime`. |
+| `AutoByteusAgentRunBackendFactory` | **Required:** application agent-definition service and exact current dependencies | Current process factory defaults allowed only in general-process assembly. |
+| `CodexThreadBootstrapper` | **Required:** application agent-definition service and scoped session manager at their current positional/options inputs | Current process thread manager/cleanup defaults remain allowed where explicitly documented; application session/definition inputs may not default. |
+| `CodexAgentRunBackendFactory` | **Required:** the exact application `CodexThreadBootstrapper` at current constructor argument 1 | Arguments 0/2 remain the deliberately allowed process-scoped thread manager/cleanup defaults. |
+| `ClaudeSessionManager` | **Required:** scoped application session manager at current session dependency | No application default getter. |
+| `ClaudeSessionBootstrapper` | **Required:** application agent-definition service | No application default getter. |
+| `ClaudeAgentRunBackendFactory` | **Required:** exact application Claude session manager and bootstrapper at arguments 0/1 | Defaults only in named general-process assembly. |
+| `AgentRunManager` | **Required:** all three backend factories, activation registry, resource manager, memory recorder/current event collaborators | `AgentRunManager.getInstance()` remains a process-only/default API and is forbidden under application-platform construction. |
+| `AgentRunProvisioningService` | **Required:** manager, metadata, history, workspace, identity allocator | Existing defaults allowed outside governed application construction. |
+| `StandaloneAgentRunActivationService` | **Required:** manager, metadata, history, workspace, token-usage readiness | Existing defaults allowed outside governed application construction. |
+| `AgentRunService` | **Required:** exact manager plus exact provisioning and activation services; it must not reconstruct defaulting children | Existing process getter remains outside application construction. |
+| `MemberTeamContextBuilder` | **Required:** exact application `AgentTeamDefinitionService` | Default singleton remains only for named process/general use. |
+| `MixedTeamRunBackendFactory.createTeamManager` | **Required:** supplied closure for every root and subteam | Default `new MixedTeamManager(...)` path remains process-only. |
+| `MixedTeamManager` | **Required:** exact agent run manager, scoped session manager/revoker, member context builder, workspace manager, memory location service, subteam factory, and current callbacks | Optional/default inputs remain only for current general process construction. |
+| `MixedConfiguredMemberRegistry` and `MixedTaskAgentExecutionRegistry` | **Required:** propagate the same leaf dependency set | No application fallback. |
+| `MixedAgentMemberHandle` | **Required:** exact manager, scoped session manager, member context builder, workspace manager, memory location service | `AgentRunManager.getInstance()` and global MCP revocation are forbidden for application-created handles. |
+| `AgentTeamRunManager` | **Required:** current mixed factory plus current execution-tree/task/communication stores and memory root | Process singleton/default factory remains outside application construction. |
+
+The architecture boundary test resolves constructor/factory call sites and proves these exact application occurrences. Synthetic omission, explicit `null`, and explicit `undefined` variants must fail. The test also proves that the only exempt defaults are reached from the named general-process assembly, not from an application builder, lifecycle, package owner, route, or team handle.
+
+### 2.6 Exact file disposition for activation/team adaptation
+
+| Path | Disposition | Responsibility |
+| --- | --- | --- |
+| `agent-execution/services/agent-run-activation-candidate.ts` | Retain/Modify only if imports change | Current private candidate contract. |
+| `agent-execution/services/standalone-agent-run-activation-service.ts` | Modify | Keep current durable activation contract; require application dependencies in governed assembly. |
+| `agent-execution/services/agent-run-provisioning-service.ts` | Modify | Keep current prepared metadata/allocator contract; explicit application dependencies. |
+| `agent-execution/services/agent-run-service.ts` | Modify | Consume explicitly constructed provisioning and activation services. |
+| `agent-execution/services/agent-run-manager.ts` | Modify | Delegate state/resource mechanics to the target registry/manager while preserving current manager orchestration. |
+| `agent-execution/runtime/agent-run-activation-registry.ts` | Add | Current claim + active state and identity-checked transition owner. |
+| `agent-execution/runtime/active-agent-run-registry.ts` | Do not add | Obsolete feature-era active-only shape. |
+| `agent-execution/services/agent-run-resource-manager.ts` | Add/Adapt | Exact application resource attachment/release. |
+| Current `mixed-configured-member-registry.ts`, `mixed-task-agent-execution-registry.ts`, `mixed-task-team-execution-registry.ts` | Modify | Retain Personal owners and propagate exact graph-local dependencies. |
+| Feature `mixed-persistent-member-registry.ts`, `mixed-task-agent-instance-registry.ts` | Do not add | Superseded by current Personal registries and rooted identities. |
+| `mixed-agent-member-handle.ts`, `mixed-team-manager.ts`, `mixed-team-run-backend-factory.ts`, `member-team-context-builder.ts`, `agent-team-run-manager.ts` | Modify | Preserve current domain behavior; make application dependencies exact. |
+
+## 3. Launch Override Store And Direct-Use Proof
+
+### 3.1 Single target owner
+
+The only target persisted override owner is:
+
+`autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts`
+
+Remove:
+
+- `application-execution-resource-configuration-store.ts`;
+- `application-execution-resource-configuration-service.ts`;
+- `application-execution-resource-configuration-launch-profile.ts`.
+
+`ApplicationLaunchConfigurationService` remains the only semantic reader/writer above the store. REST and Studio depend on it, never the store. The physical table and columns remain unchanged, so there is no database migration:
+
+```text
+__autobyteus_resource_configurations(
+  slot_key PRIMARY KEY,
+  resource_ref_json,
+  launch_profile_json,
+  launch_defaults_json,
+  updated_at
+)
+```
+
+`launch_defaults_json` remains physically present because removing a column would require a database migration, but the target writer always stores `NULL` and the current runtime does not translate or fall back to it.
+
+### 3.2 Exact current-rooted persisted contract
+
+The supported value in `launch_profile_json` is a sparse host override, using current Personal rooted identity:
+
+```ts
+type ApplicationAgentLaunchOverride = {
+  kind: "AGENT";
+  llmModelIdentifier?: string | null;
+  runtimeKind?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+  workspaceRootPath?: string | null;
+};
+
+type ApplicationTeamLaunchOverride = {
+  kind: "AGENT_TEAM";
+  defaults: {
+    llmModelIdentifier?: string | null;
+    runtimeKind?: string | null;
+    llmConfig?: Record<string, unknown> | null;
+    workspaceRootPath?: string | null;
+  } | null;
+  memberProfiles: Array<{
+    memberAddress: string;
+    displayName: string;
+    agentDefinitionId: string;
+    llmModelIdentifier?: string | null;
+    runtimeKind?: string | null;
+    llmConfig?: Record<string, unknown> | null;
+  }>;
+};
+```
+
+`memberAddress` is the rooted current team address. `displayName` is presentation metadata, never identity. `agentDefinitionId` detects topology change. The obsolete `memberRouteKey`/`memberName` fields are not accepted or written.
+
+The store returns each JSON cell as `absent`, `parsed(value: unknown)`, or `malformed(rawText)` rather than casting it to a valid domain type. `ApplicationLaunchConfigurationService` validates the parsed values. This keeps malformed/stale saved rows visible and resettable without teaching the normal overlay path an old schema.
+
+### 3.3 Reader stages and write policy
+
+For each declared slot the service evaluates, in order:
+
+```text
+immutable package default resource
+-> package baseline from current agent/team definitions
+-> optional saved selected resource
+-> selected-resource baseline from current definitions
+-> current-rooted sparse saved override
+-> effective per-leaf configuration + provenance
+-> current host runtime/model/credential availability
+-> RUNNABLE | INVALID_PACKAGE | HOST_REQUIREMENT_MISSING
+```
+
+- A missing saved row means package defaults, not a copied DB default.
+- `execution_resource_ref = null` on a present row means the package default resource remains selected while `launch_profile_json` overlays it.
+- A saved alternate resource builds its own pre-overlay baseline; the Studio editor consumes that authoritative projection.
+- Read/list/evaluate/preview never writes, deletes, normalizes, seeds, or repairs a row.
+- Only an explicit save writes the normalized current-rooted sparse contract and sets `launch_defaults_json = NULL`.
+- Only explicit Reset deletes the slot row.
+- An invalid saved row never falls back silently to the package default. It yields `HOST_REQUIREMENT_MISSING`, retains the saved selection/diagnostic where parseable, and exposes Reset.
+- Package bytes are never mutated.
+
+### 3.4 Representative latest-Personal rows
+
+Agent row — directly usable:
+
+```json
+{
+  "resource_ref_json": null,
+  "launch_profile_json": {
+    "kind": "AGENT",
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-5.6-luna",
+    "workspaceRootPath": "/workspace"
+  }
+}
+```
+
+The target reads it as a sparse override of the package-selected agent. No write occurs. Missing fields inherit from the agent/package baseline.
+
+Team row — directly usable:
+
+```json
+{
+  "resource_ref_json": {
+    "source": "shared",
+    "kind": "AGENT_TEAM",
+    "definitionId": "shared-writing-team"
+  },
+  "launch_profile_json": {
+    "kind": "AGENT_TEAM",
+    "defaults": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "workspaceRootPath": "/workspace"
+    },
+    "memberProfiles": [
+      {
+        "memberAddress": "/shared-writing-team/researcher",
+        "displayName": "Researcher",
+        "agentDefinitionId": "shared-researcher"
+      },
+      {
+        "memberAddress": "/shared-writing-team/writer",
+        "displayName": "Writer",
+        "agentDefinitionId": "shared-writer",
+        "llmModelIdentifier": "gpt-5.6-luna"
+      }
+    ]
+  }
+}
+```
+
+The selected-resource baseline is built first; member entries are matched by rooted `memberAddress`; absent values inherit team/member/agent defaults. A current Personal row that lists every member is valid even when only some values are explicit, so it is directly usable as a sparse overlay without rewrite.
+
+| Stored case | Target result | Automatic write/fallback? |
+| --- | --- | --- |
+| Valid current Personal agent row | Effective configuration with package/host provenance | No |
+| Valid current Personal rooted team row | Effective per-leaf configuration | No |
+| Valid row selects unavailable model/runtime | `HOST_REQUIREMENT_MISSING`; saved values visible | No |
+| Valid row selects deleted shared resource | `HOST_REQUIREMENT_MISSING` with saved-resource issue and Reset | No |
+| Team member missing/agent changed | `HOST_REQUIREMENT_MISSING` with stale `memberAddress` diagnostics and Reset | No |
+| Syntactically malformed JSON | `HOST_REQUIREMENT_MISSING` / malformed saved override; Reset available | No |
+| `launch_profile_json` absent but historical `launch_defaults_json` present | Invalid saved override; Reset available | No legacy conversion or fallback |
+| Obsolete `memberRouteKey`/`memberName` profile | Invalid saved override | No compatibility branch |
+| No row | Package baseline/effective defaults | No seed/copy |
+
+This is `Directly Usable — No Migration` because current valid Personal rows already have the selected physical columns and the target rooted field meanings. The target changes the reader to a version-agnostic recognized-field validator, not to an old/new version switch. Invalid/obsolete data is preserved for diagnosis/reset rather than rewritten or deleted during read.
+
+## 4. Exact Verification Delta
+
+### Lifecycle
+
+- Studio and standalone order assertions cover every row in section 1.2.
+- Failure injection at each owned phase proves correct fatal/reject outcome and reverse unwind.
+- Assert each shared readiness phase runs once, including exactly seven required tool groups.
+- Prove Studio process transports/background work are absent from standalone.
+- Prove lifecycle stop precedes process owner/vault/Prisma close in both hosts.
+
+### Activation and team construction
+
+- Current create/restore tests preserve claim-before-await, private candidate, provider ID validation, metadata-before-publication, retry, quarantine, and candidate abort semantics.
+- Registry tests cover claim conflict/quarantine, attach rollback, synchronous publish, inactive pruning, identity-mismatch replacement protection, explicit termination, stop admission/in-flight wait, and exact-once resource release.
+- Application boundary tests cover every **Required** row in section 2.5 with real occurrence plus omission/null/undefined fixtures and prove the named general-process exemption.
+- Current root/subteam/configured/task-agent paths prove rooted `memberAddress`, exact graph-local manager/session/context dependencies, final team instruction composition, and session revocation.
+
+### Launch persistence
+
+- Use an actual `ApplicationPlatformStateStore` DB containing the representative agent/team rows above; read/evaluate them and assert the DB bytes/`updated_at` remain unchanged.
+- Cover null resource selection, alternate shared resource, stale topology, unavailable model/runtime, malformed JSON, legacy-default-only, obsolete member fields, explicit save, and explicit Reset.
+- Assert there is one store/service writer and that the removed Personal service/store names have no production imports.
+- Real Studio override/reset and fresh-root standalone package-default journeys remain required.
+
+### Integrated proof
+
+All earlier Git integrity, overlap ledger, build/typecheck, durable source review, real Studio/standalone Codex/Luna publication/handoff/projection/recovery/cleanup, package parity, Personal regression, and Electron build/smoke requirements remain unchanged.

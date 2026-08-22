@@ -33,6 +33,7 @@ Integrate the finalized Universal Application Dual-Host Foundation from `origin/
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
 | `integration-strategy-analysis.md` | Intended integration strategy and semantic authority matrix | REQ-001–REQ-007 | AC-001–AC-011 | Design-ready; approved by the user's delegated technical-direction instruction | Constrains how the merge may be resolved and verified. |
+| `integration-runtime-contracts.md` | Exact lifecycle, activation/provisioning, construction, launch persistence, and verification contract | REQ-004–REQ-007 | AC-005–AC-011 | Design-ready; within the approved preserved-behavior boundary | Closes the bounded architecture-review precision gaps without adding product scope. |
 | `merge-conflict-inventory.txt` | Evidence: exact no-commit conflict set | REQ-002, REQ-006 | AC-002, AC-010 | Complete; approval N/A | Supports conflict classification. |
 | `branch-overlap-inventory.txt` | Evidence: changed-both path inventory | REQ-002, REQ-006 | AC-002, AC-010 | Complete; approval N/A | Prevents reliance on conflict markers alone. |
 | `integration-path-inventory.txt` | Evidence: add/modify/remove/regenerate candidate inventory | REQ-003–REQ-007 | AC-003–AC-011 | Complete; approval N/A | Drives detailed implementation and review inventory. |
@@ -97,7 +98,7 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 - **REQ-001 — Latest-base isolation:** The authoritative work must remain on a dedicated ticket branch created from the fetched `origin/personal@8ef282b...`; source branches remain untouched.
 - **REQ-002 — One semantic integration:** Merge the finalized feature ref once and resolve the resulting canonical overlaps by behavior and ownership, never by wholesale `ours`/`theirs` selection.
 - **REQ-003 — Dual-host developer experience:** The maintained Brief and Socratic packages retain devkit-owned `dev`, `dev:studio`, `build`, `validate`, and `start`, one canonical source tree, and build-once Studio/standalone use.
-- **REQ-004 — Current Personal execution authority:** Retain current Personal agent/team preparation, activation, rooted-member identity, event publication, teardown, provider availability, migration gates, and current package contract values.
+- **REQ-004 — Current Personal execution authority:** Retain current Personal agent/team provisioning and preparation, claim-before-await activation, private candidates, metadata-before-publication, provider-identity validation, quarantine, rooted-member identity, event publication, exact teardown, provider availability, migration gates, and current package contract values.
 - **REQ-005 — Dual-host application authority:** Retain explicit Studio and standalone assembly roots, narrow application-platform projections, package-owned launch defaults, sparse non-mutating overrides, host readiness, scoped Agent Tools session/publication, application communication, projection, recovery, and ordered stop.
 - **REQ-006 — Clean source transition:** Remove obsolete mirrored/custom-builder/old-owner paths; regenerate derived outputs from the integrated canonical source; do not add compatibility wrappers or global fallbacks.
 - **REQ-007 — Integrated proof:** Validate architecture boundaries and omission cases, compile/build affected workspaces, run focused and broad regressions, exercise real Brief/Socratic flows in both hosts, prove package parity, and rebuild/test Electron.
@@ -108,7 +109,7 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 - **AC-002:** The merge commit has both source histories as parents, no unresolved index entries, no conflict markers, and every canonical conflict/overlap has a recorded semantic resolution owner.
 - **AC-003:** From each maintained application directory, `pnpm dev` starts standalone, `pnpm dev:studio` targets Studio, `pnpm build` creates the importable package, `pnpm validate` accepts it, and `pnpm start` runs the built standalone package.
 - **AC-004:** One package build is byte/contract compatible with both the Studio import path and standalone selection path; canonical source is not duplicated into maintained editable mirrors.
-- **AC-005:** Current Personal preparation/activation/publication and rooted `memberAddress` semantics remain authoritative for agent and team runs; old feature-era manager/registry identity paths are absent.
+- **AC-005:** Current Personal provisioning/preparation/activation/publication semantics remain authoritative: claims precede provider awaits, candidates remain private until durable metadata commits, provider identity is validated, indeterminate cleanup/commit is quarantined, rooted `memberAddress` identifies team placement, and old feature-era manager/member-registry identity paths are absent.
 - **AC-006:** Brief and Socratic package defaults resolve to `codex_app_server` + `gpt-5.6-luna`; Studio sparse overrides/reset and current unavailable-model retention/blocking operate without mutating package bytes.
 - **AC-007:** Both hosts register the internal `/mcp/agent-tools/:sessionId` transport with application-scoped session/publication identity; standalone does not expose Studio's external `/mcp/gateway`.
 - **AC-008:** A real team run in each host performs recipient-name handoff, publishes artifacts, projects them into the application, survives the supported recovery/restart paths, and revokes/detaches resources exactly once on termination/stop.
@@ -128,9 +129,9 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 
 - Stored subject / location: Personal server database and application data roots, including package records, launch overrides, run/history state, artifact revisions, and host-managed provider configuration.
 - Required outcome: `Directly Usable — No Migration`.
-- Existing data to preserve: all current Personal data and migration ledger; launch overrides remain readable through their existing table/column semantics and are interpreted with current rooted resource identity.
+- Existing data to preserve: all current Personal data and migration ledger; valid current `__autobyteus_resource_configurations.resource_ref_json` and `launch_profile_json` rows remain directly readable through one target store and are interpreted as sparse overrides using current rooted `memberAddress` identity. Invalid/stale rows remain visible and explicitly resettable rather than being silently rewritten, deleted, or replaced by package defaults.
 - Unacceptable data loss or corruption: database replacement, copied/seeded defaults, launch override mutation, run/history loss, package mutation, or skipped Personal migrations.
-- Availability/rollout constraints: Personal's current migration gates must complete before the integrated Studio runtime is ready; standalone uses its own data root and the same current migration authority.
+- Availability/rollout constraints: Personal's current migration gates must complete before either integrated host is ready; standalone uses its own data root and the same current migration authority. The physical table/columns remain unchanged. Normal reads never migrate data; explicit Save writes only the current-rooted sparse override and explicit Reset deletes the row.
 - Related IDs: REQ-004–REQ-007; AC-005, AC-006, AC-009, AC-011.
 
 ## Assumptions

@@ -7,6 +7,7 @@
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
 - Scope: REQ-001–REQ-007 and AC-001–AC-011.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) fixes the exact lifecycle, activation/provisioning, construction, persisted-row, and proof contracts for SR-002.
 
 ## Executive Decision
 
@@ -54,7 +55,7 @@ The initial merge staged 1,223 paths with approximately 187k insertions and 23k 
 | Concern | Authoritative Input | Combined Rule |
 | --- | --- | --- |
 | Git base and current repository shape | Latest Personal | New ticket branch starts at Personal and keeps it as first parent. |
-| Studio/process startup and migration gates | Latest Personal | Preserve readable-provider and current data-migration gating/unwind. Insert the feature's explicit Studio assembly without bypassing current gates. |
+| Studio/standalone process startup and migration gates | Latest Personal | Both host starters run the exact logging/core migration/protected paths/Prisma/token schema/vault/app-data/token readiness/TeamRun catalog/readable-provider sequence. Shared application readiness/recovery/stop runs once in `ApplicationPlatformLifecycle`; Studio-only transports/background remain outside it. |
 | Agent run preparation, activation, event publication, teardown | Latest Personal | Preserve current prepare/publish/abort/quarantine and exact cleanup semantics. |
 | Team lifecycle and identity | Latest Personal | Preserve RootTeamRun, execution-tree, rooted `memberAddress`, and current member handles/registries. |
 | Provider/session evolution and native provider behavior | Latest Personal | Preserve current Codex/Claude behavior and current model/provider availability. |
@@ -62,7 +63,7 @@ The initial merge staged 1,223 paths with approximately 187k insertions and 23k 
 | Same package in Studio and standalone | Finalized feature | Retain separate explicit host builders over one shared application-services boundary. |
 | Standalone host and application dev workflow | Finalized feature | Retain devkit commands, standalone bootstrap/static/REST/WebSocket ingress, and canonical source ownership. |
 | Application-platform outward boundary | Finalized feature | Retain exactly lifecycle, REST, realtime, and host-management projections; internals stay private. |
-| Package defaults and host override semantics | Finalized feature + Personal availability rules | Package baseline, sparse host override, current availability blocking; no mutation or silent fallback. |
+| Package defaults and host override semantics | Finalized feature + Personal rooted row/availability rules | One launch service/store reads valid current `memberAddress` rows directly as sparse overrides; package/selected baselines and current availability block honestly; no mutation, read-time rewrite, second store, or silent fallback. |
 | Application Agent Tools scope/publication | Finalized feature adapted to Personal run identity | Same session/route/provider family must use exact application active-run/publication owner. |
 | Studio external MCP gateway | Latest Personal / finalized feature preserved distinction | Remains Studio-only; it is not exposed by standalone. |
 | Generated and mirrored application output | Devkit/canonical source design | Delete, then deterministically rebuild after canonical source resolves. |
@@ -110,33 +111,36 @@ The finalized feature created application-scoped publication/session services ag
 
 ### Target structure
 
-Introduce or extract one concrete **`AgentRunActivationRegistry`** under current agent execution. It is not a second run manager and not a generic container. It owns only:
+Introduce one concrete **`AgentRunActivationRegistry`** under current agent execution. It is not a second run manager and not a generic container. It owns:
 
-- pending activation claims/candidates;
-- active run registration and lookup;
-- replacement/removal result shapes;
-- exact run-scoped cleanup/resource attachment needed when a run leaves the registry.
+- tokenized `constructing`, `prepared`, and `quarantined` claims;
+- active run registration/lookup and stop admission;
+- identity-checked removal/replacement result shapes.
+
+An adapted `AgentRunResourceManager` owns the exact file/artifact/memory attachment and early application-session-scope revocation records. Current `AgentRunManager` continues to own backend/run construction, candidate callbacks, private termination, in-flight preparation tracking, and consumption of cleanup results. Current `AgentRunActivationCandidate`, `AgentRunProvisioningService`, and `StandaloneAgentRunActivationService` retain private-candidate, durable PREPARED, metadata-before-publication, provider identity, retry, and quarantine responsibilities.
 
 Construction order:
 
 ```text
-application run resources + application session scope
+application session ownership scope + file/artifact/memory observers
+  -> AgentRunResourceManager
   -> AgentRunActivationRegistry
   -> application PublishedArtifactPublicationService(registry, awaited event pipeline)
   -> application ScopedAgentToolMcpSessionManager(exact publisher)
   -> current Codex/Claude bootstrap/factory instances(explicit scoped sessions)
   -> current AgentRunManager(registry, resources, factories, event pipeline)
+  -> current provisioning + activation + run service
   -> current team manager/factory/member graph(explicit AgentRunManager + rooted identities)
   -> orchestration, launch configuration, application engine, projections
   -> lifecycle READY
 ```
 
-The registry must expose explicit transition results rather than invoke a later-registered cleanup callback. `AgentRunManager` remains the lifecycle owner and consumes those results to detach observers and revoke sessions exactly once. General-process assembly may retain deliberately named process defaults; application construction must provide every scoped dependency explicitly and is guarded by the existing architecture boundary test.
+The registry exposes the exact claim/prepare/publish/abort/remove/stop operations and result unions in the runtime-contract supplement. It never invokes a later-registered manager callback. `AgentRunResourceManager` deletes ownership before exact session revocation/observer detach; `AgentRunManager` consumes those results and terminates the run/backend. General-process assembly may retain only the explicitly enumerated defaults; application construction supplies every nested provider/team dependency and is guarded by occurrence plus omission/null/undefined architecture fixtures.
 
 ### Why this is proportionate
 
 - It adapts one construction cycle at the exact boundary where the branches differ.
-- It preserves Personal's current state machine instead of resurrecting feature-era `ActiveAgentRunRegistry`, resource manager semantics, or old team registries verbatim.
+- It preserves Personal's current state machine instead of resurrecting the feature-era active-only registry or old team registries; only the proven exact resource attachment/release discipline is adapted behind the current claim/candidate lifecycle.
 - It preserves the feature's application-scoped publication identity without global fallback.
 - It does not redesign the provider or team execution domains.
 
@@ -146,6 +150,7 @@ The registry must expose explicit transition results rather than invoke a later-
 - Use current explicit **`agentRunId`** and **`teamRunId`** for run bindings; never overload one ID field.
 - Use the current MCP session's run owner plus optional team identity.
 - Do not restore `memberRouteKey`, flattened team-run identities, or feature-era persistent/task registry implementations when Personal has replaced them.
+- Persisted team launch overrides also use `memberAddress`/`displayName`; valid current Personal rows are consumed unchanged by the single target launch override store/service. Obsolete route-key rows are invalid saved state, not a compatibility input.
 - Keep code symbols unversioned for the in-scope application contracts, while serialized values remain Personal's current 4/1/6 values. No aliases for old code names.
 
 ## Conflict Resolution Plan
@@ -167,9 +172,9 @@ The registry must expose explicit transition results rather than invoke a later-
 
 1. Resolve application canonical source using Personal's current app logic plus the feature's host-neutral contracts and Codex/Luna defaults.
 2. Resolve SDK/devkit schemas using Personal serialized values and the feature's developer workflow/unversioned naming.
-3. Bring forward explicit host builders, four runtime projections, standalone host, launch configuration, and scoped MCP behavior.
-4. Adapt those additions to current Personal run/team identity and lifecycle through the construction shape above.
-5. Resolve web launch editors as sparse baseline/override UI plus Personal unavailable-model retention/warnings.
+3. Bring forward explicit host builders, four runtime projections, standalone host, launch configuration, and scoped MCP behavior; allocate every process/application lifecycle phase by the normative lifecycle table.
+4. Adapt those additions to current Personal candidate/provisioning/activation/team identity through the exact construction DAG and constructor obligation table; retain current configured/task registries and reject the feature-era ones.
+5. Select one launch store, remove the Personal configuration store/service, use current rooted persisted identity, and resolve web launch editors as sparse baseline/override UI plus Personal unavailable-model retention/warnings without read-time rewrite/fallback.
 6. Port durable assertions from deleted seams to current production owners; never restore removed source to make a test compile.
 
 ### Phase D — Marker-free overlap audit
@@ -191,11 +196,13 @@ For every path in `[MODIFY_BOTH_CANONICAL]`:
 
 ## File Inventory Interpretation
 
-`integration-path-inventory.txt` is the exact starting inventory:
+`integration-path-inventory.txt` is the exact target inventory derived from the raw Git evidence:
 
-- `ADD_FEATURE_ONLY_CANONICAL` — 110 paths to introduce, but source must be adapted to current owners.
-- `MODIFY_BOTH_CANONICAL` — 77 paths requiring three-way semantic audit.
-- `REMOVE_LEGACY_CANONICAL` — 16 obsolete paths. Two custom builders appear in both modify and remove sets because both branches changed them before the feature deleted them; **removal is authoritative**.
+- `ADD_OR_ADAPT_CANONICAL` — 108 paths to introduce/adapt; the rejected active-only and feature member-registry paths are not target additions.
+- `MODIFY_BOTH_CANONICAL` — 75 paths requiring three-way semantic audit after removing those two rejected member registries.
+- `TARGET_PERSONAL_ONLY_MODIFY` — 12 current Personal owners that the semantic integration must modify even though they are not a changed-both Git class.
+- `REMOVE_LEGACY_CANONICAL` — 17 obsolete paths, now including the Personal configuration store. Two custom builders appear in both raw modify/remove evidence because both branches changed them before deletion; **removal is authoritative**.
+- `TARGET_EXPLICIT_DO_NOT_ADD` — the feature active-only registry and two old member registries.
 - `REGENERATE_OR_REMOVE_DERIVED` — 656 paths that must not become manually maintained merge resolutions.
 
 The implementation engineer may refine the exact list when current source ownership requires a file rename or split, but must record the reason and may not change the behavior boundary.

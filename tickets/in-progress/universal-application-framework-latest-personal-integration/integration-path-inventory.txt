@@ -2,7 +2,10 @@ BASE acb8985930ccce49b632cdca22b92f5b237e35bf
 PERSONAL origin/personal
 FEATURE origin/codex/universal-application-framework-proposal-analysis
 
-[ADD_FEATURE_ONLY_CANONICAL] 110
+# Counts below are target dispositions derived from the raw branch evidence.
+# Feature-only paths explicitly rejected by the target are omitted.
+
+[ADD_OR_ADAPT_CANONICAL] 108
 applications/brief-studio/.gitignore
 applications/brief-studio/autobyteus-app.config.mjs
 applications/brief-studio/frontend-src/icon.svg
@@ -29,11 +32,9 @@ autobyteus-application-frontend-sdk/tests/application-startup.test.mjs
 autobyteus-application-frontend-sdk/tests/application-startup.type-test.ts
 autobyteus-application-sdk-contracts/src/application-runtime-bootstrap.ts
 autobyteus-application-sdk-contracts/src/standalone-application-bootstrap.ts
-autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts
+autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts
 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
 autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
-autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
-autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
 autobyteus-server-ts/src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts
 autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts
@@ -95,7 +96,7 @@ autobyteus-server-ts/tests/integration/application-backend/brief-package-team-pr
 autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
 autobyteus-server-ts/tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
 autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
-autobyteus-server-ts/tests/unit/agent-execution/runtime/active-agent-run-registry.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts
 autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
 autobyteus-server-ts/tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts
 autobyteus-server-ts/tests/unit/application-backend/brief-artifact-startup-catchup.test.ts
@@ -114,7 +115,7 @@ autobyteus-web/composables/useApplicationLaunchSelectionPreviews.ts
 autobyteus-web/composables/useApplicationLaunchSetupPresentation.ts
 autobyteus-web/docs/application-bundle-iframe-contract.md
 
-[MODIFY_BOTH_CANONICAL] 77
+[MODIFY_BOTH_CANONICAL] 75
 applications/brief-studio/api/graphql/schema.graphql
 applications/brief-studio/application.json
 applications/brief-studio/backend-src/services/brief-artifact-paths.ts
@@ -141,8 +142,6 @@ autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline
 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
 autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts
 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
-autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
-autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
@@ -193,7 +192,7 @@ autobyteus-web/utils/application/applicationLaunchProfile.ts
 autobyteus-web/utils/teamLaunchReadinessCore.ts
 pnpm-lock.yaml
 
-[REMOVE_LEGACY_CANONICAL] 16
+[REMOVE_LEGACY_CANONICAL] 17
 applications/brief-studio/scripts/build-package.mjs
 applications/socratic-math-teacher/scripts/build-package.mjs
 autobyteus-application-devkit/src/dev-server/dev-bootstrap-server.ts
@@ -205,6 +204,7 @@ autobyteus-application-frontend-sdk/tests/hosted-application-startup.test.mjs
 autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts
 autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
 autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-resource-configuration-store.ts
 autobyteus-server-ts/src/application-packages/services/application-package-service.ts
 autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
 autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
@@ -868,3 +868,22 @@ autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts
 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map
 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js
 autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map
+
+[TARGET_PERSONAL_ONLY_MODIFY] 12
+autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts
+autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-activation-service.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts
+autobyteus-server-ts/src/startup/token-usage-current-schema-readiness.ts
+autobyteus-server-ts/src/token-usage/providers/token-usage-migration-readiness.ts
+autobyteus-server-ts/src/run-history/services/team-run-v1-package-catalog.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+
+[TARGET_EXPLICIT_DO_NOT_ADD] 3
+autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
