@@ -21,6 +21,18 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Docs result: six long-lived docs remain accurate after final integration; no additional docs impact from the retained test-support-only residual.
 - Delivery result: `Ready for explicit user verification; finalization, archival, push, release, deployment, and cleanup held.`
 
+## User-Requested Local Electron Build (DR-010)
+
+- Scope: local host-native package for user testing only; this is not a release or deployment.
+- README instruction followed: `pnpm -C autobyteus-web build:electron:mac`.
+- Environment: macOS ARM64; desktop `1.4.54`; Electron `42.4.1`; default production flavor `enterprise`.
+- Result: `Pass` — macOS ARM64 DMG, ZIP, app bundle, and blockmaps were produced.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log`
+- No signing identity, release tag, publication, deployment, push, or finalization was invoked.
+
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal@d487c0859905a91650387c4af41f4fc5754f214a`

@@ -4,6 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-010 | User-requested macOS ARM64 Electron build for hands-on testing | `DR-009` Ready for explicit user verification | Build Pass — host-native enterprise DMG, ZIP, app bundle, and blockmaps produced; repository finalization/release/deployment remain held | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/electron-build-enterprise-macos-arm64.log` |
 | DR-009 | API-REV-007 execution and CRR-015/CRR-016 downstream closure after final latest-base refresh | `DR-008` Blocked pending review/rerun | Ready for explicit user verification — feature-specific API/E2E Pass remains authoritative; LM Studio and other broader capability gaps remain explicit non-gating residuals; finalization/release/deployment held | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `delivery-evidence/post-integration-focused-check-round2.log`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md`, `code-review-report.md`, `code-review-revision-record.md` |
 | DR-008 | Third API-REV-007 durable quality-probe rework after CRR-011 | `DR-007` Blocked pending rerun | Blocked pending proportional re-review — the next probe changes the local Group-A fixture size and restores semantic read order; no execution claim is current until the delta is reviewed and rerun | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-007 | `CRR-011` Pass for proportional review of the second API-REV-007 durable support repair | `DR-006` Blocked pending re-review | Blocked pending API-REV-007 rerun — the stale-store-method repair is structurally reviewed with no findings, but execution coverage and final disposition are still pending | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-test-review-report.md` |
@@ -15,6 +16,21 @@
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-010 — macOS ARM64 Electron test build
+
+- Trigger: User requested that the README be read and the Electron desktop application be built for hands-on testing.
+- README basis: root `README.md` documents `pnpm -C autobyteus-web build:electron:mac` and the packaged Electron launch/testing flow.
+- Command: `pnpm -C autobyteus-web build:electron:mac`.
+- Environment: Darwin ARM64, Node `v22.23.1`, pnpm `10.28.2`, desktop package `1.4.54`, Electron `42.4.1`; the default production configuration resolved build flavor `enterprise`.
+- Result: **Pass**. Web boundary, localization, literal audit, server build/bootstrap smoke, Electron renderer/main/preload compilation, native-module rebuild, node-pty execute-bit normalization, and macOS ARM64 packaging completed successfully.
+- Artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Artifact verification: DMG/ZIP/app bundle format checks passed; DMG SHA-256 is `12eef6edb9a2a510cd297b3007beb4b7cc4c0daeacc18287cad3159dec133ca0`; ZIP SHA-256 is `7b263db34280764c5dd215ae7a7386b42af351f0283ce33188f1b78cd73f6fce`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log`.
+- Current result: `Build available for user testing. No release, publication, deployment, push, archival, or repository finalization was performed.`
 
 ### DR-009 — API/E2E closure and current integrated-state handoff
 
