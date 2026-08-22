@@ -1,0 +1,227 @@
+APIE2E-F003 standalone application runtime workspace readiness source correlation
+
+1. Normal standalone lifecycle evaluates application definition/runtime readiness before listen.
+    38	  private async runPreparation(): Promise<void> {
+    39	    this.state = "preparing_runtime";
+    40	    try {
+    41	      await this.dependencies.preparation.prepareWorkspaceRuntime();
+    42	      await this.dependencies.preparation.prepareAgentCustomizations();
+    43	      await this.dependencies.preparation.toolReadiness.registerRequiredGroups();
+    44	      this.dependencies.preparation.agentToolsSessionManager.assertReady();
+    45	      const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
+    46	      this.assertSelectedCatalogIsValid(snapshot);
+    47	      this.catalogSnapshot = snapshot;
+    48	      this.state = "catalog_ready";
+    49	      await this.dependencies.preparation.bootstrapBuiltInAgents();
+    50	      await this.dependencies.preparation.definitionRuntimeReadiness.prepare();
+    51	      this.readyApplicationIds = new Set(
+    52	        snapshot.applications
+    53	          .map((application) => application.id)
+    54	          .filter((applicationId) =>
+    55	            this.isSelected(applicationId)
+    56	            && this.dependencies.preparation.definitionRuntimeReadiness
+    57	              .isApplicationReady(applicationId)),
+    58	      );
+    59	      this.state = "waiting_for_listener";
+    60	    } catch (error) {
+    61	      this.fail(error);
+    62	      throw this.failure;
+    63	    }
+
+2. Launch configuration supplies a path-only runtimeDir; buildApplicationStorageLayout does not create it.
+   126	  const baselineBuilder = new ApplicationLaunchResourceBaselineBuilder({
+   127	    executionResourceResolver,
+   128	    agentDefinitionService: input.agentDefinitionService,
+   129	    agentTeamDefinitionService: input.agentTeamDefinitionService,
+   130	  });
+   131	  const configurationService = new ApplicationLaunchConfigurationService({
+   132	    applicationBundleService: input.bundleService,
+   133	    overrideStore,
+   134	    baselineBuilder,
+   135	    resolveWorkspaceRootPath: (applicationId) =>
+   136	      buildApplicationStorageLayout(input.appConfig, applicationId).runtimeDir,
+   137	    hostCapabilityValidator: new ApplicationLaunchHostCapabilityValidator({
+   138	      runtimeAvailabilityService: getRuntimeAvailabilityService(),
+   139	      modelCatalogService: getModelCatalogService(),
+   140	      providerCredentialReadiness: new ApplicationProviderCredentialReadinessAdapter({
+   141	        llmProviderService: getLlmProviderService(),
+   142	        codexClientManager: getCodexAppServerClientManager(),
+   143	      }),
+   144	    }),
+   145	  });
+    46	export const buildApplicationStorageLayout = (
+    47	  appConfig: ApplicationStoragePathConfig,
+    48	  applicationId: string,
+    49	): ApplicationStorageLayout => {
+    50	  const rootPath = path.join(
+    51	    appConfig.getAppDataDir(),
+    52	    "applications",
+    53	    buildApplicationStorageKey(applicationId),
+    54	  );
+    55	  const dbDir = path.join(rootPath, "db");
+    56	  const logsDir = path.join(rootPath, "logs");
+    57	  const runtimeDir = path.join(rootPath, "runtime");
+    58	
+    59	  return {
+    60	    applicationId,
+    61	    rootPath,
+    62	    dbDir,
+    63	    appDatabasePath: path.join(dbDir, "app.sqlite"),
+    64	    platformDatabasePath: path.join(dbDir, "platform.sqlite"),
+    65	    logsDir,
+    66	    workerStdoutLogPath: path.join(logsDir, "worker.stdout.log"),
+    67	    workerStderrLogPath: path.join(logsDir, "worker.stderr.log"),
+    68	    runtimeDir,
+    69	    engineLockPath: path.join(runtimeDir, "engine.lock"),
+    70	    engineStatusPath: path.join(runtimeDir, "engine-status.json"),
+    71	  };
+    72	};
+    73	
+    74	export const ensureApplicationStorageDirectories = (layout: ApplicationStorageLayout): void => {
+    75	  fs.mkdirSync(layout.rootPath, { recursive: true });
+    76	  fs.mkdirSync(layout.dbDir, { recursive: true });
+    77	  fs.mkdirSync(layout.logsDir, { recursive: true });
+    78	  fs.mkdirSync(layout.runtimeDir, { recursive: true });
+    79	};
+
+3. Provider readiness immediately spawns Codex with that runtimeDir as cwd.
+    91	  async getReadiness(input: {
+    92	    runtimeKind: RuntimeKind;
+    93	    model: ModelInfo;
+    94	    workspaceRootPath: string;
+    95	  }): Promise<ApplicationProviderCredentialReadiness> {
+    96	    switch (input.runtimeKind) {
+    97	      case RuntimeKind.CODEX_APP_SERVER:
+    98	        return this.readCodexReadiness(input.workspaceRootPath);
+    99	      case RuntimeKind.CLAUDE_AGENT_SDK:
+   100	        return this.readClaudeReadiness();
+   101	      case RuntimeKind.AUTOBYTEUS:
+   102	        return this.readAutobyteusReadiness(input.model);
+   103	    }
+   104	  }
+   105	
+   106	  private async readCodexReadiness(
+   107	    workspaceRootPath: string,
+   108	  ): Promise<ApplicationProviderCredentialReadiness> {
+   109	    try {
+   110	      const client = await this.dependencies.codexClientManager
+   111	        .acquireClient(workspaceRootPath);
+   112	      try {
+   113	        const response = await client.request<{
+   114	          account?: unknown;
+   115	          requiresOpenaiAuth?: unknown;
+   116	        }>("account/read", { refreshToken: false });
+   117	        const configured = response.requiresOpenaiAuth !== true || response.account != null;
+   118	        return configured
+   119	          ? { configured: true, reason: null }
+   120	          : {
+   121	              configured: false,
+   122	              reason: "Codex authentication is unavailable: no logged-in account.",
+   123	            };
+   124	      } finally {
+   125	        await this.dependencies.codexClientManager.releaseClient(workspaceRootPath);
+   126	      }
+   127	    } catch (error) {
+   128	      return {
+   129	        configured: false,
+   130	        reason: `Codex authentication is unavailable: ${
+   131	          error instanceof Error ? error.message : String(error)
+   132	        }`,
+   133	      };
+   134	    }
+   135	  }
+
+4. Full storage preparation would create runtimeDir, but this owner has not run for the fresh application before readiness.
+    50	
+    51	  private get migrationService(): ApplicationMigrationService {
+    52	    return this.dependencies.migrationService ?? new ApplicationMigrationService();
+    53	  }
+    54	
+    55	  getStorageLayout(applicationId: string): ApplicationStorageLayout {
+    56	    return buildApplicationStorageLayout(this.appConfig, applicationId);
+    57	  }
+    58	
+    59	  async ensurePlatformStatePrepared(applicationId: string): Promise<ApplicationStorageLayout> {
+    60	    return this.cachePreparation(
+    61	      applicationId,
+    62	      this.platformPreparationPromiseByApplicationId,
+    63	      () => this.preparePlatformState(applicationId),
+    64	    );
+    65	  }
+    66	
+    67	  async ensureStoragePrepared(applicationId: string): Promise<ApplicationStorageLayout> {
+    68	    return this.cachePreparation(
+    69	      applicationId,
+    70	      this.preparationPromiseByApplicationId,
+    71	      () => this.prepareStorage(applicationId),
+    72	    );
+    73	  }
+    74	
+    75	  private cachePreparation(
+    76	    applicationId: string,
+    77	    cache: Map<string, Promise<ApplicationStorageLayout>>,
+    78	    prepare: () => Promise<ApplicationStorageLayout>,
+    79	  ): Promise<ApplicationStorageLayout> {
+    80	    const cached = cache.get(applicationId);
+    81	    if (cached) {
+    82	      return cached;
+    83	    }
+    84	
+    85	    const promise = prepare().finally(() => {
+    86	      cache.delete(applicationId);
+    87	    });
+    88	    cache.set(applicationId, promise);
+    89	    return promise;
+    90	  }
+    91	
+    92	  private async preparePlatformState(applicationId: string): Promise<ApplicationStorageLayout> {
+    93	    await this.requireApplicationBundle(applicationId);
+    94	
+    95	    const layout = this.getStorageLayout(applicationId);
+    96	    ensureApplicationStorageDirectories(layout);
+    97	
+    98	    const platformDb = new DatabaseSync(layout.platformDatabasePath);
+    99	    try {
+   100	      this.bootstrapPlatformTables(platformDb, applicationId);
+   101	    } finally {
+   102	      platformDb.close();
+   103	    }
+   104	
+   105	    return layout;
+   106	  }
+   107	
+   108	  private async prepareStorage(applicationId: string): Promise<ApplicationStorageLayout> {
+   109	    const bundle = await this.requireApplicationBundle(applicationId);
+   110	    const layout = await this.ensurePlatformStatePrepared(applicationId);
+   111	    const appDb = new DatabaseSync(layout.appDatabasePath);
+   112	    try {
+   113	      // Opening the database file is enough to materialize app.sqlite before migration execution.
+   114	    } finally {
+   115	      appDb.close();
+   116	    }
+   117	
+   118	    this.resetAppliedMigrationLedgerWhenAppDatabaseEmpty(layout);
+   119	
+   120	    await this.migrationService.applyPendingMigrations({
+   121	      applicationId,
+   122	      appDatabasePath: layout.appDatabasePath,
+
+5. Executable probe result:
+{
+  "cwd": "/private/tmp/api-rev002-socratic-standalone.vwoaip/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime",
+  "cwdExists": false,
+  "executableExists": true,
+  "status": null,
+  "errorCode": "ENOENT",
+  "errorMessage": "spawnSync /Applications/Codex.app/Contents/Resources/codex ENOENT",
+  "stdoutPrefix": ""
+}
+{
+  "cwd": "/private/tmp/api-rev002-socratic-standalone.vwoaip",
+  "cwdExists": true,
+  "executableExists": true,
+  "status": 0,
+  "errorCode": null,
+  "errorMessage": null,
+  "stdoutPrefix": "[experimental] Run the app server or related tooling\n\nUsage: codex app-server [O"
+}

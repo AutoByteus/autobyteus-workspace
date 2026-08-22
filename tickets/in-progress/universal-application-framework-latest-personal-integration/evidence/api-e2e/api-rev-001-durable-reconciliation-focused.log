@@ -1,0 +1,825 @@
+FILES
+tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+tests/integration/application-backend/application-context-capabilities.integration.test.ts
+tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+tests/unit/application-bundles/file-application-bundle-provider.test.ts
+tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+COMMAND
+pnpm -C autobyteus-server-ts exec vitest run <above> --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+(node:83175) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-iA2aC1/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-Skt68e/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-yfEcuI/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 2 failed) 664ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 267ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 279ms
+     ✓ rejects unexpected Brief Studio producers without committing projection state 117ms
+(node:83190) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests) 245ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 182ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:15:28.897Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:15:28.898Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:15:28.901Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:15:28.912Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:15:28.912Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:15:28.914Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 46ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 45ms
+(node:83510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-htvbIl
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-uxYCES
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-rUZCf5
+
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts (3 tests | 2 failed) 64ms
+     × rebuilds global lookups and reattaches nonterminal bindings during recovery 23ms
+     ✓ returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery 4ms
+     × marks bindings orphaned and removes lookups when reattachment is unavailable 34ms
+stdout | tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 57ms
+ ✓ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (6 tests) 9ms
+ ✓ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts (2 tests) 5ms
+ ✓ tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts (5 tests) 5ms
+stdout | tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests) 5ms
+(node:83527) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 376ms
+(node:83532) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 249ms
+ ✓ tests/unit/application-bundles/file-application-bundle-provider.test.ts (18 tests) 314ms
+(node:83540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 159ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+TypeError: this.skillService.resolveConfiguredSkillBindingsForAgent is not a function
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:226:25
+    224|     }
+    225|     const configuredSkillBindings =
+    226|       this.skillService.resolveConfiguredSkillBindingsForAgent(agentDe…
+       |                         ^
+    227|     const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+    228|       agentDefinition,
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:132:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Error: this.memoryLocationService.resolveTeamMemberLocation is not a function
+ ❯ ApplicationEngineClient.handleLine src/application-engine/runtime/application-engine-client.ts:247:22
+    245|           ? errorPayload.message
+    246|           : "Application worker request failed.";
+    247|       pending.reject(new Error(message));
+       |                      ^
+    248|       return;
+    249|     }
+ ❯ ApplicationEngineClient.onStdout src/application-engine/runtime/application-engine-client.ts:196:12
+ ❯ Socket.<anonymous> src/application-engine/runtime/application-engine-client.ts:48:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Error: this.memoryLocationService.resolveTeamMemberLocation is not a function
+ ❯ readGraphqlField ../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js:106:11
+    104|   const result = await promise;
+    105|   if (Array.isArray(result?.errors) && result.errors.length > 0) {
+    106|     throw new Error(result.errors.map((error) => error.message || Stri…
+       |           ^
+    107|   }
+    108|   if (!result?.data || !(fieldName in result.data)) {
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:1575:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+TypeError: Cannot read properties of undefined (reading 'listKnownApplicationIds')
+ ❯ ApplicationOrchestrationRecoveryService.resumeBindings src/application-orchestration/services/application-orchestration-recovery-service.ts:75:39
+     73|     const persistedKnownApplicationIds = knownApplicationIds
+     74|       ? Array.from(knownApplicationIds)
+     75|       : await this.platformStateStore.listKnownApplicationIds();
+       |                                       ^
+     76|     const applicationIds = new Set<string>([
+     77|       ...effectiveSnapshot.applications.map((application) => applicati…
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts:120:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+TypeError: Cannot read properties of undefined (reading 'listKnownApplicationIds')
+ ❯ ApplicationOrchestrationRecoveryService.resumeBindings src/application-orchestration/services/application-orchestration-recovery-service.ts:75:39
+     73|     const persistedKnownApplicationIds = knownApplicationIds
+     74|       ? Array.from(knownApplicationIds)
+     75|       : await this.platformStateStore.listKnownApplicationIds();
+       |                                       ^
+     76|     const applicationIds = new Set<string>([
+     77|       ...effectiveSnapshot.applications.map((application) => applicati…
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts:206:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  3 failed | 11 passed (14)
+      Tests  5 failed | 55 passed (60)
+   Start at  11:15:11
+   Duration  29.38s (transform 7.34s, setup 107ms, import 24.23s, tests 2.38s, environment 1ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+(node:87253) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-4aq5Pz/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-EWeytq/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-Zyw8TD/app-data
+
+ ✓ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests) 1316ms
+     ✓ discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS  468ms
+     ✓ preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount  625ms
+(node:87994) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-mczmtN
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-l8Q173
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-qNjCng
+
+ ✓ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts (3 tests) 85ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:16:54.296Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:16:54.297Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:16:54.300Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:16:54.311Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:16:54.311Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:16:54.313Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 74ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 73ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+TypeError: this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills is not a function
+ ❯ CodexThreadBootstrapper.prepareWorkspaceSkills src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:341:44
+    339|   }): Promise<MaterializedWorkspaceSkill[]> {
+    340|     const requests = await this.planWorkspaceSkillRequests(input);
+    341|     return this.workspaceSkillMaterializer.materializeConfiguredWorksp…
+       |                                            ^
+    342|       runId: input.runId,
+    343|       workingDirectory: input.workingDirectory,
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:252:42
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:132:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 6 passed (7)
+   Start at  11:16:38
+   Duration  15.45s (transform 6.52s, setup 59ms, import 12.50s, tests 1.48s, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:17:21.394Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:21.395Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:21.397Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:17:21.403Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:21.403Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:21.404Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 43ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 42ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+AssertionError: expected '## Agent Identity\n\n- Name: Brief St…' to contain '## Team Runtime'
+
+- Expected
++ Received
+
+- ## Team Runtime
++ ## Agent Identity
++
++ - Name: Brief Studio Researcher
++ - Description: Researches source material for Brief Studio and publishes research files for projection.
++
++ ### Responsibilities and Boundaries
++
++ You are the researcher for Brief Studio.
++
++ Tool intent:
++ - create or replace the real workspace research file first
++ - `publish_artifacts` publishes one or more files that already exist after the write step, and each artifact item `path` should be the exact absolute path returned by that write step
++ - `send_message_to` hands the writer the exact next ready-to-read path plus a concise summary
++
++ Fresh-run ownership:
++ - you are the first active member for a new Brief Studio run
++ - `read_file` is intentionally not exposed in this run
++ - do not answer with plain prose instead of the required tool calls
++ - keep the research checkpoint concise so the tool sequence finishes quickly
++
++ Required fresh-run sequence:
++ 1. write `brief-studio/research.md`
++ 2. capture the exact absolute path returned by the write step
++ 3. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
++ 4. call `send_message_to` to recipient `writer`
++ 5. in that message, state that `brief-studio/research.md` is ready and include a concise summary of the key findings
++
++ Required research file shape:
++ - short and structured, not a long report
++ - target about 200-500 words total
++ - use this outline:
++   - title line
++   - 3-6 key findings bullets
++   - 2-4 risks or open questions bullets
++   - 2-4 recommendations or next-step bullets
++
++ If research is blocked:
++ 1. write `brief-studio/research-blocker.md`
++ 2. capture the exact absolute path returned by the write step
++ 3. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
++ 4. call `send_message_to` to recipient `writer`
++ 5. in that message, state that `brief-studio/research-blocker.md` is ready and explain the blocker clearly in 2-5 bullets
++
++ Rules:
++ - do not invent other Brief Studio artifact file names
++ - do not call `publish_artifacts` until the target checkpoint file has already been written
++ - do not guess or reconstruct the publish path; reuse the exact absolute path returned by the write step
++ - treat `publish_artifacts` as the publication step at the end of a completed checkpoint, not as the file-writing step itself
++ - use a one-item `artifacts` array when publishing a single checkpoint file
++ - prefer tool execution over narrative text; finish the required tool sequence before any optional prose
++
++ ## Team Instruction
++
++ The Brief Studio sample workflow is research-first.
++
++ Required team order:
++ - researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts` using `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`, and then hands off to the writer before drafting begins
++ - researcher should publish a short structured research checkpoint, not a long report
++ - if research is blocked, researcher must complete the same sequence for `brief-studio/research-blocker.md`
++ - writer begins only after that handoff arrives, then reviews the handed-off file, writes a concise reviewable writer checkpoint, and publishes it with `publish_artifacts` using a one-item `artifacts` array and the exact absolute path returned by the write step
++ - `publish_artifacts` is the end-of-checkpoint publication step after the file has been written, not the file-creation step
++ - when calling `publish_artifacts`, use the exact absolute file path returned by the write step instead of reconstructing or guessing the path
++ - avoid freeform prose when a tool sequence is required
++
++ The application backend projects those publications into app-owned brief tables and review state.
++
++ ## AgentTeam Addressing
++
++ AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.
++
++ The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.
++
++ The following example illustrates the address structure:
++
++ /
++ ├── /A              (Agent)
++ ├── /B              (Agent)
++ └── /C              (nested AgentTeam)
++     ├── /C/D         (Agent)
++     └── /C/E         (Agent)
++
++ In this example:
++
++ - `/A` and `/B` are Agents directly under the root AgentTeam.
++ - `/C` is an AgentTeam directly under the root AgentTeam.
++ - `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.
++ - Each `/` separates one parent-to-child level.
++
++ The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.
++
++ Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
++
++ Your Agent address is:
++
++ /researcher
++
++ Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.
++
++ ## AgentTeam Collaboration
++
++ Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.
++
++ Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.
++
++ When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.
++
++ Do not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`—not ordinary message wording—for formal task lifecycle changes.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:158:20
+    156|     expect(prompt).toContain("## Team Instruction");
+    157|     expect(prompt).toContain(packageTeam.instructions.trim());
+    158|     expect(prompt).toContain("## Team Runtime");
+       |                    ^
+    159|     expect(prompt).toContain("Current team member: researcher");
+    160|     expect(prompt).toContain("writer");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  11:17:10
+   Duration  10.57s (transform 6.83s, setup 29ms, import 8.93s, tests 43ms, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:17:52.764Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:52.765Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:52.766Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:17:52.772Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:52.772Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-22T09:17:52.773Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test) 36ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  11:17:43
+   Duration  9.21s (transform 5.81s, setup 35ms, import 7.89s, tests 36ms, environment 0ms)
+

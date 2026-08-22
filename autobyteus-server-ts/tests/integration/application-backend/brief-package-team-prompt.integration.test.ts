@@ -5,6 +5,7 @@ import { AgentDefinitionService } from "../../../src/agent-definition/services/a
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -56,31 +57,43 @@ describe("Brief package team prompt authority", () => {
 
     const globalAgentLookup = vi.spyOn(AgentDefinitionService, "getInstance");
     const globalTeamLookup = vi.spyOn(AgentTeamDefinitionService, "getInstance");
+    const researcherNode = {
+      kind: "agent",
+      address: "/researcher",
+      agentDefinitionId: researcherDefinitionId,
+      agentRunId: "brief-researcher-run",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    } as const;
+    const writerNode = {
+      kind: "agent",
+      address: "/writer",
+      agentDefinitionId: buildTeamLocalAgentDefinitionId(teamResource.definitionId, "writer"),
+      agentRunId: "brief-writer-run",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    } as const;
     const memberTeamContext = await new MemberTeamContextBuilder(
       definitions.agentTeamDefinitionService,
     ).build({
-      teamRunId: "brief-team-run",
-      teamDefinitionId: teamResource.definitionId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: "researcher",
-      currentMemberRouteKey: "researcher",
-      currentMemberRunId: "brief-researcher-run",
-      members: [
-        {
-          memberName: "researcher",
-          memberPath: ["researcher"],
-          memberRouteKey: "researcher",
-          memberRunId: "brief-researcher-run",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        },
-        {
-          memberName: "writer",
-          memberPath: ["writer"],
-          memberRouteKey: "writer",
-          memberRunId: "brief-writer-run",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        },
-      ],
+      teamContext: new TeamRunContext({
+        rootTeamRunId: "brief-team-run",
+        teamRunId: "brief-team-run",
+        teamBackendKind: TeamBackendKind.MIXED,
+        teamNode: {
+          kind: "agent_team",
+          address: "/",
+          teamDefinitionId: teamResource.definitionId,
+          teamRunId: "brief-team-run",
+          coordinatorAddress: "/researcher",
+          children: [researcherNode, writerNode],
+        } as never,
+        handoffs: [{
+          from: "/researcher",
+          to: "/writer",
+          rules: ["When research is ready."],
+        }],
+        runtimeContext: null,
+      }),
+      agentNode: researcherNode as never,
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
     });
     const createAgentToolMcpSession = vi.fn((input: {
@@ -100,14 +113,14 @@ describe("Brief package team prompt authority", () => {
     }));
     const bootstrapper = new CodexThreadBootstrapper(
       {
-        materializeConfiguredCodexWorkspaceSkills: vi.fn(async () => []),
+        materializeConfiguredWorkspaceSkills: vi.fn(async () => []),
       } as never,
       {
         resolveWorkingDirectory: vi.fn(async () => workspaceRoot),
       } as never,
       definitions.agentDefinitionService,
       {
-        resolveConfiguredSkillsForAgent: vi.fn(() => []),
+        resolveConfiguredSkillBindingsForAgent: vi.fn(() => []),
       } as never,
       {
         acquireClient: vi.fn(),
@@ -133,7 +146,7 @@ describe("Brief package team prompt authority", () => {
     }));
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
-    expect(memberTeamContext.teamInstruction).toBe(packageTeam.instructions.trim());
+    expect(memberTeamContext.authoredTeamInstruction).toBe(packageTeam.instructions.trim());
     expect(packageTeam.instructions).toContain(
       "researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts`",
     );
@@ -142,14 +155,19 @@ describe("Brief package team prompt authority", () => {
     expect(prompt).toContain(researcher.instructions.trim());
     expect(prompt).toContain("## Team Instruction");
     expect(prompt).toContain(packageTeam.instructions.trim());
-    expect(prompt).toContain("## Team Runtime");
-    expect(prompt).toContain("Current team member: researcher");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("Your Agent address is:\n\n/researcher");
+    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).toContain("writer");
     expect(createAgentToolMcpSession).toHaveBeenCalledWith(expect.objectContaining({
       owner: expect.objectContaining({
         runId: "brief-researcher-run",
-        teamRunId: "brief-team-run",
-        memberRouteKey: "researcher",
+        teamIdentity: {
+          rootTeamRunId: "brief-team-run",
+          memberAddress: "/researcher",
+          agentRunId: "brief-researcher-run",
+        },
       }),
       runtimeExposure: expect.objectContaining({
         requestedToolNames: expect.arrayContaining(["publish_artifacts", "send_message_to"]),

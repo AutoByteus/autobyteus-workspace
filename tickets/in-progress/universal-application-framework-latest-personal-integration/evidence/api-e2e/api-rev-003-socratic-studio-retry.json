@@ -1,0 +1,40 @@
+{
+  "startedAt": "2026-08-22T11:11:07.994Z",
+  "polls": [
+    {
+      "at": "2026-08-22T11:11:19.544Z",
+      "live": "Tutor is responding…",
+      "messages": "1"
+    },
+    {
+      "at": "2026-08-22T11:11:22.551Z",
+      "live": "Tutor is responding…",
+      "messages": "2"
+    },
+    {
+      "at": "2026-08-22T11:11:25.556Z",
+      "live": "Tutor is responding…",
+      "messages": "2"
+    },
+    {
+      "at": "2026-08-22T11:11:28.564Z",
+      "live": "Tutor is responding…",
+      "messages": "2"
+    },
+    {
+      "at": "2026-08-22T11:11:31.571Z",
+      "live": "Tutor is responding…",
+      "messages": "2"
+    },
+    {
+      "at": "2026-08-22T11:11:34.582Z",
+      "live": "Tutor response saved",
+      "messages": "3"
+    }
+  ],
+  "before": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\nActive\nLesson lesson-7c4cf330-67b5-46ec-8d41-8215e498360d\nUpdated 22.8.2026, 13:08:53\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\n\nlessonId lesson-7c4cf330-67b5-46ec-8d41-8215e498360d\n\nActive\nCreated 22.8.2026, 13:08:53\nUpdated 22.8.2026, 13:08:53\nLESSON RECORD\nlesson-7c4cf330-67b5-46ec-8d41-8215e498360d\nStatus active\nCONVERSATION\n1 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor connected\n\nLive text appears here while the tutor responds. Completed turns remain in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n22.8.2026, 13:08:53\n\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nNo notifications yet.",
+  "enabled": true,
+  "passed": true,
+  "after": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\nActive\nLesson lesson-7c4cf330-67b5-46ec-8d41-8215e498360d\nUpdated 22.8.2026, 13:11:31\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\n\nlessonId lesson-7c4cf330-67b5-46ec-8d41-8215e498360d\n\nActive\nCreated 22.8.2026, 13:08:53\nUpdated 22.8.2026, 13:11:31\nLESSON RECORD\nlesson-7c4cf330-67b5-46ec-8d41-8215e498360d\nStatus active\nCONVERSATION\n3 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor response saved\n\nThe authoritative tutor response is shown in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n22.8.2026, 13:08:53\n\nAPI REV 003: Solve 3x + 5 = 20 using Socratic questions.\n\nstudent\nFollow_up\n22.8.2026, 13:11:16\n\nWhat should I isolate first?\n\ntutor\nLesson_response\n22.8.2026, 13:11:31\n\nStart with the variable you’re solving for. What operation is directly attached to it? Undo that operation first using its inverse.\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nlesson.response_received\n22.8.2026, 13:11:31\n{\n  \"lessonId\": \"lesson-7c4cf330-67b5-46ec-8d41-8215e498360d\",\n  \"bindingId\": \"890f7a22-e98a-49fd-bdb4-72ed8563b3ed\",\n  \"revisionId\": \"d3d01491-d7b5-4714-8fbb-c7c5d718dc0a\",\n  \"runId\": \"socratic_math_tutor_07cba4f593bd4260a67209f122bdbedc\"\n}",
+  "finishedAt": "2026-08-22T11:11:34.627Z"
+}

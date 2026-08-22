@@ -106,8 +106,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "5",
-      frontendSdkContractVersion: "5",
+      backendDefinitionContractVersion: "6",
+      frontendSdkContractVersion: "6",
     },
     supportedExposures: {
       queries: false,
@@ -134,7 +134,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
     `import { DatabaseSync } from 'node:sqlite'
 
 export default {
-  definitionContractVersion: '5',
+  definitionContractVersion: '6',
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
@@ -178,7 +178,7 @@ export default {
 
       const teamAddress = {
         bindingId: team.bindingId,
-        target: { kind: 'AGENT_TEAM_MEMBER', memberAddress: '/researcher' },
+        target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: team.runtime.members[0].agentRunId },
       }
       const sent = await context.agentExecution.sendInput({
         address: teamAddress,
@@ -411,22 +411,20 @@ describe("Application context capability integration", () => {
       }) => {
         teamRunCount += 1;
         return {
-        teamRunId,
-        config: {
-          rootTeam: {
-            kind: "agent_team",
-            address: "/",
-            teamRunId,
-            teamDefinitionId: "team-def-1",
-            coordinatorAddress: "/researcher",
-            children: memberConfigs.map((memberConfig) => ({
-              kind: "agent",
-              address: memberConfig.memberAddress,
-              agentRunId: `${teamRunId}::researcher`,
-            })),
-          },
-        },
-      }; }),
+          teamRunId,
+          getExecutionTreeSnapshot: () => ({
+            rootTeam: {
+              kind: "configured_team",
+              address: "/",
+              members: memberConfigs.map((memberConfig) => ({
+                kind: "configured_agent",
+                address: memberConfig.memberAddress,
+                agentRunId: `${teamRunId}::researcher`,
+              })),
+            },
+          }),
+        };
+      }),
       resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
       terminateTeamRun: vi.fn(async () => undefined),
     };
@@ -565,7 +563,7 @@ describe("Application context capability integration", () => {
         subscribe: vi.fn(async (input: {
           applicationId: string;
           subscriptionId: string;
-          address: { bindingId: string; target: { kind: string; memberAddress?: string } };
+          address: { bindingId: string; target: { kind: string; agentRunId?: string } };
           emitter: { emitEvent: (event: unknown) => Promise<void> };
         }) => {
           await input.emitter.emitEvent({
@@ -575,12 +573,7 @@ describe("Application context capability integration", () => {
             address: input.address,
             runtimeSubject: "TEAM_RUN",
             producer: {
-              executionAddress: {
-                rootTeamRunId: "team-run-1",
-                taskTeamRunIds: [],
-                memberAddress: "/researcher",
-                taskAgentRunId: null,
-              },
+              agentRunId: "team-run-1::researcher",
               runtimeKind: "AGENT_TEAM_MEMBER",
               displayName: "researcher",
             },
@@ -608,7 +601,7 @@ describe("Application context capability integration", () => {
       observedEvents: Array<{
         sequence: number;
         applicationId: string;
-        address: { bindingId: string; target: { kind: string; memberAddress?: string } };
+        address: { bindingId: string; target: { kind: string; agentRunId?: string } };
         runtimeSubject: string;
         producer: unknown;
         event: { type: string };
@@ -662,16 +655,11 @@ describe("Application context capability integration", () => {
       applicationId: APPLICATION_ID,
       address: {
         bindingId: result.team.bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/researcher" },
+        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::researcher" },
       },
       runtimeSubject: "TEAM_RUN",
       producer: {
-        executionAddress: {
-          rootTeamRunId: "team-run-1",
-          taskTeamRunIds: [],
-          memberAddress: "/researcher",
-          taskAgentRunId: null,
-        },
+        agentRunId: "team-run-1::researcher",
         runtimeKind: "AGENT_TEAM_MEMBER",
         displayName: "researcher",
       },
@@ -704,7 +692,7 @@ describe("Application context capability integration", () => {
     expect(agentRunService.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionId: "agent-def-1",
       llmModelIdentifier: "gpt-test",
-      applicationExecutionContext: expect.objectContaining({ applicationId: APPLICATION_ID }),
+      applicationBinding: expect.objectContaining({ applicationId: APPLICATION_ID }),
     }));
     expect(teamRunService.createTeamRun).toHaveBeenCalledTimes(2);
     expect(agentPostUserMessage).toHaveBeenCalledWith(expect.objectContaining({
@@ -714,7 +702,7 @@ describe("Application context capability integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ content: "team initial input", metadata: { phase: "initial-team" } }),
-      "/researcher",
+      "team-run-1::researcher",
     );
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
@@ -728,7 +716,7 @@ describe("Application context capability integration", () => {
         })],
         metadata: { phase: "follow-up" },
       }),
-      "/researcher",
+      "team-run-1::researcher",
     );
     expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("agent-run-1");
     expect(teamRunService.terminateTeamRun).toHaveBeenCalledWith("team-run-1");

@@ -9,9 +9,7 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execut
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
-  type TeamRunEventListener,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
 import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
@@ -61,16 +59,9 @@ const agentBinding: ApplicationAgentBindingRecord = {
   executionResourceRef: { source: "bundle", kind: "AGENT", localId: "agent" },
   runtime: {
     subject: "AGENT_RUN",
-    runId: "agent-run",
+    agentRunId: "agent-run",
     definitionId: "agent-definition",
-    members: [{
-      memberName: "agent",
-      memberRouteKey: "agent",
-      displayName: "Agent",
-      teamPath: [],
-      runId: "agent-run",
-      runtimeKind: "AGENT",
-    }],
+    members: [],
   },
   createdAt: NOW,
   updatedAt: NOW,
@@ -86,23 +77,19 @@ const teamBinding: ApplicationAgentBindingRecord = {
   executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run",
+    teamRunId: "team-run",
     definitionId: "team-definition",
     members: [
       {
-        memberName: "researcher",
-        memberRouteKey: "researcher",
+        memberAddress: "/researcher",
         displayName: "Researcher",
-        teamPath: ["researcher"],
-        runId: "researcher-run",
+        agentRunId: "researcher-run",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
-        memberName: "writer",
-        memberRouteKey: "writer",
+        memberAddress: "/writer",
         displayName: "Writer",
-        teamPath: ["writer"],
-        runId: "writer-run",
+        agentRunId: "writer-run",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
@@ -129,7 +116,7 @@ describe("Application agent communication WebSocket integration", () => {
   let baseUrl: string;
   let lifecycleHub: ApplicationRunBindingLifecycleHub;
   let agentListeners: Set<(event: AgentRunEvent) => void>;
-  let teamListeners: Set<TeamRunEventListener>;
+  let teamListeners: Set<(input: { event: TeamRunEvent }) => void>;
   let agentPostUserMessage: ReturnType<typeof vi.fn>;
   let teamPostMessage: ReturnType<typeof vi.fn>;
   const connections: ApplicationAgentConnection[] = [];
@@ -184,7 +171,7 @@ describe("Application agent communication WebSocket integration", () => {
       } as never,
       teamRunManager: {
         getActiveTeamRun: (runId: string) => runId === "team-run" ? {
-          subscribeToEvents: (listener: TeamRunEventListener) => {
+          subscribeToEvents: (listener: (input: { event: TeamRunEvent }) => void) => {
             teamListeners.add(listener);
             return () => teamListeners.delete(listener);
           },
@@ -237,7 +224,7 @@ describe("Application agent communication WebSocket integration", () => {
     } as const satisfies ApplicationAgentTargetAddress;
     const memberAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-run" },
     } as const satisfies ApplicationAgentTargetAddress;
 
     const agentConnection = client.agentCommunication.connect(agentAddress);
@@ -269,7 +256,7 @@ describe("Application agent communication WebSocket integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ content: "member input" }),
-      { kind: "route_key", memberRouteKey: "researcher" },
+      "researcher-run",
     );
 
     for (const listener of agentListeners) listener({
@@ -285,13 +272,11 @@ describe("Application agent communication WebSocket integration", () => {
       },
     });
     const emitTeam = (event: TeamRunEvent): void => {
-      for (const listener of teamListeners) listener(event);
+      for (const listener of teamListeners) listener({ event });
     };
     emitTeam({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: "team-run",
-      sourcePath: [],
-      data: { status: "idle" } as never,
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      payload: { messageId: "non-agent-event" } as never,
     });
     for (const [memberRouteKey, memberName, memberRunId, turnId] of [
       ["writer", "writer", "writer-run", "turn-writer"],
@@ -299,20 +284,15 @@ describe("Application agent communication WebSocket integration", () => {
     ] as const) {
       emitTeam({
         eventSourceType: TeamRunEventSourceType.AGENT,
-        teamRunId: "team-run",
-        sourcePath: [memberRouteKey],
-        data: {
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          memberName,
-          memberRunId,
-          memberPath: [memberRouteKey],
-          memberRouteKey,
-          agentEvent: {
-            eventType: AgentRunEventType.TURN_STARTED,
-            runId: memberRunId,
-            statusHint: null,
-            payload: { turnId, providerSecret: "must-not-cross" },
-          },
+        execution: {
+          rootTeamRunId: "team-run",
+          memberAddress: `/${memberRouteKey}`,
+          agentRunId: memberRunId,
+        },
+        payload: {
+          eventType: AgentRunEventType.TURN_STARTED,
+          statusHint: null,
+          details: { turnId, providerSecret: "must-not-cross" },
         },
       });
     }
@@ -326,7 +306,7 @@ describe("Application agent communication WebSocket integration", () => {
       applicationId: APPLICATION_ID,
       address: agentAddress,
       runtimeSubject: "AGENT_RUN",
-      producer: { runId: "agent-run", runtimeKind: "AGENT" },
+      producer: { agentRunId: "agent-run", runtimeKind: "AGENT" },
       event: { type: "TEXT_DELTA", delta: "hello" },
     });
     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
@@ -338,7 +318,7 @@ describe("Application agent communication WebSocket integration", () => {
     expect(memberEvents[0]).toMatchObject({
       sequence: 1,
       address: memberAddress,
-      producer: { memberRouteKey: "researcher", runId: "researcher-run" },
+      producer: { agentRunId: "researcher-run", displayName: "Researcher" },
       event: { type: "TURN_STARTED" },
     });
 

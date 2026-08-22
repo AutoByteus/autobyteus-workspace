@@ -74,8 +74,8 @@ const createBundle = (
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "4",
-      frontendSdkContractVersion: "4",
+      backendDefinitionContractVersion: "6",
+      frontendSdkContractVersion: "6",
     },
     supportedExposures: {
       queries: false,
@@ -123,7 +123,7 @@ describe("Application backend custom WebSocket integration", () => {
       `import { appendFileSync } from 'node:fs'
 
 export default {
-  definitionContractVersion: '5',
+  definitionContractVersion: '6',
   webSocketRoutes: [{
     path: '/rooms/:roomId',
     async open(request, session, context) {

@@ -7,27 +7,27 @@ import { resolveLessonArtifactPathRule } from "../../../../applications/socratic
 
 describe("app published-artifact semantic path resolvers", () => {
   it("resolves Brief Studio artifacts from absolute paths while preserving canonical app roles", () => {
-    expect(resolveBriefArtifactPathRule("researcher", "/tmp/downloads/brief-studio/research.md")).toMatchObject({
+    expect(resolveBriefArtifactPathRule("/researcher", "/tmp/downloads/brief-studio/research.md")).toMatchObject({
       publicationKind: "research",
       path: "brief-studio/research.md",
     });
-    expect(resolveBriefArtifactPathRule("writer", "/tmp/downloads/final-brief.md")).toMatchObject({
+    expect(resolveBriefArtifactPathRule("/writer", "/tmp/downloads/final-brief.md")).toMatchObject({
       publicationKind: "final",
       path: "brief-studio/final-brief.md",
       readyForReview: true,
     });
-    expect(resolveBriefArtifactPathRule("writer", "C:\\Users\\agent\\Downloads\\brief-studio\\brief-draft.md")).toMatchObject({
+    expect(resolveBriefArtifactPathRule("/writer", "C:\\Users\\agent\\Downloads\\brief-studio\\brief-draft.md")).toMatchObject({
       publicationKind: "draft",
       path: "brief-studio/brief-draft.md",
     });
   });
 
-  it("resolves Brief Studio artifacts from relative historical paths through the same semantic rules", () => {
-    expect(resolveBriefArtifactPathRule("researcher", "brief-studio/research.md")).toMatchObject({
+  it("resolves Brief Studio artifacts from workspace-relative paths through the same semantic rules", () => {
+    expect(resolveBriefArtifactPathRule("/researcher", "brief-studio/research.md")).toMatchObject({
       publicationKind: "research",
       path: "brief-studio/research.md",
     });
-    expect(resolveBriefArtifactPathRule("writer", "brief-studio/final-brief.md")).toMatchObject({
+    expect(resolveBriefArtifactPathRule("/writer", "brief-studio/final-brief.md")).toMatchObject({
       publicationKind: "final",
       path: "brief-studio/final-brief.md",
       readyForReview: true,
@@ -35,10 +35,10 @@ describe("app published-artifact semantic path resolvers", () => {
   });
 
   it("rejects unrecognized Brief Studio artifact filenames for the producer", () => {
-    expect(findBriefArtifactPathRule("researcher", "/tmp/downloads/final-brief.md")).toBeNull();
+    expect(findBriefArtifactPathRule("/researcher", "/tmp/downloads/final-brief.md")).toBeNull();
     expect(() =>
-      resolveBriefArtifactPathRule("researcher", "/tmp/downloads/final-brief.md"),
-    ).toThrow("Unexpected Brief Studio artifact path '/tmp/downloads/final-brief.md' for producer 'researcher'.");
+      resolveBriefArtifactPathRule("/researcher", "/tmp/downloads/final-brief.md"),
+    ).toThrow("Unexpected Brief Studio artifact path '/tmp/downloads/final-brief.md' for producer '/researcher'.");
   });
 
   it("resolves Socratic Math artifacts from absolute paths while preserving canonical lesson roles", () => {
@@ -53,7 +53,7 @@ describe("app published-artifact semantic path resolvers", () => {
     });
   });
 
-  it("resolves Socratic Math artifacts from relative historical paths through the same semantic rules", () => {
+  it("resolves Socratic Math artifacts from workspace-relative paths through the same semantic rules", () => {
     expect(resolveLessonArtifactPathRule("socratic-math/lesson-response.md")).toMatchObject({
       messageKind: "lesson_response",
       path: "socratic-math/lesson-response.md",

@@ -703,8 +703,8 @@ describe("Brief Studio imported package integration", () => {
         resourceKind: "AGENT_TEAM",
         leaves: [
           {
-            memberRouteKey: "researcher",
-            memberName: "researcher",
+            memberAddress: "/researcher",
+            displayName: "researcher",
             agentDefinitionId: researcherDefinitionId,
             llmModelIdentifier: "gpt-test",
             runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -724,8 +724,8 @@ describe("Brief Studio imported package integration", () => {
             },
           },
           {
-            memberRouteKey: "writer",
-            memberName: "writer",
+            memberAddress: "/writer",
+            displayName: "writer",
             agentDefinitionId: writerDefinitionId,
             llmModelIdentifier: "gpt-test",
             runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -794,7 +794,7 @@ describe("Brief Studio imported package integration", () => {
       ingressService,
       publishedArtifactProjectionService,
       memoryLocationService: {
-        resolveTeamMemberLocationFromMetadata: vi.fn(() => null),
+        resolveTeamMemberLocation: vi.fn(async () => null),
       } as never,
       agentTargetAuthorizationService,
       terminalTransitionService,

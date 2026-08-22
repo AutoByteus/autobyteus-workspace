@@ -1,0 +1,37 @@
+API-REV-001 cleanup audit
+port 43141: free
+port 43142: free
+/private/tmp/api-rev001-socratic-standalone.*: 0 remaining
+/private/tmp/api-rev001-standalone-stack.*: 0 remaining
+applications/brief-studio/dist: exists=False
+applications/socratic-math-teacher/dist: exists=False
+autobyteus-application-backend-sdk/dist: exists=False
+autobyteus-application-devkit/dist: exists=False
+autobyteus-application-frontend-sdk/dist: exists=False
+autobyteus-application-sdk-contracts/dist: exists=False
+
+git status --short:
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/
+
+git diff --check:
+PASS
+exit=0

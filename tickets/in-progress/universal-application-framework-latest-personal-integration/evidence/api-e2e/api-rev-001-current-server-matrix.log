@@ -1,0 +1,1540 @@
+# API-REV-001 current application/runtime server matrix
+head=faf32ef7c1d8400e01531fbefefb0bcc7dcfd953
+start=2026-08-22T08:52:54Z
+file_count=68
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (15 tests) 2156ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  558ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1094ms
+     ✓ accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread  352ms
+(node:19995) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-77mayW/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-7iX7KS/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-MDJNlu/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 3 failed) 10ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 7ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 1ms
+     × rejects unexpected Brief Studio producers without committing projection state 1ms
+(node:20000) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts (14 tests | 14 failed) 155ms
+     × fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection 31ms
+     × reconciles Brief Studio launch failures through findByLaunchRequestId 11ms
+     × launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided 16ms
+     × launches Brief Studio from explicit per-member team profiles when defaults are null 12ms
+     × reconciles Brief Studio early events through launchRequestId without event.executionRef 12ms
+     × preserves Brief Studio early same-binding final artifacts when startAgentTeam succeeds after projection 13ms
+     × reconciles Socratic startLesson failures through findByLaunchRequestId 9ms
+     × keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch 8ms
+     × keeps requestHint on the inline whole-team DTO without a pre-send binding fetch 7ms
+     × launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided 6ms
+     × launches Socratic lessons from explicit per-member team profiles when defaults are null 5ms
+     × reconciles Socratic early tutor events through launchRequestId without event.executionRef 8ms
+     × preserves Socratic early same-binding failure state when startLesson succeeds after projection 9ms
+     × fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection 7ms
+(node:20001) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests | 1 failed) 149ms
+     × executes all named capabilities and both explicit starts through the real worker/host boundary 129ms
+     ✓ creates only canonical launch-request tables and columns from both built-in fresh baselines 19ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ❯ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests | 1 failed) 138ms
+     ✓ publishes through the route-backed MCP server for an active run without leaking descriptor secrets 31ms
+     × exposes and calls configured MCP-origin tools over the official Streamable HTTP client 40ms
+     ✓ handles authenticated initialize, tools/list, resources, ping, notification, and SSE 17ms
+     ✓ is consumable by the official Streamable HTTP MCP SDK client over loopback 25ms
+     ✓ calls configured tools and maps semantic failures as MCP tool results 3ms
+     ✓ rejects unknown and unconfigured tools as JSON-RPC invalid params without tool execution 3ms
+     ✓ enforces route gate auth, session, origin, method, content, accept, and protocol rules 5ms
+     ✓ rejects revoked sessions at the route without dispatching tools or leaking descriptor secrets 2ms
+     ✓ rejects old descriptors after in-memory registry reset and accepts a freshly materialized descriptor 4ms
+     ✓ classifies malformed JSON, invalid envelopes, method invalid params, and unknown methods 3ms
+     ✓ allows unauthenticated OPTIONS only for valid local origins 3ms
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts (18 tests | 16 failed) 135ms
+     ✓ treats an empty managed built-in application root as a valid steady state 8ms
+     × lists valid bundles from the managed built-in application root with manifest execution resource slots 12ms
+     × surfaces retired frontend SDK compatibility versions as diagnostics 8ms
+     × surfaces retired backend bundle frontend SDK compatibility versions as diagnostics 7ms
+     × rejects an explicit v3 backend-definition compatibility fixture during discovery 7ms
+     × surfaces malformed manifests as diagnostics instead of crashing discovery 6ms
+     ✓ surfaces legacy top-level resourceSlots as diagnostics instead of silently dropping slots 5ms
+     × surfaces legacy slot field 'allowedResourceKinds' as diagnostics 6ms
+     × surfaces legacy slot field 'allowedResourceOwners' as diagnostics 6ms
+     × surfaces legacy slot field 'defaultResourceRef' as diagnostics 7ms
+     × surfaces legacy slot field 'defaultExecutionResourceRef.owner' as diagnostics 6ms
+     × fails package validation when a discovered resource-slot default does not resolve 7ms
+     × rejects bundles whose application-owned team references a missing local agent 6ms
+     × recursively validates team-local child teams without cataloging them as app-owned roots 14ms
+     × rejects malformed team-local child team configs during application bundle validation 8ms
+     × rejects team-local child teams whose own local agents are missing 7ms
+     × ignores nested packaging mirrors under a discovered package root 7ms
+     × preserves built-in application ids when the same root path is also configured as an additional package root 6ms
+(node:20007) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-orc2XE
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-brmWoc
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-CIymcd
+
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts (3 tests | 2 failed) 28ms
+     × rebuilds global lookups and reattaches nonterminal bindings during recovery 14ms
+     ✓ returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery 3ms
+     × marks bindings orphaned and removes lookups when reattachment is unavailable 11ms
+ ❯ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (6 tests | 6 failed) 13ms
+     × routes a valid startAgent request only through agent creation 7ms
+     × routes a valid startAgentTeam request only through team creation 1ms
+     × rejects an AGENT_TEAM launch passed to startAgent before resolution or side effects 3ms
+     × rejects an AGENT launch passed to startAgentTeam before resolution or side effects 1ms
+     × rejects an AGENT_TEAM resource resolved for startAgent before run creation 0ms
+     × rejects an AGENT resource resolved for startAgentTeam before run creation 0ms
+ ❯ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts (2 tests | 1 failed) 7ms
+     × accepts the exact matching address and rejects extra address or target fields 6ms
+     ✓ installs the terminal listener before the final binding read 0ms
+ ✓ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts (12 tests) 1284ms
+(node:20016) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests | 2 failed) 198ms
+     × starts the app worker through the REST boundary and streams backend notifications over websocket 118ms
+     × keeps the REST boundary app-scoped by taking application identity from the route, not the body 80ms
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts (0 test)
+stdout | tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test | 1 failed) 20ms
+     × routes agent, team, and selected-member input/events through the real SDK and WebSocket boundary 19ms
+(node:20025) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests | 2 failed) 246ms
+     × round-trips readiness-hidden text and binary frames through the real Gateway and child worker 96ms
+     ✓ rejects early raw frames and disabled exposure before opening the worker path 73ms
+     × maps a real worker stop to one safe frontend error and close 75ms
+ ❯ tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts (5 tests | 3 failed) 8ms
+     × resolves Brief Studio artifacts from absolute paths while preserving canonical app roles 3ms
+     × resolves Brief Studio artifacts from relative historical paths through the same semantic rules 1ms
+     × rejects unrecognized Brief Studio artifact filenames for the producer 3ms
+     ✓ resolves Socratic Math artifacts from absolute paths while preserving canonical lesson roles 1ms
+     ✓ resolves Socratic Math artifacts from relative historical paths through the same semantic rules 0ms
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (3 tests | 2 failed) 8ms
+     × derives the shared tutor-member address from the authoritative active team binding 3ms
+     × surfaces wrong binding subjects and missing tutor membership as configuration defects 3ms
+     ✓ requests and carries the shared target address through the generated GraphQL client 2ms
+stdout | tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests | 1 failed) 5ms
+     × attributes nested task-agent events through the closed producer envelope and filters selected members 4ms
+     ✓ drops every non-agent team source before public projection 0ms
+(node:20035) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts (5 tests) 244ms
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts > PublishedArtifactPublicationService > serves revision text from the snapshot after the outside source file is deleted
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+AgentRunManager initialized.
+
+ ✓ tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts (18 tests) 134ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests | 2 failed) 11ms
+     × selects one current package, exposes only its confined surface, and leaves package bytes immutable 3ms
+     × fails before server construction for invalid roots and missing explicit selections 7ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (6 tests) 60ms
+(node:20045) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-storage/application-storage-lifecycle-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-storage/application-storage-lifecycle-service.test.ts (4 tests) 50ms
+ ✓ tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts (2 tests) 58ms
+ ✓ tests/unit/application-orchestration/services/application-published-artifact-delivery-service.test.ts (2 tests) 56ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 56ms
+(node:20050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-launch-override-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-launch-override-store.test.ts (4 tests) 57ms
+(node:20052) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/application-backend/brief-artifact-startup-catchup.test.ts (1 test) 33ms
+ ✓ tests/unit/application-packages/application-package-registry-store.test.ts (1 test) 28ms
+ ✓ tests/unit/application-engine/application-backend-definition-loader.test.ts (3 tests) 19ms
+(node:20055) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-storage/application-platform-state-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-storage/application-platform-state-store.test.ts > ApplicationPlatformStateStore > lists known application ids from existing platform state and reports presence without preparing new state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-platform-state-Tg5vlj
+
+stdout | tests/unit/application-storage/application-platform-state-store.test.ts > ApplicationPlatformStateStore > lists the real long canonical application id instead of the hashed storage key
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-platform-state-Tsn0i0
+
+ ✓ tests/unit/application-storage/application-platform-state-store.test.ts (2 tests) 16ms
+ ✓ tests/unit/application-platform/application-launch-configuration-service.test.ts (5 tests) 18ms
+(node:20058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (1 test) 15ms
+stdout | tests/unit/application-packages/application-package-root-settings-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-packages/application-package-root-settings-store.test.ts (4 tests) 23ms
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, five server units next, and Search last with ordered results
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, five server units next, and Search last with ordered results
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, five server units next, and Search last with ordered results
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Browser Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:92:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+  [errors]: [
+    Error: Required tool unit 'Task Delegation Tools' registration failed: Error: delegation registry unavailable
+        at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:113:11)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        ... 3 lines matching cause stack trace ...
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+      [cause]: Error: delegation registry unavailable
+          at Object.onRegister (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:86:46)
+          at registerTaskDelegationTools (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:31:21)
+          at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:111:11)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at async Promise.allSettled (index 1)
+          at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:138:24)
+          at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:92:5
+          at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+    }
+  ]
+}
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:108:21
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+  [errors]: [
+    Error: Required tool unit 'Media Tools' is missing export 'registerMediaTools'.
+        at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:106:11)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async Promise.allSettled (index 4)
+        at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:138:24)
+        at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:108:21
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+  ]
+}
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a module-load failure and retains the rejected memoized promise
+Required agent tool readiness failed. Error: Required tool unit 'Core Tools' could not load 'autobyteus-ts/tools/register-tools.js': Error: core module unavailable
+    at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:99:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:137:20) {
+  [cause]: Error: core module unavailable
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:26:45
+      at Mock (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+      at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:97:20)
+      at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:137:26)
+      at AgentToolRegistryReadiness.registerRequiredGroups (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/src/startup/agent-tool-loader.ts:131:32)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:123:31
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+      at new Promise (<anonymous>)
+}
+
+ ✓ tests/unit/startup/agent-tool-loader.test.ts (5 tests) 11ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (7 tests) 9ms
+stdout | tests/unit/application-platform/application-run-services.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-run-services.test.ts > application run services > shares one runtime-local real allocator across agent and team launch services
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-run-services.test.ts (1 test) 7ms
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > describes one-item artifact arrays and workspace-relative or absolute paths
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Overwriting existing tool definition for name: 'publish_artifacts'
+Invalid arguments for tool 'publish_artifacts': Required parameter 'artifacts' is missing.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+ ✓ tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts (7 tests) 7ms
+ ✓ tests/unit/application-agent-communication/application-agent-communication-session.test.ts (6 tests) 7ms
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests | 4 failed) 7ms
+     × ships source and packaged team configs with the research-first coordinator handoff 3ms
+     × ships source and packaged agent configs with the intended research-first tool split 1ms
+     × ships source and packaged prompts that require publish-after-write and research-first handoff ordering 1ms
+     × ships source and packaged team/launch guidance that preserves the research-first handoff order 1ms
+(node:20070) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test | 1 failed) 111ms
+     × round-trips structured JSON route bodies through /backend/routes/* 110ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 3ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 3ms
+ ✓ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts (4 tests) 71ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts (6 tests) 17ms
+ ✓ tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts (4 tests) 11ms
+ ✓ tests/unit/application-backend-api-gateway/application-backend-api-gateway-service.test.ts (6 tests) 8ms
+ ✓ tests/unit/application-platform/application-portable-launch-config-policy.test.ts (19 tests) 6ms
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts > AgentToolsMcpRuntime > revokes an application scope without revoking the general process scope, then clears both at process close
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts (1 test) 7ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (2 tests) 6ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (9 tests) 7ms
+ ✓ tests/unit/application-orchestration/application-availability-service.test.ts (8 tests) 5ms
+ ✓ tests/unit/application-packages/application-package-command-service.test.ts (3 tests) 6ms
+ ✓ tests/unit/application-engine/application-websocket-session-registry.test.ts (4 tests) 7ms
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts (9 tests | 9 failed) 12ms
+     × validates the real Brief package with exact token tuning and typed pricing 3ms
+     × rejects a real Brief package containing nested server_url without echoing its value 1ms
+     × rejects a real Brief package containing nested api_url without echoing its value 1ms
+     × rejects a real Brief package containing nested connection_string without echoing its value 1ms
+     × rejects a real Brief package containing nested access_key without echoing its value 1ms
+     × rejects a real Brief package containing nested baseUri without echoing its value 1ms
+     × rejects a real Brief package containing nested service_address without echoing its value 1ms
+     × rejects a real Brief package containing nested client_key without echoing its value 1ms
+     × rejects a real Brief package containing nested auth_config without echoing its value 1ms
+ ✓ tests/unit/application-backend/brief-studio-renderer-semantic-artifacts.test.ts (1 test) 16ms
+ ✓ tests/unit/application-agent-communication/application-agent-input-validator.test.ts (2 tests) 13ms
+ ✓ tests/unit/application-bundles/bundled-application-resource-root.test.ts (3 tests) 10ms
+ ✓ tests/unit/application-backend/socratic-live-tutor-session.test.ts (8 tests) 8ms
+ ✓ tests/unit/application-engine/application-handler-context-factory.test.ts (2 tests) 5ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts (2 tests) 4ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts (14 tests) 5ms
+ ✓ tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts (1 test) 4ms
+stdout | tests/unit/application-capability/application-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-capability/application-capability-service.test.ts (4 tests) 4ms
+ ✓ tests/unit/application-platform/application-run-shutdown-coordinator.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts (2 tests) 3ms
+ ✓ tests/unit/application-storage/application-storage-paths.test.ts (2 tests) 3ms
+ ✓ tests/unit/application-backend/app-owned-graphql-executors.test.ts (2 tests) 4ms
+ ✓ tests/unit/application-orchestration/application-execution-resource-resolver.test.ts (1 test) 3ms
+ ✓ tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/team-lifecycle-websocket.integration.test.ts [ tests/integration/agent/team-lifecycle-websocket.integration.test.ts ]
+Error: Cannot find module '../../../src/agent-team-execution/domain/team-leaf-agent-status-snapshot.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts'
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts:18:1
+     16| } from "../../../src/agent-execution/domain/agent-run-event.js";
+     17| import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent…
+     18| import {
+       | ^
+     19|   buildOrdinaryTeamLeafAgentStatusSnapshot,
+     20|   type TeamLeafAgentStatusSnapshot,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/76]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 72 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-agent-communication-ws.integration.test.ts > Application agent communication WebSocket integration > routes agent, team, and selected-member input/events through the real SDK and WebSocket boundary
+ApplicationAgentConnectionError: The application agent connection transport failed.
+ ❯ Object.connectAgentCommunication ../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts:314:15
+    312|         });
+    313|       } catch {
+    314|         throw new ApplicationAgentConnectionError({
+       |               ^
+    315|           code: "TRANSPORT_FAILED",
+    316|           message: "The application agent connection transport failed.…
+ ❯ Object.connect ../autobyteus-application-frontend-sdk/src/application-client.ts:30:27
+ ❯ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts:245:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/76]⎯
+
+ FAIL  tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts > Application backend custom WebSocket integration > round-trips readiness-hidden text and binary frames through the real Gateway and child worker
+ FAIL  tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts > Application backend custom WebSocket integration > maps a real worker stop to one safe frontend error and close
+ApplicationBackendWebSocketConnectionError: The application backend WebSocket handler is unavailable.
+ ❯ rejectEstablishment ../autobyteus-application-frontend-sdk/src/application-backend-websocket-connection.ts:111:19
+    109|     if (readySettled) return;
+    110|     readySettled = true;
+    111|     const error = new ApplicationBackendWebSocketConnectionError(code);
+       |                   ^
+    112|     rejectReady(error);
+    113|     if (emit) dispatchError(error);
+ ❯ finalize ../autobyteus-application-frontend-sdk/src/application-backend-websocket-connection.ts:120:24
+ ❯ WebSocket.<anonymous> ../autobyteus-application-frontend-sdk/src/application-backend-websocket-transport.ts:77:53
+ ❯ callListener ../node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/event-target.js:290:14
+ ❯ WebSocket.onClose ../node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/event-target.js:220:9
+ ❯ WebSocket.emitClose ../node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket.js:273:10
+ ❯ Socket.socketOnClose ../node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket.js:1346:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/76]⎯
+
+ FAIL  tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts > Application backend mount route transport integration > round-trips structured JSON route bodies through /backend/routes/*
+Error: Application worker process closed unexpectedly (code=1, signal=null).
+ ❯ Object.invokeRoute ../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts:356:15
+    354| 
+    355|       if (!response.ok) {
+    356|         throw new Error(await readErrorMessage(response));
+       |               ^
+    357|       }
+    358| 
+ ❯ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts:194:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/76]⎯
+
+ FAIL  tests/integration/application-backend/application-backend-rest-ws.integration.test.ts > Application backend REST/WS integration > starts the app worker through the REST boundary and streams backend notifications over websocket
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts:431:34
+    429|       },
+    430|     );
+    431|     expect(queryResponse.status).toBe(200);
+       |                                  ^
+    432|     const queryJson = await queryResponse.json() as {
+    433|       result: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/76]⎯
+
+ FAIL  tests/integration/application-backend/application-backend-rest-ws.integration.test.ts > Application backend REST/WS integration > keeps the REST boundary app-scoped by taking application identity from the route, not the body
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts:624:29
+    622|     );
+    623| 
+    624|     expect(response.status).toBe(200);
+       |                             ^
+    625|     expect(await response.json()).toEqual({
+    626|       result: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/76]⎯
+
+ FAIL  tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Error: Application worker process closed unexpectedly (code=1, signal=null).
+ ❯ ChildProcess.<anonymous> src/application-engine/runtime/application-engine-client.ts:59:21
+     57|         return;
+     58|       }
+     59|       const error = new Error(
+       |                     ^
+     60|         `Application worker process closed unexpectedly (code=${String…
+     61|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+Error: Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package
+ ❯ StandaloneApplicationSelectionService.resolve src/standalone-application-host/services/standalone-application-selection-service.ts:56:13
+     54|     const packageStat = await fs.stat(config.packageRoot).catch(() => …
+     55|     if (!packageStat?.isDirectory()) {
+     56|       throw new Error(`Standalone package root is not a directory: ${c…
+       |             ^
+     57|     }
+     58|     const provider = new SelectedApplicationBundleProvider(config.loca…
+ ❯ validateStandaloneApplicationPackage src/application-platform/launch-configuration/application-standalone-package-validator.ts:66:27
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:22:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:485:13
+    483|     const [bundle] = await bundleService.listApplications();
+    484|     if (!bundle) {
+    485|       throw new Error("Expected Brief Studio bundle to be discoverable…
+       |             ^
+    486|     }
+    487|     applicationId = bundle.id;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+TypeError: Cannot read properties of undefined (reading 'stop')
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:859:21
+    857|       await engineRuntime.engineLauncher.stop(applicationId);
+    858|     }
+    859|     dispatchService.stop();
+       |                     ^
+    860|     engineRuntime.backendGateway.dispose();
+    861|     if (app) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:24:14
+     22| 
+     23| const readJson = async <T>(filePath: string): Promise<T> =>
+     24|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     25| 
+     26| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:49:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:24:14
+     22| 
+     23| const readJson = async <T>(filePath: string): Promise<T> =>
+     24|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     25| 
+     26| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:65:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged prompts that require publish-after-write and research-first handoff ordering
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:90:38
+     88|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+     89|     );
+     90|     const packagedResearcherPrompt = await readText(
+       |                                      ^
+     91|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+     92|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/76]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch guidance that preserves the research-first handoff order
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:131:32
+    129|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+    130|     );
+    131|     const packagedTeamPrompt = await readText(
+       |                                ^
+    132|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+    133|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/76]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package'
+ ❯ visit tests/integration/application-backend/standalone-application-server.integration.test.ts:24:21
+     22|   const hash = createHash("sha256");
+     23|   const visit = async (directory: string): Promise<void> => {
+     24|     const entries = await fs.readdir(directory, { withFileTypes: true …
+       |                     ^
+     25|     entries.sort((left, right) => left.name.localeCompare(right.name));
+     26|     for (const entry of entries) {
+ ❯ hashTree tests/integration/application-backend/standalone-application-server.integration.test.ts:37:3
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:75:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/76]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+AssertionError: expected [Function] to throw error including 'Standalone application \'missing-app\…' but got 'Standalone package root is not a dire…'
+
+Expected: "Standalone application 'missing-app' was not found"
+Received: "Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package"
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:288:5
+    286|     ).rejects.toThrow("Standalone package root is not a directory");
+    287| 
+    288|     await expect(
+       |     ^
+    289|       new StandaloneApplicationSelectionService().resolve(
+    290|         resolveStandaloneApplicationHostConfig({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/76]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:33:5
+     31|     tempRoots.push(root);
+     32|     const packageRoot = path.join(root, "package");
+     33|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     34|     return {
+     35|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:54:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/76]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:33:5
+     31|     tempRoots.push(root);
+     32|     const packageRoot = path.join(root, "package");
+     33|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     34|     return {
+     35|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:102:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection
+AssertionError: expected [Function] to throw error including 'Application execution resource slot \…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "Application execution resource slot 'draftingTeam' has invalid persisted override"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Brief Studio launch failures through findByLaunchRequestId
+AssertionError: expected [Function] to throw error including 'startAgentTeam failed after binding c…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "startAgentTeam failed after binding creation"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+    153|     const launchedAt = new Date().toISOString();
+    154|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    155|     const draftingTeam = await context.agentResources.requireRunnable(…
+       |                                                       ^
+    156| 
+    157|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:508:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Brief Studio from explicit per-member team profiles when defaults are null
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+    153|     const launchedAt = new Date().toISOString();
+    154|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    155|     const draftingTeam = await context.agentResources.requireRunnable(…
+       |                                                       ^
+    156| 
+    157|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:581:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Brief Studio early events through launchRequestId without event.executionRef
+Error: Brief Studio artifact projection requires producer.agentRunId.
+ ❯ Object.projectArtifactRevision ../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts:161:13
+    159|   }): Promise<void> {
+    160|     if (!input.producer?.agentRunId) {
+    161|       throw new Error("Brief Studio artifact projection requires produ…
+       |             ^
+    162|     }
+    163|     const producer = input.producer;
+ ❯ Object.handlePersistedArtifact ../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts:91:16
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:642:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > preserves Brief Studio early same-binding final artifacts when startAgentTeam succeeds after projection
+AssertionError: promise rejected "TypeError: context.agentResources.require…" instead of resolving
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:720:7
+    718|       briefId: createdBrief.briefId,
+    719|       llmModelIdentifier: "gpt-test",
+    720|     })).resolves.toEqual({
+       |       ^
+    721|       briefId: createdBrief.briefId,
+    722|       bindingId: "binding-brief-1",
+
+Caused by: TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:717:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Socratic startLesson failures through findByLaunchRequestId
+AssertionError: expected [Function] to throw error including 'lesson start failed after binding cre…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "lesson start failed after binding creation"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > keeps requestHint on the inline whole-team DTO without a pre-send binding fetch
+Error: Application agent-team binding 'binding-lesson-1' does not contain agentRunId 'tutor'.
+ ❯ createApplicationAgentTeamMemberTargetAddress ../autobyteus-application-backend-sdk/src/application-agent-target-address.ts:70:11
+ ❯ deriveTutorTargetAddress ../applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:51:10
+     49|     throw new Error("Socratic tutor binding must be an agent-team bind…
+     50|   }
+     51|   return createApplicationAgentTeamMemberTargetAddress(binding, "tutor…
+       |          ^
+     52| };
+     53| 
+ ❯ Object.getLesson ../applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts:41:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:936:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Socratic lessons from explicit per-member team profiles when defaults are null
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1003:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Socratic early tutor events through launchRequestId without event.executionRef
+TypeError: Provided value cannot be bound to SQLite parameter 2.
+ ❯ Object.attachBinding ../applications/socratic-math-teacher/backend-src/repositories/lesson-repository.ts:132:7
+    130|               artifact_catchup_completed_at = NULL
+    131|         WHERE lesson_id = ?`,
+    132|     ).run(
+       |       ^
+    133|       input.bindingId,
+    134|       input.runId,
+ ❯ ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:108:26
+ ❯ withTransaction ../applications/socratic-math-teacher/backend-src/repositories/app-database.ts:15:20
+ ❯ ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:93:7
+ ❯ withAppDatabase ../applications/socratic-math-teacher/backend-src/repositories/app-database.ts:6:12
+ ❯ Object.resolveLessonIdForBinding ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:92:12
+ ❯ Object.projectArtifactRevision ../applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts:127:66
+ ❯ Object.handlePersistedArtifact ../applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts:69:16
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1078:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > preserves Socratic early same-binding failure state when startLesson succeeds after projection
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1178:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/76]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection
+AssertionError: expected [Function] to throw error including 'Application execution resource slot \…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "Application execution resource slot 'lessonTutorTeam' has invalid manifest default"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/76]⎯
+
+ FAIL  tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts > app published-artifact semantic path resolvers > resolves Brief Studio artifacts from absolute paths while preserving canonical app roles
+Error: Unexpected Brief Studio artifact producer 'researcher'. A canonical member address is required.
+ ❯ resolveBriefArtifactPathRule ../applications/brief-studio/backend-src/services/brief-artifact-paths.ts:150:11
+    148|   const normalizedAddress = memberAddress.trim();
+    149|   if (!normalizedAddress.startsWith('/')) {
+    150|     throw new Error(`Unexpected Brief Studio artifact producer '${memb…
+       |           ^
+    151|   }
+    152|   const normalizedRouteKey = normalizedAddress.split('/').filter(Boole…
+ ❯ tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts:10:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/76]⎯
+
+ FAIL  tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts > app published-artifact semantic path resolvers > resolves Brief Studio artifacts from relative historical paths through the same semantic rules
+Error: Unexpected Brief Studio artifact producer 'researcher'. A canonical member address is required.
+ ❯ resolveBriefArtifactPathRule ../applications/brief-studio/backend-src/services/brief-artifact-paths.ts:150:11
+    148|   const normalizedAddress = memberAddress.trim();
+    149|   if (!normalizedAddress.startsWith('/')) {
+    150|     throw new Error(`Unexpected Brief Studio artifact producer '${memb…
+       |           ^
+    151|   }
+    152|   const normalizedRouteKey = normalizedAddress.split('/').filter(Boole…
+ ❯ tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts:26:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/76]⎯
+
+ FAIL  tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts > app published-artifact semantic path resolvers > rejects unrecognized Brief Studio artifact filenames for the producer
+AssertionError: expected [Function] to throw error including 'Unexpected Brief Studio artifact path…' but got 'Unexpected Brief Studio artifact prod…'
+
+Expected: "Unexpected Brief Studio artifact path '/tmp/downloads/final-brief.md' for producer 'researcher'."
+Received: "Unexpected Brief Studio artifact producer 'researcher'. A canonical member address is required."
+
+ ❯ tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts:41:7
+     39|     expect(() =>
+     40|       resolveBriefArtifactPathRule("researcher", "/tmp/downloads/final…
+     41|     ).toThrow("Unexpected Brief Studio artifact path '/tmp/downloads/f…
+       |       ^
+     42|   });
+     43| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/76]⎯
+
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts > Socratic lesson tutor target projection > derives the shared tutor-member address from the authoritative active team binding
+Error: Application agent-team binding 'binding-lesson-1' does not contain agentRunId 'tutor'.
+ ❯ createApplicationAgentTeamMemberTargetAddress ../autobyteus-application-backend-sdk/src/application-agent-target-address.ts:70:11
+ ❯ deriveTutorTargetAddress ../applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:51:10
+     49|     throw new Error("Socratic tutor binding must be an agent-team bind…
+     50|   }
+     51|   return createApplicationAgentTeamMemberTargetAddress(binding, "tutor…
+       |          ^
+     52| };
+     53| 
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts:53:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/76]⎯
+
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts > Socratic lesson tutor target projection > surfaces wrong binding subjects and missing tutor membership as configuration defects
+AssertionError: expected [Function] to throw error including 'Application agent-team binding \'bind…' but got 'Application agent-team binding \'bind…'
+
+Expected: "Application agent-team binding 'binding-lesson-1' does not contain memberRouteKey 'tutor'."
+Received: "Application agent-team binding 'binding-lesson-1' does not contain agentRunId 'tutor'."
+
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts:106:76
+    104|       "Socratic tutor binding must be an agent-team binding.",
+    105|     );
+    106|     expect(() => deriveTutorTargetAddress(activeLesson, teamWithoutTut…
+       |                                                                            ^
+    107|       "Application agent-team binding 'binding-lesson-1' does not cont…
+    108|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/76]⎯
+
+ FAIL  tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts > ApplicationAgentStreamRuntimeSource team attribution > attributes nested task-agent events through the closed producer envelope and filters selected members
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts:55:22
+     53|     });
+     54| 
+     55|     expect(captured).toHaveLength(1);
+       |                      ^
+     56|     const mapped = new ApplicationAgentEventMapper().map(captured[0]);
+     57|     expect(mapped).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > lists valid bundles from the managed built-in application root with manifest execution resource slots
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:348:21
+    346|     const bundles = await provider.listBundles();
+    347| 
+    348|     expect(bundles).toHaveLength(1);
+       |                     ^
+    349|     expect(bundles[0]).toMatchObject({
+    350|       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'declares ui.frontendSdkContractVersio…'
+
+Expected: "declares ui.frontendSdkContractVersion '2', but '5' is required"
+Received: "Unsupported ui.frontendSdkContractVersion '2'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:409:46
+    407|     expect(snapshot.applications).toHaveLength(0);
+    408|     expect(snapshot.diagnostics).toHaveLength(1);
+    409|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    410|       `declares ui.frontendSdkContractVersion '${retiredFrontendSdkVer…
+    411|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired backend bundle frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'declares sdkCompatibility.frontendSdk…'
+
+Expected: "declares sdkCompatibility.frontendSdkContractVersion '2', but '5' is required"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:449:46
+    447|     expect(snapshot.applications).toHaveLength(0);
+    448|     expect(snapshot.diagnostics).toHaveLength(1);
+    449|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    450|       `declares sdkCompatibility.frontendSdkContractVersion '${retired…
+    451|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects an explicit v3 backend-definition compatibility fixture during discovery
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'declares sdkCompatibility.backendDefi…'
+
+Expected: "declares sdkCompatibility.backendDefinitionContractVersion '3', but '5' is required"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:471:46
+    469|     expect(snapshot.applications).toHaveLength(0);
+    470|     expect(snapshot.diagnostics).toHaveLength(1);
+    471|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    472|       "declares sdkCompatibility.backendDefinitionContractVersion '3',…
+    473|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces malformed manifests as diagnostics instead of crashing discovery
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:507:35
+    505|     const snapshot = await buildProvider().getCatalogSnapshot();
+    506| 
+    507|     expect(snapshot.applications).toHaveLength(1);
+       |                                   ^
+    508|     expect(snapshot.diagnostics).toHaveLength(1);
+    509|     expect(snapshot.diagnostics[0]).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'allowedResourceKinds' as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'executionResourceSlots[0].allowedReso…'
+
+Expected: "executionResourceSlots[0].allowedResourceKinds is no longer supported"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'allowedResourceOwners' as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'executionResourceSlots[0].allowedReso…'
+
+Expected: "executionResourceSlots[0].allowedResourceOwners is no longer supported"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'defaultResourceRef' as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'executionResourceSlots[0].defaultReso…'
+
+Expected: "executionResourceSlots[0].defaultResourceRef is no longer supported"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces legacy slot field 'defaultExecutionResourceRef.owner' as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'executionResourceSlots[0].defaultExec…'
+
+Expected: "executionResourceSlots[0].defaultExecutionResourceRef.owner is no longer supported"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:599:46
+    597|     expect(snapshot.applications).toHaveLength(0);
+    598|     expect(snapshot.diagnostics).toHaveLength(1);
+    599|     expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage…
+       |                                              ^
+    600|   });
+    601| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > fails package validation when a discovered resource-slot default does not resolve
+AssertionError: expected [Function] to throw error including 'does not resolve to a discovered bund…' but got 'Unsupported ui.frontendSdkContractVer…'
+
+Expected: "does not resolve to a discovered bundle-owned agent_team"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:621:5
+    619|     const provider = buildProvider();
+    620| 
+    621|     await expect(
+       |     ^
+    622|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    623|     ).rejects.toThrow("does not resolve to a discovered bundle-owned a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects bundles whose application-owned team references a missing local agent
+AssertionError: expected [Function] to throw error including 'must reference a local agent inside i…' but got 'Unsupported ui.frontendSdkContractVer…'
+
+Expected: "must reference a local agent inside its own agents/ folder"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:630:5
+    628|     const provider = buildProvider();
+    629| 
+    630|     await expect(provider.validatePackageRoot(builtInRoot, BUILT_IN_AP…
+       |     ^
+    631|       "must reference a local agent inside its own agents/ folder",
+    632|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > recursively validates team-local child teams without cataloging them as app-owned roots
+AssertionError: promise rejected "Error: Unsupported ui.frontendSdkContract…" instead of resolving
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:670:5
+    668|     await expect(
+    669|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    670|     ).resolves.toBeUndefined();
+       |     ^
+    671|     await expect(provider.listBundles()).resolves.toMatchObject([
+    672|       {
+
+Caused by: Error: Unsupported ui.frontendSdkContractVersion '5'.
+ ❯ FileApplicationBundleProvider.validatePackageRoot src/application-bundles/providers/file-application-bundle-provider.ts:486:13
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:668:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects malformed team-local child team configs during application bundle validation
+AssertionError: expected [Function] to throw error including 'must include refScope \'shared\', \'t…' but got 'Unsupported ui.frontendSdkContractVer…'
+
+Expected: "must include refScope 'shared', 'team_local', or 'application_owned'"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:693:5
+    691|     const provider = buildProvider();
+    692| 
+    693|     await expect(
+       |     ^
+    694|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    695|     ).rejects.toThrow("must include refScope 'shared', 'team_local', o…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects team-local child teams whose own local agents are missing
+AssertionError: expected [Function] to throw error including 'must reference a local agent inside i…' but got 'Unsupported ui.frontendSdkContractVer…'
+
+Expected: "must reference a local agent inside its own agents/ folder"
+Received: "Unsupported ui.frontendSdkContractVersion '5'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:713:5
+    711|     const provider = buildProvider();
+    712| 
+    713|     await expect(
+       |     ^
+    714|       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_P…
+    715|     ).rejects.toThrow("must reference a local agent inside its own age…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > ignores nested packaging mirrors under a discovered package root
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:752:21
+    750|     const bundles = await provider.listBundles();
+    751| 
+    752|     expect(bundles).toHaveLength(1);
+       |                     ^
+    753|     expect(bundles[0]?.localApplicationId).toBe("sample-app");
+    754|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/76]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > preserves built-in application ids when the same root path is also configured as an additional package root
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:770:21
+    768|     const bundles = await provider.listBundles();
+    769| 
+    770|     expect(bundles).toHaveLength(1);
+       |                     ^
+    771|     expect(bundles[0]).toMatchObject({
+    772|       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts > ApplicationAgentTargetAuthorizationService > accepts the exact matching address and rejects extra address or target fields
+AssertionError: expected { applicationId: 'app-1', …(4) } to match object { runtimeSubject: 'AGENT_RUN', …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "runtimeRunId": "run-1",
++   "runtimeRunId": undefined,
+    "runtimeSubject": "AGENT_RUN",
+  }
+
+ ❯ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts:42:5
+     40| describe("ApplicationAgentTargetAuthorizationService", () => {
+     41|   it("accepts the exact matching address and rejects extra address or …
+     42|     await expect(createService().authorizeTarget("app-1", {
+       |     ^
+     43|       bindingId: "binding-1",
+     44|       target: { kind: "AGENT_RUN" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+TypeError: Provided value cannot be bound to SQLite parameter 6.
+ ❯ src/application-orchestration/stores/application-run-binding-store.ts:129:9
+    127|            last_error_message = excluded.last_error_message,
+    128|            summary_json = excluded.summary_json`,
+    129|       ).run(
+       |         ^
+    130|         summary.bindingId,
+    131|         summary.launchRequestId,
+ ❯ ApplicationPlatformStateStore.runTransaction src/application-storage/stores/application-platform-state-store.ts:211:22
+ ❯ src/application-storage/stores/application-platform-state-store.ts:182:28
+ ❯ ApplicationPlatformStateStore.withDatabase src/application-storage/stores/application-platform-state-store.ts:152:14
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts:102:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+TypeError: Provided value cannot be bound to SQLite parameter 6.
+ ❯ src/application-orchestration/stores/application-run-binding-store.ts:129:9
+    127|            last_error_message = excluded.last_error_message,
+    128|            summary_json = excluded.summary_json`,
+    129|       ).run(
+       |         ^
+    130|         summary.bindingId,
+    131|         summary.launchRequestId,
+ ❯ ApplicationPlatformStateStore.runTransaction src/application-storage/stores/application-platform-state-store.ts:211:22
+ ❯ src/application-storage/stores/application-platform-state-store.ts:182:28
+ ❯ ApplicationPlatformStateStore.withDatabase src/application-storage/stores/application-platform-state-store.ts:152:14
+ ❯ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts:187:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > routes a valid startAgent request only through agent creation
+AssertionError: expected { applicationId: 'app-1', …(9) } to match object { applicationId: 'app-1', …(2) }
+(12 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "applicationId": "app-1",
+    "launchRequestId": "agent-launch-request-1",
+    "runtime": {
+      "definitionId": "agent-def-1",
+-     "runId": "agent-run-1",
+      "subject": "AGENT_RUN",
+    },
+  }
+
+ ❯ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts:113:21
+    111|     const binding = await service.startAgentRunBinding(applicationId, …
+    112| 
+    113|     expect(binding).toMatchObject({
+       |                     ^
+    114|       applicationId,
+    115|       launchRequestId: "agent-launch-request-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > routes a valid startAgentTeam request only through team creation
+TypeError: this.teams.allocateTeamRunId is not a function
+ ❯ ApplicationRunBindingLaunchService.startTeam src/application-orchestration/services/application-run-binding-launch-service.ts:102:40
+
+ ❯ ApplicationRunBindingLaunchService.startAgentTeamRunBinding src/application-orchestration/services/application-run-binding-launch-service.ts:70:17
+ ❯ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts:131:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > rejects an AGENT_TEAM launch passed to startAgent before resolution or side effects
+AssertionError: expected [Function] to throw error including 'startAgent requires launch.kind \'AGE…' but got 'startAgent requires launch.kind \'AGE…'
+
+Expected: "startAgent requires launch.kind 'AGENT'; received 'AGENT_TEAM'."
+Received: "startAgent requires launch.kind 'AGENT'."
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > rejects an AGENT launch passed to startAgentTeam before resolution or side effects
+AssertionError: expected [Function] to throw error including 'startAgentTeam requires launch.kind \…' but got 'startAgentTeam requires launch.kind \…'
+
+Expected: "startAgentTeam requires launch.kind 'AGENT_TEAM'; received 'AGENT'."
+Received: "startAgentTeam requires launch.kind 'AGENT_TEAM'."
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > rejects an AGENT_TEAM resource resolved for startAgent before run creation
+AssertionError: expected [Function] to throw error including 'startAgent requires an \'AGENT\' exec…' but got 'startAgent requires an \'AGENT\' exec…'
+
+Expected: "startAgent requires an 'AGENT' execution resource; resolved 'AGENT_TEAM'."
+Received: "startAgent requires an 'AGENT' execution resource."
+
+ ❯ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts:191:5
+    189|     const { service, bindingStore, lookupStore, agentRunService, teamR…
+    190| 
+    191|     await expect(
+       |     ^
+    192|       service.startAgentRunBinding(applicationId, {
+    193|         ...buildAgentInput(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/76]⎯
+
+ FAIL  tests/unit/application-orchestration/application-run-binding-launch-service.test.ts > ApplicationRunBindingLaunchService explicit start kinds > rejects an AGENT resource resolved for startAgentTeam before run creation
+AssertionError: expected [Function] to throw error including 'startAgentTeam requires an \'AGENT_TE…' but got 'startAgentTeam requires an \'AGENT_TE…'
+
+Expected: "startAgentTeam requires an 'AGENT_TEAM' execution resource; resolved 'AGENT'."
+Received: "startAgentTeam requires an 'AGENT_TEAM' execution resource."
+
+ ❯ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts:206:5
+    204|     const { service, bindingStore, lookupStore, agentRunService, teamR…
+    205| 
+    206|     await expect(
+       |     ^
+    207|       service.startAgentTeamRunBinding(applicationId, {
+    208|         ...buildTeamInput(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/76]⎯
+
+ FAIL  tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route configured MCP integration > exposes and calls configured MCP-origin tools over the official Streamable HTTP client
+AssertionError: expected [ { …(2) } ] to deeply equal [ { …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "agentId": "member-configured-mcp",
++     "agentId": "run-configured-mcp",
+      "args": {
+        "sql": "select 1",
+      },
+    },
+  ]
+
+ ❯ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts:375:21
+    373|         _meta: { remoteToolName: "query" },
+    374|       });
+    375|       expect(calls).toEqual([
+       |                     ^
+    376|         { agentId: "member-configured-mcp", args: { sql: "select 1" } …
+    377|       ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/76]⎯
+
+
+ Test Files  20 failed | 48 passed (68)
+      Tests  72 failed | 246 passed (318)
+   Start at  10:52:54
+   Duration  39.49s (transform 5.32s, setup 309ms, import 24.87s, tests 5.85s, environment 910ms)
+
+rc=1
+end=2026-08-22T08:53:34Z

@@ -327,8 +327,6 @@ describe("Agent Tools MCP route configured MCP integration", () => {
     const created = sessionService.createAgentToolMcpSession({
       owner: {
         runId: "run-configured-mcp",
-        memberRunId: "member-configured-mcp",
-        agentRunId: "member-configured-mcp",
       },
       sender,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -373,7 +371,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
         _meta: { remoteToolName: "query" },
       });
       expect(calls).toEqual([
-        { agentId: "member-configured-mcp", args: { sql: "select 1" } },
+        { agentId: "run-configured-mcp", args: { sql: "select 1" } },
       ]);
 
       const remoteFailure = await post({

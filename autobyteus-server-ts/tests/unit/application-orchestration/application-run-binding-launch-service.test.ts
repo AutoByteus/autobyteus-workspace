@@ -70,9 +70,12 @@ const buildService = () => {
     createAgentRun: vi.fn(async () => ({ runId: "agent-run-1" })),
   };
   const teamRunService = {
+    allocateTeamRunId: vi.fn(async () => "team-run-1"),
     createTeamRun: vi.fn(async () => ({
-      runId: "team-run-1",
-      config: { memberConfigs: [] },
+      teamRunId: "team-run-1",
+      getExecutionTreeSnapshot: () => ({
+        rootTeam: { kind: "configured_team", address: "/", members: [] },
+      }),
     })),
   };
   const agentDefinitionService = {
@@ -115,7 +118,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       launchRequestId: "agent-launch-request-1",
       runtime: {
         subject: "AGENT_RUN",
-        runId: "agent-run-1",
+        agentRunId: "agent-run-1",
         definitionId: "agent-def-1",
       },
     });
@@ -135,7 +138,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       launchRequestId: "team-launch-request-1",
       runtime: {
         subject: "TEAM_RUN",
-        runId: "team-run-1",
+        teamRunId: "team-run-1",
         definitionId: "team-def-1",
       },
     });
@@ -157,7 +160,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
 
     await expect(
       service.startAgentRunBinding(applicationId, buildTeamInput() as never),
-    ).rejects.toThrow("startAgent requires launch.kind 'AGENT'; received 'AGENT_TEAM'.");
+    ).rejects.toThrow("startAgent requires launch.kind 'AGENT'.");
     expect(executionResourceResolver.resolveExecutionResource).not.toHaveBeenCalled();
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
@@ -177,7 +180,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
 
     await expect(
       service.startAgentTeamRunBinding(applicationId, buildAgentInput() as never),
-    ).rejects.toThrow("startAgentTeam requires launch.kind 'AGENT_TEAM'; received 'AGENT'.");
+    ).rejects.toThrow("startAgentTeam requires launch.kind 'AGENT_TEAM'.");
     expect(executionResourceResolver.resolveExecutionResource).not.toHaveBeenCalled();
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
@@ -193,7 +196,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         ...buildAgentInput(),
         executionResourceRef: teamResourceRef,
       }),
-    ).rejects.toThrow("startAgent requires an 'AGENT' execution resource; resolved 'AGENT_TEAM'.");
+    ).rejects.toThrow("startAgent requires an 'AGENT' execution resource.");
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
@@ -208,7 +211,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         ...buildTeamInput(),
         executionResourceRef: agentResourceRef,
       }),
-    ).rejects.toThrow("startAgentTeam requires an 'AGENT_TEAM' execution resource; resolved 'AGENT'.");
+    ).rejects.toThrow("startAgentTeam requires an 'AGENT_TEAM' execution resource.");
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
