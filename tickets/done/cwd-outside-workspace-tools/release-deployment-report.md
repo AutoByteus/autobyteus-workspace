@@ -17,7 +17,7 @@
 - Integration action: no merge, rebase, checkpoint, or conflict resolution.
 - Integration-only rerun: not required because the base did not advance and fresh API/E2E execution covered the current candidate.
 - `git diff --check`: `Pass`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
 
 ## Validation and Docs Result
 
@@ -27,21 +27,21 @@
 - Fresh evidence: 18 focused unit/schema files / 111 tests, 6 terminal integration files / 28 tests, 6 adjacent non-MCP files / 38 tests, build/runtime, packed consumer, and generic file-tool boundary checks passed.
 - Residuals: Windows/WSL ACL/adapter behavior and MCP stdio are explicitly `Not Tested`; no success is inferred.
 - Docs sync: `Pass`; current terminal docs match the absolute-only contract. The prior relative-plus-absolute delivery summaries are superseded and retained only in revision history.
-- Docs report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`.
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/handoff-summary.md`.
+- Docs report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/handoff-summary.md`.
 
 ## Electron Test Artifact
 
-- README inputs read: root `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/README.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/README.md`.
+- README inputs read: root `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`.
 - Command run from `autobyteus-web`:
   `env -u ELECTRON_RUN_AS_NODE AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`
 - Result: `Pass` on macOS arm64; integrated server preparation, production generation, native-module rebuild, and electron-builder passed.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg`
   - SHA-256: `9374cafc5e27393082ff6e374dca2f911eedec2aa1633a79268c3e11f13d545a`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip`
   - SHA-256: `ab75b047def5a6f44520eeeb252e8cfa363ac3e67246930fad39d0d4a3d2af86`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log`.
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log`.
 - Package checks: `hdiutil verify`, `unzip -t`, and packaged executable checks passed.
 - Signing/notarization: intentionally skipped for local testing; this is not a release artifact.
 - Manual launch/testing: pending user action.
@@ -50,8 +50,8 @@
 
 - Explicit user completion/verification received: `No`.
 - Current consequence: do not archive, push, merge, release, publish, deploy, or clean up.
-- Ticket remains at `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/`.
-- Planned archive path after verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/`.
+- Ticket remains at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/`.
+- Planned archive path after verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/`.
 
 ## Repository Finalization
 
@@ -82,7 +82,7 @@
 ## Finalization Result
 
 - User completion: `Received`.
-- Archive path: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/`.
+- Archive path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/`.
 - Finalization target refresh: `git fetch origin personal` passed; `personal` matched `origin/personal` before merge.
 - Ticket branch commit/push: `Pass` — `codex/cwd-outside-workspace-tools` was committed and pushed to `origin`.
 - Target merge/push: `Pass` — ticket branch merged into `personal` without conflicts and pushed to `origin/personal`.

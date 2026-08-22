@@ -7,7 +7,7 @@
 - Ticket: `cwd-outside-workspace-tools`
 - Date: `2026-08-22`
 - Current status: `Ready for explicit user verification`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/cwd-outside-workspace-tools`
 - Recorded finalization target: `origin/personal` / `personal`
 - Current candidate: `95f538b66c88f02d52f2b33cb1f1fd47122b01bc`
@@ -34,7 +34,7 @@ The current absolute-only reset supersedes the earlier relative-plus-absolute ca
 - Integration result: `Pass`; no merge, rebase, conflict resolution, or checkpoint was needed.
 - Post-refresh decision: No integration-only rerun was required because the base did not advance and fresh `API-REV-002` evidence was executed against the current candidate.
 - `git diff --check`: `Pass` after delivery synchronization.
-- Canonical integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
+- Canonical integration evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
 
 ## Validation Summary
 
@@ -52,10 +52,10 @@ The current absolute-only reset supersedes the earlier relative-plus-absolute ca
 
 - Docs sync: `Pass`.
 - Canonical terminal docs confirmed current at:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/terminal_tools.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/tool_schema_and_configuration.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/terminal_tools.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/tool_schema_and_configuration.md`
 - Interactive terminal docs, repository `README.md`, and `autobyteus-web/README.md` required no content change. The root and frontend README build guidance was read and followed for the requested Electron artifact.
-- Docs report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`.
+- Docs report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`.
 
 ## Electron Test Artifact
 
@@ -66,12 +66,12 @@ env -u ELECTRON_RUN_AS_NODE AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPL
 ```
 
 - Build result: `Pass` on macOS arm64. Integrated server preparation, production frontend/Electron generation, native-module rebuild, and electron-builder completed successfully.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg`
   - SHA-256: `9374cafc5e27393082ff6e374dca2f911eedec2aa1633a79268c3e11f13d545a`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip`
   - SHA-256: `ab75b047def5a6f44520eeeb252e8cfa363ac3e67246930fad39d0d4a3d2af86`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log`
 - `hdiutil verify`, ZIP integrity, and packaged executable checks: `Pass`.
 - Code signing/notarization: intentionally skipped for this local testing artifact.
 - Manual launch/testing: pending user action; the build itself is not user verification.
@@ -80,50 +80,50 @@ env -u ELECTRON_RUN_AS_NODE AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPL
 
 ### Requirements and design
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/requirements.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`
 
 ### Implementation and review
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/code-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/src/tools/terminal/execution-cwd.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/src/tools/terminal/tools/run-bash.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/src/tools/terminal/tools/start-background-process.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/terminal_tools.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/tool_schema_and_configuration.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/code-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/tools/terminal/execution-cwd.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/tools/terminal/tools/run-bash.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/tools/terminal/tools/start-background-process.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/terminal_tools.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/tool_schema_and_configuration.md`
 
 ### API/E2E coverage and evidence
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-test-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-unit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-terminal.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-adjacent.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-adjacent-without-mcp.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-build.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-package-consumer.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-boundary.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/api-e2e-test-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-unit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-terminal.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-adjacent.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-adjacent-without-mcp.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-package-consumer.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-boundary.log`
 
 ### Delivery artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/delivery-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/handoff-summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/release-deployment-report.md`
 
 ## Verification Hold and Finalization
 
@@ -135,7 +135,7 @@ env -u ELECTRON_RUN_AS_NODE AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPL
 ## Finalization Result
 
 - User verification/completion: `Received`.
-- Archive: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/`.
+- Archive: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/`.
 - Ticket branch: `codex/cwd-outside-workspace-tools` committed and pushed to `origin`.
 - Finalization target: `personal` merged and pushed to `origin` without conflicts.
 - Release/version/tag/publication/deployment: `Not performed`, per user instruction.
