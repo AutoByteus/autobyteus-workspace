@@ -11,6 +11,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003` |
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` |
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `CR-005` |
+| `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-006`; `APIE2E-F003` |
 
 ## Revision Entries
 
@@ -144,3 +145,33 @@ None.
 - Material score or classification changes: the focused failure-origin `Fail` is cleared; the complete implementation scorecard returns to `93/100`, every category is at least `9.0`, and no Major or Critical finding remains.
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must rerun the two exact failures first. Its preserved dirty target-projection test contains one stale pre-fix error expectation and must be reconciled before a later execution Pass; the entire durable delta still requires proportional review after Pass. Real Studio/standalone/provider/publication/restart/parity/cleanup and downstream Electron verification remain outstanding.
+
+### CRR-006 — API-REV-002 fresh-root provider-readiness failure origin
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `6`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`; `API-REV-002`, `APIE2E-STANDALONE-001`, `APIE2E-CODEX-CWD-001` / `APIE2E-F003`.
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-005 — Pass / 93`
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API/E2E proved the prior exact-target and duplicate-manager failure origins resolved, then exercised the same supported fresh-root maintained standalone path far enough to reach current Codex credential readiness. The lifecycle supplies a computed per-application runtime path before any owner creates it; Codex spawn fails with `ENOENT` even though the absolute executable is installed, executable, authenticated, and succeeds from an existing cwd. Standalone exits before listen.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `API-REV-002` | Fresh-root startup completes current migrations and prerequisite readiness through the new failure point. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `API-REV-002` | No launch-store write/read regression is reported; F003 occurs in filesystem cwd preparation before client spawn. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `API-REV-002` | F003 occurs before listen/recovery and does not traverse event-journal recovery. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `API-REV-002`; `APIE2E-F001` | Current exact-target durable coverage passes 3/3 after API/E2E reconciles only the stale missing-tutor diagnostic expectation. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `API-REV-002`; `APIE2E-F002` | Real fresh-root startup passes exclusive process manager initialization; the former already-initialized error is absent and execution reaches provider readiness. |
+
+- New or remaining finding IDs: `CR-006` (Major), mapped to `APIE2E-F003`.
+- Material score or classification changes: no full scorecard is produced for this focused entry point. The prior `93/100` implementation result is superseded for advancement; classification is `Local Fix` to `/implementation_engineer`.
+- Failure-origin attribution: implementation defect. The reviewed architecture already assigns the two existing owners; missing precondition ordering/wiring is bounded. This was a reasonably detectable source-review gap because the path-only resolver, client spawn, and absent pre-listen directory preparation are statically traceable.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Studio shares the readiness construction; all later real provider/publication/recovery/remount/parity/cleanup/Electron-preparation scenarios remain Not Tested. The cumulative API/E2E durable-test delta awaits proportional review only after a later API/E2E Pass.
