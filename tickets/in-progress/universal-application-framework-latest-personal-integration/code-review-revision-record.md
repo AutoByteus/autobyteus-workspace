@@ -7,6 +7,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-001` | `N/A` | `Fail — Local Fix` | `CR-001`, `CR-002` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-002` | `Fail — Local Fix` | `Fail — Local Fix` | `CR-001`, `CR-002`, `CR-003` |
 
 ## Revision Entries
 
@@ -32,3 +33,29 @@ None.
 - Material score or classification changes: initial overall score `8.5/10` (`85/100`); classification `Local Fix`.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: downstream real dual-host/API/E2E/package-parity/cleanup/Electron execution remains required after source Pass; inherited whole-suite debt is not attributed; the 500-line launch configuration coordinator remains under structural pressure.
+
+### CRR-002 — Prior fixes verified; event-journal recovery mismatch found
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `2`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-002`, addressing `CR-001` and `CR-002`.
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`, `IR-002`
+- Relevant API/E2E revision IDs: `N/A`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-001 — Fail / Local Fix / 85`
+- Current authoritative result: `Fail — Local Fix / 88`
+- What changed in the review result and why: IR-002 correctly restores the standalone prerequisite lifecycle and makes launch reads genuinely non-mutating. The re-review of the changed shared database contract found one separate reachable Major regression: event-journal recovery still performs table/cursor writes through the now-read-only existing-state handle, so supported same-data recovery can fail before ready.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Open — Major | Resolved | `IR-002`, `CRR-002`; `BEH-003`, lifecycle phases 5–10 | `start-standalone-application-host.ts:84-200` now asserts current token schema, seeds readiness, initializes vault, runs one migration-status pass, derives token readiness, rebuilds TeamRun catalog, applies the exact readable-provider gate, and unwinds repository owners. Focused lifecycle coverage passes 9 cases. |
+| `CR-002` | Open — Major | Resolved | `IR-002`, `CRR-002`; `BEH-004`, launch persistence §3 | Launch get/list now use a read-only existing DB, return empty for absent DB/table, and preserve current-row bytes; Save owns current-table creation and Reset opens only existing writable state. Real SQLite coverage passes 4 cases and the repair scan is clean. |
+
+- New or remaining finding IDs: `CR-003`
+- Material score or classification changes: overall score improves from `85/100` to `88/100`; prior legacy/read-side-effect deductions are cleared, but recovery/API-boundary/runtime categories remain below Pass because `CR-003` is Major. Classification remains `Local Fix`.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: source review blocks API/E2E until the journal existing-state read is reconciled and re-reviewed; inherited whole-suite debt and downstream real dual-host/package/Electron validation remain separate.
