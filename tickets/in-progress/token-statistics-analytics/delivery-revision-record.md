@@ -6,9 +6,24 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | `code_reviewer` handoff after `API-REV-003` / `CRR-007` | N/A | Integrated docs-synchronized handoff ready; finalization held for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, this record |
 | DR-002 | User-requested README-guided Electron build | Integrated handoff ready; verification pending | macOS ARM64 Electron package built and integrity-verified; behavioral verification and finalization remain pending | `electron-build-mac-report.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, this record |
+| DR-003 | `code_reviewer` handoff after `SR-002` / `ARCH-REV-002` / `CRR-010` / `API-REV-006` / `CRR-012` | DR-002 package/handoff predated `IR-005` | Current base refreshed; docs reconciled; post-IR-005 Electron package rebuilt and integrity-verified; renewed user verification pending | `docs-sync-report.md`, `handoff-summary.md`, `electron-build-mac-report.md`, `release-deployment-report.md`, `release-notes.md`, this record |
 
 ## Revision Entries
 
+
+### DR-003 — Superseding evidence reconciliation and current Electron rebuild
+
+- Delivery round and trigger: Delivery round 3, triggered by `/code_reviewer` after the complete re-entry package passed `SR-002` / `ARCH-REV-002`, `CRR-010`, `API-REV-006`, and `CRR-012`.
+- Prior authoritative result: `DR-002` had a valid local package and pending verification, but its package predated the user-facing `IR-005` tab correction and its delivery artifacts referenced superseded API/E2E evidence.
+- Current authoritative result: `Pass` for latest-base refresh, superseding-evidence reconciliation, durable docs sync, README-guided Electron rebuild, and package integrity. The current package is ready for renewed user verification. Archival/finalization/release remain held.
+- Integration result: `git fetch origin --prune` confirmed `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1` unchanged. Candidate `HEAD` `7a21d59238e89d70747be49214503240da0560c4` is six commits ahead and zero behind with the tracked base as merge base. No checkpoint, integration, or base-triggered rerun was required.
+- Superseding gates: `SR-002` / `ARCH-REV-002` Pass; `CRR-010` source Pass at 9.4/10; `API-REV-006` Pass at 97.7%; `CRR-012` durable-test Pass. All F-001–F-006, FIELD-F-001/FIELD-F-002, and TR-F-001/TR-F-002 are resolved.
+- Superseded evidence: `API-REV-004` Fail and the package/screenshot built before `IR-005` are historical only. They do not describe the current delivery candidate.
+- Docs sync: updated the two web Token Statistics architecture/settings references with the semantic transparent/blue/2px selected-tab contract; updated the server Token Usage validation paragraph to current populated live evidence; updated release notes. Existing persistence/no-backfill/GraphQL/CSV documentation remains correct.
+- Electron build: `pnpm -C autobyteus-web build:electron:mac` passed. Current DMG SHA-256 is `d51940cfdfb665e10f6e172507a59bd1f73f0b40d7afa0e2af6571457cb03d6f`; current ZIP SHA-256 is `2de61a03a3572c20ebf88f9b003f833c8797325217fde96fc9e226aba25a7437`. `hdiutil verify`, `unzip -tq`, executable architecture, bundled server, and Prisma schema checks passed.
+- User verification/finalization state: the user's earlier working/done statement remains accepted for the clarified post-coverage lifecycle, but renewed verification is required because the selected-tab UI and package changed afterward. Delivery did not launch the Electron shell. No archive, commit, push, merge, tag, publication, deployment, or cleanup was performed.
+- Next action: user installs/opens the rebuilt unsigned package, verifies both tabs use the transparent blue 2px selected treatment and behavior remains acceptable, then replies `verified; finalize`. Release requires separate authorization.
+- Remaining risks: unsigned/notarized package; exact Prisma `P1008` under bounded SQLite saturation; provider invoice/quota reconciliation outside scope; browser/current-backend proof does not equal packaged Electron-shell execution; persisted coverage must be considered in any later rollback.
 
 ### DR-002 — README-guided local Electron package
 

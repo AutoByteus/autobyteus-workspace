@@ -1,0 +1,22 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts > TokenUsageStatistics > opens Analytics by default and keeps Run details separate 14ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:21:56
+   Duration  9.77s (transform 5.59s, setup 8.44s, collect 435ms, tests 15ms, environment 228ms, prepare 244ms)
+

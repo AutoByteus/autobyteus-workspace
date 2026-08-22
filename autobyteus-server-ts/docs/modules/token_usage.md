@@ -452,11 +452,12 @@ is not `$0`; local/no-bill and mixed-currency states remain explicit.
 - Released-scale evidence covers approximately 154,000 legacy rows, 1,269 runs,
   bounded source shaping, single-transaction consolidation, reusable SQLite
   pages, and absence of startup `VACUUM`.
-- Live Chrome coverage checks the default and custom UTC analytics journey,
-  tracking/empty distinctions, local exact CSV download, Run-details navigation,
-  desktop/mobile layout, and console/page errors. Populated graph semantics are
-  additionally proven by component fixtures and real populated SQLite/GraphQL;
-  packaged Electron behavior is not implied by browser evidence.
+- Live Chrome coverage checks default/custom UTC analytics, tracking/empty
+  distinctions, local exact CSV download, Run-details navigation, semantic tab
+  selection/focus, the transparent blue 2px selected-tab treatment, desktop/mobile
+  layout, and console/page errors. Current-frontend execution against the user's
+  production backend also proves populated graph and Run-details behavior; browser
+  proof does not imply Electron-shell execution.
 - Real LM Studio, Codex, and Claude runtime E2E remains opt-in:
 
 ```sh

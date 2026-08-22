@@ -1,53 +1,43 @@
 # Electron macOS Build Report
 
-## Scope
+## Current Scope
 
-- Trigger: User requested that delivery read the README and build Electron.
+- Delivery revision: `DR-003` (supersedes the package result recorded by `DR-002`).
+- Trigger: rebuild the README-guided Electron package after the reviewed `IR-005` selected-tab correction and the superseding `SR-002` / `ARCH-REV-002` / `CRR-010` / `API-REV-006` / `CRR-012` package.
+- Source state: ticket branch `codex/token-statistics-analytics`, implementation `HEAD` `7a21d59238e89d70747be49214503240da0560c4`, plus the reviewed uncommitted `CRR-012` durable assertion correction.
 - Host: macOS Darwin 25.5.0, Apple Silicon `arm64`.
-- Repository guidance reviewed: root `README.md` → `Build examples` / `Packaged Electron API/E2E testing`; `autobyteus-web/README.md` → `Desktop Application Build` / `Desktop Application with Integrated Backend`.
-- Build command: `pnpm -C autobyteus-web build:electron:mac`
+- Guidance reviewed: root `README.md` (`Build examples`, packaged Electron testing) and `autobyteus-web/README.md` (`Desktop Application Build`, integrated backend).
+- Command: `pnpm -C autobyteus-web build:electron:mac`
 - Package version: `1.4.54`
-- Build flavor: `enterprise` — the build script's deterministic fallback for the ticket branch; this affects artifact naming. The packaged product remains `AutoByteus`.
+- Build flavor: `enterprise`, the build script's deterministic ticket-branch fallback. This affects filenames; the product remains `AutoByteus`.
 
 ## Result
 
-`Pass` — the integrated backend, mobile web assets, Electron renderer/main/preload, native dependencies, and macOS ARM64 DMG/ZIP were built successfully.
+`Pass` — guards/localization checks, server/shared builds, Prisma generation, built-server bootstrap smokes, mobile-web assets, Electron renderer/main/preload, native dependency rebuild, and Darwin ARM64 packaging completed successfully.
 
-The build also passed:
+This current package contains the reviewed transparent selected-tab treatment for Analytics and Run details: blue text, visible 2px blue bottom border, semantic selection/focus behavior, and no former dark selected fill. It preserves the approved observation-time/no-backfill lifecycle clarified by `SR-002`.
 
-- web-boundary guard;
-- localization-boundary guard;
-- localization literal audit with zero unresolved findings;
-- Prisma client generation;
-- server TypeScript/full build and built-in bootstrap smokes;
-- Electron native-module rebuild; and
-- Electron packaging for Darwin ARM64.
+## Current Artifacts
 
-## Artifacts
-
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg` — 442 MiB
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip` — 437 MiB
+- DMG (442 MiB): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
+- ZIP (437 MiB): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
 - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg.blockmap`
-- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip.blockmap`
+- DMG SHA-256: `d51940cfdfb665e10f6e172507a59bd1f73f0b40d7afa0e2af6571457cb03d6f`
+- ZIP SHA-256: `2de61a03a3572c20ebf88f9b003f833c8797325217fde96fc9e226aba25a7437`
 
 ## Integrity Evidence
 
-- `hdiutil verify <dmg>`: passed; checksum valid.
-- `unzip -tq <zip>`: passed; no compressed-data errors.
-- App executable: Mach-O 64-bit `arm64`.
-- Bundled server directory and Prisma schema: present.
-- DMG SHA-256: `b18f59252f9e9ad7def9568b8820c6ce1255fa389eb6809d994baaa4288f8631`
-- ZIP SHA-256: `9601d6acd2c23edf075600c2d2803c744d13af6b5c047e1ad5b401e4ea131207`
+- `hdiutil verify`: passed; DMG checksum valid.
+- `unzip -tq`: passed; no compressed-data errors.
+- Packaged executable: Mach-O 64-bit `arm64`.
+- Bundled server directory and `Resources/server/prisma/schema.prisma`: present.
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-mac-current.log`
+- Integrity log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-integrity-current.log`
 
-## Evidence Logs
+## Supersession And Limits
 
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-mac.log`
-- Integrity log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/evidence/delivery/electron-build-integrity.log`
-
-## Warnings / Limits
-
-- The local package is unsigned and not notarized; electron-builder explicitly skipped macOS signing because signing identity was null.
-- Non-blocking build warnings included stale Browserslist data, large frontend chunks, deprecated transitive dependencies, and existing Nuxt peer-version warnings.
-- Delivery did not launch the application or claim behavioral Electron verification. The user-verification hold remains authoritative.
-- Build outputs under `autobyteus-web/electron-dist` are local generated artifacts and are not repository finalization.
+- The prior `DR-002` package at these same generated paths was built before `IR-005`. It was overwritten by this current build. Its old hashes and the pre-F-005 packaged-tab screenshot are historical evidence only and must not be used to identify or verify the current package.
+- `API-REV-004` was a prior failure and is superseded by `API-REV-005` / `API-REV-006` Pass.
+- The current package is unsigned and not notarized; electron-builder skipped signing because the signing identity is null.
+- Non-blocking warnings include stale Browserslist data, large frontend chunks, deprecated transitive dependencies, and existing Nuxt peer-version warnings.
+- Delivery built and integrity-checked the current package but did not launch its Electron shell. `API-REV-005` provides current-frontend live Chrome evidence against the user's production Electron backend, not packaged-shell execution. Renewed user verification of this rebuilt package is therefore required before finalization.

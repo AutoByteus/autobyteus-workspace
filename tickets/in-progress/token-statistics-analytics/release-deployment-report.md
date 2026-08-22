@@ -1,142 +1,95 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Current Scope And Status
 
-Current scope is integrated-state preparation, durable docs sync, release-note preparation, and user-verification handoff. Repository finalization and release/publication/deployment are not authorized before explicit user verification. The repository has a documented tag-driven release path, but no release was requested in this delivery round.
+- Current delivery revision: `DR-003`
+- Scope: latest-base refresh, superseding evidence reconciliation, durable docs sync, current Electron rebuild/integrity check, and renewed user-verification handoff.
+- Final status: `Ready for renewed user verification; repository finalization and release held`.
+- No release, publication, deployment, version bump, tag, commit, push, merge, archival, or cleanup is authorized in this round.
 
-## Handoff Summary
+## Integration Refresh
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: Integrated, docs-synchronized handoff plus an integrity-verified local macOS ARM64 Electron package are ready; finalization remains deliberately held for explicit user verification.
+- Ticket branch: `codex/token-statistics-analytics`
+- Bootstrap/latest tracked base: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`
+- Candidate implementation `HEAD`: `7a21d59238e89d70747be49214503240da0560c4`
+- `git fetch origin --prune`: passed on 2026-08-22.
+- Ahead/behind: `6 0`; merge base is the tracked base.
+- Base advanced: `No`; integration method/result: `Already current`.
+- Checkpoint/base-triggered rerun: not needed because no base commit was integrated. `API-REV-006` / `CRR-012` applies to the current candidate.
+- Delivery edits began only after this check: `Yes`.
 
-## Initial Delivery Integration Refresh
+## Authoritative Evidence
 
-- Bootstrap base reference: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Latest tracked remote base reference checked: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1` after `git fetch origin --prune`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed` — no merge/rebase operation was required because the candidate was already current.
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
-- Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): The refreshed tracked base exactly matched the bootstrap base and merge base. The ticket was four commits ahead and zero behind, so `API-REV-003` / `CRR-007` remained applicable to the integrated candidate.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): N/A.
+- `SR-002` / `ARCH-REV-002`: Pass; F-006/FIELD-F-002 resolved as a mistaken premise with no source change.
+- `CRR-010`: source Pass, 9.4/10.
+- `API-REV-006`: Pass, 97.7%; retains `API-REV-005` 23-assertion current-frontend/current-production-backend evidence.
+- `CRR-012`: durable-test Pass; TR-F-002 resolved with exact 2px underline assertions and focused 1-file/1-test Pass.
+- No unresolved source, API/E2E, field, or durable-test finding.
+- `API-REV-004` and the package/screenshot predating `IR-005` are historical and superseded.
 
-## User Verification
+## Docs Sync
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: Pending user response to `handoff-summary.md` checklist.
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A.
-
-## Docs Sync Result
-
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated:
+- Result: `Updated`, recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/docs-sync-report.md`.
+- Updated this round:
   - `autobyteus-server-ts/docs/modules/token_usage.md`
-  - `autobyteus-server-ts/docs/ARCHITECTURE.md`
-  - `autobyteus-server-ts/docs/modules/README.md`
   - `autobyteus-web/docs/agent_execution_architecture.md`
   - `autobyteus-web/docs/settings.md`
-- No-impact rationale (if applicable): N/A.
+  - `tickets/in-progress/token-statistics-analytics/release-notes.md`
+- No-impact: root/server/web READMEs and the already-synchronized persistence/module docs remain accurate.
 
-## Ticket State Transition
+## Current Electron Build
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: Pending explicit user verification; current path is `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics`.
+- Command: `pnpm -C autobyteus-web build:electron:mac` — passed.
+- Version/flavor: `1.4.54`, enterprise-named local artifact; product remains AutoByteus.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
+  - SHA-256: `d51940cfdfb665e10f6e172507a59bd1f73f0b40d7afa0e2af6571457cb03d6f`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
+  - SHA-256: `2de61a03a3572c20ebf88f9b003f833c8797325217fde96fc9e226aba25a7437`
+- Integrity: DMG/ZIP passed; executable is Mach-O ARM64; bundled server/Prisma schema present.
+- Package is unsigned/not notarized and was not launched by delivery.
+- Canonical report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/electron-build-mac-report.md`
 
-## Version / Tag / Release Commit
+## User Verification Hold
 
-No version bump, tag, or release commit has been created. Current frontend version remains `1.4.54`. `release-notes.md` is prepared only for a later user-authorized release.
-
-A local unsigned/unnotarized macOS ARM64 package was built from version `1.4.54` with `pnpm -C autobyteus-web build:electron:mac`. This is user-test evidence, not a release commit or published artifact. See `electron-build-mac-report.md`.
+- Earlier explicit functional completion received: `Yes` — the user confirmed populated post-coverage Analytics behavior was working/done; `SR-002` records this lifecycle acceptance.
+- Renewed verification required: `Yes` — `IR-005` later changed the user-facing selected-tab treatment and the old `DR-002` package predated it.
+- Renewed verification received: `No`.
+- Required response: test the current rebuilt package and reply `verified; finalize` when acceptable.
+- Ticket remains: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/investigation-notes.md`
-- Ticket branch: `codex/token-statistics-analytics`
-- Ticket branch commit result: `Blocked pending explicit user verification` (delivery checkpoint was not needed; earlier implementation commits remain local).
-- Ticket branch push result: `Blocked pending explicit user verification`
-- Finalization target remote: `origin`
-- Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `No verification received`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed` for this pre-verification refresh; final target must be fetched again after verification.
-- Target branch update result: `Blocked pending explicit user verification`
-- Merge into target result: `Blocked pending explicit user verification`
-- Push target branch result: `Blocked pending explicit user verification`
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): Workflow-required explicit user verification/acceptance has not yet been received.
+- Ticket moved to `tickets/done`: `No — renewed verification pending`.
+- Ticket branch commit/push: `Blocked by verification hold`.
+- Finalization target: `origin/personal` from bootstrap context.
+- Target refresh/merge/push: `Blocked by verification hold`; refresh again after verification.
+- Repository finalization status: `Not started`.
+- Worktree/branch cleanup: `Not started`; unsafe before finalization.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` in the current authorized scope
-- Method: `Other` — if later authorized, use the documented root `pnpm release <version> -- --release-notes tickets/done/token-statistics-analytics/release-notes.md` path after repository finalization.
-- Method reference / command: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/README.md` and `autobyteus-web/AGENTS.md`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` yet; artifact prepared.
-- Blocker (if applicable): A future release requires explicit user scope/version authorization after verification.
+- Applicable in current authorized scope: `No`.
+- Release notes are prepared at `tickets/in-progress/token-statistics-analytics/release-notes.md`.
+- If later authorized after finalization, follow the root README's tag-driven `pnpm release <version> -- --release-notes tickets/done/token-statistics-analytics/release-notes.md` process.
+- The local package is verification evidence, not a published release.
 
-## Post-Finalization Cleanup
+## Persisted-Data And Rollback Notes
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics`
-- Worktree cleanup result: `Blocked pending finalization`
-- Worktree prune result: `Blocked pending finalization`
-- Local ticket branch cleanup result: `Blocked pending finalization`
-- Remote branch cleanup result: `Not required` — ticket branch has not been pushed.
-- Blocker (if applicable): Cleanup cannot precede user verification and safe finalization.
-
-## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
-
-N/A — no implementation, design, requirement, docs, or deployment defect blocks the user-verification handoff.
-
-## Release Notes Summary
-
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/release-notes.md`
-- Archived release notes artifact used for release/publication: Not yet archived or used.
-- Release notes status: `Updated`
-
-## Deployment Steps
-
-No deployment is authorized. A local test package was created only:
-
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
-
-The package is unsigned/not notarized and was not launched by delivery.
-
-## Environment Or Persisted-Data Transition Notes
-
-- Approved persisted-data decision: `Directly Usable — No Migration` for existing run data, with the normal additive Prisma migration for empty analytics facet/coverage tables.
-- Delivery action required: `None`
-- Result and evidence: All 24 migrations applied in server/API runs; the built server started against a fresh data root; existing run records remained intact; coverage initialization was idempotent; no facet backfill occurred.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: N/A. The additive schema is applied by the existing startup path; no app-data transformation is approved or needed.
+- Existing run data is directly usable; normal additive Prisma schema application creates empty analytics facet/coverage tables. No backfill or app-data transformation is approved.
+- Before finalization, rollback is declining verification without committing/pushing/merging.
+- After rollout, a rollback must account for persisted coverage. Reverting writers without an approved recovery plan can create an apparent covered gap; history must not be fabricated.
 
 ## Verification Checks
 
-- `git fetch origin --prune` — passed; `origin/personal` remained `8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- `git rev-list --left-right --count HEAD...origin/personal` — `4 0` before delivery-owned docs/artifacts.
-- `git merge-base HEAD origin/personal` — `8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- `API-REV-003` — Pass at 96.6%; backend 5 files/18 tests, preserved Run-details GraphQL, web 11 files/26 tests, builds/guards, and live Chrome 19-assertion journey all pass.
-- `CRR-007` — proportional durable-test review Pass; exact `P1008` assertion and all committed run/facet reconciliation retained.
-- `git diff --check` — passed after delivery docs/artifact updates.
-- `pnpm -C autobyteus-web build:electron:mac` — passed; server/mobile-web/Electron build and Darwin ARM64 packaging completed.
-- `hdiutil verify autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg` — passed.
-- `unzip -tq autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip` — passed.
-- Packaged executable inspection — Mach-O 64-bit ARM64; bundled server and Prisma schema present.
+- Latest-base refresh: passed; base unchanged, ticket six ahead/zero behind.
+- `API-REV-006`: Pass at 97.7%.
+- `CRR-012`: Pass; focused assertion correction 1 file/1 test.
+- Current Electron build: passed.
+- `hdiutil verify`: passed.
+- `unzip -tq`: passed.
+- Packaged executable/server/schema inspection: passed.
+- Final delivery `git diff --check`: recorded after artifact updates.
 
-## Rollback Criteria
+## Escalation / Reroute
 
-Before finalization, rollback is simply declining verification and not committing, pushing, merging, tagging, or releasing. If the feature is later finalized and a production correction is required, prefer a forward fix. Reverting runtime writers to a version that does not advance analytics while retaining the coverage start can create an apparent covered gap; any rollback must therefore treat the additive analytics tables/coverage as persisted state and use an explicitly approved recovery plan rather than fabricate or backfill history.
-
-## Final Status
-
-`Local macOS ARM64 Electron package built and integrity-verified; ready for explicit user behavioral verification, with repository finalization intentionally blocked by the verification hold.`
+N/A. There is no implementation, design, requirement, documentation, packaging, or deployment defect blocking the renewed user-verification handoff.

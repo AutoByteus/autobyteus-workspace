@@ -24,7 +24,7 @@ describe('TokenUsageStatistics', () => {
     expect(wrapper.get('[role="tablist"]').attributes('aria-label')).toBe('Token statistics view');
     expect(tabs[0]?.attributes('aria-selected')).toBe('true');
     expect(tabs[0]?.classes()).toEqual(expect.arrayContaining([
-      'bg-transparent', 'border-blue-600', 'text-blue-700', 'focus-visible:ring-2',
+      'bg-transparent', 'border-b-2', 'border-blue-600', 'text-blue-700', 'focus-visible:ring-2',
     ]));
     expect(tabs[0]?.classes()).not.toContain('bg-slate-900');
     expect(tabs[1]?.classes()).toEqual(expect.arrayContaining([
@@ -37,7 +37,7 @@ describe('TokenUsageStatistics', () => {
     expect(tabs[0]?.classes()).toContain('border-transparent');
     expect(tabs[1]?.attributes('aria-selected')).toBe('true');
     expect(tabs[1]?.classes()).toEqual(expect.arrayContaining([
-      'bg-transparent', 'border-blue-600', 'text-blue-700', 'focus-visible:ring-2',
+      'bg-transparent', 'border-b-2', 'border-blue-600', 'text-blue-700', 'focus-visible:ring-2',
     ]));
     expect(tabs[1]?.classes()).not.toContain('bg-slate-900');
     expect(wrapper.find('[data-test="analytics-view"]').exists()).toBe(false);

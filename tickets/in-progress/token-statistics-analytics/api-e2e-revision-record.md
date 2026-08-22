@@ -8,6 +8,8 @@
 | API-REV-002 | `/code_reviewer` / `code-review-report.md` / API/E2E round 2 | IR-004, CRR-004–CRR-005, API-REV-001 | Fail / 61.4% | Pass / 96.6% |
 | API-REV-003 | `/code_reviewer` / `api-e2e-test-review-report.md` / API/E2E round 3 | CRR-006, API-REV-002 | Pass / 96.6% | Pass / 96.6% |
 | API-REV-004 | user packaged-Electron field report / API/E2E round 4 | API-REV-003, approved prototype/requirements | Pass / 96.6% | Fail / 89.1% |
+| API-REV-005 | `/code_reviewer` / CRR-010 / API/E2E round 5 | SR-002, ARCH-REV-002, IR-005–IR-006, CRR-008–CRR-010, API-REV-004 | Fail / 89.1% | Pass / 97.7% |
+| API-REV-006 | `/code_reviewer` / CRR-011 / API/E2E round 6 | API-REV-005, CRR-011 | Pass / 97.7% | Pass / 97.7% |
 
 ## Revision Entries
 
@@ -104,3 +106,50 @@ None.
 - Secondary risk: no polling/background refresh can retain an earlier empty result until explicit apply/range change/remount; the supplied screenshot timing does not conclusively identify this as its cause
 - Recommended recipient: `/code_reviewer` for focused failure-origin review, likely splitting implementation ownership for FIELD-F-001 and solution-design ownership for FIELD-F-002
 - Remaining risks: final intended historical/initial analytics behavior and refresh semantics require ownership before a fix and durable coverage can be validated
+
+### API-REV-005 — Approved tabs and clarified post-coverage lifecycle pass against the live Electron backend
+
+- Triggering role, report path, and round: `/code_reviewer`; `code-review-report.md` / CRR-010; API/E2E round 5
+- Triggering finding or scenario IDs: revalidate `FIELD-F-001` / F-005 and clarified `FIELD-F-002` / F-006
+- Related revision IDs: SR-002, ARCH-REV-002, IR-005–IR-006, CRR-008–CRR-010, API-REV-004
+- Why recorded: independently supersedes the prior field Fail using the current frontend at `7a21d5923` and the user's already-running Electron backend/production database
+- Coverage-path change: none owned by API/E2E in round 5; IR-005's updated `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts` was rechecked and must receive proportional successful-run review
+- Execution delta: focused spec 1/1; affected web matrix 12 files/35 tests; production Nuxt build; web/localization guards and audit; real Chrome at desktop/390px with 23 assertions
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| FIELD-F-001 / F-005 | Local Fix — implementation | Resolved: Analytics and Run details both compute transparent background, blue-700 text, blue-600 2px underline, and no black class; keyboard and narrow states pass | `web-tabs-field-revalidation.log`; `field-rerun-browser-result.json`; desktop/mobile screenshots |
+| FIELD-F-002 / F-006 | Requirement/design gap | Resolved as mistaken premise by SR-002 and execution: initial query preceded admitted contributions; unchanged production backend now returns 121,230,647 post-coverage tokens / 870 reports and current frontend renders them; Run details remains independently populated | `field-rerun-browser-result.json`; Analytics/Run-details screenshots |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this record
+- Prior result and confidence: `Fail`, `89.1%`
+- Current result and confidence: `Pass`, `97.7%`
+- New or remaining failure IDs: none
+- Environment/cleanup: Electron backend `29695` and database were left running/unmodified; only owned static frontend `3101`, Chrome and temporary script were started and removed
+- Recommended recipient: `/code_reviewer` for proportional review of the IR-005 durable tab regression
+- Remaining risks: governed SQLite P1008 under arbitrary saturation, external invoice/quota reconciliation, and unchanged Electron-shell-only behavior; none blocks the approved scope
+
+### API-REV-006 — Selected-tab regression now protects the 2px underline width
+
+- Triggering role, report path, and round: `/code_reviewer`; `api-e2e-test-review-report.md` / CRR-011; API/E2E round 6
+- Triggering finding: `TR-F-002` in `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts`
+- Related revision IDs: CRR-011, API-REV-005
+- Why recorded: the implementation/browser Pass remained valid, but the durable selected-tab regression protected blue border color without explicitly protecting the approved 2px border width
+- Coverage-path change: updated only `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts`; no file added/removed
+- Scenario delta: both selected Analytics and selected Run-details assertion arrays now require `border-b-2` alongside transparent background, blue border/text, focus class, and no former dark fill
+- Execution delta: focused spec passed 1 file/1 test; `git diff --check` passed; browser/build rerun not proportionate for assertion-only strengthening
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| TR-F-002 / FIELD-F-001 durable regression | Local Fix — test | Resolved: removing the visible 2px underline class now fails both selected-state assertions | `web-tabs-tr-f-002-rerun.log`; corrected test diff |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this record
+- Prior result and confidence: `Pass`, `97.7%`
+- Current result and confidence: `Pass`, `97.7%`
+- New or remaining failure IDs: none
+- Recommended recipient: `/code_reviewer` for proportional re-review of only the corrected durable test path
+- Remaining risks: unchanged bounded residuals from API-REV-005; no new uncertainty introduced

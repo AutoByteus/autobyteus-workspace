@@ -17,10 +17,10 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Investigation Round: `4`
-- Trigger: user field report from the packaged Electron build: Analytics renders empty despite expected usage and the selected Analytics tab is an unwanted black block; user explicitly requested current frontend validation against the already-running embedded backend
-- Prior Investigation Reviewed: `Yes` — rounds 1–3 / `API-REV-003` Pass at 96.6%; the new real-user environment and approved-prototype visual mismatch reopened browser/user-surface confidence and produced a new completed Fail result
+- Current API/E2E Revision ID: `API-REV-006`
+- Current Investigation Round: `6`
+- Trigger: `CRR-011` proportional durable-test Fail — Local Fix `TR-F-002`; strengthen the selected-tab regression with the approved `border-b-2` underline-width invariant
+- Prior Investigation Reviewed: `Yes` — API-REV-005 Pass / 97.7% remains authoritative; CRR-011 reopens only durable test quality, not implementation, browser evidence, confidence, environment, or cleanup
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -214,8 +214,8 @@ None.
 | --- | --- | --- | --- |
 | API-F-001 sparse-bucket reconciliation | Local Fix — resolved | empty NO_USAGE/null reconciles; usage-bearing null still fails | none; closed in API-REV-002 |
 | TR-F-001 API-004 rejection assertion | Local Fix — test, resolved | each rejected result now must be an `Error` with exact code `P1008`; focused 1 file/3 tests and combined 5 files/18 tests pass | none; closed in API-REV-003 pending the already-requested proportional re-review |
-| FIELD-F-001 selected Analytics/Run-details tab is a dark filled block | Local Fix — implementation | source and computed Chrome style use `bg-slate-900 text-white`; approved `prototype.html` requires transparent background, blue active text, and blue bottom border; supplied Electron screenshots reproduce the mismatch | `/code_reviewer` for focused failure-origin review |
-| FIELD-F-002 upgraded installation initially shows no historical/current-month graph | Design Impact / Requirement Gap | production DB has 26,265,223,658 lifetime tokens from June 25 onward, while coverage began Aug 22 and only post-coverage facets are queried; this exactly follows the approved no-backfill rule, but the user rejects the resulting first-upgrade experience. Fresh current frontend against the same backend now renders post-coverage usage, so a current backend aggregation defect is disproved. No automatic polling exists, leaving a bounded stale-empty risk after later writes, but the supplied screenshot timing does not prove that subtype. | `/code_reviewer` for failure-origin confirmation and likely `/solution_designer` ownership of changed history/first-run expectations |
+| FIELD-F-001 selected Analytics/Run-details tab is a dark filled block | Local Fix — resolved | current source/durable spec and Chrome computed style prove transparent background, blue text, blue 2px underline, and no `bg-slate-900` for both tabs | none; closed in API-REV-005 |
+| FIELD-F-002 upgraded installation initially shows no historical/current-month graph | Mistaken-premise gap — resolved by SR-002 and runtime revalidation | initial query preceded any admitted post-coverage contribution; current live backend now returns 121,230,647 daily-facet tokens / 870 reports and current frontend renders them while Run details retains lifetime rows; no data-policy change required | none; closed in API-REV-005 |
 
 ## Test-Review Local-Fix Re-entry Plan
 
@@ -236,12 +236,36 @@ None.
 - Durable coverage decision: no repository-resident coverage was changed in round 4; this is field diagnosis and failure rerouting. Any fix must return with requirement-linked coverage.
 - Evidence: `user-live-electron-graphql-this-month.json`, `user-field-diagnosis.log`, `user-live-electron-backend-frontend-build.log`, `user-live-electron-backend-browser-result.json`, and `user-live-electron-backend-current-frontend.png`.
 
+## CRR-010 / API-REV-004 Revalidation Plan And Result
+
+- `FIELD-F-001` validity: the approved prototype remains authoritative. Recheck the durable `TokenUsageStatistics` semantics/style regression, production frontend build, and real Chrome computed styles for both Analytics and Run details at desktop and narrow widths. Expected active state: transparent background, blue text, blue 2px bottom border; inactive state: transparent border/slate text; no `bg-slate-900`.
+- `FIELD-F-002` clarified lifecycle: no source or contract change is approved. Recheck the actual supported state sequence only: coverage exists before a contribution; admitted post-coverage contributions populate the daily facet; a current live query and current frontend render the populated partial result; pre-coverage lifetime distribution remains excluded and Run details stays reachable. Do not add polling, backfill, dynamic lifetime merge, lifetime snapshot, or alternate data policy.
+- Existing durable coverage validity: all API-001–API-005 and WEB-001–WEB-003 decisions remain `Still Valid`. The updated `TokenUsageStatistics.spec.ts` is `Needs Recheck` because IR-005 added exact selected-tab protection; no other durable coverage edit is indicated.
+- Narrowest repository execution: run `TokenUsageStatistics.spec.ts`, then the affected web analytics/Run-details/store/CSV matrix. Run the production frontend build/guards because the fix is utility-class/rendering-sensitive.
+- Broader validation: `Required`. Use the existing packaged backend read-only if still healthy, build the current frontend at `7a21d5923` against it, and execute Chrome semantics/computed-style/render checks. Start and clean only an owned frontend/browser; do not stop or mutate the user's Electron/backend/database.
+- Reroute gate: any black/filled active tab, missing blue underline, broken tab semantics/focus/navigation, empty live current response after supported contributions, or contradiction of coverage/Run-details separation is a Fail package to `/code_reviewer`.
+- Repository result: focused selected-tab spec passed 1 file/1 test; affected Token Statistics matrix passed 12 files/35 tests; production frontend build and all three frontend guards/audit passed; `git diff --check` passed.
+- Browser result: the current frontend at `7a21d5923`, built against the already-running Electron backend on `29695`, passed 23 semantic/computed-style/data assertions in Chrome. The live response was populated with 121,230,647 tokens / 870 admitted reports, `PARTIAL` coverage from the original instant, one active day, two breakdown rows, and exact selected/trend/breakdown reconciliation.
+- FIELD-F-001 resolution: both Analytics and Run details computed as transparent background, `rgb(29, 78, 216)` blue text, and `rgb(37, 99, 235)` 2px bottom border; neither contained `bg-slate-900`. Desktop and 390px screenshots visually confirm the approved treatment.
+- FIELD-F-002 resolution: clarified lifecycle is confirmed. The same production database now serves a populated post-coverage daily facet; Run details remains independently reachable and populated with retained lifetime rows. No backfill, merge, polling, or alternate database policy was required or introduced.
+- Browser environment note: the standalone static-web arrangement made one expected unrelated probe to `http://127.0.0.1:29695/health` (404); actual embedded-backend readiness at `/rest/health`, analytics GraphQL, and Run details succeeded. The probe was recorded and excluded from feature error assertions; there were no page errors or remaining application HTTP/console failures.
+- Cleanup: owned Chrome, temporary script, and port `3101` static host removed; user's Electron/backend/database remained running and unmodified.
+
+## CRR-011 Test-Review Local-Fix Re-entry Plan
+
+- Finding: `TR-F-002` — the selected Analytics and Run-details assertions prove transparent background, blue border/text, and no dark fill but omit the shared `border-b-2` width class. Removing the visible 2px underline would therefore escape the durable regression.
+- Existing coverage validity: the single `TokenUsageStatistics.spec.ts` scenario remains coherent and required; its semantics, child switching, inactive styling, focus class, selected color, and no-dark-fill assertions are still valid. Decision: `Needs Update`, not replace/remove.
+- Durable edit: add explicit `border-b-2` expectation to both selected-state assertion arrays while retaining all current checks.
+- Execution result: focused spec passed 1 file/1 test and `git diff --check` passed. Browser/build rerun was not proportionate because API-REV-005 directly proved the computed 2px width and source is unchanged.
+- Outcome: both selected-state arrays now explicitly require `border-b-2`; API-REV-005 implementation/browser Pass and 97.7% confidence remain unchanged and API-REV-006 records the corrected durable assertion.
+
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Completed` — round-4 read-only live backend/API/browser diagnosis ran.
-- Durable Coverage Added / Updated / Removed In Round 4: `No`.
-- Final confidence: `89.1%`; requirement/user-surface categories are below 90% because the user-rejected first-upgrade experience and confirmed prototype mismatch are unresolved.
-- Broader validation: `Required` and executed using current Chrome frontend against the already-running packaged Electron backend.
-- Reroute Required: `Yes`.
-- Recommended Recipient: `/code_reviewer` for focused failure-origin review; likely onward design ownership for `FIELD-F-002`.
-- Notes: `API-REV-004` supersedes the prior Pass as the latest API/E2E result. The backend currently returns and renders post-coverage data, but `FIELD-F-001` is a confirmed implementation defect and `FIELD-F-002` is a confirmed user/approved-design expectation conflict.
+- Proceed To API/E2E Execution: `Completed` — bounded test-only correction passed.
+- Durable Coverage Added / Updated / Removed In Round 6: updated only `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts`; none added/removed.
+- Final validation confidence: `97.7%`, unchanged from API-REV-005.
+- Broader validation: `Not Required`; API-REV-005's computed-style browser proof remains authoritative.
+- Critical criterion missing or failing: `None`.
+- Reroute Required: `No`.
+- Recommended Recipient: `/code_reviewer` for proportional re-review of the corrected single test path.
+- Notes: API-REV-006 retains Pass and closes TR-F-002.

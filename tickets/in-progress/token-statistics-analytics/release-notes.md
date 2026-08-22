@@ -16,5 +16,6 @@
 
 ## Fixes
 
+- Analytics and Run details now use the intended transparent selected-tab treatment with blue text and a visible 2px blue underline instead of a dark filled tab.
 - Sparse no-usage buckets now remain visible without breaking known-cost reconciliation.
 - Concurrent analytics writes preserve exact run/facet consistency for committed operations and surface the governed SQLite timeout instead of accepting unrelated errors.

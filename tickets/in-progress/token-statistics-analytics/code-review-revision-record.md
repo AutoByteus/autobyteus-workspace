@@ -15,6 +15,9 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | API/E2E Test-Code Re-review / `API-REV-003` | Fail — Local Fix | Pass | TR-F-001 |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-004`, FIELD-F-001/FIELD-F-002 | Pass | Fail — split rework | F-005, F-006 |
 | CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 9 / `IR-005`, F-005 | Fail — split rework | Fail overall; IR-005 Pass | F-005 resolved; F-006 open |
+| CRR-010 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 10 / `IR-006`, SR-002/ARCH-REV-002 no-op reconciliation | Fail overall; IR-005 Pass | Pass | F-006 resolved |
+| CRR-011 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-005`, IR-005 tab regression | Pass — source/API/E2E | Fail — Local Fix | TR-F-002 |
+| CRR-012 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | API/E2E Test-Code Re-review / `API-REV-006`, TR-F-002 | Fail — Local Fix | Pass | TR-F-002 resolved |
 
 ## Revision Entries
 
@@ -245,3 +248,84 @@ None.
 - Material score or classification changes: implementation-quality score is `9.4/10 (94/100)` and F-005 changes from open to resolved. The overall decision remains `Fail` solely because the independent F-006 Requirement Gap prevents implementation-review/API/E2E advancement.
 - Recommended recipient: `/solution_designer`
 - Remaining risks or uncertainty: the truthful immediately useful first-upgrade experience and refresh lifecycle require renewed approval and architecture review; API-REV-004 remains the latest execution result and delivery stays blocked.
+
+### CRR-010 — No-op SR-002 reconciliation resolves F-006 and passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `10`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-handoff.md`; `IR-006`; `F-006` / `FIELD-F-002`
+- Relevant solution revision IDs: `SR-001`, `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-005`, `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-001`, `DR-002`
+- Prior authoritative result: `Fail` overall; bounded IR-005 / F-005 source correction `Pass`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: SR-002 and ARCH-REV-002 establish that the initial empty Analytics query occurred before any admitted post-coverage contribution. Later supported contributions populated the approved daily facet, and the user accepted the populated behavior. The earlier assumed first-upgrade intent conflict is withdrawn; IR-006 correctly adds no lifetime snapshot, backfill, dynamic lifetime merge, polling, refresh spine, or other source change. The IR-005→IR-006 implementation-tree diff is empty.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-006 / FIELD-F-002 | Open — Requirement Gap | Resolved — mistaken premise, no implementation change | CRR-008, CRR-009, SR-002, ARCH-REV-002, IR-006 | Coverage initialized before the initial empty query; later live/API/frontend evidence and the user screenshot show populated post-coverage daily facets. User accepted the result; implementation tree has no IR-006 delta. |
+| F-005 / FIELD-F-001 | Resolved | Remains resolved | IR-005, CRR-009 | No implementation delta from IR-005; approved tab fix remains the source baseline. |
+| F-001–F-004, TR-F-001 | Resolved | Remain resolved | IR-002–IR-004, CRR-002–CRR-007 | IR-006 changes no implementation or durable test code and supplies no contrary evidence. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: overall decision changes from `Fail` to `Pass`; implementation-quality score remains `9.4/10 (94/100)` because IR-006 is a verified source no-op. The prior F-006 Requirement Gap classification is withdrawn as a mistaken premise.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API-REV-004 remains the latest executable Fail until independent verification supersedes it. Pre-coverage period distribution remains unavailable/partial, and prior bounded cardinality, SafeInt, contention, and cost-quality risks remain unchanged.
+
+### CRR-011 — Durable tab regression omits the 2px underline invariant
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `3`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`; `API-REV-005`; FIELD-F-001 / F-005
+- Relevant solution revision IDs: `SR-001`, `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-005`, `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-005`
+- Relevant delivery revision IDs: `DR-001`, `DR-002`
+- Prior authoritative result: `Pass` — CRR-010 source review and API-REV-005 API/E2E at 97.7%
+- Current authoritative result: `Fail` — `Local Fix` to `/api_e2e_engineer`
+- What changed in the review result and why: proportional review of the one post-API-REV-004 durable test update found that selected states assert blue border color but not the common `border-b-2` width. Removing the visible underline width would still pass this exact regression despite the approved prototype and FIELD-F-001's 2px-bottom-border invariant. All other scenario structure, state, semantics, isolation, and coverage alignment checks pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-F-001 | Resolved | Remains resolved | API-REV-003, CRR-007 | The tab regression does not touch SQLite contention coverage. |
+| F-005 / FIELD-F-001 | Resolved in implementation/execution | Remains resolved | IR-005, CRR-009, API-REV-005 | Current browser and focused execution prove the 2px underline; TR-F-002 concerns only whether the durable unit regression protects that exact invariant. |
+| F-006 / FIELD-F-002 | Resolved | Remains resolved | SR-002, ARCH-REV-002, IR-006, CRR-010, API-REV-005 | No test-review evidence reopens the clarified lifecycle. |
+
+- New or remaining finding IDs: `TR-F-002`.
+- Material score or classification changes: no implementation scorecard, API/E2E confidence, browser result, environment, or cleanup conclusion was reopened. The separate durable-test review result is `Fail — Local Fix`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: add an explicit `border-b-2` assertion for both selected states, rerun the focused spec and diff check, and return for proportional re-review before delivery.
+
+### CRR-012 — Exact 2px underline assertion resolves TR-F-002
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Re-review`, round `4`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-execution-coverage-report.md`; `API-REV-006`; `TR-F-002`
+- Relevant solution revision IDs: `SR-001`, `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-005`, `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-005`, `API-REV-006`
+- Relevant delivery revision IDs: `DR-001`, `DR-002`
+- Prior authoritative result: `Fail` — Local Fix, TR-F-002
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the selected Analytics and selected Run-details assertion arrays now each require `border-b-2` in addition to transparent background, blue border/text, focus treatment, semantic selection, and no former dark fill. The focused spec passes 1 file/1 test and patch hygiene passes; no broader rerun was proportionate for the assertion-only strengthening.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-F-002 | Open | Resolved | CRR-011, API-REV-006 | Corrected test diff explicitly adds `border-b-2` to both selected states; `web-tabs-tr-f-002-rerun.log` records 1 file/1 test Pass and `git diff --check` passed. |
+| TR-F-001 | Resolved | Remains resolved | API-REV-003, CRR-007 | No contention-test change. |
+| F-005/FIELD-F-001 and F-006/FIELD-F-002 | Resolved | Remain resolved | CRR-009–CRR-010, API-REV-005–API-REV-006 | Test-only assertion strengthening supplies no contrary implementation or lifecycle evidence. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: separate durable-test review changes from `Fail — Local Fix` to `Pass`. CRR-010's implementation score and API-REV-006's 97.7% confidence remain unchanged.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: only the already documented bounded residuals remain. Delivery must refresh/integrate the current branch state and reconcile its earlier DR-001/DR-002 artifacts before finalization.

@@ -1,78 +1,46 @@
 # Docs Sync Report
 
-## Scope
+## Scope And Integrated State
 
 - Ticket: `token-statistics-analytics`
-- Trigger: Delivery handoff after source review `CRR-005`, API/E2E `API-REV-003` at 96.6%, and proportional durable-test review `CRR-007` all passed with no unresolved findings.
-- Bootstrap base reference: `origin/personal` at `8ef282ba77705180d985e7000d801f0e0068cdc1` (recorded in `investigation-notes.md`).
-- Integrated base reference used for docs sync: `origin/personal` at `8ef282ba77705180d985e7000d801f0e0068cdc1`, refreshed by `git fetch origin --prune` on 2026-08-22. Ticket `HEAD` was `9dc75543182acb57b3f60dbc55ae0596d8990be7`, four commits ahead and zero behind; merge base matched the tracked base.
-- Post-integration verification reference: No new base commits were integrated, so no additional base-triggered executable rerun was required. The same candidate state is covered by `API-REV-003`: backend 5 files/18 tests, preserved Run-details GraphQL, web 11 files/26 tests, production builds/guards, and live Chrome with 19 assertions and zero page/console errors.
+- Current delivery revision: `DR-003`
+- Trigger: delivery re-entry after `SR-002` / `ARCH-REV-002`, source review `CRR-010` Pass at 9.4/10, API/E2E `API-REV-006` Pass at 97.7%, and durable-test review `CRR-012` Pass.
+- Base refresh: `git fetch origin --prune` on 2026-08-22.
+- Bootstrap and latest tracked base: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`.
+- Candidate implementation `HEAD`: `7a21d59238e89d70747be49214503240da0560c4`; six commits ahead, zero behind; merge base equals the tracked base.
+- Integration result: `Already current`. No base commit was integrated, so no checkpoint or base-triggered executable rerun was needed. The superseding `API-REV-006` / `CRR-012` evidence remains applicable.
 
-## Why Docs Were Updated
+## Result
 
-- Summary: The final implementation adds an observation-time token analytics projection and GraphQL contract, makes Analytics the default Settings view, preserves lifetime Run details separately, exposes tracking/cost-quality truth, and adds local exact CSV export.
-- Why this should live in long-lived project docs: Persistence authority, atomic write behavior, no-backfill rollout, GraphQL ownership, UI semantics, coverage/cost caveats, and the distinction between period analytics and lifetime Run details are durable runtime and product contracts. The prior docs explicitly said exact period analytics did not exist, so leaving them unchanged would be materially stale.
+`Pass — Updated`. The initial durable feature documentation remains accurate. This round reconciles it with the selected-tab correction and current live evidence. `SR-002` clarifies that the initial empty state preceded admitted post-coverage usage; it does not change the approved no-backfill model or require new runtime documentation.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
-| --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-server-ts/docs/modules/token_usage.md` | Canonical Token Usage accounting, persistence, GraphQL, frontend-contract, and operational reference. | `Updated` | Added daily facets/coverage, atomic write semantics, range/aggregation ownership, additive no-backfill rollout, analytics GraphQL/UI/CSV contract, and final validation limits. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-server-ts/docs/ARCHITECTURE.md` | Durable server persistence overview. | `Updated` | Recorded the separate lifetime and observation-time projections and their shared transaction boundary. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-server-ts/docs/modules/README.md` | Server module catalog/common pattern summary. | `Updated` | Removed the obsolete implication that run records are the only current Token Usage persistence shape. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture owner for Token Statistics stores and surfaces. | `Updated` | Replaced the pre-analytics Task-default contract with Analytics/Run-details ownership and preserved detailed Run-details behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/docs/settings.md` | Settings-facing duplicate of the Token Statistics architecture contract. | `Updated` | Mirrored the authoritative Analytics/Run-details behavior to prevent contradictory guidance. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/README.md` | Root setup, packaged testing, and release guidance. | `No change` | Existing setup and conditional release process remain accurate; this feature introduces no new operator command. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-server-ts/README.md` | Server environment/build overview. | `No change` | Existing SQLite/Prisma setup already covers automatic additive schema application; detailed semantics belong in the module doc. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/README.md` | Frontend build/test/Electron guidance. | `No change` | Commands and packaging behavior are unchanged; packaged Electron was not executed in this validation round. |
-
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/token_usage.md` | Runtime/API/rollout contract | Documented separate lifetime and daily analytics projections, atomicity, coverage start, no backfill, UTC range policy, cost quality, GraphQL result, UI/export behavior, and final coverage. | Canonical source for future Token Usage maintenance and incident diagnosis. |
-| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Persistence architecture | Added analytical projection and shared transaction boundary. | Prevents architectural diagrams/text from implying lifetime rows are the only current projection. |
-| `autobyteus-server-ts/docs/modules/README.md` | Module index summary | Added compact daily analytics projection and no-backfill rule. | Keeps the catalog aligned with the module doc. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend/store contract | Documented default Analytics, coherent server-owned result, filters/charts/CSV/coverage, and preserved Run details. | Replaces obsolete Task-default/no-period-analytics guidance. |
-| `autobyteus-web/docs/settings.md` | Settings product/architecture contract | Mirrored the same final behavior. | This file carries the same Token Statistics section and must not contradict the architecture doc. |
-
-## Durable Design / Runtime Knowledge Promoted
-
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
-| --- | --- | --- | --- |
-| Accounting authorities | Lifetime run rows remain authoritative; daily analytics is a derived observation-time projection. | `requirements.md`, `design-spec.md`, `implementation-handoff.md` | `autobyteus-server-ts/docs/modules/token_usage.md`, `docs/ARCHITECTURE.md` |
-| Atomic projection writes | Only admitted `CHANGED` contributions advance both stores in one transaction; rollback/suppression prevent drift. | `design-spec.md`, `api-e2e-execution-coverage-report.md` | `autobyteus-server-ts/docs/modules/token_usage.md` |
-| Coverage and rollout | Existing lifetime records are directly usable but never backfilled; analytics begins at an immutable coverage instant. | `design-spec.md`, `api-e2e-execution-coverage-report.md` | `autobyteus-server-ts/docs/modules/token_usage.md`, both web docs |
-| Server-owned analytics truth | UTC ranges/comparison/granularity/coverage/cost quality/filter keys come from one GraphQL result and are not reconstructed in the UI. | `token-usage-analytics-data-contract.md`, `design-spec.md` | server Token Usage doc and both web docs |
-| Analytics vs Run details | Analytics reports observed usage in periods; Run details preserves creation-time selection and lifetime totals. | `requirements.md`, `ui-ux-spec.md`, `implementation-handoff.md` | server Token Usage doc and both web docs |
-| Evidence export | CSV is deterministic, local-only, exact, and carries identity/accounting/cost/coverage metadata. | `requirements.md`, `token-usage-analytics-data-contract.md`, API/E2E report | server Token Usage doc and both web docs |
-
-## Removed / Replaced Components Recorded
-
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Doc | Result | Current decision |
 | --- | --- | --- |
-| Settings Token Statistics defaulting directly to Task/Model lifetime tables | Default Analytics view plus separate Run details | Both web docs and server Token Usage frontend contract |
-| Claim that exact observation-period reporting would require a future history contract | Implemented compact UTC daily analytics projection and query | Server Token Usage `Observation-Time Analytics Projection` / `GraphQL And Statistics` |
-| `tokenUsageStatisticsStore` and embedded model cost bar ownership | `tokenUsageAnalytics` plus renamed `tokenUsageRunStatistics`; purpose-owned trend/pace/breakdown components | Both web docs |
-| Sole-use `components/common/BarChart.vue` | Purpose-owned analytics chart components | Both web docs |
+| `autobyteus-server-ts/docs/modules/token_usage.md` | Updated | Replaced earlier live-validation wording with current-frontend/current-production-backend populated evidence and the semantic transparent blue 2px tab contract; browser proof is not described as Electron-shell execution. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Updated | Added the semantic selected-tab contract: transparent background, blue text, 2px blue bottom border, visible focus, no dark filled selected state. |
+| `autobyteus-web/docs/settings.md` | Updated | Mirrored the same product/UI contract so Settings guidance remains consistent. |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | No change | The existing lifetime/daily projection and transaction-boundary description remains accurate. |
+| `autobyteus-server-ts/docs/modules/README.md` | No change | Its compact projection/no-backfill summary remains accurate. |
+| Root `README.md`, `autobyteus-server-ts/README.md`, `autobyteus-web/README.md` | No change | Setup, build, migration, and Electron packaging commands are unchanged; the current README command built successfully. |
+| `tickets/in-progress/token-statistics-analytics/release-notes.md` | Updated | Added the selected-tab visual correction for future authorized release use. |
 
-## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
+## Durable Knowledge Reconciled
 
-Not applicable; long-lived docs required updates.
+- Observation-time analytics starts at persisted coverage; pre-coverage lifetime data remains in Run details and is not backfilled.
+- An immediate empty Analytics view before any admitted post-coverage contribution is expected; later admitted usage populates the daily projection.
+- Analytics and Run details are semantic sibling tabs. The selected state is transparent with blue text and a visible 2px blue underline, not a dark fill.
+- Current populated validation used the current frontend against the user's production Electron backend and preserved Run-details behavior; it does not substitute for launching the rebuilt Electron package.
+
+## Superseded Evidence
+
+- `API-REV-004` Fail is historical and superseded by `API-REV-005` / `API-REV-006` Pass.
+- The package and packaged-tab screenshot recorded before `IR-005` are historical and not current verification evidence. The `DR-003` Electron report identifies the rebuilt artifacts.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: Present the integrated handoff and wait for explicit user verification/acceptance before archival, commit/push, target merge, release, deployment, or cleanup.
-- Notes: Documentation edits were made only after the tracked base refresh confirmed the candidate was current. `git diff --check` passes. No delivery blocker remains.
-
-## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
-
-N/A.
-
-## Delivery Follow-Up — DR-002 Electron Build
-
-- Follow-up trigger: User requested a README-guided Electron build.
-- Docs impact: `No impact`.
-- Rationale: The documented `pnpm build:electron:mac` path successfully produced the package as written. The request introduced no new build command, packaging contract, runtime behavior, or operator requirement requiring long-lived documentation changes.
-- Evidence: `electron-build-mac-report.md`, `evidence/delivery/electron-build-mac.log`, and `evidence/delivery/electron-build-integrity.log`.
+- Current package build and integrity checks: `Pass`.
+- Documentation whitespace check: `git diff --check` must pass in the final DR-003 delivery check.
+- Next action: obtain renewed explicit user verification of the rebuilt package before archival, commit/push, target merge, release, deployment, or cleanup.
+- Blocked/escalated follow-up: none; the verification hold is a required workflow gate, not a defect.
