@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer / `design-review-report.md` / initial implementation | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001` | Reviewed analytics design implemented and locally validated; ready for code review. |
+| IR-002 | Code reviewer / `code-review-report.md` / round 1 | F-001, F-002, F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001` | Preserved mixed-run identity, elapsed pace alignment, and exact chart/table/CSV evidence corrected; ready for code-review round 2. |
 
 ## Revision Entries
 
@@ -27,3 +28,23 @@
 - Local validation and result: backend and frontend production builds passed; targeted backend 15/15 and frontend 11/11 unit checks passed; boundary/localization guards passed; migrated SQLite/provider narrow check reconciled; desktop/narrow browser rendering and interactions passed without page/console errors after the formatter fix.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: independent API/E2E coverage investigation remains required, especially cross-run SQLite contention, SafeInt extremes, digest/cardinality cases, and full state/render matrix.
+
+### IR-002 — Restore preserved run semantics and exact analytics evidence
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; code-review round 1
+- Triggering finding IDs: `F-001`, `F-002`, `F-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-001` at commit `f5be85b04`; code review `CRR-001` failed with bounded source defects.
+- Current authoritative result: run-specific mixed identity summaries are preserved; pace is plotted by elapsed UTC days with exact point evidence; trend/breakdown tooltips and tables expose quality/captured status/currency/share; local cost has no invented currency; CSV status columns are unambiguous.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the bounded local-fix delta requested by code-review round 1 without changing the approved design.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `BEH-004`, `BEH-005`; `REQ-008`, `REQ-010`, `REQ-012`, `REQ-019`, `REQ-022`–`REQ-025`; `AC-006`, `AC-011`–`AC-012`, `AC-024`, `AC-027`–`AC-031`, `AC-034`
+- Implementation delta: the run aggregate overlays its established distinct-value summary on the shared numeric/cost result; pace series use `{x: elapsedDays, y: cumulative}` points and exact current/prior tables; trend/breakdown evidence is complete; breakdown share is metric/comparability aware; local formatting is currency-safe; CSV exports captured and derived statuses separately.
+- Changed files or areas: backend run aggregate and focused fold regression; frontend pace/trend/breakdown/exact-table components, analytics presentation utility, CSV serializer, localization, and focused component/serializer fixtures/tests.
+- Local validation and result: backend/frontend production builds passed; backend focused tests 18/18; frontend focused tests 16/16; guards/audit passed; elapsed 8-vs-7 bucket endpoints both reconcile to day 213; shorter prior month remains day 28 versus current day 31; development renderer/CSV checks passed without console/page errors.
+- Next recipient or routing: `/code_reviewer` for round 2
+- Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, and the full state/render matrix.

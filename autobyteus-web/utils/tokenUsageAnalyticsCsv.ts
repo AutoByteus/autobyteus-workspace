@@ -17,8 +17,8 @@ export const serializeTokenUsageAnalyticsCsv = (
     'estimated_api_input_cost', 'estimated_api_standard_input_cost', 'estimated_api_cache_read_input_cost',
     'estimated_api_cache_creation_input_cost', 'estimated_api_cache_creation_5m_input_cost',
     'estimated_api_cache_creation_1h_input_cost', 'estimated_api_output_cost',
-    'estimated_api_reasoning_output_cost', 'estimated_api_total_cost', 'currency', 'cost_status',
-    'missing_price_dimensions', 'usage_report_count',
+    'estimated_api_reasoning_output_cost', 'estimated_api_total_cost', 'currency',
+    'captured_api_cost_status', 'derived_cost_quality', 'missing_price_dimensions', 'usage_report_count',
   ];
   const rows = result.breakdownRows.map((row) => {
     const aggregate = row.aggregate;
@@ -34,8 +34,8 @@ export const serializeTokenUsageAnalyticsCsv = (
       aggregate.estimatedApiStandardInputCost, aggregate.estimatedApiCacheReadInputCost,
       aggregate.estimatedApiCacheCreationInputCost, aggregate.estimatedApiCacheCreation5mInputCost,
       aggregate.estimatedApiCacheCreation1hInputCost, aggregate.estimatedApiOutputCost,
-      aggregate.estimatedApiReasoningOutputCost, aggregate.estimatedApiTotalCost, row.costQuality.currency,
-      row.costQuality.kind, row.costQuality.missingPriceDimensions.join('|'), aggregate.usageReportCount,
+      aggregate.estimatedApiReasoningOutputCost, aggregate.estimatedApiTotalCost, aggregate.currency,
+      aggregate.apiCostStatus, row.costQuality.kind, row.costQuality.missingPriceDimensions.join('|'), aggregate.usageReportCount,
     ].map(cell).join(',');
   });
   const inclusiveEnd = new Date(Date.parse(result.appliedRange.endTimeExclusive) - 86_400_000).toISOString();

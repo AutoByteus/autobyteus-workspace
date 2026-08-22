@@ -1,5 +1,10 @@
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
-import { distinctValueLabel } from "../domain/token-usage-distinct-value-summary.js";
+import {
+  distinctValueLabel,
+  mergeDistinctValue,
+  unknownDistinctValue,
+  type DistinctValueSummary,
+} from "../domain/token-usage-distinct-value-summary.js";
 import type {
   TokenUsageAccountingSummarySource,
   TokenUsagePricingSummary,
@@ -19,9 +24,6 @@ import {
 
 export { TokenUsageSafeIntegerExceededError };
 
-const distinctValues = (summary: TokenUsageRunRecord["identitySummary"][keyof TokenUsageRunRecord["identitySummary"]]): string[] =>
-  summary.status === "unknown" ? [] : [distinctValueLabel(summary)];
-
 const asAggregateSource = (record: TokenUsageRunRecord): TokenUsageAccountingSummarySource => ({
   tokenTotals: record.tokenTotals,
   costTotals: record.costTotals,
@@ -29,12 +31,21 @@ const asAggregateSource = (record: TokenUsageRunRecord): TokenUsageAccountingSum
   pricingSummary: record.pricingSummary,
   usageReportCount: record.usageReportCount,
   latestObservedAt: record.latestObservedAt,
-  observedRuntimeKinds: distinctValues(record.identitySummary.runtimeKinds),
-  observedModelProviders: distinctValues(record.identitySummary.modelProviders),
-  observedModelIdentifiers: record.identitySummary.modelIdentifiers.status === "unknown"
-    ? distinctValues(record.identitySummary.modelValues)
-    : distinctValues(record.identitySummary.modelIdentifiers),
+  observedRuntimeKinds: [],
+  observedModelProviders: [],
+  observedModelIdentifiers: [],
 });
+
+const mergeRunIdentity = (
+  records: readonly TokenUsageRunRecord[],
+  select: (record: TokenUsageRunRecord) => DistinctValueSummary<string>,
+): string[] => {
+  const summary = records.reduce(
+    (current, record) => mergeDistinctValue(current, select(record)),
+    unknownDistinctValue<string>(),
+  );
+  return summary.status === "unknown" ? [] : [distinctValueLabel(summary)];
+};
 
 const latestRecord = (records: readonly TokenUsageRunRecord[]): TokenUsageRunRecord | null =>
   records.reduce<TokenUsageRunRecord | null>((latest, record) => (
@@ -43,7 +54,14 @@ const latestRecord = (records: readonly TokenUsageRunRecord[]): TokenUsageRunRec
 
 export const buildTokenUsageRunAggregate = (
   records: readonly TokenUsageRunRecord[],
-): TokenUsageCostSummaryAggregate => buildTokenUsageCostSummaryAggregate(records.map(asAggregateSource));
+): TokenUsageCostSummaryAggregate => ({
+  ...buildTokenUsageCostSummaryAggregate(records.map(asAggregateSource)),
+  observed_runtime_kinds: mergeRunIdentity(records, (record) => record.identitySummary.runtimeKinds),
+  observed_model_providers: mergeRunIdentity(records, (record) => record.identitySummary.modelProviders),
+  observed_model_identifiers: mergeRunIdentity(records, (record) => record.identitySummary.modelIdentifiers.status === "unknown"
+    ? record.identitySummary.modelValues
+    : record.identitySummary.modelIdentifiers),
+});
 
 export const buildTokenUsageRunSummaryFromRecords = (input: {
   runId: string;

@@ -9,31 +9,31 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A`
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
-The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one authority, and the superseded model-table/common bar chart path is removed.
+The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one numeric/cost authority while its run adapter preserves the established `Mixed` identity-summary contract. Pace points use elapsed UTC-day coordinates; charts and exact tables expose range/share/currency/quality/captured-status evidence; local usage cannot render as invented USD; and CSV separates captured API cost status from derived analytics quality.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `F-001`, `F-002`, `F-003`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Analytics defaults; Run details preserves created-run/lifetime semantics | `TokenUsageStatistics.vue`, `TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`, `tokenUsageAnalytics.ts`, `tokenUsageRunStatistics.ts` | Implemented as separate tabs/stores/queries; Run details behavior retained. |
-| BEH-002 | Coherent summary, chronological trend, pace, ranked attribution, exact rows | `token-usage/analytics/*`, `TokenUsageAnalyticsProvider`, aggregation policy | One result drives cards/charts/table; token/cost metric and grouping controls implemented; canvas charts have exact table/text authorities. |
+| BEH-001 | Analytics defaults; Run details preserves created-run/lifetime semantics | `TokenUsageStatistics.vue`, `TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`, `tokenUsageRunAggregate`, run/analytics stores | Separate tabs/stores/queries remain; `IR-002` restores the established run-specific `['Mixed']` distinct identity summary while retaining shared numeric/cost aggregation. |
+| BEH-002 | Coherent summary, chronological trend, aligned pace, ranked attribution/share, exact rows | `token-usage/analytics/*`, `tokenUsageAnalyticsPresentation.ts`, `TokenUsageAnalyticsProvider` | One result drives cards/charts/table; pace uses explicit elapsed-day coordinates across unequal bucket counts; tooltips/text alternatives include exact range/value/share/currency/quality/captured status. |
 | BEH-003 | Observation-time daily projection and explicit coverage without backfill | Prisma migration/models, `SqlTokenUsageAnalyticsRepository`, range policy/provider, analytics GraphQL resolver | Persisted singleton coverage starts after schema verification; full/partial/unavailable is server-owned; no lifetime-row reconstruction. |
 | BEH-004 | One SafeInt/null/mixed/local cost aggregation authority | `token-usage-accounting-summary.ts`, `token-usage-cost-summary-aggregate.ts`, `token-usage-analytics-aggregation-policy.ts` | Run and analytics reuse the same aggregate builder; mixed currencies remain uncombined and exact rows are partitioned. |
-| BEH-005 | Deterministic local exact CSV export | `tokenUsageAnalyticsCsv.ts`, `TokenUsageAnalyticsView.vue` | Deterministic inclusive-date filename, escaped exact rows and selection/coverage metadata; local browser download only. |
+| BEH-005 | Deterministic local exact CSV export | `tokenUsageAnalyticsCsv.ts`, `TokenUsageAnalyticsView.vue` | Deterministic inclusive-date filename, escaped exact rows and selection/coverage metadata; exports `captured_api_cost_status` separately from `derived_cost_quality`; local browser download only. |
 | BEH-006 | Only authoritative CHANGED contributions atomically update analytics | `TokenUsageRunAccumulator`, `TokenUsageAnalyticsProjectionWriter`, contribution projector, SQL repository | Projection increment executes after run save inside the same Prisma transaction; suppressed folds do not write; facet upsert is one SQL statement. |
 
 ## Key Files Or Areas
@@ -55,7 +55,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Arbitrary custom identity/pricing combinations can increase daily facet cardinality.
 - Extreme multi-facet totals intentionally throw rather than round when JavaScript SafeInt is exceeded.
 - SQLite cross-run contention uses atomic SQL upsert and Prisma transactions but still needs independent contention coverage under realistic concurrency.
-- Full/unavailable/empty/error rendered analytics states remain for independent coverage; implementation rendering directly exercised populated partial coverage, mixed currencies, token/cost switching, CSV, Run details, desktop, and narrow layouts.
+- Full/unavailable/empty/error rendered analytics states remain for independent coverage; implementation rendering directly exercised populated partial coverage, mixed currencies, exact shares/status/currency, local no-bill handling, token/cost switching, corrected CSV, Run details, desktop, and narrow layouts. Elapsed pace alignment is covered by focused component tests using unequal 8-vs-7 monthly bucket series and the shorter-prior-month case.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -74,7 +74,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: the analytics provider was split from aggregation/coverage/bucket policy; the 238-effective-line analytics GraphQL boundary was assessed and retained as one declarative operation DTO/mapper/resolver module; the sole-use `BarChart.vue` and old generic run-statistics frontend paths were removed rather than wrapped.
+- Notes: the analytics provider was split from aggregation/coverage/bucket policy; the exact breakdown was split into its own accessible-table component during `IR-002`, keeping changed chart components below 220 effective lines; the 238-effective-line analytics GraphQL boundary was assessed and retained as one declarative operation DTO/mapper/resolver module; the sole-use `BarChart.vue` and old generic run-statistics frontend paths were removed rather than wrapped.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -93,10 +93,10 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 ## Local Implementation Checks Run
 
 - `pnpm build` in `autobyteus-server-ts`: passed, including Prisma generation, TypeScript build, built-in bootstrap smoke, and sanitized bootstrap smoke.
-- Targeted backend Vitest for run fold, accumulator, and model display: 3 files / 15 tests passed; clean test DB applied all 24 migrations including analytics.
+- Targeted backend Vitest for run fold, accumulator, pricing summary, and model display: 4 files / 18 tests passed; clean test DB applied all 24 migrations including analytics. The added run regression proves mixed runtime records return `['Mixed']` while totals still use the shared aggregate.
 - Narrow provider/repository check against a migrated local SQLite database: 240,000 tokens, 3 exact breakdown rows, 22 daily buckets, `PARTIAL` coverage, and `MIXED_CURRENCY` reconciled successfully.
 - `pnpm build` in `autobyteus-web`: passed production Nuxt build/prerender.
-- Targeted frontend Vitest for coordinator, Run details, task/model tables, and preserved run store: 5 files / 11 tests passed.
+- Targeted frontend Vitest for coordinator, Run details, task/model tables, preserved run store, pace alignment/exact data, breakdown share/local evidence, and CSV status fields: 8 files / 16 tests passed.
 - `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals`: passed.
 - Repository package typecheck limitations: server `pnpm typecheck` is blocked by the existing `rootDir: src` plus `include: tests` configuration (`TS6059` across the repository); compatible direct web `vue-tsc` remains blocked by pre-existing repository-wide diagnostics. Production builds pass, and no diagnostics remained in newly added analytics source during the changed-file diagnostic review.
 - `git diff --check`: passed.
@@ -107,9 +107,9 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md`, `prototype.html`, desktop/mobile prototype evidence, requirements, and data contract.
 - Existing design system, shared components, and adjacent product surfaces reviewed: Settings shell/sidebar, existing run statistics controls/tables, localization, Tailwind surface patterns, Chart.js usage.
 - Project development / preview instructions and rendered surface used: root `pnpm dev`; browser renderer at `http://127.0.0.1:3000/settings` against the real local server and migrated SQLite projection.
-- States, layouts, viewports, and interactions inspected: populated partial coverage; mixed USD/EUR/local pricing; token charts; cost-chart explanatory state; exact breakdown; local 4-row CSV; tab switch to preserved Run details; 1440×1000 and 390×844 layouts; no document horizontal overflow at narrow width.
-- Visual or interaction issues found and corrected: corrected an invalid `Intl.DateTimeFormat` option combination exposed only in rendering; fixed Chart.js nullable typing and grouping change handling; verified visual hierarchy/spacing and mixed-currency notices.
-- Supporting evidence and remaining unverified states or limitations: `evidence/implementation-desktop.png`, `implementation-mobile.png`, and `implementation-mobile-summary.png`. Full/unavailable/empty/error states were not all visually forced and remain for downstream investigation. This is implementation self-validation, not API/E2E sign-off.
+- States, layouts, viewports, and interactions inspected: populated partial coverage; mixed USD/EUR/local pricing; token charts; cost-chart explanatory state; exact token share; explicit quality/captured-status/currency columns; local no-bill cost text and incomparable monetary share; corrected 4-row CSV; tab switch to preserved Run details; 1440×1000 and 390×844 layouts; no document horizontal overflow at narrow width.
+- Visual or interaction issues found and corrected: initial formatter issue plus `CRR-001` evidence defects; exact breakdown was extracted to keep chart logic readable, local cost no longer falls back to USD, and status/share headers remain accessible within contained horizontal table scrolling.
+- Supporting evidence and remaining unverified states or limitations: original implementation evidence plus `evidence/implementation-rework-desktop.png`. Full/unavailable/empty/error states were not all visually forced and remain for downstream investigation. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
