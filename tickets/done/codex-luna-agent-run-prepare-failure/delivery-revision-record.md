@@ -9,6 +9,7 @@
 | `DR-003` | User explicitly accepted the tested ticket and requested finalization plus a new release | `DR-002 Pass` with finalization held | Pass — final remote refresh found the accepted state still current with `origin/personal`; no re-integration or renewed verification was required; release `1.4.54` was confirmed as the next unused patch and curated release notes were prepared | `delivery-finalization-refresh.log`; `release-notes.md`; `handoff-summary.md`; `release-deployment-report.md` |
 | `DR-004` | Repository finalization after `DR-003 Pass` | `DR-003 Pass` with release prepared | Pass — archived ticket committed and pushed on the ticket branch, latest `personal` confirmed current, ticket merged without conflict, focused changed cases and production TypeScript passed on merged `personal`, and target push was verified | `repository-finalization-validation.log`; `handoff-summary.md`; `release-deployment-report.md` |
 | `DR-005` | Authorized `v1.4.54` publication, rollout verification, and cleanup | `DR-004 Pass` with repository finalized | Pass — synchronized release commit/tag pushed, all five tag workflows succeeded, 21-asset stable GitHub release and updater/messaging metadata verified, Docker version/latest multi-arch indexes matched, and ticket worktree/branches were removed | `release-v1.4.54-execution.log`; `release-v1.4.54-workflows.log`; `release-v1.4.54-rollout-verification.log`; `post-release-cleanup.log`; `handoff-summary.md`; `release-deployment-report.md` |
+| `DR-006` | User requested the documented manual build/publish of the latest Chinese server image | `DR-005 Pass` with stable `v1.4.54` released | Pass — manually dispatched the server-Docker workflow against `v1.4.54` with `publish_zh=true`; only the zh build step ran, workflow `32548635553` succeeded, and `1.4.54-zh` / `latest-zh` were verified as matching amd64+arm64 OCI indexes | `release-v1.4.54-zh-docker-dispatch.log`; `release-v1.4.54-zh-docker-workflow.log`; `release-v1.4.54-zh-docker-rollout-verification.log`; `handoff-summary.md`; `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -80,3 +81,15 @@
 - Evidence: `release-v1.4.54-execution.log`; `release-v1.4.54-workflows.log`; `release-v1.4.54-rollout-verification.log`; `post-release-cleanup.log`.
 - Current authoritative result: `DR-005 Pass` — ticket finalization, release publication, rollout verification, and ticket-resource cleanup are complete.
 - Rollback visibility: Use the prior stable GitHub release for desktop/mobile rollback and pin the prior immutable server tag instead of `latest`; no database or persisted-data rollback is required.
+
+### DR-006 — Manual zh Docker publication follow-up
+
+- Delivery round and trigger: The user requested a build for the latest zh Docker image and recalled that this variant requires manual workflow dispatch.
+- Prior authoritative result: `DR-005 Pass` with stable release `v1.4.54` and default Docker tags already published and verified.
+- Latest-release refresh: `Pass`. `v1.4.54` remained the latest stable release and `personal` remained synchronized with `origin/personal` before dispatch.
+- Documented/manual method: Dispatched `.github/workflows/release-server-docker.yml` on `personal` with `release_tag=v1.4.54`, `release_ref=v1.4.54`, and `publish_zh=true`. This keeps the workflow definition current while building source from the immutable release tag.
+- Workflow result: `Pass`. [Server Docker Release run 32548635553](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553) completed successfully. The default multi-architecture step was skipped, the zh multi-architecture step succeeded, and no normal release workflow was re-dispatched.
+- Publication verification: `Pass`. `autobyteus/autobyteus-server:1.4.54-zh` and `autobyteus/autobyteus-server:latest-zh` both resolve OCI index digest `sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2` with `linux/amd64` and `linux/arm64` manifests.
+- Evidence: `release-v1.4.54-zh-docker-dispatch.log`; `release-v1.4.54-zh-docker-workflow.log`; `release-v1.4.54-zh-docker-rollout-verification.log`.
+- Current authoritative result: `DR-006 Pass` — the latest stable zh server image was manually rebuilt, published, and verified under both immutable and rolling zh tags.
+- Rollback visibility: Pin a prior immutable `X.Y.Z-zh` tag if rollback is needed; do not rely on the rolling `latest-zh` tag for rollback selection.

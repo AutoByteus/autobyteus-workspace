@@ -11,9 +11,10 @@
 - Finalization refresh: `origin/personal` remained `a80105ada35455ec14fd5b9f75045799449db13e` after explicit user acceptance; the branch is zero behind, so no re-integration or renewed verification was required.
 - Repository finalization: `Pass` — archived ticket commit `ee32b64193d54ec173acb8885eb8f799b2fd30b3` was pushed; merge commit `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c` was executable-checked and pushed to `origin/personal`.
 - Release: `Pass` — release commit/tag `8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34` / `v1.4.54`; all five tag workflows succeeded; GitHub assets/metadata and multi-architecture Docker publication were verified.
+- Manual zh Docker follow-up: `Pass` — [run 32548635553](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553) built only the zh variant from `v1.4.54`; `1.4.54-zh` and `latest-zh` match at verified amd64+arm64 OCI index digest `sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2`.
 - Cleanup: `Pass` — dedicated worktree and local/remote ticket branches were removed; pre-existing untracked `.article-work/` was preserved and restored.
-- Delivery revision: `DR-005`
-- Current state: Finalized, published, rollout-verified, and cleaned up.
+- Delivery revision: `DR-006`
+- Current state: Finalized, published, default and zh server rollouts verified, and cleaned up.
 
 ## Delivered Behavior
 
@@ -110,8 +111,9 @@ Persisted-data decision: `Directly Usable — No Migration`. This is on-demand f
 - Release version: `1.4.54`, selected as the next unused patch after `1.4.53` and published as stable [v1.4.54](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.54).
 - Release notes: `release-notes.md`.
 - Ticket state: Archived and finalized at `tickets/done/codex-luna-agent-run-prepare-failure`.
+- zh Docker follow-up: `Pass` — manual `publish_zh=true` dispatch published `autobyteus/autobyteus-server:1.4.54-zh` and `:latest-zh`; no new application tag/release was created.
 - Remaining work: None within the authorized delivery scope. Final public App Store review/approval remains an external Apple-console operation and is not claimed here.
 
 ## Current Status
 
-`DR-005 Pass — repository finalization, stable v1.4.54 publication, five-workflow rollout verification, and ticket-resource cleanup are complete.`
+`DR-006 Pass — repository finalization and stable v1.4.54 release remain complete; the manually requested 1.4.54-zh/latest-zh multi-architecture server images are published and verified.`

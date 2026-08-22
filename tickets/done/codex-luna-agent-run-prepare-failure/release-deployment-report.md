@@ -4,7 +4,7 @@
 
 The user explicitly accepted the tested ticket and requested repository finalization plus a new version on 2026-08-21. Delivery finalized the ticket and published stable release `v1.4.54`, the next unused patch after `v1.4.53`.
 
-Overall result: `Pass — repository finalized, release published, all five tag workflows successful, rollout metadata/assets and multi-architecture Docker tags verified, and ticket-specific worktree/branches cleaned up.`
+Overall result: `Pass — repository finalized, release published, all five tag workflows successful, rollout metadata/assets and default multi-architecture Docker tags verified, ticket-specific worktree/branches cleaned up, and the later manually requested zh Docker variant published and verified.`
 
 ## Repository Finalization
 
@@ -68,6 +68,23 @@ Workflow monitoring evidence: `release-v1.4.54-workflows.log` ending `workflow_r
 
 The unsigned local `DR-002` version `1.4.53` DMG was a user-test artifact only and was not published. Release assets were rebuilt by the tag workflows under their configured signing, architecture, updater, and package-validation gates.
 
+## Manual zh Docker Publication Follow-Up
+
+On 2026-08-22 the user requested the latest Chinese server variant, which is intentionally published through manual workflow dispatch rather than the normal tag-triggered default-image path.
+
+- Latest stable release used: `v1.4.54`.
+- Workflow: `.github/workflows/release-server-docker.yml`.
+- Dispatch inputs: `release_tag=v1.4.54`, `release_ref=v1.4.54`, `publish_zh=true`; the workflow itself was dispatched from current `personal`.
+- Run: [32548635553](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553).
+- Result: `Pass` — metadata resolution and image build/push jobs succeeded; the default image step was skipped and the zh multi-architecture step succeeded.
+- Published immutable tag: `autobyteus/autobyteus-server:1.4.54-zh`.
+- Published rolling tag: `autobyteus/autobyteus-server:latest-zh`.
+- Verified OCI index digest for both tags: `sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2`.
+- Verified platforms: `linux/amd64` and `linux/arm64`.
+- Evidence: `release-v1.4.54-zh-docker-dispatch.log`, `release-v1.4.54-zh-docker-workflow.log`, and `release-v1.4.54-zh-docker-rollout-verification.log`.
+
+This follow-up did not create a new application version, tag, GitHub release, or second set of desktop/mobile/messaging workflows.
+
 ## Documentation And Migration
 
 - Four durable module docs for skills, Codex integration, agent execution, and agent packages are finalized on `personal`.
@@ -92,10 +109,11 @@ Cleanup result: `Pass`.
 - Repository rollback point: merge parent before `577a3c810`; the immutable release/tag point is `8a2aff8c0`.
 - Desktop/mobile rollback: retain or reinstall the prior stable GitHub release if needed; no rollback was requested or executed.
 - Server rollback: pin the prior immutable version tag instead of `latest` if rollback is required.
+- zh server rollback: pin a prior immutable `X.Y.Z-zh` image rather than `latest-zh`.
 - No database or persisted-data rollback migration is needed.
 - Broader validation retains one unrelated AutoByteus compaction-runner fixture failure and two unrelated WebSocket inactive-restore/busy fixture failures; the final selected changed cases pass.
 - No packaged pixel rerun or live Claude inference turn was required because those boundaries did not change.
 
 ## Final Status
 
-`DR-005 Pass — codex-luna-agent-run-prepare-failure is archived and merged to personal; v1.4.54 is published with successful desktop, Android, iOS/App Store Connect, messaging-gateway, and Docker workflows; publication assets/metadata and multi-architecture Docker tags are verified; cleanup is complete.`
+`DR-006 Pass — codex-luna-agent-run-prepare-failure remains finalized at stable v1.4.54; its desktop, Android, iOS/App Store Connect, messaging-gateway, and default Docker rollout remains verified; the manually requested 1.4.54-zh/latest-zh multi-architecture server image was also published and verified; cleanup remains complete.`
