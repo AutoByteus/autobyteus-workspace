@@ -1,29 +1,27 @@
 $ ls -lh artifacts
--rw-r--r--@ 1 normy  staff   442M Aug 22 21:30 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
--rw-r--r--@ 1 normy  staff   437M Aug 22 21:32 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+-rw-r--r--@ 1 normy  staff   442M Aug 22 21:40 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+-rw-r--r--@ 1 normy  staff   437M Aug 22 21:43 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
 
 $ shasum -a 256 artifacts
-d51940cfdfb665e10f6e172507a59bd1f73f0b40d7afa0e2af6571457cb03d6f  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
-2de61a03a3572c20ebf88f9b003f833c8797325217fde96fc9e226aba25a7437  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+60893fa5e646b1116569e67da456834a7c80d409775b5705215bb7bbba585e26  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+f65c9950b62bfbcf29097c159c4bf5acd7cb9e6ff2af119be9ec4afa617b5116  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
 
 $ hdiutil verify DMG
 Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
-Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $85E2E07A
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $A5B30610
 Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
- GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $D6E730B9
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F47BA749
 Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
-GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $CE135D16
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $6728556C
 Prüfsumme für  (Apple_Free : 3) berechnen …
                     (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
 Prüfsumme für disk image (Apple_APFS : 4) berechnen …
-         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $25E22884
-Prüfsumme für  (Apple_Free : 5) berechnen …
-                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
-Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
-GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $CE135D16
-Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
-  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $8091A1E4
-Die überprüfte CRC32-Prüfsumme ist $8E73D1B8
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $F4722D4D
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $6728556C
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $A7127673
+Die überprüfte CRC32-Prüfsumme ist $866592F6
 hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg" is VALID
 
 $ unzip -tq ZIP
