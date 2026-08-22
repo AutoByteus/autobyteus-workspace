@@ -1062,7 +1062,7 @@ export class LiveE2eScenarioExecution {
       const memoryStore = new FileMemoryStore(memoryDirectory, runId, {
         agentRootSubdir: '',
       });
-      const rawTraceCorpus = memoryStore.listRawTraceCorpusOrdered();
+      const rawTraceCorpus = memoryStore.listTurnRawTraceCorpusOrdered();
       const toolTraceFacts = rawTraceCorpus.filter(({ traceType }) =>
         traceType === 'tool_call' || traceType === 'tool_result');
       const expectedToolTraceTypes = [

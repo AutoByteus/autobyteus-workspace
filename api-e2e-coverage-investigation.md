@@ -343,3 +343,10 @@ None.
 - Planned bounded probe: temporarily reorder only the scenario's read turns so the Unicode shield file is read first, Group A second, and Group B third. Preserve the same three read calls, one final write, exact artifact assertions, scanner safeguards, and compactor contract checks. Do not change production source or weaken the leaf assertion.
 - Probe success criterion: LM Studio completes all four turns, one compaction completes, the leaf evidence assertion passes, exact artifact/tool traces remain valid, and final output is scanner-clean. Probe failure criterion: no compaction, no final turn, or any changed contract; restore immediately.
 - Durable-change rule: retain the scenario-order change only if the bounded live probe is reproducible and focused harness validation passes. If retained, route the changed test-support path through code_reviewer before delivery; if not, restore the file and preserve the non-gating residual.
+
+### Round 7 Probe Finding: Second Stale Store API Call
+
+- The temporary order-only probe changed the compaction timing as expected: safe budget evidence showed the first trigger after the Unicode-first and Group-A turns, with phases requested/started/completed.
+- The leaf-evidence assertion was no longer the first failure. Execution then reached the native trace verification and the safe wrapper returned LIVE_E2E_PROVIDER_OPERATION_FAILED:lmstudio.qwen36.compaction-agent-flow because test-support/live-e2e/live-e2e-harness.ts still called the removed FileMemoryStore method listRawTraceCorpusOrdered(). The current store API is listTurnRawTraceCorpusOrdered().
+- This is a bounded, directly observed API/E2E-owned stale test-support call, analogous to the previously repaired inspection call. It is not a provider response, source exception, or product implementation failure.
+- Planned durable repair: replace only the remaining stale call with listTurnRawTraceCorpusOrdered(), retain the Unicode-first scenario ordering only if the full live flow then completes and focused harness validation passes. No production source change is planned.
