@@ -277,3 +277,19 @@ $ pnpm -C autobyteus-ts exec vitest run tests/unit/llm/supported-model-definitio
 
 
 $ git diff --check
+
+--- latest-base merge smoke after docs-only base advance ---
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/errors/provider-error.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-ts
+
+ ✓ tests/unit/llm/errors/provider-error.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (4 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  21:59:24
+   Duration  862ms (transform 301ms, setup 34ms, import 786ms, tests 6ms, environment 0ms)
+
+
+$ git diff --check

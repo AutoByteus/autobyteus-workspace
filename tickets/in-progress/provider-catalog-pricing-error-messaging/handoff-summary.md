@@ -2,29 +2,29 @@
 
 ## Current Status
 
-`Blocked pending re-review of the next API-REV-007 quality-probe rework; prior verification handoff remains superseded.`
+`Ready for explicit user verification; repository finalization and release/deployment remain held.`
 
 - Date: `2026-08-22`
-- Delivery revision: `DR-008`
-- Lineage: `SR-006; architecture review package; implementation handoff; CRR-002 source Pass (9.4/10); CRR-006 proportional test review; CRR-009 failure-origin review; CRR-010 durable test-support review; API-REV-006; API-REV-007 pending`
+- Delivery revision: `DR-009`
+- Lineage: `SR-006; architecture review package; implementation handoff; CRR-002 source Pass (9.4/10); CRR-006 proportional test review; CRR-009 failure-origin review; CRR-010/CRR-011 retained-state reviews; CRR-015 failure-origin continuity; CRR-016 retained-state review; API-REV-006; API-REV-007`
 - Feature-specific API/E2E: `Pass`
 - Broader validation: `89% aggregate confidence retained as non-gating residual context`
-- Latest-base integration: `Pass — origin/personal advanced from bootstrap; merged without conflicts`
+- Latest-base integration: `Pass — origin/personal@d7d4eace46dc6534d50e9150c3e84d4bd41fedfb merged as 2cb19dc8e without conflicts`
 - Documentation sync: `Pass — six long-lived docs updated; explicit no-change review recorded`
-- User verification: `Superseded pending re-review`
+- User verification: `Pending explicit user completion/verification`
 - Repository finalization: `Held`
 - Release/publication/deployment: `Held — not in scope before explicit user completion`
-- Open source/API/E2E/test-review findings: `None in reviewed source; next quality-probe rework awaiting proportional re-review`
-- Downstream review closure: `CRR-010 and CRR-011 Pass for prior deltas; next API-REV-007 durable rework requires review`
+- Open source/API/E2E/test-review findings: `None; CRR-015 classifies the LM Studio result as a non-gating API/E2E residual and CRR-016 confirms no new retained test delta`
+- Downstream review closure: `CRR-015 and CRR-016 complete; CRR-010/CRR-011 remain applicable; no further API/E2E execution is required`
 
-## Re-entry Blocker
+## Prior Re-entry Blocker — Resolved
 
-After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support changes. The scenario-order change was checkpointed at `e6ba62846` and structurally accepted by `CRR-010`; a second stale-store-method repair was checkpointed at `3f9ac980d` and structurally accepted by `CRR-011`; a proposed quality-probe rework is checkpointed at `8021ed50d` and awaits re-review. The latest base was refreshed through merge `a80d73dcd`. API-REV-007 execution and authoritative disposition remain pending.
+After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support changes. The scenario-order change was checkpointed at `e6ba62846` and accepted by `CRR-010`; the stale-store-method repair was checkpointed at `3f9ac980d` and accepted by `CRR-011`; the temporary quality-probe rework was checkpointed at `8021ed50d`, executed, and restored after the leaf-evidence failure. `CRR-015` and `CRR-016` now close the reroute. The latest base was refreshed through merge `2cb19dc8e`. API-REV-007 is authoritative.
 
 - Current API/E2E investigation: `API-REV-007`
-- Current execution report: `API-REV-006` remains the last authoritative execution result
-- Required recipient: `/api_e2e_engineer` for rerun; return through `/code_reviewer` if durable coverage changes again
-- User verification: not requested or valid for the superseded DR-003 state
+- Current execution report: `API-REV-007` — feature-specific Pass with explicit non-gating residuals
+- Required recipient: `None`; route only if a new durable coverage change, source finding, requirement gap, or deployment issue appears
+- User verification: pending explicit user completion/verification
 
 ## Delivered Behavior
 
@@ -38,8 +38,8 @@ After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support 
 
 - Recorded base/finalization target: `origin/personal` / `personal`
 - Bootstrap base: `d487c0859905a91650387c4af41f4fc5754f214a`
-- Latest fetched base: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Latest refreshed base: `14c08eeb458ff440123ca53d11192c2cb1a0216c`
+- Latest fetched base: `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`
+- Latest refreshed base: `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`
 - Pre-integration checkpoint: `e336a9744`
 - Integration merge: `09c9cb080`
 - Delivery docs/handoff checkpoint: `d7ae16ca5`
@@ -47,23 +47,31 @@ After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support 
 - API-REV-007 safety checkpoint: `e6ba62846`
 - API-REV-007 second repair checkpoint: `3f9ac980d`
 - API-REV-007 quality-probe rework checkpoint: `8021ed50d`
-- Latest-base integration merge: `a80d73dcd`
+- Latest-base integration merge: `2cb19dc8e`
 - Current ticket branch: `codex/provider-catalog-pricing-error-messaging`
 - Current branch state: latest `origin/personal` is an ancestor; no behind commits or unmerged paths; delivery checkpoints remain local-only.
 - Integration method: `Merge --no-ff origin/personal`
 - Conflicts/unmerged paths: `None`
 - Delivery edits began after integration: `Yes`
-- Post-closure refresh: `origin/personal` advanced to `14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged as `a80d73dcd`; `CRR-010` and `CRR-011` passed prior durable deltas, but the next quality-probe rework requires review before API-REV-007 execution.
+- Post-closure refresh: `origin/personal` advanced to `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb` and was merged as `2cb19dc8e`; `CRR-015` and `CRR-016` close the downstream reroute after the temporary quality-probe rework was restored.
 
 ## Validation Evidence
 
 - Post-integration native/team/application integration checks: `3 files, 19 tests passed`.
 - Post-integration provider/catalog unit checks: `5 files, 16 tests passed`.
 - Post-integration `git diff --check`: `Pass`.
-- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check.log`
+- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`
 - Full feature evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
 - Coverage disposition: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
 - API round record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+
+## Final Integrated-State Evidence
+
+- Final tracked base: `origin/personal@d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`; merge commit `2cb19dc8e`.
+- Prior latest-base merge: `origin/personal@ffdf344f23a3f4e2ae6c2ef2b2276d0c37d0d859` as `e839e009a`; the later base advance changed only unrelated token-analytics delivery/docs state.
+- Focused checks after the integrated state: server native/team/application integration `3 files / 19 tests passed`; provider/catalog unit coverage `5 files / 16 tests passed`; final provider/error smoke `2 files / 6 tests passed`; `git diff --check` passed.
+- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
+- Documentation revalidation: the six previously updated long-lived docs remain accurate; no new long-lived docs impact arises from the retained test-support-only residual.
 
 ## Explicit Non-Gating Residuals
 

@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: `6`
-- Trigger: `API-REV-007` retained-state review after quality rework restoration
+- Review Round: `7`
+- Trigger: completed `API-REV-007` execution and retained-state review after quality rework restoration
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`
@@ -12,16 +12,16 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
 - Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-014`
+- Current Code Review Revision ID: `CRR-016`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
 - Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`
-- API/E2E Result: **API-REV-006 feature-specific Pass; API-REV-007 residual classified; no new durable delta retained**
+- API/E2E Result: **API-REV-006 feature-specific Pass; API-REV-007 executed and residual classified; no new durable delta retained**
 - Final Validation Confidence: **89% aggregate broader-validation context; Round 7 residual remains non-gating**
 - Prior unresolved test-review findings rechecked: **None** — CRR-006 found no test-code findings.
 
-## Prior Durable Delta Under Review (API-REV-007 / CRR-012)
+## Historical Durable Delta Under Review (API-REV-007 / CRR-012)
 
 | Durable Test / Test-Support Path | Current Delta | Related Scenario / Requirement | Review Basis |
 | --- | --- | --- | --- |
@@ -162,11 +162,27 @@ The test-support edits are accepted as valid bounded repairs. They do not establ
 | Previously retained support state remains coherent | Pass | The retained read sequence preserves the existing three-read/one-write flow and all exact artifact, quality, trace, Unicode, scanner, and canonical-compactor assertions; the stale API repair passed 19/19 focused harness validation. |
 | New test finding or source review reopening | None | The Round 7 failure is classified separately as an API/E2E capability residual; no new durable test-code defect or product-source evidence was observed. |
 
-## Latest Authoritative Result (CRR-014)
+## Previous Authoritative Result (CRR-014)
 
 - Result: **Not Applicable for new proportional test-code review; prior CRR-010 and CRR-011 retained-state reviews remain authoritative**.
 - Retained durable paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts` with the previously reviewed semantic order and current FileMemoryStore API.
 - Unresolved test-review findings: **None**.
 - Scope: The failed 170→100 experiment was restored and is not treated as retained coverage. This N/A result does not promote LM Studio to Pass or change the API-REV-006 ticket-specific Pass.
-- Required next recipient: `/delivery_engineer` after the CRR-013 failure-origin state is acknowledged and delivery records are refreshed; no new API/E2E execution is required for this N/A review.
+- Required next recipient: `/delivery_engineer` after the CRR-015/CRR-016 state is recorded; no new API/E2E execution is required for this N/A review.
 - Notes: The non-gating residual remains explicitly documented in the API/E2E reports and CRR-013.
+
+## Current Retained-State Proportional Review (CRR-016)
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| API-REV-007 execution state is recorded | Pass | The Unicode-first probe, stale trace-API repair, projected-quality failure, and restored-order/count-100 rerun are now recorded in the authoritative API/E2E artifacts. The final live result remains `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING`. |
+| Retained durable test-support state | Pass | `test-support/live-e2e/live-e2e-harness.ts` retains the current `listTurnRawTraceCorpusOrdered()` repair and Group-A → Unicode shield → Group-B order with the Group-A fixture restored to 170. |
+| Assertions and safeguards | Pass | No production source, public contract, assertion, scanner safeguard, or test was removed or weakened. Focused harness validation passed 19/19 and `git diff --check` passed. |
+| New durable delta requiring a separate finding | None | The 170→100 experiment was restored. CRR-010 and CRR-011 remain authoritative for the retained order and stale API repair; no new test-code finding is opened. |
+
+### Current Authoritative Result (CRR-016)
+
+- Result: **Pass for proportional retained-state review; API-REV-007 execution complete; no test-code finding**.
+- Failure-origin continuity is recorded separately in `code-review-report.md` as CRR-015. The live LM Studio residual is not promoted to Pass and does not reopen source review.
+- API-REV-006 remains the ticket-specific API/E2E Pass. Aggregate broader confidence remains 89%, with the approved non-gating residuals preserved.
+- Required next recipient: `/delivery_engineer` for delivery-record refresh and final handoff. No further API/E2E execution is required solely to clear this review state.

@@ -16,11 +16,11 @@
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-013`
-- Current Review Round: `8`
+- Current Code Review Revision ID: `CRR-015`
+- Current Review Round: `9`
 - Trigger: API/E2E revision `API-REV-007`, Round 7 LM Studio test-support investigation and retained-state failure reroute
 - Prior Review Round Reviewed: `CRR-009` failure-origin review; CRR-010/011/012 proportional test-support reviews
-- Latest Authoritative Round: `API-REV-007` / `CRR-013`
+- Latest Authoritative Round: `API-REV-007` / `CRR-015`
 - Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
@@ -524,7 +524,7 @@ Failure evidence reviewed:
 - Owning specialist: `/api_e2e_engineer`.
 - Required next action: preserve the truthful restored state and either stop the non-gating probe or investigate only with a newly reviewed capability/fixture change. Do not claim a broad LM Studio Pass or reopen product source without independent supported evidence.
 - Retained durable test-support review: no new durable delta remains beyond CRR-010's read order and CRR-011's stale API repair; CRR-010/011 remain applicable, and the CRR-012 170→100 experiment was not retained.
-- Delivery remains paused until this review state is recorded; ticket-specific API/E2E remains Pass under API-REV-006.
+- Delivery was paused until this review state was recorded; ticket-specific API/E2E remains Pass under API-REV-006.
 
 ## CRR-013 Failure-Origin Result
 
@@ -534,4 +534,29 @@ Failure evidence reviewed:
 - Failure Origin: **API/E2E-owned test-support/capability residual**
 - Affected scenario: `API-REAL-001` / `lmstudio.qwen36.compaction-agent-flow`
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: CRR-010/011 remain the applicable retained-state proportional reviews; CRR-012's temporary count change was restored. Aggregate broader confidence remains 89%; delivery must not claim broad LM Studio capability as Pass.
+- Notes: CRR-010/011 remain the applicable retained-state proportional reviews; CRR-012's temporary count change was restored. Aggregate broader confidence remains 89%; delivery must not claim broad LM Studio capability as Pass. CRR-015 records the completed continuity review and clears the stale execution-pending state.
+
+## API/E2E Failure-Origin Continuity Review (CRR-015)
+
+### Review Scope
+
+This final bounded continuity review records the completed API-REV-007 execution that followed the CRR-010/011/012 reviewed support changes. It does not reopen CRR-002's implementation-source audit or attribute a product defect from the scenario's downstream evidence.
+
+### Independent Reachability And Evidence
+
+- The supported live scenario `lmstudio.qwen36.compaction-agent-flow` was run through the documented built-server runner after value-safe preflight. It completed one real compaction with safe `requested`, `started`, and `completed` phases, establishing an independently reachable live path.
+- The reviewed Unicode-first probe reached the compactor leaf and exposed the stale FileMemoryStore API; the bounded repair changed `listRawTraceCorpusOrdered()` to `listTurnRawTraceCorpusOrdered()`. The subsequent quality and restored-order/count-100 runs were executed and recorded by API-REV-007.
+- Final retained state is Group-A → Unicode shield → Group-B, Group-A count 170, and the current trace API. Focused harness validation passed 19/19 and `git diff --check` passed.
+
+### Failure-Origin Determination
+
+- The final live run failed `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING` after one real compaction. The count-100 experiment did not resolve the failure and was restored.
+- No provider response, source exception, malformed product payload, incorrect canonical transport, or deterministic product implementation failure was observed. The evidence therefore supports an API/E2E-owned test-support/capability residual, not an implementation finding.
+- The feature-specific API/E2E Pass under API-REV-006 remains authoritative because LM Studio compaction is outside the named ticket gate. DeepSeek/Kimi operation/body fidelity, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live recovery remain explicit non-gating residuals.
+
+### Current Result And Routing
+
+- Review Decision: **Ticket-specific API/E2E Pass retained; API-REAL-001 remains a non-gating API/E2E residual; no implementation defect found**.
+- Classification: **API/E2E-owned test-support/capability residual**.
+- No source finding or score change is warranted. CRR-002 remains authoritative.
+- Delivery may resume with the residuals explicitly carried forward. No unchanged LM Studio rerun is required; any future changed capability or durable fixture must return for proportional review.

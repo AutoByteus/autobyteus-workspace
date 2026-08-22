@@ -4,6 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-009 | API-REV-007 execution and CRR-015/CRR-016 downstream closure after final latest-base refresh | `DR-008` Blocked pending review/rerun | Ready for explicit user verification — feature-specific API/E2E Pass remains authoritative; LM Studio and other broader capability gaps remain explicit non-gating residuals; finalization/release/deployment held | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `delivery-evidence/post-integration-focused-check-round2.log`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md`, `code-review-report.md`, `code-review-revision-record.md` |
 | DR-008 | Third API-REV-007 durable quality-probe rework after CRR-011 | `DR-007` Blocked pending rerun | Blocked pending proportional re-review — the next probe changes the local Group-A fixture size and restores semantic read order; no execution claim is current until the delta is reviewed and rerun | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-007 | `CRR-011` Pass for proportional review of the second API-REV-007 durable support repair | `DR-006` Blocked pending re-review | Blocked pending API-REV-007 rerun — the stale-store-method repair is structurally reviewed with no findings, but execution coverage and final disposition are still pending | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-test-review-report.md` |
 | DR-006 | Second API-REV-007 durable stale-support repair after CRR-010 | `DR-005` Blocked pending execution | Blocked pending proportional re-review — a directly observed stale FileMemoryStore method was repaired in `test-support/live-e2e/live-e2e-harness.ts`; the updated durable path must return through code review before rerun | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
@@ -14,6 +15,17 @@
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-009 — API/E2E closure and current integrated-state handoff
+
+- Trigger: API/E2E Round 7 completed its bounded probe; the temporary Group-A fixture reduction was restored; `CRR-015` completed failure-origin continuity; and `CRR-016` confirmed the retained durable test-support state with no new finding.
+- Review result: `API-REV-007` records a feature-specific API/E2E Pass under the approved ticket scope. The LM Studio compactor leaf failure remains a non-gating API/E2E test-support/capability residual. `CRR-002` source Pass (9.4/10), `CRR-010`, `CRR-011`, `CRR-015`, and `CRR-016` remain authoritative; no implementation finding was reopened.
+- Retained durable state: only the directly observed stale FileMemoryStore API repair and previously reviewed test-support changes remain. No production source, public contract, assertion, scanner safeguard, or test was removed or weakened.
+- Latest-base refresh: `origin/personal` advanced to `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`; it was merged cleanly as `2cb19dc8e`. The prior `ffdf344f2` base was merged as `e839e009a`; no unmerged paths remain.
+- Integrated-state checks: the focused server integration suite passed 19/19, the provider/catalog unit suite passed 16/16, the final post-merge provider/error smoke passed 6/6, and `git diff --check` passed. Evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
+- Documentation: the six long-lived docs remain accurate after the latest unrelated base changes; no additional docs edit is warranted for the Round 7 test-support-only residual. The docs-sync report records this final no-impact review.
+- Current result: `Ready for explicit user verification. Repository finalization, archival, push, release, deployment, and cleanup remain held until that signal.`
+- Next action: obtain explicit user verification/completion. After that signal, refresh `origin/personal` again before any terminal finalization action.
 
 ### DR-008 — Quality-probe rework requires another proportional review
 

@@ -18,6 +18,8 @@
 | CRR-012 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md` | Third API-REV-007 post-CRR durable test-support delta; Group-A fixture/order quality rework | API-REV-007 quality failure observed | Pass for proportional structural review; rework rerun pending; no test-code finding | `API-REAL-001` support |
 | CRR-013 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` | API/E2E Round 7 failure-origin continuity after retained-state rerun | API-REV-006 feature-specific Pass; API-REV-007 residual | Ticket-specific Pass retained; non-gating API/E2E residual; no source defect | `API-REAL-001` |
 | CRR-014 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md` | Retained durable test-support state after API-REV-007 rework restoration | API-REV-007 quality failure; no new retained delta | Not Applicable for new proportional review; prior CRR-010/011 remain authoritative | `API-REAL-001` support |
+| CRR-015 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` | Completed API-REV-007 failure-origin continuity and stale execution-pending clearance | API-REV-007 executed; feature-specific Pass; LM Studio residual | Ticket-specific Pass retained; non-gating API/E2E residual; no source defect | `API-REAL-001` |
+| CRR-016 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md` | Completed API-REV-007 retained-state proportional review | API-REV-007 executed; no new retained delta | Pass for retained-state proportional review; no test-code finding | `API-REAL-001` support |
 
 ## Revision Entries
 
@@ -345,3 +347,49 @@ None. CRR-010/011 had no test-code findings; CRR-012's temporary change is not r
 - Material score or classification changes: N/A; no implementation source score or failure-origin classification changes.
 - Recommended recipient: `/delivery_engineer` after acknowledging CRR-013 and refreshing delivery records; no further API/E2E execution is required for this N/A review.
 - Remaining risks or uncertainty: The non-gating LM Studio residual and other broader capability residuals remain as recorded by API-REV-007 and CRR-013.
+
+### CRR-015 — Completed API-REV-007 failure-origin continuity review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round 9
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`; `API-REV-007`; `API-REAL-001`; `lmstudio.qwen36.compaction-agent-flow`
+- Relevant solution revision IDs: `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `API-REV-007`
+- Relevant delivery revision IDs: `DR-003`
+- Prior authoritative result: CRR-013 classified the same LM Studio result as a non-gating API/E2E residual, while CRR-014 recorded the restored retained state. The incoming API-REV-007 execution record now confirms the bounded rerun is complete.
+- Current authoritative result: **Ticket-specific API/E2E Pass retained; `API-REAL-001` remains a non-gating API/E2E test-support/capability residual; no implementation defect found**.
+- What changed in the review result and why: The execution-pending state is cleared. The reviewed probe reached real compaction but failed the canonical leaf-evidence assertion; the Group-A count-100 experiment was restored to 170, and only the current FileMemoryStore API repair remains retained. No provider response, source exception, malformed payload, or deterministic product failure was observed.
+
+#### Prior Finding Resolution
+
+None. `CR-001` remains resolved; no implementation finding is reopened.
+
+- New or remaining finding IDs: `API-REAL-001` remains a non-gating API/E2E residual, not an implementation finding.
+- Material score or classification changes: CRR-002 source score remains `9.4/10`; API-REV-006 ticket-specific Pass remains authoritative; aggregate broader confidence remains `89%`.
+- Recommended recipient: `/delivery_engineer` for delivery-record refresh and final handoff. No unchanged LM Studio rerun is required; any future changed capability or durable fixture must return through proportional review.
+- Remaining risks or uncertainty: Final LM Studio leaf evidence, DeepSeek/Kimi operation/body fidelity, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live recovery remain explicitly unproven and non-gating.
+
+### CRR-016 — Completed API-REV-007 retained-state proportional test review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E retained-state review, round 7
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md`; `API-REV-007`; `API-REAL-001`
+- Relevant solution revision IDs: `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `API-REV-007`
+- Relevant delivery revision IDs: `DR-003`
+- Prior authoritative result: CRR-014 treated the retained state as Not Applicable while the API-REV-007 rerun was still being recorded. The final execution now confirms the 170→100 experiment was restored and the retained state is stable.
+- Current authoritative result: **Pass for proportional retained-state review; API-REV-007 execution complete; no test-code finding**.
+- What changed in the review result and why: The stale `listRawTraceCorpusOrdered()` call remains repaired as `listTurnRawTraceCorpusOrdered()`; semantic Group-A → Unicode shield → Group-B order remains; Group-A is restored to 170. Focused harness validation passed 19/19 and `git diff --check` passed. No assertion, scanner safeguard, test, production source, or public contract was removed or weakened.
+
+#### Prior Finding Resolution
+
+None. CRR-010/011 had no test-code findings; CRR-012's temporary fixture reduction is not retained.
+
+- New or remaining finding IDs: None for test code; `API-REAL-001` remains a separately classified non-gating live capability residual.
+- Material score or classification changes: No implementation score change or source-review reopening is warranted. API-REV-006 remains the ticket-specific Pass and broader confidence remains `89%`.
+- Recommended recipient: `/delivery_engineer` with the complete package, including this review record and the current proportional report. No further API/E2E execution is required solely for this review.
+- Remaining risks or uncertainty: Preserve the non-gating LM Studio, DeepSeek/Kimi, MiniMax/Gemini AI Studio, Docker, browser, and live-recovery residuals in delivery records.
