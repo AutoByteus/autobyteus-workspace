@@ -7,10 +7,15 @@ import { getLoggingConfigFromEnv } from "../config/logging-config.js";
 import {
   initializeRuntimeLoggerBootstrap,
 } from "../logging/runtime-logger-bootstrap.js";
-import { initializeServerAppLogger } from "../logging/server-app-logger.js";
+import {
+  createServerLogger,
+  initializeServerAppLogger,
+} from "../logging/server-app-logger.js";
 import { runMigrations } from "../startup/migrations.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import { getAppDataMigrationRunner } from "../app-data-migrations/app-data-migration-runner.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "../app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import {
   resetDefaultAgentRunEventPipeline,
   stopDefaultAgentRunEventPipeline,
@@ -37,6 +42,14 @@ import {
   createGeneralProcessRunSupervisor,
   type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
+import { assertTokenUsageCurrentSchema } from "../startup/token-usage-current-schema-readiness.js";
+import {
+  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
+  configureTokenUsageMigrationReadiness,
+} from "../token-usage/providers/token-usage-migration-readiness.js";
+import { TeamRunV1PackageCatalog } from "../run-history/services/team-run-v1-package-catalog.js";
+
+const logger = createServerLogger("standalone.application-host");
 
 export type StandaloneApplicationHostHandle = Readonly<{
   config: StandaloneApplicationHostConfig;
@@ -65,23 +78,6 @@ const closeRepositoryResources = async (input: {
     }
   } else if (input.prismaInitializationStarted) {
     await shutdownPrisma();
-  }
-};
-
-const assertStandaloneMigrationsReady = async (): Promise<void> => {
-  const results = await getAppDataMigrationRunner().runPending();
-  const failures = results.filter(
-    (result) => result.requiredOnStartup
-      && result.status !== "SUCCEEDED"
-      && result.status !== "SUCCEEDED_WITH_WARNINGS",
-  );
-  if (failures.length > 0) {
-    throw new Error(
-      "Standalone app-data migration readiness failed: "
-      + failures.map((result) =>
-        `${result.migrationId}=${result.status}${result.errorMessage ? ` (${result.errorMessage})` : ""}`)
-        .join("; "),
-    );
   }
 };
 
@@ -114,9 +110,74 @@ const initializeStandaloneProcessResources = async (
     ]);
     prismaInitializationStarted = true;
     await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
+    try {
+      await assertTokenUsageCurrentSchema();
+      configureTokenUsageMigrationReadiness({
+        kind: "CURRENT_SCHEMA_DEGRADED",
+        migrationStatus: "NOT_RUN",
+        logPath: null,
+      });
+    } catch (error) {
+      const reason = `Required current token-usage schema is unavailable: ${String(error)}`;
+      configureTokenUsageMigrationReadiness({
+        kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
+        reason,
+      });
+      throw new Error(reason, { cause: error });
+    }
     vaultInitializationStarted = true;
     await getSecretVaultRuntime().initialize(databaseLocation);
-    await assertStandaloneMigrationsReady();
+    const statuses = await getAppDataMigrationRunner().runPending();
+    for (const migration of statuses) {
+      if (migration.status === "FAILED" || migration.status === "RUNNING") {
+        logger.warn(
+          `Standalone app-data migration '${migration.migrationId}' is ${migration.status}: `
+          + `${migration.errorMessage ?? "no detail"}`,
+        );
+      }
+    }
+    const tokenUsageStatus = statuses.find(
+      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
+    );
+    configureTokenUsageMigrationReadiness(
+      tokenUsageStatus?.status === "SUCCEEDED"
+        || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
+        ? { kind: "READY" }
+        : {
+            kind: "CURRENT_SCHEMA_DEGRADED",
+            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
+            logPath: tokenUsageStatus?.logPath ?? null,
+          },
+    );
+    await new TeamRunV1PackageCatalog(appConfig.getMemoryDir()).rebuild();
+    const teamRunV1Status = statuses.find(
+      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    );
+    if (teamRunV1Status?.status !== "SUCCEEDED") {
+      logger.warn(
+        `TeamRun V1 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
+          migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+          displayName: teamRunV1Status?.displayName ?? null,
+          status: teamRunV1Status?.status ?? "MISSING",
+          attempts: teamRunV1Status?.attempts ?? null,
+          errorMessage: teamRunV1Status?.errorMessage ?? null,
+          logPath: teamRunV1Status?.logPath ?? null,
+        })}`,
+      );
+    }
+    const readableProviderStatus = statuses.find(
+      (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
+    );
+    if (
+      readableProviderStatus?.status !== "SUCCEEDED"
+      && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
+    ) {
+      throw new Error([
+        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+        readableProviderStatus?.status ?? "NOT_RUN",
+        readableProviderStatus?.logPath ?? "NO_LOG",
+      ].join(":"));
+    }
     let closePromise: Promise<void> | null = null;
     return {
       appConfig,

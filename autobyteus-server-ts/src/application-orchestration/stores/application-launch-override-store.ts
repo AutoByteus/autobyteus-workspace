@@ -27,12 +27,17 @@ export type ApplicationLaunchOverrideWrite = {
 
 const TABLE_NAME = "__autobyteus_resource_configurations";
 
-const hasColumn = (db: DatabaseSync, columnName: string): boolean => {
-  const rows = db.prepare(`PRAGMA table_info(${TABLE_NAME})`).all() as Array<{ name?: string }>;
-  return rows.some((row) => row.name === columnName);
-};
+const hasCurrentTable = (db: DatabaseSync): boolean => Boolean(
+  db.prepare(
+    `SELECT 1
+       FROM sqlite_master
+      WHERE type = 'table'
+        AND name = ?
+      LIMIT 1`,
+  ).get(TABLE_NAME),
+);
 
-const ensureTables = (db: DatabaseSync): void => {
+const ensureCurrentTableForWrite = (db: DatabaseSync): void => {
   db.exec(`
     CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
       slot_key TEXT PRIMARY KEY,
@@ -42,12 +47,6 @@ const ensureTables = (db: DatabaseSync): void => {
       updated_at TEXT NOT NULL
     );
   `);
-  if (!hasColumn(db, "launch_profile_json")) {
-    db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_profile_json TEXT`);
-  }
-  if (!hasColumn(db, "launch_defaults_json")) {
-    db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_defaults_json TEXT`);
-  }
 };
 
 const hydrateCell = (value: unknown): StoredJsonCell => {
@@ -83,8 +82,10 @@ export class ApplicationLaunchOverrideStore {
     applicationId: string,
     slotKey: string,
   ): Promise<StoredApplicationLaunchOverride | null> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasCurrentTable(db)) {
+        return null;
+      }
       const row = db.prepare(
         `SELECT slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
            FROM ${TABLE_NAME}
@@ -93,11 +94,14 @@ export class ApplicationLaunchOverrideStore {
       ).get(slotKey.trim()) as Record<string, unknown> | undefined;
       return row ? hydrateRecord(row) : null;
     });
+    return result ?? null;
   }
 
   async listOverrides(applicationId: string): Promise<StoredApplicationLaunchOverride[]> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasCurrentTable(db)) {
+        return [];
+      }
       const rows = db.prepare(
         `SELECT slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
            FROM ${TABLE_NAME}
@@ -105,6 +109,7 @@ export class ApplicationLaunchOverrideStore {
       ).all() as Record<string, unknown>[];
       return rows.map(hydrateRecord);
     });
+    return result ?? [];
   }
 
   async upsertOverride(
@@ -112,7 +117,7 @@ export class ApplicationLaunchOverrideStore {
     input: ApplicationLaunchOverrideWrite,
   ): Promise<StoredApplicationLaunchOverride> {
     return this.platformStateStore.withTransaction(applicationId, (db) => {
-      ensureTables(db);
+      ensureCurrentTableForWrite(db);
       db.prepare(
         `INSERT INTO ${TABLE_NAME} (
            slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
@@ -144,8 +149,10 @@ export class ApplicationLaunchOverrideStore {
   }
 
   async removeOverride(applicationId: string, slotKey: string): Promise<void> {
-    await this.platformStateStore.withTransaction(applicationId, (db) => {
-      ensureTables(db);
+    await this.platformStateStore.withExistingTransaction(applicationId, (db) => {
+      if (!hasCurrentTable(db)) {
+        return;
+      }
       db.prepare(`DELETE FROM ${TABLE_NAME} WHERE slot_key = ?`).run(slotKey.trim());
     });
   }
