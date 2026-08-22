@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`, `SR-002`, `SR-003`, `ARCH-REV-003`; `CRR-*`, `API-REV-*`, `DR-*`: `N/A` | Ready for source review |
 | IR-002 | `code_reviewer`; `code-review-report.md`; `CRR-001` | `CR-001`, `CR-002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-001`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
+| IR-003 | `code_reviewer`; `code-review-report.md`; `CRR-002` | `CR-003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-002`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
 
 ## Revision Entries
 
@@ -50,3 +51,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: direct correction tests `2` files / `13` tests passed; affected selection `7` files / `37` tests passed; server build-config TypeScript no-emit and full production build passed; application architecture suite `1` file / `15` tests passed; scoped diff/source-size checks pass. An adjacent recovery fixture retains two known baseline SQLite binding failures and is not caused by this delta.
 - Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E.
 - Remaining limitations or risks: real standalone start/team execution and Studio launch-setup byte/schema stability remain downstream execution responsibilities after source Pass. No API/E2E sign-off is claimed.
+
+### IR-003 — Keep pending-event recovery inspection read-only
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`; `CRR-002`.
+- Triggering finding IDs: `CR-003`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-002 — Fail / Local Fix` (`88/100`).
+- Current authoritative result: `Ready for source re-review`.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-002`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: reconciles the execution-event journal reader with IR-002's explicit read-only existing-platform-state boundary so supported same-data lifecycle and reload/reentry recovery cannot attempt DDL or cursor insertion through a read-only SQLite handle.
+- Approved behavior or requirement IDs affected: `BEH-003`; `REQ-005`; `AC-008`; application lifecycle phases 25–26.
+- Implementation delta: execution-event pending-record reads now first inspect `sqlite_master` for the exact journal/cursor tables, return `null` when either table or the singleton cursor row is absent, and query the next record only from initialized state. Journal/table/cursor initialization remains owned by explicit append and write operations; genuinely read-only launch access is unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts`; new focused real-SQLite/lifecycle/reentry regression at `autobyteus-server-ts/tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts`; implementation handoff and this revision record.
+- Local validation and result: direct recovery regression `1` file / `5` tests passed; affected implementation selection `8` files / `50` tests passed; server build-config TypeScript no-emit passed; full production build and sanitized built-in-agent bootstrap smoke passed; architecture `15/15`, current-delta diff, read-only-consumer, and changed-source size audits passed.
+- Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E.
+- Remaining limitations or risks: full-process Studio/standalone same-data restart, real pending-event relay, browser journeys, and cleanup remain downstream API/E2E work after source Pass. No API/E2E sign-off is claimed.
