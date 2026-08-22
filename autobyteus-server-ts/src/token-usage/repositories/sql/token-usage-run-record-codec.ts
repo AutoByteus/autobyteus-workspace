@@ -6,8 +6,8 @@ import { isCacheState, type CacheState } from "../../domain/token-usage-componen
 import {
   TOKEN_USAGE_COST_FIELDS,
   TOKEN_USAGE_TOKEN_FIELDS,
-  type TokenUsageRunRecord,
-} from "../../domain/token-usage-run-record.js";
+} from "../../domain/token-usage-accounting-summary.js";
+import type { TokenUsageRunRecord } from "../../domain/token-usage-run-record.js";
 import {
   decodeRecentIdempotencyDigests,
   decodeSnapshotSeriesState,

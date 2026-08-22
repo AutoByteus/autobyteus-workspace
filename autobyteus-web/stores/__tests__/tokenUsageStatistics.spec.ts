@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
-import { useTokenUsageStatisticsStore } from '../tokenUsageStatistics';
+import { useTokenUsageRunStatisticsStore } from '../tokenUsageRunStatistics';
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
@@ -119,7 +119,7 @@ describe('tokenUsageStatistics store', () => {
       });
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
 
-    const store = useTokenUsageStatisticsStore();
+    const store = useTokenUsageRunStatisticsStore();
     await store.fetchStatistics('2041-07-01', '2041-07-02');
 
     expect(queryMock).toHaveBeenCalledTimes(2);
@@ -184,7 +184,7 @@ describe('tokenUsageStatistics store', () => {
       .mockResolvedValueOnce({ data: { usageStatisticsInPeriod: [] } });
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
 
-    const store = useTokenUsageStatisticsStore();
+    const store = useTokenUsageRunStatisticsStore();
     await expect(store.fetchStatistics('2041-07-01', '2041-07-02')).rejects.toThrow('task query failed');
 
     expect(store.getError).toBe('task query failed');

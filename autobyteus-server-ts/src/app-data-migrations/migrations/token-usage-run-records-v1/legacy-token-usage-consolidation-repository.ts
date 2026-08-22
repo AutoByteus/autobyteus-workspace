@@ -4,8 +4,8 @@ import { rootPrismaClient } from "repository_prisma";
 import {
   TOKEN_USAGE_COST_FIELDS,
   TOKEN_USAGE_TOKEN_FIELDS,
-  type TokenUsageRunRecord,
-} from "../../../token-usage/domain/token-usage-run-record.js";
+} from "../../../token-usage/domain/token-usage-accounting-summary.js";
+import type { TokenUsageRunRecord } from "../../../token-usage/domain/token-usage-run-record.js";
 import {
   cumulativeSnapshotSourceTokensKey,
   cumulativeSnapshotTokenFields,
