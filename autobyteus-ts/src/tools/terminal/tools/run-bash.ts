@@ -38,7 +38,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   name: 'cwd',
   type: ParameterType.STRING,
   description:
-    "Optional working-directory path for this command. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory, including pwd, git init, redirections, file creation, and scripts.",
+    "Optional working-directory path for this command. An absolute path may target any existing accessible local directory, including one outside the workspace. A relative path is resolved from the workspace root when configured and cannot escape it. If omitted, the workspace root is used when available; otherwise the system temporary directory is used. cwd applies only to this invocation and does not change workspace identity or persist across calls. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory, including pwd, git init, redirections, file creation, and scripts.",
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
@@ -57,7 +57,7 @@ export function registerRunBashTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Execute a stateless non-interactive bash command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. Use normal shell syntax such as `command > log.txt 2>&1 &` for long-running background jobs; any live ordinary background descendants are returned as backgroundProcesses with PID identities. The result includes effectiveCwd so you can confirm where the command actually ran.',
+        'Execute a stateless non-interactive bash command in a working directory. An explicit absolute cwd may target any existing accessible local directory, including outside the workspace; a relative cwd is resolved from the workspace root when configured and remains contained there. If cwd is omitted, the workspace root is used when available, otherwise the system temporary directory. cwd applies only to this invocation and does not change workspace identity or persist across calls. Use normal shell syntax such as `command > log.txt 2>&1 &` for long-running background jobs; any live ordinary background descendants are returned as backgroundProcesses with PID identities. The result includes effectiveCwd so you can confirm where the command actually ran.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd', 'timeout_seconds', 'executionOptions']

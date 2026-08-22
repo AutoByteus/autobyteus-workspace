@@ -1,8 +1,11 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import fs from 'node:fs';
+import { describe, it, expect, afterEach, vi } from 'vitest';
+import * as fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { runBash } from '../../../../src/tools/terminal/tools/run-bash.js';
+import { startBackgroundProcess } from '../../../../src/tools/terminal/tools/start-background-process.js';
+import { BackgroundProcessManager } from '../../../../src/tools/terminal/background-process-manager.js';
+import { ShellCommandExecutor } from '../../../../src/tools/terminal/command-execution/shell-command-executor.js';
 import { TerminalResult } from '../../../../src/tools/terminal/types.js';
 
 const tempRoots: string[] = [];
@@ -17,6 +20,7 @@ function createTempWorkspace(subdir?: string): string {
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
   while (tempRoots.length > 0) {
     const next = tempRoots.pop();
     if (next) {
@@ -78,6 +82,14 @@ describe('runBash', () => {
     expect(result.effectiveCwd).toBe(workspaceRoot);
   });
 
+  it('uses the system temporary directory when cwd and workspace are omitted', async () => {
+    const result = await runBash(null, 'pwd');
+
+    expect(result.exitCode).toBe(0);
+    expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(os.tmpdir()));
+    expect(result.effectiveCwd).toBe(os.tmpdir());
+  });
+
   it('resolves relative cwd paths from the workspace root when provided', async () => {
     const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
     const context: any = { workspaceRootPath: workspaceRoot };
@@ -88,17 +100,130 @@ describe('runBash', () => {
     expect(result.effectiveCwd).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
   });
 
-  it('rejects an explicit cwd outside the workspace', async () => {
+  it('executes in an explicit absolute cwd outside the workspace', async () => {
     const workspaceRoot = createTempWorkspace();
     const outsideRoot = createTempWorkspace();
     const context: any = { workspaceRootPath: workspaceRoot };
 
-    await expect(runBash(context, 'pwd', outsideRoot)).rejects.toThrow('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+    const result = await runBash(context, 'pwd', outsideRoot);
+
+    expect(result.exitCode).toBe(0);
+    expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(outsideRoot));
+    expect(result.effectiveCwd).toBe(fs.realpathSync(outsideRoot));
+  });
+
+  it('accepts an explicit absolute cwd without a configured workspace', async () => {
+    const outsideRoot = createTempWorkspace();
+
+    const result = await runBash({ workspaceRootPath: null }, 'pwd', outsideRoot);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.effectiveCwd).toBe(fs.realpathSync(outsideRoot));
+  });
+
+  it('reports the physical target for an external symlink cwd', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const outsideRoot = createTempWorkspace();
+    const symlinkPath = path.join(workspaceRoot, 'external-link');
+    fs.symlinkSync(outsideRoot, symlinkPath, 'dir');
+
+    const result = await runBash({ workspaceRootPath: workspaceRoot }, 'pwd', symlinkPath);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.effectiveCwd).toBe(fs.realpathSync(outsideRoot));
+  });
+
+  it('continues rejecting relative traversal outside the workspace', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const outsideRoot = createTempWorkspace();
+    const context: any = { workspaceRootPath: workspaceRoot };
+
+    await expect(runBash(context, 'pwd', path.relative(workspaceRoot, outsideRoot))).rejects.toThrow(
+      'FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT'
+    );
+  });
+
+  it('maps missing and non-directory cwd values to working-directory validation errors', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const filePath = path.join(workspaceRoot, 'file.txt');
+    fs.writeFileSync(filePath, 'content');
+    const physicalWorkspaceRoot = fs.realpathSync(workspaceRoot);
+
+    await expect(runBash({ workspaceRootPath: workspaceRoot }, 'pwd', path.join(workspaceRoot, 'missing')))
+      .rejects.toThrow(`Working directory '${path.join(physicalWorkspaceRoot, 'missing')}' does not exist.`);
+    await expect(runBash({ workspaceRootPath: workspaceRoot }, 'pwd', filePath))
+      .rejects.toThrow(`Working directory '${path.join(physicalWorkspaceRoot, 'file.txt')}' is not a directory.`);
   });
 
   it('rejects relative cwd paths when no workspace is configured', async () => {
     const context: any = { workspaceRootPath: null };
 
-    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(/requires an authorized workspace root/);
+    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(
+      /requires an absolute path or a configured workspace root/
+    );
+  });
+
+  it('rejects an existing inaccessible absolute cwd before foreground execution starts', async () => {
+    if (process.platform === 'win32') return;
+    const workspaceRoot = createTempWorkspace();
+    const inaccessibleRoot = createTempWorkspace();
+    const executeSpy = vi.spyOn(ShellCommandExecutor.prototype, 'execute');
+    fs.chmodSync(inaccessibleRoot, 0o600);
+    try {
+      await expect(runBash({ workspaceRootPath: workspaceRoot }, 'echo should-not-start', inaccessibleRoot))
+        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
+      expect(executeSpy).not.toHaveBeenCalled();
+    } finally {
+      fs.chmodSync(inaccessibleRoot, 0o700);
+    }
+  });
+
+  it('rejects an existing inaccessible workspace-relative cwd before foreground execution starts', async () => {
+    if (process.platform === 'win32') return;
+    const workspaceRoot = createTempWorkspace('inaccessible');
+    const inaccessibleRoot = path.join(workspaceRoot, 'inaccessible');
+    const executeSpy = vi.spyOn(ShellCommandExecutor.prototype, 'execute');
+    fs.chmodSync(inaccessibleRoot, 0o600);
+    try {
+      await expect(runBash({ workspaceRootPath: workspaceRoot }, 'echo should-not-start', 'inaccessible'))
+        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
+      expect(executeSpy).not.toHaveBeenCalled();
+    } finally {
+      fs.chmodSync(inaccessibleRoot, 0o700);
+    }
+  });
+
+  it('rejects an existing inaccessible absolute cwd before background spawning starts', async () => {
+    if (process.platform === 'win32') return;
+    const workspaceRoot = createTempWorkspace();
+    const inaccessibleRoot = createTempWorkspace();
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const context: any = { workspaceRootPath: workspaceRoot };
+    fs.chmodSync(inaccessibleRoot, 0o600);
+    try {
+      await expect(startBackgroundProcess(context, 'echo should-not-start', inaccessibleRoot))
+        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
+      expect(startSpy).not.toHaveBeenCalled();
+      expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+    } finally {
+      fs.chmodSync(inaccessibleRoot, 0o700);
+    }
+  });
+
+  it('rejects an existing inaccessible workspace-relative cwd before background spawning starts', async () => {
+    if (process.platform === 'win32') return;
+    const workspaceRoot = createTempWorkspace('inaccessible');
+    const inaccessibleRoot = path.join(workspaceRoot, 'inaccessible');
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const context: any = { workspaceRootPath: workspaceRoot };
+    fs.chmodSync(inaccessibleRoot, 0o600);
+    try {
+      await expect(startBackgroundProcess(context, 'echo should-not-start', 'inaccessible'))
+        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
+      expect(startSpy).not.toHaveBeenCalled();
+      expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+    } finally {
+      fs.chmodSync(inaccessibleRoot, 0o700);
+    }
   });
 });

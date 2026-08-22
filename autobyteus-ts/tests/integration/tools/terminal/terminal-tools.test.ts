@@ -61,15 +61,47 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
-  it('start_background_process rejects an explicit cwd outside the workspace', async () => {
+  it('run_bash executes inside an explicit external cwd', async () => {
     await withTempDir(async (workspace) => {
       await withTempDir(async (outside) => {
         const context = new MockContext(workspace);
 
-        await expect(startBackgroundProcessTool.execute(context, {
-          command: 'echo should-not-start',
+        const result = await runBashTool.execute(context, {
+          command: 'pwd',
           cwd: outside
-        })).rejects.toThrow('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+        }) as TerminalResult;
+
+        expect(result.exitCode).toBe(0);
+        expect(result.stdout.trim()).toBe(fs.realpathSync(outside));
+        expect(result.effectiveCwd).toBe(fs.realpathSync(outside));
+      });
+    });
+  });
+
+  it('start_background_process manages a process in an explicit external cwd', async () => {
+    await withTempDir(async (workspace) => {
+      await withTempDir(async (outside) => {
+        const context = new MockContext(workspace);
+
+        const startResult = await startBackgroundProcessTool.execute(context, {
+          command: 'for i in 1 2 3; do echo external_$i; sleep 0.1; done; sleep 10',
+          cwd: outside
+        }) as BackgroundProcessInfo;
+
+        try {
+          expect(startResult.status).toBe('running');
+          expect(startResult.effectiveCwd).toBe(fs.realpathSync(outside));
+
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const outputResult = await getProcessOutputTool.execute(context, {
+            pid: startResult.pid
+          }) as { output: string; isRunning: boolean };
+          expect(outputResult.output).toContain('external_');
+          expect(outputResult.isRunning).toBe(true);
+        } finally {
+          const stopResult = await stopBackgroundProcessTool.execute(context, { pid: startResult.pid }) as { status: string };
+          expect(stopResult.status).toBe('stopped');
+        }
       });
     });
   });
