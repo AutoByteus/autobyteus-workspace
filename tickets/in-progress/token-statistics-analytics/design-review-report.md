@@ -5,32 +5,32 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `ui-ux-spec.md`, `prototype.html`, `token-usage-analytics-data-contract.md`, `evidence/prototype-desktop.png`, `evidence/prototype-mobile.png`
+- Supplemental Task Artifacts Reviewed: `ui-ux-spec.md`, `prototype.html`, `token-usage-analytics-data-contract.md`, `evidence/prototype-desktop.png`, `evidence/prototype-mobile.png`, user-supplied populated field screenshot `ctx_91a98260defe__image.png`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: `1`
-- Trigger: Initial architecture review of the user-approved solution package.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: Approved behavior artifacts plus direct review of the current Vue/store/GraphQL statistics path, token-usage fold/accumulator/run repository and aggregate code, Prisma schema/migration/readiness/startup sequence, model-display projection, and rendered desktop/narrow prototype evidence in the dedicated worktree.
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: `2`
+- Trigger: SR-002 re-review after CRR-008 / API-REV-004 `F-006` / `FIELD-F-002` was returned as a Requirement Gap and the user clarified the observed first-run lifecycle.
+- Prior Review Round Reviewed: `1` / `ARCH-REV-001`
+- Latest Authoritative Round: `2`
+- Current-State Evidence Basis: The `ARCH-REV-001` code and artifact basis remains valid. Round 2 additionally reviewed SR-002 deltas, CRR-008/CRR-009, API-REV-004 coverage/field diagnosis, live GraphQL and fresh-current-frontend results, the user-supplied populated screenshot, and IR-005 tab evidence. The evidence shows the initial empty view preceded any post-coverage contribution; later admitted contributions populated the approved daily projection.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: The approved change adds observation-time UTC analytics while preserving the created-run/lifetime Run details workflow and established accounting semantics.
-- Relevant existing behavior and evidence confirmed: Direct code reads corroborate the investigation paths and the current storage limitation. The run fold is the admission owner; the accumulator owns the current transaction; the statistics provider reads lifetime run records selected by creation/fallback time; the current model table has the sole caller of `BarChart.vue`.
+- Approved requirements / intended behavior understood: The approved change remains observation-time UTC analytics with preserved created-run/lifetime Run details and established accounting semantics. SR-002 records that no retained-lifetime Analytics expansion or automatic refresh contract was approved.
+- Relevant existing behavior and evidence confirmed: The round-1 paths remain confirmed. Field evidence now also proves that the daily projection and current frontend return post-coverage usage; the first empty state occurred before the first admitted post-coverage contribution. CRR-009 separately verifies the tab-fidelity correction, so the older populated screenshot is used only for analytics-data/coverage evidence, not current tab styling.
 - Scope guardrail confirmed: `UC-001`–`UC-008` are in scope; provider quota/invoice/rate-limit claims, fabricated pre-feature history, raw event retention, currency conversion, alerts, cloud export, and task/workspace analytics filters are out of scope; BEH-001 Run details and BEH-004 accounting semantics are preserved; technical review authority is explicit.
 - Approved change, preserved behavior, and outside scope understood: `Yes`
 - Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `Yes` — no blocking finding remains.
-- Remaining material ambiguity, if any: None.
+- Remaining material ambiguity, if any: None. `F-006` / `FIELD-F-002` is resolved as a mistaken-premise gap, not an open design decision.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | Pass | Pass — Settings/Vue/store/Apollo path verified | Pass — DS-002/DS-003 separate default Analytics from preserved Run details | Confirmed | None |
 | BEH-002 | User | Pass | Pass — current table plus sole-use cost chart verified | Pass — DS-002/DS-004 produce summary, trend, pace, attribution, and exact rows from one result | Confirmed | None |
-| BEH-003 | Contract | Pass | Pass — current run-created/lifetime query and irrecoverable time-distribution limitation verified | Pass — daily observation-time projection, coverage marker, and DS-002/DS-005 are coherent | Confirmed | None |
+| BEH-003 | Contract | Pass | Pass — current run-created/lifetime limitation plus first-empty/later-populated field lifecycle verified | Pass — daily observation-time projection, coverage marker, and DS-002/DS-005 remain coherent; SR-002 adds no new path | Confirmed | None |
 | BEH-004 | Contract | Pass | Pass — current aggregate, nullable pricing, and mixed-currency semantics verified | Pass — shared aggregate extraction and server-owned cost quality preserve the contract | Confirmed | None |
 | BEH-005 | User | Pass | Pass — current product has no analytics export | Pass — DS-003 derives deterministic local CSV from the applied successful result | Confirmed | None |
 | BEH-006 | System | Pass | Pass — runtime event → store → accumulator → fold → run repository verified | Pass — DS-001/DS-006 extend the governing transaction only for `CHANGED` folds | Confirmed | None |
@@ -44,6 +44,7 @@
 | `token-usage-analytics-data-contract.md` | Pass | Pass | Pass | Pass | Pass — approved field/read-contract constraint | None |
 | `evidence/prototype-desktop.png` | Pass | Pass | Pass | Pass | Pass — validation evidence, not behavior authority | None |
 | `evidence/prototype-mobile.png` | Pass | Pass | Pass | Pass | Pass — validation evidence, not behavior authority | None |
+| User populated field screenshot `ctx_91a98260defe__image.png` | Pass | Pass | Pass | Pass | Pass — SR-002 lifecycle evidence only; older dark tab styling is superseded by CRR-009/IR-005 evidence | None |
 
 The investigation notes contain the canonical supplement inventory, and each material supplement is linked from requirements and design with purpose, scope, status, and approval applicability.
 
@@ -274,13 +275,25 @@ The design explicitly prohibits leaving a temporary dual read/write or compatibi
 - Reachability: `Reachable`
 - Review consequence / proportionate response: Versioned, non-null canonical digest keys plus retained raw nullable snapshots are proportionate and avoid both nullable uniqueness and label-as-identity errors.
 
+### MP-004 — A post-coverage contribution existed before the observed first-run empty Analytics query
+
+- Related approved requirement or established contract: REQ-013–REQ-018; AC-017–AC-023; approved no-backfill and coverage-state contract.
+- Relevant behavior ID(s): BEH-003, BEH-006.
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: The user opens Settings > Token Statistics immediately after the additive analytics schema/coverage activation, before any later runtime contribution has been admitted.
+- Support evidence: The exposed surface is Settings > Token Statistics and the supported action is opening Analytics. The persisted coverage start is `2026-08-22T10:52:04.812Z`; the field diagnosis distinguishes 26.27B retained lifetime tokens from initially absent post-coverage facets. Later live GraphQL/browser results and the user screenshot show post-coverage contributions in the August 22 bucket, growing from 1.07M/6 reports to 10.26M/53 reports and then 87.94M/one active day.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Upgrade/start → additive schema and coverage initialization → user opens Analytics before any post-coverage token observation → analytics query reads zero daily facets and reports coverage state; later runtime observations → accumulator/fold `CHANGED` → atomic daily-facet increments → subsequent Analytics query renders non-zero usage.
+- Lifecycle preconditions and material consequence at the claimed point: The initial query had no supported post-coverage contribution to render. Retained lifetime rows are intentionally owned by Run details and cannot establish observation-time monthly allocation.
+- Reachability: `Not Reachable` for the claimed observed precondition: the verified first-run lifecycle had no admitted post-coverage contribution before the empty query. The initial empty pre-contribution state itself is `Reachable` and approved; abstract future implementation defects are not inferred from it.
+- Review consequence / proportionate response: The mistaken premise cannot drive a finding or new machinery. Do not add a retained-lifetime snapshot/table, dynamic lifetime merge, guessed backfill, polling, or refresh spine under F-006. Preserve coverage-aware empty/partial/unavailable behavior and the existing Run details lifetime path.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass` — the approved behavior basis is confirmed, the target write/read/UI spines are coherent and actionable, persisted-data handling is proportionate, and no blocking finding or unsupported in-scope machinery remains.
+`Pass` — SR-002 resolves F-006 without changing approved behavior or design. The round-1 structural verdict remains valid, persisted-data handling remains proportionate, and the withdrawn retained-lifetime/polling machinery is neither required nor authorized.
 
 ## Findings
 
@@ -301,9 +314,11 @@ N/A — no finding.
 - SQLite cross-run write contention can still surface transactional busy/timeout errors under sufficiently heavy local concurrency. Atomic rollback preserves correctness; performance/timeout behavior remains an implementation and executable-coverage concern, not a reason for best-effort divergence.
 - Cost-mode presentation is sensitive to partial/missing/local/mixed-currency combinations. The server-owned quality contract and exact currency-partitioned rows are sound, but rendered and executable coverage must verify that no false zero or combined currency slips through.
 - Prototype values are illustrative. Implementation must remain generated-contract-driven and must not copy fixture arithmetic.
+- Pre-coverage monthly distribution remains unknowable. The product must continue to distinguish unavailable/partial coverage from covered zero usage; retained lifetime totals remain available only through Run details.
+- The downstream stale-mounted-result subtype mentioned in API-REV-004 was not the observed F-006 lifecycle and is not an approved automatic-refresh requirement; it does not drive this design revision.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `ARCH-REV-001` establishes the initial passing architecture-review baseline for `SR-001`. Implementation may proceed against the cumulative approved package.
+- Notes: `ARCH-REV-002` confirms `SR-002` has no design impact and resolves `F-006` / `FIELD-F-002` as a mistaken-premise gap. No implementation of the withdrawn lifetime proposal is authorized; the existing IR-005 implementation should resume the normal source/API-E2E verification chain.

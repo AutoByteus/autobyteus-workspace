@@ -14,6 +14,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-002` | Pass — source review and API/E2E | Fail — Local Fix | TR-F-001 |
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/api-e2e-test-review-report.md` | API/E2E Test-Code Re-review / `API-REV-003` | Fail — Local Fix | Pass | TR-F-001 |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-004`, FIELD-F-001/FIELD-F-002 | Pass | Fail — split rework | F-005, F-006 |
+| CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md` | Implementation Review round 9 / `IR-005`, F-005 | Fail — split rework | Fail overall; IR-005 Pass | F-005 resolved; F-006 open |
 
 ## Revision Entries
 
@@ -217,3 +218,30 @@ None.
 - Material score or classification changes: no scorecard was repeated. The latest result changes from Pass to Fail; F-005 is `Local Fix` implementation and F-006 is `Requirement Gap`. The possible stale mounted-result subtype remains `Unclear` and does not drive a finding or prescription.
 - Recommended recipients: `/implementation_engineer` for F-005; `/solution_designer` for F-006.
 - Remaining risks or uncertainty: solution design must define a truthful immediately useful existing-data experience and refresh semantics before implementation; delivery remains blocked.
+
+### CRR-009 — Tab-fidelity correction passes while F-006 keeps the package blocked
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `9`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-handoff.md`; `IR-005`; `F-005` / `FIELD-F-001`
+- Relevant solution revision IDs: `SR-001`; F-006 solution revision pending
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-001`, `DR-002`
+- Prior authoritative result: `Fail` — split rework, F-005 Local Fix and F-006 Requirement Gap
+- Current authoritative result: `Fail` overall; bounded IR-005 source correction `Pass`
+- What changed in the review result and why: both selected tab branches now directly implement the approved transparent blue-underlined treatment. Source, the strengthened focused regression, computed styles, and desktop/mobile rendered evidence agree; semantics, focus, activation, inactive styling, and overflow remain correct. IR-005 deliberately does not address the independently routed F-006 requirement gap.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-005 / FIELD-F-001 | Open | Resolved | CRR-008, IR-005 | `TokenUsageStatistics.vue` uses shared transparent/2px-border styling and selected blue-600/blue-700 classes for both tabs; reviewer Vitest passes 1/1; computed-style JSON and four screenshots verify both states at 1440×1000 and 390×844. |
+| F-006 / FIELD-F-002 | Open — Requirement Gap | Remains open | CRR-008; solution revision pending | IR-005 changes no backfill, existing-data, polling, or refresh policy; the upstream product decision is still unresolved. |
+| F-001–F-004, TR-F-001 | Resolved | Remain resolved | IR-002–IR-004, CRR-002–CRR-007 | IR-005 changes only the tab coordinator/style regression and supplies no contrary evidence. |
+
+- New or remaining finding IDs: `F-006` only.
+- Material score or classification changes: implementation-quality score is `9.4/10 (94/100)` and F-005 changes from open to resolved. The overall decision remains `Fail` solely because the independent F-006 Requirement Gap prevents implementation-review/API/E2E advancement.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: the truthful immediately useful first-upgrade experience and refresh lifecycle require renewed approval and architecture review; API-REV-004 remains the latest execution result and delivery stays blocked.

@@ -2,7 +2,7 @@
 
 ## Status
 
-`Approved` — explicitly approved by the user on 2026-08-22 as the locked basis for solution design.
+`Approved` — explicitly approved by the user on 2026-08-22 as the locked basis for solution design. On the same date, the user clarified after observing populated analytics that the earlier empty first-run view was expected because the new daily projection had not yet received usage; this clarification retains the SR-001 scope and does not add a retained-lifetime snapshot, backfill, or refresh requirement.
 
 ## Goal / Problem Statement
 
@@ -38,6 +38,8 @@ The experience must prioritize observed usage in calendar periods, not merely se
 - Current cost semantics already support `estimated`, `partial_price_missing`, `price_missing`, `local_no_api_bill`, and `mixed`; mixed currencies cannot be summed into one trusted number.
 - The UI already depends on Chart.js, but `BarChart.vue` owns only a single-series bar shape. Trend, comparison, horizontal/ranked, and accessible chart support will need clearer chart ownership rather than expanding one generic component indefinitely.
 - Detailed intended interaction and visual hierarchy are defined in [`ui-ux-spec.md`](./ui-ux-spec.md), the eventual rendered reference is [`prototype.html`](./prototype.html), and every visible analytical datum is audited in [`token-usage-analytics-data-contract.md`](./token-usage-analytics-data-contract.md).
+- Post-implementation field evidence shows 87.94M tokens, one active day, and the expected August 22 daily bucket after new usage was recorded. `Partial coverage` and `No comparable data` are correct because tracking began on August 22 and the prior comparison period was uncovered.
+- The user confirmed that the earlier empty state occurred before any post-coverage usage existed and accepted the populated result as the completed ticket behavior. The daily-facet projection is therefore not defective; no existing-run lifetime summary, historical backfill, additional table, automatic polling, or other F-006 product correction is required.
 
 ## Relevant Supplemental Task Artifacts
 
@@ -234,4 +236,4 @@ Although the visible change is a dashboard, accurate calendar-month analytics re
 
 ## Approval Status
 
-Approved by the user on 2026-08-22 together with the linked UI/UX specification, executable HTML prototype, and prototype data-contract audit. This approved basis is locked for solution design; scope-changing proposals require renewed user approval.
+Approved by the user on 2026-08-22 together with the linked UI/UX specification, executable HTML prototype, and prototype data-contract audit. The user subsequently confirmed from a populated live result that initial emptiness before the first post-coverage usage was expected and that the ticket is working/done. That clarification rejects the proposed F-006 retained-lifetime expansion and leaves BEH-001–BEH-006, REQ-001–REQ-025, and AC-001–AC-035 as the complete authority. Scope-changing proposals still require renewed user approval.

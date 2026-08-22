@@ -9,6 +9,7 @@
 | IR-003 | Code reviewer / `code-review-report.md` / round 2 | F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-002` | Cumulative pace quality now follows canonical COMPLETE + LOCAL precedence; ready for code-review round 3. |
 | IR-004 | Code reviewer / `code-review-report.md` / API/E2E failure-origin round | F-004, API-F-001/API-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-004`, `API-REV-001` | Empty no-usage buckets are neutral during known-cost reconciliation without losing null semantics; ready for source re-review. |
 | IR-005 | Code reviewer / `code-review-report.md` / field failure-origin round | F-005 / FIELD-F-001 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-008`, `API-REV-004`, `DR-001`–`DR-002` | Both selected view tabs match the approved transparent blue-underlined prototype and retain semantics/focus; ready for source re-review. |
+| IR-006 | Architecture reviewer / `design-review-report.md` / round 2 | F-006 / FIELD-F-002 | `No Implementation Change` | `SR-002`, `ARCH-REV-002`, `CRR-009`, `API-REV-004` | Mistaken first-run premise is withdrawn; IR-005 code and approved no-backfill/Run-details behavior remain authoritative and ready for source re-review. |
 
 ## Revision Entries
 
@@ -111,3 +112,23 @@
 - Local validation and result: focused component Vitest passed 1 file / 1 test; frontend production build passed; compiled renderer inspection passed at 1440×1000 and 390×844 for Analytics and Run details. Both selected states computed transparent / blue-700 / 2px blue-600; keyboard Tab/Enter and `aria-selected` were verified; no viewport overflow or page error occurred.
 - Next recipient or routing: `/code_reviewer` for source re-review. F-006 remains with `/solution_designer`; delivery remains blocked.
 - Remaining limitations or risks: `API-REV-004` remains the latest Fail until both independent workstreams complete and downstream validation resumes. No historical backfill, polling, refresh behavior, or existing-data policy was changed in IR-005.
+
+### IR-006 — Reconcile no-op first-run lifecycle clarification
+
+- Triggering role, report path, and round: Architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/design-review-report.md`; architecture re-review round 2
+- Triggering finding IDs: `F-006` / `FIELD-F-002`
+- Classification: `No Implementation Change`
+- Prior authoritative result: `IR-005` at commit `0e571644f7d87fb6309add1d83bebee33c138da8`; `CRR-009` passed the bounded F-005 source correction while leaving F-006 upstream, and `API-REV-004` remained the latest executable Fail.
+- Current authoritative result: `SR-002` / `ARCH-REV-002` resolves F-006 as a mistaken-premise requirement gap with no design or implementation impact. The existing IR-005 implementation remains authoritative and is ready to return through source review and then API/E2E revalidation.
+- Related solution revision IDs: `SR-002` (with `SR-001` retained)
+- Related architecture-review revision IDs: `ARCH-REV-002` (with `ARCH-REV-001` retained)
+- Related code-review revision IDs: `CRR-009`
+- Related API/E2E revision IDs: `API-REV-004`
+- Related delivery revision IDs: `DR-001`, `DR-002`
+- Why this baseline or implementation revision is recorded: records the reviewed no-op resolution so downstream reviewers do not infer a missing implementation step or reintroduce the withdrawn lifetime/backfill/refresh proposal.
+- Approved behavior or requirement IDs affected: clarifies `BEH-003`, `REQ-013`–`REQ-018`, and `AC-017`–`AC-023` without changing observable behavior.
+- Implementation delta: none. The initial empty view occurred before any admitted post-coverage contribution; later supported contributions populated the approved daily facet. Pre-coverage lifetime rows remain intentionally excluded from period Analytics and remain available through Run details. No retained-lifetime snapshot/table, dynamic lifetime section, historical backfill, polling, refresh spine, or alternate existing-data policy was added.
+- Changed files or areas: implementation handoff and revision artifacts only for this round; current solution/design/review artifacts record the upstream clarification and passing architecture re-review. No source, test, schema, generated contract, or rendered-frontend file changed.
+- Local validation and result: inspected the implementation tree and confirmed no backend/frontend source delta from IR-005; reconciled the handoff against SR-002, ARCH-REV-002, CRR-009, and API-REV-004; artifact whitespace validation passed. No executable implementation test or render was rerun because this round intentionally changes no implementation behavior.
+- Next recipient or routing: `/code_reviewer` for source re-review of the integrated no-op outcome; after Pass, `/api_e2e_engineer` resumes independent verification with API-REV-004 as the prior result.
+- Remaining limitations or risks: `API-REV-004` remains the latest authoritative executable Fail until downstream revalidation supersedes it. Pre-coverage monthly distribution remains unknowable and must remain labeled unavailable/partial rather than zero; existing cardinality, SafeInt, contention, and cost-quality residuals remain unchanged.

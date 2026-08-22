@@ -2,7 +2,16 @@
 
 ## Status
 
-`Ready for architecture review` — based on the requirements, UI/UX specification, HTML prototype, and data-contract audit approved by the user on 2026-08-22.
+`Ready for architecture re-review — SR-002 clarification` — the approved SR-001 design remains authoritative. CRR-008/F-006 is resolved by the user's field clarification: the initially empty view preceded the first post-coverage usage, and the subsequently populated Analytics result matches the approved daily-facet/coverage design. No retained-lifetime snapshot, dynamic lifetime section, historical backfill, additional table, polling, or refresh spine is added.
+
+## SR-002 Downstream Requirement-Gap Resolution
+
+- Trigger: CRR-008 / API-REV-004 F-006 / FIELD-F-002 classified the first-upgrade empty result as a Requirement Gap because substantial cumulative run history existed outside the new observation-time coverage.
+- Verified cause: the ticket had just activated the daily analytical projection and had not yet admitted post-coverage usage. Later live GraphQL/frontend evidence populated, and the user supplied a screenshot showing 87.94M tokens in the August 22 bucket with one active day.
+- User decision: the populated result is the intended completed ticket behavior. Existing retained cumulative run history does not need a second Analytics lifetime presentation.
+- Design impact: `None`. DS-001–DS-006, the daily-facet schema, the atomic accumulator write, coverage semantics, GraphQL result, and approved UI remain unchanged.
+- Forbidden expansion: do not create or capture a stored-lifetime snapshot; do not dynamically merge run-record lifetime totals into period Analytics; do not backfill guessed dates; do not add polling or an unrelated refresh lifecycle under F-006.
+- Persisted-data outcome: remains the approved additive daily-facet projection plus coverage singleton. Existing run records remain directly usable by preserved Run details and unchanged by this resolution.
 
 ## Current-State Read
 

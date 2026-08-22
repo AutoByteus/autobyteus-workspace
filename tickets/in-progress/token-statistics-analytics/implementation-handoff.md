@@ -13,18 +13,18 @@
 
 ## Current Implementation Summary
 
-The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one numeric/cost authority while its run adapter preserves the established `Mixed` identity-summary contract. Pace points use elapsed UTC-day coordinates and merge server-derived bucket quality with canonical provider precedence, including `COMPLETE` remote plus `LOCAL` no-bill as `COMPLETE`; charts and exact tables expose range/share/currency/quality/captured-status evidence; local usage cannot render as invented USD; and CSV separates captured API cost status from derived analytics quality. Sparse ranges retain empty buckets as `NO_USAGE` with null cost while cost reconciliation treats only those empty buckets as neutral and still rejects null cost on usage-bearing buckets. The Analytics/Run-details view switch now matches the approved prototype: both selected states remain transparent and use blue text plus a blue bottom border, with visible keyboard focus retained.
+The implementation adds a persisted UTC daily token-usage analytics projection, an atomic write from the authoritative `CHANGED` fold transaction, server-owned range/coverage/aggregation/filter behavior, a generated GraphQL contract, and a dedicated Analytics frontend. The prior created-run/lifetime workflow remains as a separate Run details view. Shared token/cost aggregation is now one numeric/cost authority while its run adapter preserves the established `Mixed` identity-summary contract. Pace points use elapsed UTC-day coordinates and merge server-derived bucket quality with canonical provider precedence, including `COMPLETE` remote plus `LOCAL` no-bill as `COMPLETE`; charts and exact tables expose range/share/currency/quality/captured-status evidence; local usage cannot render as invented USD; and CSV separates captured API cost status from derived analytics quality. Sparse ranges retain empty buckets as `NO_USAGE` with null cost while cost reconciliation treats only those empty buckets as neutral and still rejects null cost on usage-bearing buckets. The Analytics/Run-details view switch now matches the approved prototype: both selected states remain transparent and use blue text plus a blue bottom border, with visible keyboard focus retained. `SR-002` / `ARCH-REV-002` confirms that the initially empty Analytics result preceded any admitted post-coverage contribution and therefore requires no implementation change: pre-coverage lifetime rows remain intentionally excluded from period Analytics and remain available through Run details.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
-- Related solution revision IDs: `SR-001`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `CRR-001`–`CRR-008`
+- Current implementation revision ID: `IR-006`
+- Related solution revision IDs: `SR-001`, `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001`–`CRR-009`
 - Related API/E2E revision IDs: `API-REV-001`–`API-REV-004`
 - Related delivery revision IDs: `DR-001`, `DR-002`
-- Triggering finding IDs: `F-005` / `FIELD-F-001` (`F-001`–`F-004` and `TR-F-001` remain resolved)
-- Explicitly excluded parallel finding: `F-006` / `FIELD-F-002` is a Requirement Gap routed to `/solution_designer`; `IR-005` adds no backfill, polling, or existing-data policy.
+- Triggering finding IDs: `F-006` / `FIELD-F-002`, resolved by `SR-002` / `ARCH-REV-002` as a mistaken-premise requirement gap with no implementation delta. `F-005` / `FIELD-F-001` remains resolved by `IR-005` / `CRR-009`; `F-001`–`F-004` and `TR-F-001` remain resolved.
+- Explicit non-change: `IR-006` adds no retained-lifetime snapshot/table, dynamic lifetime section, historical backfill, polling, refresh spine, or other existing-data policy.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -32,7 +32,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 | --- | --- | --- | --- |
 | BEH-001 | Analytics defaults; Run details preserves created-run/lifetime semantics | `TokenUsageStatistics.vue`, `TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`, `tokenUsageRunAggregate`, run/analytics stores | Separate tabs/stores/queries remain; `IR-002` restores the established run-specific `['Mixed']` distinct identity summary, and `IR-005` restores the approved transparent blue-underlined selected state for both tabs without changing their tablist/tab/aria-selected or focus behavior. |
 | BEH-002 | Coherent summary, chronological trend, aligned pace, ranked attribution/share, exact rows | `token-usage/analytics/*`, `tokenUsageAnalyticsPresentation.ts`, `TokenUsageAnalyticsProvider` | One result drives cards/charts/table; pace uses explicit elapsed-day coordinates across unequal bucket counts and exact provider-precedence merging of server-derived bucket qualities; contiguous sparse buckets reconcile without fabricating empty-bucket costs; tooltips/text alternatives include exact range/value/share/currency/quality/captured status. |
-| BEH-003 | Observation-time daily projection and explicit coverage without backfill | Prisma migration/models, `SqlTokenUsageAnalyticsRepository`, range/aggregation policy/provider, analytics GraphQL resolver | Persisted singleton coverage starts after schema verification; full/partial/unavailable is server-owned; no lifetime-row reconstruction; covered no-usage days remain explicit `NO_USAGE`/null buckets. |
+| BEH-003 | Observation-time daily projection and explicit coverage without backfill | Prisma migration/models, `SqlTokenUsageAnalyticsRepository`, range/aggregation policy/provider, analytics GraphQL resolver | Persisted singleton coverage starts after schema verification; full/partial/unavailable is server-owned; no lifetime-row reconstruction; covered no-usage days remain explicit `NO_USAGE`/null buckets. `SR-002` / `ARCH-REV-002` revalidated that the observed initial empty state occurred before the first admitted contribution, so this path remains unchanged and pre-coverage lifetime rows stay in Run details. |
 | BEH-004 | One SafeInt/null/mixed/local cost aggregation authority | `token-usage-accounting-summary.ts`, `token-usage-cost-summary-aggregate.ts`, `token-usage-analytics-aggregation-policy.ts`, `mergeTokenUsageAnalyticsCostQualities` | Run and analytics reuse the same aggregate builder; mixed currencies remain uncombined, exact rows are partitioned, cumulative pace treats local/no-bill as non-missing, and known-cost reconciliation sums usage-bearing buckets while retaining strict rejection of usage-bearing null cost. |
 | BEH-005 | Deterministic local exact CSV export | `tokenUsageAnalyticsCsv.ts`, `TokenUsageAnalyticsView.vue` | Deterministic inclusive-date filename, escaped exact rows and selection/coverage metadata; exports `captured_api_cost_status` separately from `derived_cost_quality`; local browser download only. |
 | BEH-006 | Only authoritative CHANGED contributions atomically update analytics | `TokenUsageRunAccumulator`, `TokenUsageAnalyticsProjectionWriter`, contribution projector, SQL repository | Projection increment executes after run save inside the same Prisma transaction; suppressed folds do not write; facet upsert is one SQL statement. |
@@ -50,6 +50,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - The existing fold remains the sole idempotency/admission authority; the analytical upsert intentionally has no independent event-id dedupe.
 - UTC date inputs are exact half-open midnight ranges; presets must match the server-derived range for the current UTC day.
 - Captured pricing and currency are immutable contribution facts; analytics does not reprice or convert currencies.
+- Period Analytics reports admitted observation-time contributions only; retained pre-coverage lifetime records are intentionally not reconstructed, merged, or backfilled and remain queryable through Run details.
 
 ## Known Risks
 
@@ -66,6 +67,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
 - Evidence / notes: analytics persistence/read/UI ownership is sibling to preserved run details; accounting/GraphQL cost summaries are shared narrowly; aggregation invariants are purpose-owned and the provider file was split below size pressure.
+- `SR-002` / `ARCH-REV-002` re-review outcome: `No design impact / no implementation change`. The mistaken F-006 premise does not justify a second lifetime path or refresh mechanism, so the reviewed ownership and spine inventory remain intact.
 
 ## Legacy / Compatibility Removal Check
 
@@ -85,6 +87,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Direct-use evidence or discard/rebuild result, when applicable: existing run record model/meaning remains intact and Run details continues to query it.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`; the additive Prisma migration was applied successfully in test and development databases.
 - Deviation from the reviewed transition decision: `None`
+- `SR-002` / `ARCH-REV-002` reaffirmation: the additive projection and coverage singleton remain authoritative; no retained-lifetime migration, snapshot, merge, or backfill is authorized.
 
 ## Environment Or Dependency Notes
 
@@ -99,6 +102,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Narrow provider/repository check against a migrated local SQLite database: 240,000 tokens, 3 exact breakdown rows, 22 daily buckets, `PARTIAL` coverage, and `MIXED_CURRENCY` reconciled successfully.
 - `pnpm build` in `autobyteus-web`: passed production Nuxt build/prerender.
 - `IR-005` focused `TokenUsageStatistics` component Vitest: 1 file / 1 test passed. It verifies both selected states use transparent background, blue border/text, no dark fill, correct `aria-selected`, distinct inactive styling, and the retained focus-visible treatment.
+- `IR-006` adds no source, contract, schema, or rendered-frontend delta, so no new executable implementation check was warranted. Artifact/source status inspection confirmed the implementation tree remains exactly at the reviewed `IR-005` commit while `SR-002` / `ARCH-REV-002` require no code change.
 - Targeted frontend Vitest for coordinator, Run details, task/model tables, preserved run store, pace alignment/exact data/canonical cumulative quality, breakdown share/local evidence, and CSV status fields: 8 files / 17 tests passed. The `IR-003` regression mounts the pace component with separate `COMPLETE` USD and `LOCAL` no-bill buckets and verifies its endpoint matches server-owned `selectedCostQuality` (`COMPLETE`, USD) while retaining captured `mixed` status evidence.
 - `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals`: passed.
 - Repository package typecheck limitations: server `pnpm typecheck` is blocked by the existing `rootDir: src` plus `include: tests` configuration (`TS6059` across the repository); compatible direct web `vue-tsc` remains blocked by pre-existing repository-wide diagnostics. Production builds pass, and no diagnostics remained in newly added analytics source during the changed-file diagnostic review.
@@ -112,7 +116,7 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 - Project development / preview instructions and rendered surface used: original root `pnpm dev` browser renderer against the real local server plus, for `IR-005`, the freshly built Nuxt static `/settings` surface served on an owned temporary port and exercised in Chrome.
 - States, layouts, viewports, and interactions inspected: populated partial coverage; mixed USD/EUR/local pricing; token charts; cost-chart explanatory state; exact token share; explicit quality/captured-status/currency columns; local no-bill cost text and incomparable monetary share; corrected 4-row CSV; tab switch to preserved Run details; 1440×1000 and 390×844 layouts; no document horizontal overflow at narrow width.
 - Visual or interaction issues found and corrected: initial formatter issue, `CRR-001` evidence defects, the remaining `CRR-002` cumulative quality mismatch, and `CRR-008` F-005 prototype drift; exact breakdown was extracted to keep chart logic readable, local cost no longer falls back to USD, status/share headers remain accessible within contained horizontal table scrolling, and the top-level selected tabs no longer use the dark filled style.
-- Supporting evidence and remaining unverified states or limitations: original implementation evidence plus `evidence/implementation-rework-desktop.png`; `IR-005` evidence is `evidence/implementation-rework-tabs-{desktop,mobile}-{analytics,runs}.png` and `evidence/implementation-rework-tabs-result.json`. At 1440×1000 and 390×844, both selected tabs computed to transparent background, blue-700 text, and a 2px blue-600 bottom border; keyboard Tab exposed a visible focus ring and Enter selected Run details without moving focus; `aria-selected` flipped correctly; document widths stayed at 1440/390 with no overflow. The static preview intentionally lacked an API backend, so content showed handled fetch states while the independently scoped tab shell/style remained fully exercisable. `F-006` remains outside this implementation round. This is implementation self-validation, not API/E2E sign-off.
+- Supporting evidence and remaining unverified states or limitations: original implementation evidence plus `evidence/implementation-rework-desktop.png`; `IR-005` evidence is `evidence/implementation-rework-tabs-{desktop,mobile}-{analytics,runs}.png` and `evidence/implementation-rework-tabs-result.json`. At 1440×1000 and 390×844, both selected tabs computed to transparent background, blue-700 text, and a 2px blue-600 bottom border; keyboard Tab exposed a visible focus ring and Enter selected Run details without moving focus; `aria-selected` flipped correctly; document widths stayed at 1440/390 with no overflow. The static preview intentionally lacked an API backend, so content showed handled fetch states while the independently scoped tab shell/style remained fully exercisable. `IR-006` changes no rendered UI and therefore reuses the still-current IR-005 visual evidence rather than claiming a new render pass. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -125,4 +129,4 @@ The implementation adds a persisted UTC daily token-usage analytics projection, 
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. `API-REV-004` remains the latest authoritative Fail while F-005 returns through source review and F-006 proceeds through solution design. Delivery remains blocked; this implementation handoff claims no replacement API/E2E or delivery sign-off.
+Required. `API-REV-004` remains the latest authoritative executable Fail until independent downstream revalidation supersedes it. `IR-006` returns the no-op `SR-002` / `ARCH-REV-002` reconciliation through source review while preserving `CRR-009`'s resolved F-005 result; after source review passes, API/E2E should resume the existing verification chain. Delivery remains blocked, and this handoff claims no replacement API/E2E or delivery sign-off.
