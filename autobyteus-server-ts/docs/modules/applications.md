@@ -28,7 +28,7 @@ Each application bundle lives under `applications/<application-id>/` and must sa
 - `manifestVersion` must be `"4"`.
 - `id` must match the bundle folder name.
 - `ui.entryHtml` is required and must point to a file under `ui/`.
-- `ui.frontendSdkContractVersion` must be `"4"`.
+- `ui.frontendSdkContractVersion` must be `"6"`.
 - `icon` is optional and must also stay under `ui/`.
 - `backend.bundleManifest` is required and must point to a file under `backend/`.
 
@@ -41,10 +41,10 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 - `moduleFormat` must be `"esm"`.
 - `distribution` must be `"self-contained"`.
 - `targetRuntime.engine` must be `"node"` and `targetRuntime.semver` declares the supported Node range.
-- `sdkCompatibility.backendDefinitionContractVersion` must be `"4"`; v2 bundles are rejected during discovery.
-- `sdkCompatibility.frontendSdkContractVersion` must be `"4"`.
+- `sdkCompatibility.backendDefinitionContractVersion` must be `"6"`; unsupported bundles are rejected during discovery.
+- `sdkCompatibility.frontendSdkContractVersion` must be `"6"`.
 - `supportedExposures` is the sole seven-flag exposure authority (`queries`, `commands`, `routes`, `graphql`, `notifications`, `eventHandlers`, `webSockets`).
-- The loaded backend definition must use contract version `"4"`; `webSocketRoutes` are admitted only when `webSockets` is enabled.
+- The loaded backend definition must use contract version `"6"`; `webSocketRoutes` are admitted only when `webSockets` is enabled.
 - `migrationsDir` and `assetsDir` are optional, but when present they must also stay under `backend/`.
 
 The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.

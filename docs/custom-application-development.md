@@ -89,7 +89,7 @@ input.
 autobyteus-app validate --package-root dist/importable-package
 ```
 
-The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v4 SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
+The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v6 frontend-SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
 
 ## Develop in either real host
 

@@ -9,7 +9,7 @@ It now demonstrates:
 - one app-owned `lessonId` business identity
 - one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
 - one long-lived binding reused through `agentExecution.sendInput(...)`
-- one standard frontend `agentCommunication.connect(...)` session addressed to the bound `tutor` member
+- one standard frontend `agentCommunication.connect(...)` session that selects logical member `/tutor` from the binding and projects that member's exact binding-owned `agentRunId`
 - READY-before-input sequencing so the mounted UI observes the first provider-neutral live response
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides
 - the bundled Codex App Server tutor default (`gpt-5.6-sol`, high reasoning effort) while saved runtime/model selections retain priority

@@ -8,6 +8,8 @@
 | `API-REV-002` | `code_reviewer` / `CRR-005` / round 2 | `SR-003`, `ARCH-REV-003`, `IR-004`, `CRR-005` | **Fail / 73%** | **Fail / 75%** |
 | `API-REV-003` | `code_reviewer` / `CRR-007` / round 3 | `SR-003`, `ARCH-REV-003`, `IR-005`, `CRR-007` | **Fail / 75%** | **Fail / 93%** |
 | `API-REV-004` | `code_reviewer` / `CRR-009` / round 4 | `SR-003`, `ARCH-REV-003`, `IR-006`, `CRR-009` | **Fail / 93%** | **Pass / 98%** |
+| `API-REV-005` | user-requested packaged Electron provider expansion / round 5 | `API-REV-004`, `CRR-010`, `DR-001` | **Pass / 98%** | **Blocked / 88%** |
+| `API-REV-006` | user-reported DeepSeek balance restoration / round 6 | `API-REV-005`, `API-REV-004`, `CRR-010`, `DR-001` | **Blocked / 88%** | **Pass / 99%** |
 
 ## Revision Entries
 
@@ -112,3 +114,52 @@ None — this is the initial baseline.
 - New or remaining current API/E2E failure IDs: **None**.
 - Residual scope: Electron shell/package validation remains downstream; historical inherited broad server debt remains separate and is not Pass evidence.
 - Recommended recipient: `/code_reviewer` for the required proportional successful review of every cumulative durable update/removal before delivery.
+
+### API-REV-005 — Packaged Classroom run reaches DeepSeek balance block
+
+- Triggering role/report/round: explicit user request; `api-e2e-execution-coverage-report.md`; round 5.
+- Triggering scenario: `APIE2E-ELECTRON-CLASSROOM-001` with owner-supplied credentials and agent package.
+- Related revisions: `API-REV-004`, successful cumulative durable review `CRR-010`, and delivery packaged-Electron result `DR-001`.
+- Why recorded: the user requested a stronger packaged-shell test using real private credentials, a local agent package, exact mixed runtimes/models, tools, files and recipient-name handoff.
+- Coverage decision: temporary executable evidence only; private credentials, local authentication, mutable external package and billed providers make this unsuitable as deterministic repository-resident coverage. No durable test changed.
+- Environment delta: exact packaged macOS ARM64 AutoByteus artifact; isolated Electron E2E root and loopback ports; nine supported secret assignments imported value-safely; local `/Users/normy/autobyteus_org/autobyteus-agents`; Professor Codex `gpt-5.6-luna`; Student AutoByteus `deepseek-v4-flash`.
+- Execution result: packaged startup, credential import, package discovery, exact model configuration, team creation, Professor `run_bash`, assignment-file creation and Professor -> Student `send_message_to` all passed. Student `DeepSeekLLM` initialized but four requests rolled back and produced no answer or reply.
+- External correlation: the same source credential and exact model returned HTTP `402`, `invalid_request_error`, `Insufficient Balance` in a value-safe direct probe.
+- Cleanup: owned process group stopped gracefully; ports `53376` and `54491` are free; credential-bearing root and raw provider response were removed; the ordinary user app remained PID `37991`, port `29695`, health `200`.
+
+#### Prior Failure Resolution
+
+None. `API-REV-004` had no unresolved current failure. Its approved application-framework Pass remains valid; API-REV-005 is a supplemental provider-permutation expansion.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `evidence/api-e2e/api-rev-005-*`.
+- Prior result/confidence: **Pass / 98%** for the approved application-framework scope.
+- Current result/confidence: **Blocked / 88%** for the added packaged real-provider scenario.
+- New blocker ID: `APIE2E-BLOCKER-001` — DeepSeek account insufficient balance.
+- Recommended recipient: user; restore DeepSeek balance/access, then rerun the exact scenario unchanged.
+- Remaining untested scope: Student model completion, Student `run_bash`, answer-file creation, Student -> Professor `send_message_to`, and Professor's final correctness verdict.
+
+
+### API-REV-006 — Restored DeepSeek balance completes packaged Classroom team
+
+- Triggering role/report/round: explicit user re-entry after account top-up; `api-e2e-execution-coverage-report.md`; round 6.
+- Triggering scenario: rerun of `APIE2E-ELECTRON-CLASSROOM-001` and `APIE2E-BLOCKER-001` with the same credential source, external package and exact mixed runtime/model selection.
+- Related revisions: blocked `API-REV-005`, approved framework `API-REV-004`, successful cumulative durable review `CRR-010`, and packaged Electron result `DR-001`.
+- Why recorded: the only missing critical evidence in API-REV-005 was real DeepSeek Student completion and the return file-backed handoff after the external HTTP 402 account condition.
+- Coverage decision: temporary executable evidence only; no repository-resident durable test was added, updated or removed. The scenario depends on private credentials, installed Codex authentication, a mutable external package and billed providers.
+- Environment delta: fresh marked `/private/tmp` root, ports `55888`/`55889`, exact packaged executable and `app.asar` hashes, external agent package commit `c4e271924ed64196edbe80927d4f7eec32a68df3` (clean), and parent test-runner environment overrides stripped before the supported launcher injected its isolated root/port.
+- Execution result: exact DeepSeek direct probe HTTP 200; packaged Settings package import; nine value-safe credential assignments; Professor `CODEX` / `gpt-5.6-luna`; Student `AUTOBYTEUS` / `deepseek-v4-flash`; real assignment creation, Professor -> Student message, Student read/write/return message, Professor correctness verdict/feedback, Student acknowledgement, four persisted messages, four files, sixteen tool calls and quiescent checkpoint.
+- Cleanup: process group stopped gracefully, both ports free, credential-bearing root and temporary harnesses removed, zero sensitive-value matches in retained evidence, and ordinary AutoByteus PID `37991`/port `29695` remained health `200`.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-BLOCKER-001` | external provider account; HTTP 402 Insufficient Balance | **Resolved**: exact credential/model returned HTTP 200 with completed `OK` response | `evidence/api-e2e/api-rev-006-deepseek-direct-probe.log` |
+| `APIE2E-ELECTRON-CLASSROOM-001` | Blocked after Professor -> Student delivery because Student provider could not respond | **Resolved**: real DeepSeek Student read the assignment, wrote answer 42, replied with the file; Professor read and graded it; follow-up feedback/acknowledgement also completed | `api-rev-006-electron-classroom-correlation.json`; result screenshot and runtime logs |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `evidence/api-e2e/api-rev-006-*`.
+- Prior result/confidence: **Blocked / 88%** for the added packaged real-provider scenario.
+- Current result/confidence: **Pass / 99%**.
+- New or remaining current failure IDs: **None**.
+- Recommended recipient: `/code_reviewer` for proportional test-code review, expected `Not Applicable` because no durable test changed in API-REV-006.
+- Remaining risk: future live provider balance/availability or external-package changes are mutable external conditions; all requested critical behavior is directly proven for the recorded artifact/package identities.

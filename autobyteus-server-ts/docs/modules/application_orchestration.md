@@ -77,6 +77,8 @@ This read-time validation is authoritative: stale persisted overrides or invalid
 
 The orchestration host validates the resource choice and explicit start kind, launches the underlying agent/team run, persists one durable binding together with `launchRequestId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
 
+Team-member selection and runtime dispatch keep logical and exact identity distinct. A launch-time `initialInput.targetMemberAddress` such as `/tutor` is a package-authored logical selector; the host validates it against `binding.runtime.members` and resolves it once to that member's binding-owned `agentRunId`. Reusable `ApplicationAgentTargetAddress` values already carry the exact `agentRunId` for an `AGENT_TEAM_MEMBER`. The host authorizes that identity against the application and binding before passing the same exact `agentRunId` to `RootTeamRun.postMessage(...)`; it never forwards a logical member address into the runtime ID slot.
+
 `publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
 
 ## Resource Configuration And Availability

@@ -1,0 +1,44 @@
+DR-001 DELIVERY AUDIT
+timestamp_utc=2026-08-22T13:00:28Z
+head=42496b808df16f4ed24ca66bac03372c578f1f89
+base=8ef282ba77705180d985e7000d801f0e0068cdc1
+branch=codex/universal-application-framework-latest-personal-integration
+divergence=135/0
+base_ancestor=PASS
+unmerged_paths=NONE_PASS
+contract_constants:
+36:export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "6" as const;
+37:export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION = "6" as const;
+contract_constants=PASS
+maintained_manifest_contracts:
+applications/socratic-math-teacher/application.json:9:    "frontendSdkContractVersion": "6"
+applications/brief-studio/application.json:9:    "frontendSdkContractVersion": "6"
+maintained_manifest_contracts=PASS
+stale_long_lived_contract_claims=NONE_PASS
+applications/socratic-math-teacher/README.md:12:- one standard frontend `agentCommunication.connect(...)` session that selects logical member `/tutor` from the binding and projects that member's exact binding-owned `agentRunId`
+autobyteus-server-ts/docs/modules/application_orchestration.md:80:Team-member selection and runtime dispatch keep logical and exact identity distinct. A launch-time `initialInput.targetMemberAddress` such as `/tutor` is a package-authored logical selector; the host validates it against `binding.runtime.members` and resolves it once to that member's binding-owned `agentRunId`. Reusable `ApplicationAgentTargetAddress` values already carry the exact `agentRunId` for an `AGENT_TEAM_MEMBER`. The host authorizes that identity against the application and binding before passing the same exact `agentRunId` to `RootTeamRun.postMessage(...)`; it never forwards a logical member address into the runtime ID slot.
+autobyteus-application-backend-sdk/README.md:77:The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. The team-member builder accepts the exact binding-owned `agentRunId`, not the logical `memberAddress`; application code may select a configured role by `memberAddress` and must then project the matching member's `agentRunId`. The builders do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+identity_docs=PASS
+delivery_artifacts_present_and_clean=PASS
+git_diff_check=PASS
+generated_sdk_dist_cleanup=PASS
+delivery_evidence_final_markers=PASS
+electron_isolation_json=PASS
+electron_scenarios=E2E-PKG-001,E2E-PKG-002,E2E-PKG-003,E2E-PKG-004,E2E-PKG-005
+electron_artifact_hashes=PASS
+status:
+## codex/universal-application-framework-latest-personal-integration...origin/personal [ahead 135]
+ M applications/socratic-math-teacher/README.md
+ M autobyteus-application-backend-sdk/README.md
+ M autobyteus-application-sdk-contracts/README.md
+ M autobyteus-server-ts/docs/modules/application_engine.md
+ M autobyteus-server-ts/docs/modules/application_orchestration.md
+ M autobyteus-server-ts/docs/modules/applications.md
+ M docs/custom-application-development.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+FINAL=PASS

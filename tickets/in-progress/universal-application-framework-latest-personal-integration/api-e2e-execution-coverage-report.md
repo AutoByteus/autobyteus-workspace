@@ -2,205 +2,220 @@
 
 ## Execution Round Meta
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
-- Investigation/design basis: `investigation-notes.md`, `design-spec.md`, `integration-strategy-analysis.md`, `integration-runtime-contracts.md`
-- Upstream revisions: `SR-003`, `ARCH-REV-003`, `IR-006`, `CRR-009`
-- Source-review decision: Pass / 93
-- Reviewed implementation: `b3ddefe1a079e1bc52eb36688595462861b7415a`
-- Executed reviewed HEAD: `e2c9e2e4c89875c61aad57dea5a40d45832e6884`
-- API/E2E revision: `API-REV-004`
-- Prior result: `API-REV-003` Fail / 93%
-- Current result: **Pass / 98% validation confidence**
-- Trigger: rerun `APIE2E-SOCRATIC-002` / `APIE2E-F004` after IR-006, then complete the retained current dual-host matrix
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
+- Supplemental Task Artifacts: `integration-strategy-analysis.md`; `integration-runtime-contracts.md`
+- Solution Revision Record: `solution-revision-record.md`
+- Design Review Report: `design-review-report.md`
+- Architecture Review Revision Record: `architecture-review-revision-record.md`
+- Implementation Handoff: `implementation-handoff.md`
+- Implementation Revision Record: `implementation-revision-record.md`
+- Code Review Report: `code-review-report.md`
+- Code Review Revision Record: `code-review-revision-record.md`
+- Delivery Revision Record: `delivery-revision-record.md`, `DR-001`
+- Coverage Investigation: `api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-006`
+- Current Execution Round: 6
+- Trigger: user reported the DeepSeek balance restored and requested the exact credentialed packaged-Electron Classroom Simulation Team rerun.
+- Prior Round Reviewed: `API-REV-005` Blocked / 88%; approved framework baseline `API-REV-004` Pass / 98%; packaged isolation `DR-001` Pass.
+- Latest Authoritative Round: `API-REV-006`
+- Executed source HEAD: `42496b808df16f4ed24ca66bac03372c578f1f89`
+- Current result: **Pass / 99% validation confidence for the added provider journey**.
 
 ## Executive Result
 
-IR-006 resolves the last critical real-user failure. In a fresh isolated Studio, the maintained Socratic package now accepts the initial lesson problem immediately after application-agent readiness, targets the exact binding-owned `/tutor` member run, streams a real Luna/Codex response and durably stores the tutor message. No reopen, retry, delay, direct database edit or file workaround was used.
+The exact user-requested realistic-system journey now passes. A value-safe direct request using the same credential and exact `deepseek-v4-flash` model returned HTTP `200` and a completed `OK` response, resolving the prior account-balance blocker.
 
-The proportional retained matrix also passes: Socratic standalone and Studio, Brief standalone and Studio, real `publish_artifacts`, named `/writer` handoff, writer continuation and application projection, explicit remount, same-data restart/recovery, active child cleanup, internal Agent Tools versus Studio-only gateway separation, both maintained watcher modes, web/build gates and exact 73/73 package/authoring integrity.
+The packaged macOS ARM64 AutoByteus application then started with a fresh isolated embedded server, SQLite/vault and Temp Workspace. The external `/Users/normy/autobyteus_org/autobyteus-agents` package was imported through the packaged Settings UI, and nine credential assignments were imported through the supported `pnpm secrets:import` workflow without printing secret values. `Classroom Simulation Team` ran with Professor `CODEX` / `gpt-5.6-luna` and Student `AUTOBYTEUS` / `deepseek-v4-flash`.
 
-Two cumulative API-owned fixtures initially exposed stale expectations that the public `/researcher` address would reach team dispatch unchanged. They were correctly updated to retain `/researcher` as public input while asserting the exact binding-owned runtime `agentRunId` at `RootTeamRun.postMessage`. The complete 16-file cumulative durable selection passes 77/77.
+The real Professor created and delivered an assignment file to `/student`. The real DeepSeek Student read it, wrote `student-answer.md`, and delivered that file to `/professor`. The Professor read the answer, determined that `27 + 15 = 42` was correct, wrote file-backed feedback, and sent it to the Student; the Student read it, wrote an acknowledgement, and replied. Four persisted recipient-name messages, both providers' raw traces, sixteen total tool calls, four workspace artifacts, a quiescent execution checkpoint, renderer state, GraphQL/WebSocket traffic and the final Electron screenshot correlate the same run.
 
-## Prior Failure Resolution
+The packaged process group stopped gracefully, both owned ports were free, the credential-bearing root and temporary harnesses were removed, and the user's ordinary AutoByteus process remained PID `37991`, port `29695`, health HTTP `200`.
 
-| Failure | Prior Result | API-REV-004 Result | Evidence |
+## Investigation And Execution Basis
+
+- Coverage investigation completed before final execution: **Yes**.
+- Investigation plan followed: **Yes**, with two temporary harness-environment corrections discovered during preflight:
+  1. removed inherited `ELECTRON_RUN_AS_NODE`, which otherwise makes the packaged Electron binary enter Node mode;
+  2. removed inherited test-runner `AUTOBYTEUS_*` and `DATABASE_URL` overrides so the supported E2E launcher alone owns the isolated root/port and the package is imported through the real UI.
+- These were temporary test-harness corrections, not repository source or product corrections. Both failed preflights stopped cleanly before any credential import or business run.
+- Existing evidence retained: `API-REV-004` dual-host real-browser Pass and `DR-001` packaged-Electron build/isolation Pass.
+- Durable coverage decision: no repository-resident test was added, updated or removed. Private credentials, installed Codex authentication, a mutable external package and billed providers make this journey appropriate as recorded live evidence rather than deterministic CI coverage.
+- Reroute required during execution: **No**.
+
+## Compatibility / Legacy Scope Check
+
+- New compatibility or legacy behavior in scope: **No**.
+- Compatibility-only behavior observed: **No**.
+- Persisted-data transition: **N/A**; this supplemental scenario deliberately used a new isolated root.
+- Compatibility-only durable coverage added: **No**.
+
+## Changed Boundary And Evidence Matrix
+
+| Scenario ID | Boundary | Execution Surface | Evidence Type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| `APIE2E-BLOCKER-001` | exact DeepSeek credential/account/model | Direct HTTPS provider request | Live | Pass / resolved | `api-rev-006-deepseek-direct-probe.log` |
+| `APIE2E-ELECTRON-ENV-006` | packaged app, isolated embedded server/renderer | Packaged Electron | Desktop | Pass | `api-rev-006-electron-discovery.json`; environment and identity logs |
+| `APIE2E-ELECTRON-SECRETS-006` | supported isolated vault import | CLI + SQLite/vault | Live | Pass: 9 configured | `api-rev-006-secret-import-dry-run.log`; `api-rev-006-secret-import.log` |
+| `APIE2E-ELECTRON-PACKAGE-006` | external package and team discovery | Packaged Settings UI | Desktop | Pass | discovery JSON and package-import screenshot |
+| `APIE2E-ELECTRON-MODELS-006` | exact mixed runtime/model configuration | Electron UI + GraphQL | Desktop / Live | Pass | discovery JSON and config screenshot |
+| `APIE2E-ELECTRON-CLASSROOM-001` | providers, tools, files, recipient-name handoff and verdict | Electron + GraphQL/WS + Codex + DeepSeek | Desktop / Live | **Pass** | classroom JSON, correlation JSON, server/main logs and result screenshot |
+| `APIE2E-ELECTRON-CLEANUP-006` | graceful shutdown, root/port isolation | Process / filesystem | Live | Pass | `api-rev-006-cleanup-isolation.log` |
+
+## Additional Repository Coverage Execution
+
+| Order | Command | Boundary | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:<isolated>/production.db --dry-run` | supported CLI, server/shared builds and target preview | Pass | `api-rev-006-secret-import-dry-run.log` |
+| 2 | same command without `--dry-run`, with exact TTY `IMPORT` confirmation | atomic value-safe credential import | Pass: 9 configured | `api-rev-006-secret-import.log` |
+
+No broad repository suite was repeated because source and durable coverage did not change after `API-REV-004`, `CRR-010` and `DR-001`; this round rechecked the exact previously blocked external/provider boundary.
+
+## Validation Confidence Scorecard
+
+| Category | Post-Repository / Prior Blocked Baseline | Final | New Evidence / Residual |
+| --- | ---: | ---: | --- |
+| Requirement and acceptance-criteria proof | 75% | 100% | every requested exact model, tool, file, handoff and verdict condition passed |
+| Changed-boundary execution directness | 95% | 100% | exact prior 402 was rechecked first, then the same model ran in the packaged product |
+| Cross-boundary integration realism and mock gap | 75% | 100% | real Electron, embedded server, SQLite/vault, GraphQL/WS, Codex, DeepSeek, tools and files; no mock |
+| Environment, configuration, identity and fixture fidelity | 95% | 99% | exact package commit, app hashes, isolated root, exact run IDs/models; external services remain mutable |
+| Failure, edge-case, lifecycle and recovery evidence | 90% | 98% | prior 402 resolved, quiescence and graceful leak-free cleanup proven; arbitrary future provider outage not induced |
+| User-surface, browser and desktop-shell confidence | 90% | 100% | actual packaged renderer, visible team/messages/files and final screenshot |
+| Durable regression coverage quality and relevance | 97% | 97% | prior reviewed durable coverage remains valid; non-deterministic credentialed permutation intentionally temporary |
+
+- Overall post-repository/prior-blocked confidence: **88%**.
+- Overall final confidence: **99%** (simple average, rounded).
+- Confidence gain: the missing Student completion and return handoff were proven through the real paid provider and packaged shell.
+- Every critical added criterion directly proven: **Yes**.
+- Final category below 90%: **None**.
+- Default 95% target met: **Yes**.
+- Residual risk: live provider availability/balance and the external agent package may change after this recorded run; this does not weaken the observed result.
+
+## Broader Validation Decision And Execution
+
+- Decision: **Required by user; executed; Pass**.
+- Mode: actual packaged Electron controlled through the project Playwright Electron adapter, real embedded backend, supported secret import, real external package, Codex App Server and DeepSeek API.
+- Artifact identity: executable SHA-256 `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0`; `app.asar` SHA-256 `260f1bd61b7d59d3d99774d5437d29847722907558da1dbcc1203258a53697c0`.
+- Agent package identity: commit `c4e271924ed64196edbe80927d4f7eec32a68df3`, clean worktree.
+- Authentication: installed Codex state plus nine assignments imported from `/Users/normy/.autobyteus/server-data/.env`; no sensitive value was copied into evidence.
+- Workspace: application-created isolated `Temp Workspace` under the owned root.
+
+| Journey Step | Expected | Actual | Result |
 | --- | --- | --- | --- |
-| `APIE2E-F001` exact Socratic target | Resolved | Remains resolved; live binding and worker use exact `/tutor` member `agentRunId` | `api-rev-004-socratic-studio-correlation.json` |
-| `APIE2E-F002` duplicate process owner | Resolved | Remains resolved across both hosts | Studio/standalone logs |
-| `APIE2E-F003` missing fresh runtime cwd | Resolved | Remains resolved across fresh maintained standalone starts | standalone logs |
-| `APIE2E-F004` fresh exact-member input rejection | Fail | **Resolved**; first problem accepted and real tutor response saved without retry | Socratic Studio browser/business/worker evidence |
+| Recheck prior blocker | usable exact DeepSeek response | HTTP 200, exact model, `OK`, finish `stop` | Pass |
+| Start packaged app | embedded server and renderer ready | bridge/health ready on isolated port `55889` | Pass |
+| Import package | external package and Classroom team visible | UI reports imported; 7 shared agents, 50 team-local agents, 12 teams | Pass |
+| Import credentials | supported value-safe import | 9 configured, 0 skipped/replaced | Pass |
+| Configure team | exact requested mixed runtimes/models | Professor Codex Luna; Student AutoByteus DeepSeek Flash | Pass |
+| Professor assignment | create file and message `/student` | `run_bash` plus delivered `send_message_to` | Pass |
+| Student answer | read, solve, write and reply | `read_file`, `write_file`, exact answer 42, delivered file reply | Pass |
+| Professor verdict | read answer and report correctness | read answer, reported correct, wrote and delivered feedback | Pass |
+| Follow-up | Student consumes feedback | acknowledgement file and return message persisted | Pass |
+| Quiescence/UI | no open execution work and visible result | checkpoint false; both members and final messages visible | Pass |
+| Cleanup | no owned process/root/port leak; ordinary app untouched | all conditions met | Pass |
 
-## Requirement And Scenario Matrix
+## Desktop Application Validation
 
-| Scenario | Boundary / Mode | Result | Primary Evidence |
+- Validation approach: actual packaged macOS ARM64 application because the user explicitly requested shell-level realism beyond prior browser-equivalent coverage.
+- Web-equivalent evidence: real UI navigation, package import, model setup, GraphQL queries, one WebSocket, member conversations and final rendered state.
+- Shell/lifecycle evidence: isolated launch profile, embedded server bridge, process-group ownership, graceful close, port release and credential-root removal.
+- Effect on existing desktop application: **None**. PID `37991` on port `29695` remained healthy.
+- Behavior not directly proven in this supplemental round: none of the user's critical conditions. The already-approved full framework matrix remains in `API-REV-004` rather than being repeated.
+
+## Platform / Runtime Targets
+
+- Platform: macOS ARM64.
+- Node.js: `v22.23.1`; pnpm `10.28.2`.
+- Desktop artifact: local unsigned `AutoByteus.app`.
+- Renderer control: Playwright Electron (`playwright-core` 1.58.2 in the worktree).
+- Providers: installed Codex App Server and live DeepSeek API.
+
+## Lifecycle / Persisted-Data Checks
+
+- Approved persisted-data decision for this supplemental run: fresh isolated root; no migration claim.
+- SQLite/vault initialization and CLI import: Pass.
+- Execution checkpoint: `changeSequence=2448`, `hasOpenExecutionWork=false`.
+- Version-specific branch or compatibility fallback observed: **No**.
+- Shutdown: graceful, not forced; ports free; root removed only after evidence extraction.
+
+## Durable Coverage Changed In The Codebase
+
+- Repository-resident durable coverage added, updated or removed this round: **No**.
+- Paths added or updated: None.
+- Paths removed: None.
+- Proportional test-code review: **Not Applicable requested**.
+
+## Temporary Execution Methods
+
+| Method | Purpose | Result | Cleanup |
 | --- | --- | --- | --- |
-| `APIE2E-REPO-004` | IR-006 exact member identity + architecture + TypeScript | **Pass: 4 files / 27 tests; tsc Pass** | `api-rev-004-ir006-focused.log` |
-| `APIE2E-DURABLE-004` | cumulative current API/E2E fixtures | **Pass: 16 files / 77 tests** | `api-rev-004-cumulative-durable-matrix-rerun.log` |
-| `APIE2E-SOCRATIC-002` / `F004` | fresh Studio initial input to exact member, real provider, browser and durable state | **Pass; F004 resolved** | Socratic Studio business/correlation/worker evidence |
-| `APIE2E-SOCRATIC-STANDALONE-004` | real maintained standalone lesson and watcher restart | **Pass** | standalone business/restart evidence |
-| `APIE2E-SOCRATIC-REMOUNT-004` | explicit Studio remount and state retention | **Pass; one iframe** | remount JSON/PNG |
-| `APIE2E-BRIEF-STANDALONE-004` | real researcher/writer, tools, named handoff and projection | **Pass; two artifacts, `in_review`** | standalone business/projection/raw traces |
-| `APIE2E-BRIEF-STUDIO-004` | same business path through Studio | **Pass; two artifacts, `in_review`** | Studio business/projection/raw traces |
-| `APIE2E-ROUTES-004` | internal Agent Tools vs external gateway | **Pass** | `api-rev-004-route-separation.log` |
-| `APIE2E-RESTART-004` | active Studio shutdown, same-data restart and both-app recovery | **Pass** | pre-stop/cleanup/restart recovery evidence |
-| `APIE2E-DEV-004` | both maintained standalone `dev` watchers | **Pass** | standalone logs and ready-count evidence |
-| `APIE2E-DEV-STUDIO-004` | both maintained `dev:studio` refresh loops | **Pass** | `*-dev-studio.log` |
-| `APIE2E-PARITY-004` | immutable build-once package/authoring bytes | **Pass: 73/73** | pre/post hashes and watcher parity log |
-| `APIE2E-WEB-004` | frontend boundary and production build | **Pass** | `api-rev-004-web-build.log` |
-| `APIE2E-CLEANUP-004` | owned ports, workers/providers, roots and scratch | **Pass** | `api-rev-004-final-cleanup.log` |
+| value-safe direct DeepSeek request | recheck exact prior 402 before Electron spend | HTTP 200 / exact model / completed response | raw secret never written; sanitized result retained |
+| temporary Electron discovery harness | fresh DB, real UI package import and catalogs | Pass | removed |
+| temporary Electron Classroom harness | exact packaged team business journey | Pass | removed |
+| post-run filesystem/runtime correlation | join run tree, traces, messages, files and UI | Pass | sanitized JSON retained; isolated source root removed |
 
-## Repository Execution
+## Dependencies Mocked Or Emulated
 
-| Order | Command / Selection | Result |
+None. Codex, DeepSeek, Electron, the embedded server, SQLite/vault, the local package, tools, filesystem, GraphQL and WebSocket boundaries were real.
+
+## Result Summary
+
+| Result | Scenario IDs | Summary |
 | --- | --- | --- |
-| 1 | server, devkit, frontend SDK and both maintained package prerequisites | Pass |
-| 2 | IR-006 three-file target selection plus architecture gate | 4 files / 27 tests Pass |
-| 3 | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | Pass |
-| 4 | initial cumulative API-owned selection | 75 Pass / 2 stale exact-identity expectations |
-| 5 | two corrected fixtures, focused | 2 files / 3 tests Pass |
-| 6 | complete cumulative API-owned selection | 16 files / 77 tests Pass |
-| 7 | `pnpm -C autobyteus-application-devkit test` | 20/20 Pass |
-| 8 | Brief and Socratic `validate` plus `typecheck:backend` | Pass |
-| 9 | `pnpm -C autobyteus-web guard:web-boundary` | Pass |
-| 10 | `pnpm -C autobyteus-web build` | Pass; warnings only for stale browser data and large chunks |
+| Pass | `APIE2E-BLOCKER-001` | prior DeepSeek HTTP 402 condition resolved |
+| Pass | `APIE2E-ELECTRON-ENV-006`, `SECRETS-006`, `PACKAGE-006`, `MODELS-006` | isolated packaged setup and exact identities passed |
+| Pass | `APIE2E-ELECTRON-CLASSROOM-001` | real two-way file-backed classroom execution and correctness verdict passed |
+| Pass | `APIE2E-ELECTRON-CLEANUP-006` | graceful isolated cleanup and ordinary-app preservation passed |
+| Still Valid | `API-REV-004`, `CRR-010`, `DR-001` | approved broader framework, durable-test and packaged-build results remain current |
 
-The first focused invocation before rebuilding generated workspace outputs failed only because cleanup had correctly removed SDK contract build products. The normal documented prerequisite build restored them; all accepted results above use that prerequisite-complete state.
+## Cleanup Performed
 
-The broad inherited whole-server failure baseline from API-REV-003 remains separate characterization and was not reused as Pass evidence. This round reran the direct changed, architecture, cumulative durable and realistic-system boundaries required by IR-006.
+| Resource | Action | Result |
+| --- | --- | --- |
+| Electron process group | project harness graceful close | complete, not forced |
+| Ports `55888`, `55889` | listener verification | free before root removal and after |
+| Credential-bearing root | ownership-marker-guarded recursive removal | removed |
+| Temporary harness/path files | removed after evidence extraction | removed |
+| Evidence secret-value scan | compared sensitive source assignments to all API-REV-006 text artifacts | 0 matches |
+| Ordinary user app | not stopped or modified | PID `37991`, port `29695`, HTTP `200` |
 
-## Real Socratic Evidence
+## Preliminary Classification
 
-### Studio — exact prior failure path
-
-- Isolated Studio backend `8015`, frontend `3015`, owned data root, maintained `pnpm dev:studio` and installed Chrome.
-- Selected the exact local package with package-owned `/tutor` and Luna/Codex defaults; entry was valid and enabled.
-- A fresh lesson's initial problem was accepted immediately after readiness. The real provider streamed and the UI reported `Tutor response saved` with two durable messages.
-- Worker and binding correlation identify the exact attached member `agentRunId`; no public-address re-selection or coordinator fallback occurred.
-- Explicit remount retained the transcript, connected tutor and exactly one iframe.
-
-### Standalone
-
-- Maintained `pnpm dev -- --port 43145 --no-open` listened and served the application.
-- A fresh problem produced a real response and two durable messages.
-- Touching the maintained frontend input triggered the supported pack/close/start cycle. The same browser retained the transcript and connected target after restart.
-
-## Real Brief Evidence
-
-### Standalone
-
-- Maintained `pnpm dev -- --port 43146 --no-open` with package-owned researcher/writer Luna/Codex members.
-- Researcher wrote and called actual `publish_artifacts`, then actual `send_message_to` for named `/writer`; writer continued, wrote and published.
-- Browser/application state reached `in_review` with research and final outputs. Raw traces and projection snapshots prove the actual tool and application boundaries.
-
-### Studio
-
-- Exact package team and member bindings were selected and entered successfully.
-- The same real publication/handoff/writer path completed to `in_review` with two projected outputs and no last error.
-- The run was concurrent with the maintained Socratic graph and remained isolated by run IDs, roots and projections.
-
-## Route, Restart And Cleanup Evidence
-
-- Standalone internal Agent Tools without a valid scoped session: `401`; standalone `/mcp/gateway`: `404`.
-- Studio internal Agent Tools without a valid scoped session: `401`; Studio-only external gateway MCP initialize: `200`.
-- Before Studio stop there were two application workers and two Codex app-server children. Graceful backend stop freed port `8015` and removed all four exact children.
-- Same-root backend restart remounted one iframe per application and retained the Socratic transcript plus completed Brief state.
-- Final cleanup freed `8015`, `3015`, `43145` and `43146`; no owned worker/provider process remained. Isolated data, generated build/package outputs and test scratch were removed. `git diff --check` passes.
-
-## Package Integrity And Maintained Watchers
-
-- Both standalone `dev` logs gained a new ready marker after the source change.
-- Both `dev:studio` logs gained a new package-ready marker and reported reload complete.
-- SHA-256 rows for all 73 canonical package and authoring paths are identical before and after the four watcher loops.
-- Canonical README metadata remained stable; no staging or previous-output residue remained.
-
-## Durable Coverage Changes Requiring Review
-
-Updated current-contract fixtures:
-
-1. `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
-2. `autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts`
-3. `autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts`
-4. `autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts`
-5. `autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts`
-6. `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
-7. `autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts`
-8. `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-9. `autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts`
-10. `autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts`
-11. `autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts`
-12. `autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts`
-13. `autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts`
-14. `autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts`
-15. `autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts`
-16. `autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts`
-
-Removed as stale:
-
-- `autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts` — it protected the deliberately removed leaf-snapshot contract; current strict team event/status integration and unit coverage replace the durable intent.
-
-Round-four-specific corrections are the exact binding-owned runtime-ID expectations in `application-agent-communication-ws.integration.test.ts` and `application-context-capabilities.integration.test.ts`. No new production behavior or fallback was added.
-
-## Confidence Scorecard
-
-| Category | Final | Evidence / Residual |
-| --- | ---: | --- |
-| Requirement and acceptance proof | 98% | all critical current dual-host scenarios pass |
-| Changed-boundary directness | 100% | direct real-`RootTeamRun` tests plus live exact-identity correlation |
-| Cross-boundary realism | 98% | real browser, network, worker, provider, tools and persistence |
-| Environment/config/identity fidelity | 99% | current packages, exact IDs, isolated roots and real executable/Chrome |
-| Failure/lifecycle/recovery | 98% | restart, remount, active-child shutdown and leak cleanup |
-| User/browser/desktop-equivalent | 98% | both maintained apps pass both web-equivalent hosts; Electron downstream |
-| Durable regression quality | 97% | cumulative 16 files / 77 tests green; stale contract removed |
-
-- Overall final validation confidence: **98%** (simple average, rounded).
-- Critical acceptance criteria all pass: **Yes**.
-- Categories below 90%: **None**.
-- Default clean Pass target met: **Yes**.
+- Current failure classification: **None; Pass**.
+- Prior classification: external provider-account dependency.
+- Resolution: the same credential/model returned HTTP 200 and completed the exact packaged business journey. No source or durable test defect was found.
 
 ## Evidence Index
 
-Evidence root:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/`
+Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/`
 
-Key evidence:
+- `api-rev-006-deepseek-direct-probe.log`
+- `api-rev-006-electron-harness-preflight.log`
+- `api-rev-006-electron-environment.txt`
+- `api-rev-006-artifact-identities.log`
+- `api-rev-006-electron-discovery.log`
+- `api-rev-006-electron-discovery.json`
+- `api-rev-006-electron-package-import.png`
+- `api-rev-006-secret-import-dry-run.log`
+- `api-rev-006-secret-import.log`
+- `api-rev-006-electron-classroom-config.png`
+- `api-rev-006-electron-classroom.log`
+- `api-rev-006-electron-classroom.json`
+- `api-rev-006-electron-classroom-main.log`
+- `api-rev-006-electron-classroom-server.log`
+- `api-rev-006-electron-classroom-result.png`
+- `api-rev-006-electron-classroom-correlation.json`
+- `api-rev-006-secret-leak-scan.log`
+- `api-rev-006-cleanup-isolation.log`
 
-- `api-rev-004-ir006-focused.log`
-- `api-rev-004-durable-identity-update.log`
-- `api-rev-004-cumulative-durable-matrix-rerun.log`
-- `api-rev-004-durable-test-diff.log`
-- `api-rev-004-maintained-application-validation.log`
-- `api-rev-004-web-build.log`
-- `api-rev-004-socratic-studio-business.json/.png`
-- `api-rev-004-socratic-studio-correlation.json`
-- `api-rev-004-socratic-studio-worker.log`
-- `api-rev-004-socratic-standalone-business.json/.png`
-- `api-rev-004-socratic-standalone-restart.json/.png`
-- `api-rev-004-socratic-studio-remount.json/.png`
-- `api-rev-004-brief-standalone-business.json/.png`
-- `api-rev-004-brief-standalone-projection-tools.json`
-- `api-rev-004-brief-standalone-researcher-trace.jsonl`
-- `api-rev-004-brief-standalone-writer-trace.jsonl`
-- `api-rev-004-brief-studio-business.json/.png`
-- `api-rev-004-brief-studio-projection-tools.json`
-- `api-rev-004-brief-studio-researcher-trace.jsonl`
-- `api-rev-004-brief-studio-writer-trace.jsonl`
-- `api-rev-004-route-separation.log`
-- `api-rev-004-studio-stop-cleanup.log`
-- `api-rev-004-studio-restart-recovery.json/.png`
-- `api-rev-004-prewatch-hashes.log`
-- `api-rev-004-postwatch-hashes.log`
-- `api-rev-004-watcher-parity.log`
-- `api-rev-004-final-cleanup.log`
-
-## Residual Risks And Deferred Scope
-
-- Electron shell/package execution remains downstream delivery-owned and is not claimed by browser-equivalent API/E2E evidence.
-- This is not an assertion that every repository test or every external provider/model permutation was run. The affected/current durable, build, real Codex/Luna and dual-host boundaries required for this change were run and are green.
-- Historical broad inherited server-suite debt remains separate characterization and is not attributed to IR-006 or used as Pass evidence.
-
-## Outcome Routing
+## Latest Authoritative Result
 
 - Result: **Pass**.
-- Validation confidence: **98%**.
-- New or remaining current API/E2E failure IDs: **None**.
-- Required recipient: `/code_reviewer` for proportional successful review of every cumulative repository-resident durable update/removal before delivery.
+- Final validation confidence: **99% for the added packaged real-provider scenario**.
+- Default 95% target met: **Yes**.
+- Final applicable category below 90%: **No**.
+- Broader validation: **Required; executed; Pass**.
+- Critical acceptance criteria lacking direct proof: **None**.
+- Required next recipient: `/code_reviewer` for proportional test-code review; expected disposition **Not Applicable** because API-REV-006 changed no repository-resident durable coverage.

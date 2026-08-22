@@ -54,7 +54,7 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 ## Worker Contract
 
 - The worker loads a self-contained ESM backend module.
-- The backend definition contract version must be `"4"`; stale definitions are rejected before any handler or lifecycle hook runs.
+- The backend definition contract version must be `"6"`; unsupported definitions are rejected before any handler or lifecycle hook runs.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Custom `webSocketRoutes` run in the worker-owned `ApplicationBackendHost`; standard application-agent communication never traverses the engine or worker.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.

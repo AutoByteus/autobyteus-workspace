@@ -13,12 +13,12 @@
 - Implementation Revision Record: `implementation-revision-record.md` (`IR-006`)
 - Code Review Report: `code-review-report.md`
 - Code Review Revision Record: `code-review-revision-record.md` (`CRR-009` Pass / 93)
-- Delivery Revision Record: N/A
-- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-004`)
-- Current API/E2E Revision ID: `API-REV-004` (completed Pass / 98%; prior `API-REV-003` Fail / 93%)
-- Current Investigation Round: `4`
-- Trigger: CRR-009 source Pass after IR-006 resolved APIE2E-F004; cumulative prior basis retained
-- Prior Investigation Reviewed: API-REV-003 investigation/execution Fail / 93%
+- Delivery Revision Record: `delivery-revision-record.md` (`DR-001` packaged Electron baseline relevant)
+- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-005`; `API-REV-006` pending this rerun result)
+- Current API/E2E Revision ID: `API-REV-006` pending (recheck of `API-REV-005` Blocked / 88%; `API-REV-004` remains Pass / 98% for the approved application-framework scope)
+- Current Investigation Round: `6`
+- Trigger: user reports the DeepSeek balance for `APIE2E-BLOCKER-001` has been restored and requests the exact packaged-Electron journey rerun
+- Prior Investigation Reviewed: API-REV-005 Blocked / 88%, API-REV-004 Pass / 98%, and delivery DR-001 packaged-Electron evidence
 - Latest Authoritative Investigation: this document
 
 ## Current Requirement And Design Basis
@@ -441,3 +441,70 @@ This section supersedes the round-four planning status above.
 - Broader validation: **Required; executed; Pass**.
 - Result: **Pass**; `APIE2E-F001` through `APIE2E-F004` are resolved.
 - Required next route: `/code_reviewer` for proportional review of every cumulative repository-resident durable addition/update/removal before delivery.
+
+## API-REV-005 User-Requested Packaged-Electron Real-Provider Expansion
+
+- Trigger: explicit user request to go beyond the completed browser-equivalent/API-REV-004 and packaged-isolation/DR-001 evidence by exercising a real packaged Electron renderer, importing owner-supplied provider assignments from `/Users/normy/.autobyteus/server-data/.env`, importing the maintained agent package at `/Users/normy/autobyteus_org/autobyteus-agents`, and running the `Classroom Simulation Team` with Professor on Codex `gpt-5.6-luna` and Student on an available AutoByteus-runtime DeepSeek V4 Flash model.
+- Source baseline: current checkpoint `42496b808df16f4ed24ca66bac03372c578f1f89`; no new implementation-source change is under review. `API-REV-004` remains **Pass / 98%**, `CRR-010` passed the cumulative durable delta, and delivery's `DR-001` packaged macOS ARM64 build/isolation result remains valid.
+- Changed/selected boundaries for this expansion: packaged Electron main/preload/renderer lifecycle; isolated embedded server and SQLite/vault; supported secret-import CLI; Settings UI local agent-package import; provider/model catalog and credential readiness; team launch configuration with per-member runtime/model selection; real Codex and AutoByteus provider execution; `run_bash` and recipient-address `send_message_to`; workspace files, team event/communication rendering, and process/root cleanup.
+- Existing packaged coverage validity:
+  - `DR-001` `E2E-PKG-001` through `E2E-PKG-005`: **Still Valid** for artifact identity, endpoint selection, renderer GraphQL/WebSocket connectivity, provider-settings rendering, concurrent isolation, fail-closed profiles, updater suppression, and cleanup. It does not execute a credentialed business agent team.
+  - `API-REV-004` real Brief/Socratic Chrome journeys: **Still Valid** for application-framework dual-host provider/tool/publication behavior, but they are web-equivalent and do not prove the packaged Electron shell plus imported external agent package.
+  - Classroom package definitions and package-local `send_message_to`/`run_bash` declarations: **Still Valid as fixtures**, but definition presence alone is not run evidence.
+- Coverage gap decision: **Use Temporary Executable Probe Only**. The requested journey depends on owner-private credentials, a locally installed Codex authentication state, a mutable external agent package, and real billed/network providers. It is appropriate as recorded realistic-system evidence, not as a deterministic repository-resident regression. No durable production or test file will be changed unless execution exposes a reusable current-contract gap.
+- Supported setup decisions:
+  1. reuse the exact unsigned local Electron artifact already built and verified by delivery at `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` rather than rebuild identical source;
+  2. create a new caller-owned `/private/tmp` root and a non-production loopback port under the documented `AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e` contract, never touching the running ordinary application or `~/.autobyteus/server-data` target;
+  3. initialize the isolated database through the packaged host, then use the sole supported `pnpm secrets:import -- --source ... --database-url ...` workflow, first with `--dry-run` and then explicit `IMPORT` confirmation; never print assignment values;
+  4. import `/Users/normy/autobyteus_org/autobyteus-agents` through the packaged Electron Settings UI;
+  5. query the isolated current model catalog to select the exact requested runtime/model identities, failing or blocking rather than silently substituting a provider/model;
+  6. run the team through the packaged UI, require an actual Professor -> Student -> Professor named handoff plus owned workspace assignment/answer files, correlate UI events with backend/provider traces, and capture a screenshot only as supporting evidence;
+  7. stop only the owned Electron process tree, verify the selected port is free and the ordinary application identity/health is unchanged, then remove only the owned temporary root after evidence extraction.
+- Planned scenario: `APIE2E-ELECTRON-CLASSROOM-001`. Critical pass conditions are packaged renderer readiness; value-safe credential import into the isolated DB; visible imported `Classroom Simulation Team`; exact Professor `codex` / `gpt-5.6-luna`; exact Student `autobyteus` / DeepSeek V4 Flash catalog identity; real two-way recipient-name messaging; real tool/file activity; visible final Professor outcome; no page/backend/provider fatal error; and leak-free isolated cleanup.
+- Broader validation: **Required by user; ready to execute**. This round does not imply a result until the complete real-provider journey and cleanup are observed.
+
+### API-REV-005 Investigation Result Update (Authoritative)
+
+- Setup and identity: **Pass**. The exact packaged macOS ARM64 artifact started under the documented Electron E2E profile with a caller-owned isolated data root. The supported `pnpm secrets:import` workflow imported nine configured credential assignments into the isolated encrypted database without printing values. The Settings UI showed the imported local package `autobyteus-agents` with `Classroom Simulation Team`.
+- Exact model selection: **Pass**. The packaged catalog exposed Codex App Server `gpt-5.6-luna` and AutoByteus runtime `DeepSeek / deepseek-v4-flash`; the Electron team setup applied Professor `CODEX` / `gpt-5.6-luna`, Student `AUTOBYTEUS` / `deepseek-v4-flash`, and tool auto-approval.
+- Real business execution: **Blocked**. The packaged UI created team run `classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc`. The real Codex Professor ran `run_bash`, created `assignment.md`, and successfully called `send_message_to` for `/student`. The real AutoByteus Student was instantiated with `DeepSeekLLM` and seven tools, but all four provider attempts rolled back before a usable response; it could not read/write the answer or reply to `/professor`.
+- Exact external dependency correlation: a value-safe direct request using the same owner-supplied `DEEPSEEK_API_KEY` and exact `deepseek-v4-flash` model returned **HTTP 402**, `invalid_request_error`, `Insufficient Balance`. The key was present; its value was never printed or retained in evidence.
+- Harness deviation: the first post-run metadata poll filtered for a proposed custom workspace while the UI launched the team in its built-in isolated Temp Workspace, so the harness JSON ended with `last=null`. Filesystem/runtime correlation found the exact real team, members, tools, messages, assignment and provider rollbacks. This harness observation issue is not the execution blocker and did not alter application data.
+- Coverage validity decision: prior `API-REV-004` and `DR-001` evidence remains **Still Valid**. No current source or durable coverage defect was established. No repository-resident durable test was added, updated, or removed in this expansion.
+- Cleanup: the owned Electron process group stopped gracefully; ports `53376` and `54491` are free; the credential-bearing isolated root and raw provider response were removed. The user's ordinary Electron backend remained PID `37991` on port `29695` and returned HTTP `200`.
+- Broader-validation result: **Blocked by external provider account balance**. A passing two-way Professor -> Student -> Professor journey requires DeepSeek account balance/access restoration and rerunning `APIE2E-ELECTRON-CLASSROOM-001`.
+- Final validation confidence for the added scenario: **88%**. The exact shell, package, identities, Codex half, delivery, provider activation failure and cleanup are directly proven, but the critical Student completion and return handoff remain unproven.
+- Required action: user restores/loads DeepSeek balance for the credential in `/Users/normy/.autobyteus/server-data/.env`, then API/E2E resumes the exact scenario. Under the outcome-routing rules this Blocked result is not handed to another team member.
+
+## API-REV-006 Re-entry Investigation — DeepSeek Balance Restored
+
+- Re-entry trigger: the user explicitly reports that the DeepSeek account has been topped up and the prior `HTTP 402 Insufficient Balance` condition should be resolved.
+- Prior blocker to recheck first: `APIE2E-ELECTRON-CLASSROOM-001` / `APIE2E-BLOCKER-001` with the same source credential and exact `deepseek-v4-flash` model.
+- Existing coverage validity:
+  - `API-REV-005` packaged startup, supported credential import, local package discovery, exact Professor/Student model configuration, Professor tool/file/message behavior, and cleanup evidence remain **Still Valid**.
+  - The prior Student provider failure is **Needs Rerun**; the user changed only external account balance, not repository source, durable tests, agent package identity, or requested runtime/model selection.
+  - `API-REV-004` approved application-framework Pass and `DR-001` packaged-isolation Pass remain **Still Valid** and do not need broad repetition.
+- Durable coverage decision: **No repository-resident change planned**. The recheck remains a private-credential/billed-provider temporary executable journey.
+- Execution plan:
+  1. issue one value-safe direct request with the same `DEEPSEEK_API_KEY` and exact `deepseek-v4-flash`; require a usable HTTP 200 model response before spending time on Electron setup;
+  2. create a new marked isolated Electron root and unique loopback ports; initialize the real packaged backend/renderer and import the local agent package through Settings;
+  3. import credentials with the supported `pnpm secrets:import` CLI without exposing values;
+  4. run `Classroom Simulation Team` in the packaged UI with Professor `CODEX` / `gpt-5.6-luna`, Student `AUTOBYTEUS` / `deepseek-v4-flash`, tool auto-approval and the isolated Temp Workspace;
+  5. require real Professor assignment-file creation, Professor -> Student delivery, Student file-backed answer and Student -> Professor reply, Professor read/evaluation, quiescence, exact runtime/model correlation and visible final state;
+  6. stop only owned processes, remove the credential-bearing root after evidence extraction, verify test ports are free and the user's ordinary app remains healthy.
+- Harness correction before rerun: query the actual built-in isolated Temp Workspace selected by the UI rather than filtering for an uncommitted custom workspace. Accept the exact Student reply sender from the persisted communication record, including a package-supported Student task execution if the coordinator delegates.
+- Broader validation: **Required and ready**. No result is inferred until the complete two-way business journey and cleanup finish.
+
+### API-REV-006 Investigation Result Update (Authoritative)
+
+- Prior blocker recheck: **Resolved**. The same credential source and exact `deepseek-v4-flash` model returned HTTP `200`, exact response-model identity, content `OK`, and finish reason `stop`; no 402 or balance error remained.
+- Fresh isolated setup: **Pass**. The packaged macOS ARM64 application started through the documented E2E launcher. After stripping only parent test-runner overrides (`ELECTRON_RUN_AS_NODE`, `AUTOBYTEUS_*`, `DATABASE_URL`), the launcher owned the exact isolated root/ports. The external agent package was imported through Settings and exposed `Classroom Simulation Team`. The supported CLI configured nine credential assignments without value exposure.
+- Exact configuration: **Pass**. The run tree persisted Professor `CODEX` / `gpt-5.6-luna`, Student `AUTOBYTEUS` / `deepseek-v4-flash`, auto-approved tools and the owned Temp Workspace.
+- `APIE2E-ELECTRON-CLASSROOM-001`: **Pass**. Professor created the assignment and delivered it to `/student`; the real DeepSeek Student read it, calculated 42, wrote and returned `student-answer.md`; Professor read it, reported correctness, wrote and delivered feedback; Student read the feedback, wrote an acknowledgement and replied. The persisted run contains four recipient-name messages, four files, real provider traces and sixteen tool calls. The checkpoint is quiescent and the final state is visible in the packaged renderer.
+- Transport/browser/shell state: **Pass**. The harness observed 76 requests, 76 responses, one WebSocket, zero request failures, zero page errors and zero console errors. The Electron process group stopped gracefully without force.
+- Cleanup/isolation: **Pass**. Ports `55888` and `55889` are free, the credential-bearing owned root and temporary harnesses were removed, and the ordinary application remains PID `37991` on port `29695` with health HTTP `200`. A value comparison against sensitive assignments in the source `.env` found zero secret values in retained API-REV-006 text evidence.
+- Coverage validity: prior `API-REV-004`, `CRR-010` and `DR-001` remain **Still Valid**. `API-REV-005` remains historical evidence of the external 402 condition, now resolved by `API-REV-006`.
+- Durable coverage decision: **No repository-resident addition, update or removal**. The exact live paid-provider permutation remains temporary executable evidence; no reusable current-contract coverage gap was exposed.
+- Final confidence: **99%** for the added packaged real-provider scenario; every critical requested condition passed, no category is below 90%, and the default target is met.
+- Broader-validation result: **Required; executed; Pass**.
+- Required route: `/code_reviewer` for the workflow-required proportional test-code review, expected `Not Applicable` because this round changed no durable test file.
