@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-In scope: delivery integrated-state refresh, docs sync, handoff preparation, and a local unsigned macOS ARM64 Electron verification package.
+In scope: delivery integrated-state refresh, docs sync, handoff preparation, a local unsigned macOS ARM64 Electron package, and recording API-REV-006's actual credentialed packaged-Classroom verification.
 
 Out of scope: hosted release, tag, publication, deployment, and merge/push to Personal.
 
@@ -11,7 +11,7 @@ Out of scope: hosted release, tag, publication, deployment, and merge/push to Pe
 - Handoff artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
 - Status: Updated
 - Delivery record: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
-- Current revision: DR-001
+- Current revision: DR-002
 - Notes: ready for explicit user verification; finalization held.
 
 ## Initial Delivery Integration Refresh
@@ -20,12 +20,12 @@ Out of scope: hosted release, tag, publication, deployment, and merge/push to Pe
 - Latest tracked base checked: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
 - Base advanced: No
 - New base commits integrated: No
-- Local checkpoint: Completed at 42496b808df16f4ed24ca66bac03372c578f1f89
+- Local checkpoints: built/executed source 42496b808df16f4ed24ca66bac03372c578f1f89; cumulative API-REV-006/delivery safety checkpoint 083a3231c
 - Method: Already current
 - Integration result: Completed
-- Post-integration executable checks: Yes — Electron build, package verification, five-scenario packaged isolation
+- Post-integration executable checks: Yes — Electron build, package verification, five-scenario packaged isolation, and API-REV-006 actual packaged Codex/DeepSeek Classroom journey
 - Verification result: Passed
-- Server/API no-rerun rationale: no new base commit; API-REV-004 executed current integrated source and CRR-010 approved the durable delta
+- Server/API no-rerun rationale: no new base commit or source/test delta; API-REV-006 executed the exact package, and CRR-011 confirmed a zero-path durable-test delta while CRR-009/CRR-010 remain valid
 - Delivery edits began only after current-state confirmation: Yes
 - Handoff current with latest base: Yes
 - Blocker: none before the verification hold
@@ -33,14 +33,14 @@ Out of scope: hosted release, tag, publication, deployment, and merge/push to Pe
 ## User Verification
 
 - Explicit completion/verification received: No
-- Acceptance reference: pending manual DR-001 v1.4.54 package test
+- Acceptance reference: pending user verification after DR-002/API-REV-006 v1.4.54 package evidence
 - Renewed verification required: No at present
 - Renewed verification received: Not needed
 
 ## Docs Sync Result
 
 - Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
-- Result: Updated
+- Result: Updated in DR-001; API-REV-006 has explicit no-additional-impact in DR-002
 - Docs: SDK contracts/backend SDK READMEs, custom application guide, server Applications/Engine/Orchestration docs, and Socratic README
 
 ## Ticket State Transition
@@ -60,7 +60,7 @@ Out of scope: hosted release, tag, publication, deployment, and merge/push to Pe
 
 - Bootstrap source: requirements.md REQ-001 plus explicit out-of-scope constraints
 - Ticket branch: codex/universal-application-framework-latest-personal-integration
-- Ticket commit: delivery safety checkpoint only; final delivery commit pending
+- Ticket commit: local delivery safety checkpoints only; final delivery commit pending
 - Ticket push: pending verification
 - Remote: origin
 - Finalization target: ticket branch only under current approved scope
@@ -114,6 +114,8 @@ None. This delivery produces a local verification package only.
 - Latest-base fetch, ancestry, and divergence: Pass.
 - API-REV-004: Pass / 98; no current failure IDs.
 - CRR-010: Pass; cumulative durable delta approved.
+- API-REV-006: Pass / 99; actual packaged Electron/Codex/DeepSeek Classroom journey completed with correct file-backed result and graceful cleanup.
+- CRR-011: Not Applicable; no durable test path changed.
 - Personal macOS ARM64 Electron build: Pass.
 - Metadata, architecture, packaged owners, terminal spawn, DMG/ZIP: Pass.
 - Five-scenario isolation, fail-closed profiles, foreign-owner preservation, cleanup: Pass.
@@ -129,4 +131,4 @@ None. This delivery produces a local verification package only.
 
 ## Final Status
 
-DR-001 Pass — latest base integrated, docs synchronized, v1.4.54 macOS ARM64 Electron package and isolation probe passed; explicit user verification is pending before ticket-branch-only finalization.
+DR-002 Pass — latest base remains integrated; docs remain synchronized; the same v1.4.54 package passed deterministic isolation plus an actual credentialed Classroom journey; explicit user verification is pending before ticket-branch-only finalization.

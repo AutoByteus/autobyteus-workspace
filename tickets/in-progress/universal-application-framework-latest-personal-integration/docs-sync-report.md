@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: universal-application-framework-latest-personal-integration
-- Trigger: CRR-010 Pass after SR-003, ARCH-REV-003, IR-006, CRR-009, and API-REV-004
+- Trigger: CRR-011 Not Applicable after API-REV-006 Pass / 99; DR-001 source/docs baseline remains SR-003, ARCH-REV-003, IR-006, CRR-009, API-REV-004, and CRR-010
 - Bootstrap base: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
 - Integrated base used for docs sync: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
-- Post-integration reference: delivery checkpoint 42496b808df16f4ed24ca66bac03372c578f1f89 and evidence/delivery/dr-001-*
+- Post-integration reference: executed source 42496b808df16f4ed24ca66bac03372c578f1f89; cumulative checkpoint 083a3231c; evidence/delivery/dr-002-base-refresh-and-integration.log and DR-001 Electron build/isolation evidence
 
 ## Why Docs Were Updated
 
@@ -66,10 +66,18 @@ IR-006 also establishes durable identity guidance: a configured logical member a
 - Generated SDK dist output created by Electron prerequisites was removed after package verification.
 - Delivery diff hygiene passes in evidence/delivery/dr-001-delivery-audit.log.
 
+## DR-002 API-REV-006 Documentation Impact
+
+- Additional long-lived docs impact: No impact.
+- Rationale: API-REV-006 changed no production source, repository-resident durable test, manifest, SDK contract, user workflow, persisted-data behavior, or packaging policy. It executed the already-built DR-001 artifact through a live credentialed Classroom Simulation Team journey. CRR-011 independently confirmed the proportional durable-test review is Not Applicable because the durable path delta is zero.
+- Existing documentation status: the DR-001 v6 contract corrections and logical member selector versus exact binding-owned agentRunId guidance remain accurate and complete.
+- Delivery artifact impact: electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, and delivery-revision-record.md were refreshed to record the stronger actual Electron/Codex/DeepSeek evidence, value-safe credential handling, and cleanup result.
+- Latest-base confirmation: origin/personal remains 8ef282ba77705180d985e7000d801f0e0068cdc1; no new base documentation was integrated.
+
 ## Delivery Continuation
 
 - Result: Pass
-- Next action: present the exact unsigned macOS ARM64 package for explicit user verification.
+- Next action: present the same exact unsigned macOS ARM64 package, now backed by API-REV-006 actual credentialed packaged-Electron proof, for explicit user verification.
 - Hold: ticket remains in progress; no push, archive, Personal merge, release, deployment, or cleanup before explicit verification.
 
 ## Blocked Or Escalated Follow-Up

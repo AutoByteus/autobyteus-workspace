@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Build and validate a local macOS ARM64 Electron package from the review-passed latest-Personal integration for explicit user testing.
+Build and validate a local macOS ARM64 Electron package from the review-passed latest-Personal integration for explicit user testing, then record the API-REV-006 actual credentialed Classroom Simulation Team journey against that exact artifact.
 
 ## Documentation Followed
 
@@ -17,7 +17,7 @@ Build and validate a local macOS ARM64 Electron package from the review-passed l
 - Built checkpoint: 42496b808df16f4ed24ca66bac03372c578f1f89
 - Latest base included: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
 - Implementation: IR-006; production source b3ddefe1a079e1bc52eb36688595462861b7415a
-- Gates: CRR-009 Pass / 93, API-REV-004 Pass / 98, CRR-010 Pass
+- Gates: CRR-009 Pass / 93, API-REV-004 Pass / 98, CRR-010 Pass, API-REV-006 Pass / 99, CRR-011 Not Applicable
 - Host: macOS Darwin ARM64
 - Node.js: v22.23.1
 - pnpm: 10.28.2
@@ -32,9 +32,12 @@ Delivery fetched origin/personal before docs or packaging work. It remains exact
 
 The base did not advance, so a redundant server/API matrix rerun was unnecessary. API-REV-004 executed the integrated source, CRR-010 approved the durable delta, and delivery ran the complete Electron build, package validation, and isolation gates.
 
+DR-002 fetched origin/personal again after API-REV-006/CRR-011 and confirmed it remains unchanged. API-REV-006 used the same built source and package; no source or durable test path changed.
+
 Evidence:
 
 - /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-001-base-refresh-and-integration.log
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-002-base-refresh-and-integration.log
 
 ## Build Command
 
@@ -101,6 +104,36 @@ Evidence:
 - /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-001-electron-isolation.log
 - /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-001-electron-isolation/electron-launch-profile-evidence.json
 
+## Actual Credentialed Classroom Journey — API-REV-006
+
+Pass / 99% for the added live-provider journey.
+
+API-REV-006 reused the exact packaged app recorded above at source checkpoint 42496b808df16f4ed24ca66bac03372c578f1f89. A fresh isolated packaged Electron instance imported the external agent package through Settings and imported nine credential assignments through the supported secrets:import workflow without printing secret values.
+
+Classroom Simulation Team ran with:
+
+- Professor: Codex App Server, gpt-5.6-luna;
+- Student: AutoByteus runtime, deepseek-v4-flash.
+
+The Professor created and delivered an assignment file to /student. The Student read it, wrote student-answer.md with the correct result 42, and delivered it to /professor. The Professor read and verified the answer, wrote file-backed feedback, and sent it to the Student; the Student read it, wrote an acknowledgement, and replied. Evidence correlates four recipient-name messages, sixteen tool calls, four workspace artifacts, provider traces, GraphQL/WebSocket traffic, a quiescent execution checkpoint, renderer state, and the final screenshot.
+
+Isolation and security results:
+
+- the prior DeepSeek balance blocker returned HTTP 200 and is resolved;
+- no production source or durable test changed;
+- API-REV-006 text evidence contains zero values from the owner credential source;
+- the credential-bearing isolated root and temporary harnesses were removed;
+- both owned ports were released;
+- the ordinary AutoByteus process remained healthy and unchanged.
+
+Primary evidence:
+
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-electron-classroom.json
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-electron-classroom-correlation.json
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-electron-classroom-result.png
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-cleanup-isolation.log
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-secret-leak-scan.log
+
 ## Persisted Data
 
 Approved outcome: Directly Usable — No Migration. IR-006 adds no persistence or binding schema change. The isolated package probe did not touch the ordinary data root.
@@ -117,4 +150,4 @@ A normal launch uses ~/.autobyteus/server-data. Quit the installed app first to 
 
 ## Release Boundary
 
-This is an unsigned, unnotarized, unpublished, untagged local test artifact. Ticket remains in progress; no push, archive, Personal merge, release, deployment, or cleanup occurred.
+This is an unsigned, unnotarized, unpublished, untagged local test artifact. API-REV-006 proves the exact local artifact through a real credentialed journey but does not convert it into a release. Ticket remains in progress; no final push, archive, Personal merge, release, deployment, or cleanup occurred.
