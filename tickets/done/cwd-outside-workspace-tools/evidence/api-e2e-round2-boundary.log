@@ -1,0 +1,49 @@
+COMMAND: git diff --check
+RESULT: PASS git diff --check
+
+COMMAND: generic file-tool contract exact-block comparison against HEAD^
+PASS: generic file-tool contract block is byte-identical to HEAD^
+PASS: required generic path/base_dir/edit_file markers remain present
+
+COMMAND: terminal docs/schema wording boundary assertions
+PASS: terminal docs/schema state absolute-only provided cwd and omitted/null defaults
+PASS: stale relative-success wording absent
+
+COMMAND: changed-path scope
+M	autobyteus-ts/docs/terminal_tools.md
+M	autobyteus-ts/docs/tool_schema_and_configuration.md
+M	autobyteus-ts/src/tools/terminal/execution-cwd.ts
+M	autobyteus-ts/src/tools/terminal/tools/run-bash.ts
+M	autobyteus-ts/src/tools/terminal/tools/start-background-process.ts
+M	autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts
+M	autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts
+M	autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts
+M	tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md
+M	tickets/cwd-outside-workspace-tools/design-review-report.md
+M	tickets/cwd-outside-workspace-tools/design-spec.md
+M	tickets/cwd-outside-workspace-tools/implementation-handoff.md
+M	tickets/cwd-outside-workspace-tools/implementation-revision-record.md
+M	tickets/cwd-outside-workspace-tools/investigation-notes.md
+M	tickets/cwd-outside-workspace-tools/requirements.md
+M	tickets/cwd-outside-workspace-tools/solution-revision-record.md
+M	tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md
+
+COMMAND: tracked diff summary
+ autobyteus-ts/docs/terminal_tools.md               |  30 ++--
+ .../docs/tool_schema_and_configuration.md          |  10 +-
+ autobyteus-ts/src/tools/terminal/execution-cwd.ts  |  30 +---
+ autobyteus-ts/src/tools/terminal/tools/run-bash.ts |   5 +-
+ .../terminal/tools/start-background-process.ts     |   5 +-
+ .../tools/terminal/terminal-tools.test.ts          |  26 +++
+ .../tests/unit/tools/terminal/run-bash.test.ts     |  81 ++++-----
+ .../usage/providers/run-bash-openai-schema.test.ts |  57 ++++++-
+ .../architecture-review-revision-record.md         | 101 +++++++++++
+ .../design-review-report.md                        |  65 +++----
+ tickets/cwd-outside-workspace-tools/design-spec.md | 190 ++++++++++++---------
+ .../implementation-handoff.md                      | 145 +++++++++-------
+ .../implementation-revision-record.md              |  41 +++++
+ .../investigation-notes.md                         |  66 ++++---
+ .../cwd-outside-workspace-tools/requirements.md    |  60 +++----
+ .../solution-revision-record.md                    |  48 ++++++
+ .../terminal-cwd-policy.md                         |  13 +-
+ 17 files changed, 638 insertions(+), 335 deletions(-)

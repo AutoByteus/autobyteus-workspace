@@ -1,0 +1,103 @@
+Delivery integrated-state check — cwd-outside-workspace-tools
+Date: 2026-08-22 (Europe/Berlin)
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools
+Ticket branch: codex/cwd-outside-workspace-tools
+Recorded base: origin/personal
+
+1. Remote refresh
+Command: git fetch origin personal
+Result: PASS (exit 0)
+Refreshed base: origin/personal = 8ef282ba77705180d985e7000d801f0e0068cdc1
+
+2. Candidate/base relation
+Candidate HEAD: 3c2967d95fb93e87a9b52b7b2cf966638533b956
+Merge base:     8ef282ba77705180d985e7000d801f0e0068cdc1
+Ahead/behind:   HEAD...origin/personal = 1/0
+Interpretation: refreshed origin/personal is already an ancestor of the reviewed candidate; the base has no new commits beyond the previously validated state.
+
+3. Integration decision
+Result: PASS — ticket branch was already current with the latest tracked base.
+Integration action: No merge, rebase, or base-refresh checkpoint was needed. The reviewed candidate state was preserved without conflict.
+Delivery-owned edits were started only after this refresh decision.
+
+4. Post-refresh executable-check decision
+No additional executable smoke rerun was required solely for integration because the refreshed base did not advance and the API/E2E execution package was run against candidate commit 3c2967d95. The retained evidence remains authoritative:
+- API/E2E result: Pass, 93.2% applicable confidence.
+- API-001 through API-008: Pass.
+- API-009 Windows/WSL: Not Tested.
+- API-010 MCP adjacent fixture: Not Tested because /opt/homebrew/bin/uv is unavailable.
+
+5. Delivery-stage final check
+Command: git diff --check
+Result: PASS (after docs sync and delivery artifact creation)
+
+6. Verification hold
+Explicit user verification has not been received. Ticket archival, push, target-branch merge, release/publication, deployment, and cleanup remain blocked by workflow until that signal is received.
+
+Delivery re-entry — absolute-only reset candidate
+Date: 2026-08-22 (Europe/Berlin)
+Trigger: Fresh code/API/E2E chain `IR-002` / `CRR-003` / `API-REV-002` / `CRR-004` for candidate commit 95f538b66.
+
+1. Remote refresh
+Command: git fetch origin personal
+Result: PASS (exit 0)
+Refreshed base: origin/personal = 8ef282ba77705180d985e7000d801f0e0068cdc1
+
+2. Candidate/base relation
+Candidate HEAD: 95f538b66c88f02d52f2b33cb1f1fd47122b01bc
+Merge base:     8ef282ba77705180d985e7000d801f0e0068cdc1
+Ahead/behind:   HEAD...origin/personal = 2/0
+Interpretation: refreshed origin/personal remains an ancestor of the fresh absolute-only reset candidate; no new base commit is present.
+
+3. Integration decision
+Result: PASS — ticket branch was already current with the latest tracked base.
+Integration action: No merge, rebase, conflict resolution, or base-refresh checkpoint was needed.
+The prior DR-001/DR-002 delivery result and prior Electron artifact are historical and superseded by the absolute-only reset; they are not approval evidence for this candidate.
+
+4. Post-refresh executable-check decision
+No additional executable rerun was required solely for base integration because the refreshed base did not advance and API-REV-002 was executed against candidate 95f538b66. Fresh evidence is authoritative for this re-entry:
+- API/E2E result: Pass, 93.3% host-applicable macOS/POSIX confidence.
+- 18 focused unit/schema files / 111 tests: Pass.
+- 6 terminal integration files / 28 tests: Pass.
+- 6 adjacent non-MCP files / 38 tests: Pass after MCP setup failure.
+- Fresh package build/runtime, packed consumer, and generic file-tool boundary check: Pass.
+- Windows/WSL and MCP stdio: Not Tested; no success inferred.
+
+5. Current Electron artifact refresh
+Because the prior user-facing Electron artifact was built before the absolute-only reset, the README-guided personal macOS arm64 Electron build was rerun against 95f538b66.
+Command: env -u ELECTRON_RUN_AS_NODE AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+Result: PASS (exit 0)
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log
+DMG hdiutil verification: PASS
+ZIP unzip integrity: PASS
+Packaged app executable check: PASS
+
+6. Delivery-stage final check
+Command: git diff --check
+Result: PASS after current docs/records synchronization.
+
+7. Verification hold
+Explicit user verification has not been received for the fresh absolute-only candidate. Ticket archival, push, target-branch merge/push, release/publication, deployment, and cleanup remain blocked.
+
+Delivery finalization — explicit user completion
+Date: 2026-08-22 (Europe/Berlin)
+Trigger: User explicitly confirmed the ticket is done and authorized finalization; no new release version requested.
+
+1. Finalization target refresh
+Command: git fetch origin personal
+Result: PASS (exit 0)
+Refreshed origin/personal: 8ef282ba77705180d985e7000d801f0e0068cdc1
+Finalization target worktree: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Target branch personal matched origin/personal before merge. The target worktree had no tracked modifications; unrelated untracked .article-work/ was left untouched.
+
+2. User-verified candidate
+Ticket HEAD before delivery commit: 95f538b66c88f02d52f2b33cb1f1fd47122b01bc
+Validated candidate: absolute-only terminal cwd contract; API-REV-002 Pass at 93.3% host-applicable macOS/POSIX confidence.
+User verification: explicit completion received.
+
+3. Archive and repository finalization
+The ticket artifact directory was moved from tickets/cwd-outside-workspace-tools/ to tickets/done/cwd-outside-workspace-tools/ before the final delivery commit.
+Ticket branch commit/push, target merge/push, and final verification are recorded in the archived delivery revision record and release/deployment report.
+
+4. Release decision
+No release, version bump, tag, publication, deployment, or release-note publication was requested or performed.

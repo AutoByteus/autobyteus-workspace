@@ -1,0 +1,35 @@
+consumer_root=/tmp/cwd-outside-package-consumer-R7Ubzz
+tarball=/tmp/cwd-outside-package-consumer-R7Ubzz/autobyteus-ts-1.0.0.tgz
+Progress: resolved 0, reused 0, downloaded 1, added 0
+Progress: resolved 75, reused 53, downloaded 17, added 0
+ WARN  2 deprecated subdependencies found: node-domexception@1.0.0, whatwg-encoding@3.1.1
+Packages: +180
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 180, reused 140, downloaded 38, added 65
+Progress: resolved 180, reused 140, downloaded 38, added 178
+Progress: resolved 180, reused 140, downloaded 40, added 180, done
+
+dependencies:
++ autobyteus-ts 1.0.0
+
+devDependencies: skipped
+
+Done in 4.4s using pnpm v10.28.2
+{
+  "packageImport": "autobyteus-ts/tools/terminal/*",
+  "foreground": {
+    "exitCode": 0,
+    "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-external-xcXQ1K",
+    "stdout": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-external-xcXQ1K\n"
+  },
+  "noWorkspace": {
+    "exitCode": 0,
+    "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-external-xcXQ1K",
+    "stdout": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-external-xcXQ1K\n"
+  },
+  "backgroundLifecycle": {
+    "status": "running",
+    "outputObserved": true,
+    "stopped": "stopped"
+  }
+}

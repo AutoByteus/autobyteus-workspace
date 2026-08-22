@@ -31,8 +31,14 @@ This document details the unified design for defining, generating, and using sch
 
 The generic local file tools (`read_file`, `write_file`, and `edit_file`) use a
 trusted-local path contract.
-This is intentionally distinct from the workspace-rooted file-explorer and
-terminal `cwd` boundaries:
+This is intentionally distinct from the workspace-rooted file-explorer path
+boundary and from terminal `cwd` resolution (see `docs/terminal_tools.md`):
+terminal tools require any provided `cwd` to be absolute and accept an existing
+accessible local directory, including a directory outside the agent workspace;
+when `cwd` is omitted, the configured workspace root is used when available,
+otherwise the system temporary directory is used. The explicit cwd applies
+only to that invocation or process and does not redefine workspace identity or
+persist across calls:
 
 - an absolute `path` is used directly and may refer to any local path that the
   server process can access;
