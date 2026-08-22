@@ -15,9 +15,9 @@
 
 ### ARCH-REV-001 — Initial architecture baseline: pre-spawn inaccessible-cwd handling is incomplete
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 1; initial complete package submitted by `solution_designer` for implementation-readiness review.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-001`; `ARCH-DI-001`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-001`; `ARCH-DI-001`.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Fail`
@@ -34,9 +34,9 @@ None.
 
 ### ARCH-REV-002 — Round 1 accessibility-preflight correction accepted
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 2; re-review of `SR-002` after the `solution_designer` revised the package for `ARCH-DI-001` / `MP-001`.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-002`; prior finding `ARCH-DI-001`; material premise `MP-001`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-002`; prior finding `ARCH-DI-001`; material premise `MP-001`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `Fail` (`ARCH-REV-001`)
 - Current authoritative decision: `Pass`
@@ -56,9 +56,9 @@ None.
 
 ### ARCH-REV-003 — Absolute-only cwd reset requires durable documentation inventory correction
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 3; architecture re-review of the `SR-003` contract reset after implementation, code review, API/E2E, and delivery evidence for the superseded relative-cwd contract.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-003`; `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-003`; `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Prior authoritative decision: `Pass` (`ARCH-REV-002`)
 - Current authoritative decision: `Fail`
@@ -81,9 +81,9 @@ None.
 
 ### ARCH-REV-004 — Durable terminal cross-reference remains inconsistent after resubmission
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 4; re-review after the solution-designer resubmission of `SR-003` for prior finding `ARCH-DI-002`.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-003`; `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-003`; `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Prior authoritative decision: `Fail` (`ARCH-REV-003`)
 - Current authoritative decision: `Fail`
@@ -107,9 +107,9 @@ None.
 
 ### ARCH-REV-005 — Durable terminal cross-reference correction accepted
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 5; re-review of `SR-004` after the prior `ARCH-DI-002` design-impact finding.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-004`; `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-004`; `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Prior authoritative decision: `Fail` (`ARCH-REV-004`)
 - Current authoritative decision: `Pass`
@@ -130,9 +130,9 @@ None.
 
 ### ARCH-REV-006 — Durable documentation correction verified
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
 - Review round and trigger: Round 6; re-review of `SR-005` after the prior `ARCH-DI-002` design-impact correction.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-005`; `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`; `SR-005`; `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`
 - Prior authoritative decision: `Pass` (`ARCH-REV-005`)
 - Current authoritative decision: `Pass`

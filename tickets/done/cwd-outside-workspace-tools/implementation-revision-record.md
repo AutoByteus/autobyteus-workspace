@@ -4,14 +4,14 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `/architecture_reviewer`; architecture review Round 2; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md` | None; approved implementation baseline | `Initial Baseline` | `SR-002`, `ARCH-REV-002`, `N/A` for `CRR-*`, `API-REV-*`, and `DR-*` | Implementation complete and ready for source review |
-| IR-002 | `/architecture_reviewer`; architecture review Round 6; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md` | `ARCH-DI-002` resolved upstream; prior implementation evidence superseded | `Local Fix` | `SR-003`, `SR-004`, `SR-005`, `ARCH-REV-006`, `N/A` for `CRR-*`, `API-REV-*`, and `DR-*` | Absolute-only reset implemented and ready for fresh source review |
+| IR-001 | `/architecture_reviewer`; architecture review Round 2; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md` | None; approved implementation baseline | `Initial Baseline` | `SR-002`, `ARCH-REV-002`, `N/A` for `CRR-*`, `API-REV-*`, and `DR-*` | Implementation complete and ready for source review |
+| IR-002 | `/architecture_reviewer`; architecture review Round 6; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md` | `ARCH-DI-002` resolved upstream; prior implementation evidence superseded | `Local Fix` | `SR-003`, `SR-004`, `SR-005`, `ARCH-REV-006`, `N/A` for `CRR-*`, `API-REV-*`, and `DR-*` | Absolute-only reset implemented and ready for fresh source review |
 
 ## Revision Entries
 
 ### IR-001 — External absolute terminal cwd with resolver-owned access preflight
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md`; Round 2 passed.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`; Round 2 passed.
 - Triggering finding IDs: None. The approved design resolves `ARCH-DI-001`; `MP-001` remains covered by the implementation and focused no-spawn checks.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -50,7 +50,7 @@
 
 ### IR-002 — Absolute-only provided cwd reset and durable documentation alignment
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md`; Round 6 (`ARCH-REV-006`) after the `SR-003` reset and `SR-004`/`SR-005` documentation corrections.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`; Round 6 (`ARCH-REV-006`) after the `SR-003` reset and `SR-004`/`SR-005` documentation corrections.
 - Triggering finding IDs: `ARCH-DI-002` was resolved upstream. Prior implementation, code-review, API/E2E, and delivery evidence covered the superseded relative-cwd contract and is not approval evidence for this revision.
 - Classification: `Local Fix`.
 - Prior authoritative result: `IR-001` implementation handoff for the superseded contract; downstream evidence superseded by the approved absolute-only reset.

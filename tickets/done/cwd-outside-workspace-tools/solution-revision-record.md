@@ -29,7 +29,7 @@
 
 ### SR-002 — Resolver-owned inaccessible-cwd preflight
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`; Round 1.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`; Round 1.
 - Triggering finding IDs: `ARCH-DI-001`; material premise `MP-001` is `Reachable`.
 - Prior authoritative result: `Fail` for implementation readiness; the approved external-absolute cwd behavior and package structure were otherwise confirmed.
 - Current authoritative result: Revised Design-ready solution package prepared for architecture re-review; no user-approved behavior was changed.
@@ -44,7 +44,7 @@
 
 ### SR-003 — Absolute-only provided cwd contract reset
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/code-review-report.md`; post-delivery review feedback after the previously completed architecture, implementation, API/E2E, and delivery stages.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/code-review-report.md`; post-delivery review feedback after the previously completed architecture, implementation, API/E2E, and delivery stages.
 - Triggering finding IDs: `CRR-001` is the reviewed baseline; the user-requested requirement change supersedes the prior relative-cwd approval. No separate code-review finding ID was assigned for the user change.
 - Prior authoritative result: `Pass` for the previously approved contract, including workspace-relative cwd; delivery was awaiting explicit user verification.
 - Current authoritative result: Requirements and design reset are ready for architecture re-review; the prior implementation is no longer implementation-ready for the new absolute-only contract.
@@ -59,7 +59,7 @@
 
 ### SR-004 — Durable tool-schema documentation cross-reference
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`; Round 3.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`; Round 3.
 - Triggering finding IDs: `ARCH-DI-002`.
 - Prior authoritative result: `Fail` for implementation rerun; the absolute-only provided-cwd reset was coherent, but the durable tool-schema documentation cross-reference was omitted from the design inventory and update sequence.
 - Current authoritative result: Corrected Design-ready solution package prepared for architecture re-review; implementation remains blocked pending approval.
@@ -74,7 +74,7 @@
 
 ### SR-005 — Corrected durable terminal documentation
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`; Round 4.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`; Round 4.
 - Triggering finding IDs: `ARCH-DI-002` reused.
 - Prior authoritative result: `Fail` for implementation rerun; the reviewer still observed the superseded relative-cwd statement in the durable tool-schema documentation surface and treated the final inventory/sequence as insufficiently explicit.
 - Current authoritative result: Corrected documentation and strengthened Design-ready package prepared for architecture re-review; implementation remains blocked pending approval.

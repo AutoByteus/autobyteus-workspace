@@ -160,7 +160,7 @@ Update both LLM-facing schemas with the exact requested cwd field descriptions. 
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md` | Operation matrix, anchoring/default rules, trusted-local posture, and non-goals | REQ-001–REQ-010; AC-001–AC-010 | Defines the approved behavior this design carries into the terminal resolver and schemas. | User-approved intended behavior; architecture approval required. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md` | Operation matrix, anchoring/default rules, trusted-local posture, and non-goals | REQ-001–REQ-010; AC-001–AC-010 | Defines the approved behavior this design carries into the terminal resolver and schemas. | User-approved intended behavior; architecture approval required. |
 
 ## Task Design Health Assessment (Mandatory)
 

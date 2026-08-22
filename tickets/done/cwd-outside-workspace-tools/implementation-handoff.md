@@ -2,26 +2,26 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-spec.md`
-- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md`
-- Current implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/implementation-revision-record.md`
-- Historical implementation handoff superseded by this rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/implementation-handoff.md` (this file now contains the current handoff; prior content is represented by `IR-001`)
-- Historical code review report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/code-review-report.md`
-- Historical code review revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/code-review-revision-record.md`
-- Historical API/E2E coverage investigation, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md`
-- Historical API/E2E execution coverage report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md`
-- Historical API/E2E revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/api-e2e-revision-record.md`
-- Historical API/E2E test review report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/api-e2e-test-review-report.md`
-- Historical delivery integration check, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/delivery-integration-check.log`
-- Historical delivery revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/delivery-revision-record.md`
-- Historical docs-sync report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/docs-sync-report.md`
-- Historical handoff summary, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/handoff-summary.md`
-- Historical release/deployment report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-spec.md`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`
+- Current implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md`
+- Historical implementation handoff superseded by this rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-handoff.md` (this file now contains the current handoff; prior content is represented by `IR-001`)
+- Historical code review report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/code-review-report.md`
+- Historical code review revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/code-review-revision-record.md`
+- Historical API/E2E coverage investigation, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md`
+- Historical API/E2E execution coverage report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md`
+- Historical API/E2E revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-revision-record.md`
+- Historical API/E2E test review report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/api-e2e-test-review-report.md`
+- Historical delivery integration check, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`
+- Historical delivery revision record, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-revision-record.md`
+- Historical docs-sync report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/docs-sync-report.md`
+- Historical handoff summary, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/handoff-summary.md`
+- Historical release/deployment report, superseded for this reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/release-deployment-report.md`
 - Source documentation surfaces:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/terminal_tools.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts/docs/tool_schema_and_configuration.md`
@@ -29,7 +29,7 @@
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003`, `SR-004`, `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-006` (current pass); `ARCH-REV-005` (prior documentation pass)

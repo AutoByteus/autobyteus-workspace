@@ -34,7 +34,7 @@ The proposed target is a trusted-local `cwd` contract: an explicit absolute dire
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md` | Intended terminal cwd operation matrix, omitted-default/absolute-only rules, security posture, and explicit non-goals | REQ-001–REQ-010 | AC-001–AC-010 | User-approved intended behavior; architecture approval required | Makes the boundary and precedence rules reviewable without hiding them in implementation notes. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md` | Intended terminal cwd operation matrix, omitted-default/absolute-only rules, security posture, and explicit non-goals | REQ-001–REQ-010 | AC-001–AC-010 | User-approved intended behavior; architecture approval required | Makes the boundary and precedence rules reviewable without hiding them in implementation notes. |
 
 ## Design Health Assessment (Mandatory)
 

@@ -2,20 +2,20 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md`
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/design-spec.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md`
 - Current Architecture Review Revision ID: `ARCH-REV-006`
 - Current Review Round: `6`
 - Trigger: Re-review of the `SR-005` durable documentation correction for `ARCH-DI-002` in the `SR-003` absolute-only contract reset.
 - Prior Review Round Reviewed: `ARCH-REV-005` / Round 5, plus the downstream implementation/code/API-E2E/delivery evidence for the superseded contract
 - Latest Authoritative Round: `ARCH-REV-006`
 - Current-State Evidence Basis: Static re-review of the corrected `SR-005` package plus current source in `autobyteus-ts` at branch `codex/cwd-outside-workspace-tools`, based on `origin/personal` commit `8ef282ba77705180d985e7000d801f0e0068cdc1`. Both durable documentation surfaces now state the absolute-only provided-cwd contract and unchanged omitted defaults; the focused diff for `tool_schema_and_configuration.md` changes only the terminal cross-reference, leaving its generic file-tool contract unchanged. Runtime resolver, serialized schemas, tests, and all prior downstream evidence remain superseded and require post-approval rerun; no post-reset implementation/runtime evidence exists yet.
-- Downstream Evidence Reviewed For Reset Impact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/implementation-handoff.md`, `implementation-revision-record.md`, `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-integration-check.log`, `delivery-revision-record.md`, `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-report.md`. These artifacts establish the superseded contract and its stale durable documentation references; they do not approve the reset.
+- Downstream Evidence Reviewed For Reset Impact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/implementation-handoff.md`, `implementation-revision-record.md`, `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-integration-check.log`, `delivery-revision-record.md`, `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-report.md`. These artifacts establish the superseded contract and its stale durable documentation references; they do not approve the reset.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
