@@ -1,0 +1,17 @@
+# v1.4.54 zh Docker manual dispatch
+requested_utc=2026-08-22T03:19:01Z
+workflow=.github/workflows/release-server-docker.yml
+release_tag=v1.4.54
+release_ref=v1.4.54
+publish_zh=true
+existing_recent_runs:
+32518756788	push	completed	success	v1.4.54	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756788
+32458399771	workflow_dispatch	completed	success	personal	8812520ec0c86598479097bc151dc6827fff4946	2026-08-21T07:23:15Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771
+32451160682	push	completed	success	v1.4.53	6ceaf2ec5349752d0afb6d9be3326833451a4aca	2026-08-21T05:36:17Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160682
+31883940459	push	completed	success	v1.4.52	3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c	2026-08-15T12:10:44Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940459
+31873216187	push	completed	success	v1.4.51	b17e5cb4d6cab0bc9e4ec4c389ed31291dea81d6	2026-08-15T07:56:13Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31873216187
+31605085749	push	completed	success	v1.4.50	8ddaad588c51c61eab31a86b782064c8b8ea0090	2026-08-12T14:07:37Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085749
+31470908807	push	completed	success	v1.4.49	783ed6971cfbdb066a7d2079f4cb314ccee79111	2026-08-11T07:54:32Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31470908807
+31460923432	push	completed	success	v1.4.48	0469b6610c9d355f430a5da140c3df9fa2043915	2026-08-11T05:13:08Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31460923432
+dispatch_command=gh workflow run release-server-docker.yml --ref personal -f release_tag=v1.4.54 -f release_ref=v1.4.54 -f publish_zh=true
+dispatch_result=accepted

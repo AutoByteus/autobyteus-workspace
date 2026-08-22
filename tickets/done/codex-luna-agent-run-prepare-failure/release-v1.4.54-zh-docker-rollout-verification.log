@@ -1,0 +1,60 @@
+# v1.4.54 zh Docker rollout verification
+timestamp_utc=2026-08-22T03:50:21Z
+run_id=32548635553
+run_url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553
+release_tag=v1.4.54
+release_ref=v1.4.54
+expected_tags=autobyteus/autobyteus-server:1.4.54-zh,autobyteus/autobyteus-server:latest-zh
+--- workflow and step state ---
+32548635553	Server Docker Release	workflow_dispatch	completed	success	personal	d487c0859905a91650387c4af41f4fc5754f214a	2026-08-22T03:19:03Z	2026-08-22T03:49:15Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553
+Resolve Release Metadata	completed	success
+Build And Push Server Image	completed	success
+Resolve Release Metadata	1	Set up job	completed	success
+Resolve Release Metadata	2	Resolve publish metadata	completed	success
+Resolve Release Metadata	3	Summarize publish plan	completed	success
+Resolve Release Metadata	4	Complete job	completed	success
+Build And Push Server Image	1	Set up job	completed	success
+Build And Push Server Image	2	Checkout workspace	completed	success
+Build And Push Server Image	3	Free runner disk space	completed	success
+Build And Push Server Image	4	Set up QEMU	completed	success
+Build And Push Server Image	5	Set up Docker Buildx	completed	success
+Build And Push Server Image	6	Login to Docker Hub	completed	success
+Build And Push Server Image	7	Build and push default multi-arch image	completed	skipped
+Build And Push Server Image	8	Build and push zh multi-arch image	completed	success
+Build And Push Server Image	9	Publish summary	completed	success
+Build And Push Server Image	14	Post Build and push zh multi-arch image	completed	success
+Build And Push Server Image	15	Post Login to Docker Hub	completed	success
+Build And Push Server Image	16	Post Set up Docker Buildx	completed	success
+Build And Push Server Image	17	Post Set up QEMU	completed	success
+Build And Push Server Image	18	Post Checkout workspace	completed	success
+Build And Push Server Image	19	Complete job	completed	success
+variant_step_validation=pass (default skipped; zh succeeded)
+--- immutable zh tag ---
+Name:      docker.io/autobyteus/autobyteus-server:1.4.54-zh
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.54-zh@sha256:ed9fdf528b1fe8cf624710c75768a36506b5ee0b795656ccb4425b77a9635978
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.54-zh@sha256:8d56be8c7796ebadbf3353e98cc01262a0c7d2b956baedfa6cce8ba8eff01985
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+--- latest zh tag ---
+Name:      docker.io/autobyteus/autobyteus-server:latest-zh
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest-zh@sha256:ed9fdf528b1fe8cf624710c75768a36506b5ee0b795656ccb4425b77a9635978
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest-zh@sha256:8d56be8c7796ebadbf3353e98cc01262a0c7d2b956baedfa6cce8ba8eff01985
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+version_zh_digest=sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2
+latest_zh_digest=sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2
+ZH DOCKER ROLLOUT VERIFICATION: PASS
