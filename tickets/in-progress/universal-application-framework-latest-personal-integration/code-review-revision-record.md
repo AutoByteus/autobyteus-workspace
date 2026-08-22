@@ -10,6 +10,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-002` | `Fail — Local Fix` | `Fail — Local Fix` | `CR-001`, `CR-002`, `CR-003` |
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003` |
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` |
+| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `CR-005` |
 
 ## Revision Entries
 
@@ -114,3 +115,32 @@ None.
 - Failure-origin attribution: implementation defects. Both were reasonably detectable source-review gaps: the maintained Socratic SDK call was not traced against exact current identity, and mocked startup tests concealed eager singleton construction across migration/location/supervisor boundaries.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Studio may share the process-owner failure and must be rerun; cumulative durable test changes await proportional review only after a later API/E2E Pass; real provider/publication/restart/parity/cleanup/Electron proof is incomplete.
+
+### CRR-005 — Exact Socratic identity and exclusive process ownership corrections verified
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `5`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-004`, addressing `CR-004`, `CR-005`, `APIE2E-F001`, and `APIE2E-F002`.
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-004 — Fail / Local Fix`
+- Current authoritative result: `Pass / 93`
+- What changed in the review result and why: IR-004 now resolves the configured `/tutor` member and forwards its exact bound `agentRunId`, while retaining SDK validation. Migration classification and the general-process RunFileChangeService now use one explicit stored-history-only execution-tree location seam, so neither preempts the supervisor's exclusive process manager family. Failure unwind, idempotent close, restart, current startup ordering, and prior IR-002/IR-003 corrections remain intact.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-004` | Standalone prerequisite phases and unwind are unchanged; lifecycle selection passes 9/9. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-004` | IR-004 contains no launch persistence delta; non-mutating get/list and explicit Save/Reset authority remain intact. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `IR-004` | IR-004 contains no event-journal delta; existing-state recovery contract remains intact. |
+| `CR-004` | Open — Major | Resolved | `IR-004`, `CRR-005`; `BEH-003`, `BEH-006`; `APIE2E-F001` | `lesson-model.ts` selects exact `memberAddress=/tutor`, fails explicitly when absent, and passes the selected member's exact `agentRunId`; unchanged SDK membership validation passes 6/6 and focused Socratic coverage passes 2/2. |
+| `CR-005` | Open — Major | Resolved | `IR-004`, `CRR-005`; `BEH-002`, `BEH-003`, `BEH-006`; `APIE2E-F002` | Both prior eager paths inject `createStoredTeamRunExecutionTreeLocationService`; manager-construction spying proves migration registry construction is passive and the supervisor initializes exactly one manager family, releases partial ownership on failure, closes idempotently, and restarts. Reviewer affected selection passes 7 files / 56 tests. |
+
+- New or remaining finding IDs: none.
+- Material score or classification changes: the focused failure-origin `Fail` is cleared; the complete implementation scorecard returns to `93/100`, every category is at least `9.0`, and no Major or Critical finding remains.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must rerun the two exact failures first. Its preserved dirty target-projection test contains one stale pre-fix error expectation and must be reconciled before a later execution Pass; the entire durable delta still requires proportional review after Pass. Real Studio/standalone/provider/publication/restart/parity/cleanup and downstream Electron verification remain outstanding.
