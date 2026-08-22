@@ -15,11 +15,11 @@
 - Code Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md
-- Current API/E2E Revision ID: API-REV-006
-- Current Investigation Round: 6
+- Current API/E2E Revision ID: API-REV-007
+- Current Investigation Round: 7
 - Trigger: Solution-designer scope decision that LM Studio compaction and broad live-provider capability are non-gating residuals for this ticket-specific validation.
 - Prior Investigation Reviewed: Round 4 / API-REV-004, including its execution report and revision record.
-- Latest Authoritative Investigation: Round 6, this file.
+- Latest Authoritative Investigation: Round 7, this file.
 
 ## Current Requirement And Design Basis
 
@@ -334,3 +334,12 @@ None.
 - Confidence: retain 89% aggregate broader-validation confidence because the residual live capability categories remain unproven; this does not downgrade the feature-specific deterministic/API/transport result.
 - Repository-resident durable coverage retained this round: None.
 - Delivery handoff: Yes, with explicit residual risks and the cumulative package. No additional live rerun is warranted without a changed reviewed capability or safe evidence method.
+
+## Round 7 LM Studio Test-Support Repair Investigation Plan (API-REV-007)
+
+- Trigger: user requested investigation and possible repair of the non-gating LM Studio test failure if the evidence identifies a test-support/scenario defect.
+- Current failure: LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING after a real compaction. Safe prior budget evidence showed the first trigger during the large Group-A read, before the Unicode shield turn, so the canonical compactor leaf did not contain the expected shield evidence.
+- Investigation hypothesis: the live scenario orders the large Group-A read before the Unicode shield read, while the assertion requires the first selected compactor leaf to contain the Unicode shield evidence. This is a scenario-order/compaction-window coupling, not an application-source failure.
+- Planned bounded probe: temporarily reorder only the scenario's read turns so the Unicode shield file is read first, Group A second, and Group B third. Preserve the same three read calls, one final write, exact artifact assertions, scanner safeguards, and compactor contract checks. Do not change production source or weaken the leaf assertion.
+- Probe success criterion: LM Studio completes all four turns, one compaction completes, the leaf evidence assertion passes, exact artifact/tool traces remain valid, and final output is scanner-clean. Probe failure criterion: no compaction, no final turn, or any changed contract; restore immediately.
+- Durable-change rule: retain the scenario-order change only if the bounded live probe is reproducible and focused harness validation passes. If retained, route the changed test-support path through code_reviewer before delivery; if not, restore the file and preserve the non-gating residual.

@@ -869,20 +869,20 @@ export class LiveE2eScenarioExecution {
       };
 
       await postAndWait(
-        `Call read_file exactly once for "${evidenceAPath}" with include_line_numbers=false. ` +
-        'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_A_INGESTED ' +
-        'plus the exact customer, rollback_action, safety_rule, and verification values.',
-        1,
-      );
-      await postAndWait(
         `Call read_file exactly once for "${unicodeBoundaryEvidencePath}" with `
         + 'include_line_numbers=false. Do not call write_file. Preserve the result as ordinary evidence and '
         + 'then respond concisely with UNICODE_BOUNDARY_EVIDENCE_INGESTED.',
-        2,
+        1,
       );
       if (await fs.readFile(unicodeBoundaryEvidencePath, 'utf8') !== unicodeShieldSource) {
         throw new Error('LIVE_E2E_UNICODE_SHIELD_SOURCE_MUTATED');
       }
+      await postAndWait(
+        `Call read_file exactly once for "${evidenceAPath}" with include_line_numbers=false. ` +
+        'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_A_INGESTED ' +
+        'plus the exact customer, rollback_action, safety_rule, and verification values.',
+        2,
+      );
       await postAndWait(
         `Call read_file exactly once for "${evidenceBPath}" with include_line_numbers=false. ` +
         'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_B_INGESTED ' +
