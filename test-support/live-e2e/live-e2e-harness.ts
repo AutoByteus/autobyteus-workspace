@@ -316,7 +316,7 @@ const inspectCanonicalCompactorTask = (runId: string): {
   noSelfCompactionPersistenceVerified: boolean;
 } => {
   const store = new FileMemoryStore(appConfigProvider.config.getMemoryDir(), runId);
-  const userTraces = store.listRawTraceCorpusOrdered()
+  const userTraces = store.listTurnRawTraceCorpusOrdered()
     .filter(({ traceType }) => traceType === 'user');
   if (userTraces.length !== 1) {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_TRACE_INVALID');

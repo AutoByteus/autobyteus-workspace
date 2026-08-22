@@ -136,6 +136,67 @@ const diagnosticEvents = (events: readonly AgentRunEvent[]): AgentRunEvent[] =>
   );
 
 describe("AgentRun-owned Team segment lifecycle", () => {
+  it("transports a canonical provider error through standalone, Team, wire, and application projections", async () => {
+    const { backend, observed } = createRunHarness();
+    await backend.emit([sourceEvent(AgentRunEventType.ERROR, {
+      turn_id: "turn-error",
+      error_scope: "turn",
+      error_effect: "terminal",
+      code: "LLM_PROVIDER_ERROR",
+      message: "The provider rejected the request.",
+      provider_status: 402,
+      provider_code: "balance_required",
+      provider_request_id: "provider-request-456",
+      details: "safe provider details",
+      error: { message: "raw-provider-secret", stack: "private-stack" },
+    })]);
+
+    const canonical = observed.find((event) => event.eventType === AgentRunEventType.ERROR);
+    expect(canonical).toBeDefined();
+    const adapted = new TeamAgentEventAdapter(() => execution).adapt(canonical!);
+    expect(adapted.kind).toBe("publish");
+    if (adapted.kind !== "publish") throw new Error("Expected provider error to be admitted.");
+
+    expect(adapted.event).toMatchObject({
+      eventType: "ERROR",
+      details: {
+        code: "LLM_PROVIDER_ERROR",
+        message: "The provider rejected the request.",
+        providerStatus: 402,
+        providerCode: "balance_required",
+        providerRequestId: "provider-request-456",
+        details: "safe provider details",
+        errorScope: "turn",
+        errorEffect: "terminal",
+        turnId: "turn-error",
+      },
+    });
+
+    const wire = projectTeamAgentEventMessage(execution, adapted.event, 1);
+    expect(wire).toEqual({
+      type: "ERROR",
+      payload: {
+        change_sequence: 1,
+        agent_run_id: runId,
+        code: "LLM_PROVIDER_ERROR",
+        message: "The provider rejected the request.",
+        details: "safe provider details",
+        provider_status: 402,
+        provider_code: "balance_required",
+        provider_request_id: "provider-request-456",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-error",
+      },
+    });
+
+    expect(new ApplicationAgentStreamEventProjector().projectTeam(adapted.event)).toEqual({
+      type: "ERROR",
+      message: "The provider rejected the request.",
+    });
+    expect(JSON.stringify(wire)).not.toContain("raw-provider-secret");
+  });
+
   it("correlates a real AutoByteus native sequence before Team, standalone, and application projection", async () => {
     const { backend, observed } = createRunHarness();
     const converter = new AutoByteusStreamEventConverter(runId);

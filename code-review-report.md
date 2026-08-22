@@ -2,227 +2,484 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-011`
+- Relevant Solution Revision IDs: `SR-012`, `SR-013`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`–`ARCH-REV-003`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-004`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Implementation handoff `IR-001`, commit `115dcd7d06df03c35e37381f289e5959704470f2`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `ARCH-REV-003` / `IR-001`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
-- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
-- API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
-- Relevant API/E2E Revision IDs: `N/A`
+- Current Code Review Revision ID: `CRR-009`
+- Current Review Round: `7`
+- Trigger: API/E2E revision `API-REV-005`, user-authorized provider-capability recovery with DeepSeek/Kimi live operation failures
+- Prior Review Round Reviewed: `CRR-008` failure-origin review; API/E2E provider-capability recovery round `API-REV-005`
+- Latest Authoritative Round: `API-REV-005` / `CRR-009`
+- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-005`
 - Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: `N/A` — API/E2E execution has not started.
-- Failure Evidence Paths: `N/A`
+- Failing Scenario IDs: `API-REAL-001` (blocked); `deepseek.llm` and `kimi.llm` provider-operation failures; `API-BROWSER-001` (not tested, not a failure)
+- Exact Failing Commands / Execution Mode: `pnpm test:e2e:real -- --scenarios=deepseek.llm,gemini.vertex-express.llm,openai.llm` (DeepSeek failed); `pnpm test:e2e:real -- --scenarios=grok.llm,kimi.llm,glm.llm` (temporary probe entries; Kimi failed); existing LM Studio compactor failure remains unresolved.
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` Round 5 provider-capability recovery and latest result.
+
+## API/E2E Failure-Origin Review (CRR-003)
+
+### Review Scope
+
+This bounded review covers the failed completion-gate scenario `API-REAL-001` from `API-REV-001`. It does not reopen the passed CRR-002 implementation source review or repeat its source audit and scorecard. The durable test-code changes are reviewed separately in `api-e2e-test-review-report.md` under `CRR-004`.
+
+Failure evidence reviewed:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+
+### Approved Scenario And Independent Reachability Basis
+
+- `API-REAL-001` represents the supported operational live-capability validation command `pnpm test:e2e:real`, governed by the repository's explicit real-E2E instructions and preceded by `pnpm test:e2e:real:preflight`.
+- The preflight is an independent capability witness: it passed 18 value-safe checks, reported external provider credentials missing without exposing values, and reported a local LM Studio capability as ready.
+- The forward execution path is the documented built-server live-E2E runner → configured capability selection → provider/runtime request → final scenario evidence. The runner did not reach a final scenario result.
+- This is an execution/environment validation path, not proof that a product user reached a provider rejection. No external provider response, source exception, or incorrect product payload was observed.
+
+### Expected / Observed / Consequence
+
+| Item | Evidence |
+| --- | --- |
+| Expected | A safely configured live capability produces a final scenario result proving provider request/error behavior and the relevant external/runtime boundary. |
+| Observed | `pnpm test:e2e:real:preflight` passed; external provider keys were unavailable; LM Studio was reported ready. `pnpm test:e2e:real` produced no final result after approximately three minutes and was interrupted. |
+| Cleanup | Owned processes and temporary live-E2E resources were cleaned; no secret values were recorded. |
+| Consequence | Provider-account-specific AC-005/007/010–012/017 evidence, Docker identity evidence, and live provider rejection fidelity remain unproven. |
+
+### Failure-Origin Determination
+
+- No deterministic implementation failure is indicated. Native/team/application WebSocket integration, focused provider/server/web/SDK tests, selected GraphQL E2E, builds, and patch checks all passed.
+- No stale or incorrect durable test caused this blocked scenario. The stale fixtures discovered earlier were repaired in their owning tests and passed; the proportional test review found no test-code finding.
+- The missing external credentials and incomplete configured live run make this an external capability/environment/execution block. The exact reason the configured run did not produce a final result is not observable from the retained evidence, so no provider-specific or source-specific mechanism is inferred.
+- The known product-supported initiating basis reaches the live runner, but not a completed provider request/error lifecycle. Therefore there is no supported failure path that justifies attributing `API-REAL-001` to implementation source, a design defect, or a provider-error mapping defect.
+- The prior CRR-002 source review remains **Pass**. No source-review finding is reopened.
+
+### Classification And Routing
+
+- Failure-origin classification: **Local Fix — environment/capability/execution block**.
+- Owning specialist: `/api_e2e_engineer`.
+- Required next action: investigate the configured LM Studio/live-runner capability or obtain an explicitly safe configured provider capability, then rerun the affected live scenario. Preserve the no-secret evidence rule and do not claim live provider/Docker proof from preflight alone.
+- `API-BROWSER-001` is `Not Tested`, not a failed browser scenario; it is retained as residual coverage and is not attributed to source.
+
+## Prior Implementation Review Baseline (CRR-002)
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: curated provider catalog and adapter policy, DeepSeek latest schedule pricing, safe provider-error extraction and missing-key mapping, canonical error transport across standalone/team/web paths, application projection, web rendering preservation, and runtime-scoped current-model validation.
-- Files / areas reviewed: all changed implementation source in `autobyteus-ts`, `autobyteus-server-ts`, `autobyteus-team-stream-contracts`, `autobyteus-application-sdk-contracts`, and `autobyteus-web`; changed durable unit/integration test paths; and the complete upstream artifact chain listed above.
-- Explicit exclusions: API/E2E/integration execution, vault import, Docker build identity, live provider endpoint/pricing verification, and delivery-stage documentation synchronization. Those are downstream evidence gates, not source-review proof.
+- Changed implementation and behavior reviewed: complete implementation package re-reviewed after `CR-001`; corrected provider-neutral application-agent boundary; durable agent/team projector assertions; application frontend rejection fixture; application SDK fixture alignment; and all current contract/revision artifacts.
+- Files / areas reviewed: implementation source previously reviewed in `IR-001`, the unchanged application projector and SDK event union, changed durable tests/fixtures/docs, and the complete upstream artifact chain.
+- Explicit exclusions: API/E2E/integration execution, vault import, Docker build identity, live provider endpoint/pricing verification, and delivery-stage documentation synchronization. These remain downstream evidence gates.
+
+The current commit adds durable tests and artifact alignment; it does not add application metadata machinery or change the already message-only projector/SDK source. Those source paths were re-read against the corrected contract.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Confirmed for `B-001`–`B-010`, `REQ-001`–`REQ-012`, and `AC-001`–`AC-018`.
-- Design-spec behavior map verified against the implementation: Confirmed for catalog/adapters, latest-only pricing, missing-key/error transport, native team/web projection, and runtime-aware model ownership; contradicted at the application-agent public error boundary described by `DS-003`.
-- Design review report and round confirmed: `ARCH-REV-003` is an authoritative architecture pass after the runtime-ownership correction in `SR-011`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: `CR-001` identifies a contract mismatch exposed by the implementation: the approved DS-003 path says application projection carries safe provider metadata, while the application SDK event remains message-only. The unchanged application contract artifact still specifies the old generic error message and explicitly excludes provider details.
-- Remaining material ambiguity: The intended application-agent public error contract must be reconciled before API/E2E. Native team/web transport is sufficiently specified; the application-agent SDK boundary is not.
+- Approved requirements basis understood: **Confirmed** for `B-001`–`B-010`, `REQ-001`–`REQ-012`, and `AC-001`–`AC-018`.
+- Design-spec behavior map verified against the implementation: **Confirmed**. `DS-003` is now explicitly split between native evidence transport and message-only application projection.
+- Design review report and round confirmed: `design-review-report.md` passes after `ARCH-REV-004`; `SR-013` is the current solution correction.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior: `SR-013` supersedes the prior metadata-extension interpretation. The application SDK remains provider-neutral with the closed five-variant stream and `ERROR: { type: "ERROR"; message: string }`.
+- Remaining material ambiguity: None for the source-review boundary. API/E2E/live provider and deployment evidence remain unexecuted downstream.
 
-| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
+The corrected design, supplement, normative application communication contract, SDK README, source, and tests now agree: native/team/web transport may carry safe evidence; the application projector passes through only the safe canonical message and excludes native/provider evidence.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `B-001` | Confirmed | `supported-model-definitions.ts` replaces the named catalog rows and retains exact current identifiers; `LLMFactory` resolves the active rows. | — |
-| `B-002` | Confirmed | DeepSeek V4 catalog rows carry the current schedule; `TokenPriceConfigProvider` selects UTC time-of-day and `TokenCostCalculator` persists the selected policy. | — |
-| `B-003`–`B-005` | Confirmed | Gemini, Kimi, and GLM schemas/normalizers use the reviewed current request shapes and remove the named obsolete branches. | — |
-| `B-006` | Confirmed | Secret resolver maps missing/blank credentials to `MissingApiKeyError`; `LlmPhase` emits `missing_api_key` while other vault errors remain distinct. | — |
-| `B-007`–`B-008` | Confirmed for runtime, AgentRun, team, and native web | Provider extraction and canonical `code`/`message`/safe-evidence fields flow through the notifier, stream payload, AgentRun mapper, team adapter, DTO, websocket projector, web parser, and `ErrorSegment`. | Application public projection is separately affected by `CR-001`. |
-| `B-009` | Contradicted at the application-agent boundary | Native web `handleError` constructs the safe message/evidence segment. `ApplicationAgentStreamEventProjector` now uses the safe message but still returns only `{ type: "ERROR", message }`; the SDK contract has no safe metadata fields. | `design-spec.md` DS-003 and `provider-error-and-pricing-contract.md` sections 6–7 require the same safe evidence shape through the application projector, while `tickets/done/application-agent-streaming/application-agent-communication-contract.md` section 5.2 still requires the generic message and no provider details. |
-| `B-010` | Confirmed in source shape; downstream evidence gate remains | MiniMax reports the approved context/pricing shape and exact `MiniMax-M3` value; GLM remains explicitly unpriced. | Deployment-specific endpoint/pricing confirmation remains downstream, as already recorded by `IR-001`. |
+| `B-001`–`B-006` | Confirmed | Catalog, pricing, adapter, missing-key, and native error preparation remain as reviewed in `IR-001`; rework did not regress them. | — |
+| `B-007`–`B-008` | Confirmed | Canonical native `code`/safe `message`/optional evidence continues through AgentRun, team, websocket, and web paths. | — |
+| `B-009` | Confirmed | A supported application-agent or team stream reaches `ApplicationAgentStreamEventProjector`; terminal errors become exactly the provider-neutral message-only SDK `ERROR`, with native/provider evidence excluded. `IR-002` proves both agent and team paths. | — |
+| `B-010` | Confirmed in source shape; downstream evidence gate remains | Runtime-scoped current-model validation and external-runtime ownership remain unchanged. | Endpoint/pricing and live deployment confirmation remain downstream, as recorded by `IR-002`. |
 
 ## Approved Behavior / Existing Behavior / Preserved Boundary
 
-- Approved change: replace named legacy catalog rows and obsolete adapter policy; add the latest DeepSeek time-of-day schedule; map only missing credentials to the intentional setup message; preserve other provider messages after redaction; make `code` and `message` distinct canonical transport fields; and scope current-model validation to AutoByteus runtime ownership.
-- Existing behavior confirmed and preserved: Claude/Codex dispatch remains with their backend factories; local runtime pricing remains non-billed; existing tier arithmetic and immutable usage records remain; diagnostic error filtering remains in the application projector; the existing `ErrorSegment.vue` heading/layout remains.
-- Relevant existing public boundary: `autobyteus-application-sdk-contracts/src/application-agent-events.ts` still exposes `ERROR` as `{ type: "ERROR"; message: string }`. The prior application communication contract says this v1 surface intentionally hides provider codes/details and uses `The agent response failed.`.
-- Boundary conclusion: the native team/web boundary is coherent, but the approved DS-003 application boundary and the existing minimal application SDK/contract are not reconciled. This is a design-impact finding, not a reason to invent a new provider classification.
+- Approved application behavior: preserve the safe canonical provider message, retain the existing five application event variants, and do not expose provider status, provider code, request ID, details, raw errors, stacks, causes, credentials, or runtime/session identifiers in the application SDK.
+- Approved native behavior: native team/web transport preserves optional safe provider evidence for native presentation/debug details.
+- Existing ownership preserved: the application projector owns application projection; native team/web projectors own native evidence; Claude/Codex dispatch remains with existing factories; AutoByteus current-model validation remains runtime-scoped.
+- The prior `CR-001` was a real supported contract mismatch, not a speculative provider scenario. `SR-013` corrected the governing behavior and `IR-002` proves the implementation and fixtures now follow it.
 
 ## Data-Flow Spine Inventory
 
-| Spine | Scope | Start | End | Governing owner | Why it matters |
-| --- | --- | --- | --- | --- | --- |
-| `DS-001` | Runtime/model selection | user/profile selection | runtime-owned adapter/factory and provider SDK | runtime-specific model owner; application gate delegates only AutoByteus | prevents stale AutoByteus IDs and unrelated external-runtime rejection |
-| `DS-002` | Usage pricing | usage event with `observed_at` | cost calculation and `pricing_snapshot_json` | `TokenPriceConfigProvider` plus existing `TokenCostCalculator` | selects current DeepSeek peak/off-peak prices without historical lookup |
-| `DS-003-native` | Provider error transport | provider/secret failure | native web `ErrorSegment` | safe error boundary, AgentRun/team/web contracts | preserves original safe provider text and supplemental evidence |
-| `DS-003-app` | Application-agent error projection | AgentRun/team source event | application SDK `ApplicationAgentEvent` | application stream projector and SDK contract | exposes application-facing error semantics; this is the unresolved boundary in `CR-001` |
-| `DS-003-local` | Error preparation | SDK/vault error | notifier payload | provider error extractor / secret resolver / `LlmPhase` | ensures redaction and missing-key translation happen before transport |
+| Spine | Current endpoint | Governing owner / review result |
+| --- | --- | --- |
+| `DS-001` runtime/model selection | selected runtime and runtime-owned factory | AutoByteus guard is scoped correctly; external runtime ownership is preserved. Pass. |
+| `DS-002` usage pricing | observed timestamp to current pricing snapshot/arithmetic | Latest-only schedule behavior remains centralized. Pass. |
+| `DS-003-native` provider error transport | safe extraction to native team/web error presentation | Canonical fields and optional safe evidence remain native. Pass. |
+| `DS-003-app` application projection | AgentRun/team source event to message-only application SDK `ERROR` | Explicit provider-neutral endpoint; no unexplained metadata requirement remains. Pass. |
+| `DS-003-local` error preparation | provider/vault error to redacted canonical notifier payload | Missing-key mapping and safe extraction remain in their existing owners. Pass. |
 
 ## Production Path Trace
 
-1. A supported provider request enters the selected AutoByteus adapter or an external runtime factory. AutoByteus selections are guarded by `LLMFactory.requireCurrentModelIdentifier`; Claude/Codex selections bypass that guard and continue to their existing factories.
-2. A provider or vault failure reaches the `LlmPhase` catch or secret resolver. Missing/blank credentials become `MissingApiKeyError`; all other errors pass through `extractProviderErrorEvidence` and retain the safe provider message plus safe metadata.
-3. `AgentExternalEventNotifier` emits required `code` and `message`; `ErrorEventData`, the AgentRun mapper, `TeamAgentEventAdapter`, strict team DTO, websocket projector, web parser, and `handleError` preserve those fields. This native path is structurally coherent.
-4. For a supported application-bound agent/team, `ApplicationAgentStreamRuntimeSource` supplies source events to `ApplicationAgentEventMapper`, which calls `ApplicationAgentStreamEventProjector`, and `ApplicationAgentStreamSubscription` enqueues the resulting public SDK event. The current public shape can carry only `message`; it cannot carry the approved optional safe evidence, and its governing contract still describes the prior generic message. This is the concrete lifecycle consequence of `CR-001`.
+1. A supported provider request enters its selected adapter/factory. AutoByteus selections use the current-model guard; Claude/Codex selections retain their external factory ownership.
+2. A provider or vault failure reaches the existing error-preparation path. Missing or blank credentials become the intentional missing-key error; other errors produce a safe canonical message and optional native evidence.
+3. Native notifier, AgentRun, team adapter/DTO, websocket projector, and web parser preserve canonical `code`, safe `message`, and approved optional native evidence.
+4. For a supported application binding, `ApplicationAgentStreamRuntimeSource` supplies the source event, `ApplicationAgentEventMapper` calls `ApplicationAgentStreamEventProjector.project` or `.projectTeam`, and `ApplicationAgentStreamSubscription` emits the SDK event. The projector returns exactly `{ type: "ERROR", message }`; `IR-002` proves native/provider metadata and raw error material are not copied.
+5. The application frontend validator accepts only the closed application shape. The updated fixture rejects an application ERROR carrying provider metadata while preserving the meaningful safe message.
+
+This trace is grounded in the supported application streaming surface and its governing contract; no downstream technical mechanism is being used as proof of reachability.
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | The design package is evidence-backed overall, but DS-003 does not reconcile the application SDK shape with its “every boundary” metadata requirement. | Resolve the application contract/design boundary upstream. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Native transport matches the supplement; application projector/SDK does not carry the same safe evidence shape required in sections 6–7. | Route `CR-001` to `/solution_designer`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | `DS-001`/`DS-002`/native `DS-003` are clear; `DS-003-app` has conflicting endpoint contracts. | Reconcile the application spine endpoint and payload. |
-| Ownership boundary preservation and clarity | Fail | Application stream projector owns projection, but the public SDK contract and old communication contract disagree on its owned error semantics. | Assign one authoritative application error contract. |
-| Off-spine concern clarity | Pass | Endpoint/pricing verification, Docker identity, and vault setup remain correctly treated as downstream evidence gates. | None in source review. |
-| Existing capability/subsystem reuse check | Pass | The implementation extends existing catalog/factory, pricing provider/calculator, secret resolver, AgentRun/team/web contracts, and application projector owners. | None. |
-| Reusable owned structures check | Pass | `ProviderErrorEvidence`, `TokenPricingSchedule`, and effective runtime/model expansion are centralized rather than copied across callers. | None. |
-| Shared-structure/data-model tightness check | Fail | The native safe-evidence structure is tight, but the application public event is a parallel reduced shape without an explicit design decision explaining the reduction. | Reconcile or explicitly document the specialization. |
-| Repeated coordination ownership check | Pass | Runtime validation is delegated only for AutoByteus pairs; pricing policy selection remains in its provider. | None. |
-| Empty indirection check | Pass | New helpers have concrete validation, extraction, schedule, or projection responsibilities. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Catalog, adapter, pricing, error boundary, transport, runtime gate, and web rendering changes remain in their owning files. | None. |
-| Ownership-driven dependency check | Pass | External runtime factories are not coupled to AutoByteus catalog validation. | None. |
-| Authoritative Boundary Rule check | Pass | No new caller bypasses an outer owner to reach a lower-level manager/repository; the issue is contract reconciliation, not an internal shortcut. | None. |
-| File placement check | Pass | Changed files are placed in the existing catalog, pricing, stream, orchestration, contract, and web areas. | None. |
-| Flat-vs-over-split layout judgment | Pass | The implementation stays within the existing package layout and source-size guardrails. | None. |
-| Interface/API/query/command/service-method boundary clarity | Fail | Internal `code`/`message`/evidence is explicit, but the application public `ERROR` interface omits the evidence required by the approved design and the old contract still states conflicting semantics. | Update the authoritative interface/design. |
-| Naming quality and naming-to-responsibility alignment | Pass | Names such as `ProviderErrorEvidence`, `requireCurrentModelIdentifier`, and `expandEffectiveRuntimeModelSelections` match their responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No material duplicated provider-error or schedule implementation was found. | None. |
-| Patch-on-patch complexity control | Pass | Legacy adapters/rows and generic wrappers are removed rather than layered behind aliases. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | The old application communication contract remains contradictory to the changed application projector semantics; it was not updated or explicitly superseded. | Reconcile/update the contract artifact. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Focused tests cover native message/evidence and application message projection, but no durable test proves the approved application safe-metadata contract or resolves the old contract expectation. | Add/update tests after the upstream contract decision. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused tests are organized by catalog, pricing, error transport, runtime validation, and web handling. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | Application tests now assert the new message but do not cover the unresolved public contract; the old contract artifact remains stale. | Update the application contract and corresponding tests. |
-| API/E2E readiness for the next workflow stage | Fail | API/E2E must not begin against an unresolved application event contract; IR-001 also records no integration execution. | Return to solution design, then re-review before coverage investigation. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | `design-review-report.md` passes and `ARCH-REV-004` accepts the provider-neutral application boundary. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Requirements, design, supplement, communication contract, README, source, and IR-002 tests agree on native-vs-application evidence scope. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-003 is explicitly split into native evidence and message-only application projection. | None. |
+| Ownership boundary preservation and clarity | Pass | Projector/SDK retain narrow application responsibility; native evidence stays in native contracts. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Endpoint/pricing, Docker identity, vault setup, and live provider checks remain downstream gates rather than source machinery. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing projector, SDK event union, validators, native transport, pricing, and runtime owners are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | No parallel application metadata model was introduced; existing native evidence structures remain owned by native paths. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The reduced application shape is intentional, documented, and tested rather than an unexplained parallel provider-error model. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Runtime validation remains scoped to AutoByteus ownership; pricing policy selection remains in its provider. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | The projector filters diagnostics, validates messages/text, enforces the application shape, and excludes native fields; it is not an empty wrapper. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Rework is in projector tests, application fixtures, contract/docs, and revision artifacts; no misplaced implementation machinery was added. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | External runtime factories are not coupled to AutoByteus catalog validation; application code does not reach into native evidence internals. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller bypasses an outer owner; the application boundary uses the public projector/SDK contract only. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Changed files remain in existing stream, contract, frontend fixture, and artifact locations. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No new source file or fragmented metadata layer was introduced. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Native evidence fields and application message-only ERROR are separately specified and tested; fixture identity updates match the current `agentRunId`/producer contract. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Existing names such as `ProviderErrorEvidence`, `requireCurrentModelIdentifier`, and `ApplicationAgentStreamEventProjector` remain aligned. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated provider-error or pricing implementation was added. | None. |
+| Patch-on-patch complexity control | Pass | The rework adds proof and contract alignment instead of a compatibility wrapper or second application protocol. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Stale generic application fallback wording was replaced in the normative contract and README; no obsolete implementation branch remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Agent and team terminal-error tests assert exact message-only output and exclusion of code/status/provider code/request ID/details/raw error leakage. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing envelope/socket helpers are reused; fixture changes align current target URL, `agentRunId`, and producer identity. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Frontend fixtures reject removed provider metadata fields; SDK fixtures use current API names and member identity. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Source/design blocker is resolved; focused projector, SDK, frontend, and diff checks pass. API/E2E remains unexecuted and is the next specialist responsibility. | Coverage investigation before any durable API/E2E coverage change or execution. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-The changed implementation-source audit covered 42 non-test, non-generated source files. The largest changed file has 458 effective non-empty lines and the largest diff delta is 119 lines. No changed implementation source exceeds the `>500` hard limit or the `>220` delta pressure threshold.
+The original implementation source audit remains applicable: 42 changed non-test, non-generated source files; largest effective file 458 non-empty lines; largest diff delta 119 lines. No changed implementation source exceeded the `>500` hard limit or `>220` delta pressure threshold.
+
+The `IR-002` commit adds no implementation-source change to the previously reviewed application projector or SDK event contract. Re-read confirms the following affected source files:
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/supported-model-definitions.ts` | 458 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-ts/src/llm/llm-factory.ts` | 453 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts` | 437 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-ts/src/llm/utils/llm-config.ts` | 427 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-ts/src/agent/loop/llm-phase.ts` | 424 | Pass | Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts` | 57 | Pass | Pass | Fail — public contract mismatch | Pass | `CR-001` | Reconcile application contract/design. |
-| `autobyteus-application-sdk-contracts/src/application-agent-events.ts` | 19 | Pass | Pass | Fail — shape is not aligned to approved DS-003 evidence | Pass | `CR-001` | Reconcile or extend the public event. |
+| `autobyteus-ts/src/llm/supported-model-definitions.ts` | 458 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-ts/src/llm/llm-factory.ts` | 453 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts` | 437 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-ts/src/llm/utils/llm-config.ts` | 427 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | 424 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts` | 57 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-application-sdk-contracts/src/application-agent-events.ts` | 19 | Pass | Pass | Pass | Pass | None | None. |
+| Remaining 35 changed implementation-source files | Within prior audit thresholds | Pass | Pass | Pass | Pass | None | None. |
+
+No new source-size, ownership, or indirection finding was introduced.
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No aliases, old-price lookup, or compatibility request branch was added. |
-| No legacy old-behavior retention in changed scope | Fail | The old application communication contract remains in the repository while the projector now changes its error-message semantics. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | The application contract/documentation was not updated or explicitly superseded. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Usage snapshots remain immutable; saved model IDs are retained and rejected/reselected rather than remapped. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No old model aliases or dual provider request paths were found. |
-| Approved transition mechanics match the reviewed design | Pass | Runtime-aware validation and latest-only pricing follow `DS-001`/`DS-002`. |
+| No backward-compatibility mechanisms in changed scope | Pass | No aliases, old prices, fallback request branches, or metadata compatibility shim was added. |
+| No legacy old-behavior retention in changed scope | Pass | The application communication contract and SDK README now state safe-message passthrough and provider-neutral message-only ERROR. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The stale generic application wording and contradictory contract text were replaced. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing usage snapshots and saved model IDs retain the reviewed transition behavior; no unrelated migration was introduced. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | The application boundary has one authoritative shape; native evidence is not duplicated into the SDK. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Runtime-aware validation and latest-only pricing follow DS-001/DS-002; no migration was required by the approved design. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-No dead implementation code or compatibility wrapper was identified. The stale application communication contract is recorded as a docs/design-impact item in `CR-001`, not as a deletion recommendation.
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None | N/A | No dead implementation code, obsolete file, legacy branch, compatibility wrapper, or unused test was identified in the current scope. | N/A | None. |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: The implementation changes application-agent error semantics, but the existing application communication contract still specifies the generic message and no provider details. The design/supplement also need an explicit decision about whether application consumers receive safe metadata.
-- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`, `autobyteus-application-sdk-contracts/src/application-agent-events.ts` and generated copies if the public shape is extended, plus application stream tests.
+- Docs impact: **Yes — addressed**.
+- Why: `SR-013`, `ARCH-REV-004`, `design-spec.md`, `provider-error-and-pricing-contract.md`, `requirements.md`, `investigation-notes.md`, the application communication contract, the SDK README, and implementation records now carry the same provider-neutral application boundary.
+- Files or areas likely affected: The above artifacts were updated in the upstream correction/rework; no remaining documentation contradiction is a source-review blocker.
 
 ## Material Premise Validation (Only When Needed)
 
-### Upstream Design-Review Material-Premise Decisions
-
-| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
+| Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-001`–`MP-007` | Confirmed | No upstream premise was reclassified. The implementation review used the existing stale-profile, provider-failure, missing-key, pricing-timestamp, balance, Docker-identity, and external-runtime records as context. |
+| `MP-001`–`MP-007` | Confirmed | No upstream premise changed in this re-review; prior production-path and governing-contract evidence remains applicable. |
+| `MP-008` | Confirmed | The supported application stream path remains reachable as previously traced in `CRR-001`; `SR-013` corrected the governing contract, so the reachable path is now coherent rather than contradictory. |
 
-### `MP-008` — Supported application-agent stream consumes the application public ERROR contract
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-007`, `REQ-009`, `AC-011`, `AC-014`; DS-003; the existing application-agent SDK/communication contract.
-- Relevant behavior ID(s): `B-009`
-- Initiating basis kind: `Contract` / `User`
-- Independent product-supported initiating trigger or applicable governing contract: The application SDK exposes `agentStreaming` for a bound standalone agent, whole team, or selected team member; an application client can connect and observe a provider failure event on that supported binding.
-- Support evidence: `ApplicationAgentStreamRuntimeSource` supplies authorized source events; `ApplicationAgentEventMapper` maps them; `ApplicationAgentStreamSubscription` wraps mapped events in the public `ApplicationAgentEvent` contract for the application client.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: bound application client → `ApplicationAgentStreamSubscription.onSourceEvent` → `ApplicationAgentEventMapper.map` → `ApplicationAgentStreamEventProjector.project`/`projectTeam` → `ApplicationAgentEvent.event` → SDK consumer.
-- Lifecycle preconditions and material consequence at the claimed point: a provider error must have safe `message` and optional status/code/request-ID evidence at the application-facing boundary. The current public event shape can carry only the message, while the existing contract still mandates the old generic message/no-details semantics; application consumers therefore cannot receive the approved safe metadata and the governing artifacts disagree on display semantics.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: This is a design/contract reconciliation blocker, not a speculative provider scenario. Route `CR-001` to `/solution_designer`; do not advance to API/E2E until one authoritative application contract is recorded and implementation/tests are aligned.
+No new or reclassified material premise was introduced. No finding, deduction, or failure attribution relies on an unsupported or merely technically possible scenario.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): **8.6**
-- Overall score (`/100`): **86**
-- Score calculation note: simple average of the ten category scores; the finding and mandatory per-category threshold independently determine the decision.
+All categories meet the clean-pass threshold of 9.0.
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+- Overall score (/10): **9.4**
+- Overall score (/100): **94**
+- Score calculation note: simple average of the ten category scores, rounded to one decimal; the per-category threshold and absence of findings determine the decision.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 8.7 | Native DS-003 and the runtime/pricing spines are clear and implemented end to end. | The application endpoint is described as carrying metadata but terminates at a message-only public shape. | Make the application endpoint payload and filtering rule explicit and consistent. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 8.4 | Internal ownership is strong across catalog, pricing, error extraction, runtime, team, and web layers. | Application projector ownership is not aligned with the public SDK/old communication contract. | Establish one authoritative owner/contract for application error evidence. |
-| `3` | API / Interface / Query / Command Clarity | 8.0 | Canonical internal `code`/`message`/evidence fields are explicit. | `ApplicationAgentStreamEvent` does not expose the safe evidence required by DS-003, while the old contract states incompatible semantics. | Reconcile the SDK interface and contract, then add boundary tests. |
-| `4` | Separation of Concerns and File Placement | 8.9 | Changed concerns are placed in their existing owning files with no source-size pressure. | The application projection change is incomplete relative to its declared boundary. | Complete the chosen boundary without leaking provider logic into application consumers. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.0 | Shared provider evidence and pricing schedule structures are well factored. | The application contract is an unexplained reduced parallel shape. | Either explicitly specialize/document it or reuse the safe evidence fields. |
-| `6` | Naming Quality and Local Readability | 9.2 | Names and local control flow are clear, especially in error extraction and runtime validation. | No material naming weakness found. | Preserve current naming quality when resolving the contract. |
-| `7` | API/E2E Readiness | 7.8 | Focused package checks pass and native transport is ready for downstream execution. | Application API semantics and metadata assertions are unresolved; no API/E2E evidence exists yet. | Resolve design/SDK contract, add boundary coverage, then investigate/execute API/E2E. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 8.4 | Catalog, pricing, missing-key, native error transport, and runtime ownership follow the reviewed behavior. | The approved application error contract is not fully realized. | Align application projection and public SDK behavior with the final approved contract. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 8.9 | No old model aliases, prices, or provider request branches remain. | The prior application contract artifact remains contradictory after the semantic change. | Update or explicitly supersede the old contract; do not leave dual semantics. |
-| `10` | Cleanup Completeness | 8.7 | Obsolete provider rows/policies and generic wrappers were removed. | Application contract/tests/docs were not cleaned up as one coherent boundary. | Finish contract, generated artifacts, docs, and tests after the design decision. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Native and application DS-003 endpoints are explicitly separated and traced. | No material source weakness; live endpoint evidence is downstream. | Preserve the split during API/E2E integration coverage. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Projector/SDK/native owners have clear non-overlapping responsibilities. | No material ownership weakness found. | Keep provider evidence native when adding downstream tests. |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | Public application shape and native evidence shape are explicit and tested. | No material interface weakness; live serialization remains unexecuted. | Confirm wire behavior in API/E2E without extending the SDK shape. |
+| 4 | Separation of Concerns and File Placement | 9.4 | Rework adds proof and contract alignment without metadata machinery or misplaced logic. | No material separation weakness found. | Retain existing ownership if integration fixtures need updates. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | No redundant provider metadata model crosses the application boundary. | Native and application shapes intentionally differ, so dual-boundary assertions must stay explicit. | Keep contract tests at both native and application endpoints. |
+| 6 | Naming Quality and Local Readability | 9.3 | Existing names and narrow projector flow remain clear. | No material naming weakness found. | Preserve current names in downstream coverage. |
+| 7 | API/E2E Readiness | 9.2 | Source blocker is resolved and focused package checks pass. | API/E2E/live provider execution and coverage investigation are not yet evidence. | Produce the required coverage investigation, then execute proportionate checks. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Corrected application semantics and native behavior are implemented and covered. | Provider/deployment runtime behavior remains unexecuted. | Validate live provider and transport behavior downstream. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.4 | Stale generic semantics are removed without compatibility duplication. | No material legacy weakness found. | Keep one authoritative application contract through delivery. |
+| 10 | Cleanup Completeness | 9.4 | Tests, fixtures, normative docs, and revision artifacts are aligned. | No material cleanup weakness; downstream evidence artifacts remain. | Record coverage and delivery evidence in their owning artifacts. |
 
 ## Findings
 
-### CR-001 — Application-agent ERROR contract does not implement the approved safe-evidence boundary
+### Prior Finding `CR-001` — Resolved
 
-- Classification: `Design Impact`
-- Affected behavior: `B-009`; `REQ-007`, `REQ-009`; `AC-011`, `AC-014`; DS-003.
-- Reachability basis: `MP-008`.
-- Evidence:
-  - `design-spec.md` DS-003 states that the application projector projects the actual safe message **and metadata**, and that every parser/mapper/team DTO/websocket/application boundary carries the same safe evidence shape.
-  - `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts` returns only `{ type: "ERROR", message }` for both agent and team application events.
-  - `autobyteus-application-sdk-contracts/src/application-agent-events.ts` defines the public ERROR variant as message-only, so the implementation cannot satisfy the approved metadata requirement without a public contract change.
-  - `tickets/done/application-agent-streaming/application-agent-communication-contract.md` section 5.2 still specifies `The agent response failed.` and explicitly forbids provider codes/details. The implementation changes the message behavior without updating or superseding this governing artifact.
-- Consequence: an application-bound consumer can receive the safe provider message but cannot receive the approved safe status/provider-code/request-ID evidence; the repository has two incompatible application error contracts. Native team/web transport is not implicated by this finding.
-- Required action: `/solution_designer` must reconcile the contract before API/E2E. Either (a) explicitly scope application consumers to a message-only, metadata-free boundary and update DS-003/supplement/requirements and the communication contract accordingly, or (b) extend the application SDK ERROR shape and projector with the safe optional evidence fields, update generated copies and tests, and document the new public semantics. Do not choose a code-only workaround that leaves the two contracts contradictory.
+- Prior classification: `Design Impact`.
+- Resolution: `SR-013` narrowed the approved application boundary to the existing provider-neutral message-only SDK; `ARCH-REV-004` accepted the correction; `IR-002` aligned the normative contract, README, fixtures, and durable projector tests.
+- Current evidence: the application projector returns only the safe canonical message; the SDK union remains message-only; agent/team tests reject native/provider/raw evidence; the frontend fixture rejects provider metadata on application ERROR.
+- Current status: **Resolved; no current finding remains.**
+
+No new source or architecture finding is present.
 
 ## Classification
 
-- Review result: `Fail`.
-- Primary classification: `Design Impact` (`CR-001`).
-- This is not a provider taxonomy, redaction, pricing, runtime-ownership, or native team/web transport finding. Those areas matched the reviewed design at source level; their live endpoint/Docker/vault evidence remains downstream as documented.
+- `Pass` is the review outcome; no failure classification applies.
+- Primary classification: **None**.
 
 ## Recommended Recipient
 
-- `/solution_designer` — reconcile the application-agent public error contract and update the authoritative design/supplement or route the required SDK/projector change. After resolution, implementation must return through source review; only then should `/api_e2e_engineer` investigate and execute coverage.
+- `/api_e2e_engineer` — source review passed. Begin the required coverage investigation, then execute API/E2E checks. Do not infer live provider success from the focused package tests.
 
 ## Residual Risks
 
-- GLM-5.3 endpoint/pricing trust and MiniMax deployment endpoint confirmation remain downstream verification gates; the implementation correctly leaves GLM unpriced.
-- Docker build identity and vault-import/provider integration were not verified; no secret was imported or exposed.
-- The server `typecheck` limitation (`tsconfig` `rootDir=src` including tests / TS6059) remains a repository configuration issue; source build passed.
-- Representative live/provider fixtures for balance/quota, auth, rate, request, transport, and redaction behavior remain API/E2E work after the contract blocker is resolved.
-- The old application communication contract must not remain stale after the final design decision.
+- GLM/MiniMax endpoint, pricing, Docker identity, vault import, and live provider behavior remain downstream verification gates.
+- The server `typecheck` limitation caused by repository `tsconfig` `rootDir=src` including tests / TS6059 remains known; source build passed.
+- Representative API/E2E checks for provider balance/quota, authentication, rate limiting, request-shape errors, transport failures, and redaction remain to be investigated and executed.
+- No credential was imported or exposed during this source review.
 
-## Latest Authoritative Result
+## CRR-002 Source Review Result (Prior)
 
-- Review Decision: **Fail**
+- Review Decision: **Pass**
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Pass** — the application-bound contract path is independently supported and forward-traced (`MP-008`); the failure is the concrete contract/design mismatch.
-- Score Summary: **8.6/10 (86/100)**; categories 2, 3, 7, 8, 9, and 10 are below the clean-pass threshold because of `CR-001`.
-- Failure Origin (when applicable): `N/A` — no API/E2E failure was executed.
-- Recommended Recipient: `/solution_designer`
-- Notes: Do not advance to API/E2E coverage investigation until the application-agent error contract is reconciled and the implementation package is re-reviewed.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Pass**
+- Score Summary: **9.4/10 (94/100)**; all categories are at least 9.0.
+- Failure Origin: `N/A` — no API/E2E failure was executed.
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: Source review is complete. Focused re-review checks passed: projector 16 tests, application SDK contract build/tests (6), application frontend SDK build/tests/type tests (12 runtime tests), and `git diff --check`. API/E2E coverage investigation may begin and must remain truthful about unexecuted provider/live paths.
+
+## CRR-003 Failure-Origin Result
+
+- Review Decision: **API/E2E completion gate remains Blocked; no implementation defect found**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass** — the operational live-E2E command and capability preflight are independently supported, but the run did not reach the claimed provider lifecycle.
+- Failure Origin: **API/E2E-owned environment/capability/execution block**
+- Affected scenario: `API-REAL-001`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: Deterministic repository and realistic in-process coverage passed at 88% confidence. External provider-account, Docker identity, browser DOM, and live recovery evidence remain incomplete.
+
+
+## API/E2E Failure-Origin Review (CRR-005)
+
+### Review Scope
+
+This bounded review covers the Round 2 recheck of `API-REAL-001` from `API-REV-002`. It does not reopen the passed CRR-002 implementation source review or repeat the source audit and scorecard. The seven changed durable test/test-support paths are reviewed separately in `api-e2e-test-review-report.md` under `CRR-006`.
+
+Failure evidence reviewed:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-scenarios.mjs`
+
+### Approved Scenario And Independent Reachability Basis
+
+- `API-REAL-001` is the supported operational live-capability validation path selected by `pnpm test:e2e:real -- --scenarios=lmstudio.qwen36.compaction-agent-flow`, preceded by the value-safe preflight.
+- The independent capability witness remained valid: all 18 preflight checks passed, the configured local LM Studio endpoint/model was ready, and external provider credentials were reported missing without exposing values.
+- The forward path reached the built server, AutoByteus runtime, local LM Studio model, real tool calls, agent turns, and compaction lifecycle. It then failed at the live-E2E compactor leaf-evidence assertion; a separate combined-turn probe produced no next turn/final result for over ten minutes and was interrupted.
+- This is a supported operational validation path, but the compactor leaf-evidence assertion is a test-support scenario contract, not an approved provider-catalog/error behavior contract. Its failure cannot by itself prove a product-source defect.
+
+### Round 2 Expected / Observed / Consequence
+
+| Item | Evidence |
+| --- | --- |
+| Expected | The selected safe local capability completes the supported compaction scenario and emits the final evidence contract. |
+| Support repairs | `live-e2e-harness.ts` now calls the current `listTurnRawTraceCorpusOrdered()` API; `live-e2e-scenarios.mjs` uses approved `gemini-3.7-flash` for the two stale Gemini LLM fixtures. Focused harness tests pass 19/19. |
+| Observed live behavior | Separate-turn runs reached real tool calls, four agent turns, one completed compaction, scanner-clean output, and cleanup, then failed `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING` because the selected compactor task did not contain the required Unicode-boundary source evidence. The combined-turn probe persisted two tool calls but produced no next turn/final result for more than ten minutes and was interrupted. |
+| Cleanup | No secret, provider response body, authorization header, or raw exception was recorded; owned processes were cleaned. |
+| Consequence | `API-REAL-001` remains unresolved. Provider-account-specific behavior, Docker identity, final compactor evidence, browser DOM, and live recovery remain unproven. |
+
+### Prior Failure Decomposition
+
+- The original Round 1 topology misclassification had a concrete stale test-support cause: the harness called a removed `FileMemoryStore.listRawTraceCorpusOrdered()` method while inspecting turn-level user traces. That bounded support defect was repaired and the 19-test harness suite passed.
+- The retired Gemini identifiers in the live scenario catalog were also valid stale fixtures; changing them to the approved `gemini-3.7-flash` was a bounded test-support/data repair and passed focused validation.
+- After those repairs, the remaining live result was not a stale method or catalog-selector failure. It was a scenario-specific leaf-evidence failure after real local model/compaction activity, followed by an uncompleted combined-turn recovery probe.
+
+### Failure-Origin Determination
+
+- No deterministic application implementation failure is indicated. The prior native/team/application WebSocket, provider/server/web/SDK, GraphQL, build, and focused harness suites pass; Round 2 reports no source exception or incorrect product payload.
+- The two durable support edits are accepted as Local Fixes and do not add fallback, provider behavior, or production machinery. The proportional review found no test/test-support quality finding.
+- The remaining failure is an API/E2E-owned test-support/capability-execution block. The retained evidence cannot distinguish whether the local model's compactor selection, the scenario's exact leaf-evidence expectation, or the combined-turn model responsiveness is responsible for the remaining non-completion. No source-specific mechanism is inferred.
+- The product-supported initiating path reaches real runtime/tool/compaction execution, but the evidence does not establish a failure in the provider-error/catalog/pricing implementation. The CRR-002 source pass remains authoritative; no source finding is reopened.
+
+### Classification And Routing
+
+- Failure-origin classification: **Local Fix — API/E2E test-support/capability-execution block**.
+- Owning specialist: `/api_e2e_engineer`.
+- Required next action: investigate or explicitly disposition the remaining local compactor evidence/capability execution result, preserving the no-secret rule. Do not claim external-provider or Docker success from local LM Studio execution or preflight.
+- `API-BROWSER-001` remains `Not Tested`, not a failed browser scenario; it is not attributed to source.
+
+## CRR-005 Failure-Origin Result
+
+- Review Decision: **API/E2E completion gate remains Blocked; no implementation defect found**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass** — the supported local capability reached real runtime/tool/compaction execution, but the remaining failure is a test-support scenario evidence/completion result rather than an approved product-source behavior failure.
+- Failure Origin: **API/E2E-owned test-support/capability-execution block**
+- Affected scenario: `API-REAL-001`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: The two bounded support repairs are accepted. Final confidence is 87%; no external-provider, Docker, browser, or live recovery Pass is claimed.
+
+## API/E2E Failure-Origin Review (CRR-007)
+
+### Review Scope
+
+This bounded review covers the Round 3 disposition of `API-REAL-001` from `API-REV-003`. No new durable test or test-support path was retained, so CRR-006 remains the latest proportional test-code result and is not repeated here.
+
+Failure evidence reviewed:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+
+### Approved Scenario And Independent Reachability Basis
+
+- `API-REAL-001` is the supported operational command `pnpm test:e2e:real -- --scenarios=lmstudio.qwen36.compaction-agent-flow`, preceded by the value-safe capability preflight.
+- The independent preflight remained positive: 18/18 checks passed, LM Studio was READY, and external provider credentials were reported missing without exposing values.
+- The forward path reached the built server, AutoByteus runtime, local LM Studio model, real tool calls, agent turns, and one completed compaction. The live harness then failed its compactor leaf-evidence assertion; temporary probe variations either did not compact or did not produce a final result before the bounded operator window.
+- The compactor leaf-evidence assertion is a test-support scenario contract. It is not an approved provider-catalog/error/pricing contract, so its failure cannot alone establish a product-source defect.
+
+### Round 3 Evidence And Consequence
+
+| Item | Evidence |
+| --- | --- |
+| Unmodified scenario | Preflight passed; one real compaction completed; `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING` occurred after 159.43 seconds. |
+| Budget evidence | Scanner-safe prompt tokens were `[2561,15952,2897,3879,4102,5857,6056,6302]`; trigger threshold was `13043`; phases were `requested`, `started`, `completed`. The first threshold crossing occurred during the large Group-A tool result, before the Unicode-boundary turn. |
+| Temporary probe 1 | A 40-record Group-A corpus plus a short no-tool acknowledgment stayed below threshold and failed `LIVE_E2E_COMPACTION_LIFECYCLE_NOT_COMPLETED`; its changes were restored. |
+| Temporary probe 2 | An inert context-pressure probe produced no final result in the bounded window and was interrupted; its changes were restored. |
+| Durable state | Harness 19/19 and `git diff --check` passed; only the two previously accepted support repairs remain. |
+| Consequence | `API-REAL-001` remains unresolved. External-provider behavior, Docker identity, final local compactor leaf evidence, browser DOM, and live recovery remain unproven. |
+
+### Failure-Origin Determination
+
+- The budget evidence explains the unmodified scenario's missing Unicode leaf source as deterministic compaction-window selection: the first compaction occurred before that evidence entered the target history. It does not show an API/provider rejection, a malformed product payload, or an application source exception.
+- The bounded probes demonstrate that moving the trigger later is not currently a deterministic executable recovery: one probe did not compact, and the second did not complete within the operator window. Those probes were temporary and were correctly not retained as durable coverage changes.
+- The prior stale support repairs remain accepted, and CRR-006 already found no quality defect in the seven changed durable paths. No new test review is required because Round 3 retained no durable edits.
+- The supported operational path reached real product runtime and compaction, but the retained evidence does not establish a failure in the provider-catalog, pricing, or canonical provider-error implementation. The CRR-002 source pass remains authoritative and no implementation finding is reopened.
+
+### Classification And Routing
+
+- Failure-origin classification: **Local Fix — API/E2E test-support/capability-execution disposition block**.
+- Owning specialist: `/api_e2e_engineer`.
+- Required next action: explicitly disposition or obtain a deterministic, reviewed live compactor scenario result; preserve the no-secret boundary and do not promote partial compaction/preflight to a Pass.
+- `API-BROWSER-001` remains `Not Tested`, not a failed browser scenario and not a source attribution.
+
+## CRR-007 Failure-Origin Result
+
+- Review Decision: **API/E2E completion gate remains Blocked; no implementation defect found**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass** — the supported local capability reached real runtime/tool/compaction execution, but the remaining failure is a test-support scenario selection/capability-execution result rather than an approved product-source behavior failure.
+- Failure Origin: **API/E2E-owned test-support/capability-execution disposition block**
+- Affected scenario: `API-REAL-001`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: Round 3 added no durable changes. Final confidence remains 87%; no external-provider, Docker, browser, or live recovery Pass is claimed.
+
+## API/E2E Failure-Origin Review (CRR-008)
+
+### Review Scope
+
+This bounded review records the explicit Round 4 disposition of `API-REAL-001` from `API-REV-004`. It does not repeat CRR-002 source review or CRR-006 proportional test review. Round 4 retained no code, durable coverage, or test-support change.
+
+Disposition evidence reviewed:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+
+### Disposition Basis And Reachability
+
+- `API-REAL-001` remains the supported operational validation command `pnpm test:e2e:real -- --scenarios=lmstudio.qwen36.compaction-agent-flow`, with value-safe preflight and a documented local capability.
+- The prior independent evidence remains valid: preflight passed 18/18, LM Studio was READY, and one real compaction completed. The leaf-evidence assertion failed because the first compaction trigger occurred before the Unicode-boundary turn; bounded attempts to move the trigger later did not produce a deterministic final result.
+- No new safe configured provider/model, external credentials, Docker identity, or reviewed deterministic scenario redesign is available. Repeating the same capability without a changed evidence basis would not add truthful evidence.
+- Preflight and partial compaction are supporting evidence only. They do not establish the final live scenario contract and cannot be promoted to Pass.
+
+### Final Failure-Origin Determination
+
+- The explicit disposition confirms the remaining gap is an API/E2E-owned test-support/capability-execution completion block, not an implementation source failure.
+- No provider response, source exception, malformed product payload, or deterministic application implementation failure was observed. CRR-002 source Pass remains authoritative; no implementation finding is reopened.
+- Round 4 retained no durable path change, so CRR-006 remains the applicable proportional test review and no new test review is required.
+- Resume requires a deterministic reviewed live compactor capability or an explicitly reviewed scenario/test-support redesign that produces final scanner-clean leaf evidence without weakening the contract.
+
+### Classification And Routing
+
+- Failure-origin classification: **Local Fix — API/E2E test-support/capability-execution disposition block**.
+- Owning specialist: `/api_e2e_engineer`.
+- Required next action: wait for the stated capability or reviewed redesign precondition; do not repeat the unchanged non-deterministic run or claim delivery readiness.
+- `API-BROWSER-001` remains `Not Tested`; it is not a failed browser scenario or a source attribution.
+
+## CRR-008 Failure-Origin Result
+
+- Review Decision: **API/E2E completion gate remains Blocked; explicit unresolved disposition; no implementation defect found**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass** — the supported capability evidence and explicit no-repeat disposition are grounded in the prior reachable live path; no unsupported source scenario is inferred.
+- Failure Origin: **API/E2E-owned test-support/capability-execution disposition block**
+- Affected scenario: `API-REAL-001`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: Round 4 retained no code or durable coverage change. Final confidence remains 87%; the package is not delivery-ready.
+
+## API/E2E Failure-Origin Review (CRR-009)
+
+### Review Scope
+
+This bounded review covers the DeepSeek and Kimi live operation failures reported in `API-REV-005`. It does not repeat CRR-002's implementation-source audit or CRR-006's proportional durable test review. Round 5 retained no repository-resident test or test-support change, so no new test review is required.
+
+Failure evidence reviewed:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` safe-operation wrapper and current scenario dispatch
+- `test-support/live-e2e/live-e2e-scenarios.mjs` current DeepSeek model entry and the restored probe-only Kimi entry
+
+### Approved Scenario And Independent Reachability Basis
+
+- The supported product path is the current catalog/model selection → `LLMFactory`/provider adapter → managed-vault credential resolution → live provider request. The approved basis includes current DeepSeek V4 and Kimi K3 catalog/request behavior (`REQ-001`, `AC-006`, `AC-010`–`AC-012`) and preserves provider-specific failures as safe original-message behavior rather than a generic replacement.
+- The direct live scenarios exercised that path through the built server after a user-authorized, value-safe import into only the worktree test vault. Preflight passed 18/18; the selected DeepSeek capability was reported READY, and the Kimi probe was admitted by the same managed live runner after its temporary scenario entry was installed. This is an independent reachability basis for the attempted provider operations, not proof of a successful provider response.
+- The runner's `safeExternalOperation` deliberately converts every non-canonical exception into `LIVE_E2E_PROVIDER_OPERATION_FAILED:<scenario>`. It removes provider body/status details and raw exception text before evidence is retained.
+
+### Expected / Observed / Consequence
+
+| Item | Evidence |
+| --- | --- |
+| Expected | A configured current-provider LLM scenario completes a safe request through the built product boundary, or produces retained evidence sufficient to verify the provider-error contract. |
+| Observed | Vertex Express Gemini, OpenAI, Anthropic, Grok, and GLM completed. DeepSeek returned `LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.llm`; Kimi returned `LIVE_E2E_PROVIDER_OPERATION_FAILED:kimi.llm`. The wrapper retained no provider response body/status, request ID, or raw exception. |
+| Independent checks | Worktree-only vault import configured nine mapped entries without exposing values; preflight passed 18/18; final harness validation passed 19/19; temporary Kimi/Grok/GLM scenario entries were restored. |
+| Consequence | DeepSeek/Kimi provider request success and provider-error-body fidelity remain unproven. The retained evidence cannot distinguish provider rejection, provider/account/model capability, endpoint/credential behavior, transport failure, or a provider-specific request-shape problem. |
+
+### Failure-Origin Determination
+
+- The result is an **API/E2E-owned external-provider capability/execution block**. The direct scenarios reached the reviewed live runner and failed at its safe provider-operation boundary, while multiple other current providers completed through the same built product boundary.
+- The retained evidence does **not** prove that DeepSeek or Kimi rejected the request for a particular reason, and it does not prove a shared application implementation defect. Because the wrapper intentionally discards the differentiating provider evidence, a narrower provider-versus-request-versus-transport attribution would be speculative.
+- No source exception, malformed application payload, deterministic catalog mismatch, or deterministic provider-error transport failure was observed. The passed native/team/application/GraphQL coverage and CRR-002 source Pass remain authoritative; no implementation finding is reopened.
+- The prior LM Studio compactor evidence block remains unresolved. The Round 5 provider runs improve external reachability evidence but do not close `API-REAL-001`, because DeepSeek/Kimi failure fidelity, MiniMax/Gemini AI Studio, Docker identity, browser DOM, provider response fidelity, and live recovery remain unproven.
+
+### Classification And Routing
+
+- Failure-origin classification: **Local Fix — API/E2E external-provider capability/execution block; exact provider-operation cause is unobservable under the safe evidence boundary**.
+- Owning specialist: `/api_e2e_engineer`.
+- Required next action: retain the safe no-secret boundary and investigate only with a changed, reviewed capability or evidence method that can distinguish the operation outcome without exposing provider secrets or raw responses. Do not attribute the failures to implementation source or claim provider rejection fidelity from the wrapper code alone.
+- `API-BROWSER-001` remains `Not Tested`; it is not a failed browser scenario or a source attribution.
+
+## CRR-009 Failure-Origin Result
+
+- Review Decision: **API/E2E completion gate remains Blocked; DeepSeek/Kimi origin is an external-provider capability/execution block; no implementation defect found**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass** — the supported current-provider path reached the live runner after independent value-safe capability setup, but the retained wrapper evidence is intentionally insufficient for a narrower provider/request/transport cause.
+- Failure Origin: **API/E2E-owned external-provider capability/execution block with unresolved subcause**
+- Affected scenarios: `API-REAL-001`, `deepseek.llm`, `kimi.llm`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: CRR-006 remains the applicable proportional test review because Round 5 retained no durable coverage change. Final confidence is 89%; the package remains not delivery-ready.
