@@ -7,33 +7,34 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/terminal-cwd-policy.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Re-review of the revised solution package for Round 1 finding `ARCH-DI-001` / `MP-001`, submitted by `solution_designer`.
-- Prior Review Round Reviewed: `ARCH-REV-001` / Round 1
-- Latest Authoritative Round: `ARCH-REV-002`
-- Current-State Evidence Basis: Static review of the approved package plus current source in `autobyteus-ts` at branch `codex/cwd-outside-workspace-tools`, based on `origin/personal` commit `8ef282ba77705180d985e7000d801f0e0068cdc1`. No dependency-backed runtime or built-artifact evidence was available in either review round; this remains downstream validation work.
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: `6`
+- Trigger: Re-review of the `SR-005` durable documentation correction for `ARCH-DI-002` in the `SR-003` absolute-only contract reset.
+- Prior Review Round Reviewed: `ARCH-REV-005` / Round 5, plus the downstream implementation/code/API-E2E/delivery evidence for the superseded contract
+- Latest Authoritative Round: `ARCH-REV-006`
+- Current-State Evidence Basis: Static re-review of the corrected `SR-005` package plus current source in `autobyteus-ts` at branch `codex/cwd-outside-workspace-tools`, based on `origin/personal` commit `8ef282ba77705180d985e7000d801f0e0068cdc1`. Both durable documentation surfaces now state the absolute-only provided-cwd contract and unchanged omitted defaults; the focused diff for `tool_schema_and_configuration.md` changes only the terminal cross-reference, leaving its generic file-tool contract unchanged. Runtime resolver, serialized schemas, tests, and all prior downstream evidence remain superseded and require post-approval rerun; no post-reset implementation/runtime evidence exists yet.
+- Downstream Evidence Reviewed For Reset Impact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/cwd-outside-workspace-tools/implementation-handoff.md`, `implementation-revision-record.md`, `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-integration-check.log`, `delivery-revision-record.md`, `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-report.md`. These artifacts establish the superseded contract and its stale durable documentation references; they do not approve the reset.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: Yes. Explicit absolute cwd may target an existing external local directory for `run_bash` and `start_background_process`; relative cwd remains workspace-root-relative and lexically/physically contained; omitted defaults, statelessness, process lifecycle, and unrelated tool boundaries remain unchanged.
+- Approved requirements / intended behavior understood: Yes. Explicit absolute cwd may target an existing external local directory for `run_bash` and `start_background_process`; any provided relative cwd is rejected before resolution/process creation; omitted defaults, statelessness, process lifecycle, and unrelated tool boundaries remain unchanged. Exact concise serialized cwd field descriptions are part of the approved contract.
 - Relevant existing behavior and evidence confirmed: Yes. Both tools call `resolveExecutionCwd`; the resolver currently applies workspace containment before `ShellCommandExecutor` or `BackgroundProcessManager`; downstream owners consume one resolved cwd and preserve effective-cwd metadata.
-- Scope guardrail confirmed (`In-Scope Use Cases` / `Out of Scope` / `Preserved Behavior Boundary` / `Review Authority`): Yes. Sandbox/OS isolation/allowlists/cross-category policy and unrelated path policies are explicitly out of scope.
+- Scope guardrail confirmed (`In-Scope Use Cases` / `Out of Scope` / `Preserved Behavior Boundary` / `Review Authority`): Yes. Sandbox/OS isolation/allowlists/cross-category policy, file-tool behavior, `edit_file`, and unrelated path policies are explicitly out of scope; synchronizing an existing terminal contract cross-reference doc is documentation only.
 - Approved change, preserved behavior, and outside scope understood: Yes.
-- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID (`Yes`/`No`): `N/A` for this passing round; the resolved prior finding `ARCH-DI-001` was traceable to `BEH-005`, `REQ-005`, and `AC-006`.
-- Remaining material ambiguity, if any: None for design readiness. Host preflight, error mapping, no-spawn behavior, and the Windows/WSL adapter boundary are now explicit; runtime permission and platform evidence remains downstream.
+- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID (`Yes`/`No`): `N/A` for this passing round; the resolved `ARCH-DI-002` was traceable to `BEH-006`, `REQ-009`, and `AC-009`.
+- Remaining material ambiguity, if any: None for design readiness. The source cross-reference is intentionally a pending implementation edit; `SR-004` now makes its ownership, edit boundary, and consistency evidence explicit.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | Contract | Pass | Pass | Pass | Confirmed | Preserve the foreground path and result/timeout/abort contract. |
 | `BEH-002` | Contract | Pass | Pass | Pass | Confirmed | Preserve the background PID, output, status, stop, and effective-cwd path. |
-| `BEH-003` | Contract | Pass | Pass | Pass | Confirmed | Keep workspace anchoring plus lexical/physical containment for relative input. |
+| `BEH-003` | Contract | Pass | Pass | Pass | Confirmed | Reject every provided relative value before workspace joining or physical resolution; only omitted cwd may use the workspace default. |
 | `BEH-004` | Contract | Pass | Pass | Pass | Confirmed | Keep omitted workspace/tmp defaults and per-call statelessness. |
-| `BEH-005` | System | Pass | Pass | Pass | Confirmed | Resolve, type-check, preflight host cwd access, and map failures before either process owner is invoked; preserve the WSL adapter boundary. |
-| `BEH-006` | Contract | Pass | Pass | Pass | Confirmed | Update schemas and terminal docs together. |
+| `BEH-005` | System | Pass | Pass | Pass | Confirmed | Retain absolute physical/type/access preflight and host-before-WSL ordering; reject provided relative values before resolution. |
+| `BEH-006` | Contract | Pass | Pass | Pass | Confirmed | Exact field descriptions and both terminal documentation surfaces are in scope; `SR-005` verifies the bounded cross-contract documentation correction and requires schema/docs consistency evidence. |
 | `BEH-007` | Contract | Pass | Pass | Pass | Confirmed | Keep file, multimedia, MCP, provider, file-explorer, and interactive-terminal boundaries unchanged. |
 
 ## Supplemental Artifact Coherence Verdict
@@ -120,10 +121,10 @@ The primary spines span the tool boundary, cwd policy owner, execution/lifecycle
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `AgentContextLike.workspaceRootPath` | Pass | Pass | Pass | N/A | Pass | Remains workspace identity/default/relative anchor, not absolute-cwd authority. |
+| `AgentContextLike.workspaceRootPath` | Pass | Pass | Pass | N/A | Pass | Remains workspace identity and omitted-cwd default only; it is not a provided-cwd anchor or absolute-cwd authority. |
 | `TerminalResult.effectiveCwd` | Pass | Pass | Pass | N/A | Pass | Reports the normalized cwd used by foreground execution. |
 | `BackgroundProcessInfo.effectiveCwd` | Pass | Pass | Pass | N/A | Pass | Reports process-start cwd while PID remains lifecycle identity. |
-| `cwd` parameter | Pass | Pass | Pass | N/A | Pass | Same absolute/relative/default semantics for both affected tools. |
+| `cwd` parameter | Pass | Pass | Pass | N/A | Pass | Same provided-absolute/provided-relative-rejection/omitted-default semantics for both affected tools. |
 
 ## File Responsibility Mapping Verdict
 
@@ -133,6 +134,7 @@ The primary spines span the tool boundary, cwd policy owner, execution/lifecycle
 | `autobyteus-ts/src/tools/terminal/tools/run-bash.ts` | Pass | Pass | N/A | Pass | Foreground entrypoint/schema/delegation only. |
 | `autobyteus-ts/src/tools/terminal/tools/start-background-process.ts` | Pass | Pass | N/A | Pass | Background entrypoint/schema/delegation only. |
 | `autobyteus-ts/docs/terminal_tools.md` | Pass | Pass | N/A | Pass | Durable contract and testing guidance. |
+| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Pass | Pass | N/A | Pass | `SR-005` verifies the terminal-only documentation diff, preserves generic file-tool behavior, and requires serialized-schema/docs consistency evidence. |
 | Focused unit/integration terminal tests | Pass | Pass | N/A | Pass | Boundary and lifecycle evidence, not a new runtime owner. |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -143,14 +145,16 @@ The primary spines span the tool boundary, cwd policy owner, execution/lifecycle
 | `autobyteus-ts/src/tools/terminal/tools/` | Pass | Pass | Low | Pass | LLM-facing tool wrappers. |
 | `autobyteus-ts/src/tools/terminal/command-execution/` | Pass | Pass | Low | Pass | Execution/platform adapter boundary. |
 | Terminal unit/integration test folders | Pass | Pass | Low | Pass | Existing focused verification locations. |
+| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Pass | Pass | Low | Pass | Documentation contract boundary is explicitly included and corrected in the durable source package. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Absolute-cwd workspace rejection | Pass | Pass | Pass | Pass | Remove only for explicit absolute input; retain relative traversal rejection. |
+| Legacy relative workspace anchoring/containment branch | Pass | Pass | Pass | Pass | Remove the old relative join/containment path; reject every provided relative value before path resolution. |
 | Stale external-cwd rejection tests | Pass | Pass | Pass | Pass | Replace with external success and preserved-boundary coverage. |
-| Stale workspace-contained documentation | Pass | Pass | Pass | Pass | Replace with the approved explicit policy. |
+| Stale workspace-contained documentation | Pass | Pass | Pass | Pass | Replace terminal docs and all existing cross-contract references with the absolute-only policy. |
+| Delivery-updated terminal cross-reference documentation | Pass | Pass | Pass | Pass | `SR-005` verifies the terminal-only correction and requires docs consistency verification. |
 | Sandbox/root-registration machinery | Pass | Pass | Pass | Pass | Correctly rejected/deferred, not introduced. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -179,7 +183,7 @@ The primary spines span the tool boundary, cwd policy owner, execution/lifecycle
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | External absolute cwd | Yes | Pass | Pass | Pass | The worktree example shows direct absolute resolution and execution. |
-| Relative cwd / no-workspace behavior | Yes | Pass | Pass | Pass | Examples distinguish workspace anchoring from process-cwd fallback. |
+| Relative cwd / no-workspace behavior | Yes | Pass | Pass | Pass | Examples show rejection before workspace/process-cwd resolution and absolute success without a workspace. |
 | Boundary ownership / sandbox scope | Yes | Pass | Pass | Pass | Avoided shape is a tool-local sandbox or duplicate path policy. |
 
 ## Material Premise Validation (Only When Needed)
@@ -198,19 +202,21 @@ The primary spines span the tool boundary, cwd policy owner, execution/lifecycle
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None. The Round 1 finding `ARCH-DI-001` is resolved by `SR-002`; the revised package does not introduce a new approved-behavior or current-state gap.
+| Item | Why It Matters | Required Action | Status |
+| --- | --- | --- | --- |
+| None | The corrected package now inventories the long-lived terminal cross-reference, the source docs agree with the absolute-only contract, and the bounded diff preserves generic file-tool behavior. Post-reset implementation still must run the required schema/docs consistency check. | No further architecture action. | Resolved in `SR-005` |
 
 ## Review Decision
 
-`Pass` — the approved behavior basis is confirmed, the revised resolver contract is actionable, and the design is ready for implementation. The remaining runtime, package/build, and supported-platform checks are downstream validation responsibilities, not architecture blockers.
+`Pass` — `SR-005` resolves `ARCH-DI-002`; both durable documentation surfaces now agree with the absolute-only contract, and the design is ready for implementation. Runtime/schema/test changes and the required post-reset consistency evidence remain downstream work.
 
 ## Findings
 
-None.
+None. `ARCH-DI-002` is resolved by `SR-005`; the corrected design and source docs now name, bound, and align the affected cross-contract documentation while preserving the generic file-tool contract and requiring a post-reset docs consistency check.
 
 ## Classification
 
-No unresolved architecture finding. The prior `Design Impact` finding `ARCH-DI-001` is resolved and is recorded in `ARCH-REV-002`.
+No unresolved architecture finding. Prior `Design Impact` finding `ARCH-DI-002` is resolved and is recorded in `ARCH-REV-006`.
 
 ## Recommended Recipient
 
@@ -218,14 +224,13 @@ No unresolved architecture finding. The prior `Design Impact` finding `ARCH-DI-0
 
 ## Residual Risks
 
-- No dependency-backed runtime evidence was available in the clean worktree; downstream implementation/API-E2E work must validate external cwd, symlink normalization, relative containment, inaccessible-cwd no-spawn behavior, and built/package artifacts on supported platforms.
-- Host accessibility preflight is inherently subject to TOCTOU changes and cannot guarantee that a later spawn will succeed; later OS or WSL adapter failures remain runtime errors, not evidence that a sandbox exists.
-- On Windows, the host path preflight intentionally precedes WSL conversion. WSL availability, drive mounting, conversion, and runtime failures remain owned by the existing execution adapter and require platform tests.
-- The approved behavior is trusted-local terminal cwd semantics, not a sandbox. A future sandbox/security ticket must cover all relevant host-accessing categories and must not be added to this change.
-- External cwd makes wrong-checkout operations easier; truthful schema wording and `effectiveCwd` reporting are the approved mitigation.
+- The previously completed implementation, code review, API/E2E evidence, and delivery evidence are valid only for the superseded contract; after this architecture approval, implementation, code review, API/E2E coverage investigation/execution, and delivery must rerun for absolute-only provided cwd.
+- Windows host ACL/WSL behavior remains explicitly untested in the prior evidence and must be rerun after the reset.
+- Host accessibility preflight remains subject to TOCTOU changes and is not a sandbox guarantee.
+- The absolute-only change must not widen or otherwise modify generic file-tool, `edit_file`, media, MCP, provider, file-explorer, or interactive-terminal policy.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-001` remains a reachable approved contract case, and `SR-002` now defines resolver-owned host access preflight, validation error mapping, no-spawn behavior, and the host/Windows-WSL boundary.
-- Notes: `ARCH-DI-001` is resolved. Ownership, spine inventory, interface boundaries, persisted-data reasoning, removal scope, and sandbox deferral remain coherent. No new finding was identified.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-001` remains a reachable approved contract case and `SR-002` still defines the resolver-owned preflight; no material premise blocks this design.
+- Notes: `ARCH-DI-001` and `ARCH-DI-002` are resolved. The absolute-only resolver contract, exact field-description requirement, no-spawn reset coverage, ownership, spines, aligned documentation, bounded generic file-tool diff, consistency-check requirement, and persisted-data decision are coherent. Runtime/schema/test implementation and all downstream evidence must rerun; no approval is inferred from prior superseded reports.

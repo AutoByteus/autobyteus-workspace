@@ -3,9 +3,6 @@ import path from 'node:path';
 import * as fs from 'node:fs';
 import type { AgentContextLike } from './background-process-context.js';
 
-const isWithin = (root: string, candidate: string): boolean =>
-  candidate === root || candidate.startsWith(`${root}${path.sep}`);
-
 const isPermissionError = (error: unknown): boolean => {
   if (typeof error !== 'object' || error === null || !('code' in error)) {
     return false;
@@ -25,28 +22,11 @@ const resolvePhysicalCandidate = (candidate: string): string => {
   return path.resolve(realAncestor, path.relative(existingAncestor, candidate));
 };
 
-function resolveTerminalCwd(context: AgentContextLike | null | undefined, cwd: string): string {
-  if (path.isAbsolute(cwd)) {
-    return path.normalize(resolvePhysicalCandidate(path.resolve(cwd)));
+function resolveTerminalCwd(cwd: string): string {
+  if (!path.isAbsolute(cwd)) {
+    throw new Error('Working directory must be an absolute path.');
   }
-
-  const workspaceRootPath = context?.workspaceRootPath;
-  if (!workspaceRootPath || workspaceRootPath.trim().length === 0) {
-    throw new Error("Parameter 'cwd' requires an absolute path or a configured workspace root.");
-  }
-
-  const lexicalRoot = path.resolve(workspaceRootPath);
-  const candidate = path.resolve(path.join(lexicalRoot, cwd));
-  if (!isWithin(lexicalRoot, candidate)) {
-    throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
-  }
-
-  const physicalRoot = fs.realpathSync(lexicalRoot);
-  const physicalCandidate = resolvePhysicalCandidate(candidate);
-  if (!isWithin(physicalRoot, physicalCandidate)) {
-    throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
-  }
-  return path.normalize(physicalCandidate);
+  return path.normalize(resolvePhysicalCandidate(path.resolve(cwd)));
 }
 
 function ensureDirectoryExists(directoryPath: string): void {
@@ -92,7 +72,7 @@ export function resolveExecutionCwd(
   }
 
   const normalizedCwd = cwd.trim();
-  const resolved = resolveTerminalCwd(context, normalizedCwd);
+  const resolved = resolveTerminalCwd(normalizedCwd);
   ensureDirectoryExists(resolved);
   return resolved;
 }

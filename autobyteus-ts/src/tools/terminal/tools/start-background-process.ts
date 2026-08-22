@@ -27,8 +27,7 @@ argumentSchema.addParameter(new ParameterDefinition({
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'cwd',
   type: ParameterType.STRING,
-  description:
-    "Optional working-directory path for this process. An absolute path may target any existing accessible local directory, including one outside the workspace. A relative path is resolved from the workspace root when configured and cannot escape it. If omitted, the workspace root is used when available; otherwise the system temporary directory is used. cwd applies only to this process and does not change workspace identity or persist across calls. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory.",
+  description: 'Optional working directory for the process.',
   required: false
 }));
 
@@ -40,7 +39,7 @@ export function registerStartBackgroundProcessTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Start a long-running non-interactive shell command in a working directory and return its PID as pid. An explicit absolute cwd may target any existing accessible local directory, including outside the workspace; a relative cwd is resolved from the workspace root when configured and remains contained there. If cwd is omitted, the workspace root is used when available, otherwise the system temporary directory. cwd applies only to this process and does not change workspace identity or persist across calls. The result includes effectiveCwd so you can confirm where the process started.',
+        'Start a long-running non-interactive shell command in a working directory and return its PID as pid. Any provided cwd must be an absolute path to an existing accessible local directory, including one outside the workspace. If cwd is omitted, the workspace root is used when available, otherwise the system temporary directory. cwd applies only to this process and does not change workspace identity or persist across calls. The result includes effectiveCwd so you can confirm where the process started.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd']

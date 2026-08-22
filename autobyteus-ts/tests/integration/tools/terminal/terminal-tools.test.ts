@@ -106,6 +106,32 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
+  it('start_background_process accepts an absolute cwd without a configured workspace', async () => {
+    await withTempDir(async (outside) => {
+      const context = { workspaceRootPath: null, agentId: 'test-agent-001' } as any;
+
+      const startResult = await startBackgroundProcessTool.execute(context, {
+        command: 'for i in 1 2; do echo no_workspace_external_$i; sleep 0.1; done; sleep 10',
+        cwd: outside
+      }) as BackgroundProcessInfo;
+
+      try {
+        expect(startResult.status).toBe('running');
+        expect(startResult.effectiveCwd).toBe(fs.realpathSync(outside));
+
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        const outputResult = await getProcessOutputTool.execute(context, {
+          pid: startResult.pid
+        }) as { output: string; isRunning: boolean };
+        expect(outputResult.output).toContain('no_workspace_external_');
+        expect(outputResult.isRunning).toBe(true);
+      } finally {
+        const stopResult = await stopBackgroundProcessTool.execute(context, { pid: startResult.pid }) as { status: string };
+        expect(stopResult.status).toBe('stopped');
+      }
+    });
+  });
+
   it('run_bash does not preserve cwd across calls', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);

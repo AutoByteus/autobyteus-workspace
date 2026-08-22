@@ -90,16 +90,6 @@ describe('runBash', () => {
     expect(result.effectiveCwd).toBe(os.tmpdir());
   });
 
-  it('resolves relative cwd paths from the workspace root when provided', async () => {
-    const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
-    const context: any = { workspaceRootPath: workspaceRoot };
-
-    const result = await runBash(context, 'pwd', path.join('packages', 'api'));
-
-    expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
-    expect(result.effectiveCwd).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
-  });
-
   it('executes in an explicit absolute cwd outside the workspace', async () => {
     const workspaceRoot = createTempWorkspace();
     const outsideRoot = createTempWorkspace();
@@ -133,14 +123,13 @@ describe('runBash', () => {
     expect(result.effectiveCwd).toBe(fs.realpathSync(outsideRoot));
   });
 
-  it('continues rejecting relative traversal outside the workspace', async () => {
+  it('rejects a provided relative cwd before foreground execution starts', async () => {
     const workspaceRoot = createTempWorkspace();
-    const outsideRoot = createTempWorkspace();
-    const context: any = { workspaceRootPath: workspaceRoot };
+    const executeSpy = vi.spyOn(ShellCommandExecutor.prototype, 'execute');
 
-    await expect(runBash(context, 'pwd', path.relative(workspaceRoot, outsideRoot))).rejects.toThrow(
-      'FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT'
-    );
+    await expect(runBash({ workspaceRootPath: workspaceRoot }, 'echo should-not-start', 'packages/api'))
+      .rejects.toThrow('Working directory must be an absolute path.');
+    expect(executeSpy).not.toHaveBeenCalled();
   });
 
   it('maps missing and non-directory cwd values to working-directory validation errors', async () => {
@@ -158,9 +147,32 @@ describe('runBash', () => {
   it('rejects relative cwd paths when no workspace is configured', async () => {
     const context: any = { workspaceRootPath: null };
 
-    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(
-      /requires an absolute path or a configured workspace root/
-    );
+    const executeSpy = vi.spyOn(ShellCommandExecutor.prototype, 'execute');
+
+    await expect(runBash(context, 'echo nope', 'relative/path'))
+      .rejects.toThrow('Working directory must be an absolute path.');
+    expect(executeSpy).not.toHaveBeenCalled();
+  });
+
+  it('rejects a provided relative cwd before background spawning starts', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const context: any = { workspaceRootPath: workspaceRoot };
+
+    await expect(startBackgroundProcess(context, 'echo should-not-start', 'packages/api'))
+      .rejects.toThrow('Working directory must be an absolute path.');
+    expect(startSpy).not.toHaveBeenCalled();
+    expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+  });
+
+  it('rejects a provided relative cwd without a workspace before background spawning starts', async () => {
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const context: any = { workspaceRootPath: null };
+
+    await expect(startBackgroundProcess(context, 'echo should-not-start', 'relative/path'))
+      .rejects.toThrow('Working directory must be an absolute path.');
+    expect(startSpy).not.toHaveBeenCalled();
+    expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
   });
 
   it('rejects an existing inaccessible absolute cwd before foreground execution starts', async () => {
@@ -171,21 +183,6 @@ describe('runBash', () => {
     fs.chmodSync(inaccessibleRoot, 0o600);
     try {
       await expect(runBash({ workspaceRootPath: workspaceRoot }, 'echo should-not-start', inaccessibleRoot))
-        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
-      expect(executeSpy).not.toHaveBeenCalled();
-    } finally {
-      fs.chmodSync(inaccessibleRoot, 0o700);
-    }
-  });
-
-  it('rejects an existing inaccessible workspace-relative cwd before foreground execution starts', async () => {
-    if (process.platform === 'win32') return;
-    const workspaceRoot = createTempWorkspace('inaccessible');
-    const inaccessibleRoot = path.join(workspaceRoot, 'inaccessible');
-    const executeSpy = vi.spyOn(ShellCommandExecutor.prototype, 'execute');
-    fs.chmodSync(inaccessibleRoot, 0o600);
-    try {
-      await expect(runBash({ workspaceRootPath: workspaceRoot }, 'echo should-not-start', 'inaccessible'))
         .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
       expect(executeSpy).not.toHaveBeenCalled();
     } finally {
@@ -210,20 +207,4 @@ describe('runBash', () => {
     }
   });
 
-  it('rejects an existing inaccessible workspace-relative cwd before background spawning starts', async () => {
-    if (process.platform === 'win32') return;
-    const workspaceRoot = createTempWorkspace('inaccessible');
-    const inaccessibleRoot = path.join(workspaceRoot, 'inaccessible');
-    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
-    const context: any = { workspaceRootPath: workspaceRoot };
-    fs.chmodSync(inaccessibleRoot, 0o600);
-    try {
-      await expect(startBackgroundProcess(context, 'echo should-not-start', 'inaccessible'))
-        .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
-      expect(startSpy).not.toHaveBeenCalled();
-      expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
-    } finally {
-      fs.chmodSync(inaccessibleRoot, 0o700);
-    }
-  });
 });

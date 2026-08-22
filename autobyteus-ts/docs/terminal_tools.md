@@ -13,14 +13,14 @@ Terminal tools provide stateless non-interactive command execution for agents pl
 ## Overview
 
 - **`run_bash` is stateless** — each call runs the supplied command through a non-interactive shell in the resolved `cwd`. Do not rely on `cd` or exported variables from earlier calls.
-- **Explicit terminal `cwd` is per invocation/process** — an absolute `cwd` may
-  target any existing accessible local directory, including one outside the
-  agent workspace. A relative `cwd` is resolved from the configured workspace
-  root and remains workspace-contained. An omitted `cwd` uses the workspace
-  root when configured, otherwise the system temporary directory. This changes
-  only where that command or process runs; it does not redefine workspace
-  identity or persist across calls. This trusted-local terminal behavior is
-  separate from generic file-tool path policy and is not a sandbox.
+- **Explicit terminal `cwd` is per invocation/process** — any provided `cwd`
+  must be absolute and may target any existing accessible local directory,
+  including one outside the agent workspace. An omitted `cwd` uses the
+  workspace root when configured, otherwise the system temporary directory.
+  This changes only where that command or process runs; it does not redefine
+  workspace identity or persist across calls. This trusted-local terminal
+  behavior is separate from generic file-tool path policy and is not a
+  sandbox.
 - **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
 - **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
 - **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.
@@ -33,15 +33,14 @@ Terminal tools provide stateless non-interactive command execution for agents pl
 Execute a stateless command in a working directory.
 
 ```ts
-const result = await runBash(context, "npm install", "apps/web", 120);
+const result = await runBash(context, "npm install", "/absolute/path/to/apps/web", 120);
 ```
 
 **Parameters:**
 
 - `command` (string): shell command to execute.
 - `cwd` (string, optional): an absolute path to any existing accessible local
-  directory, or a relative path resolved from the workspace root when one is
-  configured. Relative paths cannot escape that workspace. If omitted, the
+  directory, including one outside the agent workspace. If omitted, the
   workspace root is used when available; otherwise the system temporary
   directory is used. The value applies only to this invocation.
 - `timeout_seconds` (number, optional): maximum execution time, default `30`.
@@ -70,6 +69,8 @@ const result = await runBash(context, "npm install", "apps/web", 120);
 **Key behavior:**
 
 - Reuse `cwd` on every location-sensitive command that should run in a nested target.
+- A provided relative `cwd` is rejected before path resolution or target
+  process creation; provide an absolute path instead.
 - An existing but inaccessible cwd is rejected before the target shell/process
   is created with a working-directory validation error; no probe process is
   started to test access.
@@ -80,7 +81,7 @@ const result = await runBash(context, "npm install", "apps/web", 120);
 Example long-running command:
 
 ```xml
-<run_bash cwd="apps/web">
+<run_bash cwd="/absolute/path/to/apps/web">
 npm run dev > server.log 2>&1 &
 </run_bash>
 ```
@@ -92,7 +93,7 @@ npm run dev > server.log 2>&1 &
 Convenience tool for starting a long-running process when shell `&` syntax is not desired.
 
 ```ts
-const info = await startBackgroundProcess(context, "yarn dev", "apps/web");
+const info = await startBackgroundProcess(context, "yarn dev", "/absolute/path/to/apps/web");
 // info.pid is the PID to use with the other background tools
 ```
 
@@ -100,8 +101,7 @@ const info = await startBackgroundProcess(context, "yarn dev", "apps/web");
 
 - `command` (string): command to run.
 - `cwd` (string, optional): an absolute path to any existing accessible local
-  directory, or a relative path resolved from the workspace root when one is
-  configured. Relative paths cannot escape that workspace. If omitted, the
+  directory, including one outside the agent workspace. If omitted, the
   workspace root is used when available; otherwise the system temporary
   directory is used. The value applies only to this process.
 
