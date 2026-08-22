@@ -21,7 +21,7 @@
 - Acceptance reference: the user's current explicit done/finalize instruction accepts the `DR-003` rebuilt handoff state.
 - Docs result: no additional long-lived product/runtime documentation impact. Archival paths and delivery/finalization records were reconciled.
 - Release result: intentionally `Not performed`. The user explicitly declined a new version; version remains `1.4.54`, with no tag, release commit, publication, or deployment.
-- Repository result: final ticket-branch commit/push, target merge/push, and safe ticket worktree/branch cleanup are recorded in the canonical release/deployment report.
+- Repository result: ticket finalization commit `c3315f1e73515fbdf870c66013fad32b862617b3` was pushed; merge commit `4311f30ecd41efa23554f0ce087a0559c4257d46` integrated the ticket into `personal`; the target was pushed. Safe worktree/branch cleanup is recorded in the canonical release/deployment report.
 - Residuals: the bounded operational/product residuals from `DR-003` remain documented but are accepted and do not block finalization.
 
 ### DR-003 — Superseding evidence reconciliation and current Electron rebuild
