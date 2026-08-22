@@ -36,6 +36,8 @@ This current package contains the reviewed transparent selected-tab treatment fo
 
 ## Supersession And Limits
 
+- After user acceptance and repository finalization, the dedicated ticket worktree was removed. The generated DMG/ZIP paths above are therefore historical local-build locations rather than retained release assets; hashes and build/integrity logs remain authoritative evidence.
+
 - The prior `DR-002` package at these same generated paths was built before `IR-005`. It was overwritten by this current build. Its old hashes and the pre-F-005 packaged-tab screenshot are historical evidence only and must not be used to identify or verify the current package.
 - `API-REV-004` was a prior failure and is superseded by `API-REV-005` / `API-REV-006` Pass.
 - The current package is unsigned and not notarized; electron-builder skipped signing because the signing identity is null.
