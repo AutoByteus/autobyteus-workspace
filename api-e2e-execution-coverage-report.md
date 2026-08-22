@@ -16,18 +16,18 @@
 - Delivery Revision Record: N/A
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: API-REV-006
-- Current Execution Round: 6
-- Trigger: Solution-designer scope decision separating ticket-specific API/E2E Pass from non-gating broad live-capability residuals.
-- Prior Round Reviewed: Round 5 / API-REV-005; prior feature evidence was complete but the aggregate live gate was reported blocked at 89%.
-- Latest Authoritative Round: Round 6, this report.
+- Current API/E2E Revision ID: API-REV-007
+- Current Execution Round: 7
+- Trigger: User-requested investigation and bounded repair of the non-gating LM Studio live-E2E failure when it could be a test-support defect.
+- Prior Round Reviewed: Round 6 / API-REV-006; feature-specific API/E2E coverage was Pass and broad live residuals were explicitly non-gating.
+- Latest Authoritative Round: Round 7, this report.
 
 ## Investigation And Execution Basis
 
 - Coverage investigation completed before durable coverage changes or final execution: **Yes**.
-- Investigation plan followed: **Yes, with explicit provider-capability recovery**. The user-authorized importer was inspected and used only against the worktree test DB; preflight ran before direct provider execution; temporary provider probes were restored before final durable checks.
-- Existing coverage decisions revised during prior rerun: `test-support/live-e2e/live-e2e-harness.ts` required `listTurnRawTraceCorpusOrdered()` instead of a removed method; `test-support/live-e2e/live-e2e-scenarios.mjs` required `gemini-3.7-flash` for current LLM fixtures. Round 3 added no durable edit; its temporary compaction-timing probes are recorded and restored.
-- Reroute required before or during execution: **Yes, after Round 6** for delivery handoff with the feature-specific Pass and explicit non-gating residuals. No new Round 6 durable path was retained; CRR-006 remains the applicable test review and CRR-009 remains the failure-origin review.
+- Investigation plan followed: **Yes**. The approved CRR-012 test-support rework was executed only after the coverage investigation and proportional review. The live runner used a worktree-owned runtime, value-safe preflight, and no recorded secrets or provider bodies.
+- Existing coverage decisions revised during this rerun: the remaining stale `FileMemoryStore` call was confirmed and repaired to `listTurnRawTraceCorpusOrdered()`. The reviewed local Group-A fixture reduction was not reproducible and was restored; no assertion or production source was changed.
+- Reroute required before or during execution: **Yes, after Round 7**. The stale test-support repair remains a durable delta already covered by CRR-011; the failed live rework and restored fixture are recorded here and require focused failure-origin continuity through `/code_reviewer` before any delivery re-entry.
 - Compatibility / legacy scope: No compatibility wrapper, alias, historical price branch, or migration shim was added. Persisted-data decision remains `Directly Usable — No Migration`; stale saved models are rejected/reselected.
 
 ## Changed Boundary And Evidence Matrix
@@ -42,7 +42,7 @@
 | API-UNIT-001 | AC-001–009, AC-016–018 | Provider catalog, request policies, pricing, vault, orchestration | Focused `autobyteus-ts` and server unit suites | Durable | Pass | 32 `autobyteus-ts` tests and 47 server unit tests passed. |
 | API-CONTRACT-001 | AC-013–015 | SDK/team/web contracts and handlers | SDK Node tests, type tests, team contract tests, Nuxt Vitest | Durable | Pass | Application SDK contracts 6; frontend SDK 12 runtime + type tests; team contracts 2; web 26 tests passed. |
 | API-E2E-001 | AC-001–004, AC-008/009, AC-016/017; persisted data | GraphQL metadata/pricing/secret/import/token ledger | Test-owned SQLite GraphQL E2E | Durable | Pass | Selected E2E run: 18 passed, 28 explicitly skipped runtime tests. Import lifecycle passed despite its expected foreign-key diagnostic fixture. |
-| API-REAL-001 | AC-005/007/010–012/014/017 as exercised; ticket-specific provider/error boundaries | Live and deterministic API/E2E coverage | Feature-specific requirements use deterministic fixtures and passed native/team/application/API coverage; broad LM Studio/DeepSeek/Kimi capability evidence is separately retained as non-gating residual. | Mixed evidence | Pass for ticket scope; residual broader live capability incomplete | Deterministic AC-010–012 provider-message fixtures and Docker-equivalent code/message tests passed; relevant catalog/pricing/runtime/API tests passed. Gemini, OpenAI, Anthropic, Grok, and GLM direct requests passed. DeepSeek/Kimi wrapper failures, LM Studio compactor leaf evidence, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live recovery remain non-gating residuals. |
+| API-REAL-001 | AC-005/007/010–012/014/017 as exercised; ticket-specific provider/error boundaries | Live and deterministic API/E2E coverage | Feature-specific requirements use deterministic fixtures and passed native/team/application/API coverage; broad LM Studio/DeepSeek/Kimi capability evidence is separately retained as non-gating residual. | Mixed evidence | Pass for ticket scope; residual broader live capability incomplete | Deterministic AC-010–012 provider-message fixtures and Docker-equivalent code/message tests passed; relevant catalog/pricing/runtime/API tests passed. Gemini, OpenAI, Anthropic, Grok, and GLM direct requests passed. The reviewed LM Studio test-support rework still failed the non-gating leaf-evidence assertion; DeepSeek/Kimi wrapper failures, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live recovery remain residuals. |
 | API-BROWSER-001 | AC-011/014/015; REQ-009/010 | Browser DOM/WebSocket journey | Not run; direct web handler/stream tests, Nuxt build, and real SDK WebSocket integration were run instead | Browser | Not Tested | No deterministic browser fixture for a provider failure was available; no Electron shell source changed. |
 
 ## Additional Repository Coverage Execution
@@ -79,6 +79,8 @@
 | 28 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/secret-management/live-e2e-harness.test.ts --no-watch && git diff --check | Restored durable worktree | Final harness validity and patch hygiene | Pass | Harness 19/19 passed; diff check passed. |
 | 29 | Solution-designer scope decision: LM Studio compaction and broad live-provider capability are not hard gates for this ticket | Approved requirements/design scope | Separate ticket-specific acceptance from broad live residuals | Pass | Requirements do not name LM Studio or compaction; deterministic provider-message fixtures and Docker-equivalent contract tests are authoritative for AC-010–AC-015. |
 | 30 | Final focused API/E2E disposition after scope decision | Worktree; no source or durable coverage change | Ticket-specific API/E2E result and residual classification | Pass | Feature-specific API/E2E coverage is Pass. Broad live residuals remain explicit and non-gating; no delivery-ready claim is made for those residuals. |
+| 31 | `pnpm test:e2e:real -- --scenarios=lmstudio.qwen36.compaction-agent-flow` | Built server; worktree-owned live runtime; CRR-012-reviewed Group-A count 100 rework | Round 7 LM Studio test-support rework | Fail | Value-safe preflight passed; one compaction completed with phases `requested/started/completed`; safe prompt tokens `[2527,10492,10647,11628,11750,13493,5768,6012]` against threshold `13043`; canonical leaf evidence still failed after 132.823s of test execution (137.28s total) with `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING`. |
+| 32 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/secret-management/live-e2e-harness.test.ts --no-watch && git diff --check` | Restored local Group-A fixture count 170; retained current-store API repair | Final Round 7 durable test-support state | Pass | Harness 19/19 passed and diff check passed. The direct stale method repair is retained; the unproven fixture-size rework is restored. |
 
 ## Validation Confidence Scorecard
 
@@ -90,7 +92,7 @@
 | Environment, configuration, identity, and fixture fidelity | Pass for owned test runtime | 88% | Worktree vault import/preflight passed; MiniMax/Gemini AI Studio and Docker deployment identity remain unavailable. |
 | Failure, edge-case, lifecycle, and recovery evidence | Pass for required deterministic error behavior | 89% | Provider body/status fidelity, LM Studio compactor leaf evidence, and live recovery remain non-gating residuals. |
 | User-surface, browser, and desktop-shell confidence | Pass for tested web-equivalent contracts | 82% | Browser DOM/Electron execution was not required for this source change and remains untested residual scope. |
-| Durable regression coverage quality and relevance | Pass | 91% | Seven reviewed durable paths remain current; no Round 6 durable changes were retained. |
+| Durable regression coverage quality and relevance | Pass | 91% | Prior reviewed paths remain current; the stale store API repair is focused and harness-validated, while the unproven timing rework was restored. |
 
 - Feature-specific API/E2E result: **Pass**.
 - Aggregate broader-validation confidence: **89%**, retained only to make non-gating residual uncertainty visible.
@@ -108,7 +110,7 @@
 - Transport authority: native/team/application API and Docker-equivalent contract tests passed, including canonical non-empty code plus original safe message and application SDK message-only ERROR projection.
 - Relevant catalog/pricing/runtime/API coverage passed. Direct Gemini, OpenAI, Anthropic, Grok, and GLM requests passed; DeepSeek/Kimi wrapper failures remain external capability/body-fidelity residuals and are not source findings.
 - Explicit residuals, not passes: DeepSeek/Kimi live operation/body fidelity; unavailable MiniMax/Gemini AI Studio; actual Docker build and port-8001 identity; browser DOM; LM Studio compactor leaf evidence; live restart/recovery.
-- No Round 6 code or durable coverage change was made. CRR-006 remains the applicable proportional review and CRR-009 remains the focused failure-origin review.
+- Round 7 retained one bounded test-support repair (`listRawTraceCorpusOrdered()` → `listTurnRawTraceCorpusOrdered()`); the CRR-012-reviewed Group-A timing rework was restored after the live leaf assertion remained failing. CRR-011 covers the retained repair; CRR-012 records the failed rework. The result remains feature-specific Pass with non-gating live residuals.
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Ticket Result |
 | --- | --- | --- | --- |
@@ -170,7 +172,7 @@ None. Stale assertions were repaired in place; no compatibility-only coverage wa
 | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` | Authoritative coverage plan and validity record | Retained | Updated with execution-discovered stale fixtures and confidence. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` | Authoritative execution result | Retained | This report. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md` | Round history | Retained | API-REV-001 baseline through API-REV-005 provider-capability recovery history. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md` | Round history | Retained | API-REV-001 baseline through API-REV-007 test-support investigation and execution outcome. |
 | `/tmp/live-e2e-evidence-*` | Sanitized live-run evidence scanner directory | Temporary | Runner removed its temporary evidence directory in its `finally` path. |
 
 ## Temporary Execution Methods / Scaffolding
@@ -209,7 +211,7 @@ None. Stale assertions were repaired in place; no compatibility-only coverage wa
 - Ticket-specific classification: **API/E2E Pass** for the approved exercised requirements. Deterministic provider-message fixtures are authoritative for AC-010–AC-012; Docker-equivalent contract tests are authoritative for AC-013–AC-015; relevant catalog/pricing/runtime/API coverage passed.
 - Residual classification: **API/E2E-owned external-provider/environment capability residual**, not a source failure and not a ticket-gating failure. DeepSeek/Kimi wrapper-level failures, LM Studio compactor evidence, unavailable providers, Docker identity, browser DOM, and live recovery remain visible.
 - No provider response, source exception, incorrect payload, or deterministic application implementation failure was observed. CRR-002 source Pass, CRR-006 proportional test review, and CRR-009 failure-origin review remain authoritative.
-- No Round 6 durable coverage change was retained. Delivery handoff is appropriate with residuals explicitly listed.
+- Round 7 retained one bounded stale test-support API repair; the reviewed Group-A timing rework was restored after the leaf assertion remained failing. Delivery must not bypass the required proportional/failure-origin continuity through `/code_reviewer`.
 
 ## Evidence / Notes
 
@@ -243,7 +245,7 @@ None. Stale assertions were repaired in place; no compatibility-only coverage wa
 - Final preflight passed 18/18. READY included OpenAI, DeepSeek, Vertex Express Gemini, Anthropic, AutoByteus, and LM Studio; Serper and Gemini AI Studio were missing. MiniMax was not eligible because no mapped credential was imported.
 - Direct runs: DeepSeek/Gemini/OpenAI produced Gemini PASS, OpenAI PASS, DeepSeek FAIL with LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.llm. Temporary Grok/Kimi/GLM produced Grok PASS, GLM PASS, Kimi FAIL with LIVE_E2E_PROVIDER_OPERATION_FAILED:kimi.llm. Anthropic passed 2/2 tests.
 - Temporary Grok/Kimi/GLM entries were restored before final harness validation. Final harness validation passed 19/19 and git diff --check passed; no new Round 5 durable coverage remains.
-- Result is not a completion Pass: DeepSeek/Kimi operation failures, unresolved LM Studio compactor leaf evidence, MiniMax/Gemini AI Studio absence, provider-error response-body fidelity, Docker identity, browser DOM, and live recovery remain unproven. No source finding is reopened.
+- Result is not a broader live-capability Pass: DeepSeek/Kimi operation failures, unresolved LM Studio compactor leaf evidence, MiniMax/Gemini AI Studio absence, provider-error response-body fidelity, Docker identity, browser DOM, and live recovery remain unproven. No source finding is reopened.
 
 ## Round 6 Scope Disposition And Ticket-Specific Pass
 
@@ -252,7 +254,7 @@ None. Stale assertions were repaired in place; no compatibility-only coverage wa
 - AC-010–AC-012 authority: deterministic fixtures and redaction/transport assertions; no live account balance or live provider response is required.
 - AC-013–AC-015 authority: Docker-equivalent native/team/application contract tests; the application SDK remains message-only with ERROR shape { type: ERROR, message: string }.
 - Residuals retained and not promoted to Pass: DeepSeek/Kimi live body/operation fidelity, MiniMax/Gemini AI Studio, Docker build/port-8001 identity, browser DOM, LM Studio compactor leaf evidence, and live restart/recovery.
-- No durable coverage or test-support change was made in Round 6. CRR-006 and CRR-009 remain applicable.
+- Round 7 retained the stale store API repair and restored the unproven fixture-timing rework. CRR-011 covers the retained test-support delta; CRR-012 records the failed rework; CRR-009 remains the applicable broader capability failure-origin review.
 - Delivery status: feature-specific package is ready for delivery handoff with non-gating residual risks recorded.
 
 ## Latest Authoritative Result
@@ -262,6 +264,17 @@ None. Stale assertions were repaired in place; no compatibility-only coverage wa
 - Passed ticket evidence: deterministic missing-key behavior; original provider-message fixture preservation/redaction; canonical native code/message; native/team/application message-only projection; catalog/pricing/runtime/API coverage; relevant configured provider requests.
 - Residuals not promoted to Pass: DeepSeek/Kimi live operation/body fidelity; MiniMax/Gemini AI Studio capability; Docker build/port-8001 identity; browser DOM; LM Studio compactor leaf evidence; live restart/recovery.
 - No live account balance or live provider response is required for AC-010–AC-012 under the approved scope.
-- No Round 6 durable coverage change was retained. CRR-006 remains the proportional test review; CRR-009 remains the failure-origin review.
+- Round 7 retained one bounded test-support repair and restored the failed timing rework. The feature-specific result remains Pass; broader LM Studio/DeepSeek/Kimi/Docker/browser/recovery evidence remains non-gating residual. Reroute the cumulative package through `/code_reviewer` before delivery re-entry.
 - Delivery handoff: **Ready for delivery review**, with residual/non-gating capability risks explicitly carried forward.
 
+## Round 7 Test-Support Investigation, Execution, and Disposition
+
+- Trigger: user requested analysis and repair of the LM Studio failure if it originated in test support.
+- Reviewed rework executed: original Group-A → Unicode → Group-B semantic order, local Group-A fixture count 100, and the current `listTurnRawTraceCorpusOrdered()` store API.
+- Safe execution: `pnpm test:e2e:real -- --scenarios=lmstudio.qwen36.compaction-agent-flow`. Build/bootstrap and value-safe preflight passed. The live flow completed one compaction with `requested`, `started`, and `completed` phases. Safe prompt-token evidence was `[2527,10492,10647,11628,11750,13493,5768,6012]` with trigger threshold `13043`.
+- Observed result: the scenario still failed `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING` at the existing canonical leaf assertion after 132.823 seconds of test execution (137.28 seconds total). The fixture reduction did not yield a reproducible final leaf-evidence result.
+- Durable state: restored the Group-A fixture count to 170. Retained only the directly observed stale support repair from `listRawTraceCorpusOrdered()` to `listTurnRawTraceCorpusOrdered()`. No production source, public contract, assertion, scanner safeguard, or test was removed or weakened.
+- Focused post-restoration validation: the live-E2E harness suite passed 19/19 and `git diff --check` passed.
+- Feature-specific decision: **Pass**, unchanged from API-REV-006. The LM Studio result is a broader non-gating API/E2E-owned test-support/capability residual, not a ticket failure. No provider response, source exception, incorrect product payload, or deterministic application implementation failure was observed.
+- Confidence: retain **89% aggregate broader-validation confidence**; the new run confirms the residual but does not add direct feature-specific evidence or eliminate the remaining DeepSeek/Kimi, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and recovery gaps.
+- Routing: the retained durable test-support repair and the failed rework outcome require the cumulative package to return through `/code_reviewer`; delivery must not treat the LM Studio residual as a feature-specific failure or claim broader live capability as Pass.

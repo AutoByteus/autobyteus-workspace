@@ -10,6 +10,7 @@
 | API-REV-004 | `/api_e2e_engineer`; CRR-007 explicit final disposition round 4 | CRR-007; API-REV-003 | Fail for completion gate / 87% | Fail for completion gate / 87% |
 | API-REV-005 | /api_e2e_engineer; user-authorized provider-capability recovery and direct live-provider execution round 5 | CRR-008; CRR-006; API-REV-004 | Fail for completion gate / 87% | Fail for completion gate / 89% |
 | API-REV-006 | /api_e2e_engineer; solution-designer scope disposition and ticket-specific Pass round 6 | Solution decision; CRR-009; API-REV-005 | Feature-specific Pass / aggregate broader residual 89% | Feature-specific Pass / aggregate broader residual 89% |
+| API-REV-007 | /api_e2e_engineer; user-requested LM Studio test-support investigation and reviewed bounded rework round 7 | CRR-010; CRR-011; CRR-012; API-REV-006 | Feature-specific Pass / aggregate broader residual 89% | Feature-specific Pass / aggregate broader residual 89%; LM Studio rework failed and was restored, stale store API repair retained |
 
 ## Revision Entries
 
@@ -112,3 +113,17 @@ None. `API-REV-001` is the initial baseline.
 - Durable state: no Round 6 durable coverage or test-support change. CRR-006 remains the applicable proportional review; CRR-009 remains the focused failure-origin review.
 - Confidence: aggregate broader-validation confidence remains 89% to expose residual uncertainty; this does not downgrade the ticket-specific Pass.
 - Current result: **Feature-specific API/E2E Pass; ready for delivery review with explicit non-gating residuals**.
+
+### API-REV-007 — User-requested LM Studio test-support investigation and bounded rework
+
+- Triggering role, report path, and round: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`; Round 7.
+- Triggering request and scenario IDs: user-requested test-error analysis; `API-REAL-001`; `lmstudio.qwen36.compaction-agent-flow`.
+- Related upstream revision IDs: CRR-010, CRR-011, CRR-012, API-REV-006.
+- Why this revision was recorded: The user asked for a bounded analysis and repair if the earlier LM Studio failure originated in test support. The coverage investigation identified a directly observed stale FileMemoryStore method and a scenario timing hypothesis; code review accepted the bounded changes before rerun.
+- Reviewed rework executed: original Group-A → Unicode → Group-B order, local Group-A fixture count 100, and the current `listTurnRawTraceCorpusOrdered()` API. The run used the documented built runner, worktree-owned runtime, value-safe preflight, and no secret/provider-body recording.
+- Live evidence: build/bootstrap and preflight passed. One compaction completed with phases `requested/started/completed`; safe prompt tokens were `[2527,10492,10647,11628,11750,13493,5768,6012]` against threshold `13043`. The scenario then failed `LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING` after 132.823 seconds of test execution (137.28 seconds total).
+- Prior failure resolution: the test-support stale API defect is resolved by retaining `listTurnRawTraceCorpusOrdered()`. The Group-A count rework did not resolve the canonical leaf-evidence failure and was restored to 170. The stale call was not reached in this run because the leaf assertion still failed first; harness validation passed 19/19 and `git diff --check` passed after restoration.
+- Durable coverage state: retain only the bounded stale test-support repair. No production source, public contract, assertion, scanner safeguard, or test was removed or weakened.
+- Classification and result: **Feature-specific API/E2E Pass remains authoritative.** The LM Studio scenario remains an explicit non-gating API/E2E-owned test-support/capability residual. No provider response, source exception, incorrect product payload, or deterministic application implementation failure was observed; CRR-002 source Pass remains authoritative.
+- Confidence: retain **89% aggregate broader-validation confidence**. The Round 7 run confirms the residual but does not alter the approved feature-specific result or eliminate DeepSeek/Kimi, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live recovery gaps.
+- Required recipient: `/code_reviewer` for focused failure-origin continuity and proportional review of the retained durable test-support repair. Delivery must wait for that reroute and may not claim the broader LM Studio capability as Pass.

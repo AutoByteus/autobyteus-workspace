@@ -745,7 +745,7 @@ export class LiveE2eScenarioExecution {
     }
     await fs.writeFile(
       evidenceAPath,
-      buildCompactionEvidence('A', partA, localModelScenario ? 100 : 180),
+      buildCompactionEvidence('A', partA, localModelScenario ? 170 : 180),
       'utf8',
     );
     await fs.writeFile(unicodeBoundaryEvidencePath, unicodeShieldSource, 'utf8');
