@@ -31,9 +31,10 @@
 - Latest fetched base: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Pre-integration checkpoint: `e336a9744`
 - Integration merge: `09c9cb080`
+- Delivery docs/handoff checkpoint: `d7ae16ca5`
 - Current ticket branch: `codex/provider-catalog-pricing-error-messaging`
-- Current HEAD: `09c9cb080`
-- Divergence from latest tracked base: `4 ahead / 0 behind`
+- Current HEAD: `d7ae16ca5`
+- Divergence from latest tracked base: `5 ahead / 0 behind`
 - Integration method: `Merge --no-ff origin/personal`
 - Conflicts/unmerged paths: `None`
 - Delivery edits began after integration: `Yes`
