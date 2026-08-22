@@ -1,0 +1,767 @@
+# CRR-004 focused API/E2E failure-origin review
+HEAD faf32ef7c1d8400e01531fbefefb0bcc7dcfd953
+
+$ git status --short -- applications/socratic-math-teacher autobyteus-server-ts/src
+(no production-source modifications expected above)
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-backend/socratic-lesson-target-projection.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts [ tests/unit/application-backend/socratic-lesson-target-projection.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-backend-sdk". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:6:7
+  1  |  import {
+  2  |    createApplicationAgentTeamMemberTargetAddress
+  3  |  } from "@autobyteus/application-backend-sdk";
+     |          ^
+  4  |  const UNUSABLE_BINDING_STATUSES = /* @__PURE__ */ new Set(["TERMINATING", "TERMINATED", "FAILED", "ORPHANED"]);
+  5  |  const isApplicationAgentTeamBinding = (binding) => binding.runtime.subject === "TEAM_RUN";
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  11:28:46
+   Duration  858ms (transform 28ms, setup 19ms, import 0ms, tests 0ms, environment 0ms)
+
+exit_status=1 (prerequisite failure before product execution; not credited)
+
+## F001 production path/source
+   256	  const startLesson = async () => {
+   257	    const prompt = elements.lessonPromptInput?.value?.trim() || "";
+   258	    if (!prompt) {
+   259	      setStatus("Enter a math problem before starting a lesson.", "error");
+   260	      return;
+   261	    }
+   262
+   263	    let operation = advanceOperation();
+   264	    pendingStartOperation = operation;
+   265	    setStartLessonBusy(true);
+   266	    setStatus("Starting a new lesson…");
+   267	    try {
+   268	      const lesson = await client.startLesson({ prompt });
+   269	      if (!isOperationCurrent(operation)) return;
+   270
+   271	      operation = replaceSelection(lesson.lessonId, { cancelPendingStart: false });
+   272	      pendingStartOperation = operation;
+   273	      state.detail = lesson;
+   274	      state.lessons = [lesson, ...state.lessons.filter((item) => item.lessonId !== lesson.lessonId)];
+   275	      const connectionAttempt = tutorSession.connectLesson({ lesson, sendInitialProblem: true });
+   276	      render();
+   104	        });
+   105	      });
+   106	    });
+   107	    const pendingLaunchRequest = correlationService.createPendingLaunchRequest(lessonId);
+   108	    const tutorTeam = await context.agentResources.requireRunnable(LESSON_TUTOR_TEAM_SLOT_KEY);
+   109
+   110	    try {
+   111	      const binding = await context.agentExecution.startAgentTeam({
+   112	        launchRequestId: pendingLaunchRequest.launchRequestId,
+   113	        executionResourceRef: tutorTeam.executionResourceRef,
+   114	        launch: buildEffectiveTeamRunLaunch({
+   115	          configuration: tutorTeam,
+   116	        }),
+   117	      });
+   118
+   119	      withAppDatabase(context.storage.appDatabasePath, (db) => {
+   120	        withTransaction(db, () => {
+   121	          const lessonRepository = createLessonRepository(db);
+   122	          createPendingLaunchRequestRepository(db).markCommitted({
+   123	            launchRequestId: binding.launchRequestId,
+   124	            bindingId: binding.bindingId,
+   125	            committedAt: createdAt,
+   126	          });
+   127	          const launchProjection = resolveStartLessonProjection({
+   128	            currentLesson: lessonRepository.getById(lessonId),
+   129	            binding,
+   130	            createdAt,
+   131	          });
+   132	          lessonRepository.upsertLesson({
+   133	            lessonId,
+   134	            prompt,
+   135	            status: launchProjection.status,
+   136	            updatedAt: launchProjection.updatedAt,
+   137	            latestBindingId: binding.bindingId,
+   138	            latestRunId: binding.runtime.teamRunId,
+   139	            latestBindingStatus: launchProjection.latestBindingStatus,
+   140	            lastErrorMessage: launchProjection.lastErrorMessage,
+   141	            closedAt: launchProjection.closedAt,
+   142	            artifactCatchupCompletedAt: launchProjection.artifactCatchupCompletedAt,
+   143	          });
+   144	        });
+   145	      });
+   146
+   147	      await context.publishNotification("lesson.started", {
+   148	        lessonId,
+   149	        bindingId: binding.bindingId,
+   150	        runId: binding.runtime.teamRunId,
+   151	        createdAt,
+   152	      });
+   153
+   154	      return createLessonReadService(context).getLesson(lessonId);
+   155	    } catch (error) {
+   156	      const message = error instanceof Error ? error.message : String(error);
+   157	      const reconciled = await correlationService.reconcileLaunchRequest(pendingLaunchRequest.launchRequestId);
+   158	      withAppDatabase(context.storage.appDatabasePath, (db) => {
+   159	        withTransaction(db, () => {
+   160	          createLessonRepository(db).upsertLesson({
+    20	  },
+    21
+    22	  async getLesson(lessonId: string) {
+    23	    const normalizedLessonId = requireLessonId(lessonId);
+    24	    const lessonDetail = withAppDatabase(context.storage.appDatabasePath, (db) => {
+    25	      const lesson = createLessonRepository(db).getById(normalizedLessonId);
+    26	      if (!lesson) {
+    27	        return null;
+    28	      }
+    29	      return {
+    30	        lesson,
+    31	        messages: createLessonMessageRepository(db).listByLessonId(normalizedLessonId),
+    32	      };
+    33	    });
+    34	    if (!lessonDetail) return null;
+    35
+    36	    const binding = lessonDetail.lesson.status === "active" && lessonDetail.lesson.latestBindingId
+    37	      ? await context.agentExecution.get(lessonDetail.lesson.latestBindingId)
+    38	      : null;
+    39	    return {
+    40	      ...lessonDetail.lesson,
+    41	      tutorTargetAddress: deriveTutorTargetAddress(lessonDetail.lesson, binding),
+    42	      messages: lessonDetail.messages,
+    43	    };
+    44	  },
+    45	});
+    33	const isApplicationAgentTeamBinding = (
+    34	  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
+    35	): binding is ApplicationAgentTeamBinding => binding.runtime.subject === "TEAM_RUN";
+    36
+    37	export const deriveTutorTargetAddress = (lesson: Pick<
+    38	  LessonSummary,
+    39	  "status" | "latestBindingId" | "latestBindingStatus"
+    40	>, binding: ApplicationAgentBinding | ApplicationAgentTeamBinding | null): ApplicationAgentTargetAddress | null => {
+    41	  if (lesson.status !== "active" || !lesson.latestBindingId || (
+    42	    lesson.latestBindingStatus
+    43	    && UNUSABLE_BINDING_STATUSES.has(lesson.latestBindingStatus)
+    44	  ) || !binding || binding.status !== "ATTACHED") {
+    45	    return null;
+    46	  }
+    47
+    48	  if (!isApplicationAgentTeamBinding(binding)) {
+    49	    throw new Error("Socratic tutor binding must be an agent-team binding.");
+    50	  }
+    51	  return createApplicationAgentTeamMemberTargetAddress(binding, "tutor");
+    52	};
+    56	export const createApplicationAgentTeamMemberTargetAddress = (
+    57	  binding: ApplicationAgentTeamBinding,
+    58	  agentRunId: string,
+    59	): ApplicationAgentTargetAddress => {
+    60	  const bindingId = requireBindingId(binding);
+    61	  requireRuntimeSubject(binding, "TEAM_RUN");
+    62
+    63	  const normalizedAgentRunId = typeof agentRunId === "string" ? agentRunId.trim() : "";
+    64	  if (!normalizedAgentRunId) {
+    65	    throw new Error("Application agent-team member target requires agentRunId.");
+    66	  }
+    67
+    68	  const members = Array.isArray(binding.runtime.members) ? binding.runtime.members : [];
+    69	  if (!members.some((member) => member?.agentRunId === normalizedAgentRunId)) {
+    70	    throw new Error(
+    71	      `Application agent-team binding '${bindingId}' does not contain agentRunId '${normalizedAgentRunId}'.`,
+    72	    );
+    73	  }
+    74
+    75	  return {
+    76	    bindingId,
+    77	    target: {
+    78	      kind: "AGENT_TEAM_MEMBER",
+    79	      agentRunId: normalizedAgentRunId,
+    80	    },
+    81	  };
+    82	};
+
+## F002 production path/source
+    84	const initializeStandaloneProcessResources = async (
+    85	  config: StandaloneApplicationHostConfig,
+    86	): Promise<StandaloneProcessResources> => {
+    87	  let prismaInitializationStarted = false;
+    88	  let vaultInitializationStarted = false;
+    89	  try {
+    90	    await materializeStandaloneHostConfig(config);
+    91	    const appConfig = appConfigProvider.initialize({ appDataDir: config.appDataDir });
+    92	    appConfig.initialize();
+    93	    const loggingConfig = getLoggingConfigFromEnv(process.env);
+    94	    initializeRuntimeLoggerBootstrap({
+    95	      logsDir: appConfig.getLogsDir(),
+    96	      loggingConfig,
+    97	    });
+    98	    initializeServerAppLogger(loggingConfig);
+    99	    runMigrations({
+   100	      appRoot: appConfig.getAppRootDir(),
+   101	      databaseUrl: appConfig.getOperationalDatabaseUrl(),
+   102	    });
+   103	    const databaseLocation = appConfig.getOperationalDatabaseLocation();
+   104	    configureFileToolDeniedPaths([
+   105	      databaseLocation.databasePath,
+   106	      databaseLocation.rootKeyPath,
+   107	      `${databaseLocation.databasePath}-wal`,
+   108	      `${databaseLocation.databasePath}-shm`,
+   109	      `${databaseLocation.databasePath}-journal`,
+   110	    ]);
+   111	    prismaInitializationStarted = true;
+   112	    await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
+   113	    try {
+   114	      await assertTokenUsageCurrentSchema();
+   115	      configureTokenUsageMigrationReadiness({
+   116	        kind: "CURRENT_SCHEMA_DEGRADED",
+   117	        migrationStatus: "NOT_RUN",
+   118	        logPath: null,
+   119	      });
+   120	    } catch (error) {
+   121	      const reason = `Required current token-usage schema is unavailable: ${String(error)}`;
+   122	      configureTokenUsageMigrationReadiness({
+   123	        kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
+   124	        reason,
+   125	      });
+   126	      throw new Error(reason, { cause: error });
+   127	    }
+   128	    vaultInitializationStarted = true;
+   129	    await getSecretVaultRuntime().initialize(databaseLocation);
+   130	    const statuses = await getAppDataMigrationRunner().runPending();
+   131	    for (const migration of statuses) {
+   132	      if (migration.status === "FAILED" || migration.status === "RUNNING") {
+   133	        logger.warn(
+   134	          `Standalone app-data migration '${migration.migrationId}' is ${migration.status}: `
+   135	          + `${migration.errorMessage ?? "no detail"}`,
+   136	        );
+   137	      }
+   138	    }
+   139	    const tokenUsageStatus = statuses.find(
+   140	      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
+   141	    );
+   142	    configureTokenUsageMigrationReadiness(
+   143	      tokenUsageStatus?.status === "SUCCEEDED"
+   144	        || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
+   145	        ? { kind: "READY" }
+   146	        : {
+   147	            kind: "CURRENT_SCHEMA_DEGRADED",
+   148	            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
+   149	            logPath: tokenUsageStatus?.logPath ?? null,
+   150	          },
+   151	    );
+   152	    await new TeamRunV1PackageCatalog(appConfig.getMemoryDir()).rebuild();
+   153	    const teamRunV1Status = statuses.find(
+   154	      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+   155	    );
+   202	export const startStandaloneApplicationHost = async (
+   203	  input: StandaloneApplicationHostConfigInput,
+   204	): Promise<StandaloneApplicationHostHandle> => {
+   205	  const config = resolveStandaloneApplicationHostConfig(input);
+   206	  const validatedPackage = await validateStandaloneApplicationPackage({
+   207	    packageRoot: config.packageRoot,
+   208	    localApplicationId: config.localApplicationId,
+   209	  });
+   210	  let app: FastifyInstance | null = null;
+   211	  let processResources: StandaloneProcessResources | null = null;
+   212	  let agentToolsMcpRuntime:
+   213	    AgentToolsMcpRuntime | null = null;
+   214	  let generalProcessRunSupervisor:
+   215	    GeneralProcessRunSupervisor | null = null;
+   216	  try {
+   217	    processResources = await initializeStandaloneProcessResources(config);
+   218	    await resetDefaultAgentRunEventPipeline();
+   219	    const { selection, bundleService } = validatedPackage;
+   220	    const definitionServices = createApplicationDefinitionServices({
+   221	      appConfig: processResources.appConfig,
+   222	      bundleService,
+   223	    });
+   224	    agentToolsMcpRuntime =
+   225	      createAgentToolsMcpRuntime({
+   226	        generalProcessPublisher:
+   227	          getGeneralProcessPublishedArtifactPublisher(),
+   228	      });
+   229	    generalProcessRunSupervisor =
+   230	      createGeneralProcessRunSupervisor(
+   231	        agentToolsMcpRuntime.generalProcessSessionManager,
+   232	      );
+   233	    const applicationRuntime = buildApplicationPlatformRuntime({
+   234	      appConfig: processResources.appConfig,
+   235	      bundleService,
+    20	export class AppDataMigrationRegistry {
+    21	  private readonly definitions: AppDataMigrationDefinition[];
+    22
+    23	  constructor(definitions?: AppDataMigrationDefinition[]) {
+    24	    this.definitions = definitions ?? [
+    25	      new CustomProviderV1AppDataMigration(),
+    26	      new RemoveGlobalSkillDiscoveryModeMigration(
+    27	        appConfigProvider.config.getMemoryDir(),
+    28	        appConfigProvider.config.getAppDataDir(),
+    29	      ),
+    30	      new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+    31	      new TeamRunExecutionTreeV1AppDataMigration(
+    32	        appConfigProvider.config.getMemoryDir(),
+    33	        appConfigProvider.config.getAppDataDir(),
+    34	      ),
+    35	      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+    36	        appConfigProvider.config.getMemoryDir(),
+    37	      ),
+    38	      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+    39	      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+    40	      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+    41	      new MigrateNativeWorkingContextSnapshotsV5Migration(
+    42	        appConfigProvider.config.getMemoryDir(),
+    43	      ),
+    44	      new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
+    45	      new TokenUsageCustomProviderModelValueBackfillMigration(),
+    46	      new TokenUsageProviderNameSnapshotBackfillMigration(),
+    47	      new TokenUsageRunRecordsV1AppDataMigration(),
+    48	      new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
+    49	      new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+    50	      new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+    51	      new CustomProviderReadableIdAppDataMigration(),
+    52	    ];
+    53	    this.validateDefinitions();
+    54	  }
+    55
+    68	export class RuntimeMemoryLocationClassifier {
+    69	  private readonly layout: AgentMemoryLayout;
+    70	  private readonly runMetadataStore: AgentRunMetadataStore;
+    71	  private readonly locationService: AgentMemoryLocationService;
+    72
+    73	  constructor(private readonly memoryDir: string) {
+    74	    this.layout = new AgentMemoryLayout(memoryDir);
+    75	    this.runMetadataStore = new AgentRunMetadataStore(memoryDir);
+    76	    this.locationService = new AgentMemoryLocationService({ memoryDir });
+    77	  }
+    78
+    79	  async classify(): Promise<RuntimeMemoryLocationClassification> {
+    80	    const diagnostics: RuntimeMemoryLocationDiagnostic[] = [];
+    81	    const locations = new Map<string, RuntimeMemoryLocation>();
+    82	    const blockedPaths = new Set<string>();
+    23	/** Resolves current Team Agent memory locations from the authoritative V1 execution tree. */
+    24	export class AgentMemoryLocationService {
+    25	  private readonly layout: AgentMemoryLayout;
+    26	  private readonly locations: TeamRunExecutionTreeLocationService;
+    27
+    28	  constructor(input: {
+    29	    layout?: AgentMemoryLayout;
+    30	    locationService?: TeamRunExecutionTreeLocationService;
+    31	    memoryDir?: string;
+    32	  } = {}) {
+    33	    const memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    34	    this.layout = input.layout ?? new AgentMemoryLayout(memoryDir);
+    35	    this.locations = input.locationService ?? new TeamRunExecutionTreeLocationService({ memoryDir });
+    36	  }
+    37
+    38	  getStandaloneLocation(input: { agentRunId: string; storedMemoryDir?: string | null }): StandaloneAgentMemoryLocation {
+    39	    const agentRunId = required(input.agentRunId, "agentRunId");
+    40	    return {
+    27	type Manager = Pick<AgentTeamRunManager, "getManagedTeamRun" | "listManagedTeamRunIds">;
+    28
+    29	/** Derives physical/history context from the exact V1 tree without another identity model. */
+    30	export class TeamRunExecutionTreeLocationService {
+    31	  private readonly memoryDir: string;
+    32	  private readonly layout: AgentMemoryLayout;
+    33	  private readonly manager: Manager;
+    34	  private readonly store: TeamRunExecutionTreeStore;
+    35	  private readonly packageCatalog: TeamRunV1PackageCatalog;
+    36
+    37	  constructor(input: {
+    38	    memoryDir?: string;
+    39	    manager?: Manager;
+    40	    store?: TeamRunExecutionTreeStore;
+    41	  } = {}) {
+    42	    this.memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    43	    this.layout = new AgentMemoryLayout(this.memoryDir);
+    44	    this.manager = input.manager ?? DefaultManager.getInstance();
+    45	    this.store = input.store ?? new TeamRunExecutionTreeStore();
+    46	    this.packageCatalog = new TeamRunV1PackageCatalog(this.memoryDir);
+    47	  }
+    48
+    49	  async findAgent(input: {
+    50	    agentRunId?: string | null;
+    25	export class GeneralProcessRunSupervisor {
+    26	  private readonly agentRunManager: AgentRunManager;
+    27	  private readonly agentTeamRunManager: AgentTeamRunManager;
+    28	  private closePromise: Promise<void> | null = null;
+    29
+    30	  constructor(
+    31	    agentToolsSessionManager: AgentToolMcpSessionManager,
+    32	  ) {
+    33	    const codexThreadBootstrapper = new CodexThreadBootstrapper(
+    34	      undefined,
+    35	      undefined,
+    36	      undefined,
+    37	      undefined,
+    38	      undefined,
+    39	      agentToolsSessionManager,
+    40	    );
+    41	    const claudeSessionManager = new ClaudeSessionManager(
+    42	      undefined,
+    43	      undefined,
+    44	      agentToolsSessionManager,
+    45	    );
+    46	    this.agentRunManager = AgentRunManager.initializeProcessInstance({
+    47	      codexBackendFactory: new CodexAgentRunBackendFactory(
+    48	        undefined,
+    49	        codexThreadBootstrapper,
+    50	      ),
+    51	      claudeBackendFactory: new ClaudeAgentRunBackendFactory(
+    52	        claudeSessionManager,
+    53	      ),
+    54	      agentToolMcpSessionManager: agentToolsSessionManager,
+    55	    });
+    56	    const memberTeamContextBuilder =
+    57	      new MemberTeamContextBuilder(
+    58	        AgentTeamDefinitionService.getInstance(),
+    59	      );
+    60	    try {
+    61	      this.agentTeamRunManager =
+    62	        AgentTeamRunManager.initializeProcessInstance({
+    63	          mixedTeamRunBackendFactory:
+    64	            new MixedTeamRunBackendFactory({
+    65	              createTeamManager:
+    66	                (context, subTeamRunFactory, callbacks) =>
+    67	                  new MixedTeamManager(context, {
+    68	                    subTeamRunFactory,
+    69	                    agentRunManager: this.agentRunManager,
+    70	                    agentToolMcpSessionManager:
+    71	                      agentToolsSessionManager,
+    72	                    memberTeamContextBuilder,
+    73	                    publish: callbacks.publish,
+    74	                    deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
+    75	                    acceptPlatformBinding: callbacks.acceptPlatformBinding,
+    76	                  }),
+    77	            }),
+    78	        });
+    79	    } catch (error) {
+    80	      AgentRunManager.releaseProcessInstance(
+    81	        this.agentRunManager,
+    82	      );
+    83	      throw error;
+    84	    }
+    85	  }
+    86
+    87	  close(): Promise<void> {
+    88	    this.closePromise ??= this.closeInternal();
+    56	export class AgentRunManager {
+    57	  private static instance: AgentRunManager | null = null;
+    58	  private readonly autoByteusBackendFactory: AgentRunBackendFactory;
+    59	  private readonly codexBackendFactory: AgentRunBackendFactory;
+    60	  private readonly claudeBackendFactory: AgentRunBackendFactory;
+    61	  private readonly activationRegistry: AgentRunActivationRegistry;
+    62	  private readonly memoryRecorder: AgentRunMemoryRecorder;
+    63	  private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
+    64
+    65	  static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
+    66	    return AgentRunManager.instance ??= new AgentRunManager(options);
+    67	  }
+    68
+    69	  static initializeProcessInstance(options: AgentRunManagerOptions): AgentRunManager {
+    70	    if (AgentRunManager.instance) {
+    71	      throw new Error("The process AgentRunManager is already initialized.");
+    72	    }
+    73	    AgentRunManager.instance = new AgentRunManager(options);
+    74	    return AgentRunManager.instance;
+    75	  }
+    76
+    77	  static releaseProcessInstance(instance: AgentRunManager): void {
+    78	    if (AgentRunManager.instance === instance) AgentRunManager.instance = null;
+    79	  }
+    80
+    81	  constructor(options: AgentRunManagerOptions = {}) {
+    82	    this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    83	    this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    84	    this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    85	    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    86	    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
+    87	      new AgentRunResourceManager({
+    88	        sessionScope: {
+    89	          revokeForRun: (runId) => (options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService())
+    90	            .revokeAgentToolMcpSessionsForRun(runId),
+    91	        },
+    92	        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
+    93	        publishedArtifactRelayService: options.publishedArtifactRelayService
+    94	          ?? createGeneralProcessPublishedArtifactRelayService(),
+    95	        memoryRecorder: this.memoryRecorder,
+    96	      }),
+    97	    );
+    98	    logger.info("AgentRunManager initialized.");
+    99	  }
+   100
+    31	export class RunFileChangeService {
+    32	  private readonly projectionStore: RunFileChangeProjectionStore;
+    33	  private readonly workspaceManager: WorkspaceManager;
+    34	  private readonly teamLocations: TeamRunExecutionTreeLocationService;
+    35	  private readonly projections = new Map<string, RunFileChangeProjection>();
+    36	  private readonly queues = new Map<string, Promise<void>>();
+    37
+    38	  constructor(options: {
+    39	    projectionStore?: RunFileChangeProjectionStore;
+    40	    workspaceManager?: WorkspaceManager;
+    41	    teamLocations?: TeamRunExecutionTreeLocationService;
+    42	    memoryDir?: string;
+    43	  } = {}) {
+    44	    this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
+    45	    this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    46	    this.teamLocations = options.teamLocations ?? new TeamRunExecutionTreeLocationService({ memoryDir: options.memoryDir });
+    47	  }
+    48
+    49	  attachToRun(run: AgentRun): () => void {
+    37	/** Process-wide catalog and lifecycle owner for root executions only. */
+    38	export class AgentTeamRunManager {
+    39	  private static instance: AgentTeamRunManager | null = null;
+    40	  private readonly memoryLayout: AgentMemoryLayout;
+    41	  private readonly factory: MixedTeamRunBackendFactory;
+    42	  private readonly executionTreeStore: TeamRunExecutionTreeStore;
+    43	  private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
+    44	  private readonly communicationStore: TeamCommunicationV1Store;
+    45	  private readonly packageCatalog: TeamRunV1PackageCatalog;
+    46	  private readonly managedRoots = new Map<string, RootTeamRun>();
+    47	  private readonly rootTransitionLanes = new Map<string, Promise<void>>();
+    48	  private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
+    49
+    50	  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
+    51	    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
+    52	  }
+    53
+    54	  static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+    55	    if (AgentTeamRunManager.instance) {
+    56	      throw new Error("The process AgentTeamRunManager is already initialized.");
+    57	    }
+    58	    AgentTeamRunManager.instance = new AgentTeamRunManager(options);
+    59	    return AgentTeamRunManager.instance;
+    60	  }
+    61
+    62	  static releaseProcessInstance(instance: AgentTeamRunManager): void {
+    63	    if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+    64	  }
+    65
+    66	  constructor(options: AgentTeamRunManagerOptions = {}) {
+
+## Existing API/E2E executable evidence
+See api-rev-001-socratic-standalone.log, api-rev-001-socratic-standalone-server.log,
+api-rev-001-standalone-manager-stack-probe.log, and api-rev-001-source-correlation.log.
+
+$ git diff --check
+PASS
+
+## Reviewer exact rerun after required shared-package build
+The first reviewer attempt above stopped at missing generated SDK dist and is not credited as product evidence.
+$ pnpm -C autobyteus-server-ts prepare:shared
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-backend/socratic-lesson-target-projection.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (3 tests | 1 failed) 6ms
+     × derives the shared tutor-member address from the authoritative active team binding 3ms
+     ✓ surfaces wrong binding subjects and missing tutor membership as configuration defects 1ms
+     ✓ requests and carries the shared target address through the generated GraphQL client 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts > Socratic lesson tutor target projection > derives the shared tutor-member address from the authoritative active team binding
+Error: Application agent-team binding 'binding-lesson-1' does not contain agentRunId 'tutor'.
+ ❯ createApplicationAgentTeamMemberTargetAddress ../autobyteus-application-backend-sdk/src/application-agent-target-address.ts:70:11
+ ❯ deriveTutorTargetAddress ../applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:51:10
+     49|     throw new Error("Socratic tutor binding must be an agent-team bind…
+     50|   }
+     51|   return createApplicationAgentTeamMemberTargetAddress(binding, "tutor…
+       |          ^
+     52| };
+     53|
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts:51:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  11:29:08
+   Duration  569ms (transform 33ms, setup 16ms, import 32ms, tests 6ms, environment 0ms)
+
+exit_status=1 (expected current production assertion failure)
