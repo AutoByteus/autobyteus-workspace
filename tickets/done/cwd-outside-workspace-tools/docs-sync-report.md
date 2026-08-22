@@ -8,7 +8,7 @@
 - Delivery re-entry trigger: fresh source/API/E2E chain `IR-002` / `CRR-003` / `API-REV-002` / `CRR-004` for candidate commit `95f538b66c88f02d52f2b33cb1f1fd47122b01bc`.
 - Integrated base: `origin/personal @ 8ef282ba77705180d985e7000d801f0e0068cdc1`.
 - Candidate relation after refresh: `HEAD...origin/personal = 2/0`; refreshed base is an ancestor of the candidate.
-- Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
+- Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log`.
 
 ## Integrated-State Decision
 
