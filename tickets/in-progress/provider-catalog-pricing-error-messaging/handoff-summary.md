@@ -2,10 +2,10 @@
 
 ## Current Status
 
-`Blocked pending re-review of the second API-REV-007 durable support repair; prior verification handoff remains superseded.`
+`Blocked pending re-review of the next API-REV-007 quality-probe rework; prior verification handoff remains superseded.`
 
 - Date: `2026-08-22`
-- Delivery revision: `DR-006`
+- Delivery revision: `DR-008`
 - Lineage: `SR-006; architecture review package; implementation handoff; CRR-002 source Pass (9.4/10); CRR-006 proportional test review; CRR-009 failure-origin review; CRR-010 durable test-support review; API-REV-006; API-REV-007 pending`
 - Feature-specific API/E2E: `Pass`
 - Broader validation: `89% aggregate confidence retained as non-gating residual context`
@@ -14,16 +14,16 @@
 - User verification: `Superseded pending re-review`
 - Repository finalization: `Held`
 - Release/publication/deployment: `Held — not in scope before explicit user completion`
-- Open source/API/E2E/test-review findings: `None in reviewed source; second durable support repair awaiting proportional re-review`
-- Downstream review closure: `CRR-010 Pass for first API-REV-007 delta; second stale-support repair requires re-review before execution`
+- Open source/API/E2E/test-review findings: `None in reviewed source; next quality-probe rework awaiting proportional re-review`
+- Downstream review closure: `CRR-010 and CRR-011 Pass for prior deltas; next API-REV-007 durable rework requires review`
 
 ## Re-entry Blocker
 
-After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support changes. The scenario-order change was checkpointed at `e6ba62846` and structurally accepted by `CRR-010`; a second stale-store-method repair was checkpointed at `3f9ac980d` and is now awaiting proportional re-review. The latest base was refreshed through merge `a80d73dcd`. API-REV-007 execution and authoritative disposition remain pending.
+After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support changes. The scenario-order change was checkpointed at `e6ba62846` and structurally accepted by `CRR-010`; a second stale-store-method repair was checkpointed at `3f9ac980d` and structurally accepted by `CRR-011`; a proposed quality-probe rework is checkpointed at `8021ed50d` and awaits re-review. The latest base was refreshed through merge `a80d73dcd`. API-REV-007 execution and authoritative disposition remain pending.
 
 - Current API/E2E investigation: `API-REV-007`
 - Current execution report: `API-REV-006` remains the last authoritative execution result
-- Required recipient: `/api_e2e_engineer` for execution; return through `/code_reviewer` if durable coverage changes again
+- Required recipient: `/api_e2e_engineer` for rerun; return through `/code_reviewer` if durable coverage changes again
 - User verification: not requested or valid for the superseded DR-003 state
 
 ## Delivered Behavior
@@ -46,13 +46,14 @@ After the DR-003 closure, the worktree acquired API/E2E Round 7 durable support 
 - Delivery revision checkpoint: `025a7ee56`
 - API-REV-007 safety checkpoint: `e6ba62846`
 - API-REV-007 second repair checkpoint: `3f9ac980d`
+- API-REV-007 quality-probe rework checkpoint: `8021ed50d`
 - Latest-base integration merge: `a80d73dcd`
 - Current ticket branch: `codex/provider-catalog-pricing-error-messaging`
 - Current branch state: latest `origin/personal` is an ancestor; no behind commits or unmerged paths; delivery checkpoints remain local-only.
 - Integration method: `Merge --no-ff origin/personal`
 - Conflicts/unmerged paths: `None`
 - Delivery edits began after integration: `Yes`
-- Post-closure refresh: `origin/personal` advanced to `14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged as `a80d73dcd`; `CRR-010` structurally passed the first durable delta, but the second repair requires re-review before API-REV-007 execution can resume.
+- Post-closure refresh: `origin/personal` advanced to `14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged as `a80d73dcd`; `CRR-010` and `CRR-011` passed prior durable deltas, but the next quality-probe rework requires review before API-REV-007 execution.
 
 ## Validation Evidence
 

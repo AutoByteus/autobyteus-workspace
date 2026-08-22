@@ -59,16 +59,17 @@
 ## Delivery Continuation
 
 - Result: `Blocked`
-- Next delivery action: Await proportional re-review of the second API-REV-007 durable support repair, then rerun the bounded API/E2E probe and update the authoritative execution report.
-- Notes: `CRR-010` structurally passed the first durable test-support delta; the second stale-store-method repair is now awaiting re-review. The prior DR-002/DR-003 documentation sync remains accurate for reviewed production behavior. No release, deployment, archival, push, target-branch finalization, or user-verification claim is authorized for the superseded handoff.
+- Next delivery action: Await proportional re-review of the next API-REV-007 quality-probe rework, then rerun the bounded probe and update the authoritative execution report.
+- Notes: `CRR-010` and `CRR-011` structurally passed prior durable test-support deltas with no findings; the next fixture/order rework is not yet reviewed. The prior DR-002/DR-003 documentation sync remains accurate for reviewed production behavior. No release, deployment, archival, push, target-branch finalization, or user-verification claim is authorized for the superseded handoff.
 
 ## Delivery Re-entry After API-REV-007 Delta
 
 - The latest tracked base advanced to `origin/personal@14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged cleanly as `a80d73dcd` after safety checkpoint `e6ba62846` and CRR-010 review checkpoint `e71354165`.
 - `test-support/live-e2e/live-e2e-harness.ts` contains a durable scenario-order change that is pending focused/proportional review.
-- A second durable repair in the same harness replaces a directly observed stale store method; this repair is now pending proportional re-review.
+- A second durable repair in the same harness replaces a directly observed stale store method; `CRR-011` passed its proportional review and the repair is pending rerun evidence.
 - `api-e2e-coverage-investigation.md` records API-REV-007; `api-e2e-execution-coverage-report.md` remains API-REV-006 until the new execution is complete.
 - No new long-lived documentation edit is appropriate until the current API-REV-007 execution state is authoritative.
+- The current proposed fixture/order rework is a delivery blocker for coverage validation only; it introduces no long-lived production documentation change.
 
 ## Blocked Or Escalated Follow-Up
 
