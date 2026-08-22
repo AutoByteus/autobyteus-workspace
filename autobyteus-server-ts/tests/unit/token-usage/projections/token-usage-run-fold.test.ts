@@ -208,4 +208,22 @@ describe("token usage current run fold", () => {
       "TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens",
     );
   });
+
+  it("preserves the run-specific Mixed identity summary across records", () => {
+    const first = foldTokenUsageObservation({
+      current: null,
+      payload: cacheObservation({ event: "1", cacheState: "positive", runtimeKind: "autobyteus" }),
+      pricingPolicy: policy,
+    }).record!;
+    const second = foldTokenUsageObservation({
+      current: null,
+      payload: cacheObservation({ event: "2", cacheState: "positive", runtimeKind: "codex_app_server" }),
+      pricingPolicy: policy,
+    }).record!;
+
+    const aggregate = buildTokenUsageRunAggregate([first, second]);
+
+    expect(aggregate.total_tokens).toBe(2);
+    expect(aggregate.observed_runtime_kinds).toEqual(["Mixed"]);
+  });
 });

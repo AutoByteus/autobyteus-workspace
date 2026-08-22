@@ -1,0 +1,168 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file at an absolute path
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content with line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file in a new directory
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content without line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Successfully registered tool definition: 'write_file'
+
+stderr | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Invalid arguments for tool 'write_file': Required parameter 'path' is missing.
+
+stderr | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Invalid arguments for tool 'write_file': Required parameter 'content' is missing.
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > writes empty content
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > overwrites existing file
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file with line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects invalid line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Successfully registered tool definition: 'read_file'
+
+stderr | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Invalid arguments for tool 'read_file': Required parameter 'path' is missing.
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'write_file'
+
+ ✓ tests/integration/tools/multimedia/media-reader-tool.test.ts > ReadMediaFile tool (integration) > reads media file with workspace-relative path 5ms
+ ✓ tests/integration/tools/multimedia/media-reader-tool.test.ts > ReadMediaFile tool (integration) > reads media file with absolute path 3ms
+ ✓ tests/integration/tools/multimedia/media-reader-tool.test.ts > ReadMediaFile tool (integration) > throws for non-existent file 2ms
+ ✓ tests/integration/tools/multimedia/media-reader-tool.test.ts > ReadMediaFile tool (integration) > blocks path traversal outside workspace 1ms
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > returns empty string for empty file
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > throws when file does not exist
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > wraps IO errors
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > wraps IO errors
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file at an absolute path 5ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file in a new directory 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > writes empty content 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > overwrites existing file 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > resolves relative paths from an explicit absolute base directory 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > rejects relative paths without an explicit base directory 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > allows absolute paths outside the workspace root 1ms
+ ✓ tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > wraps IO errors 2ms
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > edits file content on disk
+Successfully registered tool definition: 'edit_file'
+
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content with line numbers 5ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content without line numbers 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file with line range 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects invalid line range 2ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument 0ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > resolves relative paths from an explicit absolute base directory 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects relative paths without an explicit base directory 0ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > returns empty string for empty file 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > throws when file does not exist 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > allows absolute paths outside the workspace root 1ms
+ ✓ tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > wraps IO errors 1ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > resolves relative edit paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > rejects relative edit paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+
+ ✓ tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > edits file content on disk 6ms
+ ✓ tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > allows absolute paths outside the workspace root 2ms
+ ✓ tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > resolves relative edit paths from an explicit absolute base directory 2ms
+ ✓ tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > rejects relative edit paths without an explicit base directory 1ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path 6ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path 9ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path 4ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root 16ms
+stdout | tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > executes commands through TerminalSessionManager
+TerminalSessionManager started backend 'DirectShellSession' with shell 'sh' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-direct-shell-dI1bF0'.
+
+ ✓ tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > executes commands through TerminalSessionManager 1223ms
+stdout | tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > preserves shell state across commands
+TerminalSessionManager started backend 'DirectShellSession' with shell 'sh' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-direct-shell-fvB0df'.
+
+ ✓ tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > preserves shell state across commands 1742ms
+ ✓ tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > supports non-PTY background process lifecycle separately from direct shell sessions 971ms
+
+ Test Files  6 passed (6)
+      Tests  38 passed (38)
+   Start at  07:44:19
+   Duration  4.28s (transform 723ms, setup 126ms, import 812ms, tests 4.04s, environment 0ms)

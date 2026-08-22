@@ -28,6 +28,7 @@ import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace
 import { TeamRunV1PackageCatalog } from "./run-history/services/team-run-v1-package-catalog.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
+import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/token-usage-analytics-projection-writer.js";
 import {
   TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
   configureTokenUsageMigrationReadiness,
@@ -156,6 +157,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   try {
     await assertTokenUsageCurrentSchema();
+    await new TokenUsageAnalyticsProjectionWriter().initializeCoverage();
     configureTokenUsageMigrationReadiness({
       kind: "CURRENT_SCHEMA_DEGRADED",
       migrationStatus: "NOT_RUN",

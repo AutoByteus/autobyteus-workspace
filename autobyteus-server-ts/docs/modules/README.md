@@ -51,10 +51,12 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - Services expose `getInstance()` or accessor functions.
 - Cached providers decorate persistence providers for read-heavy flows.
 - Persistence is owned per subsystem instead of by a global runtime mode.
-- Token usage is run-record-backed through `TokenUsageRunStore` /
-  `token_usage_run_records`: one cumulative row per canonical AgentRun ID.
+- Token usage keeps lifetime accounting in `TokenUsageRunStore` /
+  `token_usage_run_records` as one cumulative row per canonical AgentRun ID.
+  A separate compact UTC daily projection serves observation-time analytics and
+  advances atomically with changed run folds; it never backfills lifetime rows.
   Released ledger tables and decoders are migration-only, not current runtime
-  accounting sources.
+  accounting or analytics sources.
 - GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
 - Startup registration and background initialization run through `src/startup`.
 - Application bundles, orchestration, backend API gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.

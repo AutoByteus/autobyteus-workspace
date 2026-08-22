@@ -1,0 +1,29 @@
+{
+  "result": "PASS",
+  "backendPort": 59194,
+  "frontendPort": 59195,
+  "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-analytics-browser-vVDO8S",
+  "steps": [
+    "Analytics is selected by default",
+    "UTC time basis is visible once",
+    "This month is the selected default range",
+    "Fresh current-month state is visibly partial coverage",
+    "Covered empty state is distinct and actionable",
+    "Tokens metric has a semantic selected radio",
+    "Estimated cost switches through a semantic radio",
+    "Metric switching preserves the selected range",
+    "Invalid custom date order is inline and Apply is disabled",
+    "Wholly historical range is unavailable rather than zero",
+    "Unavailable state does not render covered-empty copy",
+    "Browser download uses the deterministic inclusive-date filename",
+    "Browser download contains the exact analytics CSV header",
+    "Run details remains reachable as the secondary tab",
+    "Returning from Run details preserves the analytics range selection",
+    "Narrow 390px viewport has no document-level horizontal clipping ({\"documentScrollWidth\":390,\"viewportWidth\":390,\"bodyScrollWidth\":390})",
+    "Export remains reachable at narrow width",
+    "No browser page errors (0)",
+    "No browser console errors (0)"
+  ],
+  "consoleErrors": [],
+  "pageErrors": []
+}

@@ -3,16 +3,23 @@
 ## Scope
 
 Token Usage is the server-owned accounting boundary for model/runtime usage.
-The current source of truth is `token_usage_run_records`: exactly one cumulative
-row per canonical agent `run_id`. The same invariant covers standalone runs,
-direct and nested Team members, and delegated/task-created agent runs.
+It has two deliberately separate persisted projections:
+
+- `token_usage_run_records` is the lifetime accounting authority: exactly one
+  cumulative row per canonical agent `run_id`, covering standalone runs, direct
+  and nested Team members, and delegated/task-created agent runs.
+- `token_usage_analytics_daily_facets` is a compact observation-time analytical
+  projection keyed by UTC day and an exact captured runtime/provider/model and
+  accounting facet. `token_usage_analytics_coverage` records when trustworthy
+  analytical tracking began.
 
 `TOKEN_USAGE_UPDATED` observations are transient inputs. They carry the raw
-runtime facts needed to normalize and fold one update, but the current store
-does not retain one row or raw payload per notification. The released
+runtime facts needed to normalize and fold one update, but no current store
+retains one row or raw payload per notification. The released
 `token_usage_ledger_events` table remains declared only inside the production
 migration contract for direct and skip-version upgrades; normal runtime code
-does not read or write it.
+and analytics do not read or write it. The daily projection is derived evidence,
+not a second lifetime-run authority and not a provider invoice or quota source.
 
 Each current run record contains:
 
@@ -36,16 +43,26 @@ store.
   - `src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.ts`
   - `src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.ts`
 - Current token-usage owner: `src/token-usage`
-  - domain record: `domain/token-usage-run-record.ts`
-  - deterministic fold: `projections/token-usage-run-fold.ts`
-  - accumulator: `services/token-usage-run-accumulator.ts`
+  - lifetime domain record: `domain/token-usage-run-record.ts`
+  - analytics domain/result contracts: `domain/token-usage-analytics.ts`
+  - deterministic lifetime fold: `projections/token-usage-run-fold.ts`
+  - admitted-contribution projection: `projections/token-usage-analytics-contribution.ts`
+  - accumulator and atomic write coordinator: `services/token-usage-run-accumulator.ts`
+  - analytics projection writer: `services/token-usage-analytics-projection-writer.ts`
+  - analytics range/aggregation policy: `services/token-usage-analytics-range-policy.ts`
+    and `services/token-usage-analytics-aggregation-policy.ts`
   - use-case facade/readiness: `providers/token-usage-run-store.ts` and
     `providers/token-usage-migration-readiness.ts`
-  - SQL repository: `repositories/sql/token-usage-run-repository.ts`
-- GraphQL: `src/api/graphql/types/token-usage-stats.ts`
+  - analytics read governor: `providers/token-usage-analytics-provider.ts`
+  - SQL repositories: `repositories/sql/token-usage-run-repository.ts` and
+    `repositories/sql/token-usage-analytics-repository.ts`
+- GraphQL: `src/api/graphql/types/token-usage-stats.ts` and
+  `src/api/graphql/types/token-usage-analytics.ts`
 - Current Prisma owner:
-  - `prisma/schema.prisma` model `TokenUsageRunRecord`
+  - `prisma/schema.prisma` models `TokenUsageRunRecord`,
+    `TokenUsageAnalyticsCoverage`, and `TokenUsageAnalyticsDailyFacet`
   - `prisma/migrations/20260819090000_add_token_usage_run_records/`
+  - `prisma/migrations/20260822090000_add_token_usage_analytics/`
 - Migration-only legacy owners:
   - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
   - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
@@ -75,9 +92,15 @@ pipeline processes each token event in this order:
    server-side model pricing.
 6. The awaited `TokenUsageRunPersistenceTransformer` sends the enriched
    observation to `TokenUsageRunStore`. `TokenUsageRunAccumulator` serializes
-   work by `run_id`, resolves the pricing policy, folds inside a real SQLite
-   transaction, upserts the one current row, and returns the authoritative
-   per-event contribution plus `run_summary_after_event`.
+   work by `run_id`, resolves the pricing policy, and folds inside a real SQLite
+   transaction.
+7. Only a `CHANGED` fold saves the lifetime run row and increments the matching
+   UTC daily analytical facet in that same transaction. Duplicate, regressed,
+   no-advance, or zeroed contributions advance neither store. Any facet-write
+   failure rolls back the run save; different runs may contend on a shared facet
+   through the atomic SQL upsert without allowing committed run/facet drift.
+8. After commit, the accumulator returns the authoritative per-event contribution
+   plus `run_summary_after_event`.
 
 `run_summary_after_event` is the complete cumulative current-record projection
 after the successful fold, not another live delta. Standalone and Team
@@ -156,6 +179,42 @@ field-specific error such as
 `TOKEN_USAGE_SAFE_INTEGER_EXCEEDED:accounting_input_tokens`; it is not rounded,
 capped, string-coerced, or silently dropped. Persistence can therefore remain
 truthful even when the current public number contract cannot represent a value.
+
+## Observation-Time Analytics Projection
+
+The analytical projection starts empty when the additive schema is installed.
+Startup verifies both analytics tables and indexes, then idempotently initializes
+the singleton coverage instant before requests are served. Existing lifetime run
+records are directly usable by Run details but are never distributed across past
+days or backfilled into analytics.
+
+Each daily facet preserves the exact captured UTC observation day, runtime kind,
+provider/model identity snapshots, normalized token components, usage report
+count, captured estimated-cost components, currency, pricing status, missing
+price dimensions, and latest observation time. Identity keys are opaque stable
+digests; consumers filter with keys returned by the API rather than reconstructing
+or parsing them. The compact shape is bounded by day plus analytical/accounting
+facet, not by provider notification count.
+
+The analytics provider owns the complete read policy:
+
+- validates explicit half-open UTC ranges and `This month`, `Last month`,
+  `Last 3 months`, `Last 12 months`, and `Custom` presets;
+- computes the prior comparable range and day/week/month display granularity;
+- reads coverage plus selected/comparison facets in one coherent transaction;
+- applies runtime/provider/model filters consistently to cards, buckets,
+  breakdowns, filter options, and export data;
+- returns contiguous trend buckets, elapsed cumulative comparison series, exact
+  breakdown rows, active-day count, and coverage/cost-quality metadata; and
+- throws on unsafe primary token totals instead of rounding beyond JavaScript
+  `SafeInt`.
+
+Coverage is `FULL`, `PARTIAL`, or `UNAVAILABLE` relative to the immutable
+tracking start. A covered interval with no admitted usage is distinct from an
+interval before tracking. Cost quality is `NO_USAGE`, `COMPLETE`, `PARTIAL`,
+`MISSING`, `LOCAL`, or `MIXED_CURRENCY`; unpriced or mixed-currency facts may
+contribute to token analytics but are never silently converted to zero or summed
+into an unsafe monetary total. Captured estimates are not repriced later.
 
 ## Runtime Adapter Semantics
 
@@ -271,6 +330,16 @@ empty and its SQLite pages reusable. It does not run startup `VACUUM`, and the
 physical legacy table/model contract remains for a separately sequenced future
 contraction.
 
+### Additive Analytics Schema
+
+Migration `20260822090000_add_token_usage_analytics` adds the empty daily-facet
+and singleton-coverage tables plus their indexes. It performs no application-data
+migration, bulk rewrite, or legacy/lifetime backfill. The existing run-record
+meaning remains unchanged, and there is no version branch, dual reader/writer,
+or request-time fallback from analytics to lifetime totals. If the current
+analytics schema is unavailable, startup fails rather than serving writes that
+could make the two projections diverge.
+
 ### Readiness And Availability
 
 Bootstrap validates the current table, required columns, and unique `run_id`
@@ -294,7 +363,10 @@ status fabrication is part of the supported path.
 
 ## GraphQL And Statistics
 
-`TokenUsageRunStore` and `TokenUsageStatisticsProvider` read current run records:
+The GraphQL boundary exposes sibling lifetime and observation-time contracts.
+
+`TokenUsageRunStore` and `TokenUsageStatisticsProvider` preserve current run
+records:
 
 - `getAgentRunTokenUsageSummary(runId)` reads at most one exact run record.
 - `getTeamRunTokenUsageSummary(teamRunId)` sums the concrete member records with
@@ -308,66 +380,69 @@ status fabrication is part of the supported path.
 - `totalCostInPeriod(startTime, endTime)` keeps its public name but follows the
   same run-selection rule.
 
-The date range selects runs whose `run_created_at` is in range, falling back to
-`first_observed_at` only when creation time is unavailable. Every selected row
-shows its lifetime cumulative totals. The one-row model does not claim exact
-"usage observed during an arbitrary period" semantics and does not retain time
-buckets to reconstruct them.
+Those Run details queries select runs whose `run_created_at` is in range,
+falling back to `first_observed_at` only when creation time is unavailable. Every
+selected row shows its lifetime cumulative totals. Task statistics group Team
+rows by exact root TeamRun ID and backend-provided concrete member children;
+token code never reconstructs topology from paths, names, or migration-only
+columns.
 
-Task statistics keep topology ownership narrow:
+`tokenUsageAnalytics(input)` is a separate observation-time query. Its input
+contains one approved UTC preset/range plus optional opaque runtime, provider,
+and model filter keys. Its one result supplies the applied selected/comparison
+ranges, granularity, coverage, filter options, selected/comparison aggregates,
+active-day count, trend buckets, and exact breakdown rows. Resolver mapping is
+thin; comparison, coverage, accounting reconciliation, and cost-quality truth
+remain server-owned.
 
-- a Team row groups by exact root TeamRun ID;
-- child rows represent exact concrete member run IDs;
-- nested member/task usage is not repeated as a standalone top-level row;
-- task IDs and captured names/summaries remain display metadata; and
-- token code does not rebuild TeamRun topology from execution paths, names, or
-  migration-only predecessor columns.
-
-When history readiness is degraded, GraphQL returns
-`TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` with migration status/log guidance
-instead of exposing partial history.
+When history readiness is degraded, lifetime GraphQL returns
+`TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED`. Invalid or missing current analytics
+schema blocks startup instead of silently falling back to lifetime rows. Public
+primary token totals continue to use `SafeInt` and fail explicitly when they
+cannot be represented exactly.
 
 ## Frontend Contract
 
-The frontend treats token usage as display-only state:
+The frontend treats all token usage as display-only state and never recomputes
+accounting, pricing, coverage, comparison, or provider quota facts.
 
-- standalone and Team-member caches accept only complete record-backed
-  summaries from current-record GraphQL or the post-persist
-  `run_summary_after_event` snapshot;
-- missing, malformed, unsafe, or identity-mismatched live snapshots do not mark
-  an individual cache hydrated, so focus/reopen paths still load the current
-  GraphQL record;
-- individual snapshots are keyed by exact run identity (and exact root-Team/run
-  identity for Team members), while `usageReportCount` provides the monotonic
-  generation used to reject equal or older GraphQL/live arrivals;
-- Team aggregates remain backend-owned. Before hydration, persisted Team events
-  may form a `live_partial` total; after hydration, a new event marks the total
-  `refresh_required` rather than blindly extending a possibly inclusive
-  GraphQL result. A single-flight GraphQL refresh repeats sequentially until no
-  event arrived during the request, and only that stable response becomes
-  `record_backed`;
-- Token Meter renders latest prompt, lifetime gross input/output, component
-  breakdown, estimated cost/status, pricing explanation, context pressure, and
-  report count without recomputing accounting or prices;
-- Settings > Token Statistics defaults to Task grouping and retains Model as a
-  runtime/model diagnostic view;
-- the visible range helper states that the date range selects runs by creation
-  time and totals show lifetime usage; and
-- a history-migration error is rendered as an actionable nonfatal warning that
-  new runs remain available and a corrected installed version can retry on
-  restart.
+The live Token Meter remains record-backed: standalone and Team-member caches
+accept complete current-record GraphQL summaries or strict post-persist
+`run_summary_after_event` snapshots, while Team aggregation retains its existing
+single-flight refresh and exact identity rules.
 
-Task rows render backend-provided `children`, `rootTeamRunId`, display fields,
-models, totals, and cost statuses. The frontend must not infer provider identity
-from display labels, reconstruct execution topology, or round primary SafeInt
-token totals. `Unpriced` is not `$0`; local/no-bill and mixed-currency states
-remain explicit.
+Settings > Token Statistics now has two sibling views:
+
+- **Analytics** is the default. `tokenUsageAnalytics` owns one coherent selection
+  and latest-response state for UTC presets/custom dates, Tokens/Estimated cost,
+  and runtime/provider/model filters. Summary cards, chronological trend,
+  cumulative prior-period pace, ranked breakdown (default Runtime + model), and
+  exact tables all consume the same server result.
+- Coverage copy distinguishes full/partial/unavailable tracking and covered empty
+  periods. Cost surfaces preserve complete, partial, missing/local, and mixed-
+  currency evidence. Charts omit unsafe monetary values with visible explanation
+  rather than plotting them as zero.
+- CSV export is local and deterministic. It uses the applied half-open UTC range,
+  selected filters/grouping, exact identity snapshots, token components,
+  captured estimated cost/currency/status, and tracking metadata; it performs no
+  upload.
+- **Run details** preserves the creation-time-selected/lifetime-total task/team/
+  run tables, Model diagnostic grouping, sorting, expansion, cost disclosure,
+  first-observed fallback, and history-migration guidance under the renamed
+  `tokenUsageRunStatistics` store/query/type boundary.
+
+Task rows continue to render backend-provided `children`, `rootTeamRunId`,
+`runId`, display fields, models, totals, and cost statuses. The frontend must not
+infer provider identity from labels, reconstruct execution topology, allocate
+lifetime totals into analytics, or round primary SafeInt token totals. `Unpriced`
+is not `$0`; local/no-bill and mixed-currency states remain explicit.
 
 ## Coverage And Operational Notes
 
-- Deterministic unit/integration/E2E coverage owns current fold, repository,
-  migration, readiness, restore, GraphQL, pricing, frontend component, and
-  lifecycle contracts.
+- Deterministic unit/integration/E2E coverage owns contribution admission,
+  UTC range policy, aggregation/cost reconciliation, real-SQLite rollback and
+  shared-facet contention, coverage/no-backfill, GraphQL, preserved Run details,
+  frontend stores/states/charts/accessibility, and exact CSV behavior.
 - Built-process restart coverage proves that existing current rows remain
   directly usable through run, Team, and member GraphQL reads without a data
   migration, rewritten row identity, or duplicate fold.
@@ -377,9 +452,12 @@ remain explicit.
 - Released-scale evidence covers approximately 154,000 legacy rows, 1,269 runs,
   bounded source shaping, single-transaction consolidation, reusable SQLite
   pages, and absence of startup `VACUUM`.
-- Browser coverage checks normal lifetime statistics plus degraded and fatal
-  error presentation in Chrome. Electron shell-specific behavior is not implied
-  by browser evidence.
+- Live Chrome coverage checks default/custom UTC analytics, tracking/empty
+  distinctions, local exact CSV download, Run-details navigation, semantic tab
+  selection/focus, the transparent blue 2px selected-tab treatment, desktop/mobile
+  layout, and console/page errors. Current-frontend execution against the user's
+  production backend also proves populated graph and Run-details behavior; browser
+  proof does not imply Electron-shell execution.
 - Real LM Studio, Codex, and Claude runtime E2E remains opt-in:
 
 ```sh

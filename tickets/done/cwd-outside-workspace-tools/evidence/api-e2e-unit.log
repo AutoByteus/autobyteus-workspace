@@ -1,0 +1,140 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > adds execute bits when a helper file is not executable 6ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > returns false when the file is already executable 2ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > returns false when the file does not exist 6ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > uses node-pty selected native dir instead of first existing build helper 8ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted creates session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > exposes sessionId 1ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > is not alive before start 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > write before start throws 1ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > read before start throws 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > resize before start throws 0ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts > WslTmuxSession > throws on non-windows platforms 1ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts > direct_shell_session shell selection > prefers bash on android when bash is present 5ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts > direct_shell_session shell selection > falls back to sh on android when bash is not present 2ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts > direct_shell_session shell selection > falls back to /system/bin/sh when PATH lookup has no shell on android 0ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts > direct_shell_session shell selection > uses ComSpec on win32 1ms
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts > ShellCommandExecutor WSL adoption > adopts ordinary WSL bash background descendants by Linux PID 143ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts > WslTmuxSession > spawns wsl bash session and sets prompt/cwd 102ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts > WslTmuxSession > reads queued output 101ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > starts an isolated bridge child process 256ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager adoption > adopts observed PID records with PID-only public info and captured output 159ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager adoption > getOutput throws for unknown PID 2ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > appends data and returns full content 1ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > ignores empty data 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > returns last n lines 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > returns all lines when requesting more than available 3ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > clears content and resets size 1ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > tracks size in bytes 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > tracks line count 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > respects max_bytes limit by discarding old data 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > handles unicode input 0ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > handles invalid utf-8 bytes without throwing 6ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts > OutputBuffer > handles concurrent-style appends 4ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > starting twice throws 317ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns DirectShellSession on Android 1ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns WslTmuxSession on Windows 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns IsolatedPtySession on Darwin 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns PtySession on non-Windows non-Darwin Unix 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns DirectShellSession as fallback for PtySession 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > falls back from IsolatedPtySession to local PTY and direct shell backends 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > detects current platform 0ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > executes foreground commands through the non-PTY shell executor 161ms
+stdout | tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > uses the function-tool envelope with closed object parameters and no default strict flag
+Successfully registered tool definition: 'run_bash'
+
+stdout | tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > describes the same cwd contract for start_background_process
+Successfully registered tool definition: 'start_background_process'
+
+ ✓ tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > uses the function-tool envelope with closed object parameters and no default strict flag 3ms
+ ✓ tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > describes the same cwd contract for start_background_process 0ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > selects default distro when not excluded 1ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > skips docker-default distro 0ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > throws when no distros are installed 1ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > ensureWslDistroAvailable throws when none found 1ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > windowsPathToWsl preserves posix paths 0ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > windowsPathToWsl rejects UNC paths 0ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts > wsl_utils > windowsPathToWsl falls back to manual conversion 0ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts > NonInteractiveShellResolver > builds a non-interactive shell invocation for POSIX run_bash commands 3ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts > NonInteractiveShellResolver WSL construction > builds WSL invocations with Linux PID marker and process target metadata 1ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts > ProcessGroupObserver > finds and stops live descendants in a detached shell process group 493ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > does not spawn a bridge if close wins while bootstrap repair is pending 1ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > forwards writes and resize messages to the bridge 253ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > writes large heredoc content without PTY corruption 166ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts > stripAnsiCodes > removes color escape sequences 1ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts > stripAnsiCodes > removes mixed escape sequences 0ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts > stripAnsiCodes > returns empty string when input is empty 0ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts > stripAnsiCodes > handles non-ansi content 0ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > creates TerminalResult with provided values 1ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > allows null exitCode for TerminalResult 0ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > creates BackgroundProcessOutput with PID identity 0ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > creates BackgroundProcessInfo with PID identity 0ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > serializes a clean successful result omitting empty/no-op fields (AC-001) 0ms
+ ✓ tests/unit/tools/terminal/types.test.ts > terminal types > serializes non-empty stderr, timedOut, and backgroundProcesses when present (AC-002) 0ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted creates session 513ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted is idempotent
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts > ProcessGroupObserver WSL target > lists WSL Linux processes through the selected distro and filters by process group 1ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > detects $ prompt 1ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > detects # prompt 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > returns false when no prompt is present 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > detects prompt after output 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > returns false for partial output without prompt 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > supports custom patterns 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > updates pattern dynamically 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > exposes current pattern 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > checks only last line for prompt 0ms
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts > PromptDetector > handles trailing whitespace variations 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > close is idempotent 304ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > uses the workspace root when cwd is omitted 150ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > read after close returns null 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > write after close throws 1ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts > ProcessGroupObserver WSL target > stops WSL Linux process groups through WSL kill commands 252ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > returns queued bridge stdout from read 252ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > uses the system temporary directory when cwd and workspace are omitted 148ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > returns queued data on read 303ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > resolves relative cwd paths from the workspace root when provided 154ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts > ProcessGroupObserver WSL target > still signals a WSL process group when the tracked shell PID has exited 252ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > flushes pending reads and stops the child on close 252ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted is idempotent 510ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > executes in an explicit absolute cwd outside the workspace 133ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > marks session closed on exit 101ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > accepts an explicit absolute cwd without a configured workspace 135ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > is idempotent on repeated close 251ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > destroys bridge streams when the child exits by itself 1ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > destroys PTY resources when startup is closed before attach completes 254ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > reports the physical target for an external symlink cwd 138ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > continues rejecting relative traversal outside the workspace 2ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > maps missing and non-directory cwd values to working-directory validation errors 1ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects relative cwd paths when no workspace is configured 0ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible absolute cwd before foreground execution starts 2ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible workspace-relative cwd before foreground execution starts 1ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible absolute cwd before background spawning starts 1ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible workspace-relative cwd before background spawning starts 1ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager WSL lifecycle > starts, tracks, reads, and stops background commands by WSL Linux PID 314ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager process lifecycle > startCommand returns PID metadata and captures output 868ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager process lifecycle > stopProcess removes a managed process 308ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand before start throws 1ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult 1017ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > close cleans up session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > close cleans up session 509ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > falls back to provided session factory when primary startup fails
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > retries the same startup error on repeated calls when no fallback is available 1ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > falls back to provided session factory when primary startup fails 1014ms
+
+ Test Files  18 passed (18)
+      Tests  111 passed (111)
+   Start at  07:43:07
+   Duration  3.93s (transform 1.04s, setup 197ms, import 1.23s, tests 10.40s, environment 2ms)

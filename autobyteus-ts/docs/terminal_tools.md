@@ -13,10 +13,14 @@ Terminal tools provide stateless non-interactive command execution for agents pl
 ## Overview
 
 - **`run_bash` is stateless** — each call runs the supplied command through a non-interactive shell in the resolved `cwd`. Do not rely on `cd` or exported variables from earlier calls.
-- **Terminal `cwd` remains workspace-contained** — an explicit terminal `cwd`
-  is resolved by the terminal-specific containment resolver. The generic file
-  tools' trusted-local absolute-path contract does not widen terminal command
-  working directories.
+- **Explicit terminal `cwd` is per invocation/process** — any provided `cwd`
+  must be absolute and may target any existing accessible local directory,
+  including one outside the agent workspace. An omitted `cwd` uses the
+  workspace root when configured, otherwise the system temporary directory.
+  This changes only where that command or process runs; it does not redefine
+  workspace identity or persist across calls. This trusted-local terminal
+  behavior is separate from generic file-tool path policy and is not a
+  sandbox.
 - **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
 - **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
 - **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.
@@ -29,13 +33,16 @@ Terminal tools provide stateless non-interactive command execution for agents pl
 Execute a stateless command in a working directory.
 
 ```ts
-const result = await runBash(context, "npm install", "apps/web", 120);
+const result = await runBash(context, "npm install", "/absolute/path/to/apps/web", 120);
 ```
 
 **Parameters:**
 
 - `command` (string): shell command to execute.
-- `cwd` (string, optional): absolute path or workspace-root-relative path. If omitted, the workspace root is used when available.
+- `cwd` (string, optional): an absolute path to any existing accessible local
+  directory, including one outside the agent workspace. If omitted, the
+  workspace root is used when available; otherwise the system temporary
+  directory is used. The value applies only to this invocation.
 - `timeout_seconds` (number, optional): maximum execution time, default `30`.
 
 **Returns:** `TerminalResult`
@@ -62,6 +69,11 @@ const result = await runBash(context, "npm install", "apps/web", 120);
 **Key behavior:**
 
 - Reuse `cwd` on every location-sensitive command that should run in a nested target.
+- A provided relative `cwd` is rejected before path resolution or target
+  process creation; provide an absolute path instead.
+- An existing but inaccessible cwd is rejected before the target shell/process
+  is created with a working-directory validation error; no probe process is
+  started to test access.
 - A foreground timeout stops the spawned shell process group when possible.
 - The tool does not parse shell text to infer intent. It only adopts actual live ordinary background descendants after the shell exits.
 - Commands that redirect output to files may produce little or no captured background output; read the log file with a later `run_bash` call.
@@ -69,7 +81,7 @@ const result = await runBash(context, "npm install", "apps/web", 120);
 Example long-running command:
 
 ```xml
-<run_bash cwd="apps/web">
+<run_bash cwd="/absolute/path/to/apps/web">
 npm run dev > server.log 2>&1 &
 </run_bash>
 ```
@@ -81,14 +93,17 @@ npm run dev > server.log 2>&1 &
 Convenience tool for starting a long-running process when shell `&` syntax is not desired.
 
 ```ts
-const info = await startBackgroundProcess(context, "yarn dev", "apps/web");
+const info = await startBackgroundProcess(context, "yarn dev", "/absolute/path/to/apps/web");
 // info.pid is the PID to use with the other background tools
 ```
 
 **Parameters:**
 
 - `command` (string): command to run.
-- `cwd` (string, optional): absolute path or workspace-root-relative path.
+- `cwd` (string, optional): an absolute path to any existing accessible local
+  directory, including one outside the agent workspace. If omitted, the
+  workspace root is used when available; otherwise the system temporary
+  directory is used. The value applies only to this process.
 
 **Returns:** `BackgroundProcessInfo` with `pid`, `status`, `command`, `startedAt`, and `effectiveCwd`.
 

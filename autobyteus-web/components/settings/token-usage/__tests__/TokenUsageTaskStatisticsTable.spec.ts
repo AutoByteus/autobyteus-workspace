@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import TokenUsageTaskStatisticsTable from '../TokenUsageTaskStatisticsTable.vue';
-import type { TokenUsageCostSummaryAggregate, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageStatistics';
+import type { TokenUsageCostSummaryAggregate, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageRunStatistics';
 
 const { translate } = vi.hoisted(() => {
   const messages: Record<string, string> = {
@@ -117,7 +117,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rowKind: 'AGENT_RUN',
   runId: 'standalone-run-123456789',
   rootTeamRunId: null,
-  memberRouteKey: null,
   memberAgentRunId: null,
   taskAgentRunId: null,
   taskTeamRunId: null,
@@ -154,7 +153,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rowKind: 'TEAM_RUN',
   runId: null,
   rootTeamRunId: 'team-run-987654321',
-  memberRouteKey: null,
   memberAgentRunId: null,
   taskAgentRunId: null,
   taskTeamRunId: null,
@@ -170,7 +168,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   aggregate: buildAggregate(),
   children: [{
     rowId: 'team:team-run:member:solution_designer',
-    memberRouteKey: 'solution_designer',
     memberAgentRunId: 'member-run-123456789',
     rowKind: 'MEMBER_RUN',
     runId: 'member-run-123456789',
@@ -204,7 +201,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     children: [],
   }, {
     rowId: 'team:team-run:member:implementation_engineer',
-    memberRouteKey: 'implementation_engineer',
     memberAgentRunId: 'member-run-223456789',
     rowKind: 'MEMBER_RUN',
     runId: 'member-run-223456789',

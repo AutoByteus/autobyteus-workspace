@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoByteus — Token Statistics Analytics Prototype</title>
+  <style>
+    :root {
+      --gray-25:#fafafa; --gray-50:#f2f2f2; --gray-100:#e6e6e6; --gray-200:#cccccc;
+      --gray-300:#b3b3b3; --gray-400:#999999; --gray-500:#808080; --gray-600:#666666;
+      --gray-700:#4d4d4d; --gray-800:#333333; --gray-900:#1a1a1a;
+      --blue-50:#eff6ff; --blue-100:#dbeafe; --blue-200:#bfdbfe; --blue-500:#3b82f6;
+      --blue-600:#2563eb; --blue-700:#1d4ed8; --amber-50:#fffbeb; --amber-200:#fde68a;
+      --amber-700:#b45309; --green-50:#ecfdf5; --green-200:#a7f3d0; --green-700:#047857;
+      --shadow:0 1px 2px rgba(0,0,0,.04); --nav-width:256px;
+      color-scheme: light;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; background:white; color:var(--gray-900); }
+    body { font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:14px; }
+    button, select, input { font:inherit; }
+    button, select { cursor:pointer; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline:2px solid var(--blue-500); outline-offset:2px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .settings-shell { min-height:100vh; display:grid; grid-template-columns:var(--nav-width) 1px minmax(0,1fr); background:#fff; }
+    .sidebar { overflow:auto; border-right:0; background:#fff; padding:20px 16px; }
+    .divider { background:var(--gray-200); position:relative; }
+    .nav-list { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .nav-separator { border-bottom:1px solid var(--gray-100); padding-bottom:8px; margin-bottom:0; }
+    .nav-item { width:100%; border:0; background:transparent; color:var(--gray-700); border-radius:6px; padding:8px 16px; display:flex; align-items:center; gap:12px; text-align:left; transition:.15s; }
+    .nav-item:hover { background:var(--gray-50); color:var(--gray-900); }
+    .nav-item.active { background:var(--gray-50); color:var(--gray-900); font-weight:500; }
+    .nav-icon { width:20px; height:20px; display:inline-grid; place-items:center; flex:none; color:currentColor; }
+    .nav-icon svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .content-frame { min-width:0; height:100vh; overflow:auto; padding:16px 16px 16px 0; background:#fff; }
+    .dashboard { min-width:0; padding:24px 28px 48px; max-width:1580px; margin:0 auto; }
+    .view-tabs { border-bottom:1px solid var(--gray-100); display:flex; gap:28px; margin-bottom:20px; }
+    .view-tab { border:0; border-bottom:2px solid transparent; background:transparent; padding:3px 2px 11px; color:var(--gray-600); font-weight:600; }
+    .view-tab.active { color:var(--blue-700); border-bottom-color:var(--blue-600); }
+    .control-card { border:1px solid var(--gray-100); background:var(--gray-25); border-radius:9px; padding:14px; box-shadow:var(--shadow); }
+    .control-row { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+    .control-row + .control-row { margin-top:12px; padding-top:12px; border-top:1px solid var(--gray-100); }
+    .preset-group, .metric-group { display:inline-flex; align-items:center; padding:3px; background:var(--gray-100); border-radius:7px; gap:2px; }
+    .preset, .metric { border:0; border-radius:5px; background:transparent; color:var(--gray-600); padding:6px 10px; font-size:13px; font-weight:600; white-space:nowrap; }
+    .preset.active, .metric.active { background:white; color:var(--gray-900); box-shadow:0 1px 2px rgba(0,0,0,.09); }
+    .timezone { display:flex; align-items:center; gap:6px; margin-left:auto; color:var(--gray-600); font-size:13px; }
+    .timezone svg { width:16px; height:16px; }
+    .custom-range { display:none; align-items:center; gap:7px; width:100%; padding-top:2px; }
+    .custom-range.show { display:flex; }
+    .field { display:grid; gap:5px; min-width:150px; }
+    .field label { font-size:11px; line-height:1; text-transform:uppercase; letter-spacing:.055em; color:var(--gray-500); font-weight:700; }
+    select, input[type="date"] { height:36px; min-width:146px; border:1px solid var(--gray-200); background:white; color:var(--gray-800); border-radius:6px; padding:0 32px 0 10px; }
+    input[type="date"] { padding-right:8px; }
+    .metric-group { margin-left:auto; }
+    .export-button, .secondary-button, .primary-button { height:36px; border-radius:6px; padding:0 12px; display:inline-flex; align-items:center; justify-content:center; gap:7px; font-weight:600; }
+    .export-button, .secondary-button { border:1px solid var(--gray-200); color:var(--gray-700); background:white; }
+    .export-button:hover, .secondary-button:hover { border-color:var(--gray-300); color:var(--gray-900); }
+    .primary-button { border:1px solid var(--blue-600); background:var(--blue-600); color:white; }
+    .primary-button:hover { background:var(--blue-700); }
+    .button-icon { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .coverage { margin:12px 0 16px; min-height:38px; border:1px solid var(--green-200); background:var(--green-50); color:#065f46; border-radius:7px; padding:9px 12px; display:flex; align-items:center; gap:9px; font-size:13px; }
+    .coverage svg { width:17px; height:17px; flex:none; }
+    .coverage strong { color:#064e3b; }
+    .coverage .coverage-note { margin-left:auto; color:var(--gray-600); }
+    .filter-summary { display:none; align-items:center; gap:8px; margin-top:10px; color:var(--gray-600); font-size:12px; }
+    .filter-summary.show { display:flex; }
+    .filter-summary .secondary-button { height:28px; padding-inline:9px; margin-left:auto; font-size:11px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:12px; }
+    .summary-card, .chart-card, .breakdown-card, .table-card { border:1px solid var(--gray-100); background:white; border-radius:9px; box-shadow:var(--shadow); }
+    .summary-card { min-height:126px; padding:16px; }
+    .eyebrow { display:flex; align-items:center; justify-content:space-between; gap:6px; color:var(--gray-500); font-size:11px; line-height:1.2; text-transform:uppercase; letter-spacing:.055em; font-weight:750; }
+    .eyebrow .info { display:inline-grid; place-items:center; width:18px; height:18px; border:0; border-radius:50%; color:var(--gray-400); background:transparent; padding:0; }
+    .metric-value { margin-top:12px; font-size:28px; line-height:1.08; letter-spacing:-.03em; font-weight:680; color:var(--gray-900); font-variant-numeric:tabular-nums; }
+    .metric-subline { margin-top:8px; color:var(--gray-600); font-size:12px; line-height:1.45; }
+    .positive { color:#b42318; font-weight:650; }
+    .status-pill { display:inline-flex; align-items:center; border-radius:999px; padding:2px 7px; font-size:10px; letter-spacing:0; text-transform:none; font-weight:700; }
+    .status-pill.partial { color:var(--amber-700); background:var(--amber-50); border:1px solid var(--amber-200); }
+    .chart-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(360px,1fr); gap:12px; margin-bottom:12px; }
+    .chart-card { min-width:0; padding:16px 16px 10px; }
+    .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:10px; }
+    .card-title { margin:0; font-size:15px; line-height:1.3; font-weight:680; color:var(--gray-900); }
+    .card-description { margin:4px 0 0; color:var(--gray-500); font-size:12px; line-height:1.4; }
+    .legend { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:12px; color:var(--gray-600); font-size:11px; }
+    .legend-key { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+    .legend-line { width:18px; height:0; border-top:2px solid var(--blue-600); }
+    .legend-line.prior { border-color:var(--gray-400); border-top-style:dashed; }
+    .chart { width:100%; min-height:252px; display:block; overflow:visible; }
+    .chart text { font-family:inherit; fill:var(--gray-500); font-size:10.5px; }
+    .chart .grid { stroke:var(--gray-100); stroke-width:1; }
+    .chart .axis { stroke:var(--gray-200); stroke-width:1; }
+    .chart .bar { fill:var(--blue-500); opacity:.86; }
+    .chart .bar:hover, .chart .bar:focus { fill:var(--blue-700); opacity:1; outline:none; }
+    .chart .current-line { fill:none; stroke:var(--blue-600); stroke-width:2.5; }
+    .chart .prior-line { fill:none; stroke:var(--gray-400); stroke-width:2; stroke-dasharray:6 5; }
+    .chart .dot-current { fill:white; stroke:var(--blue-600); stroke-width:2; }
+    .chart .dot-prior { fill:white; stroke:var(--gray-400); stroke-width:1.7; }
+    .breakdown-card { padding:16px; margin-bottom:12px; }
+    .group-select { height:32px; min-width:160px; font-size:12px; }
+    .breakdown-content { display:grid; grid-template-columns:minmax(300px,.68fr) minmax(620px,1.32fr); gap:24px; align-items:start; }
+    .bar-list { display:grid; gap:14px; padding:6px 0 2px; }
+    .bar-row { display:grid; gap:6px; }
+    .bar-label-row { display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:12px; }
+    .bar-label { color:var(--gray-800); font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .bar-value { color:var(--gray-600); white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .bar-track { height:8px; border-radius:999px; background:var(--gray-50); overflow:hidden; }
+    .bar-fill { height:100%; min-width:2px; border-radius:inherit; background:var(--blue-500); }
+    .bar-row:nth-child(2) .bar-fill { background:#6366f1; }
+    .bar-row:nth-child(3) .bar-fill { background:#8b5cf6; }
+    .bar-row:nth-child(4) .bar-fill { background:#0d9488; }
+    .bar-row:nth-child(5) .bar-fill { background:#94a3b8; }
+    .exact-wrap { min-width:0; overflow:auto; border:1px solid var(--gray-100); border-radius:7px; }
+    table { width:100%; border-collapse:collapse; text-align:left; font-size:12px; }
+    th { padding:9px 10px; color:var(--gray-500); background:var(--gray-25); border-bottom:1px solid var(--gray-100); text-transform:uppercase; letter-spacing:.045em; font-size:10px; white-space:nowrap; }
+    td { padding:10px; border-bottom:1px solid var(--gray-100); color:var(--gray-700); vertical-align:top; }
+    tbody tr:last-child td { border-bottom:0; }
+    td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .identity-primary { color:var(--gray-900); font-weight:650; white-space:nowrap; }
+    .identity-secondary { color:var(--gray-500); margin-top:2px; white-space:nowrap; }
+    .table-note { margin-top:10px; display:flex; align-items:flex-start; gap:7px; color:var(--gray-500); font-size:11px; line-height:1.45; }
+    .table-note svg { width:15px; height:15px; flex:none; margin-top:1px; }
+    .run-details { display:none; }
+    .run-details.active { display:block; }
+    .analytics.hidden { display:none; }
+    .run-toolbar { border:1px solid var(--gray-100); background:var(--gray-25); border-radius:9px; padding:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
+    .run-note { width:100%; color:var(--gray-600); font-size:12px; margin:2px 0 0; }
+    .run-table-card { border:1px solid var(--gray-100); border-radius:9px; overflow:auto; }
+    .run-table { min-width:1040px; font-size:12px; }
+    .run-table th { padding:11px 12px; }
+    .run-table td { padding:12px; }
+    .run-title { color:var(--gray-900); font-weight:650; }
+    .run-summary { color:var(--gray-600); margin-top:2px; max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .run-meta { color:var(--gray-500); margin-top:2px; font-size:11px; }
+    .disclaimer { color:var(--gray-500); font-size:11px; line-height:1.5; padding:0 2px; }
+    .toast { position:fixed; right:22px; bottom:22px; z-index:5; background:var(--gray-900); color:white; border-radius:7px; padding:10px 13px; box-shadow:0 8px 28px rgba(0,0,0,.18); opacity:0; transform:translateY(8px); pointer-events:none; transition:.2s; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    @media (max-width:1180px) {
+      .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .chart-grid, .breakdown-content { grid-template-columns:1fr; }
+      .breakdown-content { gap:18px; }
+    }
+    @media (max-width:767px) {
+      .settings-shell { display:block; }
+      .sidebar { border-bottom:1px solid var(--gray-200); padding:10px; max-height:112px; }
+      .nav-list { display:flex; overflow:auto; gap:4px; }
+      .nav-separator { display:none; }
+      .nav-item { white-space:nowrap; padding:8px 10px; }
+      .nav-item:not(.active):not(.back-mobile) { display:none; }
+      .divider { display:none; }
+      .content-frame { height:auto; min-height:calc(100vh - 56px); padding:0; }
+      .dashboard { padding:18px 14px 36px; }
+      .summary-grid { grid-template-columns:1fr; }
+      .timezone, .metric-group { margin-left:0; }
+      .field { min-width:100%; flex:1 1 100%; }
+      select, input[type="date"] { width:100%; min-width:0; }
+      .chart-grid { grid-template-columns:1fr; }
+      .breakdown-content { grid-template-columns:1fr; }
+      .chart-card { padding-inline:12px; }
+      .control-row { align-items:flex-end; }
+      .preset-group { width:100%; overflow:auto; max-width:100%; }
+      .metric-group { max-width:100%; overflow:auto; }
+      .coverage { align-items:flex-start; }
+      .coverage .coverage-note { display:none; }
+      .card-head { flex-direction:column; }
+      .legend { justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-shell">
+    <aside class="sidebar" aria-label="Settings navigation">
+      <nav>
+        <ul class="nav-list">
+          <li class="nav-separator">
+            <button class="nav-item back-mobile" type="button">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h10"/></svg></span>
+              <span>Back</span>
+            </button>
+          </li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="3.5"/><path d="m10 13 8-8 2 2-8 8"/><path d="m15 8 2 2"/></svg></span>API Keys</button></li>
+          <li><button class="nav-item active" type="button" aria-current="page"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg></span>Token Statistics</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 9h10M7 13h6"/><path d="M5 19l1.5-3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7z"/></svg></span>Messaging</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></span>Display</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>Language</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m14.7 6.3 3-3a4.2 4.2 0 0 1-5.4 5.4l-7.6 7.6a2.1 2.1 0 0 0 3 3l7.6-7.6a4.2 4.2 0 0 0 5.4-5.4l-3 3z"/></svg></span>Local Tools</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M8 3v4H4v4h4v4h4v-4h4V7h-4V3z"/><path d="M8 15v6h12V9h-4"/></svg></span>MCP Servers</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM8 7V4h8v3M4 12h16"/></svg></span>Application Packages</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v11H3z"/><path d="M12 12v5m-2.5-2.5h5"/></svg></span>Agent Packages</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="7" rx="1"/><rect x="4" y="14" width="16" height="7" rx="1"/><path d="M8 6.5h.01M8 17.5h.01"/></svg></span>Server Settings</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg></span>Extensions</button></li>
+          <li><button class="nav-item" type="button"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 8A7 7 0 0 1 18.5 6.5L20 9M4 15l1.5 2.5A7 7 0 0 0 17.9 16"/></svg></span>Updates</button></li>
+        </ul>
+      </nav>
+    </aside>
+    <div class="divider" aria-hidden="true"></div>
+
+    <main class="content-frame">
+      <div class="dashboard">
+        <h1 class="sr-only">Token Statistics</h1>
+        <div class="view-tabs" role="tablist" aria-label="Token statistics view">
+          <button id="analytics-tab" class="view-tab active" type="button" role="tab" aria-selected="true">Analytics</button>
+          <button id="runs-tab" class="view-tab" type="button" role="tab" aria-selected="false">Run details</button>
+        </div>
+
+        <section id="analytics-view" class="analytics" aria-labelledby="analytics-tab">
+          <section class="control-card" aria-label="Analytics controls">
+            <div class="control-row">
+              <div class="preset-group" role="group" aria-label="Date range preset">
+                <button class="preset active" data-range="month" type="button">This month</button>
+                <button class="preset" data-range="last" type="button">Last month</button>
+                <button class="preset" data-range="three" type="button">Last 3 months</button>
+                <button class="preset" data-range="twelve" type="button">Last 12 months</button>
+                <button class="preset" data-range="custom" type="button">Custom</button>
+              </div>
+              <div class="timezone" title="Calendar days, comparisons, and exports use fixed UTC boundaries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+                <span>UTC</span>
+              </div>
+              <div id="custom-range" class="custom-range">
+                <div class="field"><label for="start-date">Start date</label><input id="start-date" type="date" value="2026-08-01"></div>
+                <span aria-hidden="true" style="color:var(--gray-400);padding-top:17px">to</span>
+                <div class="field"><label for="end-date">End date</label><input id="end-date" type="date" value="2026-08-22"></div>
+                <button id="apply-custom" class="primary-button" type="button" style="margin-top:16px">Apply</button>
+              </div>
+            </div>
+            <div class="control-row">
+              <div class="field"><label for="runtime-filter">Runtime</label><select id="runtime-filter"><option value="all">All runtimes</option><option>Codex</option><option>Claude SDK</option><option>Autobyteus</option></select></div>
+              <div class="field"><label for="provider-filter">Provider</label><select id="provider-filter"><option value="all">All providers</option><option>OpenAI</option><option>Anthropic</option><option>DeepSeek</option><option>Unknown Provider</option></select></div>
+              <div class="field"><label for="model-filter">Model</label><select id="model-filter"><option value="all">All models</option><option>gpt-5.6-sol</option><option>gpt-5.5</option><option>claude-sonnet-4-6</option><option>deepseek-v4-flash</option><option>Unknown Model</option></select></div>
+              <div class="metric-group" role="group" aria-label="Analytical metric">
+                <button class="metric active" data-metric="tokens" type="button">Tokens</button>
+                <button class="metric" data-metric="cost" type="button">Estimated cost</button>
+              </div>
+              <button id="export" class="export-button" type="button">
+                <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 20h14"/></svg>
+                Export CSV
+              </button>
+            </div>
+            <div id="filter-summary" class="filter-summary" role="status">
+              <span>Active filters: <strong id="active-filter-label" style="color:var(--gray-800)"></strong></span>
+              <button id="clear-filters" class="secondary-button" type="button">Clear filters</button>
+            </div>
+          </section>
+
+          <div id="coverage" class="coverage" role="status">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+            <span id="coverage-message"><strong>Full analytics coverage</strong> for the selected range</span>
+            <span class="coverage-note">Usage is grouped by observation time.</span>
+          </div>
+
+          <section class="summary-grid" aria-label="Usage summary">
+            <article class="summary-card">
+              <div class="eyebrow"><span>Total tokens</span><button class="info" title="Gross input plus output. Cached input and thinking are not added twice." aria-label="Total tokens definition">ⓘ</button></div>
+              <div id="total-tokens" class="metric-value">300.0M</div>
+              <div id="token-subline" class="metric-subline">293.0M input · 7.0M output</div>
+            </article>
+            <article class="summary-card">
+              <div class="eyebrow"><span>Estimated API cost</span><span id="price-pill" class="status-pill partial">Partial</span></div>
+              <div id="total-cost" class="metric-value">$82.41</div>
+              <div id="cost-subline" class="metric-subline">Partial estimate · some usage is unpriced</div>
+            </article>
+            <article class="summary-card">
+              <div class="eyebrow"><span>Tokens per active day</span><button class="info" title="Total tokens divided by days with tracked usage." aria-label="Active-day average definition">ⓘ</button></div>
+              <div id="daily-average" class="metric-value">15.8M</div>
+              <div id="active-days" class="metric-subline">19 active days in Aug 1–22 UTC</div>
+            </article>
+            <article class="summary-card">
+              <div class="eyebrow"><span>Compared with prior period</span><span id="comparison-status" class="status-pill partial" style="color:#b42318;background:#fff1f0;border-color:#fecaca">Faster</span></div>
+              <div id="period-change" class="metric-value positive">+60.1%</div>
+              <div id="comparison-subline" class="metric-subline">+112.6M tokens vs Jul 1–22</div>
+            </article>
+          </section>
+
+          <section class="chart-grid">
+            <article class="chart-card">
+              <div class="card-head">
+                <div><h2 class="card-title">Usage over time</h2><p id="trend-description" class="card-description">Daily tokens observed · Aug 1–22</p></div>
+                <div class="legend"><span class="legend-key"><span class="legend-line"></span><span id="trend-legend">Total tokens</span></span></div>
+              </div>
+              <svg id="trend-chart" class="chart" viewBox="0 0 720 260" role="img" aria-label="Daily token usage from August 1 through August 22"></svg>
+            </article>
+            <article class="chart-card">
+              <div class="card-head">
+                <div><h2 class="card-title">Consumption pace</h2><p id="pace-description" class="card-description">Cumulative tokens by elapsed day</p></div>
+                <div class="legend"><span class="legend-key"><span class="legend-line"></span><span id="current-legend">Aug 1–22</span></span><span class="legend-key"><span class="legend-line prior"></span><span id="prior-legend">Jul 1–22</span></span></div>
+              </div>
+              <svg id="pace-chart" class="chart" viewBox="0 0 560 260" role="img" aria-label="Cumulative token consumption comparison"></svg>
+            </article>
+          </section>
+
+          <section class="breakdown-card">
+            <div class="card-head">
+              <div><h2 class="card-title">Where usage went</h2><p class="card-description">Ranked contribution to the selected period</p></div>
+              <div class="field" style="min-width:160px"><label for="grouping">Group by</label><select id="grouping" class="group-select"><option value="runtime-model">Runtime + model</option><option value="runtime">Runtime</option><option value="provider">Provider</option><option value="model">Model</option></select></div>
+            </div>
+            <div class="breakdown-content">
+              <div id="bar-list" class="bar-list" aria-label="Ranked usage breakdown"></div>
+              <div>
+                <div class="exact-wrap">
+                  <table aria-label="Exact token usage breakdown">
+                    <thead><tr><th>Runtime / model</th><th>Provider</th><th class="num">Input</th><th class="num">Cached</th><th class="num">Output</th><th class="num">Total</th><th class="num">Est. cost</th><th class="num">Share</th></tr></thead>
+                    <tbody id="breakdown-table"></tbody>
+                  </table>
+                </div>
+                <div class="table-note">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+                  <span><strong style="color:var(--gray-700)">Cost is estimated.</strong> Unpriced usage remains in token totals and is never treated as $0. Different currencies are not combined.</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <p class="disclaimer">These figures reflect token usage observed and normalized by AutoByteus. Provider quota policies, subscription allowances, invoice adjustments, and rate-limit accounting may use different rules.</p>
+        </section>
+
+        <section id="runs-view" class="run-details" aria-labelledby="runs-tab">
+          <div class="run-toolbar">
+            <div class="field"><label for="run-grouping">Result grouping</label><select id="run-grouping"><option>Task</option><option>Model</option></select></div>
+            <div class="field"><label for="run-start">Start date</label><input id="run-start" type="date" value="2026-08-01"></div>
+            <span aria-hidden="true" style="color:var(--gray-400);padding-top:16px">to</span>
+            <div class="field"><label for="run-end">End date</label><input id="run-end" type="date" value="2026-08-22"></div>
+            <button class="primary-button" type="button" style="margin-left:auto;margin-top:16px">Fetch statistics</button>
+            <p class="run-note">The date range selects runs by creation time; totals show each selected run’s lifetime usage.</p>
+          </div>
+          <div class="run-table-card">
+            <table class="run-table">
+              <thead><tr><th>Task / run</th><th>Runtime</th><th>Model(s)</th><th class="num">Input</th><th class="num">Output</th><th class="num">Input cost</th><th class="num">Output cost</th><th class="num">Total cost</th><th>Created time ↓</th></tr></thead>
+              <tbody>
+                <tr><td><div class="run-title">▸ Software Engineering Team</div><div class="run-summary">“analyze token statistics and design graphs…”</div><div class="run-meta">team …7f3a</div></td><td>Mixed</td><td>gpt-5.6-sol, claude-sonnet-4-6</td><td class="num">28.4M<div class="run-meta">91.2% cache hit</div></td><td class="num">684,240<div class="run-meta">142,109 thinking included</div></td><td class="num">$7.48</td><td class="num">$2.14</td><td class="num"><strong>$9.62⌄</strong></td><td>Aug 22, 2026, 09:10</td></tr>
+                <tr><td><div class="run-title">Standalone Codex Agent</div><div class="run-summary">“prepare API release notes…”</div><div class="run-meta">run …a842</div></td><td>Codex</td><td>gpt-5.6-sol</td><td class="num">14.1M<div class="run-meta">94.8% cache hit</div></td><td class="num">312,708<div class="run-meta">68,410 thinking included</div></td><td class="num">$3.19</td><td class="num">$0.98</td><td class="num"><strong>$4.17⌄</strong></td><td>Aug 21, 2026, 18:42</td></tr>
+                <tr><td><div class="run-title">Research Agent</div><div class="run-summary">“compare model provider behavior…”</div><div class="run-meta">run …1c09</div></td><td>Autobyteus</td><td>deepseek-v4-flash</td><td class="num">2.8M<div class="run-meta">no cache data</div></td><td class="num">92,401</td><td class="num">price missing</td><td class="num">price missing</td><td class="num"><strong>price missing⌄</strong></td><td>Aug 20, 2026, 12:06</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /*
+      Structurally exact prototype fixture:
+      - identity names mirror TokenUsageUpdatedPayload / target analytics rows;
+      - aggregate names mirror TokenUsageCostSummaryAggregateGraphql;
+      - numbers are illustrative and internally reconciled, not read from a user database.
+      See token-usage-analytics-data-contract.md for the source/derivation audit.
+    */
+    const PROTOTYPE_COVERAGE_START = '2025-09-01T00:00:00Z';
+    const series = [
+      {
+        runtimeKind:'codex_app_server', runtimeLabel:'Codex', modelProvider:'OPENAI', providerName:null, providerDisplayName:'OpenAI',
+        modelIdentifier:'gpt-5.6-sol', modelValue:'gpt-5.6-sol', modelDisplayName:'gpt-5.6-sol',
+        aggregate:{ grossInputTokens:185e6, cacheReadInputTokens:150e6, outputTokens:4e6, totalTokens:189e6, estimatedApiInputCost:42.20, estimatedApiOutputCost:12.00, estimatedApiTotalCost:54.20, currency:'USD', apiCostStatus:'estimated', missingPriceDimensions:[], usageReportCount:340 }
+      },
+      {
+        runtimeKind:'codex_app_server', runtimeLabel:'Codex', modelProvider:'OPENAI', providerName:null, providerDisplayName:'OpenAI',
+        modelIdentifier:'gpt-5.5', modelValue:'gpt-5.5', modelDisplayName:'gpt-5.5',
+        aggregate:{ grossInputTokens:49.8e6, cacheReadInputTokens:42e6, outputTokens:1.2e6, totalTokens:51e6, estimatedApiInputCost:12.10, estimatedApiOutputCost:3.50, estimatedApiTotalCost:15.60, currency:'USD', apiCostStatus:'estimated', missingPriceDimensions:[], usageReportCount:120 }
+      },
+      {
+        runtimeKind:'claude_agent_sdk', runtimeLabel:'Claude SDK', modelProvider:'ANTHROPIC', providerName:null, providerDisplayName:'Anthropic',
+        modelIdentifier:'claude-sonnet-4-6', modelValue:'claude-sonnet-4-6', modelDisplayName:'claude-sonnet-4-6',
+        aggregate:{ grossInputTokens:30.7e6, cacheReadInputTokens:26e6, outputTokens:.8e6, totalTokens:31.5e6, estimatedApiInputCost:7.20, estimatedApiOutputCost:2.60, estimatedApiTotalCost:9.80, currency:'USD', apiCostStatus:'estimated', missingPriceDimensions:[], usageReportCount:80 }
+      },
+      {
+        runtimeKind:'autobyteus', runtimeLabel:'Autobyteus', modelProvider:'DEEPSEEK', providerName:null, providerDisplayName:'DeepSeek',
+        modelIdentifier:'deepseek-v4-flash', modelValue:'deepseek-v4-flash', modelDisplayName:'deepseek-v4-flash',
+        aggregate:{ grossInputTokens:17.4e6, cacheReadInputTokens:0, outputTokens:.6e6, totalTokens:18e6, estimatedApiInputCost:null, estimatedApiOutputCost:null, estimatedApiTotalCost:null, currency:null, apiCostStatus:'price_missing', missingPriceDimensions:['input','output'], usageReportCount:45 }
+      },
+      {
+        runtimeKind:'autobyteus', runtimeLabel:'Autobyteus', modelProvider:null, providerName:null, providerDisplayName:'Unknown Provider',
+        modelIdentifier:null, modelValue:null, modelDisplayName:'Unknown Model',
+        aggregate:{ grossInputTokens:10.1e6, cacheReadInputTokens:3.2e6, outputTokens:.4e6, totalTokens:10.5e6, estimatedApiInputCost:2.21, estimatedApiOutputCost:.60, estimatedApiTotalCost:2.81, currency:'USD', apiCostStatus:'estimated', missingPriceDimensions:[], usageReportCount:30 }
+      }
+    ];
+    const ranges = {
+      month:{ labels:Array.from({length:22},(_,i)=>String(i+1)), values:[8,9,7,12,11,15,13,10,9,16,18,14,20,17,19,12,11,14,15,16,15,19], prior:[6,7,5,8,7,9,8,7,6,10,11,8,12,10,11,7,6,8,9,10,9,13.4], startTime:'2026-08-01T00:00:00Z', endTimeExclusive:'2026-08-23T00:00:00Z', current:'Aug 1–22 UTC', previous:'Jul 1–22 UTC', desc:'Daily', active:19 },
+      last:{ labels:Array.from({length:31},(_,i)=>String(i+1)), values:[6,7,5,8,7,9,8,7,6,10,11,8,12,10,11,7,6,8,9,10,9,8,7,9,6,8,5,7,6,5,4.4], prior:[5,6,5,6,6,7,7,6,5,8,9,7,9,8,9,6,5,7,8,8,7,7,6,7,5,6,5,6,5,4,4], startTime:'2026-07-01T00:00:00Z', endTimeExclusive:'2026-08-01T00:00:00Z', current:'Jul 1–31 UTC', previous:'Jun 1–30 UTC', desc:'Daily', active:28 },
+      three:{ labels:['Jun 1','Jun 8','Jun 15','Jun 22','Jul 1','Jul 8','Jul 15','Jul 22','Aug 1','Aug 8','Aug 15','Aug 22'], values:[38,42,45,47,43,46,49,50,62,69,78,91], prior:[28,31,33,36,35,38,40,41,45,47,50,54], startTime:'2026-06-01T00:00:00Z', endTimeExclusive:'2026-08-23T00:00:00Z', current:'Jun 1–Aug 22 UTC', previous:'Mar 10–May 31 UTC', desc:'Weekly', active:72 },
+      twelve:{ labels:['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'], values:[132,148,141,169,181,204,197,218,237,254,281,300], prior:[105,112,118,121,126,132,140,145,151,158,165,171], startTime:'2025-09-01T00:00:00Z', endTimeExclusive:'2026-08-23T00:00:00Z', current:'Sep 2025–Aug 2026 UTC', previous:'Sep 2024–Aug 2025 UTC', desc:'Monthly', active:287 },
+      custom:{ labels:Array.from({length:22},(_,i)=>String(i+1)), values:[8,9,7,12,11,15,13,10,9,16,18,14,20,17,19,12,11,14,15,16,15,19], prior:[6,7,5,8,7,9,8,7,6,10,11,8,12,10,11,7,6,8,9,10,9,13.4], startTime:'2026-08-01T00:00:00Z', endTimeExclusive:'2026-08-23T00:00:00Z', current:'Aug 1–22 UTC', previous:'Jul 10–31 UTC', desc:'Daily', active:19 }
+    };
+    let state = { range:'month', metric:'tokens', group:'runtime-model' };
+    const el = id => document.getElementById(id);
+    const sum = values => values.reduce((a,b)=>a+b,0);
+    const fmtTokens = m => m >= 1000 ? `${(m/1000).toFixed(m>=10000?1:2)}B` : m >= 100 ? `${m.toFixed(1)}M` : m >= 1 ? `${m.toFixed(1)}M` : `${Math.round(m*1e6).toLocaleString()} `;
+    const fmtCost = v => v == null ? 'Price missing' : `$${v.toFixed(2)}`;
+    const currentFilters = () => ({ runtime:el('runtime-filter').value, provider:el('provider-filter').value, model:el('model-filter').value });
+    const tokenMillions = row => row.aggregate.totalTokens / 1e6;
+    const inputMillions = row => row.aggregate.grossInputTokens / 1e6;
+    const cachedMillions = row => row.aggregate.cacheReadInputTokens / 1e6;
+    const outputMillions = row => row.aggregate.outputTokens / 1e6;
+    const knownCost = row => row.aggregate.estimatedApiTotalCost;
+    const filteredSeries = () => { const f=currentFilters(); return series.filter(s=>(f.runtime==='all'||s.runtimeLabel===f.runtime)&&(f.provider==='all'||s.providerDisplayName===f.provider)&&(f.model==='all'||s.modelDisplayName===f.model)); };
+    const shareFactor = () => sum(filteredSeries().map(tokenMillions))/300;
+    const costFactor = () => sum(filteredSeries().map(s=>knownCost(s)||0))/82.41;
+    const rangeData = () => ranges[state.range];
+    const rangeMultiplier = () => sum(rangeData().values) / 300;
+    const displayValue = v => state.metric==='tokens' ? fmtTokens(v) : fmtCost(v);
+
+    function renderSelectionContext(){
+      const filters=currentFilters(),active=[filters.runtime,filters.provider,filters.model].filter(value=>value!=='all');
+      el('filter-summary').classList.toggle('show',active.length>0);
+      el('active-filter-label').textContent=active.join(' · ');
+      const d=rangeData(),coverageStart=new Date(PROTOTYPE_COVERAGE_START),rangeStart=new Date(d.startTime),rangeEnd=new Date(d.endTimeExclusive);
+      const whollyUnavailable=rangeEnd<=coverageStart,partial=rangeStart<coverageStart&&rangeEnd>coverageStart;
+      el('coverage-message').innerHTML=whollyUnavailable
+        ? `<strong>Analytics unavailable for this range.</strong> Tracking begins ${PROTOTYPE_COVERAGE_START}.`
+        : partial
+          ? `<strong>Partial analytics coverage.</strong> Tracking begins ${PROTOTYPE_COVERAGE_START}.`
+          : '<strong>Full analytics coverage</strong> for the selected range';
+      el('coverage').style.borderColor=whollyUnavailable||partial?'var(--amber-200)':'var(--green-200)';
+      el('coverage').style.background=whollyUnavailable||partial?'var(--amber-50)':'var(--green-50)';
+      el('trend-chart').setAttribute('aria-label',`${d.desc} ${state.metric==='tokens'?'token usage':'estimated API cost'} for ${d.current}`);
+      el('pace-chart').setAttribute('aria-label',`Cumulative ${state.metric==='tokens'?'token usage':'estimated API cost'} comparing ${d.current} with ${d.previous}`);
+    }
+
+    function drawAxes(svg,width,height,max,labels,formatY) {
+      const left=48,right=14,top=12,bottom=32,plotH=height-top-bottom,plotW=width-left-right;
+      let html='';
+      for(let i=0;i<=4;i++){ const y=top+plotH*i/4, val=max*(1-i/4); html+=`<line class="grid" x1="${left}" x2="${width-right}" y1="${y}" y2="${y}"/><text x="${left-8}" y="${y+3}" text-anchor="end">${formatY(val)}</text>`; }
+      html+=`<line class="axis" x1="${left}" x2="${width-right}" y1="${height-bottom}" y2="${height-bottom}"/>`;
+      const picks=[0,Math.floor((labels.length-1)/2),labels.length-1];
+      picks.forEach(i=>{ const x=left+(labels.length===1?0:plotW*i/(labels.length-1)); html+=`<text x="${x}" y="${height-10}" text-anchor="middle">${labels[i]}</text>`; });
+      return {html,left,right,top,bottom,plotH,plotW};
+    }
+    function renderTrend() {
+      const d=rangeData();
+      const values=d.values.map(v=>state.metric==='tokens'?v*shareFactor():v*(82.41/300)*costFactor());
+      const width=720,height=260,max=Math.max(...values, state.metric==='tokens'?1:.1)*1.14;
+      const axes=drawAxes(el('trend-chart'),width,height,max,d.labels,v=>state.metric==='tokens'?`${Math.round(v)}M`:`$${v.toFixed(0)}`);
+      if(state.metric==='cost'&&costFactor()===0&&shareFactor()>0){
+        el('trend-chart').innerHTML=axes.html+`<text x="380" y="132" text-anchor="middle" style="font-size:13px;fill:var(--gray-600)">No priced cost data for this selection</text>`;
+        el('trend-description').textContent=`${d.desc} estimated API cost · ${d.current}`;
+        el('trend-legend').textContent='Estimated cost';
+        return;
+      }
+      const step=axes.plotW/values.length, barW=Math.max(4,Math.min(18,step*.58));
+      let html=axes.html;
+      values.forEach((v,i)=>{ const h=v/max*axes.plotH,x=axes.left+step*i+(step-barW)/2,y=axes.top+axes.plotH-h; html+=`<rect class="bar" tabindex="0" x="${x}" y="${y}" width="${barW}" height="${h}" rx="2"><title>${d.labels[i]}: ${displayValue(v)}</title></rect>`; });
+      el('trend-chart').innerHTML=html;
+      el('trend-description').textContent=`${d.desc} ${state.metric==='tokens'?'tokens observed':'estimated API cost'} · ${d.current}`;
+      el('trend-legend').textContent=state.metric==='tokens'?'Total tokens':'Estimated cost';
+    }
+    function renderPace() {
+      const d=rangeData(), scale=state.metric==='tokens'?shareFactor():(82.41/300)*costFactor();
+      const current=[],prior=[]; let a=0,b=0; d.values.forEach(v=>{a+=v*scale;current.push(a)}); d.prior.forEach(v=>{b+=v*scale;prior.push(b)});
+      const width=560,height=260,max=Math.max(...current,...prior,1)*1.1;
+      const axes=drawAxes(el('pace-chart'),width,height,max,d.labels,v=>state.metric==='tokens'?fmtTokens(v):`$${v.toFixed(0)}`);
+      if(state.metric==='cost'&&costFactor()===0&&shareFactor()>0){
+        el('pace-chart').innerHTML=axes.html+`<text x="300" y="132" text-anchor="middle" style="font-size:13px;fill:var(--gray-600)">No priced cost data for this selection</text>`;
+        el('current-legend').textContent=d.current; el('prior-legend').textContent=d.previous;
+        const elapsedUnit=d.desc==='Daily'?'day':d.desc==='Weekly'?'week':'month';
+        el('pace-description').textContent=`Cumulative estimated cost by elapsed ${elapsedUnit}`;
+        return;
+      }
+      const point=(v,i,n)=>`${axes.left+axes.plotW*i/Math.max(1,n-1)},${axes.top+axes.plotH-(v/max*axes.plotH)}`;
+      const poly=(arr,cls)=>`<polyline class="${cls}" points="${arr.map((v,i)=>point(v,i,arr.length)).join(' ')}"/>`;
+      let html=axes.html+poly(prior,'prior-line')+poly(current,'current-line');
+      [[prior,'dot-prior'],[current,'dot-current']].forEach(([arr,cls])=>arr.forEach((v,i)=>{if(i===arr.length-1||i%Math.max(1,Math.floor(arr.length/6))===0){const [x,y]=point(v,i,arr.length).split(',');html+=`<circle class="${cls}" cx="${x}" cy="${y}" r="3"><title>${i+1}: ${displayValue(v)}</title></circle>`;}}));
+      el('pace-chart').innerHTML=html; el('current-legend').textContent=d.current; el('prior-legend').textContent=d.previous;
+      const elapsedUnit=d.desc==='Daily'?'day':d.desc==='Weekly'?'week':'month';
+      el('pace-description').textContent=`Cumulative ${state.metric==='tokens'?'tokens':'estimated cost'} by elapsed ${elapsedUnit}`;
+    }
+    function groupedRows() {
+      const rows=new Map();
+      filteredSeries().forEach(s=>{
+        const key=state.group==='runtime-model'?`${s.runtimeLabel} · ${s.modelDisplayName}`:state.group==='runtime'?s.runtimeLabel:state.group==='provider'?s.providerDisplayName:s.modelDisplayName;
+        const cost=knownCost(s);
+        const prev=rows.get(key)||{label:key,tokens:0,cost:0,unpriced:false}; prev.tokens+=tokenMillions(s); if(cost==null)prev.unpriced=true;else prev.cost+=cost; rows.set(key,prev);
+      });
+      const multiplier=rangeMultiplier();
+      return [...rows.values()].map(r=>({...r,tokens:r.tokens*multiplier,cost:r.cost*multiplier})).sort((a,b)=>(state.metric==='tokens'?b.tokens-a.tokens:b.cost-a.cost));
+    }
+    function renderBreakdown(){
+      const rows=groupedRows(), total=state.metric==='tokens'?sum(rows.map(r=>r.tokens)):sum(rows.map(r=>r.cost)), max=Math.max(...rows.map(r=>state.metric==='tokens'?r.tokens:r.cost),1);
+      el('bar-list').innerHTML=rows.length?rows.map(r=>{const v=state.metric==='tokens'?r.tokens:r.cost,share=total?v/total*100:0;const missingCost=state.metric==='cost'&&r.unpriced&&r.cost===0;const valueLabel=state.metric==='cost'&&r.unpriced?(r.cost>0?`${fmtCost(r.cost)} partial`:'Price missing'):displayValue(v);const shareLabel=missingCost?'':r.unpriced&&state.metric==='cost'?` · ${share.toFixed(1)}% of known cost`:` · ${share.toFixed(1)}%`;return `<div class="bar-row"><div class="bar-label-row"><span class="bar-label" title="${r.label}">${r.label}</span><span class="bar-value">${valueLabel}${shareLabel}</span></div><div class="bar-track"><div class="bar-fill" style="width:${v/max*100}%"></div></div></div>`}).join(''):'<p style="color:var(--gray-500)">No usage matches these filters.</p>';
+      const selected=filteredSeries(), tokenTotal=sum(selected.map(tokenMillions)), multiplier=rangeMultiplier();
+      el('breakdown-table').innerHTML=selected.length?selected.sort((a,b)=>tokenMillions(b)-tokenMillions(a)).map(s=>`<tr><td><div class="identity-primary">${s.runtimeLabel}</div><div class="identity-secondary">${s.modelDisplayName}</div></td><td>${s.providerDisplayName}</td><td class="num">${fmtTokens(inputMillions(s)*multiplier)}</td><td class="num">${cachedMillions(s)?fmtTokens(cachedMillions(s)*multiplier):'—'}</td><td class="num">${fmtTokens(outputMillions(s)*multiplier)}</td><td class="num"><strong>${fmtTokens(tokenMillions(s)*multiplier)}</strong></td><td class="num">${knownCost(s)==null?'price missing':fmtCost(knownCost(s)*multiplier)}</td><td class="num">${tokenTotal?(tokenMillions(s)/tokenTotal*100).toFixed(1):'0.0'}%</td></tr>`).join(''):'<tr><td colspan="8">No usage matches these filters.</td></tr>';
+    }
+    function renderSummary(){
+      const d=rangeData(), selected=filteredSeries(), multiplier=rangeMultiplier();
+      const tokenTotal=sum(selected.map(tokenMillions))*multiplier, input=sum(selected.map(inputMillions))*multiplier, output=sum(selected.map(outputMillions))*multiplier;
+      const cost=sum(selected.map(s=>knownCost(s)||0))*multiplier, unpriced=selected.some(s=>knownCost(s)==null), selectedBase=sum(selected.map(tokenMillions)), pricedBase=sum(selected.filter(s=>knownCost(s)!=null).map(tokenMillions));
+      const priorToken=sum(d.prior)*shareFactor(), currentToken=sum(d.values)*shareFactor();
+      const currentCompared=state.metric==='tokens'?currentToken:sum(d.values)*(82.41/300)*costFactor();
+      const priorCompared=state.metric==='tokens'?priorToken:sum(d.prior)*(82.41/300)*costFactor();
+      const change=priorCompared?((currentCompared-priorCompared)/priorCompared*100):null;
+      el('total-tokens').textContent=fmtTokens(tokenTotal); el('token-subline').textContent=`${fmtTokens(input)} input · ${fmtTokens(output)} output`;
+      const allUnpriced=selectedBase>0&&pricedBase===0;
+      el('total-cost').textContent=!selected.length?'—':allUnpriced?'Price missing':fmtCost(cost); el('price-pill').textContent=allUnpriced?'Missing':unpriced?'Partial':'Complete'; el('price-pill').className=`status-pill ${unpriced?'partial':''}`;
+      el('cost-subline').textContent=!selectedBase?'No selected usage':allUnpriced?'No estimated cost available':unpriced?'Partial estimate · some usage is unpriced':'Complete estimate · not an invoice';
+      el('daily-average').textContent=fmtTokens(tokenTotal/Math.max(1,d.active)); el('active-days').textContent=`${d.active} active days in ${d.current}`;
+      el('period-change').textContent=change==null?'—':`${change>=0?'+':''}${change.toFixed(1)}%`; el('comparison-subline').textContent=change==null?'No comparable data':`${state.metric==='tokens'?`${fmtTokens(Math.abs(currentCompared-priorCompared))} tokens`:fmtCost(Math.abs(currentCompared-priorCompared))} ${change>=0?'more':'less'} vs ${d.previous}`;
+      el('comparison-status').textContent=change==null?'Unavailable':change>=0?'Faster':'Slower';
+    }
+    function renderAll(){ renderSelectionContext(); renderSummary(); renderTrend(); renderPace(); renderBreakdown(); }
+    document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.range=btn.dataset.range;el('custom-range').classList.toggle('show',state.range==='custom');renderAll();}));
+    document.querySelectorAll('.metric').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.metric').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.metric=btn.dataset.metric;renderAll();}));
+    ['runtime-filter','provider-filter','model-filter'].forEach(id=>el(id).addEventListener('change',renderAll));
+    el('clear-filters').addEventListener('click',()=>{['runtime-filter','provider-filter','model-filter'].forEach(id=>el(id).value='all');renderAll();});
+    el('grouping').addEventListener('change',e=>{state.group=e.target.value;renderBreakdown();});
+    el('apply-custom').addEventListener('click',()=>{const start=el('start-date').value,end=el('end-date').value;if(!start||!end||start>end){showToast('Choose a start date on or before the end date.');return;}const endExclusive=new Date(`${end}T00:00:00Z`);endExclusive.setUTCDate(endExclusive.getUTCDate()+1);ranges.custom.startTime=`${start}T00:00:00Z`;ranges.custom.endTimeExclusive=endExclusive.toISOString().replace('.000Z','Z');ranges.custom.current=`${start}–${end} UTC`;renderAll();});
+    function switchView(view){const analytics=view==='analytics';el('analytics-view').classList.toggle('hidden',!analytics);el('runs-view').classList.toggle('active',!analytics);el('analytics-tab').classList.toggle('active',analytics);el('runs-tab').classList.toggle('active',!analytics);el('analytics-tab').setAttribute('aria-selected',String(analytics));el('runs-tab').setAttribute('aria-selected',String(!analytics));}
+    el('analytics-tab').addEventListener('click',()=>switchView('analytics')); el('runs-tab').addEventListener('click',()=>switchView('runs'));
+    function showToast(message){const t=el('toast');t.textContent=message;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+    el('export').addEventListener('click',()=>{
+      const rows=filteredSeries(),d=rangeData(),multiplier=rangeMultiplier(),filters=currentFilters();
+      const header=['range_start_utc','range_end_exclusive_utc','selected_runtime','selected_provider','selected_model','grouping','runtime_kind','model_provider','provider_name','provider_display_name','model_identifier','model_value','model_display_name','gross_input_tokens','cache_read_input_tokens','output_tokens','total_tokens','estimated_api_input_cost','estimated_api_output_cost','estimated_api_total_cost','currency','api_cost_status','missing_price_dimensions','usage_report_count','tracking_coverage_start_utc'];
+      const scaleNullable=value=>value==null?'':Number((value*multiplier).toFixed(6));
+      const body=rows.map(s=>[d.startTime,d.endTimeExclusive,filters.runtime,filters.provider,filters.model,state.group,s.runtimeKind,s.modelProvider??'',s.providerName??'',s.providerDisplayName,s.modelIdentifier??'',s.modelValue??'',s.modelDisplayName,Math.round(s.aggregate.grossInputTokens*multiplier),Math.round(s.aggregate.cacheReadInputTokens*multiplier),Math.round(s.aggregate.outputTokens*multiplier),Math.round(s.aggregate.totalTokens*multiplier),scaleNullable(s.aggregate.estimatedApiInputCost),scaleNullable(s.aggregate.estimatedApiOutputCost),scaleNullable(s.aggregate.estimatedApiTotalCost),s.aggregate.currency??'',s.aggregate.apiCostStatus,s.aggregate.missingPriceDimensions.join(';'),Math.round(s.aggregate.usageReportCount*multiplier),PROTOTYPE_COVERAGE_START]);
+      const csv=[header,...body].map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');
+      const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download=`token-usage-${d.startTime.slice(0,10)}-to-${new Date(new Date(d.endTimeExclusive).getTime()-1).toISOString().slice(0,10)}-utc.csv`;a.click();URL.revokeObjectURL(a.href);showToast('CSV exported locally.');
+    });
+    renderAll();
+  </script>
+</body>
+</html>

@@ -3,14 +3,14 @@ import { getApolloClient } from '~/utils/apolloClient';
 import {
   GET_TOKEN_USAGE_STATISTICS,
   GET_TOKEN_USAGE_TASK_STATISTICS,
-} from '~/graphql/queries/token_usage_statistics_queries';
+} from '~/graphql/queries/token_usage_run_statistics_queries';
 import type {
   TokenUsageCostSummaryAggregate,
   TokenUsageCreatedTimeSource,
   TokenUsageRuntimeModelStatisticsRow,
   TokenUsageTaskRowKind,
   TokenUsageTaskStatisticsRow,
-} from '~/types/tokenUsageStatistics';
+} from '~/types/tokenUsageRunStatistics';
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
 
 interface TokenUsageStatisticsState {
@@ -169,7 +169,7 @@ const normalizeModelRow = (row: ModelRowPayload): TokenUsageRuntimeModelStatisti
   aggregate: normalizeAggregate(row.aggregate),
 });
 
-export const useTokenUsageStatisticsStore = defineStore('tokenUsageStatistics', {
+export const useTokenUsageRunStatisticsStore = defineStore('tokenUsageRunStatistics', {
   state: (): TokenUsageStatisticsState => ({
     taskRows: [],
     modelRows: [],
