@@ -2,11 +2,11 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, and the merge/conflict/overlap/path inventories in the ticket directory.
+- Supplemental Task Artifacts Reviewed As Context: `integration-strategy-analysis.md` and `integration-runtime-contracts.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`–`SR-003`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
@@ -16,174 +16,123 @@
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`–`IR-005`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: `7`
-- Trigger: `/implementation_engineer` requested affected source re-review of `IR-005` at `ad2ef7597f615c673e2998e083f412fdae4e7854`, addressing `CR-006` after `API-REV-002`.
-- Prior Review Round Reviewed: `CRR-006 — Fail / Local Fix`
-- Latest Authoritative Round: `CRR-007`
+- Current Code Review Revision ID: `CRR-008`
+- Current Review Round: `8`
+- Trigger: `/api_e2e_engineer` reported `API-REV-003 — Fail / 93% evidence confidence` at reviewed HEAD `63000f7bc1d07f3b9b3164594c60fadb8ed6a8b8`.
+- Prior Review Round Reviewed: `CRR-007 — Pass / 93`
+- Latest Authoritative Round: `CRR-008`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-003`
 - Delivery Revision Record Reviewed: `N/A`
-- Failing Scenario IDs Addressed: `APIE2E-STANDALONE-001`; `APIE2E-CODEX-CWD-001` / `APIE2E-F003`
-- Review Evidence Paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-007-source-review.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-007-focused-validation.log`
-  - retained `CRR-001`–`CRR-006` evidence in the same directory
+- Failing Scenario IDs: `APIE2E-SOCRATIC-002` / `APIE2E-F004`
+- Exact Failing Execution Mode: isolated real Studio backend on `127.0.0.1:8014`, Nuxt frontend on `127.0.0.1:3014`, the maintained Socratic `dev:studio` package, installed headless Chrome, and authenticated Codex App Server with the configured Luna model; the visible `Start lesson` action was exercised twice from fresh lesson state.
+- Failure Evidence Paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-003-socratic-studio-business.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-003-socratic-studio-fresh-repro.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-003-socratic-studio-retry.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-003-socratic-failure-correlation.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-003-socratic-failure-source-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-008-failure-origin-focused.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-008-focused-host-service-test.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: narrow runtime-directory preparation; catalog/selection filtering; shared pre-listen ordering; graph-local storage owner injection; exact provider cwd precondition; failure transition and stop availability; non-creation of application/platform databases.
-- Files / areas reviewed: five production files, three implementation-owned tests, lifecycle/storage contracts, launch/provider paths proven unchanged, current architecture checks, and prior read-only launch/journal/standalone behavior.
-- Explicit exclusions: the exact authenticated real standalone/Studio executions, later provider/business/recovery/parity matrix, proportional review of API/E2E-owned durable coverage, and Electron execution remain downstream-owned.
+- Changed implementation and behavior reviewed: no new implementation delta; this round classifies the current integrated source behavior exposed by the real fresh Socratic first-turn failure.
+- Files / areas reviewed: the maintained Socratic start/read/target/frontend session path; application agent WebSocket session and streaming source; application binding launch and exact addressed-input translation; root team command dispatch; the focused host-service test; the smallest current API/E2E evidence needed to distinguish identity, provider, environment, test, and source origins.
+- Explicit exclusions: no full implementation scorecard was reopened; no proportional review of the cumulative API/E2E durable-test delta was performed because execution failed; broad whole-suite debt and Electron remain separate.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: the maintained application must start from a normal fresh data root, use its declared per-application workspace, validate provider credentials truthfully before listen, and retain current read-only storage behavior (`REQ-003`–`REQ-005`; `AC-003`, `AC-007`, `AC-009`, `AC-011`).
-- Design-spec behavior map verified against the implementation: `ApplicationPlatformLifecycle` remains the shared pre-listen sequence owner and calls the existing graph-local `ApplicationStorageLifecycleService` before definition/provider readiness. Storage identity and credential validation are unchanged.
-- Design review report and round confirmed: `ARCH-REV-003 / Pass` remains applicable.
+- Approved requirements basis understood: maintained Socratic is a supported dual-host application whose current rooted `/tutor` identity, application-scoped communication, first real response, and integrated host execution are governed by `REQ-003`–`REQ-005`, `REQ-007`, `AC-003`, `AC-005`, `AC-007`, `AC-008`, and `AC-011`.
+- Design-spec behavior map verified against the implementation: `BEH-002` exposes the maintained package, `BEH-003` requires current Personal execution identity with application-scoped messaging, and `BEH-006` requires real integrated proof. The maintained package README further establishes one long-lived binding, exact tutor communication, and `READY`-before-input sequencing.
+- Design review report and round confirmed: `ARCH-REV-003 / Pass` remains the approved integration basis; F004 does not reveal a requirement ambiguity or require a different product capability.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior: none; IR-005 restores a required fresh-root precondition.
-- Remaining material ambiguity: none.
+- Changed or newly discovered behavior: none. API-REV-003 reached an already-supported Socratic workflow that earlier execution rounds could not reach because prior startup defects failed first.
+- Remaining material ambiguity: none. The communication session hides the internal rejection detail on the wire, but the current caller/callee contract proves the deterministic `RUN_NOT_FOUND` source path.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Integration ancestry and merge/path integrity are unchanged. | N/A |
-| `BEH-002` | Confirmed | `pnpm start -> selected catalog -> canonical runtime directory preparation -> definition/provider readiness -> listen`; exact real execution remains the downstream confirmation. | N/A |
-| `BEH-003` | Confirmed | The shared lifecycle prepares only cataloged/selected application runtime directories before provider acquisition; migrations, manager ownership, exact identity, and storage schemas remain unchanged. | N/A |
-| `BEH-004` | Confirmed | Runtime-directory preparation creates neither application nor platform SQLite state; ordinary launch reads and explicit Save/Reset ownership remain intact. | N/A |
-| `BEH-005` | Confirmed | No cwd fallback, path-resolver mutation, query-side database preparation, provider bypass, compatibility path, or alternate storage identity was added. | N/A |
-| `BEH-006` | Confirmed | Reviewer selection passes 6 files / 42 tests including architecture 15/15, plus server build-config no-emit. Full production build/sanitized bootstrap passes in IR-005 evidence. | N/A |
+| `BEH-002` | Confirmed | The user enters the maintained Socratic application in Studio and submits the visible `Start lesson` form; the package calls `startLesson`, starts the package-owned team, returns the exact tutor address, connects, awaits `connection.ready`, and immediately sends the problem. | The first supported turn fails twice after the UI-visible action. |
+| `BEH-003` | Contradicted | Exact binding/member identity and authorization succeed, but addressed dispatch converts the validated member `agentRunId` to `memberAddress` and passes that address to `RootTeamRun.postMessage`, whose second parameter is an `agentRunId`. Root lookup deterministically returns `RUN_NOT_FOUND` for `/tutor`. | A later follow-up uses the team-run/coordinator route, which resolves the configured coordinator's actual `agentRunId` and therefore reaches the same tutor successfully. |
+| `BEH-006` | Contradicted | Real Studio, Chrome, Codex/Luna, SQLite, WebSocket, and raw worker evidence exercise the production path directly. | `API-REV-003` is `Fail`; high evidence confidence is not product readiness. |
 
-## Structural / Design Checks
+## Focused Failure Trace
 
-| Check | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-005 is correctly bounded to an established fresh-root lifecycle precondition and existing owners. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Shared readiness sequencing, exact storage identity, and no-read-mutation constraints are preserved. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | The startup spine now exposes catalog validation, runtime preparation, definition/provider readiness, listen, and later recovery in correct order. | None. |
-| Ownership boundary preservation and clarity | Pass | Lifecycle owns sequencing; storage lifecycle owns physical materialization; provider readiness only consumes the prepared cwd. | None. |
-| Off-spine concern clarity | Pass | Directory creation serves readiness without absorbing launch configuration, provider policy, or engine startup. | None. |
-| Existing capability/subsystem reuse check | Pass | The existing storage lifecycle and canonical layout utility are extended rather than bypassed. | None. |
-| Reusable owned structures check | Pass | `ApplicationStorageLayout` remains the single physical path structure; both narrow and full preparation reuse it. | None. |
-| Shared-structure/data-model tightness check | Pass | No second application ID, workspace identity, or optional fallback path is introduced. | None. |
-| Repeated coordination ownership check | Pass | Application runtime preconditions are sequenced once by the shared lifecycle for both hosts. | None. |
-| Empty indirection check | Pass | `ensureRuntimeDirectoryPrepared` owns catalog validation, canonical layout resolution, concurrency coalescing, and exact directory materialization. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Each small change stays in lifecycle contracts/sequence, runtime assembly, storage service, or storage path utility. | None. |
-| Ownership-driven dependency check | Pass | The lifecycle depends on a one-method public storage contract; architecture tests pass 15/15 and no cycle/shortcut appears. | None. |
-| Authoritative Boundary Rule check | Pass | Lifecycle does not reach the filesystem utility directly; it calls the storage owner. Provider and launch readers do not bypass that owner. | None. |
-| File placement check | Pass | Contracts, sequence, composition, storage policy, and path operation remain in their owning subsystem files. | None. |
-| Flat-vs-over-split layout judgment | Pass | One narrow method and one reusable path operation are clearer than a new readiness-storage module. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | `ensureRuntimeDirectoryPrepared` explicitly communicates one mutation and returns the authoritative layout. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `ensureRuntimeDirectoryPrepared` and `ensureApplicationRuntimeDirectory` accurately describe scope and effect. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Full storage preparation delegates runtime directory materialization to the same utility. | None. |
-| Patch-on-patch complexity control | Pass | No fallback cwd, provider special case, read mutation, mode flag, or compatibility wrapper was added. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The previous direct runtime mkdir in the full utility is replaced by the shared narrow operation; no duplicate remains. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests prove selection, ordering, actual adapter acquire/release cwd, DB absence, failure short-circuit, and cleanup. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing lifecycle/storage fixtures are extended; no separate synthetic subsystem harness is introduced. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in implementation-owned changed scope | Pass | Tests express only current fresh-root and cleanup behavior. | None. |
-| API/E2E readiness for the next workflow stage | Pass | Source gates pass and the exact prior failing command has an isolated first-rerun target. | Proceed to API/E2E. |
-
-## Source File Size And Structure Audit
-
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `application-platform/runtime/application-platform-lifecycle-contracts.ts` | 63 | Pass | `+5/-0`; pass | Narrow lifecycle dependency contract | Pass | No finding | None |
-| `application-platform/runtime/application-platform-lifecycle.ts` | 194 | Pass | `+6/-0`; pass | Shared readiness/recovery/stop sequence owner | Pass | No finding | None |
-| `application-platform/runtime/build-application-platform-runtime.ts` | 179 | Pass | `+1/-0`; pass | Graph-local application runtime assembly | Pass | No finding | None |
-| `application-storage/services/application-storage-lifecycle-service.ts` | 253 | Pass | `+17/-0`; pass | Cohesive application storage preparation owner | Pass | No finding | None |
-| `application-storage/utils/application-storage-paths.ts` | 73 | Pass | `+5/-1`; pass | Canonical storage path calculation/materialization primitives | Pass | No finding | None |
-
-The unchanged cumulative source audit remains valid: no changed implementation-source file exceeds 500 effective lines. The prior 500-line launch coordinator remains under monitoring but is unaffected by IR-005.
-
-## Legacy / Backward-Compatibility Verdict
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No historical cwd, storage, or provider path exists. |
-| No legacy old-behavior retention in changed scope | Pass | The absent-cwd ordering is corrected directly. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Runtime directory creation has one reusable utility. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No database, schema, ledger, or data migration is introduced; only the canonical runtime directory is created. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Existing Personal migrations and IR-002/IR-003 read boundaries remain unchanged. |
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-
-None.
-
-## Docs-Impact Verdict
-
-- Docs impact: `No`
-- Why: IR-005 restores internal ordering for existing documented commands and paths; no public command, route, schema, package, or developer contract changes.
-- Files or areas likely affected: none beyond current implementation/review artifacts.
+1. `applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:77-154` persists the prompt, starts the team without an initial input, persists the attached binding, emits `lesson.started`, and returns the lesson. This intentionally leaves response streaming to the frontend connection.
+2. `applications/socratic-math-teacher/frontend-src/socratic-runtime.js:256-281` handles the supported `Start lesson` action and invokes `connectLesson(..., sendInitialProblem: true)`.
+3. `applications/socratic-math-teacher/frontend-src/socratic-tutor-session.js:188-289` opens the exact member connection, installs event listeners, awaits `connection.ready`, and immediately calls `sendInput` once. Its no-retry behavior is intentional.
+4. `application-run-binding-launch-service.ts:101-131` creates and persists the root team plus exact configured member identities. The returned target correctly contains the tutor's `agentRunId`.
+5. `application-agent-communication-session.ts:66-168` establishes the event stream and forwards the exact address to `sendRunInput`; it later converts any thrown dispatch error to generic `INPUT_REJECTED`.
+6. `application-orchestration-host-service.ts:437-468` validates the exact `agentRunId` against the binding, but then derives `targetMember.memberAddress` and passes `/tutor` as the second argument to `run.postMessage`. The adjacent application-runtime initial-input path at lines 410-435 also passes `targetMemberAddress` directly to the same `agentRunId` parameter, so the mismatch is shared by both current targeting forms.
+7. `root-team-run.ts:246-248,337-348` defines that second argument as `agentRunId`, uses it in `TeamExecutionIndex.getAgent`, and returns `RUN_NOT_FOUND` before member materialization when given `/tutor`. The focused unit test at `application-orchestration-host-service.test.ts:370-408` explicitly expects the wrong `/Researcher` argument and therefore masks the current callee contract; reviewer rerun passes all 6 tests.
+8. The later Socratic follow-up is not the same address shape: `lesson-runtime-service.ts:178-216` sends `AGENT_TEAM_RUN`, so `RootTeamRun.postMessage` receives `null`, resolves the coordinator's actual `agentRunId`, lazily activates that same `/tutor` member, and succeeds. This precisely explains the deterministic first failure and later success without attributing the issue to provider readiness.
 
 ## Material Premise Validation
 
-### Prior Material-Premise Decisions
+### `CR-PREM-007` — Fresh Socratic first input immediately after connection readiness
 
-| Premise ID | Current Status | Changed Evidence / Reason |
-| --- | --- | --- |
-| `CR-PREM-001`–`CR-PREM-005B` | Confirmed | The supported paths remain, and their prior findings remain resolved. |
-| `CR-PREM-006` | Confirmed | Fresh-root standalone still reaches provider readiness, but lifecycle now materializes the exact canonical runtime cwd first; the prior ENOENT consequence is removed. |
+- Origin: `New`
+- Related approved requirement or established contract: `REQ-003`–`REQ-005`, `REQ-007`; `AC-003`, `AC-005`, `AC-007`, `AC-008`, `AC-011`; maintained Socratic README lines 3 and 11–13.
+- Relevant behavior IDs: `BEH-002`, `BEH-003`, `BEH-006`
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: a Studio user enters the maintained Socratic application, types a math problem into the visible start form, and selects `Start lesson`.
+- Support evidence: the maintained package is explicitly the current in-repo teaching sample; its UI and README instruct that the first problem is sent after the live connection is ready.
+- Forward current production path: visible form -> `socratic-runtime.startLesson` -> package GraphQL `startLesson` -> `context.agentExecution.startAgentTeam` -> persisted exact `/tutor` binding -> frontend `agentCommunication.connect(exactTarget)` -> `connection.ready` -> immediate `sendInput` -> application communication session -> addressed input translation -> root team `agentRunId` lookup -> rejection because `/tutor` was forwarded instead of the authorized ID.
+- Lifecycle preconditions and material consequence: the application worker is ready, the exact team binding is `ATTACHED`, and the exact member target carries a valid tutor `agentRunId`. Addressed dispatch replaces it with `/tutor`; root lookup expects an `agentRunId`, rejects before materialization, the UI shows `Tutor connection failed`, and the lesson retains only the student prompt.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: F004 may drive a Major implementation finding and blocks advancement. A frontend delay/retry is not an acceptable correction because it would conceal admission uncertainty and alter the supported contract.
 
-No new or reclassified material premise is required.
+## Prior Finding Resolution
 
-## Review Scorecard
-
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93`
-- Score calculation note: simple average is `9.27/10`, rounded to `9.3/10` and `93/100`. Every mandatory category is at least `9.0`; no Major or Critical finding remains.
-
-| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Fresh-root runtime preparation is now explicit on the shared pre-listen spine. | Real-host confirmation remains downstream. | Rerun the exact failure and complete both host journeys. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Sequencing and filesystem materialization remain with distinct authoritative owners. | The framework remains multi-owner by functional necessity. | Preserve narrow contracts and architecture guards. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.3 | The new storage method names one concrete mutation and avoids query/provider side effects. | Callers must still distinguish runtime-only, platform-state, and full storage preparation. | Keep each method tied to its exact lifecycle stage. |
-| `4` | `Separation of Concerns and File Placement` | 9.0 | IR-005 is cohesive and correctly placed. | The unchanged 500-line launch coordinator and 302-line standalone starter remain structural pressure, not current defects. | Do not add unrelated responsibilities there. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | One canonical layout and one runtime-dir primitive serve narrow and full preparation. | Future storage phases could pressure the service. | Keep transitions explicit rather than adding optional mode flags. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | New names expose scope and effect directly. | Wider runtime vocabulary remains domain-dense. | Preserve role-specific naming and documentation. |
-| `7` | `API/E2E Readiness` | 9.2 | Reviewer validation passes 6 files / 42 tests plus no-emit; exact rerun evidence is well isolated. | Actual authenticated standalone/Studio runs have not rerun. | Execute F003 first, then full matrix and coverage reconciliation. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | The reachable cwd precondition is corrected without weakening credentials, storage, or lifecycle behavior. | Source/unit evidence cannot replace actual OS/provider execution. | Confirm both hosts on fresh state. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No fallback cwd, alias, migration, repair branch, or dual path exists. | No material weakness found. | Preserve clean current behavior. |
-| `10` | `Cleanup Completeness` | 9.3 | Duplicate mkdir logic is centralized, diff checks pass, and reviewer outputs are cleaned. | API/E2E-owned dirty coverage/evidence remains intentionally pending. | Return durable edits for proportional review after execution Pass. |
+| Finding ID | Prior Status | Current Status | Verification Evidence |
+| --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | API-REV-003 passes the IR-005 affected selection and real startup prerequisite path. |
+| `CR-002` | Resolved | Remains resolved | No launch-store mutation regression appears; exact 73/73 package parity and current focused coverage pass. |
+| `CR-003` | Resolved | Remains resolved | Existing-state journal recovery remains green in the affected selection. |
+| `CR-004` | Resolved | Remains resolved | Both failed lessons persist and return the exact configured `/tutor` `agentRunId`; F001 remains resolved. |
+| `CR-005` | Resolved | Remains resolved | The former duplicate process manager failure is absent from real standalone/Studio startup; F002 remains resolved. |
+| `CR-006` | Resolved | Remains resolved | Real fresh-root Socratic standalone now creates the canonical runtime cwd, reaches provider readiness/listen/HTTP 200, and stops cleanly; F003 remains resolved. |
 
 ## Findings
 
-No open findings.
+### `CR-007` — Major — `Local Fix` — Application team inputs pass member addresses to an `agentRunId` contract
 
-Prior findings:
-
-- `CR-001`–`CR-005` remain resolved.
-- `CR-006` — resolved by graph-local runtime-directory preparation after catalog validation and before definition/provider readiness, with no DB creation, path fallback, or read/provider mutation.
-
-Detailed resolution evidence is preserved in `code-review-revision-record.md` under `CRR-007`.
+- Affected behavior: `BEH-002`, `BEH-003`, `BEH-006`; `CR-PREM-007`; `APIE2E-F004`.
+- Evidence: the supported frontend correctly waits for `connection.ready` and sends exactly once with the validated tutor `agentRunId`. `ApplicationOrchestrationHostService` finds that binding member but forwards its `/tutor` address to `RootTeamRun.postMessage`; the callee interprets the string as an `agentRunId` and returns `RUN_NOT_FOUND`. Its application-runtime `targetMemberAddress` path makes the same incompatible call. The existing focused unit test protects the wrong address argument. The later team-run follow-up resolves the coordinator's real `agentRunId`, reaches the same tutor member, and succeeds.
+- User consequence: a fresh Socratic lesson deterministically enters `Tutor connection failed` and never delivers or saves its first tutor response.
+- Failure origin: bounded implementation/source contract mismatch at `ApplicationOrchestrationHostService -> RootTeamRun.postMessage`. This is not an invalid test, fixture, environment problem, readiness race, stale identity, provider unavailability, or IR-005 runtime-directory regression.
+- Review-gap attribution: this was reasonably detectable in source review. The caller names its value `targetMemberAddress`, the callee names and uses the parameter `agentRunId`, and the focused mock test asserts the wrong address argument without exercising `RootTeamRun`.
+- Required correction:
+  1. Preserve current rooted identity, application scope, binding durability, subscribe-before-input ordering, lazy member activation, and current provider activation semantics.
+  2. Forward the already-authorized exact member `agentRunId` to the current `RootTeamRun.postMessage` contract; do not translate it to `memberAddress`, route through the coordinator, or add a global/legacy fallback. For the separate public `ApplicationRuntimeInput.targetMemberAddress` contract, resolve the validated address through the binding's current member projection to its exact `agentRunId` before dispatch and reject an unknown address.
+  3. Correct the focused unit assertion so it proves exact `agentRunId` dispatch, then add non-mocked regressions for both targeting forms: fresh package-team -> exact member connection -> immediate input, and targeted `initialInput.targetMemberAddress` -> exact ID resolution -> root materialization. Retain no-retry behavior and verify invalid/non-member IDs and addresses still fail.
+  4. Rerun F004 first and the retained API/E2E matrix. The public generic rejection contract does not need to change for this bounded fix.
 
 ## Classification
 
-N/A — `Pass`.
+- Classification: `Local Fix`
+- Basis: intended behavior is clear and the correction is a bounded identity translation at the two existing application-orchestration call sites plus their misleading mocks. No new product requirement, schema, compatibility path, or architecture reset is needed.
 
 ## Recommended Recipient
 
-`/api_e2e_engineer`
-
-API/E2E must rerun `APIE2E-STANDALONE-001` / `APIE2E-CODEX-CWD-001` first with the exact authenticated executable and fresh data root, then validate the shared Studio fresh-state path and continue the complete provider, publication/handoff, recovery/restart/remount/browser, package-parity, cleanup, and broader matrix. A later Pass must return every durable test addition, update, and removal for proportional review.
+- `/implementation_engineer`
+- After correction: affected source re-review, then API/E2E must rerun `APIE2E-SOCRATIC-002` first and complete the retained matrix. The cumulative API/E2E durable-test delta still requires separate proportional review only after an execution Pass.
 
 ## Residual Risks
 
-- Exact real execution has not yet confirmed that the fresh-root cwd failure is resolved.
-- Studio shares this lifecycle and must be checked with fresh application state.
-- The API/E2E-owned cumulative durable update/removal remains preserved and unreviewed until a later Pass.
-- Later business/provider/recovery/parity/cleanup and downstream Electron verification remain incomplete.
-- Inherited broad-suite debt remains separate and unattributed without a supported connection.
-- `application-launch-configuration-service.ts` remains exactly 500 effective non-empty lines and should not absorb another concern.
+- Generic wire rejection hides the internal `RUN_NOT_FOUND` detail, but the current source contract makes the defect deterministic; changing the public error shape is not required.
+- The cumulative 16-file API/E2E durable update and one removed stale test remain unreviewed by design while API/E2E is failing.
+- Broad whole-suite debt remains separately characterized and cannot be used as F004 evidence.
+- Electron remains delivery-owned and blocked behind successful source and API/E2E reruns.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Fail`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `9.3/10` (`93/100`); every mandatory category is at least `9.0`, and no Major or Critical finding remains.
-- Failure Origin: `N/A — implementation re-review`
-- Recommended Recipient: `/api_e2e_engineer`
-- Notes: `IR-005` resolves `CR-006` without regressing `CR-001`–`CR-005`. Advance to API/E2E for the exact fresh-root failure rerun and complete execution matrix; proportional durable-test review remains deferred until a later API/E2E Pass.
+- Score Summary: no full scorecard was reopened; `CRR-007 / 93` is superseded for advancement by this focused failure result.
+- Failure Origin: `ApplicationOrchestrationHostService` passes `memberAddress` to `RootTeamRun.postMessage`, which requires `agentRunId`; exact-member first input fails with `RUN_NOT_FOUND` before materialization.
+- Recommended Recipient: `/implementation_engineer`
+- Notes: `CR-007` / `APIE2E-F004` is a bounded Local Fix. `CR-001`–`CR-006` remain resolved.

@@ -13,6 +13,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `CR-005` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-006`; `APIE2E-F003` |
 | `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-006` |
+| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-007`; `APIE2E-F004` |
 
 ## Revision Entries
 
@@ -206,3 +207,34 @@ None.
 - Material score or classification changes: the focused failure-origin `Fail` is cleared; the complete implementation scorecard returns to `93/100`, every category is at least `9.0`, and no Major or Critical finding remains.
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must rerun the exact authenticated fresh-root standalone failure first and validate the shared Studio path before the complete provider/publication/handoff/recovery/restart/remount/browser/package-parity/cleanup matrix. Its cumulative durable-test update/removal remains preserved for proportional review only after a later Pass; downstream Electron execution remains delivery-owned.
+
+### CRR-008 — API-REV-003 fresh Socratic first-input failure origin
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`; `API-REV-003`, `APIE2E-SOCRATIC-002` / `APIE2E-F004`.
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-005`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-003`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-007 — Pass / 93`
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API/E2E confirmed F003 resolved and completed most of the real dual-host matrix, then reproduced the maintained Socratic fresh-start failure twice. The exact rooted binding and tutor `agentRunId` are valid, but `ApplicationOrchestrationHostService` replaces that ID with `/tutor` before calling `RootTeamRun.postMessage`; the callee interprets the string as an `agentRunId` and returns `RUN_NOT_FOUND`. A later team-run follow-up resolves the coordinator's actual ID and reaches the same member, explaining its success without a readiness or provider hypothesis. Generic `INPUT_REJECTED` hides the internal result on the wire, but the source contract is definitive.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `API-REV-003` | Current affected and startup prerequisite selections pass. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `API-REV-003` | No launch-read mutation regression appears; parity is 73/73. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `API-REV-003` | Existing-state journal recovery remains green in the affected selection. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `API-REV-003`; `APIE2E-F001` | Both failed lessons use the exact persisted `/tutor` `agentRunId`. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `API-REV-003`; `APIE2E-F002` | Real host startup no longer encounters duplicate process manager ownership. |
+| `CR-006` | Resolved | Remains resolved | `IR-005`, `CRR-007`, `API-REV-003`; `APIE2E-F003` | Fresh Socratic standalone prepares the canonical runtime cwd, reaches readiness/listen/HTTP 200, and stops cleanly. |
+
+- New or remaining finding IDs: `CR-007` (Major), mapped to `APIE2E-F004`.
+- Material score or classification changes: no full scorecard is produced for this focused entry point. `CRR-007 / 93` is superseded for advancement; classification is `Local Fix` to `/implementation_engineer`.
+- Failure-origin attribution: bounded implementation/source contract mismatch at `ApplicationOrchestrationHostService -> RootTeamRun.postMessage`. This was reasonably detectable in prior source review because the caller forwarded a variable named `targetMemberAddress`, the callee required `agentRunId`, and the focused mock test explicitly asserted the wrong `/Researcher` value without exercising root lookup.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: generic wire handling still hides the internal `RUN_NOT_FOUND`, but public error-shape change is not required. The implementation must forward the authorized exact `agentRunId`, correct the misleading test, add a real root-dispatch regression without retry/fallback, receive source re-review, and rerun F004 first. The cumulative API/E2E durable-test delta remains pending proportional review only after a later Pass; whole-suite debt and Electron remain separate.
