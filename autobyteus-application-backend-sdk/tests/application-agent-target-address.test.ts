@@ -34,7 +34,7 @@ const buildAgentBinding = (): ApplicationAgentBinding => ({
   },
   runtime: {
     subject: "AGENT_RUN",
-    runId: "agent-run-1",
+    agentRunId: "agent-run-1",
     definitionId: "agent-definition-1",
     members: [],
   },
@@ -44,15 +44,13 @@ const buildTeamBinding = (): ApplicationAgentTeamBinding => ({
   ...bindingFields,
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-1",
+    teamRunId: "team-run-1",
     definitionId: "team-definition-1",
     members: [
       {
-        memberName: "tutor-name",
-        memberRouteKey: "tutor",
+        memberAddress: "/tutor",
         displayName: "Tutor Display Name",
-        teamPath: [],
-        runId: "team-run-1::tutor",
+        agentRunId: "team-run-1::tutor",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
@@ -70,8 +68,8 @@ describe("application agent target-address builders", () => {
     const secondAgentAddress = createApplicationAgentTargetAddress(agentBinding);
     const firstTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding);
     const secondTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding);
-    const firstMemberAddress = createApplicationAgentTeamMemberTargetAddress(teamBinding, "  tutor  ");
-    const secondMemberAddress = createApplicationAgentTeamMemberTargetAddress(teamBinding, "tutor");
+    const firstMemberAddress = createApplicationAgentTeamMemberTargetAddress(teamBinding, "  team-run-1::tutor  ");
+    const secondMemberAddress = createApplicationAgentTeamMemberTargetAddress(teamBinding, "team-run-1::tutor");
 
     expect(firstAgentAddress).toEqual({
       bindingId: "binding-1",
@@ -83,7 +81,7 @@ describe("application agent target-address builders", () => {
     });
     expect(firstMemberAddress).toEqual({
       bindingId: "binding-1",
-      target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::tutor" },
     });
 
     for (const [first, second] of [
@@ -103,7 +101,7 @@ describe("application agent target-address builders", () => {
     ["team", (binding: unknown) => createApplicationAgentTeamTargetAddress(binding as ApplicationAgentTeamBinding)],
     ["team member", (binding: unknown) => createApplicationAgentTeamMemberTargetAddress(
       binding as ApplicationAgentTeamBinding,
-      "tutor",
+      "team-run-1::tutor",
     )],
   ])("rejects a missing or blank binding ID for the %s builder before other validation", (_name, buildAddress) => {
     expect(() => buildAddress({ runtime: { subject: "WRONG" } })).toThrow(
@@ -127,15 +125,15 @@ describe("application agent target-address builders", () => {
     )).toThrow("Application agent-team target address requires a TEAM_RUN binding.");
   });
 
-  it("rejects blank and unknown member keys without falling back to other member identities", () => {
+  it("rejects blank and unknown run identities without falling back to member metadata", () => {
     const binding = buildTeamBinding();
 
     expect(() => createApplicationAgentTeamMemberTargetAddress(binding, "   ")).toThrow(
-      "Application agent-team member target address requires memberRouteKey.",
+      "Application agent-team member target requires agentRunId.",
     );
-    for (const invalidKey of ["unknown", "tutor-name", "Tutor Display Name", "team-run-1::tutor"]) {
+    for (const invalidKey of ["unknown", "/tutor", "Tutor Display Name", "tutor"]) {
       expect(() => createApplicationAgentTeamMemberTargetAddress(binding, invalidKey)).toThrow(
-        `Application agent-team binding 'binding-1' does not contain memberRouteKey '${invalidKey}'.`,
+        `Application agent-team binding 'binding-1' does not contain agentRunId '${invalidKey}'.`,
       );
     }
   });

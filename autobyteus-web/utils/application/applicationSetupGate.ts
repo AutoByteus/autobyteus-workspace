@@ -1,4 +1,7 @@
-import type { ApplicationExecutionResourceConfigurationView } from '@autobyteus/application-sdk-contracts'
+import type {
+  ApplicationLaunchReadiness,
+  ApplicationLaunchSlotView,
+} from '@autobyteus/application-sdk-contracts'
 import type {
   ApplicationLaunchSetupTranslate,
   ApplicationSlotDraft,
@@ -15,7 +18,8 @@ export type ApplicationLaunchSetupGateState = {
 export const buildLaunchSetupGateState = (input: {
   loading: boolean
   loadError: string | null
-  configurationViews: ApplicationExecutionResourceConfigurationView[]
+  configurationViews: ApplicationLaunchSlotView[]
+  launchReadiness: ApplicationLaunchReadiness | null
   drafts: Record<string, ApplicationSlotDraft>
   slotReadinessByKey: Record<string, ApplicationSlotEditorReadiness>
   savingSlotKeys: string[]
@@ -64,17 +68,12 @@ export const buildLaunchSetupGateState = (input: {
     }
   }
 
-  const unreadiness = input.configurationViews.find((view) => {
-    const readiness = input.slotReadinessByKey[view.slot.slotKey]
-    return !readiness || !readiness.isReady
-  })
-  if (unreadiness) {
-    const readiness = input.slotReadinessByKey[unreadiness.slot.slotKey]
+  if (!input.launchReadiness || input.launchReadiness.status !== 'RUNNABLE') {
     return {
       phase: 'ready',
       isLaunchReady: false,
       blockingReason:
-        readiness?.blockingReason
+        input.launchReadiness?.issues[0]?.message
         || input.t('applications.components.applications.ApplicationLaunchSetupPanel.waitingForLoadBeforeEntry'),
     }
   }

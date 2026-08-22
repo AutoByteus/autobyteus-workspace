@@ -175,7 +175,7 @@ const isUnresolvedInheritedModel = computed(() =>
 const unresolvedInheritedModelMessage = computed(() =>
   buildUnavailableInheritedModelMessage({
     globalLlmModelIdentifier: globalModelIdentifier.value,
-    runtimeKind: effectiveRuntimeKind.value,
+    runtimeKind: effectiveRuntimeKind.value ?? '',
     memberName: props.memberName,
   }),
 )

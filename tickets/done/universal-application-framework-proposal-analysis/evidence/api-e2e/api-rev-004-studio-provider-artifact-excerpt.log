@@ -1,0 +1,186 @@
+=== STUDIO REAL TEAM PROVIDER / ARTIFACT EXCERPT ===
+210:Successfully registered tool definition: 'publish_artifacts'
+330:Successfully created mixed team run 'brief_studio_team_d14443ac021e4ce1b31944eac5faa202'.
+331:Resolved system prompt from fresh definition instructions for AgentDefinition team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher.
+333:AgentRuntimeState initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+334:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': LLM instance 'LMStudioLLM' and 3 tools prepared and stored in state.
+335:AgentContext composed for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Config and State linked.
+336:Instantiating AgentRuntime for agent_id: 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' with config: 'Brief Studio Researcher'.
+337:AgentWorker initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'.
+338:Registered AgentContext for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Total registered contexts: 1
+339:AgentRuntime initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Context registered.
+340:Agent facade initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'.
+341:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' created and stored successfully.
+342:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' requesting runtime to start.
+343:AgentRuntime for 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Starting worker.
+344:AgentWorker 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Starting...
+345:AgentWorker 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' asyncRun(): Starting.
+346:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Runtime init completed (event store initialized).
+347:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Runtime init completed (status deriver initialized).
+348:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Runtime init completed (AgentEventInbox initialized).
+349:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Runtime init completed (AgentEventScheduler initialized).
+350:Waiting for agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' to become idle (timeout: 30s)...
+351:AgentEventStream (ID: e5bbfc58-d3cc-4b5e-bf5f-80bcbacd90a3) initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Subscribed to notifier.
+352:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Starting direct runtime bootstrap lifecycle.
+353:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+354:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Bootstrapper starting direct lifecycle execution.
+355:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Running bootstrap step 0 (McpServerPrewarmingStep).
+356:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Executing McpServerPrewarmingStep.
+357:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Running bootstrap step 1 (SystemPromptProcessingStep).
+358:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Executing SystemPromptProcessingStep.
+359:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': No configured skills. Skipping injection.
+360:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Final processed system prompt configured on LLM instance. Final length: 4167.
+361:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Final processed system prompt:
+368:- `publish_artifacts` publishes one or more files that already exist after the write step, and each artifact item `path` should be the exact absolute path returned by that write step
+380:3. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
+396:3. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
+402:- do not call `publish_artifacts` until the target checkpoint file has already been written
+403:- do not guess or reconstruct the publish path; reuse the exact absolute path returned by the write step
+404:- treat `publish_artifacts` as the publication step at the end of a completed checkpoint, not as the file-writing step itself
+405:- use a one-item `artifacts` array when publishing a single checkpoint file
+437:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+438:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+439:AgentWorker 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' initialized successfully. Entering main event scheduler loop.
+440:Agent 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11' has become idle.
+441:AgentEventStream (ID: e5bbfc58-d3cc-4b5e-bf5f-80bcbacd90a3) for 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': close() called. Unsubscribing all listeners and signaling.
+442:AgentEventStream (ID: ef48bbf4-418f-47e6-83cf-027cc5d34956) initialized for agent_id 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'. Subscribed to notifier.
+443:Successfully created autobyteus agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11'.
+444:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+445:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+446:Agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': UserInputContextBuildingProcessor completed. Final content length: 1024
+447:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+449:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+451:  agent_id: 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11',
+465:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+466:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+467:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+468:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+469:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+470:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+471:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+472:Agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': UserInputContextBuildingProcessor completed. Final content length: 76
+473:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+474:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+476:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+478:  agent_id: 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11',
+492:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+493:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+494:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+495:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+496:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+497:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+498:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+499:Agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': UserInputContextBuildingProcessor completed. Final content length: 83
+500:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+501:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+503:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+505:  agent_id: 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11',
+519:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+520:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+521:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+522:Resolved system prompt from fresh definition instructions for AgentDefinition team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer.
+524:AgentRuntimeState initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+525:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': LLM instance 'LMStudioLLM' and 4 tools prepared and stored in state.
+526:AgentContext composed for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Config and State linked.
+527:Instantiating AgentRuntime for agent_id: 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' with config: 'Brief Studio Writer'.
+528:AgentWorker initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'.
+529:Registered AgentContext for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Total registered contexts: 2
+530:AgentRuntime initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Context registered.
+531:Agent facade initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'.
+532:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' created and stored successfully.
+533:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' requesting runtime to start.
+534:AgentRuntime for 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Starting worker.
+535:AgentWorker 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Starting...
+536:AgentWorker 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' asyncRun(): Starting.
+537:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Runtime init completed (event store initialized).
+538:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Runtime init completed (status deriver initialized).
+539:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Runtime init completed (AgentEventInbox initialized).
+540:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Runtime init completed (AgentEventScheduler initialized).
+541:Waiting for agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' to become idle (timeout: 30s)...
+542:AgentEventStream (ID: f50187ed-6132-48e0-830e-82a3d50f899f) initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Subscribed to notifier.
+543:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Starting direct runtime bootstrap lifecycle.
+544:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+545:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Bootstrapper starting direct lifecycle execution.
+546:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Running bootstrap step 0 (McpServerPrewarmingStep).
+547:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Executing McpServerPrewarmingStep.
+548:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Running bootstrap step 1 (SystemPromptProcessingStep).
+549:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Executing SystemPromptProcessingStep.
+550:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': No configured skills. Skipping injection.
+551:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Final processed system prompt configured on LLM instance. Final length: 4310.
+552:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Final processed system prompt:
+560:- `publish_artifacts` publishes one or more files that already exist after the write step, and each artifact item `path` should be the exact absolute path returned by that write step
+573:4. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
+589:4. call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`
+598:- do not call `publish_artifacts` until the target checkpoint file has already been written
+599:- do not guess or reconstruct the publish path; reuse the exact absolute path returned by the write step
+600:- treat `publish_artifacts` as the publication step at the end of a completed checkpoint, not as the file-writing step itself
+601:- use a one-item `artifacts` array when publishing a single checkpoint file
+633:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+634:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+635:AgentWorker 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' initialized successfully. Entering main event scheduler loop.
+636:Agent 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452' has become idle.
+637:AgentEventStream (ID: f50187ed-6132-48e0-830e-82a3d50f899f) for 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': close() called. Unsubscribing all listeners and signaling.
+638:AgentEventStream (ID: b6f91f8c-5b7e-4c61-a9e6-3d2f33f78907) initialized for agent_id 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'. Subscribed to notifier.
+639:Successfully created autobyteus agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452'.
+640:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+641:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+642:Agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': UserInputContextBuildingProcessor completed. Final content length: 1122
+643:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+644:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+645:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+646:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+647:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+648:Agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': UserInputContextBuildingProcessor completed. Final content length: 81
+649:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+650:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+651:[team-communication] projection inserted teamRunId=brief_studio_team_d14443ac021e4ce1b31944eac5faa202 messageId=teammsg_7h-gtpROSvDPylutTSeGstOpAztA8cAz referenceCount=1 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/memory/agent_teams/brief_studio_team_d14443ac021e4ce1b31944eac5faa202/team_communication_messages.json
+652:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+654:  agent_id: 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11',
+668:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+669:Agent run 'brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+670:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+671:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+672:AgentExternalEventNotifier (NotifierID: af9437ac-fb79-4cfc-a94e-c42dd0227684, AgentID: brief_studio_researcher_9f8e15aeada74f0f82c427b492636f11) emitted agent_status. Kwarg keys for emit: agent_id,payload
+674:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+676:  agent_id: 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452',
+690:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+691:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+692:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+693:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+694:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+695:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+696:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+697:Agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': UserInputContextBuildingProcessor completed. Final content length: 75
+698:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+699:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+701:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+703:  agent_id: 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452',
+717:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+718:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+719:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+720:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+721:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+722:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+723:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+724:Agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': UserInputContextBuildingProcessor completed. Final content length: 76
+725:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+726:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+728:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+730:  agent_id: 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452',
+744:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+745:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+746:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+747:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+748:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+749:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+750:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+751:Agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': UserInputContextBuildingProcessor completed. Final content length: 83
+752:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+753:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+754:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+756:  agent_id: 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452',
+770:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload
+771:Agent run 'brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+772:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+773:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+774:AgentExternalEventNotifier (NotifierID: 5e23e867-cb95-43f9-a673-47aa32304d5a, AgentID: brief_studio_writer_8fc42e27638c4e1bbc3dd3f0c4ebf452) emitted agent_status. Kwarg keys for emit: agent_id,payload

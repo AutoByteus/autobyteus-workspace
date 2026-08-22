@@ -1,0 +1,132 @@
+{
+  "scenarioId": "APIE2E-STUDIO-BUSINESS-015",
+  "assertions": {
+    "actualPublishArtifactsSucceeded": true,
+    "actualRecipientNameHandoffSucceeded": true,
+    "writerPublishedArtifact": true
+  },
+  "toolExecutions": [
+    {
+      "memberRunId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the API REV 015 studio restart brief."
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the API REV 015 studio restart brief.",
+            "revisionId": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+            "createdAt": "2026-08-13T11:06:06.304Z",
+            "updatedAt": "2026-08-13T11:06:06.304Z"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+      "toolName": "send_message_to",
+      "arguments": {
+        "recipient_name": "writer",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md. Key findings: frame this as a bounded studio restart anchored to API REV 015; make outcome, scope, ownership, acceptance evidence, and rollback explicit; validate contract compatibility, happy path, failures, observability, and rollback. Context is incomplete, so treat the trigger, API surface, baseline metrics, fixtures, and dependencies as open questions. Please review the file, draft the concise brief, write and publish the writer checkpoint, then report completion.",
+        "message_type": "research_handoff",
+        "reference_files": [
+          "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md"
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": "Delivered message to writer.",
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+      "toolName": "send_message_to",
+      "arguments": {
+        "recipient_name": "writer",
+        "content": "Checking handoff receipt: please proceed with the writer checkpoint now. Keep it concise, write the final brief artifact, publish it with the exact absolute path returned by your write step, and reply with the published path.",
+        "message_type": "handoff_followup"
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": "Delivered message to writer.",
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "description": "Retained generic publication used to validate Brief startup eligibility filtering."
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Retained generic publication used to validate Brief startup eligibility filtering.",
+            "revisionId": "8085564f-fd0f-48d9-bdd9-6ec1bebdb4a8",
+            "createdAt": "2026-08-13T11:10:29.507Z",
+            "updatedAt": "2026-08-13T11:10:29.507Z"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "description": "Concise writer checkpoint for the API REV 015 studio restart."
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8",
+            "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise writer checkpoint for the API REV 015 studio restart.",
+            "revisionId": "ecb5102b-8950-4ec4-be56-c155f5a9c51e",
+            "createdAt": "2026-08-13T11:06:48.548Z",
+            "updatedAt": "2026-08-13T11:06:48.548Z"
+          }
+        ]
+      },
+      "error": null
+    }
+  ]
+}

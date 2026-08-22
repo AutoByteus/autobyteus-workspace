@@ -17,19 +17,28 @@ import {
 } from "../../fixtures/current-team-run-fixtures.js";
 
 const createAgentRunManager = () => {
-  const createAgentRun = vi.fn(async (config, runId) => ({
-    runId,
-    config,
-    isActive: () => true,
-    getPlatformAgentRunId: () => null,
-    getStatusSnapshot: () => ({ status: "idle" }),
-    subscribeToEvents: () => () => undefined,
-    postUserMessage: async () => ({ accepted: true }),
-    approveToolInvocation: async () => ({ accepted: true }),
-    interrupt: async () => ({ accepted: true }),
-    terminate: async () => ({ accepted: true }),
-  }));
-  return { createAgentRun };
+  const prepareNewAgentRun = vi.fn(async ({ config, runId }) => {
+    const run = {
+      runId,
+      config,
+      isActive: () => true,
+      getPlatformAgentRunId: () => `${runId}-platform`,
+      getStatusSnapshot: () => ({ status: "idle" }),
+      subscribeToEvents: () => () => undefined,
+      postUserMessage: async () => ({ accepted: true }),
+      approveToolInvocation: async () => ({ accepted: true }),
+      interrupt: async () => ({ accepted: true }),
+      terminate: async () => ({ accepted: true }),
+    };
+    return {
+      runId,
+      runtimeKind: config.runtimeKind,
+      platformAgentRunId: `${runId}-platform`,
+      commitPublication: () => run,
+      abort: async () => ({ kind: "aborted" as const }),
+    };
+  });
+  return { prepareNewAgentRun };
 };
 
 const createHandle = (input: {
@@ -37,7 +46,7 @@ const createHandle = (input: {
   teamRunId: string;
   teamAddress: string;
   node: TeamRunAgentNode;
-  createAgentRun: ReturnType<typeof vi.fn>;
+  prepareNewAgentRun: ReturnType<typeof vi.fn>;
 }) => {
   const findTeam = (node: TeamRunNode): TeamRunAgentTeamNode | null => {
     if (node.kind === "agent") return null;
@@ -70,7 +79,9 @@ const createHandle = (input: {
     teamContext,
     context: memberContext,
     config: input.node,
-    agentRunManager: { createAgentRun: input.createAgentRun } as never,
+    activationMode: "fresh",
+    agentRunManager: { prepareNewAgentRun: input.prepareNewAgentRun } as never,
+    activityInspector: { inspect: () => ({ kind: "none" }) } as never,
     memberTeamContextBuilder: {
       build: vi.fn(async () => testMemberTeamContext({
         rootTeamRunId: input.config.rootTeam.teamRunId,
@@ -79,6 +90,7 @@ const createHandle = (input: {
       })),
     } as never,
     publish: vi.fn(),
+    acceptPlatformBinding: vi.fn(async () => undefined),
     deliverInterAgentMessage: vi.fn(),
   });
 };
@@ -94,18 +106,24 @@ describe("MixedAgentMemberHandle memory location", () => {
       coordinatorAddress: worker.address,
       children: [worker],
     });
-    const { createAgentRun } = createAgentRunManager();
-    const handle = createHandle({ config, teamRunId: "team-run-1", teamAddress: "/", node: worker, createAgentRun });
+    const { prepareNewAgentRun } = createAgentRunManager();
+    const handle = createHandle({
+      config,
+      teamRunId: "team-run-1",
+      teamAddress: "/",
+      node: worker,
+      prepareNewAgentRun,
+    });
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
       .resolves.toMatchObject({ accepted: true });
-    expect(createAgentRun).toHaveBeenCalledWith(
-      expect.objectContaining({
+    expect(prepareNewAgentRun).toHaveBeenCalledWith({
+      runId: "worker-run-1",
+      config: expect.objectContaining({
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
           .getTeamAgentRunDirPath({ rootTeamRunId: "team-run-1", ancestorTeamRunIds: [] }, "worker-run-1"),
       }),
-      "worker-run-1",
-    );
+    });
   });
 
   it("uses the root plus globally unique AgentRun identity for a nested configured member", async () => {
@@ -126,26 +144,26 @@ describe("MixedAgentMemberHandle memory location", () => {
         }),
       ],
     });
-    const { createAgentRun } = createAgentRunManager();
+    const { prepareNewAgentRun } = createAgentRunManager();
     const handle = createHandle({
       config,
       teamRunId: "sub-team-run",
       teamAddress: "/sub_team",
       node: worker,
-      createAgentRun,
+      prepareNewAgentRun,
     });
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
       .resolves.toMatchObject({ accepted: true });
-    expect(createAgentRun).toHaveBeenCalledWith(
-      expect.objectContaining({
+    expect(prepareNewAgentRun).toHaveBeenCalledWith({
+      runId: "nested-worker-run",
+      config: expect.objectContaining({
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
           .getTeamAgentRunDirPath({
             rootTeamRunId: "root-run",
             ancestorTeamRunIds: [],
           }, "nested-worker-run"),
       }),
-      "nested-worker-run",
-    );
+    });
   });
 });

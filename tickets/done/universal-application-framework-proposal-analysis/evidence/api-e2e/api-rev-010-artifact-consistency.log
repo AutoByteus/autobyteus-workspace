@@ -1,0 +1,38 @@
+HEAD=f90a8b666cb102e877772af53656a82529802a41
+BRANCH=codex/universal-application-framework-proposal-analysis
+REPORT_META:
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:22:- Current API/E2E Revision ID: `API-REV-010`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:23:- Current Investigation Round: `10` (`API-REV-010` complete)
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:26:- Current Result: **Pass / 98%** (`98.3%`); `APIE2E-PARITY-005` / `APIE2E-F008` is resolved, all 73 paths remain byte-identical across repeated maintained `dev` and `dev:studio`, and the cumulative durable change awaits proportional test-code review.
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:18:- Current API/E2E Revision ID: `API-REV-010`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:179:## Latest Authoritative Result
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:181:- Result: **Pass**.
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:182:- Final validation confidence: **98%** (`98.3%`).
+REV_INDEX:
+| API-REV-010 | `code_reviewer` `CRR-026`; API/E2E round 10 | `IR-015`; `CRR-025`–`CRR-026`; `API-REV-009`; `DR-001` | **Fail / 94%** | **Pass / 98%** |
+### API-REV-010 — Canonical atomic metadata restores exact dual-host package parity
+EVIDENCE_MARKERS:
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-devkit-full-suite.log:# pass 20
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-devkit-full-suite.log:# fail 0
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-parity-comparison-summary.log:after-standalone-initial COUNT=73 PARITY=73/73_IDENTICAL
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-parity-comparison-summary.log:after-standalone-watch COUNT=73 PARITY=73/73_IDENTICAL
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-parity-comparison-summary.log:after-dev-studio-initial COUNT=73 PARITY=73/73_IDENTICAL
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-parity-comparison-summary.log:after-dev-studio-watch COUNT=73 PARITY=73/73_IDENTICAL
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-parity-comparison-summary.log:RESULT=PASS
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-default-explicit-pack.log:DEFAULT_VALIDATION=PASS
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-default-explicit-pack.log:EXPLICIT_VALIDATION=PASS
+tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-010-atomic-validation-rollback-cleanup-probe.log:{"result":"PASS","probeRootExistsAfterCleanup":false}
+FILES:
+tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md OK
+tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md OK
+tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md OK
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md OK
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md OK
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md OK
+autobyteus-application-devkit/tests/application-devkit.test.mjs OK
+PORTS:
+43124 CLEAR
+8000 CLEAR
+3000 CLEAR
+9229 CLEAR
+DIFF_CHECK=PASS

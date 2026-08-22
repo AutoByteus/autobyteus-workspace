@@ -49,7 +49,6 @@ type LessonMessage {
 
 input StartLessonInput {
   prompt: String!
-  llmModelIdentifier: String
 }
 
 input AskFollowUpInput {

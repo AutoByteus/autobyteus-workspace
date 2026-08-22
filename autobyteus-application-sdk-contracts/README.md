@@ -6,8 +6,8 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 - application manifest v4 types and version constants
 - backend bundle manifest v1 types and version constants
-- backend definition contract v5 types
-- frontend SDK contract v5 constants
+- backend definition contract v4 types
+- frontend SDK contract v4 constants
 - iframe/bootstrap contract v4 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - execution-resource, resource-slot, and host-managed launch-default configuration types
@@ -22,24 +22,24 @@ New external custom applications should start with `@autobyteus/application-devk
 
 ## Key exported version constants
 
-- `APPLICATION_MANIFEST_VERSION_V4`
-- `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
-- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6`
-- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6`
+- `APPLICATION_MANIFEST_VERSION`
+- `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION`
+- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION`
+- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
 ## Main shared contracts
 
 ### Bundle manifests
 
-- `ApplicationManifestV4`
+- `ApplicationManifest`
   - `application.json`
   - requires `manifestVersion: "4"`
-  - requires `ui.frontendSdkContractVersion: "6"`
+  - requires `ui.frontendSdkContractVersion: "4"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`
-- `ApplicationBackendBundleManifestV1`
+- `ApplicationBackendBundleManifest`
   - bundle-owned backend manifest under `backend/`
   - declares backend entry module, supported exposures, target runtime, SDK compatibility, and optional migrations/assets directories
 
@@ -58,17 +58,17 @@ New external custom applications should start with `@autobyteus/application-devk
 ### Iframe / bootstrap contract
 
 - `APPLICATION_IFRAME_CHANNEL`
-- `APPLICATION_IFRAME_CONTRACT_VERSION_V4`
+- `APPLICATION_IFRAME_CONTRACT_VERSION`
 - `APPLICATION_IFRAME_READY_EVENT`
 - `APPLICATION_IFRAME_BOOTSTRAP_EVENT`
 - `ApplicationIframeLaunchHints`
 - `ApplicationHostTransport`
-- `ApplicationUiReadyEnvelopeV4`
-- `ApplicationHostBootstrapEnvelopeV4`
-- `createApplicationUiReadyEnvelopeV4(...)`
-- `createApplicationHostBootstrapEnvelopeV4(...)`
-- `isApplicationUiReadyEnvelopeV4(...)`
-- `isApplicationHostBootstrapEnvelopeV4(...)`
+- `ApplicationUiReadyEnvelope`
+- `ApplicationHostBootstrapEnvelope`
+- `createApplicationUiReadyEnvelope(...)`
+- `createApplicationHostBootstrapEnvelope(...)`
+- `isApplicationUiReadyEnvelope(...)`
+- `isApplicationHostBootstrapEnvelope(...)`
 - `readApplicationIframeLaunchHints(...)`
 - `normalizeApplicationHostOrigin(...)`
 - `doesApplicationHostOriginMatch(...)`
@@ -139,6 +139,6 @@ It demonstrates:
 - `../autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`
 - `../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../autobyteus-server-ts/docs/modules/application_storage.md`
-- `../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../autobyteus-web/docs/application-bundle-iframe-contract.md`
 - `../autobyteus-application-frontend-sdk/README.md`
 - `../autobyteus-application-backend-sdk/README.md`

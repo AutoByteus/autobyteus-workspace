@@ -7,7 +7,7 @@ const publishManyForRunMock = vi.fn();
 vi.mock(
   "../../../../src/services/published-artifacts/published-artifact-publication-service.js",
   () => ({
-    getPublishedArtifactPublicationService: () => ({
+    getGeneralProcessPublishedArtifactPublisher: () => ({
       publishManyForRun: publishManyForRunMock,
     }),
   }),

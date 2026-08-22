@@ -1,0 +1,325 @@
+# CRR-036 affected review evidence
+UTC 2026-07-31T12:43:00Z
+
+## Corrective scope
+M	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+
+## Official corrected architecture suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+·············
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  14:43:01
+   Duration  1.94s (transform 136ms, setup 10ms, import 428ms, tests 958ms, environment 0ms)
+
+
+## Server production TypeScript
+PASS: tsc -p tsconfig.build.json --noEmit
+
+## Frozen lockfile
+Scope: all 11 workspace projects
+Done in 296ms using pnpm v10.28.2
+
+## Source correlation: resolved external src is read but never evaluated as an import edge
+  1006	        continue;
+  1007	      }
+  1008	      let blockSource = block.content;
+  1009	      let sourceName = importer;
+  1010	      if (block.src) {
+  1011	        const resolution = this.resolveSpecifier(block.src, importer, profile);
+  1012	        if (resolution.kind !== "source") {
+  1013	          violations.push(this.violation({
+  1014	            policy,
+  1015	            profile,
+  1016	            importer,
+  1017	            line: block.loc.start.line,
+  1018	            column: block.loc.start.column,
+  1019	            subject: block.src,
+  1020	            reason: "UNRESOLVED_GOVERNED_IMPORT",
+  1021	          }));
+  1022	          continue;
+  1023	        }
+  1024	        sourceName = resolution.resolvedPath;
+  1025	        blockSource = readFileSync(sourceName, "utf8");
+  1026	      }
+  1027	      const parsed = this.parseScript(
+  1028	        sourceName,
+  1029	        blockSource,
+  1030	        profile,
+  1031	        policy,
+  1032	        block.src ? 0 : Math.max(0, block.loc.start.line - 1),
+  1033	        importer,
+  1034	        language,
+  1035	      );
+  1036	      sources.push(...parsed.sources);
+  1037	      violations.push(...parsed.violations);
+  1038	    }
+  1039	    return { sources, violations };
+  1040	  }
+
+## Same-checker external-src target probe
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 454ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > extracts every governed import form without reading comments or arbitrary strings 9ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > enforces every named AFB-001 private runtime category while retaining exact inputs 21ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > enforces each GraphQL and Studio presentation direction in AFB-002 16ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > enforces every AFB-003 outward owner direction and only the reconciliation seam 20ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > fails closed for malformed Vue and unresolved governed source 18ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 9ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > resolves package imports only from the owning manifest 10ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > uses each AFB-005 importer's own manifest and project root 11ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > resolves named aliases and namespace members for every direct AFB-004 callee 16ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > accepts only the two named assembly roots as general-process selection exemptions 12ms
+stdout | tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > CRR-036 external src target observation > records the result when a governed Studio SFC directly selects server runtime as its external script
+CRR036_DIRECT_EXTERNAL_SRC_DIAGNOSTICS=[]
+
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 305ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > application framework architecture boundaries > preserves deliberately process-scoped Codex positions zero and two 9ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-observation.test.ts > CRR-036 external src target observation > records the result when a governed Studio SFC directly selects server runtime as its external script 8ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  14:43:10
+   Duration  1.78s (transform 132ms, setup 9ms, import 388ms, tests 919ms, environment 0ms)
+
+
+OBSERVED: the exact AFB-002 checker returns [] for a Vue external-script src that resolves directly to server application-engine implementation.
+
+## Same-checker AFB-005 external-src project-escape observation
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 598ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > extracts every governed import form without reading comments or arbitrary strings 9ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > enforces every named AFB-001 private runtime category while retaining exact inputs 22ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > enforces each GraphQL and Studio presentation direction in AFB-002 17ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > enforces every AFB-003 outward owner direction and only the reconciliation seam 20ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > fails closed for malformed Vue and unresolved governed source 8ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 9ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > resolves package imports only from the owning manifest 10ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > uses each AFB-005 importer's own manifest and project root 12ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > resolves named aliases and namespace members for every direct AFB-004 callee 13ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > accepts only the two named assembly roots as general-process selection exemptions 20ms
+stdout | tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > CRR-036 AFB-005 external src observation > records the result when maintained app Vue src directly escapes to host runtime
+CRR036_AFB005_EXTERNAL_SRC_DIAGNOSTICS=[]
+
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 303ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > application framework architecture boundaries > preserves deliberately process-scoped Codex positions zero and two 10ms
+ ✓ tests/architecture/.tmp-crr036-boundary-src-afb005-observation.test.ts > CRR-036 AFB-005 external src observation > records the result when maintained app Vue src directly escapes to host runtime 8ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  14:43:32
+   Duration  2.02s (transform 138ms, setup 10ms, import 410ms, tests 1.06s, environment 0ms)
+
+OBSERVED: AFB-005 also returns [] when a maintained application Vue external-script src escapes its owning project into server application-engine source.
+
+## Direct strict architecture-test TypeScript
+Command: pnpm -C autobyteus-server-ts exec tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --esModuleInterop --skipLibCheck --types node,vitest/globals tests/architecture/application-framework-boundaries.test.ts
+Result: PASS (exit 0, no diagnostics)

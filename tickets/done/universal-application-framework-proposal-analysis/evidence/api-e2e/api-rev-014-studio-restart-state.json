@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-08-13T10:30:51.439Z",
+  "title": "API REV 014 Studio current-base 1786616813740",
+  "stages": [
+    {
+      "stage": "setup-restored",
+      "hasTeam": true
+    }
+  ],
+  "error": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('iframe') to be visible\u001b[22m\n\n    at /private/tmp/api-rev014-studio-restart-state.mjs:1:1097",
+  "finishedAt": "2026-08-13T10:32:23.680Z"
+}

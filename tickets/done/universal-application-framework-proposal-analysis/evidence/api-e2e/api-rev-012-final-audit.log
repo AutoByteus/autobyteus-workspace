@@ -1,0 +1,41 @@
+utc=2026-07-31T09:45:07Z
+head=4266ec7ebd60fbf06981159d6e1f7b0c9e6f6ca5
+--- production source diff ---
+--- API/E2E durable delta ---
+autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+autobyteus-server-ts/tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-availability-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-engine-test-runtime.ts
+--- retired broad host scan ---
+PASS
+--- diff check ---
+PASS
+--- package parity ---
+path_count=73
+baseline_digest_count=73
+post_digest_count=73
+exact_digest_result=PASS
+scratch_candidates:
+--- cleanup ports ---
+port_43126=CLEAR
+port_8010=CLEAR
+port_3010=CLEAR
+--- canonical artifact markers ---
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md:18:| API-REV-012 | `code_reviewer` `CRR-033`; API/E2E round 12 | `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011` | **Pass / 99%** | **Pass / 97%** |
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md:302:### API-REV-012 — Acyclic narrow owners preserve worker recovery, exact cleanup, and real dual-host behavior
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:4:- API/E2E revision: `API-REV-012`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:8:- Outcome: `Pass`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:9:- Final confidence: `97%` (`96.6%` unrounded)
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:229:## Latest Authoritative Result
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:4:- Current API/E2E revision: `API-REV-012`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:10:- Final confidence: `97%` (`96.6%` unrounded)
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:172:- Outcome: all selected scenarios passed.
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:218:- Final confidence: `97%` (`96.6%`).

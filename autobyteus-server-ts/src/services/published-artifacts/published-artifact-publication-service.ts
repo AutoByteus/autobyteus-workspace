@@ -2,10 +2,10 @@ import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import {
   ApplicationPublishedArtifactRelayService,
-  getApplicationPublishedArtifactRelayService,
+  createGeneralProcessPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { inferArtifactType } from "../../utils/artifact-utils.js";
@@ -21,7 +21,11 @@ import {
   PublishedArtifactSnapshotStore,
   getPublishedArtifactSnapshotStore,
 } from "./published-artifact-snapshot-store.js";
-import type { PublishArtifactsToolArtifactInput } from "./published-artifact-tool-contract.js";
+import type {
+  PublishedArtifactPublicationFallbackRuntimeContext,
+  PublishedArtifactPublisher,
+  PublishedArtifactPublicationRequest,
+} from "./published-artifact-publisher.js";
 import {
   EMPTY_PUBLISHED_ARTIFACT_PROJECTION,
   normalizePublishedArtifactType,
@@ -50,17 +54,16 @@ const normalizeOptionalNonEmptyString = (value: string | null | undefined): stri
   return trimmed.length > 0 ? trimmed : null;
 };
 
-type FallbackPublicationRuntimeContext = {
-  memoryDir?: string | null;
-  workspaceRootPath?: string | null;
-  applicationExecutionContext?: ApplicationExecutionContext | null;
-  emitArtifactPersisted?: ((artifact: PublishedArtifactSummary) => void | Promise<void>) | null;
-};
+const createGeneralProcessActiveRunReader = (): Pick<AgentRunManager, "getActiveRun"> => ({
+  getActiveRun: (runId: string): AgentRun | null =>
+    AgentRunManager.getInstance().getActiveRun(runId),
+});
 
-export class PublishedArtifactPublicationService {
+export class PublishedArtifactPublicationService
+implements PublishedArtifactPublisher {
   constructor(
     private readonly dependencies: {
-      agentRunManager?: AgentRunManager;
+      activeRunReader?: Pick<AgentRunManager, "getActiveRun">;
       workspaceManager?: WorkspaceManager;
       publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
       projectionStore?: PublishedArtifactProjectionStore;
@@ -68,8 +71,8 @@ export class PublishedArtifactPublicationService {
     } = {},
   ) {}
 
-  private get agentRunManager(): AgentRunManager {
-    return this.dependencies.agentRunManager ?? AgentRunManager.getInstance();
+  private get activeRunReader(): Pick<AgentRunManager, "getActiveRun"> {
+    return this.dependencies.activeRunReader ?? createGeneralProcessActiveRunReader();
   }
 
   private get workspaceManager(): WorkspaceManager {
@@ -77,7 +80,8 @@ export class PublishedArtifactPublicationService {
   }
 
   private get publishedArtifactRelayService(): ApplicationPublishedArtifactRelayService {
-    return this.dependencies.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
+    return this.dependencies.publishedArtifactRelayService
+      ?? createGeneralProcessPublishedArtifactRelayService();
   }
 
   private get projectionStore(): PublishedArtifactProjectionStore {
@@ -92,9 +96,9 @@ export class PublishedArtifactPublicationService {
     runId: string;
     path: string;
     description?: string | null;
-    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
+    fallbackRuntimeContext?: PublishedArtifactPublicationFallbackRuntimeContext | null;
   }): Promise<PublishedArtifactSummary> {
-    const run = this.agentRunManager.getActiveRun(input.runId);
+    const run = this.activeRunReader.getActiveRun(input.runId);
     const fallbackRuntimeContext = input.fallbackRuntimeContext ?? null;
     const emitArtifactPersisted = fallbackRuntimeContext?.emitArtifactPersisted ?? null;
     if (!run && !emitArtifactPersisted) {
@@ -145,6 +149,7 @@ export class PublishedArtifactPublicationService {
       throw new Error(`Published artifact path '${canonicalPath}' could not be snapshotted: ${message}`);
     });
 
+    let projectionPersisted = false;
     let clonedSummary: PublishedArtifactSummary;
     try {
       const nextProjection = this.buildNextProjection({
@@ -160,6 +165,7 @@ export class PublishedArtifactPublicationService {
         sourceFileName: snapshot.sourceFileName,
       });
       await this.projectionStore.writeProjection(memoryDir, nextProjection);
+      projectionPersisted = true;
       const summary = nextProjection.summaries.find((candidate) => candidate.id === artifactId);
       if (!summary) {
         throw new Error(`Published artifact '${artifactId}' was not persisted.`);
@@ -167,7 +173,12 @@ export class PublishedArtifactPublicationService {
 
       clonedSummary = structuredClone(summary);
     } catch (error) {
-      await this.snapshotStore.deleteRevisionSnapshot(memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
+      if (!projectionPersisted) {
+        await this.snapshotStore.deleteRevisionSnapshot(
+          memoryDir,
+          snapshot.snapshotRelativePath,
+        ).catch(() => undefined);
+      }
       throw error;
     }
 
@@ -196,11 +207,9 @@ export class PublishedArtifactPublicationService {
   }
 
 
-  async publishManyForRun(input: {
-    runId: string;
-    artifacts: PublishArtifactsToolArtifactInput[];
-    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
-  }): Promise<PublishedArtifactSummary[]> {
+  async publishManyForRun(
+    input: PublishedArtifactPublicationRequest,
+  ): Promise<PublishedArtifactSummary[]> {
     if (!Array.isArray(input.artifacts) || input.artifacts.length === 0) {
       throw new Error("At least one published artifact is required.");
     }
@@ -268,11 +277,18 @@ export class PublishedArtifactPublicationService {
   }
 }
 
-let cachedPublishedArtifactPublicationService: PublishedArtifactPublicationService | null = null;
+export const createGeneralProcessPublishedArtifactPublisher =
+(): PublishedArtifactPublicationService =>
+  new PublishedArtifactPublicationService();
 
-export const getPublishedArtifactPublicationService = (): PublishedArtifactPublicationService => {
-  if (!cachedPublishedArtifactPublicationService) {
-    cachedPublishedArtifactPublicationService = new PublishedArtifactPublicationService();
+let cachedGeneralProcessPublishedArtifactPublisher:
+PublishedArtifactPublicationService | null = null;
+
+export const getGeneralProcessPublishedArtifactPublisher =
+(): PublishedArtifactPublicationService => {
+  if (!cachedGeneralProcessPublishedArtifactPublisher) {
+    cachedGeneralProcessPublishedArtifactPublisher =
+      createGeneralProcessPublishedArtifactPublisher();
   }
-  return cachedPublishedArtifactPublicationService;
+  return cachedGeneralProcessPublishedArtifactPublisher;
 };

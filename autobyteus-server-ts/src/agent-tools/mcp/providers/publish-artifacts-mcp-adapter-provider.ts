@@ -3,10 +3,6 @@ import {
   PUBLISH_ARTIFACTS_TOOL_NAME,
   normalizePublishArtifactsToolInput,
 } from "../../../services/published-artifacts/published-artifact-tool-contract.js";
-import {
-  getPublishedArtifactPublicationService,
-  type PublishedArtifactPublicationService,
-} from "../../../services/published-artifacts/published-artifact-publication-service.js";
 import { buildPublishArtifactsParameterSchema } from "../../published-artifacts/publish-artifacts-tool.js";
 import { toJsonString } from "../../json-utils.js";
 import type {
@@ -26,10 +22,6 @@ const buildErrorPayload = (error: unknown): Record<string, unknown> => ({
 });
 
 export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
-  constructor(
-    private readonly publicationService: PublishedArtifactPublicationService = getPublishedArtifactPublicationService(),
-  ) {}
-
   getAdapters(): AgentToolMcpToolAdapter[] {
     return [
       {
@@ -42,8 +34,15 @@ export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterPr
         isAvailable: () => true,
         execute: async ({ session, rawArguments }) => {
           try {
+            const publication =
+              session.executionCapabilities?.publishedArtifactPublisher;
+            if (!publication) {
+              throw new Error(
+                "Published artifact publisher is unavailable for this session.",
+              );
+            }
             const input = normalizePublishArtifactsToolInput(rawArguments);
-            const artifacts = await this.publicationService.publishManyForRun({
+            const artifacts = await publication.publishManyForRun({
               runId: session.owner.runId,
               artifacts: input.artifacts,
               fallbackRuntimeContext: {

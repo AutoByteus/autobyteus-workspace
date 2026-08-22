@@ -12,14 +12,17 @@ import type {
   ApplicationAgentBinding,
   ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
-import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
+import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
+import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
+import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 
 const APPLICATION_ID = "built-in:applications__context-capability-app";
 const REMOVED_CORRELATION_PROPERTY = ["binding", "Intent", "Id"].join("");
@@ -135,7 +138,7 @@ export default {
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
-      const configured = await context.agentResources.getConfigured('primaryAgent')
+      const configured = await context.agentResources.requireRunnable('primaryAgent')
 
       const agent = await context.agentExecution.startAgent({
         launchRequestId: 'agent-launch-request-1',
@@ -330,18 +333,19 @@ export default {
 describe("Application context capability integration", () => {
   let tempRoot: string;
   let applicationRootPath: string;
-  let engineHostService: ApplicationEngineHostService | null;
+  let engineRuntime: ReturnType<typeof createApplicationEngineTestRuntime> | null;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-context-capabilities-"));
     applicationRootPath = path.join(tempRoot, "bundle", "applications", "context-capability-app");
-    engineHostService = null;
+    engineRuntime = null;
     await writeCapabilityBackend(applicationRootPath);
   });
 
   afterEach(async () => {
-    if (engineHostService) {
-      await engineHostService.stopApplicationEngine(APPLICATION_ID);
+    if (engineRuntime) {
+      await engineRuntime.engineLauncher.stop(APPLICATION_ID);
+      engineRuntime.backendGateway.dispose();
     }
     await fs.rm(tempRoot, { recursive: true, force: true });
   });
@@ -481,15 +485,52 @@ describe("Application context capability integration", () => {
       getRunPublishedArtifacts: vi.fn(async () => [artifactSummary]),
       getPublishedArtifactRevisionText: vi.fn(async () => "# deterministic revision"),
     };
+    const startupGate = { awaitReady: vi.fn(async () => undefined) };
+    const availabilityService = { requireApplicationActive: vi.fn(async () => undefined) };
+    const lifecycleHub = new ApplicationRunBindingLifecycleHub();
+    const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
+      bindingStore,
+      lookupStore,
+      ingressService: ingressService as never,
+      lifecycleHub,
+    });
+    const agentTargetAuthorizationService = new ApplicationAgentTargetAuthorizationService({
+      startupGate: startupGate as never,
+      availabilityService: availabilityService as never,
+      bindingStore,
+      lifecycleHub,
+    });
     const orchestrationHostService = new ApplicationOrchestrationHostService({
-      startupGate: { awaitReady: vi.fn(async () => undefined) } as never,
-      availabilityService: { requireApplicationActive: vi.fn(async () => undefined) } as never,
+      startupGate: startupGate as never,
+      availabilityService: availabilityService as never,
       executionResourceResolver: executionResourceResolver as never,
-      executionResourceConfigurationService: {
-        getConfiguredExecutionResource: vi.fn(async (_applicationId: string, slotKey: string) => ({
+      launchConfigurationService: {
+        requireRunnableConfiguration: vi.fn(async (_applicationId: string, slotKey: string) => ({
           slotKey,
           executionResourceRef: AGENT_RESOURCE_REF,
-          launchProfile: null,
+          resourceDefinitionId: AGENT_RESOURCE.definitionId,
+          resourceKind: "AGENT",
+          leaves: [{
+            memberRouteKey: null,
+            memberName: "Sample Agent",
+            agentDefinitionId: AGENT_RESOURCE.definitionId,
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "gpt-test",
+            llmConfig: null,
+            workspaceRootPath: tempRoot,
+            provenance: {
+              runtimeKind: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: AGENT_RESOURCE.definitionId,
+              },
+              llmModelIdentifier: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: AGENT_RESOURCE.definitionId,
+              },
+              llmConfig: null,
+              workspaceRootPath: "APPLICATION_RUNTIME",
+            },
+          }],
         })),
       } as never,
       runBindingLaunchService,
@@ -506,11 +547,17 @@ describe("Application context capability integration", () => {
       } as never,
       agentRunService: agentRunService as never,
       teamRunService: teamRunService as never,
+      teamRunMetadataService: { readMetadata: vi.fn(async () => null) } as never,
       ingressService: ingressService as never,
       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+      memoryLocationService: {
+        resolveTeamMemberLocationFromMetadata: vi.fn(() => null),
+      } as never,
+      agentTargetAuthorizationService,
+      terminalTransitionService,
     });
 
-    engineHostService = new ApplicationEngineHostService({
+    engineRuntime = createApplicationEngineTestRuntime({
       applicationBundleService: bundleService as never,
       storageLifecycleService,
       orchestrationHostService,
@@ -546,11 +593,12 @@ describe("Application context capability integration", () => {
       } as never,
     });
 
-    const result = await engineHostService.invokeApplicationCommand(APPLICATION_ID, {
-      commandName: "capabilities.exercise",
-      requestContext: { applicationId: APPLICATION_ID },
-      input: null,
-    }) as {
+    const result = await engineRuntime.backendGateway.invokeApplicationCommand(
+      APPLICATION_ID,
+      "capabilities.exercise",
+      { applicationId: APPLICATION_ID },
+      null,
+    ) as {
       requestContext: { applicationId: string };
       resources: ApplicationExecutionResourceSummary[];
       configured: { slotKey: string; executionResourceRef: ApplicationExecutionResourceRef };

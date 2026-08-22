@@ -1,0 +1,17 @@
+# API-REV-008 Studio publication/remount state
+2026-07-30T08:15:00Z
+appdb=.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/app.sqlite
+## briefs
+[{"brief_id":"brief-ebd5b30a-8c64-484a-815b-94158be444b6","title":"API REV 008 studio publication 1785399087331","status":"in_review","latest_run_id":"brief_studio_team_b7021522d75d4810bb860d2aed0d9127","latest_binding_status":"ATTACHED","last_error_message":null}]
+## artifacts
+[{"artifact_kind":"researcher","publication_kind":"research","revision_id":"0758e6f6-aeda-4742-8a33-cd79d0c96769","body_length":1678,"path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md","updated_at":"2026-07-30T08:12:09.119Z"},
+{"artifact_kind":"writer","publication_kind":"final","revision_id":"558ea28d-a0af-4579-93ba-444d3eac4480","body_length":2273,"path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md","updated_at":"2026-07-30T08:12:57.926Z"}]
+## revisions
+[{"revision_id":"0758e6f6-aeda-4742-8a33-cd79d0c96769","brief_id":"brief-ebd5b30a-8c64-484a-815b-94158be444b6","binding_id":"82dcdf97-af3a-41c2-be0e-3286772e6f3b","run_id":"brief_studio_researcher_2be4958610b14a038d144b8985b4c0ca","artifact_kind":"researcher","publication_kind":"research","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md","producer_member_route_key":"researcher","published_at":"2026-07-30T08:12:09.119Z","projected_at":"2026-07-30T08:12:09.130Z"},
+{"revision_id":"558ea28d-a0af-4579-93ba-444d3eac4480","brief_id":"brief-ebd5b30a-8c64-484a-815b-94158be444b6","binding_id":"82dcdf97-af3a-41c2-be0e-3286772e6f3b","run_id":"brief_studio_writer_97145eda96da41428eee227b43d3687a","artifact_kind":"writer","publication_kind":"final","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md","producer_member_route_key":"writer","published_at":"2026-07-30T08:12:57.926Z","projected_at":"2026-07-30T08:12:57.935Z"}]
+## platform publication journal
+## ports/processes after stop
+clear 8000
+clear 3000
+clear 43124
+clear 9229

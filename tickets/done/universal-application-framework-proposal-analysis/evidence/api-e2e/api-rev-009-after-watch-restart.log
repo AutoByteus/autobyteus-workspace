@@ -1,0 +1,9 @@
+UTC=2026-07-30T09:00:26Z
+listener_pid=80791
+ready_count=2
+change_count=1
+token_usage_after_restart_before_new_run=17
+prior_brief_after_restart:
+[{"brief_id":"brief-d78479cd-35c7-4016-95a8-e759b4c08cfe","title":"API REV 009 active lifecycle 1785401797","status":"researching","latest_run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203","latest_binding_status":"ATTACHED","last_error_message":null}]
+current_child_processes:
+80799 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping

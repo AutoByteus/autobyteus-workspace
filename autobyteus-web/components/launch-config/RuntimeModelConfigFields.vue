@@ -155,7 +155,7 @@ watch(
       typeof previousRuntimeKind !== 'undefined' &&
       resolveEffectiveScopedRuntimeKind(previousRuntimeKind) !== effectiveRuntimeKind.value
 
-    await ensureModelsForRuntime(effectiveRuntimeKind.value)
+    await ensureModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
 
     if (
       validateSelectedModel &&

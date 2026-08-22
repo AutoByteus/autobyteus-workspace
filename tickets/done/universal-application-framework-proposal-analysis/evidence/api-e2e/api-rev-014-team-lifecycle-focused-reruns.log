@@ -1,0 +1,396 @@
+head=7e8e43340b5d83547e74395c9c03ba28ee8248a2
+start=2026-08-13T10:04:39Z
+
+=== rerun 1 start=2026-08-13T10:04:39Z ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Agent team websocket attached for team run root-team-1
+Created agent session d31b495e-17e9-41ea-98d8-4a29f8a1a3b9 for run root-team-1
+Agent Team WebSocket connected: session=d31b495e-17e9-41ea-98d8-4a29f8a1a3b9, run=root-team-1
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Closed agent session d31b495e-17e9-41ea-98d8-4a29f8a1a3b9
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Agent Team WebSocket disconnected: d31b495e-17e9-41ea-98d8-4a29f8a1a3b9
+
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts (1 test | 1 failed) 2046ms
+     × keeps binary root liveness separate while live/reconnect map the same exact scoped leaf 2045ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Error: Expected 7 messages, received [{"type":"CONNECTED","payload":{"team_id":"root-team-1","session_id":"d31b495e-17e9-41ea-98d8-4a29f8a1a3b9"}},{"type":"AGENT_STATUS","payload":{"status":"idle","agent_id":"critic-runtime-93","agent_name":"critic","member_path":["research_group","review_team","review_group","critic"],"member_route_key":"research_group/review_team/review_group/critic","source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"team_run_id":"root-team-1","is_active":true}},{"type":"AGENT_STATUS","payload":{"status":"running","agent_id":"critic-runtime-93","agent_name":"critic","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TURN_STARTED","payload":{"turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"SEGMENT_CONTENT","payload":{"segment_id":"segment-live","delta":"streamed through every boundary","turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}}]
+ ❯ waitForMessageCount tests/integration/agent/team-lifecycle-websocket.integration.test.ts:339:9
+    337|     await wait(10);
+    338|   }
+    339|   throw new Error(`Expected ${String(count)} messages, received ${JSON…
+       |         ^
+    340| };
+    341| 
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts:427:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  12:04:39
+   Duration  6.30s (transform 2.46s, setup 9ms, import 3.68s, tests 2.05s, environment 0ms)
+
+rerun_1_rc=1 end=2026-08-13T10:04:46Z
+
+=== rerun 2 start=2026-08-13T10:04:46Z ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Agent team websocket attached for team run root-team-1
+Created agent session 6fca3c7b-634c-47b0-964a-ee5a5c864fb8 for run root-team-1
+Agent Team WebSocket connected: session=6fca3c7b-634c-47b0-964a-ee5a5c864fb8, run=root-team-1
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Closed agent session 6fca3c7b-634c-47b0-964a-ee5a5c864fb8
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Agent Team WebSocket disconnected: 6fca3c7b-634c-47b0-964a-ee5a5c864fb8
+
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts (1 test | 1 failed) 2033ms
+     × keeps binary root liveness separate while live/reconnect map the same exact scoped leaf 2033ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Error: Expected 7 messages, received [{"type":"CONNECTED","payload":{"team_id":"root-team-1","session_id":"6fca3c7b-634c-47b0-964a-ee5a5c864fb8"}},{"type":"AGENT_STATUS","payload":{"status":"idle","agent_id":"critic-runtime-93","agent_name":"critic","member_path":["research_group","review_team","review_group","critic"],"member_route_key":"research_group/review_team/review_group/critic","source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"team_run_id":"root-team-1","is_active":true}},{"type":"AGENT_STATUS","payload":{"status":"running","agent_id":"critic-runtime-93","agent_name":"critic","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TURN_STARTED","payload":{"turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"SEGMENT_CONTENT","payload":{"segment_id":"segment-live","delta":"streamed through every boundary","turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}}]
+ ❯ waitForMessageCount tests/integration/agent/team-lifecycle-websocket.integration.test.ts:339:9
+    337|     await wait(10);
+    338|   }
+    339|   throw new Error(`Expected ${String(count)} messages, received ${JSON…
+       |         ^
+    340| };
+    341| 
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts:427:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  12:04:46
+   Duration  5.95s (transform 2.51s, setup 8ms, import 3.48s, tests 2.03s, environment 0ms)
+
+rerun_2_rc=1 end=2026-08-13T10:04:52Z
+
+=== rerun 3 start=2026-08-13T10:04:52Z ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Agent team websocket attached for team run root-team-1
+Created agent session b7fb4507-bb09-4d19-8b21-e5e425251c77 for run root-team-1
+Agent Team WebSocket connected: session=b7fb4507-bb09-4d19-8b21-e5e425251c77, run=root-team-1
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Closed agent session b7fb4507-bb09-4d19-8b21-e5e425251c77
+
+stdout | tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+Agent Team WebSocket disconnected: b7fb4507-bb09-4d19-8b21-e5e425251c77
+
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts (1 test | 1 failed) 2044ms
+     × keeps binary root liveness separate while live/reconnect map the same exact scoped leaf 2043ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/team-lifecycle-websocket.integration.test.ts > Team lifecycle and nested task-team WebSocket integration > keeps binary root liveness separate while live/reconnect map the same exact scoped leaf
+Error: Expected 7 messages, received [{"type":"CONNECTED","payload":{"team_id":"root-team-1","session_id":"b7fb4507-bb09-4d19-8b21-e5e425251c77"}},{"type":"AGENT_STATUS","payload":{"status":"idle","agent_id":"critic-runtime-93","agent_name":"critic","member_path":["research_group","review_team","review_group","critic"],"member_route_key":"research_group/review_team/review_group/critic","source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TEAM_RUN_LIFECYCLE","payload":{"team_run_id":"root-team-1","is_active":true}},{"type":"AGENT_STATUS","payload":{"status":"running","agent_id":"critic-runtime-93","agent_name":"critic","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"TURN_STARTED","payload":{"turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}},{"type":"SEGMENT_CONTENT","payload":{"segment_id":"segment-live","delta":"streamed through every boundary","turn_id":"turn-live","agent_name":"critic","agent_id":"critic-runtime-93","member_route_key":"research_group/review_team/review_group/critic","member_path":["research_group","review_team","review_group","critic"],"source_path":["research_group","review_team","review_group","critic"],"source_route_key":"research_group/review_team/review_group/critic","sub_team_node_name":"research_group","task_team_run_id":"task-team-run-7","task_team_instance_id":"task-team-instance-7","task_id":"task-42","team_route_key":"research_group/review_team","team_path":["research_group","review_team"],"task_team_relative_member_path":["review_group","critic"],"task_team_relative_member_route_key":"review_group/critic"}}]
+ ❯ waitForMessageCount tests/integration/agent/team-lifecycle-websocket.integration.test.ts:339:9
+    337|     await wait(10);
+    338|   }
+    339|   throw new Error(`Expected ${String(count)} messages, received ${JSON…
+       |         ^
+    340| };
+    341| 
+ ❯ tests/integration/agent/team-lifecycle-websocket.integration.test.ts:427:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  12:04:52
+   Duration  6.62s (transform 3.01s, setup 10ms, import 4.10s, tests 2.04s, environment 0ms)
+
+rerun_3_rc=1 end=2026-08-13T10:04:59Z
+end=2026-08-13T10:04:59Z

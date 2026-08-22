@@ -2,6 +2,9 @@ import type { AgentRunMessageSenderContext } from "../../agent-communication/dom
 import type { RuntimeAgentToolExposure } from "../../agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type {
+  PublishedArtifactPublisher,
+} from "../../services/published-artifacts/published-artifact-publisher.js";
 import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
@@ -60,6 +63,10 @@ export type AgentToolMcpExecutionContext = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
 };
 
+export type AgentToolMcpSessionExecutionCapabilities = Readonly<{
+  publishedArtifactPublisher: PublishedArtifactPublisher;
+}>;
+
 export type AgentToolMcpSession = {
   sessionId: string;
   tokenHash: Buffer;
@@ -68,6 +75,7 @@ export type AgentToolMcpSession = {
   runtimeKind: RuntimeKind | string | null;
   runtimeExposure: RuntimeAgentToolExposure;
   executionContext: AgentToolMcpExecutionContext;
+  executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
@@ -81,6 +89,7 @@ export type AgentToolMcpCreateSessionInput = {
   sender: AgentRunMessageSenderContext;
   runtimeExposure: RuntimeAgentToolExposure;
   executionContext?: AgentToolMcpExecutionContext | null;
+  executionCapabilities?: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources?: ConfiguredMcpAgentToolSource[];

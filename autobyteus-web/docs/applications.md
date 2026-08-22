@@ -27,7 +27,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `utils/application/applicationLaunchProfile.ts`
 - `utils/application/applicationSetupGate.ts`
 - `utils/teamLaunchReadinessCore.ts`
-- `docs/application-bundle-iframe-contract-v4.md`
+- `docs/application-bundle-iframe-contract.md`
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Runtime Availability And Gating
@@ -112,13 +112,23 @@ This keeps host-launch identity tied to route visit and explicit reload/exit sem
 
 That gate:
 
-- loads the application's declared `executionResourceSlots[]` contract and current saved setup,
+- loads the application's declared `executionResourceSlots[]` contract,
+  bundle-owned package baselines, and any current Studio overrides,
 - keeps technical metadata hidden behind an explicit toggle by default,
 - lets the user save required execution-resource and launch-profile selections before entry,
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
-`ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
+Studio consumes `ApplicationLaunchConfigurationService` through the host API
+and shares one server-owned `ApplicationPlatformRuntime` across installed
+applications. The browser does not traverse definitions or start agent/team
+runs while loading setup; a run begins only when application business behavior
+requests execution after entry.
+
+`ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It
+keeps `packageBaseline`, no-write `selectedResourceBaseline`, sparse
+`savedOverride`, and `effectiveConfiguration` distinct; owns
+refresh/preview/save/reset actions; and surfaces:
 
 - required vs optional slots, and
 - bundled vs shared execution-resource choices,
@@ -127,11 +137,21 @@ That gate:
 
 `ApplicationExecutionResourceSlotEditor.vue` owns the slot-local editor choice:
 
-- `ApplicationAgentLaunchProfileEditor.vue` saves the agent-shaped `launchProfile` fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
-- `ApplicationTeamLaunchProfileEditor.vue` saves the team-shaped `launchProfile`: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
+- `ApplicationAgentLaunchProfileEditor.vue` edits the agent-shaped override fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
+- `ApplicationTeamLaunchProfileEditor.vue` edits the team-shaped override: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
 - `ApplicationWorkspaceRootSelector.vue` keeps workspace-root path selection consistent across the agent and team editors.
 
-The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The launch-profile editors do not expose a skill-access selector; runtime skill exposure remains the configured skills on the selected agent definition, or each selected team member's definition. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract. For the execution-resource rename itself, stale saved refs using old `resourceRef`/`owner` shapes are not migrated: the server resets those setup rows so the host gate returns to setup/reconfigure state.
+Editor writes use a sparse `launchOverride`, not a copied full launch profile.
+Changing the selected resource requests a no-write preview before save. A saved
+override that becomes invalid stays visible with issue detail and cannot launch;
+the server does not silently repair or delete it. Explicit reset deletes only
+the Studio override, revealing the package baseline again.
+
+The launch-configuration editors do not expose a skill-access selector; runtime
+skill exposure remains the configured skills on the selected agent definition,
+or each selected team member's definition. The frontend draft helpers in
+`applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate
+aligned with the kind-aware configuration contract.
 
 ## Immersive Control Panel
 
@@ -165,7 +185,7 @@ It owns:
 
 `ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/iframe launch identity, and posts the supplied bootstrap envelope back to the iframe.
 
-Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
+Inside the bundle, `startApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
 
 - launch-hint parsing
 - unsupported raw-entry behavior
@@ -208,7 +228,7 @@ The public author-facing surface is:
 - `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, `agentExecution`, `agentResources`, and `publishedArtifacts` capability types, plus execution-event types
 - `@autobyteus/application-frontend-sdk` for framework-owned startup plus app UI query/command/GraphQL/notification helpers
 - `@autobyteus/application-backend-sdk` for backend definition typing
-- `application-bundle-iframe-contract-v4.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
+- `application-bundle-iframe-contract.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
 App UIs use `applicationClient.backend` for backend request/response and optional custom WebSockets, `applicationClient.notifications.subscribe(listener)` for one-way backend notifications, and `applicationClient.agentCommunication.connect(address)` for the separate standard direct connection to a bound agent/team target. Standard agent communication does not traverse the backend API gateway, application engine, or worker. All three capabilities derive their fixed desktop endpoints from the strict v4 bootstrap transport, which exposes no application authentication field.
 
@@ -237,7 +257,7 @@ This separation is the core architectural change: the Applications page launches
 
 ## Related Docs
 
-- `application-bundle-iframe-contract-v4.md`
+- `application-bundle-iframe-contract.md`
 - `agent_management.md`
 - `agent_teams.md`
 - `settings.md`

@@ -1,0 +1,23 @@
+utc=2026-07-31T13:17:26Z
+head=53eb73795c616148f01c2f6e0207f6b410410e24
+report_headers:
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:4:- Current API/E2E revision: `API-REV-013`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:10:- Final confidence: `98%` (`98.3%` unrounded)
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:151:- Final confidence: `98%` (`98.3%` unrounded).
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md:167:- Final confidence: `98%`.
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:4:- API/E2E revision: `API-REV-013`
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:8:- Outcome: **Pass**
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:9:- Final confidence: `98%` (`98.3%` unrounded)
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:136:- Outcome: **Pass**.
+tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md:138:- Final confidence: `98%`.
+revision_count:
+1
+secret_pattern_scan:
+PASS
+evidence_files:
+25
+ports:
+43127=FREE
+8011=FREE
+3011=FREE
+git_diff_check:

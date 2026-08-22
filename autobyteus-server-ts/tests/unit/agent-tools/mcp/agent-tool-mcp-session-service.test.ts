@@ -219,7 +219,7 @@ describe("AgentToolMcpSessionService", () => {
     });
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForAgentRun("member-run-3")).toBe(1);
+    expect(service.revokeAgentToolMcpSessionsForRun("member-run-3")).toBe(1);
     expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",

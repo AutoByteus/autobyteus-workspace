@@ -135,7 +135,7 @@ describe("Brief Studio team package config", () => {
       path.join(applicationRoot, "backend-src", "services", "brief-run-launch-service.ts"),
     );
     const packagedLaunchService = await readText(
-      path.join(packagedApplicationRoot, "backend-src", "services", "brief-run-launch-service.ts"),
+      path.join(packagedApplicationRoot, "backend", "dist", "entry.mjs"),
     );
 
     for (const prompt of [sourceTeamPrompt, packagedTeamPrompt]) {

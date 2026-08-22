@@ -72,12 +72,12 @@ test('canonical WebSocket URL composition appends ordered business query values'
 test('standard agent connection derives the fixed target URL, opens on exact READY, and correlates input', async () => {
   const socket = createSocket();
   let openedUrl = '';
-  const address = { bindingId: 'binding/one', target: { kind: 'AGENT_TEAM_MEMBER', memberRouteKey: 'reviewer two' } };
+  const address = { bindingId: 'binding/one', target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer/run two' } };
   const connection = createTransport({
     agentCommunicationWebSocketFactory: (url) => { openedUrl = url; return socket; },
   }).connectAgentCommunication(address);
   assert.equal(connection.state, 'connecting');
-  assert.equal(openedUrl, 'ws://node/ws/applications/app/agent-communication/binding%2Fone/targets/agent-team-member/reviewer%20two');
+  assert.equal(openedUrl, 'ws://node/ws/applications/app/agent-communication/binding%2Fone/targets/agent-team-member/reviewer%2Frun%20two');
   socket.emit('message', { data: JSON.stringify({ protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL, type: 'READY', address }) });
   await connection.ready;
   assert.equal(connection.state, 'open');
@@ -128,12 +128,9 @@ test('standard connection accepts exact events and rejects malformed nested payl
     address,
     runtimeSubject: 'AGENT_RUN',
     producer: {
-      runId: 'run-1',
-      memberRouteKey: 'root',
-      memberName: null,
+      agentRunId: 'run-1',
       displayName: null,
       runtimeKind: 'AGENT',
-      teamPath: [],
     },
     event: publicEvent,
   });
@@ -168,12 +165,9 @@ test('standard connection accepts exact events and rejects malformed nested payl
 test('standard connection rejects removed event shapes, nullable producers, and extra fields', async () => {
   const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
   const producer = {
-    runId: 'run-1',
-    memberRouteKey: 'root',
-    memberName: null,
+    agentRunId: 'run-1',
     displayName: null,
     runtimeKind: 'AGENT',
-    teamPath: [],
   };
   const envelope = (event, overrides = {}) => ({
     sequence: 1,

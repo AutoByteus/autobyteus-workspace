@@ -6,6 +6,7 @@ import {
   type AgentToolMcpCreateSessionInput,
   type AgentToolMcpDescriptor,
   type AgentToolMcpSession,
+  type AgentToolMcpSessionExecutionCapabilities,
   type AgentToolMcpSessionOwnerIdentity,
   type RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
@@ -24,10 +25,30 @@ export type CreateAgentToolMcpSessionResult = {
   redactedDescriptor: RedactedAgentToolMcpDescriptor;
 };
 
+export type AgentToolMcpSessionIssueInput = Omit<
+  AgentToolMcpCreateSessionInput,
+  "enabledTools" | "toolRoutes" | "configuredMcpToolSources" | "executionCapabilities"
+>;
+
+export type AgentToolMcpSessionManager = {
+  createAgentToolMcpSession(
+    input: AgentToolMcpSessionIssueInput,
+  ): CreateAgentToolMcpSessionResult;
+  revokeAgentToolMcpSession(sessionId: string): boolean;
+  revokeAgentToolMcpSessionsForRun(runId: string): number;
+  revokeAgentToolMcpSessionsForOwner(
+    owner: Partial<AgentToolMcpSessionOwnerIdentity>,
+  ): number;
+  redactAgentToolMcpDescriptor(
+    descriptor: AgentToolMcpDescriptor,
+  ): RedactedAgentToolMcpDescriptor;
+};
+
 type AgentToolMcpSessionServiceDeps = {
   registry?: AgentToolMcpSessionRegistry;
   catalog?: AgentToolMcpCatalog;
   getInternalBaseUrl?: () => string;
+  executionCapabilities?: AgentToolMcpSessionExecutionCapabilities | null;
 };
 
 export class AgentToolMcpSessionService {
@@ -35,6 +56,7 @@ export class AgentToolMcpSessionService {
   private readonly registry: AgentToolMcpSessionRegistry;
   private readonly catalog: AgentToolMcpCatalog;
   private readonly getInternalBaseUrl: () => string;
+  private readonly executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null;
 
   static getInstance(): AgentToolMcpSessionService {
     if (!AgentToolMcpSessionService.instance) {
@@ -51,10 +73,13 @@ export class AgentToolMcpSessionService {
     this.registry = deps.registry ?? getAgentToolMcpSessionRegistry();
     this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
     this.getInternalBaseUrl = deps.getInternalBaseUrl ?? getInternalServerBaseUrlOrThrow;
+    this.executionCapabilities = deps.executionCapabilities
+      ? Object.freeze({ ...deps.executionCapabilities })
+      : null;
   }
 
   createAgentToolMcpSession(
-    input: Omit<AgentToolMcpCreateSessionInput, "enabledTools" | "toolRoutes" | "configuredMcpToolSources">,
+    input: AgentToolMcpSessionIssueInput,
   ): CreateAgentToolMcpSessionResult {
     const exposure = this.catalog.resolveRuntimeSessionToolExposure({
       runtimeExposure: input.runtimeExposure,
@@ -63,6 +88,7 @@ export class AgentToolMcpSessionService {
     });
     const { session, capabilityToken } = this.registry.createSession({
       ...input,
+      executionCapabilities: this.executionCapabilities,
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
@@ -85,14 +111,6 @@ export class AgentToolMcpSessionService {
       return 0;
     }
     return this.registry.revokeSessionsForOwner({ runId: normalizedRunId });
-  }
-
-  revokeAgentToolMcpSessionsForAgentRun(agentRunId: string): number {
-    const normalizedAgentRunId = agentRunId.trim();
-    if (!normalizedAgentRunId) {
-      return 0;
-    }
-    return this.registry.revokeSessionsForOwner({ runId: normalizedAgentRunId });
   }
 
   revokeAgentToolMcpSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {

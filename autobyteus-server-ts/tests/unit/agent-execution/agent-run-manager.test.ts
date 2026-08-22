@@ -256,17 +256,22 @@ describe("AgentRunManager candidate lifecycle", () => {
       publishedArtifactRelayService: { attachToRun: vi.fn(() => { throw failure; }) },
     });
 
-    await expect(manager.prepareNewAgentRun({
+    const rejected = await manager.prepareNewAgentRun({
       runId: "run-attach-failure",
       config: createConfig(),
-    })).rejects.toMatchObject({
+    }).catch((error: unknown) => error as Error & { cause?: AggregateError });
+    expect(rejected).toMatchObject({
       message: "Failed to prepare agent run 'run-attach-failure'.",
-      cause: failure,
     });
+    expect(rejected.cause).toMatchObject({
+      name: "AgentRunResourceAttachmentError",
+      message: "Failed to attach resources for agent run 'run-attach-failure'.",
+    });
+    expect(rejected.cause?.errors).toEqual([failure]);
 
     expect(errorSpy).toHaveBeenCalledWith(
       `Unexpected failure while preparing agent run 'run-attach-failure' for runtime '${RuntimeKind.CODEX_APP_SERVER}'.`,
-      failure,
+      rejected.cause,
     );
     expect(detachRunFiles).toHaveBeenCalledOnce();
     expect(backend.terminate).toHaveBeenCalledOnce();

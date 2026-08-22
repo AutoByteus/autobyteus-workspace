@@ -41,13 +41,13 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
     });
     const postedMessages: AgentInputUserMessage[] = [];
     const createdConfigs: unknown[] = [];
-    const createAgentRun = vi.fn(async (runConfig, runId) => {
+    const prepareNewAgentRun = vi.fn(async ({ config: runConfig, runId }) => {
       createdConfigs.push(runConfig);
-      return {
+      const run = {
         runId,
         config: runConfig,
         isActive: () => true,
-        getPlatformAgentRunId: () => null,
+        getPlatformAgentRunId: () => `${runId}-platform`,
         getStatusSnapshot: () => ({ status: "idle" }),
         subscribeToEvents: () => () => undefined,
         postUserMessage: async (message: AgentInputUserMessage) => {
@@ -61,12 +61,21 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
           commit: () => ({ finish: async () => ({ accepted: true as const }) }),
         }),
       };
+      return {
+        runId,
+        runtimeKind: runConfig.runtimeKind,
+        platformAgentRunId: `${runId}-platform`,
+        commitPublication: () => run,
+        abort: async () => ({ kind: "aborted" as const }),
+      };
     });
     const registry = new MixedTaskAgentExecutionRegistry({
       teamContext,
-      agentRunManager: { createAgentRun } as never,
+      agentRunManager: { prepareNewAgentRun } as never,
+      activityInspector: { inspect: () => ({ kind: "none" }) } as never,
       publish: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
+      acceptPlatformBinding: vi.fn(async () => undefined),
     });
     const taskAgentRunId = "worker_00000000000000000000000000000001";
     const message = new AgentInputUserMessage("start task", SenderType.USER);
@@ -83,18 +92,18 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
     expect(registry.get(taskAgentRunId)).toBeNull();
     expect(postedMessages).toEqual([]);
     prepared.sealForCommit();
-    const committed = prepared.commit();
+    const committed = prepared.commitAfterDurability();
     expect(registry.get(taskAgentRunId)).not.toBeNull();
     committed.releaseWork();
 
     await vi.waitFor(() => expect(postedMessages).toEqual([message]));
-    expect(createAgentRun).toHaveBeenCalledWith(
-      expect.objectContaining({
+    expect(prepareNewAgentRun).toHaveBeenCalledWith({
+      runId: taskAgentRunId,
+      config: expect.objectContaining({
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
           .getTeamAgentRunDirPath({ rootTeamRunId: "owning-team-run", ancestorTeamRunIds: [] }, taskAgentRunId),
       }),
-      taskAgentRunId,
-    );
+    });
     expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
   });
 });

@@ -1,0 +1,74 @@
+IMPORT_START Skills 1785324914377
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+IMPORT_DONE Skills 1785324915584
+CALL_START Skills 1785324915584
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+CALL_DONE Skills 1785324915584
+IMPORT_START Browser 1785324915584
+IMPORT_DONE Browser 1785324915598
+CALL_START Browser 1785324915598
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+CALL_DONE Browser 1785324915598
+IMPORT_START Task 1785324915598
+IMPORT_DONE Task 1785324915846
+CALL_START Task 1785324915846
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+CALL_DONE Task 1785324915847
+IMPORT_START Communication 1785324915847
+IMPORT_DONE Communication 1785324915848
+CALL_START Communication 1785324915848
+Successfully registered tool definition: 'send_message_to'
+CALL_DONE Communication 1785324915849
+IMPORT_START Published 1785324915849
+IMPORT_DONE Published 1785324915851
+CALL_START Published 1785324915851
+Successfully registered tool definition: 'publish_artifacts'
+CALL_DONE Published 1785324915852
+IMPORT_START Media 1785324915852
+IMPORT_DONE Media 1785324915852
+CALL_START Media 1785324915852
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+CALL_DONE Media 1785324915853
+IMPORT_START Search 1785324915853
+IMPORT_DONE Search 1785324915856
+CALL_START Search 1785324915856
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+CALL_DONE Search 1785324915856
+ALL_DONE

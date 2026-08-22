@@ -1,0 +1,21 @@
+# API-REV-010 final cleanup and integrity
+UTC 2026-07-30T09:46:52Z
+OWNED_PATHS:
+.autobyteus/development ABSENT
+applications/brief-studio/.autobyteus ABSENT
+autobyteus-application-devkit/.tmp-tests ABSENT
+autobyteus-application-devkit/.tmp-api-rev010-probe ABSENT
+autobyteus-application-devkit/dist ABSENT
+/tmp/api-rev010-explicit-package ABSENT
+/tmp/api-rev010-atomic-failure-probe ABSENT
+/tmp/api-rev010-atomic-failure-probe.mjs ABSENT
+PORTS:
+43124 CLEAR
+8000 CLEAR
+3000 CLEAR
+9229 CLEAR
+PACKAGE_AUTHORING_STATUS:
+DURABLE_TEST_STATUS:
+ M autobyteus-application-devkit/tests/application-devkit.test.mjs
+SCRATCH:
+DIFF_CHECK:

@@ -4,9 +4,9 @@ import { createRequire } from "node:module";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { registerTools } from "autobyteus-ts";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
+import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
+import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 
 describe("Tool catalog cleanup GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -25,8 +25,9 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
   beforeEach(async () => {
     registrySnapshot = defaultToolRegistry.snapshot();
     defaultToolRegistry.clear();
-    registerTools();
-    await loadAllAgentTools();
+    await new AgentToolRegistryReadiness({
+      publishedArtifactPublicationService: getGeneralProcessPublishedArtifactPublisher(),
+    }).registerRequiredGroups();
   });
 
   afterEach(() => {

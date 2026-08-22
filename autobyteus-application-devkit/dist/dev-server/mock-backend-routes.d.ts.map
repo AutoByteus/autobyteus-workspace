@@ -1,1 +1,0 @@
-{"version":3,"file":"mock-backend-routes.d.ts","sourceRoot":"","sources":["../../src/dev-server/mock-backend-routes.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,cAAc,EAAE,MAAM,WAAW,CAAC;AAiCjE,eAAO,MAAM,sBAAsB,GAAU,OAAO;IAClD,OAAO,EAAE,eAAe,CAAC;IACzB,QAAQ,EAAE,cAAc,CAAC;IACzB,GAAG,EAAE,GAAG,CAAC;CACV,KAAG,OAAO,CAAC,OAAO,CA4ClB,CAAC"}

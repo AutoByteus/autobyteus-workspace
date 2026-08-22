@@ -1,0 +1,106 @@
+{
+  "briefs": [
+    {
+      "brief_id": "brief-584d766d-4b3d-4a74-90c0-04949d17a5b2",
+      "title": "API REV 014 Studio current-base 1786616813740",
+      "status": "in_review",
+      "latest_binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "latest_run_id": "brief_studio_team_6462a4a00f0c4cc7833e29d2ec7dbde5",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-08-13T10:26:56.925Z",
+      "updated_at": "2026-08-13T10:28:52.124Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-584d766d-4b3d-4a74-90c0-04949d17a5b2",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+      "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the API REV 014 Studio brief.",
+      "body": "# API REV 014 Studio current-base 1786616813740 — Research Checkpoint\n\n## Key findings\n- The brief should establish a clear “current base” snapshot: what API REV 014 is, which experience or system surface it covers, and why this revision matters now.\n- “Studio” implies a creator/operator workflow; the most useful framing is a compact brief that connects user need, core workflow, and the evidence or decision this revision should enable.\n- The numeric suffix (1786616813740) is best treated as a run or snapshot identifier, not a product claim; preserve it in the title and metadata while keeping the narrative human-readable.\n- A reviewable brief should distinguish confirmed facts from working assumptions and identify the smallest set of decisions needed to move from base state to next iteration.\n\n## Risks or open questions\n- No source material, audience, success metric, or product context was supplied, so claims about users, API behavior, scope, and outcomes remain provisional.\n- “API REV 014” could refer to a release, experiment, internal review, or design revision; the final brief should avoid inventing technical details.\n- The current base, baseline metrics, owners, and timeline need confirmation before execution commitments are made.\n\n## Recommendations or next steps\n- Draft around a crisp problem statement, intended audience, current-base description, proposed direction, and explicit review decisions.\n- Label assumptions inline and add an evidence/owner field for each unresolved item.\n- Request the canonical API/revision notes and one baseline success measure before turning the brief into an implementation plan.\n",
+      "producer_member_route_key": "researcher",
+      "updated_at": "2026-08-13T10:27:44.427Z"
+    },
+    {
+      "brief_id": "brief-584d766d-4b3d-4a74-90c0-04949d17a5b2",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+      "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "description": "Concise reviewable writer checkpoint for API REV 014 Studio.",
+      "body": "# API REV 014 — Studio Current-Base Brief (snapshot 1786616813740)\n\n## Recommendation summary\nTreat API REV 014 as the current-base snapshot for a Studio workflow, not yet as a confirmed public release or technical specification. Use the brief to align on the user need, the creator/operator workflow Studio should support, and the review decisions required before implementation. **Working assumption:** “API REV 014” names an internal revision or review checkpoint; the numeric suffix is a run/snapshot identifier and should remain metadata rather than a product claim.\n\n## Key evidence\n- **Current base:** The revision needs a plain-language description of the experience or system surface it covers and why this snapshot matters now.\n- **User need:** Studio should help a defined creator/operator accomplish a concrete task with less ambiguity and a clear path from input to reviewable output. The audience and problem statement remain to be confirmed.\n- **Core workflow:** Frame the workflow as: establish the starting state, make or configure the change, inspect the resulting evidence, and decide what advances to the next iteration.\n- **Review value:** A compact, decision-oriented brief is more useful than speculative API detail. It should separate confirmed facts from assumptions and expose the smallest set of decisions needed to move forward.\n- **Evidence standard:** Each unresolved claim should have an owner and source, with at least one baseline success measure before execution commitments are made.\n\n## Risks or cautions\n- “API REV 014” may denote a release, experiment, internal review, or design revision; do not invent behavior, scope, or compatibility claims.\n- No canonical API/product source, audience, baseline metrics, owner, or timeline was supplied. Outcomes and implementation scope are therefore provisional.\n- Avoid treating the snapshot identifier as evidence of maturity, adoption, or release status.\n\n## Next actions\n- Confirm the canonical revision notes and the exact Studio surface covered by API REV 014.\n- Name the primary audience, user problem, accountable owner, and review date.\n- Select one baseline success measure and define the evidence needed to judge the next iteration.\n- Convert the confirmed decisions into an implementation plan only after the above gaps are closed.\n",
+      "producer_member_route_key": "writer",
+      "updated_at": "2026-08-13T10:28:52.124Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+      "brief_id": "brief-584d766d-4b3d-4a74-90c0-04949d17a5b2",
+      "binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "published_at": "2026-08-13T10:27:44.427Z",
+      "projected_at": "2026-08-13T10:27:44.435Z"
+    },
+    {
+      "revision_id": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+      "brief_id": "brief-584d766d-4b3d-4a74-90c0-04949d17a5b2",
+      "binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "run_id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "published_at": "2026-08-13T10:28:52.124Z",
+      "projected_at": "2026-08-13T10:28:52.130Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "launch_request_id": "brief-launch-request-a079a9df-d356-4b55-b1b5-c4461d132652",
+      "status": "ATTACHED",
+      "runtime_subject": "TEAM_RUN",
+      "run_id": "brief_studio_team_6462a4a00f0c4cc7833e29d2ec7dbde5",
+      "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "resource_owner": "bundle",
+      "resource_kind": "AGENT_TEAM",
+      "resource_local_id": "brief-studio-team",
+      "resource_definition_id": null,
+      "created_at": "2026-08-13T10:26:57.293Z",
+      "updated_at": "2026-08-13T10:26:57.293Z",
+      "terminated_at": null,
+      "last_error_message": null,
+      "summary_json": "{\"bindingId\":\"007eba12-8fdc-45d5-8849-fd33258037e6\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-a079a9df-d356-4b55-b1b5-c4461d132652\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_6462a4a00f0c4cc7833e29d2ec7dbde5\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_28b4ed53da974f438d902189d7816775\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_c1d98f41338548eab0639c64121c9abc\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]},\"createdAt\":\"2026-08-13T10:26:57.293Z\",\"updatedAt\":\"2026-08-13T10:26:57.293Z\",\"terminatedAt\":null,\"lastErrorMessage\":null}"
+    }
+  ],
+  "members": [
+    {
+      "binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "member_name": "researcher",
+      "member_route_key": "researcher",
+      "display_name": "researcher",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    },
+    {
+      "binding_id": "007eba12-8fdc-45d5-8849-fd33258037e6",
+      "member_name": "writer",
+      "member_route_key": "writer",
+      "display_name": "writer",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+capturedAt=2026-07-29T21:04:00Z
+listeners:
+port=43124
+port=8000
+port=3000
+owned paths:
+absent applications/brief-studio/.autobyteus
+absent applications/brief-studio/brief-studio
+absent autobyteus-application-devkit/.tmp-tests
+absent autobyteus-application-devkit/dist
+temp worktree:
+absent
+diff-check:
+PASS

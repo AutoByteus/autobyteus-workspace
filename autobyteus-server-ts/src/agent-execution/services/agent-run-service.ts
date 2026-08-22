@@ -87,6 +87,7 @@ export class AgentRunService {
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+      provisioningService?: AgentRunProvisioningService;
       activationService?: StandaloneAgentRunActivationService;
     } = {},
   ) {
@@ -96,7 +97,7 @@ export class AgentRunService {
     this.historyCatalogService =
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     const workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.provisioningService = new AgentRunProvisioningService(memoryDir, {
+    this.provisioningService = deps.provisioningService ?? new AgentRunProvisioningService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,

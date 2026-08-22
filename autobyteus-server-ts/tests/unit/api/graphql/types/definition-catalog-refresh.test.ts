@@ -1,14 +1,38 @@
 import "reflect-metadata";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildGraphqlSchema } from "../../../../../src/api/graphql/schema.js";
+import { configureStudioApplicationApiServices } from "../../../../../src/api/graphql/studio-application-api-services.js";
 import { AgentDefinitionResolver } from "../../../../../src/api/graphql/types/agent-definition.js";
 import { AgentTeamDefinitionResolver } from "../../../../../src/api/graphql/types/agent-team-definition.js";
 import { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../../../src/agent-team-definition/services/agent-team-definition-service.js";
+import type { ApplicationBundleService } from "../../../../../src/application-bundles/services/application-bundle-service.js";
+import type { ApplicationPackageRegistryService } from "../../../../../src/application-packages/services/application-package-registry-service.js";
 
 describe("definition catalog refresh GraphQL boundary", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
+  const refreshAgentCache = vi.fn<AgentDefinitionService["refreshCache"]>();
+  const refreshTeamCache = vi.fn<AgentTeamDefinitionService["refreshCache"]>();
+  const agentDefinitionService = {
+    refreshCache: refreshAgentCache,
+  } as unknown as AgentDefinitionService;
+  const agentTeamDefinitionService = {
+    refreshCache: refreshTeamCache,
+  } as unknown as AgentTeamDefinitionService;
+
+  beforeAll(() => {
+    configureStudioApplicationApiServices({
+      agentDefinitionService,
+      agentTeamDefinitionService,
+      bundleService: {} as ApplicationBundleService,
+      packageRegistryService: {} as ApplicationPackageRegistryService,
+    });
+  });
+
+  beforeEach(() => {
+    refreshAgentCache.mockReset();
+    refreshTeamCache.mockReset();
+    refreshAgentCache.mockResolvedValue(undefined);
+    refreshTeamCache.mockResolvedValue(undefined);
   });
 
   it("exposes subject-owned catalog refresh mutations and removes node sync fields", async () => {
@@ -23,33 +47,22 @@ describe("definition catalog refresh GraphQL boundary", () => {
     expect(queryFields).not.toHaveProperty("exportSyncBundle");
   });
 
-  it("refreshes the agent definition cache through the agent definition boundary", async () => {
-    const refreshCache = vi.fn().mockResolvedValue(undefined);
-    vi.spyOn(AgentDefinitionService, "getInstance").mockReturnValue({
-      refreshCache,
-    } as unknown as AgentDefinitionService);
-
+  it("refreshes the exact Studio agent definition authority", async () => {
     const result = await new AgentDefinitionResolver().refreshAgentDefinitionCatalog();
 
     expect(result).toBe(true);
-    expect(refreshCache).toHaveBeenCalledTimes(1);
+    expect(refreshAgentCache).toHaveBeenCalledTimes(1);
+    expect(refreshTeamCache).not.toHaveBeenCalled();
   });
 
-  it("refreshes agent definitions before team definitions for team catalog refresh", async () => {
+  it("refreshes the exact Studio agent authority before its paired team authority", async () => {
     const calls: string[] = [];
-    const refreshAgentCache = vi.fn(async () => {
+    refreshAgentCache.mockImplementation(async () => {
       calls.push("agent");
     });
-    const refreshTeamCache = vi.fn(async () => {
+    refreshTeamCache.mockImplementation(async () => {
       calls.push("team");
     });
-
-    vi.spyOn(AgentDefinitionService, "getInstance").mockReturnValue({
-      refreshCache: refreshAgentCache,
-    } as unknown as AgentDefinitionService);
-    vi.spyOn(AgentTeamDefinitionService, "getInstance").mockReturnValue({
-      refreshCache: refreshTeamCache,
-    } as unknown as AgentTeamDefinitionService);
 
     const result = await new AgentTeamDefinitionResolver().refreshAgentTeamDefinitionCatalog();
 

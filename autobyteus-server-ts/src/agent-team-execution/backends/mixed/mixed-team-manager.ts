@@ -24,6 +24,11 @@ import { MixedTaskTeamExecutionRegistry } from "./members/mixed-task-team-execut
 import { MixedTeamMemberConfigResolver } from "./members/mixed-team-member-config-resolver.js";
 import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
 import type { FrozenTeamRunTerminationScope } from "../../domain/frozen-team-run-termination-scope.js";
+import type { AgentToolMcpSessionManager } from "../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentMemoryLocationService } from "../../../agent-memory/services/agent-memory-location-service.js";
+import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
+import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import type { MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 
 /** Provider/local mechanics for exactly one concrete TeamRun. */
 export class MixedTeamManager {
@@ -41,6 +46,11 @@ export class MixedTeamManager {
     options: {
       subTeamRunFactory: MixedSubTeamRunFactory;
       agentRunManager?: AgentRunManager;
+      agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+      memoryLocationService?: AgentMemoryLocationService;
+      activityInspector?: AgentConversationActivityInspector;
+      memberTeamContextBuilder?: MemberTeamContextBuilder;
+      workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
       publish: (event: TeamRunEvent) => void;
       deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
       acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
@@ -51,6 +61,11 @@ export class MixedTeamManager {
       configResolver: new MixedTeamMemberConfigResolver(context),
       subTeamRunFactory: options.subTeamRunFactory,
       agentRunManager: options.agentRunManager,
+      agentToolMcpSessionManager: options.agentToolMcpSessionManager,
+      memoryLocationService: options.memoryLocationService,
+      activityInspector: options.activityInspector,
+      memberTeamContextBuilder: options.memberTeamContextBuilder,
+      workspaceManager: options.workspaceManager,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
       acceptPlatformBinding: options.acceptPlatformBinding,
@@ -58,6 +73,11 @@ export class MixedTeamManager {
     this.taskAgents = new MixedTaskAgentExecutionRegistry({
       teamContext: context,
       agentRunManager: options.agentRunManager,
+      agentToolMcpSessionManager: options.agentToolMcpSessionManager,
+      memoryLocationService: options.memoryLocationService,
+      activityInspector: options.activityInspector,
+      memberTeamContextBuilder: options.memberTeamContextBuilder,
+      workspaceManager: options.workspaceManager,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
       acceptPlatformBinding: options.acceptPlatformBinding,

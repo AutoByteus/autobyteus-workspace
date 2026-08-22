@@ -1,0 +1,35 @@
+# DR-008 Integrated Electron macOS ARM64 Verification
+started_utc=2026-08-01T04:42:14Z
+candidate=9987c2c10fdc74416b55baa8bd123ab31afe3285
+integrated_base=8b8ae4c304928b391bdd5466b2262f87d43cf272
+node=v22.23.1
+pnpm=10.28.2
+electron=42.4.1
+desktop_package_version=1.4.35
+
+## Artifacts, metadata, and architecture
+  "CFBundleDisplayName" => "AutoByteus"
+  "CFBundleExecutable" => "AutoByteus"
+  "CFBundleIdentifier" => "com.autobyteus.app"
+  "CFBundleShortVersionString" => "1.4.35"
+  "CFBundleVersion" => "1.4.35"
+  "LSMinimumSystemVersion" => "12.0"
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Non-fat file: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus is architecture: arm64
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+PASS: current artifacts, v1.4.35 metadata, and ARM64 native runtime
+
+## Packaged application framework
+PASS present: dist/compositions/build-studio-server.js
+PASS present: dist/compositions/build-standalone-application-server.js
+PASS present: dist/application-platform/runtime/application-platform-runtime.js
+PASS present: dist/application-platform/runtime/application-platform-runtime-contracts.js
+PASS present: dist/application-engine/services/application-engine-controller.js
+PASS present: dist/application-engine/services/application-engine-launcher.js
+PASS absent: dist/application-engine/services/application-engine-host-service.js
+PASS absent: dist/application-platform/runtime/bind-once-published-artifact-publisher.js
+PASS absent: dist/application-platform/runtime/bind-once-application-engine-event-handler.js
+
+## Packaged latest-base memory/migration owners
+PASS present: dist/agent-memory/services/runtime-memory-location-classifier.js

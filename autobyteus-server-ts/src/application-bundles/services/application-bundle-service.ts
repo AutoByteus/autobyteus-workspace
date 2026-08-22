@@ -5,43 +5,23 @@ import type {
   ApplicationCatalogDiagnostic,
   ApplicationCatalogSnapshot,
 } from "../domain/application-catalog-snapshot.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import { FileApplicationBundleProvider } from "../providers/file-application-bundle-provider.js";
 import type { ApplicationPackageRegistrySnapshot } from "../../application-packages/domain/application-package-registry-snapshot.js";
 import { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
-import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
+import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
+import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
+import { BuiltInApplicationPackageMaterializer } from "../../application-packages/services/built-in-application-package-materializer.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
 
 type ApplicationBundleProvider = {
   getCatalogSnapshot: (registrySnapshot: ApplicationPackageRegistrySnapshot) => Promise<ApplicationCatalogSnapshot>;
-  validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
-  buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
-  buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
-};
-
-type LegacyApplicationBundleProvider = {
-  listBundles: () => Promise<ApplicationBundle[]>;
-  validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
   buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
   buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
 };
 
 export class ApplicationBundleService {
-  private static instance: ApplicationBundleService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationBundleService>[0] = {},
-  ): ApplicationBundleService {
-    if (!ApplicationBundleService.instance) {
-      ApplicationBundleService.instance = new ApplicationBundleService(dependencies);
-    }
-    return ApplicationBundleService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationBundleService.instance = null;
-  }
-
   private cachePopulated = false;
   private populatePromise: Promise<void> | null = null;
   private snapshot: ApplicationCatalogSnapshot = {
@@ -55,48 +35,17 @@ export class ApplicationBundleService {
 
   constructor(
     private readonly dependencies: {
-      provider?: ApplicationBundleProvider | LegacyApplicationBundleProvider;
-      packageRegistryService?: Pick<ApplicationPackageRegistryService, "getRegistrySnapshot">;
-      rootSettingsStore?: unknown;
-      registryStore?: unknown;
-      builtInMaterializer?: unknown;
-    } = {},
+      provider: ApplicationBundleProvider;
+      packageRegistryService: Pick<ApplicationPackageRegistryService, "getRegistrySnapshot">;
+    },
   ) {}
 
   private get provider(): ApplicationBundleProvider {
-    const provider = this.dependencies.provider ?? new FileApplicationBundleProvider();
-    if ("getCatalogSnapshot" in provider) {
-      return provider;
-    }
-
-    return {
-      getCatalogSnapshot: async () => ({
-        applications: await provider.listBundles(),
-        diagnostics: [],
-        refreshedAt: new Date().toISOString(),
-      }),
-      validatePackageRoot: provider.validatePackageRoot,
-      buildApplicationOwnedAgentSources: provider.buildApplicationOwnedAgentSources,
-      buildApplicationOwnedTeamSources: provider.buildApplicationOwnedTeamSources,
-    };
+    return this.dependencies.provider;
   }
 
   private get packageRegistryService(): Pick<ApplicationPackageRegistryService, "getRegistrySnapshot"> {
-    if (this.dependencies.packageRegistryService) {
-      return this.dependencies.packageRegistryService;
-    }
-    if (
-      this.dependencies.rootSettingsStore
-      || this.dependencies.registryStore
-      || this.dependencies.builtInMaterializer
-    ) {
-      return new ApplicationPackageRegistryService({
-        rootSettingsStore: this.dependencies.rootSettingsStore as never,
-        registryStore: this.dependencies.registryStore as never,
-        builtInMaterializer: this.dependencies.builtInMaterializer as never,
-      });
-    }
-    return ApplicationPackageRegistryService.getInstance();
+    return this.dependencies.packageRegistryService;
   }
 
   private assetPath(applicationId: string, relativePath: string): string {
@@ -260,14 +209,6 @@ export class ApplicationBundleService {
     return Array.from(this.applicationOwnedTeamSourceById.values());
   }
 
-  async validatePackageRoot(packageRootPath: string, packageId?: string): Promise<void> {
-    const resolvedRootPath = path.resolve(packageRootPath);
-    await this.provider.validatePackageRoot(
-      resolvedRootPath,
-      packageId ?? buildLocalApplicationPackageId(resolvedRootPath),
-    );
-  }
-
   async refresh(): Promise<void> {
     this.cachePopulated = false;
     this.populatePromise = null;
@@ -277,3 +218,21 @@ export class ApplicationBundleService {
     await this.ensureCache();
   }
 }
+
+let generalProcessApplicationBundleService: ApplicationBundleService | null = null;
+
+export const getGeneralProcessApplicationBundleService =
+(): ApplicationBundleService => {
+  if (!generalProcessApplicationBundleService) {
+    const appConfig = appConfigProvider.config;
+    generalProcessApplicationBundleService = new ApplicationBundleService({
+      provider: new FileApplicationBundleProvider(),
+      packageRegistryService: new ApplicationPackageRegistryService({
+        rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
+        registryStore: new ApplicationPackageRegistryStore(appConfig),
+        builtInMaterializer: new BuiltInApplicationPackageMaterializer(appConfig),
+      }),
+    });
+  }
+  return generalProcessApplicationBundleService;
+};

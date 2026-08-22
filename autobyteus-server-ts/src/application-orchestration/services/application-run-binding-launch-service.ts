@@ -11,9 +11,9 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { TeamRunService, getTeamRunService, type TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
+import type { TeamRunService, TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
+import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
@@ -40,19 +40,19 @@ const configuredAgents = (members: readonly ConfiguredMemberExecution[]): Config
 
 export class ApplicationRunBindingLaunchService {
   constructor(private readonly dependencies: {
-    executionResourceResolver?: ApplicationExecutionResourceResolver;
-    bindingStore?: ApplicationRunBindingStore;
-    lookupStore?: ApplicationRunLookupStore;
-    agentRunService?: AgentRunService;
-    teamRunService?: TeamRunService;
-    agentDefinitionService?: AgentDefinitionService;
-  } = {}) {}
-  private get resolver() { return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver(); }
-  private get bindings() { return this.dependencies.bindingStore ?? new ApplicationRunBindingStore(); }
-  private get lookups() { return this.dependencies.lookupStore ?? new ApplicationRunLookupStore(); }
-  private get agents() { return this.dependencies.agentRunService ?? getAgentRunService(); }
-  private get teams() { return this.dependencies.teamRunService ?? getTeamRunService(); }
-  private get definitions() { return this.dependencies.agentDefinitionService ?? AgentDefinitionService.getInstance(); }
+    executionResourceResolver: ApplicationExecutionResourceResolver;
+    bindingStore: ApplicationRunBindingStore;
+    lookupStore: ApplicationRunLookupStore;
+    agentRunService: AgentRunService;
+    teamRunService: TeamRunService;
+    agentDefinitionService: AgentDefinitionService;
+  }) {}
+  private get resolver() { return this.dependencies.executionResourceResolver; }
+  private get bindings() { return this.dependencies.bindingStore; }
+  private get lookups() { return this.dependencies.lookupStore; }
+  private get agents() { return this.dependencies.agentRunService; }
+  private get teams() { return this.dependencies.teamRunService; }
+  private get definitions() { return this.dependencies.agentDefinitionService; }
 
   async startAgentRunBinding(applicationId: string, input: ApplicationStartAgentInput): Promise<ApplicationAgentBindingRecord> {
     if (input.launch.kind !== "AGENT") throw new Error("startAgent requires launch.kind 'AGENT'.");

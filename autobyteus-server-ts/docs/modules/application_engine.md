@@ -7,11 +7,16 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 ## TS Source
 
 - `src/application-engine`
-- `src/server-runtime.ts`
+- `src/application-platform/runtime`
+- `src/compositions/build-studio-server.ts`
+- `src/compositions/build-standalone-application-server.ts`
 
 ## Main Service And Supporting Owners
 
-- `src/application-engine/services/application-engine-host-service.ts`
+- `src/application-engine/services/application-engine-controller.ts`
+- `src/application-engine/services/application-engine-launcher.ts`
+- `src/application-engine/services/application-engine-state-registry.ts`
+- `src/application-engine/services/application-engine-context-capability-handler.ts`
 - `src/application-engine/runtime/application-worker-supervisor.ts`
 - `src/application-engine/runtime/application-engine-client.ts`
 - `src/application-engine/runtime/protocol.ts`
@@ -34,7 +39,7 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 
 ## Startup Contract
 
-For a given `applicationId`, the host service:
+For a given `applicationId`, `ApplicationEngineLauncher`:
 
 1. validates the bundle exists,
 2. prepares per-app storage through `ApplicationStorageLifecycleService.ensureStoragePrepared(...)`,
@@ -58,7 +63,7 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 
 ## Invocation Boundary
 
-Once ready, the engine is the only owner used to invoke:
+Once ready, `ApplicationEngineController` is the only owner used to invoke:
 
 - application queries,
 - application commands,
@@ -83,11 +88,38 @@ Unexpected worker exit clears the in-memory runtime handle and moves engine stat
 
 ## Startup Resume Hook
 
-After the HTTP/WebSocket stack is listening, `server-runtime.ts` runs application-orchestration startup recovery:
+After the HTTP/WebSocket stack is listening, each server assembly root runs
+application-orchestration startup recovery:
 
 - `ApplicationOrchestrationRecoveryService.resumeBindings()` rebuilds durable lookups and reattaches observers,
 - `ApplicationExecutionEventDispatchService.resumePendingEvents()` reschedules pending event journals,
 - none of that eagerly starts every application worker, but pending event dispatch or live backend traffic may lazily start a worker when needed.
+
+## Application Platform Runtime Shutdown
+
+The Studio and standalone servers place each application engine inside one
+`ApplicationPlatformRuntime`. Building that runtime prepares its services and
+managers but starts no new run. Business launch requests create new runs;
+post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
+no new work can enter while owned capabilities are being dismantled:
+
+1. block new application Agent Tools session issue;
+2. stop execution-event dispatch and close application communication, backend
+   gateway/socket, and notification ingress;
+3. stop artifact-delivery intake and drain every accepted command through
+   launcher ensure plus controller invoke;
+4. dispose remaining run observers and stop application workers;
+5. use `ApplicationRunShutdownCoordinator` to stop runtime-owned team runs
+   before remaining runtime-owned agent runs; exact run removal also revokes
+   run sessions and detaches file/artifact/memory observers;
+6. close the runtime's scoped Agent Tools session manager/scope; and
+7. stop remaining streaming surfaces.
+
+The process-level `AgentToolsMcpRuntime` closes only after the application
+runtime has stopped. There is no deferred publisher or handler state.
+This ordering prevents a stopped application from retaining a publication
+capability, accepting new runtime-scoped work, or abandoning accepted artifact
+delivery after a worker exit.
 
 ## Related Docs
 

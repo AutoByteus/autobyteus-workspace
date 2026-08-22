@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import type {
-  ApplicationHostBootstrapEnvelopeV4,
+  ApplicationHostBootstrapEnvelope,
   ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationSurface from '../ApplicationSurface.vue'
@@ -12,7 +12,7 @@ import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/appl
 const hostHarness = vi.hoisted(() => ({
   props: {
     descriptor: null as ApplicationIframeLaunchDescriptor | null,
-    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV4 | null,
+    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelope | null,
   },
   bindingRevision: 0,
 }))
@@ -65,7 +65,7 @@ const ApplicationIframeHostStub = defineComponent({
   setup(props) {
     return () => {
       hostHarness.props.descriptor = props.descriptor as ApplicationIframeLaunchDescriptor
-      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV4 | null
+      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelope | null
       return h('div', { 'data-testid': 'iframe-host' })
     }
   },

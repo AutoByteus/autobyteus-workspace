@@ -4,7 +4,7 @@ Socratic Math Teacher is the current in-repo teaching sample for the “one long
 
 It now demonstrates:
 
-- framework-owned hosted application startup through `startHostedApplication(...)`
+- one provider-neutral `startApplication(...)` entry for Studio and standalone
 - one app-owned GraphQL lesson API hosted under the platform backend mount
 - one app-owned `lessonId` business identity
 - one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
@@ -25,7 +25,7 @@ Authoring roots:
 - `frontend-src/`
 - `agent-teams/socratic-math-team/`
 
-Runnable bundle roots remain:
+Generated runnable bundle roots:
 
-- `ui/`
-- `backend/`
+- `dist/importable-package/applications/socratic-math-teacher/ui/`
+- `dist/importable-package/applications/socratic-math-teacher/backend/`

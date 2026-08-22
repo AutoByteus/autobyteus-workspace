@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import {
-  buildConfiguredTeamRunLaunch,
-  resolveConfiguredTeamLaunchProfile,
+  buildEffectiveTeamRunLaunch,
   type ApplicationHandlerContext,
 } from "@autobyteus/application-backend-sdk";
 import type { BriefDetail, BriefStatus } from "../domain/brief-model.js";
@@ -13,11 +12,6 @@ import { createPendingLaunchRequestRepository } from "../repositories/pending-la
 import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
-const BRIEF_STUDIO_TEAM_RESOURCE = {
-  source: "bundle",
-  kind: "AGENT_TEAM",
-  localId: "brief-studio-team",
-} as const;
 const DRAFTING_TEAM_SLOT_KEY = "draftingTeam" as const;
 
 const requireNonEmptyString = (value: string | null | undefined, fieldName: string): string => {
@@ -93,13 +87,6 @@ const resolveLaunchProjection = (input: {
   };
 };
 
-const resolveDraftingTeamConfiguration = async (context: ApplicationHandlerContext) => {
-  return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.agentResources.getConfigured(DRAFTING_TEAM_SLOT_KEY),
-    fallbackExecutionResourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
-  });
-};
-
 export const createBriefRunLaunchService = (context: ApplicationHandlerContext) => ({
   async createBrief(input: { title: string }) {
     const title = requireNonEmptyString(input.title, "title");
@@ -134,7 +121,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
     return brief;
   },
 
-  async launchDraftRun(input: { briefId: string; llmModelIdentifier?: string | null }) {
+  async launchDraftRun(input: { briefId: string }) {
     const briefId = requireNonEmptyString(input.briefId, "briefId");
     const correlationService = createRunBindingCorrelationService(context);
 
@@ -165,17 +152,14 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
 
     const launchedAt = new Date().toISOString();
     const pendingLaunchRequest = correlationService.createPendingLaunchRequest(briefId);
-    const draftingTeam = await resolveDraftingTeamConfiguration(context);
-    const workspaceRootPath = draftingTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
+    const draftingTeam = await context.agentResources.requireRunnable(DRAFTING_TEAM_SLOT_KEY);
 
     try {
       const binding = await context.agentExecution.startAgentTeam({
         launchRequestId: pendingLaunchRequest.launchRequestId,
         executionResourceRef: draftingTeam.executionResourceRef,
-        launch: buildConfiguredTeamRunLaunch({
-          launchProfile: draftingTeam.launchProfile,
-          workspaceRootPath,
-          llmModelIdentifier: input.llmModelIdentifier,
+        launch: buildEffectiveTeamRunLaunch({
+          configuration: draftingTeam,
         }),
         initialInput: {
           text: buildInitialInputText({

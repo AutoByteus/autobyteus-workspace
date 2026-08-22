@@ -51,6 +51,18 @@ export class AgentTeamRunManager {
     return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
   }
 
+  static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+    if (AgentTeamRunManager.instance) {
+      throw new Error("The process AgentTeamRunManager is already initialized.");
+    }
+    AgentTeamRunManager.instance = new AgentTeamRunManager(options);
+    return AgentTeamRunManager.instance;
+  }
+
+  static releaseProcessInstance(instance: AgentTeamRunManager): void {
+    if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+  }
+
   constructor(options: AgentTeamRunManagerOptions = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
@@ -189,6 +201,23 @@ export class AgentTeamRunManager {
       return this.unregister(rootTeamRunId, root) || !this.managedRoots.has(rootTeamRunId);
     } catch (error) {
       throw new AgentTeamTerminationError(String(error));
+    }
+  }
+
+  async stopAllTeamRuns(): Promise<void> {
+    const errors: unknown[] = [];
+    for (const teamRunId of this.listManagedTeamRunIds()) {
+      try {
+        const stopped = await this.terminateTeamRun(teamRunId);
+        if (!stopped && this.hasManagedTeamRun(teamRunId)) {
+          errors.push(new Error(`Team run '${teamRunId}' did not accept termination.`));
+        }
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    if (errors.length > 0) {
+      throw new AggregateError(errors, "Failed to stop all team runs.");
     }
   }
 

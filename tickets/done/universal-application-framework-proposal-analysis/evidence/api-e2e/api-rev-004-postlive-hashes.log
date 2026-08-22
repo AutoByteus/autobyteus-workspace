@@ -1,0 +1,11 @@
+captured=2026-07-29T14:12:13Z
+HEAD=59db1da126171d8a4360f6b2e93c9fcbd2882db0
+ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0  applications/brief-studio/dist/importable-package/applications/brief-studio/ui/styles.css
+0f6e4ae0860b3eb9e5b8efb00a9ab96cfae72ff8ca458b2ba8094b9b43260f01  applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs
+4530448ebfb7d26efb409ccd6e674e91d9cb885b8deeb8de97383d5fb59dda07  applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js
+--- full tree excluding generated README ---
+3304964900085b9542e9f52ae7e89e3bb15f809f240988befc6ca109f304f670  -
+--- standalone disposable entries ---
+ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0  applications/brief-studio/.autobyteus/dev/package/applications/brief-studio/ui/styles.css
+0f6e4ae0860b3eb9e5b8efb00a9ab96cfae72ff8ca458b2ba8094b9b43260f01  applications/brief-studio/.autobyteus/dev/package/applications/brief-studio/backend/dist/entry.mjs
+4530448ebfb7d26efb409ccd6e674e91d9cb885b8deeb8de97383d5fb59dda07  applications/brief-studio/.autobyteus/dev/package/applications/brief-studio/ui/app.js

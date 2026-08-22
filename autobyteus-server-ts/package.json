@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.10",
+    "@vue/compiler-sfc": "^3.5.28",
     "prisma": "^5.22.0",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^4.3.2",

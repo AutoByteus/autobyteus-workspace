@@ -93,6 +93,10 @@ export class ApplicationAgentCommunicationSession {
     }
   }
 
+  abort(): void {
+    this.finish("ABORTED", true);
+  }
+
   private commitReady(): void {
     if (this.state !== "READY_COMMIT_PENDING" || !this.pausedStream) return;
     if (!this.pausedStream.beginReadyCommit()) {

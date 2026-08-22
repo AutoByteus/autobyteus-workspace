@@ -1,6 +1,9 @@
 import { DatabaseSync } from "node:sqlite";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
 import type { ApplicationStorageLayout } from "../domain/models.js";
 import {
   buildApplicationStorageLayout,
@@ -41,7 +44,8 @@ export class ApplicationStorageLifecycleService {
   }
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
   }
 
   private get migrationService(): ApplicationMigrationService {

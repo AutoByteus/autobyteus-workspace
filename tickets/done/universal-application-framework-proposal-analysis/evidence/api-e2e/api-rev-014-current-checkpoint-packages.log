@@ -1,0 +1,323 @@
+# API-REV-014 non-server current checkpoint gates
+head=7e8e43340b5d83547e74395c9c03ba28ee8248a2
+start=2026-08-13T10:01:55Z
+## devkit full suite (covers checkpoint durable path)
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Successfully registered tool definition: 'read_file'
+# Successfully registered tool definition: 'write_file'
+# Successfully registered tool definition: 'edit_file'
+# Successfully registered tool definition: 'run_bash'
+# Successfully registered tool definition: 'start_background_process'
+# Successfully registered tool definition: 'get_background_processes'
+# Successfully registered tool definition: 'get_process_output'
+# Successfully registered tool definition: 'stop_background_process'
+# Successfully registered tool definition: 'search_web'
+# Successfully registered tool definition: 'read_media_file'
+# Successfully registered tool definition: 'download_media'
+# Successfully registered tool definition: 'read_url'
+# AgentFactory (Singleton) initialized.
+# (node:19203) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 22.657042
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.419Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 80.702
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.453Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: atomic development pack keeps generated package metadata canonical after staging rename
+ok 3 - atomic development pack keeps generated package metadata canonical after staging rename
+  ---
+  duration_ms: 32.402708
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.480Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 34.5365
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.514Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 26.567333
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.540Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 26.555083
+      type: 'test'
+      ...
+    1..3
+ok 4 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 88.086333
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.566Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 5 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 25.37125
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.591Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 6 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 25.387209
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 5.897334
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 6.255625
+      type: 'test'
+      ...
+    1..2
+ok 7 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 12.443833
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 8 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 5.933875
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 7.847542
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 16.22725
+      type: 'test'
+      ...
+    1..2
+ok 9 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 24.316791
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-13T10:01:59.665Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 10 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 31.141041
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 11 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 265.985917
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 12 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 103.442209
+  type: 'test'
+  ...
+# Subtest: Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+ok 13 - Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+  ---
+  duration_ms: 5.000291
+  type: 'test'
+  ...
+1..13
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2384.302833
+## frontend SDK package suite/type proof
+
+> @autobyteus/application-frontend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-frontend-sdk
+> pnpm build && node --test tests/application-startup.test.mjs tests/application-connections.test.mjs && tsc -p tsconfig.type-tests.json --noEmit
+
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: application client exposes the exact capability groups and notification sibling
+ok 1 - application client exposes the exact capability groups and notification sibling
+  ---
+  duration_ms: 0.883917
+  type: 'test'
+  ...
+# Subtest: canonical WebSocket URL composition appends ordered business query values
+ok 2 - canonical WebSocket URL composition appends ordered business query values
+  ---
+  duration_ms: 0.245167
+  type: 'test'
+  ...
+# Subtest: standard agent connection derives the fixed target URL, opens on exact READY, and correlates input
+ok 3 - standard agent connection derives the fixed target URL, opens on exact READY, and correlates input
+  ---
+  duration_ms: 1.971292
+  type: 'test'
+  ...
+# Subtest: standard establishment failure settles ready, error, and close once
+ok 4 - standard establishment failure settles ready, error, and close once
+  ---
+  duration_ms: 2.643375
+  type: 'test'
+  ...
+# Subtest: standard connection accepts exact events and rejects malformed nested payloads
+ok 5 - standard connection accepts exact events and rejects malformed nested payloads
+  ---
+  duration_ms: 3.183542
+  type: 'test'
+  ...
+# Subtest: standard connection rejects removed event shapes, nullable producers, and extra fields
+ok 6 - standard connection rejects removed event shapes, nullable producers, and extra fields
+  ---
+  duration_ms: 12.335083
+  type: 'test'
+  ...
+# Subtest: standard connection rejects unsupported frames and unserializable or oversized input safely
+ok 7 - standard connection rejects unsupported frames and unserializable or oversized input safely
+  ---
+  duration_ms: 4.29025
+  type: 'test'
+  ...
+# Subtest: custom backend WebSocket hides readiness
+ok 8 - custom backend WebSocket hides readiness
+  ---
+  duration_ms: 2.177375
+  type: 'test'
+  ...
+# Subtest: startup coordinator acquires one runtime bootstrap and hands off once
+ok 9 - startup coordinator acquires one runtime bootstrap and hands off once
+  ---
+  duration_ms: 2.313791
+  type: 'test'
+  ...
+# Subtest: startup coordinator contains business mount failures
+ok 10 - startup coordinator contains business mount failures
+  ---
+  duration_ms: 1.766625
+  type: 'test'
+  ...
+# Subtest: startup disposal aborts provider work and is idempotent
+ok 11 - startup disposal aborts provider work and is idempotent
+  ---
+  duration_ms: 0.227583
+  type: 'test'
+  ...
+# Subtest: standalone bootstrap normalization resolves visible same-origin HTTP and WebSocket URLs
+ok 12 - standalone bootstrap normalization resolves visible same-origin HTTP and WebSocket URLs
+  ---
+  duration_ms: 0.311375
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88.169
+## SDK contracts package suite
+
+> @autobyteus/application-sdk-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-sdk-contracts
+> pnpm build && node --test tests/application-iframe-contract.test.mjs
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: application agent target path codec round-trips encoded binding and member identities
+ok 1 - application agent target path codec round-trips encoded binding and member identities
+  ---
+  duration_ms: 0.934209
+  type: 'test'
+  ...
+# Subtest: application agent target path decoder rejects non-canonical and incomplete paths
+ok 2 - application agent target path decoder rejects non-canonical and incomplete paths
+  ---
+  duration_ms: 0.080792
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+ok 3 - readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+  ---
+  duration_ms: 0.204875
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+ok 4 - readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+  ---
+  duration_ms: 0.100875
+  type: 'test'
+  ...
+# Subtest: packaged host-origin normalization preserves the file/null equivalence rule
+ok 5 - packaged host-origin normalization preserves the file/null equivalence rule
+  ---
+  duration_ms: 0.14375
+  type: 'test'
+  ...
+# Subtest: ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+ok 6 - ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+  ---
+  duration_ms: 0.330291
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56.158292
+end=2026-08-13T10:02:03Z

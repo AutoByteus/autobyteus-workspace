@@ -1,15 +1,13 @@
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
-import {
-  ApplicationEngineHostService,
-  getApplicationEngineHostService,
-} from "../../application-engine/services/application-engine-host-service.js";
+import type { ApplicationEngineController } from "../../application-engine/services/application-engine-controller.js";
+import type { ApplicationEngineLauncher } from "../../application-engine/services/application-engine-launcher.js";
+import { ApplicationExecutionEventDispatchQueue } from "./application-execution-event-dispatch-queue.js";
 import type { ApplicationExecutionEventJournalRecord } from "../domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
-import {
-  ApplicationAvailabilityService,
-  getApplicationAvailabilityService,
-} from "./application-availability-service.js";
+type ApplicationAvailabilityReader = {
+  isApplicationActive: (applicationId: string) => boolean | Promise<boolean>;
+};
 
 const MAX_BACKOFF_MS = 60_000;
 
@@ -29,53 +27,47 @@ const computeRetryDelayMs = (record: ApplicationExecutionEventJournalRecord): nu
 };
 
 export class ApplicationExecutionEventDispatchService {
-  private static instance: ApplicationExecutionEventDispatchService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationExecutionEventDispatchService>[0] = {},
-  ): ApplicationExecutionEventDispatchService {
-    if (!ApplicationExecutionEventDispatchService.instance) {
-      ApplicationExecutionEventDispatchService.instance = new ApplicationExecutionEventDispatchService(dependencies);
-    }
-    return ApplicationExecutionEventDispatchService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationExecutionEventDispatchService.instance = null;
-    cachedApplicationExecutionEventDispatchService = null;
-  }
-
   private readonly runningApplications = new Set<string>();
   private readonly retryTimerByApplicationId = new Map<string, NodeJS.Timeout>();
+  private readonly eventQueue: ApplicationExecutionEventDispatchQueue;
 
   constructor(
     private readonly dependencies: {
-      applicationBundleService?: ApplicationBundleService;
-      availabilityService?: ApplicationAvailabilityService;
-      platformStateStore?: ApplicationPlatformStateStore;
-      journalStore?: ApplicationExecutionEventJournalStore;
-      engineHostService?: ApplicationEngineHostService;
-    } = {},
-  ) {}
-
-  private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+      applicationBundleService: ApplicationBundleService;
+      availabilityReader: ApplicationAvailabilityReader;
+      platformStateStore: ApplicationPlatformStateStore;
+      journalStore: ApplicationExecutionEventJournalStore;
+      eventQueue: ApplicationExecutionEventDispatchQueue;
+      engineLauncher: Pick<ApplicationEngineLauncher, "ensureReady">;
+      engineController: Pick<ApplicationEngineController, "invokeApplicationEventHandler">;
+    },
+  ) {
+    this.eventQueue = dependencies.eventQueue;
+    void this.consumeQueue();
   }
 
-  private get availabilityService(): ApplicationAvailabilityService {
-    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+  private get applicationBundleService(): ApplicationBundleService {
+    return this.dependencies.applicationBundleService;
+  }
+
+  private get availabilityService(): ApplicationAvailabilityReader {
+    return this.dependencies.availabilityReader;
   }
 
   private get platformStateStore(): ApplicationPlatformStateStore {
-    return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
+    return this.dependencies.platformStateStore;
   }
 
   private get journalStore(): ApplicationExecutionEventJournalStore {
-    return this.dependencies.journalStore ?? new ApplicationExecutionEventJournalStore();
+    return this.dependencies.journalStore;
   }
 
-  private get engineHostService(): ApplicationEngineHostService {
-    return this.dependencies.engineHostService ?? getApplicationEngineHostService();
+  private get engineLauncher(): Pick<ApplicationEngineLauncher, "ensureReady"> {
+    return this.dependencies.engineLauncher;
+  }
+
+  private get engineController(): Pick<ApplicationEngineController, "invokeApplicationEventHandler"> {
+    return this.dependencies.engineController;
   }
 
   async resumePendingEvents(): Promise<void> {
@@ -119,7 +111,7 @@ export class ApplicationExecutionEventDispatchService {
       return;
     }
 
-    void this.startDrain(applicationId);
+    this.eventQueue.enqueue(applicationId);
   }
 
   private async isApplicationActive(applicationId: string): Promise<boolean> {
@@ -171,7 +163,11 @@ export class ApplicationExecutionEventDispatchService {
 
       try {
         const envelope = this.journalStore.buildDispatchEnvelope(nextRecord, attemptNumber, dispatchedAt);
-        await this.engineHostService.invokeApplicationEventHandler(applicationId, { envelope });
+        await this.engineLauncher.ensureReady(applicationId);
+        await this.engineController.invokeApplicationEventHandler(
+          applicationId,
+          { envelope },
+        );
         await this.journalStore.acknowledgeRecord(
           applicationId,
           nextRecord.event.journalSequence,
@@ -240,13 +236,26 @@ export class ApplicationExecutionEventDispatchService {
     timeoutHandle.unref?.();
     this.retryTimerByApplicationId.set(applicationId, timeoutHandle);
   }
-}
 
-let cachedApplicationExecutionEventDispatchService: ApplicationExecutionEventDispatchService | null = null;
-
-export const getApplicationExecutionEventDispatchService = (): ApplicationExecutionEventDispatchService => {
-  if (!cachedApplicationExecutionEventDispatchService) {
-    cachedApplicationExecutionEventDispatchService = ApplicationExecutionEventDispatchService.getInstance();
+  private async consumeQueue(): Promise<void> {
+    while (true) {
+      const applicationId = await this.eventQueue.take();
+      if (!applicationId) {
+        return;
+      }
+      if (this.runningApplications.has(applicationId)) {
+        continue;
+      }
+      void this.startDrain(applicationId);
+    }
   }
-  return cachedApplicationExecutionEventDispatchService;
-};
+
+  stop(): void {
+    this.eventQueue.stop();
+    for (const timeoutHandle of this.retryTimerByApplicationId.values()) {
+      clearTimeout(timeoutHandle);
+    }
+    this.retryTimerByApplicationId.clear();
+    this.runningApplications.clear();
+  }
+}

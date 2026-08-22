@@ -59,7 +59,9 @@ export const loadRuntimeProviderGroupsForSelection = async (
 
 export const useRuntimeScopedModelSelection = (params: {
   runtimeKind: Ref<string | null | undefined>
+  inheritedRuntimeKind?: Ref<string | null | undefined>
   allowBlankRuntime?: boolean
+  useDefaultRuntimeFallback?: boolean
 }) => {
   const llmStore = useLLMProviderConfigStore()
   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
@@ -74,9 +76,11 @@ export const useRuntimeScopedModelSelection = (params: {
   const normalizedStoredRuntimeKind = computed(() =>
     normalizeScopedRuntimeKind(params.runtimeKind.value, allowBlankRuntime.value),
   )
-  const effectiveRuntimeKind = computed(() =>
-    resolveEffectiveScopedRuntimeKind(params.runtimeKind.value),
-  )
+  const effectiveRuntimeKind = computed<AgentRuntimeKind | null>(() => {
+    const resolved = (params.runtimeKind.value || params.inheritedRuntimeKind?.value || '').trim()
+    if (resolved) return resolved as AgentRuntimeKind
+    return params.useDefaultRuntimeFallback === false ? null : DEFAULT_AGENT_RUNTIME_KIND
+  })
 
   const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
     const normalizedRuntimeKind = resolveEffectiveScopedRuntimeKind(runtimeKind)
@@ -99,7 +103,7 @@ export const useRuntimeScopedModelSelection = (params: {
   watch(
     () => effectiveRuntimeKind.value,
     (runtimeKind) => {
-      void ensureModelsForRuntime(runtimeKind)
+      if (runtimeKind) void ensureModelsForRuntime(runtimeKind)
     },
     { immediate: true },
   )
@@ -128,7 +132,7 @@ export const useRuntimeScopedModelSelection = (params: {
       })
     }
 
-    if (!optionByKind.has(selectedRuntimeKind)) {
+    if (selectedRuntimeKind && !optionByKind.has(selectedRuntimeKind)) {
       optionByKind.set(selectedRuntimeKind, {
         value: selectedRuntimeKind,
         label: runtimeKindToLabel(selectedRuntimeKind),
@@ -142,6 +146,7 @@ export const useRuntimeScopedModelSelection = (params: {
   })
 
   const selectedRuntimeUnavailableReason = computed(() => {
+    if (!effectiveRuntimeKind.value) return null
     const availability = runtimeAvailabilityStore.availabilityByKind(effectiveRuntimeKind.value)
     if (!availability) {
       return effectiveRuntimeKind.value === DEFAULT_AGENT_RUNTIME_KIND
@@ -155,7 +160,9 @@ export const useRuntimeScopedModelSelection = (params: {
   })
 
   const availableProviderGroups = computed<ProviderWithModels[]>(() =>
-    providerGroupsByRuntime.value[effectiveRuntimeKind.value] ?? [],
+    effectiveRuntimeKind.value
+      ? providerGroupsByRuntime.value[effectiveRuntimeKind.value] ?? []
+      : [],
   )
 
   const groupedModelOptions = computed<GroupedOption[]>(() => {
@@ -163,16 +170,18 @@ export const useRuntimeScopedModelSelection = (params: {
       return []
     }
 
+    const runtimeKind = effectiveRuntimeKind.value
+    if (!runtimeKind) return []
     return availableProviderGroups.value.map((providerGroup) => ({
       label: providerGroup.provider.name,
       items: providerGroup.models.map((model) => ({
         id: model.modelIdentifier,
-        name: getModelSelectionOptionLabel(model, effectiveRuntimeKind.value),
+        name: getModelSelectionOptionLabel(model, runtimeKind),
         description: model.description,
         selectedLabel: getModelSelectionSelectedLabel(
           providerGroup.provider.name,
           model,
-          effectiveRuntimeKind.value,
+          runtimeKind,
         ),
       })),
     }))
