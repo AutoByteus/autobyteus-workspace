@@ -2,11 +2,11 @@
 
 ## Current Status
 
-`Blocked pending review of the API-REV-007 durable test-support delta; prior verification handoff superseded.`
+`Blocked pending API-REV-007 execution evidence; structural re-review passed, prior verification handoff remains superseded.`
 
 - Date: `2026-08-22`
-- Delivery revision: `DR-004`
-- Lineage: `SR-006; architecture review package; implementation handoff; CRR-002 source Pass (9.4/10); CRR-006 proportional test review; CRR-009 failure-origin review; API-REV-006`
+- Delivery revision: `DR-005`
+- Lineage: `SR-006; architecture review package; implementation handoff; CRR-002 source Pass (9.4/10); CRR-006 proportional test review; CRR-009 failure-origin review; CRR-010 durable test-support review; API-REV-006; API-REV-007 pending`
 - Feature-specific API/E2E: `Pass`
 - Broader validation: `89% aggregate confidence retained as non-gating residual context`
 - Latest-base integration: `Pass — origin/personal advanced from bootstrap; merged without conflicts`
@@ -14,16 +14,16 @@
 - User verification: `Superseded pending re-review`
 - Repository finalization: `Held`
 - Release/publication/deployment: `Held — not in scope before explicit user completion`
-- Open source/API/E2E/test-review findings: `None in reviewed source; current durable test-support delta is awaiting re-review`
-- Downstream review closure: `Pass reaffirmed — no Round 6 durable test/test-support changes retained; no additional code review required`
+- Open source/API/E2E/test-review findings: `None; API-REV-007 execution evidence pending`
+- Downstream review closure: `CRR-010 Pass for proportional structural review; no test-code finding; execution remains pending`
 
 ## Re-entry Blocker
 
-After the DR-003 closure, the worktree acquired a new API/E2E Round 7 investigation and a durable scenario-order change in `test-support/live-e2e/live-e2e-harness.ts`. The change was checkpointed at `e6ba62846` and the latest base was refreshed through merge `a810e3c230`. Because this is repository-resident durable coverage/test-support work after the initial review, it must complete focused/proportional review and subsequent API/E2E execution before this handoff can be considered current.
+After the DR-003 closure, the worktree acquired a new API/E2E Round 7 investigation and a durable scenario-order change in `test-support/live-e2e/live-e2e-harness.ts`. The change was checkpointed at `e6ba62846`, structurally accepted by `CRR-010`, and the latest base was refreshed through merge `a80d73dcd`. The bounded API-REV-007 execution and authoritative disposition remain pending before this handoff can be considered current.
 
 - Current API/E2E investigation: `API-REV-007`
 - Current execution report: `API-REV-006` remains the last authoritative execution result
-- Required recipient: `/code_reviewer`, then `/api_e2e_engineer` as applicable
+- Required recipient: `/api_e2e_engineer` for execution; return through `/code_reviewer` if durable coverage changes again
 - User verification: not requested or valid for the superseded DR-003 state
 
 ## Delivered Behavior
@@ -39,19 +39,19 @@ After the DR-003 closure, the worktree acquired a new API/E2E Round 7 investigat
 - Recorded base/finalization target: `origin/personal` / `personal`
 - Bootstrap base: `d487c0859905a91650387c4af41f4fc5754f214a`
 - Latest fetched base: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Latest refreshed base: `201eddc452a7b9b5b3220e8238373b04c1423c0f`
+- Latest refreshed base: `14c08eeb458ff440123ca53d11192c2cb1a0216c`
 - Pre-integration checkpoint: `e336a9744`
 - Integration merge: `09c9cb080`
 - Delivery docs/handoff checkpoint: `d7ae16ca5`
 - Delivery revision checkpoint: `025a7ee56`
 - API-REV-007 safety checkpoint: `e6ba62846`
-- Latest-base integration merge: `a810e3c230`
+- Latest-base integration merge: `a80d73dcd`
 - Current ticket branch: `codex/provider-catalog-pricing-error-messaging`
 - Current branch state: latest `origin/personal` is an ancestor; no behind commits or unmerged paths; delivery checkpoints remain local-only.
 - Integration method: `Merge --no-ff origin/personal`
 - Conflicts/unmerged paths: `None`
 - Delivery edits began after integration: `Yes`
-- Post-closure refresh: `origin/personal` advanced to `201eddc452a7b9b5b3220e8238373b04c1423c0f` and was merged as `a810e3c230` after checkpoint `e6ba62846`; the new durable test-support delta is now awaiting re-review, so prior checks are not sufficient for a current handoff.
+- Post-closure refresh: `origin/personal` advanced to `14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged as `a80d73dcd`; `CRR-010` structurally passed the durable delta, but API-REV-007 execution is still pending, so prior checks are not sufficient for a current handoff.
 
 ## Validation Evidence
 

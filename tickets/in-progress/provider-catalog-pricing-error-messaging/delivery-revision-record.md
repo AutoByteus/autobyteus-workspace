@@ -4,12 +4,24 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-005 | `CRR-010` Pass for proportional review of API-REV-007 durable test-support delta | `DR-004` Blocked pending review | Blocked pending API-REV-007 execution — the durable delta is structurally reviewed with no findings, but the updated execution coverage report and authoritative disposition are still required before delivery handoff | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-test-review-report.md`, `code-review-revision-record.md` |
 | DR-004 | API/E2E Round 7 durable test-support delta discovered after the DR-003 closure | `DR-003` Pass reaffirmed; user verification pending | Blocked — the new `test-support/live-e2e/live-e2e-harness.ts` delta and API-REV-007 investigation must complete the required focused/proportional code review and API/E2E execution before delivery can resume | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-003 | Code-review downstream closure for `API-REV-006` | `DR-002` Pass; explicit user verification pending | Pass reaffirmed — `CRR-002` remains Pass at 9.4/10, `CRR-006` and `CRR-009` remain authoritative, no durable coverage changes were retained, and the integrated handoff remains current; finalization/release/deployment remain held | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-002 | API/E2E Round 6 feature-specific Pass; latest-base delivery refresh; docs sync | `DR-001` initial baseline with latest-base integration pending | Pass — latest tracked `origin/personal` integrated without conflicts, focused post-integration checks passed, durable docs synchronized, and user-verification handoff prepared; finalization/release/deployment held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `delivery-evidence/post-integration-focused-check.log` |
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-005 — Structural re-review passed; API/E2E execution pending
+
+- Trigger: `CRR-010` proportional review of the API-REV-007 durable `test-support/live-e2e/live-e2e-harness.ts` scenario-order delta.
+- Review result: `Pass` for structural test-support review; no test-code finding. The production source, API contract, provider configuration, and durable product behavior remain unchanged.
+- Current API/E2E state: API-REV-006 feature-specific Pass remains authoritative for ticket scope; API-REV-007 execution is pending. The execution coverage report must be updated before delivery can claim a current handoff.
+- Latest-base refresh: after the prior checkpoint, `origin/personal` advanced to `14c08eeb458ff440123ca53d11192c2cb1a0216c`; delivery merged it cleanly as `a80d73dcd`, with no conflicts or unmerged paths. The latest tracked base remains an ancestor.
+- Required next route: `/api_e2e_engineer` for the bounded API-REV-007 execution and authoritative coverage/revision update. If durable coverage is edited again, it must return through proportional code review.
+- Documentation state: no new long-lived docs edit is warranted while the execution result is pending; the prior production docs sync remains accurate.
+- Current result: `Blocked pending API/E2E execution evidence and final residual disposition; user verification remains superseded.`
+- Next action: await the API/E2E execution result, then re-enter delivery only after the current cumulative package is authoritative.
 
 ### DR-004 — Post-closure durable test-support delta blocks delivery re-entry
 

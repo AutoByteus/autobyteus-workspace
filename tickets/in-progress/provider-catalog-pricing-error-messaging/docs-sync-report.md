@@ -59,15 +59,15 @@
 ## Delivery Continuation
 
 - Result: `Blocked`
-- Next delivery action: Await focused/proportional code review of the API-REV-007 durable test-support delta, then the corresponding API/E2E execution result and any required re-review.
-- Notes: The prior DR-002/DR-003 documentation sync remains accurate for reviewed production behavior, but the new durable test-support delta is not yet a delivery-ready state. No release, deployment, archival, push, target-branch finalization, or user-verification claim is authorized for the superseded handoff.
+- Next delivery action: Await the bounded API-REV-007 API/E2E execution result and authoritative residual disposition; return through proportional code review if durable coverage changes again.
+- Notes: `CRR-010` structurally passed the new durable test-support delta with no finding, but execution remains pending. The prior DR-002/DR-003 documentation sync remains accurate for reviewed production behavior. No release, deployment, archival, push, target-branch finalization, or user-verification claim is authorized for the superseded handoff.
 
 ## Delivery Re-entry After API-REV-007 Delta
 
-- The latest tracked base advanced to `origin/personal@201eddc452a7b9b5b3220e8238373b04c1423c0f` and was merged cleanly as `a810e3c230` after safety checkpoint `e6ba62846`.
+- The latest tracked base advanced to `origin/personal@14c08eeb458ff440123ca53d11192c2cb1a0216c` and was merged cleanly as `a80d73dcd` after safety checkpoint `e6ba62846` and CRR-010 review checkpoint `e71354165`.
 - `test-support/live-e2e/live-e2e-harness.ts` contains a durable scenario-order change that is pending focused/proportional review.
 - `api-e2e-coverage-investigation.md` records API-REV-007; `api-e2e-execution-coverage-report.md` remains API-REV-006 until the new execution is complete.
-- No new long-lived documentation edit is appropriate until the current durable coverage state is reviewed and validated.
+- No new long-lived documentation edit is appropriate until the current API-REV-007 execution state is authoritative.
 
 ## Blocked Or Escalated Follow-Up
 

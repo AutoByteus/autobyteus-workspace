@@ -13,6 +13,7 @@
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` | API/E2E failure-origin disposition `API-REAL-001` / `API-REV-003` | Blocked completion gate | Blocked completion gate; no source defect | `API-REAL-001` |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` | API/E2E explicit final disposition `API-REAL-001` / `API-REV-004` | Blocked completion gate | Blocked completion gate; explicit unresolved disposition; no source defect | `API-REAL-001` |
 | CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` | API/E2E provider-capability recovery `API-REAL-001` / `API-REV-005`; DeepSeek/Kimi live operation failures | Blocked completion gate | Blocked completion gate; external-provider capability/execution block; no source defect | `API-REAL-001`, `deepseek.llm`, `kimi.llm` |
+| CRR-010 | `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md` | Post-CRR durable test-support delta `API-REV-007`; bounded LM Studio scenario-order probe | API-REV-006 feature-specific Pass; execution pending | Pass for proportional structural review; execution pending; no test-code finding | `API-REAL-001` support |
 
 ## Revision Entries
 
@@ -225,3 +226,26 @@ None. `CR-001` remains resolved; no implementation finding was reopened. CRR-006
 - Material score or classification changes: CRR-002 source score remains `9.4/10`; no source score change is justified. The API/E2E confidence is `89%`, but the completion gate remains blocked.
 - Recommended recipient: `/api_e2e_engineer` for any future changed-capability or reviewed safe-evidence investigation; do not attribute the wrapper-level failures to implementation source or route to delivery as ready.
 - Remaining risks or uncertainty: Exact DeepSeek/Kimi operation causes, provider-error-body fidelity, final LM Studio compactor leaf evidence, MiniMax/Gemini AI Studio, Docker identity, browser DOM, and live restart/recovery remain unproven.
+
+### CRR-010 — Proportional review of API-REV-007 durable scenario-order delta
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E test-support review, round 3, pre-execution re-entry
+- Triggering role, report path, and finding or scenario IDs: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`; `API-REV-007`; `API-REAL-001`
+- Relevant solution revision IDs: `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `API-REV-007` (execution pending); prior `API-REV-006`
+- Relevant delivery revision IDs: `DR-003`
+- Prior authoritative result: `CRR-006` passed the seven previously changed durable paths; `CRR-009` classified the prior live capability residual without reopening source review.
+- Current authoritative result: **Pass for proportional structural review; API-REV-007 execution pending; no test-code finding**.
+- What changed in the review result and why: `test-support/live-e2e/live-e2e-harness.ts` reorders the existing Unicode shield read before Group A and updates only the corresponding completed-turn thresholds. The same three reads, one final write, exact artifact/tool-trace checks, scanner safeguards, and canonical compactor leaf assertions remain. The delta is directly tied to the prior reachable live evidence showing compaction triggered during Group A before Unicode selection; it does not alter production source or weaken the contract.
+
+#### Prior Finding Resolution
+
+None. CRR-006 had no test-code findings, and this delta introduces no new actionable test-support finding.
+
+- New or remaining finding IDs: None for test code; `API-REAL-001` remains an execution scenario pending API-REV-007 evidence.
+- Material score or classification changes: No implementation source score or failure-origin classification changes. The ticket-specific API-REV-006 Pass remains the scope authority; aggregate residual confidence remains 89%.
+- Recommended recipient: `/api_e2e_engineer` for bounded API-REV-007 execution and authoritative report update. Delivery must remain paused until that execution state is recorded.
+- Remaining risks or uncertainty: The reordered scenario may still fail to compact, fail to finish, or fail the leaf assertion under the live capability; no such result is currently available. LM Studio remains non-gating under the approved ticket scope.
