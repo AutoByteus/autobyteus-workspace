@@ -9,21 +9,22 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md` (`IR-001`); no downstream rework report applies.
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md` (`IR-001`, `IR-002`); `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` (`CR-001`); `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md` (`CRR-001`).
+- Scope-correction artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-application-sdk-contracts/README.md`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-009`, `SR-010`, `SR-011`
-- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-009`, `SR-010`, `SR-011`, `SR-013`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001` / `CR-001` pending re-review
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` for this initial implementation baseline; `ARCH-DI-001`–`ARCH-DI-005` were resolved upstream before implementation.
+- Triggering finding IDs: `CR-001`; `ARCH-DI-001`–`ARCH-DI-005` remain resolved upstream.
 
-The implementation follows the passed runtime-aware design. Provider catalog entries and request policies are clean-cut current-only replacements. DeepSeek V4 pricing is schedule-aware by UTC time-of-day and records selected-period provenance. Provider errors retain the safe original message and optional transport evidence. The canonical event contract uses non-empty `code` separately from `message` across the single-agent, team, websocket, application, and web paths. Saved/direct application launches expand effective runtime/model pairs and apply the AutoByteus current-model guard only for `RuntimeKind.AUTOBYTEUS`, before persistence or run side effects.
+The implementation follows the passed runtime-aware design and the `SR-013` scope correction. Provider catalog entries and request policies are clean-cut current-only replacements. DeepSeek V4 pricing is schedule-aware by UTC time-of-day and records selected-period provenance. Native provider errors retain the safe original message and optional transport evidence; the application-agent SDK deliberately projects only the safe message in its existing provider-neutral `ERROR` variant. Saved/direct application launches expand effective runtime/model pairs and apply the AutoByteus current-model guard only for `RuntimeKind.AUTOBYTEUS`, before persistence or run side effects.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -36,8 +37,8 @@ The implementation follows the passed runtime-aware design. Provider catalog ent
 | B-005 | GLM 5.3 always-enabled thinking and no assumed legacy price | `supported-model-definitions.ts`, `api/glm-llm.ts` | Schema and adapter force `thinking.type=enabled` with low/high/max; GLM 5.3 is explicitly unpriced pending deployment evidence. |
 | B-006 | Stable missing-key category/action; preserve other vault failures | `secrets/provider-api-key-error.ts`, `secret-management-provider-api-key-resolver.ts`, `agent/loop/llm-phase.ts` | Missing/blank keys map to `missing_api_key` with provider-specific setup text; non-missing `SecretVaultError` values pass through. |
 | B-007 | Original provider error message after safe redaction, no generic wrappers/classification | `llm/errors/provider-error.ts`, `api/openai-compatible-llm.ts`, `agent/loop/llm-phase.ts` | Provider text is preserved; safe status/code/request ID/details are supplemental; API request/stream wrappers and LLM-phase truncation/prefix are removed. |
-| B-008 | Canonical non-empty `code` separate from display `message` | `agent/events/notifiers.ts`, `agent/streaming/events/stream-event-payload-lifecycle.ts`, server/team DTOs/adapters/projectors, web parser/types | `source` is removed from the provider error contract; missing code/message remains a validation failure instead of being rewritten. |
-| B-009 | User-facing error segment renders supplied provider message | `application-agent-stream-event-projector.ts`, web `agentStatusHandler.ts`, `types/segments.ts`, existing `ErrorSegment.vue` | Terminal application projection now uses the safe event message; web preserves message/evidence and existing component renders it. |
+| B-008 | Canonical non-empty `code` separate from display `message` on native transport | `agent/events/notifiers.ts`, `agent/streaming/events/stream-event-payload-lifecycle.ts`, server/team DTOs/adapters/projectors, web parser/types | `source` is removed from the native provider error contract; missing code/message remains a validation failure instead of being rewritten. The application boundary intentionally stops at the safe message. |
+| B-009 | User-facing error segment and application stream render supplied provider message | `application-agent-stream-event-projector.ts`, `autobyteus-application-sdk-contracts/src/application-agent-events.ts`, application/frontend SDK tests, web `agentStatusHandler.ts`, `types/segments.ts`, existing `ErrorSegment.vue` | Terminal application projection uses the safe event message without native/provider metadata; the application SDK remains `{ type: "ERROR", message }`. Native web preserves message/evidence and existing component renders it. |
 | B-010 | MiniMax M3 current metadata/pricing shape | `supported-model-definitions.ts` | `minimax-m3` / `MiniMax-M3` reports 1,000,000 context and retains verified ≤512K/>512K tiers; endpoint/deployment evidence remains downstream residual validation. |
 
 ## Key Files Or Areas
@@ -45,6 +46,7 @@ The implementation follows the passed runtime-aware design. Provider catalog ent
 - Catalog and adapters: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-ts/src/llm/supported-model-definitions.ts`, `api/{grok,gemini,kimi,glm,openai-compatible}-llm.ts`, `utils/llm-config.ts`, `utils/token-pricing-schedule.ts`, `model-pricing-types.ts`, `current-model-selection-error.ts`.
 - Error and credential boundary: `autobyteus-ts/src/llm/errors/provider-error.ts`, `autobyteus-ts/src/secrets/provider-api-key-error.ts`, `autobyteus-server-ts/src/secret-management/resolution/secret-management-provider-api-key-resolver.ts`.
 - Canonical event transport: `autobyteus-ts/src/agent/events/notifiers.ts`, `agent/streaming/events/stream-event-payload-lifecycle.ts`, server AgentRun mapper/team adapter/domain/websocket projector, `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts`, and web protocol/parser/adapters.
+- Application boundary: `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts`, `autobyteus-application-sdk-contracts/src/application-agent-events.ts`, `autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts`, and their focused tests. Native `code`/provider evidence is intentionally not projected into this SDK.
 - Application launch ownership: `autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts`, `application-execution-resource-configuration-service.ts`, and `application-run-binding-launch-service.ts`.
 - Pricing policy: `autobyteus-server-ts/src/token-usage/pricing/token-price-config-provider.ts` and `token-pricing-policy.ts`.
 - Application projection: `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts`.
@@ -75,7 +77,7 @@ The implementation follows the passed runtime-aware design. Provider catalog ent
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for named provider rows/policies, generic wrappers, and source-only error path; older API/E2E fixtures remain downstream coverage work and were not silently treated as implementation proof.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for named provider rows/policies, generic wrappers, and source-only error path; stale application test fixtures were aligned to the current target/producers and message-only ERROR contract; older API/E2E fixtures remain downstream coverage work.
 - Shared structures remain tight: `Yes`.
 - Canonical shared design guidance was reapplied and file-level weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; `llm-factory.ts` was split to keep the changed source below 500 effective non-empty lines, and large changed test files are outside the source limit.
@@ -99,14 +101,16 @@ The implementation follows the passed runtime-aware design. Provider catalog ent
 
 - `pnpm -C autobyteus-ts build` — pass.
 - `pnpm -C autobyteus-team-stream-contracts build` — pass.
-- `pnpm -C autobyteus-application-sdk-contracts build` — pass.
+- `pnpm -C autobyteus-application-sdk-contracts test` — pass; generated SDK build and six contract tests pass.
+- `pnpm -C autobyteus-application-frontend-sdk test` — pass; generated frontend build, twelve hosted/connection tests, and type tests pass. Mock WebSocket fixtures now use the current `agentRunId`/producer contract and assert provider metadata is rejected at the application boundary.
 - `pnpm -C autobyteus-server-ts build` — pass, including Prisma generation and sanitized built-in-agent bootstrap smoke.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts --no-watch` — pass; 16 tests, including agent/team message-only ERROR projection and native-evidence exclusion.
 - `pnpm -C autobyteus-ts exec vitest run ...` focused canonical event/provider/catalog tests — 8 files, 39 tests passed.
 - `pnpm -C autobyteus-server-ts exec vitest run ...` focused projection/runtime/secret/pricing tests — 6 files, 51 tests passed.
 - `pnpm -C autobyteus-web exec vitest run ...` focused stream/handler/submission tests — 4 files, 71 tests passed.
 - `pnpm -C autobyteus-web build` — pass; Nuxt static build/prerender completed.
 - `pnpm -C autobyteus-server-ts typecheck` — fails due existing `TS6059` test inclusion/rootDir configuration; this is not a source-build failure.
-- No API/E2E/integration execution was run; those checks are intentionally downstream-owned.
+- No provider/API/E2E or live server WebSocket integration execution was run; those checks are intentionally downstream-owned. The package-level application SDK/frontend mock WebSocket checks above are implementation-scoped contract tests and did not require vault credentials.
 
 ## Frontend Rendered-Result Check
 
@@ -115,14 +119,14 @@ The implementation follows the passed runtime-aware design. Provider catalog ent
 - Existing design system, shared components, and adjacent product surfaces reviewed: `autobyteus-web/components/conversation/segments/ErrorSegment.vue`, `AIMessage.vue`, stream handlers, protocol parser, and existing focused tests.
 - Project development / preview instructions and rendered surface used: README/AGENTS instructions reviewed; Nuxt production build and prerendered surface completed with `pnpm -C autobyteus-web build`.
 - States, layouts, viewports, and interactions inspected: Unit-level diagnostic/terminal message projection, protocol validation, tool-error routing, and reentrant stream handling were exercised. The existing ErrorSegment markup already renders `segment.message`; no layout or template changes were needed.
-- Visual or interaction issues found and corrected: Removed the server application's generic terminal error replacement; web handler now carries safe message/evidence without visual redesign.
+- Visual or interaction issues found and corrected: The server application's generic terminal error replacement was already removed in IR-001; this round verified the message-only application projection and native web message/evidence split without visual redesign.
 - Supporting evidence and remaining unverified states or limitations: No live browser session was started because the changed frontend path is data/projection-only and the provider/team journey requires downstream API/E2E environment setup. Nuxt build and 71 focused tests passed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Verify the user-provided vault import path before any live provider integration: `pnpm import /Users/normy/.autobyteus/server-data/.env`; confirm only a safe missing-key category/message reaches the client.
 - Add/refresh provider fixtures for balance/quota, authentication, rate, request, and unrecognized transport failures; assert original message, redaction, provider status/code/request ID, and no semantic replacement.
-- Validate Docker-equivalent single-agent/team websocket paths and application API projection with a known build/version; assert absence of `Rejected ERROR: code is required` and absence of `The agent response failed.` for valid provider errors.
+- Validate Docker-equivalent single-agent/team websocket paths and application API projection with a known build/version; assert absence of `Rejected ERROR: code is required` and absence of `The agent response failed.` for valid provider errors. Application-agent ERROR must remain message-only and must reject native/provider metadata fields.
 - Cover exact current catalog additions/removals, GLM/MiniMax deployment endpoint/pricing evidence, DeepSeek schedule boundaries plus persisted pricing snapshot provenance, and stale saved/direct AutoByteus reselection behavior.
 - Cover mixed-runtime teams and Claude/Codex factory ownership/dispatch, including member runtime overrides and pre-allocation validation ordering.
 

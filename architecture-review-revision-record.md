@@ -7,6 +7,7 @@
 | ARCH-REV-001 | Initial review of the complete approved design package | `SR-009` | N/A | Fail | `ARCH-DI-001`, `ARCH-DI-002`, `ARCH-DI-003`, `ARCH-DI-004` |
 | ARCH-REV-002 | Re-review after architecture-rework entry `SR-010` | `SR-009`, `SR-010` | Fail | Fail | `ARCH-DI-005` (with `ARCH-DI-001`–`ARCH-DI-004` resolved) |
 | ARCH-REV-003 | Re-review after runtime-aware ownership rework `SR-011` | `SR-009`, `SR-010`, `SR-011` | Fail | Pass | `ARCH-DI-005` resolved |
+| ARCH-REV-004 | Re-review after provider-neutral application-boundary correction `SR-013` | `SR-009`–`SR-013` | Pass (with downstream CR-001) | Pass | `CR-001` resolved; `ARCH-DI-001`–`ARCH-DI-005` remain resolved |
 
 ## Revision Entries
 
@@ -73,3 +74,26 @@ None.
 - Material classification changes: `ARCH-DI-005` is resolved as a `Design Impact`; no requirement or scope change was introduced. MP-007 remains `Reachable` and now verifies the corrected external-runtime path. MP-005 balance causality and MP-006 Docker build identity remain `Unclear` residual evidence only.
 - Recommended recipient: `/implementation_engineer`.
 - Remaining risks or uncertainty: GLM/MiniMax deployment-specific endpoint/pricing evidence, application API error-boundary verification for the stable reselection message, Docker build identity, provider balance causality, and preservation of existing unsupported-runtime validation remain implementation/integration checks. None blocks implementation handoff.
+
+### ARCH-REV-004 — Re-review: provider-neutral application boundary accepted
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-review-report.md`
+- Review round and trigger: Round 4; re-review after solution revision `SR-013` corrected the downstream `CR-001` scope/design contradiction identified by `CRR-001`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`; downstream `CR-001`.
+- Relevant solution revision IDs: `SR-009`, `SR-010`, `SR-011`, `SR-012`, `SR-013`.
+- Relevant downstream artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`.
+- Prior authoritative decision: Pass — `ARCH-REV-003` accepted runtime-aware model ownership; subsequent source review exposed a provisional application-boundary mismatch.
+- Current authoritative decision: Pass — `SR-013` resolves `CR-001` as a scope/design correction; source re-review remains required before API/E2E.
+- What changed in the review result or what baseline was established: The user-authoritative boundary is now explicit. The supported application-agent SDK remains the closed provider-neutral five-variant stream with `ERROR: { type: "ERROR", message: string }`. The application projector preserves the safe original message and removes the stale generic fallback. Native/platform/team transport retains canonical non-empty `code` and optional safe metadata needed for the Docker/team path, and those fields stop at the application boundary. No application SDK metadata machinery is introduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` (downstream design impact) | Blocking | Resolved as a scope/design correction | `SR-013`; `ARCH-REV-004` | `requirements.md` REQ-007–REQ-009 and B-007–B-009, `design-spec.md` DS-003, `provider-error-and-pricing-contract.md`, the normative application communication contract, and the SDK README all define the same message-only application `ERROR` shape. Current `application-agent-stream-event-projector.ts` and `application-agent-events.ts` already match it; native metadata remains confined to native/platform/team transport. |
+| `ARCH-DI-001`–`ARCH-DI-005` | Resolved | Remain resolved | `ARCH-REV-001`–`ARCH-REV-003`; `SR-010`–`SR-011` | The corrected application boundary does not alter the previously accepted behavior IDs, runtime ownership, pricing projection, persisted-data decision, or native error transport. |
+
+- New or remaining architecture finding IDs: None.
+- Material classification changes: `CR-001` is no longer an unresolved design impact because the user clarified that application metadata extension is out of scope and the corrected package aligns the application boundary to the existing supported contract. MP-008 remains `Reachable`; MP-005 balance causality and MP-006 Docker build identity remain `Unclear` residual evidence only and do not drive machinery.
+- Recommended recipient: `/implementation_engineer`, with mandatory return through `/code_reviewer` for `CR-001` source re-review before `/api_e2e_engineer`.
+- Remaining risks or uncertainty: Confirm source-level stale-fallback removal and message passthrough, ensure no accidental application SDK metadata expansion, and verify generated SDK/application consumer parity. GLM/MiniMax endpoint/pricing evidence, Docker build identity, provider balance causality, and API/E2E fixtures remain downstream checks.

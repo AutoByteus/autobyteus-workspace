@@ -7,7 +7,7 @@ This ticket follows four existing production paths:
 1. Model selection: effective runtime/model pair -> AutoByteus catalog/LLMFactory or Claude/Codex backend factory -> provider SDK/endpoint.
 2. Pricing: usage event -> TokenPriceConfigProvider -> TokenCostCalculator -> immutable usage snapshot.
 3. Credentials: ProviderApiKeyResolver -> secret-management resolver -> provider client initialization.
-4. Errors: provider/secret failure -> LlmPhase/notifier -> AgentRun mapping -> team/websocket projection -> client error segment.
+4. Errors: provider/secret failure -> LlmPhase/notifier -> AgentRun mapping -> native team/websocket projection -> client error segment, with a separate application-agent projector that narrows the same safe message to the provider-neutral SDK stream.
 
 The catalog and provider adapters already own model execution. The pricing package already owns cost policy. The secret resolver already owns credential lookup. The event mismatch is the confirmed structural defect: the producer emits source while the team contract requires code. The target strengthens these owners; it does not add a separate request-validation subsystem.
 
@@ -34,7 +34,7 @@ The catalog and provider adapters already own model execution. The pricing packa
 | B-006 | User/Contract | REQ-006; AC-008–009 | Missing record leaks SECRET_NOT_FOUND | Clear missing-key setup message; other vault failures stay distinct | DS-001, DS-003 |
 | B-007 | User/Contract | REQ-007, REQ-009; AC-010–012 | Provider errors are generically wrapped | Original provider message survives after redaction | DS-003 |
 | B-008 | Contract/User | REQ-008, REQ-009; AC-013–014 | source/code mismatch rejects Docker event | code is transport metadata; message remains original | DS-003 |
-| B-009 | Contract/User | REQ-009, REQ-010; AC-014–015 | UI receives generic/hidden error text | UI renders the safe original message and optional safe metadata | DS-003 |
+| B-009 | Contract/User | REQ-007, REQ-009–010; AC-011, AC-014–015 | Native/application consumers receive generic or hidden error text | Native web renders the safe original message and native transport may retain safe metadata; the application-agent SDK preserves only the safe original message in its existing `ERROR` variant | DS-003 |
 | B-010 | User/Contract | REQ-001–002, REQ-011; AC-001–002, AC-016–017 | MiniMax M3 exists with stale metadata | M3 metadata, price, and verified deployment endpoint are current | DS-001 |
 
 ## Relevant Supplemental Task Artifacts
@@ -42,6 +42,7 @@ The catalog and provider adapters already own model execution. The pricing packa
 | Artifact Path | Purpose | Related IDs | Relationship |
 | --- | --- | --- | --- |
 | /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md | Current provider, pricing, schema, endpoint, and error contracts | REQ-001–012; AC-001–018 | Detailed contract and evidence supplement aligned to this design |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md | Normative application-agent binding, stream, and message-only public `ERROR` contract | REQ-007–010; AC-011, AC-014–015 | Existing application boundary reconciled to safe original-message passthrough without exposing native/provider metadata |
 
 ## Task Design Health Assessment
 
@@ -82,7 +83,7 @@ The catalog and provider adapters already own model execution. The pricing packa
 
 - DS-001: User/profile selection -> effective `{ runtimeKind, llmModelIdentifier }` -> runtime-owned model path (`AUTOBYTEUS` catalog/LLMFactory -> AutoByteus adapter, or Claude/Codex backend factory) -> SDK/endpoint.
 - DS-002: Usage event -> current pricing policy -> UTC period selection -> existing token-tier arithmetic -> snapshot/repository.
-- DS-003: Provider/secret failure -> safe error extraction -> notifier -> AgentRun mapper -> team/websocket -> ErrorSegment.
+- DS-003: Provider/secret failure -> safe error extraction -> notifier -> AgentRun mapper -> native team/websocket -> ErrorSegment, with a separate application-agent projector -> message-only SDK `ERROR` event.
 
 ## Spine Narratives
 
@@ -90,7 +91,7 @@ The catalog and provider adapters already own model execution. The pricing packa
 | --- | --- | --- | --- |
 | DS-001 | The effective selection is a runtime/model pair. For `RuntimeKind.AUTOBYTEUS`, the catalog defines current identity, schema, defaults, metadata, and adapter; `LLMFactory` resolves it and owns exact current membership. For `CLAUDE_AGENT_SDK` and `CODEX_APP_SERVER`, the corresponding backend factory owns the provider model/session or thread bootstrap and the AutoByteus catalog guard is not invoked. Saved-profile/readiness and run-binding owners normalize and validate each effective pair before any run side effect. | RuntimeKind normalization, AutoByteus catalog/LLMModel/LLMFactory, Claude backend factory, Codex backend factory, provider adapters, application configuration/run binding | Secret lookup, metadata discovery |
 | DS-002 | Pricing policy resolves current DeepSeek period before existing arithmetic. The selected policy is persisted as evidence for the new usage event. | Usage payload, ModelPricingInfo, pricing provider, calculator, repository | Source/effective provenance, invalid timestamp |
-| DS-003 | Safe message preparation happens before transport. Every producer, parser, mapper, team DTO, websocket projector, and web parser carries one typed safe evidence shape. `code` is required transport metadata; `message` is never replaced by it. | Provider error, notifier, stream, AgentRun mapper, team adapter, team DTO, websocket projector, application projector, web protocol, UI | Redaction, scope/effect, malformed unrelated events |
+| DS-003 | Safe message preparation happens before transport. Native producers, parsers, mappers, team DTOs, websocket projectors, and web parsers carry the typed safe evidence shape. The application-agent projector deliberately narrows that evidence to the existing message-only `ERROR` event. `code` is required native transport metadata; `message` is never replaced by it. | Provider error, notifier, stream, AgentRun mapper, team adapter, team DTO, native websocket projector, application projector, web protocol, UI | Redaction, public-boundary projection, scope/effect, malformed unrelated events |
 
 ### DS-001 runtime-aware saved-model validation and reselection path
 
@@ -145,10 +146,11 @@ The producer/parser/mapper path is explicit:
 | `AgentRunEvent` and `agent-run-event-message-mapper.ts` | Preserve the fields during event serialization and map all safe evidence fields without deriving a new semantic category. |
 | `TeamAgentEventAdapter` and `team-agent-event.ts` | Require non-empty `code` and `message` as before, but carry optional provider status/code/request ID/details; only malformed events are rejected. A valid provider failure cannot produce `code is required`. |
 | `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts` and `team-stream-server-message.ts` | Extend the strict ERROR payload schema with the optional safe evidence fields. Null/omitted values are valid; raw headers/payloads are not. |
-| `team-agent-event-websocket-projector.ts` and `application-agent-stream-event-projector.ts` | Project the actual safe `message` and metadata. Remove `The agent response failed.` for terminal provider errors; diagnostic filtering remains unchanged. |
+| `team-agent-event-websocket-projector.ts` | Project the actual safe `message` and optional safe native metadata. Remove `The agent response failed.` for terminal provider errors; diagnostic filtering remains unchanged. |
+| `application-agent-stream-event-projector.ts` and `autobyteus-application-sdk-contracts/src/application-agent-events.ts` | Keep the existing five-variant application stream and project terminal errors as `{ type: "ERROR", message }` using the safe canonical message. Do not add provider status/code/request ID/details to the application SDK; do not copy raw error objects, stacks, causes, provider payloads, credentials, or runtime/session identifiers. |
 | `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`, `messageParser.ts`, `agentStreamMessageProjector.ts`, `teamStreamDtoAdapters.ts`, and `types/segments.ts` | Validate/carry the same optional fields and construct `ErrorSegment` with the received message. `ErrorSegment.vue` keeps its heading but renders the message; optional safe provider metadata can remain in details/debug presentation, never provider classification. |
 
-The canonical internal code is `providerCode` when it is a safe non-empty provider code; otherwise `LLM_PROVIDER_ERROR`. For missing credentials it is `missing_api_key`. The internal code is transport metadata only; UI text always comes from `message`.
+The canonical native transport code is `providerCode` when it is a safe non-empty provider code; otherwise `LLM_PROVIDER_ERROR`. For missing credentials it is `missing_api_key`. The code is native transport metadata only; all user-visible text, including the application-agent SDK message, comes from the safe `message`.
 
 ### DS-002 DeepSeek schedule projection onto current pricing types
 
@@ -237,7 +239,7 @@ RuntimeKind normalization, catalog, LLMFactory, AutoByteus provider adapter, Cla
 
 ## Return Or Event Spine
 
-DS-003 is: Provider/secret error -> safe error evidence -> AgentErrorNotification(code,message,classification) -> ErrorEventData -> AgentRun mapper -> TeamAgentEventAdapter -> websocket/client -> ErrorSegment.
+DS-003 is: Provider/secret error -> safe error evidence -> AgentErrorNotification(code,message,classification) -> ErrorEventData -> AgentRun mapper -> (TeamAgentEventAdapter -> native websocket/client -> ErrorSegment, and ApplicationAgentStreamEventProjector -> message-only SDK `ERROR`).
 
 The code is required transport metadata. The message is the safe original provider text. A valid provider failure must never become Rejected ERROR: code is required.
 
@@ -324,6 +326,7 @@ No caller bypasses LLMFactory for `AUTOBYTEUS` curated model lookup, TokenPriceC
 | Credentials | secret-management resolution | Extend |
 | Error evidence | LLM/agent event path | Extend/refactor with one typed safe evidence shape |
 | Team transport | team execution/contracts | Extend |
+| Application-agent stream | Existing focused SDK projector | Preserve message-only `ERROR`; update stale generic fallback only |
 | UI display | existing ErrorSegment | Verify/extend only if needed |
 
 ## Subsystem / Capability-Area Allocation
@@ -355,10 +358,12 @@ No caller bypasses LLMFactory for `AUTOBYTEUS` curated model lookup, TokenPriceC
 | autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts and `domain/team-agent-event.ts` | Validate/adapt canonical team error evidence |
 | autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts and `team-stream-server-message.ts` | Strict team ERROR payload with optional safe metadata |
 | autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts | Project team error evidence to websocket |
-| autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts | Project actual safe message, not generic replacement |
+| autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts | Project actual safe message into the existing message-only application `ERROR` event; never expose native/provider metadata |
 | autobyteus-web/services/agentStreaming/protocol/messageTypes.ts, messageParser.ts, adapters, and `types/segments.ts` | Validate/carry evidence into web state |
 | application configuration/run binding services | Validate saved/direct current model selection before side effects |
 | `autobyteus-application-sdk-contracts/src/execution-resources.ts` | Application contract | Add `CURRENT_MODEL_SELECTION_REQUIRED` to the existing configuration issue-code union; no migration payload is added |
+| `autobyteus-application-sdk-contracts/src/application-agent-events.ts` | Application SDK contract | Keep the closed five-variant stream and message-only `ERROR` shape |
+| `tickets/done/application-agent-streaming/application-agent-communication-contract.md` and `autobyteus-application-sdk-contracts/README.md` | Application contract documentation | Replace the stale generic error-message rule with safe original-message passthrough; do not add provider metadata |
 | application projector/UI | Preserve/render received message |
 
 ## Reusable Owned Structures Check
@@ -373,7 +378,7 @@ No caller bypasses LLMFactory for `AUTOBYTEUS` curated model lookup, TokenPriceC
 
 | Structure | Clear meaning | Risk | Action |
 | --- | --- | --- | --- |
-| ProviderErrorEvidence | Yes | Low | Separate display message from code |
+| ProviderErrorEvidence | Yes | Low | Keep native transport metadata separate from display message; project only the message at the application boundary |
 | Pricing schedule | Yes | Medium | Store only current schedule and selected period |
 | AgentErrorNotification | Yes after change | Medium | Replace source with code |
 | ResolvedTokenPricingPolicy | Yes | Medium | Add selected period rather than parallel policy DTO |
@@ -397,7 +402,7 @@ No caller bypasses LLMFactory for `AUTOBYTEUS` curated model lookup, TokenPriceC
 | `runtime-kind-enum.ts` | Runtime identity | Normalize effective runtime ownership before any model validation |
 | `application-execution-resource-configuration-service.ts`, launch-profile module, `application-run-binding-launch-service.ts` | Application orchestration | Derive effective runtime/model pairs; validate only AutoByteus IDs and return explicit reselection before side effects |
 | `agent-run-manager.ts`, Claude/Codex backend factory files | Runtime dispatch | Preserve distinct runtime factory ownership; do not route external selections through LLMFactory |
-| application projector, web protocol/parser/adapters, `ErrorSegment.vue`, segment types | Client stream/UI | Use supplied error message and optional safe evidence |
+| application projector, application SDK contract, web protocol/parser/adapters, `ErrorSegment.vue`, segment types | Client stream/UI | Use supplied error message; native web may carry safe metadata, while the application SDK remains message-only |
 
 ## Applied Patterns
 
@@ -418,6 +423,8 @@ The implementation and downstream coverage pass must make runtime ownership obse
 | `autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts` | Direct stale AutoByteus agent fails before creation; team expands and validates all AutoByteus members before allocation; Claude/Codex agent launches proceed without the AutoByteus guard; mixed-runtime team members retain their runtime values | Run-binding boundary scopes validation and preserves side-effect ordering |
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts` | AutoByteus, Claude, and Codex configs dispatch to their distinct factories | `AgentRunManager` remains runtime dispatch owner |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts` and `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts` | External model values reach their existing SDK/thread bootstrap paths | External factories retain model ownership and are not catalog-gated |
+| `autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts` | Native AgentRun/team provider errors preserve the safe original message in the existing message-only application `ERROR`; diagnostic errors remain filtered; raw provider fields are not projected | Application projection is a narrow message-only boundary, not a native metadata protocol |
+| `autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts` and application SDK contract/build tests | Application-agent websocket events retain the five-variant stream and serialize the original safe error message without the stale generic fallback or provider metadata fields | Normative contract and generated SDK surface remain aligned |
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -495,9 +502,9 @@ The implementation and downstream coverage pass must make runtime ownership obse
 6. Add missing-key mapping without exposing vault internals.
 7. Remove generic error wrappers and add safe original-error extraction.
 8. Rename producer event source to canonical code and update all stream/team fixtures.
-9. Replace `source` with canonical `code` at every producer/parser/mapper/team/web boundary, add optional safe provider evidence fields, and update strict protocol schemas/projectors.
+9. Replace `source` with canonical `code` at every native producer/parser/mapper/team/web boundary, add optional safe provider evidence fields to native transport, and update strict native protocol schemas/projectors. Keep the application SDK `ERROR` event message-only.
 10. Remove old rows and obsolete policy branches. Normalize effective runtime/model pairs. Call the exact-current-model guard from `ApplicationExecutionResourceConfigurationService` and `ApplicationRunBindingLaunchService` only for `RuntimeKind.AUTOBYTEUS`; leave Claude/Codex model ownership in their backend factories. Expose `CURRENT_MODEL_SELECTION_REQUIRED` for stale AutoByteus IDs without rewriting stored data, and move team allocation after all effective-pair checks.
-11. Update application projection and web handlers only to use the received safe message/metadata; retain diagnostic filtering and genuine malformed-event validation.
+11. Update application projection and normative application contract only to use the received safe message; retain diagnostic filtering and genuine malformed-event validation. Do not extend the application SDK with native/provider metadata.
 12. Run implementation checks, then code review and API/E2E coverage investigation.
 
 ## Key Tradeoffs

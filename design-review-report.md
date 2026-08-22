@@ -5,26 +5,27 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-application-sdk-contracts/README.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009`, `SR-010`, `SR-011`
+- Relevant Solution Revision IDs: `SR-009`, `SR-010`, `SR-011`, `SR-012`, `SR-013`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Re-review of `SR-011` runtime-aware model-ownership rework for `ARCH-DI-005`.
-- Prior Review Round Reviewed: `ARCH-REV-002` — Fail with `ARCH-DI-005`.
-- Latest Authoritative Round: `ARCH-REV-003`
-- Current-State Evidence Basis: Updated design artifacts plus current `RuntimeKind`, application launch contracts, `ApplicationRunBindingLaunchService`, `AgentRunManager`, and separate Claude/Codex backend factories.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: Re-review of `SR-013` after downstream `CRR-001`/`CR-001`, confirming the provider-neutral message-only application-agent boundary.
+- Prior Review Round Reviewed: `ARCH-REV-003` — Pass; downstream `CRR-001` exposed a provisional design contradiction at the application public boundary.
+- Latest Authoritative Round: `ARCH-REV-004`
+- Downstream Triggering Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
+- Current-State Evidence Basis: Corrected requirements, DS-003, provider/error supplement, normative application communication contract, SDK README, investigation evidence, and current application projector/SDK source were rechecked against the supported application-agent path.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: **Confirmed**.
-- Approved requirements / intended behavior understood: `B-001`–`B-010`, `REQ-001`–`REQ-012`, and `AC-001`–`AC-018` remain authoritative. `SR-011` clarifies preserved runtime ownership without adding behavior.
-- Relevant existing behavior and evidence confirmed: AutoByteus catalog/factory/adapters, external runtime dispatch, pricing, secret resolution, agent/team event transport, application configuration, and application launch paths were rechecked.
+- Approved requirements / intended behavior understood: `B-001`–`B-010`, `REQ-001`–`REQ-012`, and `AC-001`–`AC-018` remain authoritative. `SR-013` clarifies the already-approved provider-message-preservation scope: native/platform/team transport may carry safe metadata, while the provider-neutral application SDK remains message-only.
+- Relevant existing behavior and evidence confirmed: AutoByteus catalog/factory/adapters, external runtime dispatch, pricing, secret resolution, native agent/team event transport, application configuration/launch, and the supported application-agent stream/projector path were rechecked.
 - Scope guardrail confirmed: Confirmed. No alias, historical pricing, provider taxonomy, generic request-rejection subsystem, or unrelated runtime/model-family removal is introduced.
 - Approved change, preserved behavior, and outside scope understood: Confirmed.
 - Every prospective blocking finding is traceable to approved authority: Yes; no blocking finding remains.
-- Remaining material ambiguity: GLM/MiniMax deployment evidence, provider balance causality, and Docker build identity remain implementation/integration evidence items only.
+- Remaining material ambiguity: GLM/MiniMax deployment evidence, provider balance causality, and Docker build identity remain implementation/integration evidence items only. The application boundary is now explicit; source parity and CR-001 re-review remain downstream code-review gates.
 
 | Behavior ID | Kind | Design Alignment | Trigger / Current Evidence | Target Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -36,7 +37,7 @@
 | B-006 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
 | B-007 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
 | B-008 | Contract/User | Pass | Pass | Pass | Confirmed | None. |
-| B-009 | Contract/User | Pass | Pass | Pass | Confirmed | None. |
+| B-009 | Contract/User | Pass | Pass | Pass | Confirmed | None; the application-agent `ERROR` variant intentionally remains message-only while native transport retains its own safe metadata. |
 | B-010 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
 
 ## Supplemental Artifact Coherence Verdict
@@ -44,6 +45,7 @@
 | Artifact | Purpose Clear | Linked To Core Artifacts | Internally Complete | Consistent | Status/Approval Clear | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `provider-error-and-pricing-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `application-agent-communication-contract.md` | Pass | Pass | Pass | Pass | Pass | None; its message-only `ERROR` shape matches DS-003, requirements, SDK README, and current source. |
 
 ## Task Design Health Assessment Verdict
 
@@ -72,7 +74,7 @@
 | Application configuration readiness | Pass | Pass | Pass | Pass | Saved profile validation preserves the saved string and exposes reselection. |
 | Application run-binding launch | Pass | Pass | Pass | Pass | All effective pairs are checked before run/team side effects. |
 | TokenPriceConfigProvider | Pass | Pass | Pass | Pass | Current schedule remains the pricing owner. |
-| Error notifier/team/web projection | Pass | Pass | Pass | Pass | Safe evidence and code/message separation are end to end. |
+| Error notifier/team/web/application projection | Pass | Pass | Pass | Pass | Safe native evidence and code/message separation are end to end; the application boundary intentionally narrows to the safe message. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -81,7 +83,7 @@
 | Runtime identity and application gate | Pass | Pass | Pass | Pass | Server runtime normalization selects the owning model validator. |
 | Catalog/factory/adapters | Pass | Pass | Pass | Pass | External runtime factories are not routed through AutoByteus catalog logic. |
 | Pricing policy/calculator | Pass | Pass | Pass | Pass | Calculator does not read catalog pricing directly. |
-| Error/event transport | Pass | Pass | Pass | Pass | Provider SDK types stay out of team/web contracts. |
+| Error/event transport | Pass | Pass | Pass | Pass | Native/provider metadata stays in native/platform/team transport; the provider-neutral application contract receives only the safe message. |
 
 ## Interface Boundary Verdict
 
@@ -95,6 +97,7 @@
 | `TokenPriceConfigProvider.resolvePolicy` | Pass | Pass | Pass | Low | Pass |
 | `ProviderErrorEvidence` / event contract | Pass | Pass | Pass | Low | Pass |
 | `TeamAgentEventAdapter` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationAgentStreamEvent.ERROR` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -103,7 +106,8 @@
 | Current model catalog | Pass | Pass | N/A | Pass | Extends `LLMFactory`; no alias/validation subsystem. |
 | Runtime ownership/dispatch | Pass | Pass | N/A | Pass | Reuses `RuntimeKind` and `AgentRunManager` dispatch. |
 | DeepSeek schedule | Pass | Pass | Pass | Pass | Narrow schedule plus existing policy extension. |
-| Provider error evidence | Pass | Pass | Pass | Pass | One shared safe evidence shape. |
+| Provider error evidence | Pass | Pass | Pass | Pass | One shared safe native evidence shape. |
+| Application-agent message projection | Pass | Pass | Pass | Pass | Existing public message-only `ERROR` shape is the intentional provider-neutral specialization. |
 | Application readiness/launch | Pass | Pass | N/A | Pass | Existing services gain runtime-aware delegation and ordering. |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -142,7 +146,7 @@
 | Application configuration/run-binding services | Pass | Pass | Pass | Pass | Derive effective pairs and preserve side-effect ordering. |
 | `agent-run-manager.ts` and Claude/Codex factories | Pass | Pass | Pass | Pass | Preserve distinct runtime dispatch/model ownership. |
 | Pricing files/schedule module | Pass | Pass | Pass | Pass | Concrete and aligned. |
-| Error/event/web files | Pass | Pass | Pass | Pass | Full propagation map is actionable. |
+| Error/event/application/web files | Pass | Pass | Pass | Pass | Full propagation map is actionable, including the intentional application message-only boundary and stale-fallback removal. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -152,7 +156,7 @@
 | LLM catalog/error folders | Pass | Pass | Low | Pass | Narrow modules fit existing ownership. |
 | Server token-usage/pricing | Pass | Pass | Low | Pass | Schedule resolution stays beside policy/arithmetic. |
 | Application orchestration services | Pass | Pass | Low | Pass | Runtime gate belongs with saved/direct launch ownership. |
-| Team contracts/web stream/UI | Pass | Pass | Low | Pass | No provider logic moves into presentation. |
+| Team contracts/application SDK/web stream/UI | Pass | Pass | Low | Pass | No provider logic moves into presentation; native safe metadata stops before the provider-neutral application SDK. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -161,6 +165,7 @@
 | Named legacy catalog rows/policies | Pass | Pass | Pass | Pass |
 | Generic provider wrappers/prefix/truncation | Pass | Pass | Pass | Pass |
 | Source-only event payload | Pass | Pass | Pass | Pass |
+| Stale application generic-error fallback | Pass | Pass | Pass | Pass |
 | Historical price lookup/model aliases | Pass | Pass | Pass | Pass |
 | Global AutoByteus guard over external runtimes | Pass | Pass | Pass | Pass |
 
@@ -171,6 +176,7 @@
 | Removed AutoByteus model IDs/prices | No | Pass | Pass | Saved strings remain data, not aliases/migration. |
 | External runtime model ownership | No | Pass | Pass | Claude/Codex continue through existing factories; no parallel compatibility path. |
 | Provider error source alias | No | Pass | Pass | `code` is canonical; genuine malformed events remain validation failures. |
+| Application metadata extension / generic fallback | No | Pass | Pass | No provider metadata is added to the SDK; the stale generic message is removed in favor of safe original-message passthrough. |
 | DeepSeek historical prices | No | Pass | Pass | One current schedule only. |
 
 ## Persisted-Data Transition Verdict
@@ -188,6 +194,7 @@
 | Runtime-aware model validation | Pass | Pass | Pass | Pass |
 | Pricing schedule projection | Pass | Pass | Pass | Pass |
 | Error/event contract | Pass | Pass | Pass | Pass |
+| Application-agent message-only contract | Pass | Pass | Pass | Pass |
 | Saved/direct launch ordering | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
@@ -196,7 +203,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Runtime/model selection | Yes | Pass | Pass | Pass | Correct pair-to-owner path and global-guard anti-example are explicit. |
 | Current model reselection | Yes | Pass | Pass | Pass | Old AutoByteus ID requires explicit reselection without alias. |
-| Provider error transport | Yes | Pass | Pass | Pass | Code/message separation and `code is required` repair are explicit. |
+| Provider error transport | Yes | Pass | Pass | Pass | Native code/message repair, safe message passthrough, and the application message-only boundary are explicit. |
 | DeepSeek schedule | Yes | Pass | Pass | Pass | UTC selection and no historical table are explicit. |
 
 ## Material Premise Validation
@@ -285,13 +292,25 @@
 - Reachability: `Reachable`.
 - Review consequence: Confirms `ARCH-DI-005` is resolved; retain mixed-runtime and per-member override coverage.
 
+### MP-008 — A supported application-agent stream reaches the provider-neutral public ERROR boundary
+
+- Related approved requirement or established contract: `REQ-007`–`REQ-010`, `AC-011`, `AC-014`–`AC-015`, and the normative application-agent communication contract.
+- Relevant behavior ID(s): `B-009`.
+- Initiating basis kind: Contract / User.
+- Independent product-supported initiating trigger: An application client connects to the supported agent-streaming surface for a bound standalone agent, whole team, or selected team member and observes a provider failure event.
+- Support evidence: The supported application path uses the application stream runtime source, event mapper, projector, SDK event contract, and application communication contract.
+- Forward path: Bound application client -> application stream subscription -> event mapper/projector -> `{ type: "ERROR", message }` -> SDK consumer.
+- Lifecycle consequence: The safe original provider message must reach the application consumer without the stale `The agent response failed.` replacement; native transport code/status/request metadata must not be added to this provider-neutral public stream.
+- Reachability: `Reachable`.
+- Review consequence: `SR-013` resolves `CR-001` by aligning the design to the approved message-only boundary and current source. Native code/evidence remains a separate platform/team transport concern; source re-review must confirm stale-fallback removal and message preservation.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-**Pass** — the approved behavior basis is confirmed, `ARCH-DI-001`–`ARCH-DI-005` are resolved, and the design is ready for implementation. No in-scope machinery depends on an unsupported material premise.
+**Pass** — `SR-013` resolves downstream `CR-001` as a scope/design correction. The approved behavior basis is confirmed, `ARCH-DI-001`–`ARCH-DI-005` remain resolved, and requirements, DS-003, the provider/error supplement, the normative application contract, SDK README, and current application source all agree that the application-agent `ERROR` event remains `{ type: "ERROR", message }`. No application metadata machinery is required or introduced.
 
 ## Findings
 
@@ -299,7 +318,7 @@ None.
 
 ## Classification
 
-`Pass` — the design is structurally coherent, actionable in the current codebase, and preserves runtime-specific ownership while implementing the approved model, pricing, credential, and error-path changes.
+`Pass` — the corrected design is structurally coherent and actionable. Native/platform/team transport owns canonical `code` and optional safe evidence needed for the Docker/team path; the application projector intentionally narrows that data to the safe original message for the provider-neutral SDK, while removing the stale generic fallback.
 
 ## Recommended Recipient
 
@@ -307,6 +326,7 @@ None.
 
 ## Residual Risks
 
+- `CR-001` is design-resolved but requires source re-review through `/code_reviewer` to confirm safe original-message passthrough, stale-fallback removal, and no accidental SDK metadata expansion before API/E2E.
 - GLM-5.3 and MiniMax M3 deployment-specific endpoint/pricing facts remain implementation-time verification gates; unverified pricing must remain explicitly unpriced.
 - The exact upstream provider cause behind the screenshot remains unproven; use safe fixtures/runtime evidence and do not invent balance text.
 - The Docker node build/commit identity remains unproven; integrated validation must record it.
@@ -316,5 +336,5 @@ None.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` — MP-001–MP-004 and MP-007 are reachable supported paths; MP-005 and MP-006 remain `Unclear` residual evidence and do not drive machinery.
-- Notes: `ARCH-DI-001`–`ARCH-DI-005` are resolved. The cumulative package is ready for implementation handoff.
+- Material-Premise Gate: `Pass` — MP-001–MP-004, MP-007, and MP-008 are reachable supported paths; MP-005 and MP-006 remain `Unclear` residual evidence and do not drive machinery.
+- Notes: `CR-001` is resolved as a scope/design correction; `ARCH-DI-001`–`ARCH-DI-005` remain resolved. The corrected package is ready for source re-review, with API/E2E still blocked until code review passes.

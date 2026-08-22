@@ -64,16 +64,66 @@ describe("ApplicationAgentStreamEventProjector", () => {
     [AgentRunEventType.TURN_STARTED, { type: "TURN_STARTED" }],
     [AgentRunEventType.TURN_COMPLETED, { type: "TURN_COMPLETED" }],
     [AgentRunEventType.TURN_INTERRUPTED, { type: "TURN_INTERRUPTED" }],
-    [AgentRunEventType.ERROR, { type: "ERROR", message: "provider-error-message" }],
+    [AgentRunEventType.ERROR, { type: "ERROR", message: "provider balance is unavailable" }],
   ])("projects %s to its exact closed event", (eventType, expected) => {
     const actual = projector.project(event(eventType, {
       turnId: "provider-turn-secret",
       reason: "provider-reason-secret",
-      message: "provider-error-message",
+      code: "LLM_PROVIDER_ERROR",
+      message: "provider balance is unavailable",
+      provider_status: 402,
+      provider_code: "balance_required",
+      provider_request_id: "request-secret",
+      details: "safe provider details",
       error: { message: "provider-error-secret", stack: "stack-secret" },
     }));
     expect(actual).toEqual(expected);
     expect(JSON.stringify(actual)).not.toContain("secret");
+  });
+
+  it("keeps application errors provider-neutral while preserving the safe canonical message", () => {
+    const actual = projector.project(event(AgentRunEventType.ERROR, {
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-1",
+      code: "RATE_LIMITED",
+      message: "Provider request limit reached.",
+      provider_status: 429,
+      provider_code: "rate_limit",
+      provider_request_id: "request-123",
+      details: "retry after 10 seconds",
+      error: { message: "raw-provider-error", stack: "stack-secret", cause: "cause-secret" },
+    }));
+
+    expect(actual).toEqual({ type: "ERROR", message: "Provider request limit reached." });
+    expect(actual).not.toHaveProperty("code");
+    expect(actual).not.toHaveProperty("providerStatus");
+    expect(actual).not.toHaveProperty("providerCode");
+    expect(actual).not.toHaveProperty("providerRequestId");
+    expect(actual).not.toHaveProperty("details");
+    expect(JSON.stringify(actual)).not.toContain("raw-provider-error");
+  });
+
+  it("projects team terminal errors as the same message-only application variant", () => {
+    const actual = projector.projectTeam({
+      eventType: "ERROR",
+      statusHint: "ERROR",
+      details: {
+        code: "AUTH_FAILED",
+        message: "The provider rejected the request.",
+        providerStatus: 401,
+        providerCode: "invalid_api_key",
+        providerRequestId: "request-456",
+        details: "safe diagnostic detail",
+        errorScope: "turn",
+        errorEffect: "terminal",
+        turnId: "turn-2",
+      },
+    });
+
+    expect(actual).toEqual({ type: "ERROR", message: "The provider rejected the request." });
+    expect(actual).not.toHaveProperty("providerStatus");
+    expect(actual).not.toHaveProperty("providerRequestId");
   });
 
   it("drops every non-v1 canonical agent event", () => {

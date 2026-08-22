@@ -178,7 +178,20 @@ The internal error event has separate fields:
 
 The provider's code is used as transport `code` when available and safe. Otherwise the producer supplies `LLM_PROVIDER_ERROR`; for missing credentials it supplies `missing_api_key`. This code is not used to replace the display message. All producers and parsers use the canonical `code` field; the old producer-only `source` field is removed rather than aliased.
 
-The exact path is `OpenAICompatibleLLM`/Gemini request -> extractor or missing-key mapper -> `LlmPhase` -> `AgentErrorNotification` -> `ErrorEventData` -> AgentRun mapper -> `TeamAgentEventAdapter`/`TeamAgentEvent` -> team DTO schema -> websocket projector -> web `messageTypes.ts`/`messageParser.ts` -> web stream adapter -> `ErrorSegment`. Every boundary carries `message` and optional safe metadata. A malformed unrelated event may still fail its genuine schema validation, but a valid provider failure cannot become `Rejected ERROR: code is required`.
+The focused application-agent public stream is a deliberate provider-neutral boundary projection, not a second error meaning or metadata protocol. Its SDK source contract remains the existing five-variant shape:
+
+```ts
+type ApplicationAgentStreamEvent =
+  | { type: "TURN_STARTED" }
+  | { type: "TEXT_DELTA"; delta: string }
+  | { type: "TURN_COMPLETED" }
+  | { type: "TURN_INTERRUPTED" }
+  | { type: "ERROR"; message: string };
+```
+
+`ApplicationAgentStreamEventProjector` maps only the safe canonical `message` into this shape and retains diagnostic filtering. It never copies native transport `code`, provider status/code/request ID, details, raw `error` objects, stack/cause values, headers, credentials, full payloads, provider session/thread/item IDs, or runtime configuration. The SDK README, normative application communication contract, generated declarations/build output, and application websocket/consumer tests must describe and validate this message-only shape. Native team/websocket transport may retain safe metadata; the application SDK does not.
+
+The exact paths are `OpenAICompatibleLLM`/Gemini request -> extractor or missing-key mapper -> `LlmPhase` -> `AgentErrorNotification` -> `ErrorEventData` -> AgentRun mapper -> native `TeamAgentEventAdapter`/`TeamAgentEvent` -> team DTO schema -> websocket projector -> web `messageTypes.ts`/`messageParser.ts` -> web stream adapter -> `ErrorSegment`, and the separate application branch from the canonical AgentRun/team event -> `ApplicationAgentStreamEventProjector` -> message-only `ApplicationAgentStreamEvent.ERROR` -> application SDK consumer. Native error boundaries carry the required safe `code`/`message` pair and optional safe metadata; the application boundary carries only the safe `message`. A malformed unrelated native event may still fail its genuine schema validation, but a valid provider failure cannot become `Rejected ERROR: code is required`.
 
 ## 7. Redaction boundary
 
@@ -188,7 +201,7 @@ Redaction occurs before an error message enters the user-visible event path. It 
 - secret query/header values;
 - provider request payload fragments containing credential fields.
 
-The redactor must not rewrite ordinary provider text or replace it with a semantic category. Full raw provider payloads remain diagnostics-only and are not emitted to clients. Generic `Error in API request`, `Error in API streaming`, and `Error processing your request with the LLM:` prefixes and truncation are removed so they cannot replace the provider message. The application projector must stop emitting `The agent response failed.` for a terminal provider event and instead use the safe event message.
+The redactor must not rewrite ordinary provider text or replace it with a semantic category. Full raw provider payloads remain diagnostics-only and are not emitted to clients. Generic `Error in API request`, `Error in API streaming`, and `Error processing your request with the LLM:` prefixes and truncation are removed so they cannot replace the provider message. The application projector must stop emitting `The agent response failed.` for a terminal provider event and instead use the safe event message, without copying native/provider metadata or raw error objects.
 
 ## 8. Persistence and legacy behavior
 

@@ -91,7 +91,7 @@ New external custom applications should start with `@autobyteus/application-devk
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
-`ApplicationAgentStreamEvent` is the closed provider-neutral live stream: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, or safe `ERROR`. It excludes reasoning, tools, native/provider records, and accumulated whole responses.
+`ApplicationAgentStreamEvent` is the closed provider-neutral live stream: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, or safe `ERROR`. The `ERROR` variant preserves the safe original `message` and does not expose native transport/provider metadata. It excludes reasoning, tools, native/provider records, credentials, stacks/causes, and accumulated whole responses.
 
 `ApplicationPublishedArtifacts` includes durable reads through `list(runId)` and `readRevision({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
