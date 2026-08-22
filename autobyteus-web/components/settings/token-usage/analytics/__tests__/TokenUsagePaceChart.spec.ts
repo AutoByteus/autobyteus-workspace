@@ -69,4 +69,63 @@ describe('TokenUsagePaceChart', () => {
     expect(current.at(-1)?.x).toBe(31);
     expect(shorterPrior.at(-1)?.x).toBe(28);
   });
+
+  it('keeps complete remote plus local no-bill cumulative quality aligned with the server summary', async () => {
+    const complete = bucket('2026-08-01', '2026-08-02');
+    const localBase = bucket('2026-08-02', '2026-08-03');
+    const local = {
+      ...localBase,
+      aggregate: {
+        ...localBase.aggregate,
+        estimatedApiInputCost: null,
+        estimatedApiStandardInputCost: null,
+        estimatedApiTotalCost: null,
+        currency: null,
+        apiCostStatus: 'local_no_api_bill',
+      },
+      costQuality: { kind: 'LOCAL', currency: null, missingPriceDimensions: [] },
+    };
+    const result = analyticsResult({
+      appliedRange: {
+        preset: 'CUSTOM',
+        startTime: '2026-08-01T00:00:00.000Z',
+        endTimeExclusive: '2026-08-03T00:00:00.000Z',
+        granularity: 'DAY',
+      },
+      comparisonRange: {
+        startTime: '2026-07-30T00:00:00.000Z',
+        endTimeExclusive: '2026-08-01T00:00:00.000Z',
+      },
+      trendBuckets: [complete, local],
+      comparisonBuckets: [
+        bucket('2026-07-30', '2026-07-31'),
+        bucket('2026-07-31', '2026-08-01'),
+      ],
+      selectedAggregate: {
+        ...complete.aggregate,
+        totalTokens: complete.aggregate.totalTokens + local.aggregate.totalTokens,
+        apiCostStatus: 'mixed',
+        usageReportCount: 2,
+      },
+      selectedCostQuality: { kind: 'COMPLETE', currency: 'USD', missingPriceDimensions: [] },
+    });
+
+    const points = buildTokenUsagePacePoints(
+      result.trendBuckets,
+      '2026-08-01T00:00:00.000Z',
+      'COST',
+    );
+
+    expect(points.at(-1)).toMatchObject({
+      qualityKind: result.selectedCostQuality.kind,
+      currency: result.selectedCostQuality.currency,
+      y: complete.aggregate.estimatedApiTotalCost,
+    });
+
+    const wrapper = mount(TokenUsagePaceChart, { props: { result, metric: 'COST' } });
+    await vi.waitFor(() => expect(chartConfigs).toHaveLength(1));
+    expect(wrapper.findAll('tbody tr')[1]?.text()).toContain('Complete estimate');
+    expect(wrapper.findAll('tbody tr')[1]?.text()).toContain('mixed');
+    expect(wrapper.findAll('tbody tr')[1]?.text()).toContain('USD');
+  });
 });

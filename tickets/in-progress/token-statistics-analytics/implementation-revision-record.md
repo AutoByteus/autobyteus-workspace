@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer / `design-review-report.md` / initial implementation | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001` | Reviewed analytics design implemented and locally validated; ready for code review. |
 | IR-002 | Code reviewer / `code-review-report.md` / round 1 | F-001, F-002, F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001` | Preserved mixed-run identity, elapsed pace alignment, and exact chart/table/CSV evidence corrected; ready for code-review round 2. |
+| IR-003 | Code reviewer / `code-review-report.md` / round 2 | F-003 | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-002` | Cumulative pace quality now follows canonical COMPLETE + LOCAL precedence; ready for code-review round 3. |
 
 ## Revision Entries
 
@@ -48,3 +49,23 @@
 - Local validation and result: backend/frontend production builds passed; backend focused tests 18/18; frontend focused tests 16/16; guards/audit passed; elapsed 8-vs-7 bucket endpoints both reconcile to day 213; shorter prior month remains day 28 versus current day 31; development renderer/CSV checks passed without console/page errors.
 - Next recipient or routing: `/code_reviewer` for round 2
 - Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, and the full state/render matrix.
+
+### IR-003 — Align cumulative pace quality with canonical local/no-bill policy
+
+- Triggering role, report path, and round: Code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/tickets/in-progress/token-statistics-analytics/code-review-report.md`; code-review round 2
+- Triggering finding IDs: `F-003`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-002` at commit `ea55b27bd`; code review `CRR-002` verified F-001/F-002 and narrowed F-003 to cumulative quality merging.
+- Current authoritative result: cumulative pace quality applies the canonical provider precedence, so completely priced remote usage plus explicitly local/no-bill usage remains `COMPLETE` and matches `selectedCostQuality` at the endpoint.
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: records the final bounded F-003 policy correction requested by code-review round 2 without changing the approved server contract or design.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-004`; `REQ-012`, `REQ-022`–`REQ-023`; `AC-027`–`AC-029`, `AC-034`
+- Implementation delta: extracted one reusable cumulative merge for server-derived bucket qualities with provider-equivalent precedence; `LOCAL` is non-missing unless all contributions are local, while missing/partial and mixed-currency cases retain their established precedence. Pace points now consume that merged result for quality, currency, and missing dimensions.
+- Changed files or areas: `autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts`; focused pace component regression in `components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts`; implementation handoff/revision artifacts.
+- Local validation and result: frontend production build passed; the full targeted frontend set passed 8 files / 17 tests; the focused rework subset passed 3 files / 6 tests. The added mounted regression proves separate COMPLETE/USD/estimated and LOCAL/null/local-no-bill buckets end as COMPLETE/USD, matching `selectedCostQuality`, while captured status remains `mixed` in exact evidence.
+- Next recipient or routing: `/code_reviewer` for round 3
+- Remaining limitations or risks: independent downstream API/E2E coverage remains required after code review, including contention, SafeInt extremes, digest/cardinality, cost-quality combinations, and the full state/render matrix.

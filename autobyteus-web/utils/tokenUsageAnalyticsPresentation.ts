@@ -17,6 +17,40 @@ export interface TokenUsagePacePoint {
   missingPriceDimensions: string[];
 }
 
+type TokenUsageAnalyticsCostQuality = TokenUsageAnalyticsResult['selectedCostQuality'];
+
+/** Merge server-derived bucket qualities with the same precedence as the analytics provider. */
+export const mergeTokenUsageAnalyticsCostQualities = (
+  qualities: readonly TokenUsageAnalyticsCostQuality[],
+): TokenUsageAnalyticsCostQuality => {
+  const contributing = qualities.filter((quality) => quality.kind !== 'NO_USAGE');
+  if (contributing.length === 0) return { kind: 'NO_USAGE', currency: null, missingPriceDimensions: [] };
+
+  const pricedCurrencies = new Set(contributing
+    .filter((quality) => ['COMPLETE', 'PARTIAL'].includes(quality.kind) && quality.currency)
+    .map((quality) => quality.currency!));
+  const reportedCurrencies = new Set(contributing
+    .map((quality) => quality.currency)
+    .filter((currency): currency is string => Boolean(currency)));
+  const missingPriceDimensions = [...new Set(contributing
+    .flatMap((quality) => quality.missingPriceDimensions))].sort();
+  if (pricedCurrencies.size > 1 || contributing.some((quality) => quality.kind === 'MIXED_CURRENCY')) {
+    return { kind: 'MIXED_CURRENCY', currency: null, missingPriceDimensions };
+  }
+  if (contributing.every((quality) => quality.kind === 'LOCAL')) {
+    return { kind: 'LOCAL', currency: null, missingPriceDimensions: [] };
+  }
+
+  const known = contributing.some((quality) => ['COMPLETE', 'PARTIAL'].includes(quality.kind));
+  const incomplete = contributing.some((quality) => ['MISSING', 'PARTIAL'].includes(quality.kind));
+  const currency = [...pricedCurrencies][0] ?? (reportedCurrencies.size === 1 ? [...reportedCurrencies][0]! : null);
+  return {
+    kind: !known && incomplete ? 'MISSING' : known && incomplete ? 'PARTIAL' : 'COMPLETE',
+    currency,
+    missingPriceDimensions,
+  };
+};
+
 export const buildTokenUsagePacePoints = (
   buckets: TokenUsageAnalyticsResult['trendBuckets'],
   rangeStart: string,
@@ -24,39 +58,27 @@ export const buildTokenUsagePacePoints = (
 ): TokenUsagePacePoint[] => {
   const start = Date.parse(rangeStart);
   let cumulative = 0;
-  const qualityKinds = new Set<string>();
-  const currencies = new Set<string>();
+  const costQualities: TokenUsageAnalyticsCostQuality[] = [];
   const apiCostStatuses = new Set<string>();
-  const missingPriceDimensions = new Set<string>();
   return buckets.map((bucket) => {
     const amount = metric === 'TOKENS'
       ? bucket.aggregate.totalTokens
       : bucket.aggregate.estimatedApiTotalCost;
     cumulative += amount ?? 0;
     if (bucket.aggregate.usageReportCount > 0) {
-      qualityKinds.add(bucket.costQuality.kind);
-      if (bucket.costQuality.currency) currencies.add(bucket.costQuality.currency);
+      costQualities.push(bucket.costQuality);
       apiCostStatuses.add(bucket.aggregate.apiCostStatus);
-      bucket.costQuality.missingPriceDimensions.forEach((dimension) => missingPriceDimensions.add(dimension));
     }
-    const hasPriced = qualityKinds.has('COMPLETE') || qualityKinds.has('PARTIAL');
-    const hasIncomplete = qualityKinds.has('PARTIAL') || qualityKinds.has('MISSING') || qualityKinds.has('LOCAL');
-    const qualityKind = currencies.size > 1 || qualityKinds.has('MIXED_CURRENCY')
-      ? 'MIXED_CURRENCY'
-      : qualityKinds.size > 0 && [...qualityKinds].every((kind) => kind === 'LOCAL')
-        ? 'LOCAL'
-        : hasPriced && hasIncomplete
-          ? 'PARTIAL'
-          : qualityKinds.has('MISSING') ? 'MISSING' : qualityKinds.size > 0 ? 'COMPLETE' : 'NO_USAGE';
+    const costQuality = mergeTokenUsageAnalyticsCostQualities(costQualities);
     return {
       x: (Date.parse(bucket.bucketEndExclusive) - start) / DAY_MS,
       y: cumulative,
       rangeStart,
       rangeEndExclusive: bucket.bucketEndExclusive,
-      qualityKind,
-      currency: currencies.size === 1 ? [...currencies][0] : null,
+      qualityKind: costQuality.kind,
+      currency: costQuality.currency,
       apiCostStatus: apiCostStatuses.size === 1 ? [...apiCostStatuses][0]! : apiCostStatuses.size > 1 ? 'mixed' : 'price_missing',
-      missingPriceDimensions: [...missingPriceDimensions].sort(),
+      missingPriceDimensions: costQuality.missingPriceDimensions,
     };
   });
 };
