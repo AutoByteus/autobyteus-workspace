@@ -7,6 +7,7 @@ import {
 import type { ApplicationStorageLayout } from "../domain/models.js";
 import {
   buildApplicationStorageLayout,
+  ensureApplicationRuntimeDirectory,
   ensureApplicationStorageDirectories,
   type ApplicationStoragePathConfig,
 } from "../utils/application-storage-paths.js";
@@ -30,6 +31,7 @@ export class ApplicationStorageLifecycleService {
 
   private readonly platformPreparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
   private readonly preparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
+  private readonly runtimePreparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
 
   constructor(
     private readonly dependencies: {
@@ -61,6 +63,14 @@ export class ApplicationStorageLifecycleService {
       applicationId,
       this.platformPreparationPromiseByApplicationId,
       () => this.preparePlatformState(applicationId),
+    );
+  }
+
+  async ensureRuntimeDirectoryPrepared(applicationId: string): Promise<ApplicationStorageLayout> {
+    return this.cachePreparation(
+      applicationId,
+      this.runtimePreparationPromiseByApplicationId,
+      () => this.prepareRuntimeDirectory(applicationId),
     );
   }
 
@@ -102,6 +112,13 @@ export class ApplicationStorageLifecycleService {
       platformDb.close();
     }
 
+    return layout;
+  }
+
+  private async prepareRuntimeDirectory(applicationId: string): Promise<ApplicationStorageLayout> {
+    await this.requireApplicationBundle(applicationId);
+    const layout = this.getStorageLayout(applicationId);
+    ensureApplicationRuntimeDirectory(layout);
     return layout;
   }
 

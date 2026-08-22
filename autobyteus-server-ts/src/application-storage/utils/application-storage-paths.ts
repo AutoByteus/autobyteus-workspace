@@ -71,9 +71,13 @@ export const buildApplicationStorageLayout = (
   };
 };
 
+export const ensureApplicationRuntimeDirectory = (layout: ApplicationStorageLayout): void => {
+  fs.mkdirSync(layout.runtimeDir, { recursive: true });
+};
+
 export const ensureApplicationStorageDirectories = (layout: ApplicationStorageLayout): void => {
   fs.mkdirSync(layout.rootPath, { recursive: true });
   fs.mkdirSync(layout.dbDir, { recursive: true });
   fs.mkdirSync(layout.logsDir, { recursive: true });
-  fs.mkdirSync(layout.runtimeDir, { recursive: true });
+  ensureApplicationRuntimeDirectory(layout);
 };

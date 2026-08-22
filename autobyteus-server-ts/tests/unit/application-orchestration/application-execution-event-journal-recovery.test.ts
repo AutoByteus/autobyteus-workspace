@@ -190,6 +190,7 @@ describe("application execution-event journal recovery", () => {
           refreshedAt: "2026-08-22T10:00:00.000Z",
         })),
       },
+      storageLifecycleService: storageLifecycle,
       platformStateStore,
       recoveryService: {
         resumeBindings: vi.fn(async () => [{

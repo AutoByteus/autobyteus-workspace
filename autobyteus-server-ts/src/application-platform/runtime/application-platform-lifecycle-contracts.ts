@@ -1,4 +1,5 @@
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationStorageLifecycleService } from "../../application-storage/services/application-storage-lifecycle-service.js";
 import type { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 import type { ApplicationOrchestrationRecoveryService } from "../../application-orchestration/services/application-orchestration-recovery-service.js";
 import type { ApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
@@ -42,6 +43,10 @@ export type ApplicationPlatformLifecycleDependencies = {
     agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
   };
   bundleService: ApplicationBundleService;
+  storageLifecycleService: Pick<
+    ApplicationStorageLifecycleService,
+    "ensureRuntimeDirectoryPrepared"
+  >;
   platformStateStore: ApplicationPlatformStateStore;
   recoveryService: ApplicationOrchestrationRecoveryService;
   availabilityService: ApplicationAvailabilityService;

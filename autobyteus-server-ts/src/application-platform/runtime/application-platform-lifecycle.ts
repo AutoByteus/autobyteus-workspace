@@ -46,6 +46,12 @@ export class ApplicationPlatformLifecycle {
       this.assertSelectedCatalogIsValid(snapshot);
       this.catalogSnapshot = snapshot;
       this.state = "catalog_ready";
+      for (const application of snapshot.applications) {
+        if (this.isSelected(application.id)) {
+          await this.dependencies.storageLifecycleService
+            .ensureRuntimeDirectoryPrepared(application.id);
+        }
+      }
       await this.dependencies.preparation.bootstrapBuiltInAgents();
       await this.dependencies.preparation.definitionRuntimeReadiness.prepare();
       this.readyApplicationIds = new Set(

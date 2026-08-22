@@ -1,5 +1,11 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { ApplicationPlatformLifecycle } from "../../../src/application-platform/runtime/application-platform-lifecycle.js";
+import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
+import { ApplicationProviderCredentialReadinessAdapter } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const createDependencies = () => ({
   preparation: {
@@ -27,6 +33,9 @@ const createDependencies = () => ({
       diagnostics: [],
       refreshedAt: "2026-07-29T10:00:00.000Z",
     })),
+  },
+  storageLifecycleService: {
+    ensureRuntimeDirectoryPrepared: vi.fn(async () => undefined),
   },
   platformStateStore: {
     listKnownApplicationIds: vi.fn(async () => ["dormant-app", "selected-app"]),
@@ -82,6 +91,14 @@ describe("ApplicationPlatformLifecycle", () => {
     ).toHaveBeenCalledAfter(
       dependencies.preparation.toolReadiness.registerRequiredGroups,
     );
+    expect(
+      dependencies.storageLifecycleService.ensureRuntimeDirectoryPrepared,
+    ).toHaveBeenCalledExactlyOnceWith("selected-app");
+    expect(
+      dependencies.storageLifecycleService.ensureRuntimeDirectoryPrepared,
+    ).toHaveBeenCalledBefore(
+      dependencies.preparation.definitionRuntimeReadiness.prepare,
+    );
     expect(dependencies.preparation.definitionRuntimeReadiness.prepare).toHaveBeenCalledTimes(1);
 
     await lifecycle.recoverAfterListen();
@@ -99,6 +116,82 @@ describe("ApplicationPlatformLifecycle", () => {
       dependencies.eventDispatchService.resumePendingEventsForApplication,
     ).toHaveBeenCalledWith("selected-app");
     await expect(lifecycle.awaitReady()).resolves.toBeUndefined();
+  });
+
+  it("materializes a fresh selected application runtime cwd before definition/provider readiness", async () => {
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-runtime-readiness-"));
+    try {
+      const dependencies = createDependencies();
+      const storageLifecycleService = new ApplicationStorageLifecycleService({
+        appConfig: { getAppDataDir: () => tempRoot },
+        applicationBundleService: {
+          getApplicationById: vi.fn(async (applicationId: string) =>
+            applicationId === "selected-app" ? { id: applicationId } : null),
+        } as never,
+      });
+      const layout = storageLifecycleService.getStorageLayout("selected-app");
+      const acquireClient = vi.fn(async (workspaceRootPath: string) => {
+        expect(workspaceRootPath).toBe(layout.runtimeDir);
+        expect((await fs.stat(workspaceRootPath)).isDirectory()).toBe(true);
+        return {
+          request: vi.fn(async () => ({ requiresOpenaiAuth: false })),
+        };
+      });
+      const releaseClient = vi.fn(async () => undefined);
+      const credentialReadiness = new ApplicationProviderCredentialReadinessAdapter({
+        llmProviderService: { listProviderSettings: vi.fn() } as never,
+        codexClientManager: { acquireClient, releaseClient } as never,
+      });
+      dependencies.storageLifecycleService = storageLifecycleService as never;
+      dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {
+        await expect(credentialReadiness.getReadiness({
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          model: {} as never,
+          workspaceRootPath: layout.runtimeDir,
+        })).resolves.toEqual({ configured: true, reason: null });
+        await expect(fs.access(layout.platformDatabasePath)).rejects.toThrow();
+        await expect(fs.access(layout.appDatabasePath)).rejects.toThrow();
+      });
+      const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
+
+      await lifecycle.prepareBeforeListen();
+
+      expect(lifecycle.getState()).toBe("waiting_for_listener");
+      expect(
+        dependencies.preparation.definitionRuntimeReadiness.prepare,
+      ).toHaveBeenCalledTimes(1);
+      expect(acquireClient).toHaveBeenCalledExactlyOnceWith(layout.runtimeDir);
+      expect(releaseClient).toHaveBeenCalledExactlyOnceWith(layout.runtimeDir);
+    } finally {
+      await fs.rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps full lifecycle cleanup available when runtime directory preparation fails", async () => {
+    const dependencies = createDependencies();
+    dependencies.storageLifecycleService.ensureRuntimeDirectoryPrepared = vi.fn(
+      async () => { throw new Error("runtime directory preparation failed"); },
+    );
+    const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
+
+    await expect(lifecycle.prepareBeforeListen()).rejects.toThrow(
+      "runtime directory preparation failed",
+    );
+    expect(lifecycle.getState()).toBe("failed");
+    expect(
+      dependencies.preparation.definitionRuntimeReadiness.prepare,
+    ).not.toHaveBeenCalled();
+
+    await expect(lifecycle.stop()).resolves.toBeUndefined();
+    expect(lifecycle.getState()).toBe("stopped");
+    expect(
+      dependencies.preparation.agentToolsSessionManager.blockNewSessions,
+    ).toHaveBeenCalledTimes(1);
+    expect(dependencies.engineLauncher.stopAll).toHaveBeenCalledTimes(1);
+    expect(dependencies.runShutdownCoordinator.stopAllRuns).toHaveBeenCalledTimes(1);
+    expect(
+      dependencies.preparation.agentToolsSessionManager.close,
+    ).toHaveBeenCalledTimes(1);
   });
 
   it("stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing", async () => {

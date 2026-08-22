@@ -110,6 +110,7 @@ export const buildApplicationPlatformRuntime = (input: {
       agentToolsSessionManager: services.agentToolsSessionManager,
     },
     bundleService: input.bundleService,
+    storageLifecycleService,
     platformStateStore,
     recoveryService: services.recoveryService,
     availabilityService: services.availabilityService,

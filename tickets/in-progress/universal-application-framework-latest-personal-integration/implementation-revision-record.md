@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | `code_reviewer`; `code-review-report.md`; `CRR-001` | `CR-001`, `CR-002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-001`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
 | IR-003 | `code_reviewer`; `code-review-report.md`; `CRR-002` | `CR-003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-002`; `API-REV-*`, `DR-*`: `N/A` | Ready for source re-review |
 | IR-004 | `code_reviewer`; `code-review-report.md`; `CRR-004` | `CR-004`, `CR-005`; `APIE2E-F001`, `APIE2E-F002` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-004`, `API-REV-001`; `DR-*`: `N/A` | Ready for source re-review |
+| IR-005 | `code_reviewer`; `code-review-report.md`; `CRR-006` | `CR-006`; `APIE2E-F003` | `Local Fix` | `SR-001`–`SR-003`, `ARCH-REV-003`, `CRR-006`, `API-REV-002`; `DR-*`: `N/A` | Ready for source re-review |
 
 ## Revision Entries
 
@@ -92,3 +93,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: affected server selection `7` files / `53` tests passed, including all `15` application-framework architecture checks; direct new regressions `2` files / `4` tests passed; backend SDK exact target contract `1` file / `6` tests passed; server build-config TypeScript no-emit, full production build, sanitized bootstrap smoke, and Socratic backend typecheck passed. An adjacent broad migration selection retained two unrelated latest-Personal baseline metadata-diagnostic failures and is not claimed as passing.
 - Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
 - Remaining limitations or risks: the exact maintained Socratic `pnpm start`, mounted Start Lesson target, Studio startup, complete provider/publication/recovery/parity matrix, and proportional review of API/E2E-owned dirty tests remain downstream responsibilities after source Pass. No API/E2E sign-off is claimed.
+
+### IR-005 — Prepare canonical application runtime cwd before provider readiness
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`; `CRR-006` failure-origin review of `API-REV-002`.
+- Triggering finding IDs: `CR-006`; `APIE2E-CODEX-CWD-001` / `APIE2E-F003` within `APIE2E-STANDALONE-001`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-006 — Fail / Local Fix`; triggering execution `API-REV-002 — Fail / 75%`.
+- Current authoritative result: `Ready for source re-review`.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-006` (with `CRR-001`–`CRR-005` retained as prior history).
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: restores the normal fresh-root precondition for the maintained standalone path by wiring the existing shared lifecycle sequencer to the existing application storage owner before exact provider capability readiness.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-006`; `REQ-003`–`REQ-005`; `AC-003`, `AC-007`, `AC-009`, `AC-011`.
+- Implementation delta: `ApplicationStorageLifecycleService` now exposes a narrow `ensureRuntimeDirectoryPrepared(applicationId)` operation that validates the cataloged application and materializes only its canonical `runtimeDir`. `ApplicationPlatformLifecycle` invokes that owner sequentially for selected catalog applications after catalog validation and before built-in definition/provider readiness. `buildApplicationPlatformRuntime` supplies the exact graph-local storage service. The path resolver, launch reader, provider adapter, Codex client, workspace identity, credential validation, and database preparation semantics remain unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/application-storage/utils/application-storage-paths.ts`; `src/application-storage/services/application-storage-lifecycle-service.ts`; `src/application-platform/runtime/application-platform-lifecycle-contracts.ts`; `src/application-platform/runtime/application-platform-lifecycle.ts`; `src/application-platform/runtime/build-application-platform-runtime.ts`; focused lifecycle/storage/recovery tests under `tests/unit/application-platform/`, `tests/unit/application-storage/`, and `tests/unit/application-orchestration/`; implementation handoff and this record.
+- Local validation and result: affected selection `6` files / `42` tests passed, including all `15` application-framework architecture checks; direct lifecycle regression `1` file / `4` tests passed; server build-config TypeScript no-emit and full production build plus sanitized bootstrap smoke passed. Fresh-root coverage proves the exact canonical runtime path exists when the real provider credential adapter acquires/releases its client, neither application nor platform SQLite is created, dormant applications are not prepared in standalone selection, preparation failure skips definition readiness, and normal stop cleanup remains available.
+- Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
+- Remaining limitations or risks: API/E2E must rerun the exact authenticated fresh-root maintained Socratic command first and then validate shared Studio fresh-root behavior plus the remaining provider/publication/recovery/parity/browser/cleanup matrix. Its dirty durable package remains preserved and is not claimed as reviewed or passing here.
