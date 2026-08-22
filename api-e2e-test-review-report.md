@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: `3`
-- Trigger: `API-REV-007` post-CRR durable test-support delta; pre-execution proportional review
+- Review Round: `4`
+- Trigger: `API-REV-007` second post-CRR durable test-support delta; pre-rerun proportional review
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`
@@ -12,7 +12,7 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
 - Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-010`
+- Current Code Review Revision ID: `CRR-011`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-revision-record.md`
@@ -21,15 +21,15 @@
 - Final Validation Confidence: **89% aggregate broader-validation context; no API-REV-007 execution result yet**
 - Prior unresolved test-review findings rechecked: **None** — CRR-006 found no test-code findings.
 
-## Current Durable Delta Under Review (API-REV-007)
+## Current Durable Delta Under Review (API-REV-007 / CRR-011)
 
 | Durable Test / Test-Support Path | Current Delta | Related Scenario / Requirement | Review Basis |
 | --- | --- | --- | --- |
-| `test-support/live-e2e/live-e2e-harness.ts` | Reorders the existing Unicode shield `read_file` turn before Group A and updates the expected completed-turn counts from `2,3` to `1,2`; the existing Group B and final write turns remain unchanged. | `API-REAL-001` support; bounded non-gating LM Studio compactor probe | The prior live evidence showed the first compaction triggered during Group A before Unicode evidence entered the selected history. The current delta preserves three reads, one write, exact artifact checks, scanner safeguards, and the compactor leaf assertion. |
+| `test-support/live-e2e/live-e2e-harness.ts` | Replaces the remaining `listRawTraceCorpusOrdered()` call with the current `listTurnRawTraceCorpusOrdered()` API. The Unicode-first order delta remains the previously reviewed CRR-010 change. | `API-REAL-001` support; bounded non-gating LM Studio compactor probe | The Round 7 probe directly reached native trace verification and exposed the stale call. The repair aligns the final trace reader with the current `FileMemoryStore` API without changing the three-read/one-write assertions or compactor checks. |
 
 - Repository-resident durable delta reviewed: **One previously reviewed test-support path updated**.
 - Production source, API contract, provider configuration, and durable product behavior changed: **No**.
-- API-REV-007 execution result: **Pending**. This review accepts the support delta structurally; it does not promote the live probe to Pass.
+- API-REV-007 execution result: **Pending rerun**. This review accepts the stale-call repair structurally; it does not promote the live probe to Pass.
 
 ## Prior Reviewed Durable Test Scope (CRR-004 / CRR-006)
 
@@ -76,7 +76,7 @@ The test-support edits are accepted as valid bounded repairs. They do not establ
 - Recommended Recipient: `/api_e2e_engineer` for the unresolved API-REAL-001 capability/execution block; this proportional review does not make the overall API/E2E package delivery-ready.
 - Notes: The one-line harness API repair and two current Gemini fixture updates are coherent and verified. The live scenario still fails or blocks at the compactor leaf-evidence/completion stage; no source defect is attributed and no live-provider or Docker Pass is claimed.
 
-## Current Proportional Test-Support Checks (CRR-010)
+## Previous Proportional Test-Support Checks (CRR-010)
 
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
@@ -87,13 +87,13 @@ The test-support edits are accepted as valid bounded repairs. They do not establ
 | Stale/duplicated/disabled coverage | Pass | No test was removed, disabled, aliased, or broadened. The existing three-read/one-write scenario remains intact. |
 | Agreement with investigation and prior evidence | Pass | API-REV-007 records the supported probe hypothesis and success/failure criteria. The diff matches the recorded prior evidence that Group A triggered compaction before Unicode selection. |
 
-### Current Findings
+### Previous Findings (CRR-010)
 
 | Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- |
 | None | `test-support/live-e2e/live-e2e-harness.ts` / `API-REAL-001` | The post-CRR delta is narrow, traceable to prior reachable live evidence, and preserves all contract-strengthening assertions. No API-REV-007 execution result exists yet. | Run the bounded API-REV-007 probe, record its result, and reroute if execution exposes a failure. | N/A; execution owned by `/api_e2e_engineer` |
 
-## Latest Authoritative Result (CRR-010)
+## Previous Authoritative Result (CRR-010)
 
 - Result: **Pass for proportional structural review; execution pending**.
 - Changed durable path reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
@@ -101,3 +101,29 @@ The test-support edits are accepted as valid bounded repairs. They do not establ
 - Scope: The scenario-order delta is accepted as a bounded test-support change for API-REV-007. It does not establish a live compactor Pass, change the ticket-specific API/E2E scope, or reopen CRR-002.
 - Required next recipient: `/api_e2e_engineer` for the bounded API-REV-007 execution and authoritative coverage-report update before delivery re-entry.
 - Notes: If API-REV-007 retains the delta, this proportional review remains applicable. If the probe is reverted, record the restoration and retain the prior CRR-006/CRR-009 state; no product-source finding is implied by either result.
+
+## Current Proportional Test-Support Checks (CRR-011)
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario organization and intent | Pass | The repair stays inside the existing managed compaction scenario's final trace-verification step and directly addresses the stale API exposed by the bounded probe. |
+| Assertions prove the intended boundary | Pass | The one-line API replacement leaves the exact tool-count, trace-order, Unicode, artifact, scanner, and canonical-compactor assertions unchanged. |
+| Fixtures/helpers are reused | Pass | The existing `FileMemoryStore` instance and current public trace-corpus method are reused; no alternate reader, fallback, or duplicate fixture was introduced. |
+| Isolation and determinism are appropriate | Pass with execution pending | The repair changes only repository-owned test support and has no production state or secret dependency. The live capability rerun remains pending and must be recorded before delivery. |
+| Stale/duplicated/disabled coverage | Pass | The directly observed stale method is removed from this harness path; repository search shows the harness now uses `listTurnRawTraceCorpusOrdered()` at both trace-inspection sites. No test was removed or disabled. |
+| Agreement with investigation and execution evidence | Pass | API-REV-007 records the exact wrapper-level failure at native trace verification and the current store API. The checkpoint changes only that stale call. |
+
+### Current Findings (CRR-011)
+
+| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| None | `test-support/live-e2e/live-e2e-harness.ts` / `API-REAL-001` | The one-line replacement is a bounded, directly observed stale test-support repair with no product-source or contract impact. | Execute the reviewed API-REV-007 state and record the authoritative result. | N/A; execution owned by `/api_e2e_engineer` |
+
+## Latest Authoritative Result (CRR-011)
+
+- Result: **Pass for proportional structural review; API-REV-007 rerun pending**.
+- Changed durable path reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
+- Unresolved test-review findings: **None**.
+- Scope: The remaining stale FileMemoryStore call is accepted as a narrow test-support repair. It does not change production source, product/API contracts, ticket-specific scope, or the non-gating status of LM Studio.
+- Required next recipient: `/api_e2e_engineer` for the bounded rerun and authoritative `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` update before delivery re-entry.
+- Notes: No live compactor Pass is claimed. If the rerun exposes another failure, classify it from the retained evidence rather than reopening source review speculatively.
