@@ -9,7 +9,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
+- Current delivery revision ID: `DR-006`
 - Notes: Handoff is current with the integrated, checked branch and calls out all non-gating residuals explicitly.
 
 ## Initial Delivery Integration Refresh
@@ -51,7 +51,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` (`API-REV-007`).
 - Last authoritative execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` (`API-REV-006`).
 - Required review route: `/api_e2e_engineer` for bounded execution; return through `/code_reviewer` if durable coverage changes again.
-- Current result: `Blocked — CRR-010 structural review passed, but API-REV-007 execution and authoritative coverage disposition remain pending.`
+- Current result: `Blocked — the second API-REV-007 durable support repair requires proportional re-review before rerun.`
 
 ## Current API-REV-007 Execution Hold
 
@@ -60,6 +60,14 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Execution investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` (`API-REV-007`).
 - Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` remains `API-REV-006`; it must be updated by API/E2E before delivery resumes.
 - User verification: prior DR-003 verification state remains superseded; no terminal finalization, release, deployment, archival, or cleanup is authorized.
+
+## Current API-REV-007 Re-review Hold
+
+- New durable repair checkpoint: `3f9ac980d`.
+- Changed path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
+- Observed issue: remaining stale `listRawTraceCorpusOrdered()` call; repair uses `listTurnRawTraceCorpusOrdered()`.
+- Required route: `/code_reviewer` for proportional re-review, then `/api_e2e_engineer` for rerun if accepted.
+- Current result: `Blocked pending re-review; API-REV-007 execution report remains not authoritative.`
 
 ## User Verification
 

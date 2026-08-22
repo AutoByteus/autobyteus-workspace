@@ -4,6 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-006 | Second API-REV-007 durable stale-support repair after CRR-010 | `DR-005` Blocked pending execution | Blocked pending proportional re-review — a directly observed stale FileMemoryStore method was repaired in `test-support/live-e2e/live-e2e-harness.ts`; the updated durable path must return through code review before rerun | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-005 | `CRR-010` Pass for proportional review of API-REV-007 durable test-support delta | `DR-004` Blocked pending review | Blocked pending API-REV-007 execution — the durable delta is structurally reviewed with no findings, but the updated execution coverage report and authoritative disposition are still required before delivery handoff | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-test-review-report.md`, `code-review-revision-record.md` |
 | DR-004 | API/E2E Round 7 durable test-support delta discovered after the DR-003 closure | `DR-003` Pass reaffirmed; user verification pending | Blocked — the new `test-support/live-e2e/live-e2e-harness.ts` delta and API-REV-007 investigation must complete the required focused/proportional code review and API/E2E execution before delivery can resume | `delivery-revision-record.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-deployment-report.md`, `api-e2e-coverage-investigation.md`, `test-support/live-e2e/live-e2e-harness.ts` |
 | DR-003 | Code-review downstream closure for `API-REV-006` | `DR-002` Pass; explicit user verification pending | Pass reaffirmed — `CRR-002` remains Pass at 9.4/10, `CRR-006` and `CRR-009` remain authoritative, no durable coverage changes were retained, and the integrated handoff remains current; finalization/release/deployment remain held | `delivery-revision-record.md`, `handoff-summary.md`, `release-deployment-report.md` |
@@ -11,6 +12,16 @@
 | DR-001 | Initial delivery-stage baseline after API/E2E handoff | N/A | Baseline recorded — cumulative reviewed/API-E2E package accepted for delivery review; latest-base refresh and post-integration verification required before docs sync or handoff | This record; upstream cumulative package |
 
 ## Revision Entries
+
+### DR-006 — Second durable support repair requires re-review
+
+- Trigger: the API-REV-007 bounded probe reached trace verification and directly exposed one remaining stale `FileMemoryStore` method in `test-support/live-e2e/live-e2e-harness.ts`.
+- Repair: the support path now uses `listTurnRawTraceCorpusOrdered()`; no production source, API contract, provider configuration, or product behavior changed. The investigation records the observed wrapper failure and repair plan.
+- Safety checkpoint: the updated support delta was checkpointed at `3f9ac980d`.
+- Review gate: because this is a second repository-resident durable test-support change after `CRR-010`, it was routed back to `/code_reviewer` for proportional re-review. API-REV-007 execution remains incomplete until that review passes and the current state is rerun.
+- Base state: `origin/personal@14c08eeb458ff440123ca53d11192c2cb1a0216c` remains the integrated ancestor; no new base merge is required for this re-review.
+- Current result: `Blocked pending proportional re-review, then API/E2E rerun and authoritative execution report.`
+- Next action: await `/code_reviewer`, then return to `/api_e2e_engineer` for execution if accepted.
 
 ### DR-005 — Structural re-review passed; API/E2E execution pending
 
