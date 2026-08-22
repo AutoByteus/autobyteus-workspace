@@ -12,10 +12,9 @@ import {
   TOKEN_USAGE_COST_FIELDS,
   TOKEN_USAGE_TOKEN_FIELDS,
   type TokenUsageCostTotals,
-  type TokenUsageIdentitySummary,
-  type TokenUsageRunRecord,
   type TokenUsageTokenTotals,
-} from "../domain/token-usage-run-record.js";
+} from "../domain/token-usage-accounting-summary.js";
+import type { TokenUsageIdentitySummary, TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
 import {
   compareAdmissionMarkers,
   type AdmissionMarker,

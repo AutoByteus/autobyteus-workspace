@@ -1,4 +1,4 @@
-import type { TokenUsageCostSummaryAggregate } from '~/types/tokenUsageStatistics';
+import type { TokenUsageCostSummaryAggregate } from '~/types/tokenUsageCostSummary';
 import type { TokenUsageApiCostStatus } from '~/types/tokenUsageMeter';
 
 export type TokenUsageTranslator = (key: string, params?: Record<string, string | number>) => string;

@@ -1,0 +1,27 @@
+USER FIELD DIAGNOSIS 2026-08-22
+$ curl http://127.0.0.1:29695/rest/health
+{"status":"ok","message":"Server is running"}
+$ live database read-only coverage/facet/run totals
+coverage_utc
+-------------------
+2026-08-22 10:52:04
+facet_count  min_day              max_day              projected_reports  projected_tokens
+-----------  -------------------  -------------------  -----------------  ----------------
+2            2026-08-22 00:00:00  2026-08-22 00:00:00  58                 11072363
+run_count  lifetime_reports  lifetime_tokens  min_observed         max_observed
+---------  ----------------  ---------------  -------------------  -------------------
+1369       173176            26265223658      2026-06-25 06:36:55  2026-08-22 17:42:23
+$ current implementation selected tab
+9:          :class="activeView === 'analytics' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'"
+18:          :class="activeView === 'runs' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'"
+$ approved prototype selected tab
+    .view-tabs { border-bottom:1px solid var(--gray-100); display:flex; gap:28px; margin-bottom:20px; }
+    .view-tab { border:0; border-bottom:2px solid transparent; background:transparent; padding:3px 2px 11px; color:var(--gray-600); font-weight:600; }
+    .view-tab.active { color:var(--blue-700); border-bottom-color:var(--blue-600); }
+    .control-card { border:1px solid var(--gray-100); background:var(--gray-25); border-radius:9px; padding:14px; box-shadow:var(--shadow); }
+$ current client refresh lifecycle
+TokenUsageAnalyticsView.vue:54:onMounted(() => { if (!store.result) retry(); });
+TokenUsageAnalyticsControls.vue:104:const apply = () => { if (!validationError.value) void store.fetch().catch(() => undefined); };
+No polling or background refresh is present. A result fetched before later post-coverage writes can remain displayed until an explicit selection/apply or remount; this is a bounded stale-result risk, not proven as the timestamp of the supplied screenshot.
+$ field execution conclusion
+A fresh current frontend build against the same embedded backend rendered non-zero post-coverage usage (10,263,664 tokens / 53 reports at browser capture) with no page errors. The backend aggregation path is not currently empty. Pre-coverage lifetime history remains excluded by the approved no-backfill design; the user rejects that first-upgrade experience. The dark selected tab is confirmed in both source and computed browser style and contradicts the approved prototype.

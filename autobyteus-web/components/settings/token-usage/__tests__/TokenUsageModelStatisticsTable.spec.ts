@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TokenUsageModelStatisticsTable from '../TokenUsageModelStatisticsTable.vue';
-import type { TokenUsageCostSummaryAggregate, TokenUsageRuntimeModelStatisticsRow } from '~/types/tokenUsageStatistics';
+import type { TokenUsageCostSummaryAggregate, TokenUsageRuntimeModelStatisticsRow } from '~/types/tokenUsageRunStatistics';
 
 const messages: Record<string, string> = {
   'settings.components.settings.TokenUsageStatistics.runtime': 'Runtime',
@@ -131,14 +131,7 @@ const rows: TokenUsageRuntimeModelStatisticsRow[] = [{
 
 describe('TokenUsageModelStatisticsTable', () => {
   it('renders runtime/model diagnostics as separate rows with runtime and fallback visibility', () => {
-    const wrapper = mount(TokenUsageModelStatisticsTable, {
-      props: { rows },
-      global: {
-        stubs: {
-          BarChart: { props: ['labels'], template: '<div data-test="bar-chart">{{ labels.join("|") }}</div>' },
-        },
-      },
-    });
+    const wrapper = mount(TokenUsageModelStatisticsTable, { props: { rows } });
 
     expect(wrapper.text()).toContain('Runtime');
     expect(wrapper.text()).toMatch(/Llm model/i);
@@ -151,7 +144,6 @@ describe('TokenUsageModelStatisticsTable', () => {
     expect(wrapper.text()).toMatch(/Included diagnostic|included \/ diagnostic/i);
     expect(wrapper.text()).toContain('mixed est.');
     expect(wrapper.text()).toContain('price missing');
-    expect(wrapper.get('[data-test="bar-chart"]').text()).toContain('Codex · gpt-shared');
-    expect(wrapper.get('[data-test="bar-chart"]').text()).toContain('Autobyteus · Autobyteus:gpt-shared');
+    expect(wrapper.find('canvas').exists()).toBe(false);
   });
 });

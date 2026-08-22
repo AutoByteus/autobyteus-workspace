@@ -1,0 +1,4 @@
+data_dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-analytics-browser-vVDO8S
+backend=node dist/app.js --host 127.0.0.1 --port 59194 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-analytics-browser-vVDO8S
+frontend=BACKEND_NODE_BASE_URL=http://127.0.0.1:59194 pnpm exec nuxt dev --host 127.0.0.1 --port 59195
+browser=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome

@@ -1,0 +1,5 @@
+$ curl -sS http://127.0.0.1:29695/rest/health
+{"status":"ok","message":"Server is running"}
+$ lsof -nP -iTCP:29695 -sTCP:LISTEN
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 37991 normy   26u  IPv4 0x18aca2748ac08799      0t0  TCP *:29695 (LISTEN)
