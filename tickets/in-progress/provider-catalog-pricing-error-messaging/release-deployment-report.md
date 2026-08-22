@@ -22,6 +22,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Integration method: `Merge`
 - Integration result: `Completed — merge commit 09c9cb080; no conflicts`
 - Delivery docs/handoff checkpoint: `d7ae16ca5` (local only; not pushed)
+- Delivery revision checkpoint: `025a7ee56` (local only; not pushed)
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
 - No-rerun rationale: N/A; the base advanced and checks were rerun.
@@ -57,7 +58,7 @@ No version file, release commit, tag, or release note was created. Version/relea
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
 - Ticket branch: `codex/provider-catalog-pricing-error-messaging`
-- Ticket branch commit result: `Held pending user verification; local checkpoints e336a9744 and d7ae16ca5 exist`
+- Ticket branch commit result: `Held pending user verification; local checkpoints e336a9744, d7ae16ca5, and 025a7ee56 exist`
 - Ticket branch push result: `Held`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
