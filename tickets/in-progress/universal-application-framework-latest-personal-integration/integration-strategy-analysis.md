@@ -2,12 +2,12 @@
 
 ## Status And Authority
 
-- Status: Design-ready supplement.
+- Status: Design-ready through SR-004; the original merge strategy remains authoritative and the newest-base refresh addendum below governs the 32-commit delta (31 production/provider commits plus one unrelated delivery-document commit).
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
-- Scope: REQ-001–REQ-007 and AC-001–AC-011.
+- Scope: REQ-001–REQ-008 and AC-001–AC-015.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
-- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) fixes the exact lifecycle, Core-plus-six-server-tool readiness, activation/provisioning, construction, persisted-row, and proof contracts for SR-003.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-design-analysis.md](latest-base-refresh-design-analysis.md) governs the SR-004 current-model/error/conflict delta.
 
 ## Executive Decision
 
@@ -286,3 +286,20 @@ The implementation engineer may refine the exact list when current source owners
 - No resurrection of removed Personal or feature intermediate seams.
 - No compatibility aliases, generic DI/service locator, generic event bus, mode-switched server builder, later-bound generic proxy, singleton fallback, or package-specific branch.
 - No claim that pre-integration test results validate the integrated tree.
+
+## SR-004 Newest-Personal Refresh Addendum
+
+The original one-merge decision is complete and verified. The mandatory refresh now merges current `origin/personal@7edfb1625...` into protected checkpoint `663f44d...`; it does not replay the original feature merge. Delivery measured the same semantic conflict surface at parent `1629441a3...`; solution-design revalidation proves the current child commit changes only two unrelated delivery documents and does not alter that surface.
+
+| Refresh decision | Result |
+| --- | --- |
+| Method | One additional history-preserving merge of the newly fetched Personal ref into the ticket branch after re-confirming the ref has not moved. |
+| Measured surface | 32 commits, unchanged 11 conflicts, 13 production changed-both paths, plus two unrelated delivery-document modifications in the newest commit. |
+| Latest Personal authority | provider catalog/pricing/current AutoByteus membership, missing-key/provider error extraction/redaction, canonical native error metadata, and native clients. |
+| Verified ticket authority | explicit hosts, application-platform boundary, one launch owner/store, v6 exact identity/URL, message-only application stream, generated/legacy removal. |
+| Required adaptation | one explicit `ApplicationCurrentModelSelectionPolicy` shared by readiness, Save, and direct run validation; original safe message in the strict application ERROR projection. |
+| Required deletions | keep the retired configuration helper/service/test and application SDK generated declarations absent. |
+| Persisted outcome | Directly Usable — No Migration; stale model strings remain visible and blocked, never remapped or rewritten. |
+| Full design | `latest-base-refresh-design-analysis.md`. |
+
+The refresh does not change the selected integration strategy, introduce a new host, or authorize a greenfield refactor. A whole-file `ours`/`theirs` choice is specifically forbidden for the 11 conflicts and the marker-free run-binding overlap.

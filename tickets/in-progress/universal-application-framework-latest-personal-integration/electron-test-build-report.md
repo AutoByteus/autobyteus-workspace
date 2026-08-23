@@ -1,5 +1,7 @@
 # Electron Test Build Report
 
+> DR-004 status (2026-08-23): **Blocked before rebuild.** The newest fetched `origin/personal` (`1629441a30dfce91d75b9bf7dcdd508b0f371bc5`) produces 11 merge-tree conflicts with the current ticket architecture. The package and hashes below are the superseded DR-003 candidate based on `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`; do not use them as proof of the newest-base request. See `latest-base-refresh-conflict-report.md`.
+
 ## Current Result
 
 DR-003 Pass. The ticket branch now includes the newest tracked origin/personal and a fresh local macOS ARM64 Electron package. This report supersedes DR-001/DR-002 package identities.

@@ -1,0 +1,47 @@
+API-REV-007 final cleanup and integrity
+recordedAt=2026-08-23T06:39:05Z
+head=fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342
+== owned ports ==
+43271 free
+43272 free
+8027 free
+3027 free
+== owned roots ==
+none
+== owned runtime processes ==
+none
+== generated output existence ==
+autobyteus-application-sdk-contracts/dist absent
+autobyteus-application-backend-sdk/dist absent
+autobyteus-application-frontend-sdk/dist absent
+autobyteus-application-devkit/dist absent
+autobyteus-server-ts/dist absent
+autobyteus-web/.nuxt absent
+autobyteus-web/.output absent
+applications/brief-studio/.autobyteus absent
+applications/socratic-math-teacher/.autobyteus absent
+applications/brief-studio/dist absent
+applications/socratic-math-teacher/dist absent
+== ordinary application ==
+health=200
+{"status":"ok","message":"Server is running"}
+== secret scan ==
+{
+  "policy": "sensitive assignment names only: API_KEY/SECRET/PASSWORD/ACCESS_TOKEN/AUTH_TOKEN/CREDENTIAL; values never printed",
+  "sensitiveAssignmentsCompared": 12,
+  "textArtifactsScanned": 55,
+  "secretValueMatches": 0,
+  "matchedKeys": [],
+  "result": "PASS"
+}
+== durable test delta ==
+5	1	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+6	6	autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+== production source delta owned by API/E2E ==
+none
+== diff check ==
+
+gitDiffCheck=pass
+== status summary ==
+modified_or_deleted=18 untracked=66
+result=PASS

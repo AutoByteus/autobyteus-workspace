@@ -9,6 +9,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 | SR-001 | User request and isolated merge investigation / baseline | N/A | Initial Baseline | Design-ready semantic integration package prepared for architecture review |
 | SR-002 | Architecture reviewer / `design-review-report.md` / `ARCH-REV-001` | AR-001–AR-003 | Design Impact | Exact lifecycle, activation/provisioning/construction, inventory, and launch direct-use contracts added; ready for re-review |
 | SR-003 | Architecture reviewer / `design-review-report.md` / `ARCH-REV-002` | AR-001 | Design Impact | Required-tool readiness corrected to one source-backed Core-plus-six-server-unit owner with exact removal and proof inventory |
+| SR-004 | Delivery engineer / `latest-base-refresh-conflict-report.md` / `DR-004` | Latest-base provider/model/error semantic conflicts | Design Impact | Newest Personal refresh mapped to retained owners with exact conflict, current-model, message-only error, no-migration, and verification contracts |
 
 ## Revision Entries
 
@@ -62,3 +63,26 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: implementation remains paused. On a Pass, implementation must perform the one semantic merge and apply the exact phase-16 clean-cut correction without restoring the removed wrapper or adding compatibility behavior.
 - Next recipient or routing: `/architecture_reviewer`.
 - Remaining gaps or risks: architecture must validate that the one owner, result set, order, and test inventory fully close `AR-001`; delivery must still refresh Personal if the remote advances.
+
+### SR-004 — Newest-Personal provider/model/error refresh
+
+- Triggering role, report path, and round: `/delivery_engineer`; `latest-base-refresh-conflict-report.md`; `DR-004` newest-base refresh.
+- Triggering finding IDs: delivery classified the 11-path refresh as Design Impact; no architecture-review finding ID exists yet for this revision.
+- Prior authoritative result: the completed integration at protected checkpoint `663f44d...` had passed architecture, implementation/source review, API/E2E, provider, package, and Electron verification. Delivery then fetched `origin/personal@1629441a3...`, 31 commits beyond the prior integrated base, and correctly stopped before a non-semantic merge. Before handoff, solution design revalidated current `origin/personal@7edfb1625...`; its one additional commit is delivery-document-only and leaves the exact 11-conflict semantic surface unchanged.
+- Current authoritative result: Design-ready SR-004 correction prepared for architecture review; no refresh merge, production source edit, or Electron rebuild is authorized yet.
+- Resolution:
+  - retained the passed Studio/standalone/application-platform/run/session/publication architecture unchanged;
+  - accepted newest Personal as authority for provider catalog/pricing/current AutoByteus membership, missing-key/provider error extraction/redaction, canonical native error metadata, and native consumers;
+  - added one explicit stateless `ApplicationCurrentModelSelectionPolicy` design, constructed once and required by launch readiness, Save, and direct run validation, with only AutoByteus pairs delegated to `LLMFactory` and Claude/Codex ownership preserved;
+  - specified stale read retention, exact `CURRENT_MODEL_SELECTION_REQUIRED` readiness, no-write Save rejection, and pre-allocation direct agent/team rejection;
+  - combined the latest safe provider message with the existing closed v6 message-only application ERROR projection, strict metadata/secret exclusion, exact `agentRunId`/rooted identity, and current URL codec;
+  - resolved all 11 conflicts plus two marker-free overlaps, keeping three retired configuration paths and two generated SDK declarations deleted;
+  - preserved `Directly Usable — No Migration` and defined the focused plus complete refreshed verification matrix.
+- Approved behavior or requirement IDs affected: BEH-001, BEH-004–BEH-007; REQ-001–REQ-002, REQ-004–REQ-008; AC-001–AC-002, AC-005–AC-015. No new host, route, public metadata protocol, authentication, migration, or product workflow was added.
+- Canonical artifacts and sections updated: `requirements.md`; `investigation-notes.md`; `design-spec.md`; `integration-strategy-analysis.md`; `integration-runtime-contracts.md`; `integration-path-inventory.txt`; this record.
+- Supplemental artifact added: `latest-base-refresh-design-analysis.md`.
+- Self-validation result: Passed. The SR-004 supplement records approved-behavior, reachability, spine-span, authoritative-boundary, proportionality, dependency, clean-cut removal, no-migration, host-parity, return-contract, construction-side-effect, naming, and verification checks plus eight reachable scenario closures.
+- Evidence retained: delivery-owned `latest-base-refresh-conflict-report.md` and `evidence/delivery/dr-004-base-refresh-and-integration.log`, plus the four modified DR-004 delivery artifacts, remain untouched by solution design.
+- Downstream and architecture-review impact: implementation and delivery remain paused. On an architecture Pass, implementation must merge the re-confirmed Personal ref once and follow the exact conflict/file/policy/error map; then the full source-review/API-E2E/durable-test/delivery chain restarts.
+- Next recipient or routing: `/architecture_reviewer` with the cumulative solution package and DR-004 evidence.
+- Remaining gaps or risks: Personal may move again before implementation; re-fetch must stop for re-analysis if the target changes. The final integrated provider/Electron proof depends on the existing environment and must be reported truthfully.

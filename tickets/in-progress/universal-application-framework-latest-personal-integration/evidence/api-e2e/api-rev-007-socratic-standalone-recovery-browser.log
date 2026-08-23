@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "scenario": "APIE2E-STANDALONE-001/APIE2E-DUAL-HOST-007",
+  "state": {
+    "url": "http://127.0.0.1:43271/",
+    "title": "Socratic Math Teacher",
+    "workspaceStatus": "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
+    "liveState": "ready",
+    "liveText": "Live tutor Tutor connected Live text appears here while the tutor responds. Completed turns remain in the transcript below.",
+    "detail": "Solve 7x + 4 = 25 step by step, and check the result. lessonId lesson-71b4310c-f7e0-44da-b0fc-316ec29c2576 active Created 23.8.2026, 07:55:27 Updated 23.8.2026, 07:55:48 Lesson record lesson-71b4310c-f7e0-44da-b0fc-316ec29c2576 Status active Conversation 2 messages Closed — Next step Ask a follow-up question or request a hint to continue this lesson. Request hint Close lesson Live tutor Tutor connected Live text appears here while the tutor responds. Completed turns remain in the transcript below. Transcript The lesson keeps the tutoring conversation and student follow-ups together in one record. student prompt 23.8.2026, 07:55:27 Solve 7x + 4 = 25 step by step, and check the result. tutor lesson_response 23.8.2026, 07:55:48 Let's solve it step by step: 1. Start with: \\[ 7x + 4 = 25 \\] 2. Subtract 4 from both sides: \\[ 7x = 21 \\] 3. Divide both sides by 7: \\[ x = 3 \\] **Check:** Substitute \\(x=3\\) into the original equation: \\[ 7(3)+4=21+4=25 \\] This is true, so the solution is **\\(x=3\\)**. Send follow-up Send one follow-up or request one hint. The next action becomes available after the tutor response is saved. Advanced runtime details Optional diagnostics for app authors. The main lesson view stays centered on the tutoring conversation. Latest binding 90f2b790-19f6-4757-ad54-3a5a178b6662 Status ATTACHED Latest run socratic_math_team_514b535cc8d341749d0b8b4fed6ff72a Updated 23.8.2026, 07:55:48 Runtime note No recorded runtime error",
+    "list": "Solve 7x + 4 = 25 step by step, and check the result. active Lesson lesson-71b4310c-f7e0-44da-b0fc-316ec29c2576 Updated 23.8.2026, 07:55:48",
+    "failed": false
+  },
+  "consoleLines": [
+    "[error] Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

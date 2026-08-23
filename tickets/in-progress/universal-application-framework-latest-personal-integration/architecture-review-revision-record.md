@@ -9,6 +9,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-001 | Round 1 / initial SR-001 semantic-integration review | SR-001 | N/A | Fail — Design Impact | AR-001–AR-003 |
 | ARCH-REV-002 | Round 2 / SR-002 AR-001–AR-003 re-review | SR-001, SR-002 | Fail — Design Impact | Fail — Design Impact | AR-001–AR-003 |
 | ARCH-REV-003 | Round 3 / SR-003 bounded AR-001 re-review | SR-001–SR-003 | Fail — Design Impact | Pass | AR-001 |
+| ARCH-REV-004 | Round 4 / SR-004 newest-Personal refresh review | SR-001–SR-004 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -76,3 +77,26 @@ None.
 - Material classification changes: `AR-001` resolved; authoritative decision changes from `Fail — Design Impact` to `Pass`.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: implementation must execute the semantic overlap ledger, deterministic regeneration, and complete current-base verification. A later Personal refresh remains delivery-owned; no unsupported production scenario drives approved machinery.
+
+### ARCH-REV-004 — Newest-Personal model/error refresh preserves the passed application framework
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 4; SR-004 review after delivery's mandatory latest-base preview (`DR-004`) found 11 semantic conflicts and stopped before merge/build.
+- Triggering role, report path, and finding IDs: `/delivery_engineer` through `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`; no architecture finding ID—the trigger was a delivery-classified newest-base Design Impact.
+- Relevant solution revision IDs: `SR-001`–`SR-004`
+- Prior authoritative decision: `Pass` (`ARCH-REV-003`, followed by a passed implementation/source/API-E2E/Electron checkpoint before Personal advanced)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-004 retains the passed Studio/standalone/application-platform/run/session/publication design, introduces one stateless `ApplicationCurrentModelSelectionPolicy` shared by readiness, Save, and direct-run defense, preserves Codex/Claude ownership, keeps stale rows visible without migration or fallback, combines newest Personal's safe original provider message with the strict application message-only v6 projection, and gives all 11 conflicts plus two marker-free overlaps exact owner-based dispositions. A fresh review-time merge-tree check confirmed the conflict set and clean index.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved in ARCH-REV-003 | Remains resolved | `SR-003`, `SR-004`; runtime contracts sections 1 and 4 | SR-004 does not change the exact Core-first/five-server/Search-last readiness owner, removal set, or proof obligations. |
+| AR-002 | Resolved in ARCH-REV-002 | Remains resolved | `SR-002`–`SR-004`; runtime contracts section 2 | SR-004 does not change activation/provisioning state, graph-local construction, rooted team identity, or cleanup ownership. |
+| AR-003 | Resolved in ARCH-REV-002 | Remains resolved and extended truthfully for stale model identifiers | `SR-002`–`SR-004`; runtime contracts sections 3 and 5 | One launch store remains; stale values are preserved and blocked without read-time rewrite; explicit Save/Reset are still the only row mutations; Directly Usable — No Migration remains evidence-backed. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none; the delivery Design Impact is resolved without reopening or changing the approved product behavior.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: implementation must re-fetch and stop if Personal moved, perform the one reviewed merge, preserve delivery-owned evidence, and run the complete refreshed source/dual-host/provider/package/Electron matrix on one commit. Prior evidence remains characterization only.

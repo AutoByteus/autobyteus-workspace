@@ -3,12 +3,12 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete.
-- Current Status: Complete; design input ready.
-- Investigation Goal: Quantify divergence and conflicts, identify semantic authorities, and choose the lowest-risk method for rebuilding the finalized dual-host feature on latest Personal.
+- Current Status: Latest-base refresh investigation complete; SR-004 design input ready for architecture review.
+- Investigation Goal: Preserve the completed integration while mapping the newest Personal delta into current owners, resolving the bounded conflict set, and defining the exact re-verification delta.
 - Scope Classification: `Large`.
-- Scope Classification Rationale: 238 Personal-only commits, 115 feature-only commits, 177 merge conflicts, 227 changed-both paths, multiple workspaces, and real dual-host/Electron verification.
-- Scope Summary: Git integration plus bounded adaptation of the application-platform construction and current agent/team identity/lifecycle seams.
-- Primary Questions To Resolve: How much conflict is real? Which branch owns each overlapping behavior? Is merge, rebase, replay, or reimplementation safest? What must be reverified?
+- Scope Classification Rationale: Large cumulative integration; current SR-004 is a bounded Design Impact refresh of 31 new commits, 11 conflicts, 13 changed-both paths, several package boundaries, and mandatory dual-host/Electron re-verification.
+- Scope Summary: History-preserving latest-base refresh plus bounded relocation of current-model validation and provider-error projection into the already-approved application-platform owners.
+- Primary Questions To Resolve: Which newest-Personal behaviors land in retired owners, where do they belong now, how are exact v6 identity/error contracts combined, which paths remain deleted, and what must be reverified?
 
 ## Request Context
 
@@ -21,16 +21,16 @@ The finalized Universal Application Framework branch was completed, reviewed, te
 - Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration`
 - Current Branch: `codex/universal-application-framework-latest-personal-integration`
 - Current Worktree / Working Directory: same as task workspace root.
-- Bootstrap Base Branch: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Remote Refresh Result: fetched successfully.
+- Bootstrap Base Branch: historical `origin/personal@8ef282b...`; previously integrated through `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`; current refresh target `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`
+- Remote Refresh Result: fetched successfully; newest target is 32 commits beyond the prior integrated base. The newest commit after delivery's measured `1629441a3...` target changes only two unrelated completed-ticket delivery documents.
 - Task Branch: created from and tracking latest `origin/personal`.
 - Expected Base Branch: `origin/personal`.
 - Expected Finalization Target: the ticket branch only unless the user later explicitly requests Personal integration.
 - Feature Input: `origin/codex/universal-application-framework-proposal-analysis@a5ffd289aa58293574e44dfa8b38ed8b1978ffd0`
 - Merge Base: `acb8985930ccce49b632cdca22b92f5b237e35bf`
 - Divergence: Personal 238 unique commits; feature 115 unique commits.
-- Bootstrap Blockers: None.
-- Notes For Downstream Agents: the trial merge was aborted after evidence capture. No production source has been modified. Preserve both source refs.
+- Bootstrap Blockers: delivery is paused on the reviewed semantic conflict set; no actual refresh merge has started.
+- Notes For Downstream Agents: the latest refresh used a non-mutating merge-tree preview. No refresh merge or production edit has begun. Preserve checkpoint `663f44d...`, the six delivery-owned DR-004 changes/evidence, and both source histories.
 
 ## Supplemental Task Artifact Inventory
 
@@ -42,6 +42,9 @@ The finalized Universal Application Framework branch was completed, reviewed, te
 | `branch-overlap-inventory.txt` | Common changes from merge base | 227 changed-both paths and canonical subset | Investigation, design | REQ-002, REQ-006; AC-002, AC-010 | Complete | N/A evidence | Implementation audits all canonical paths |
 | `integration-path-inventory.txt` | Raw merge classes plus corrected target disposition inventory | Measured add/changed-both/remove/regenerate sets, explicit Personal/integration-only target modifications, retained dependencies, and removals | Design | REQ-003–REQ-007; AC-003–AC-011 | Complete; corrected through SR-003 | N/A evidence | Implementation consumes target dispositions, not raw branch membership alone |
 | `integration-runtime-contracts.md` | Exact integration seam contract | Host lifecycle allocation, source-backed tool readiness, activation/provisioning state and construction DAG, general-process exemptions, one launch store/direct-use proof, verification delta | Requirements, design | REQ-004–REQ-007; AC-005–AC-011 | Complete; corrected through SR-003 | Intended behavior precision within approved scope | Architecture re-review |
+| `latest-base-refresh-design-analysis.md` | Latest-base refresh semantic contract | New ref evidence, reachability, authority, current-model/error spines, 11-conflict decisions, marker-free overlaps, exact inventory, and verification delta | Requirements, design | REQ-001–REQ-008; AC-001–AC-015 | Complete for SR-004 | Intended bounded integration behavior | Architecture review |
+| `latest-base-refresh-conflict-report.md` | Delivery-owned blocker report | Original 31-commit ref/divergence, 11 conflicts, changed-both classification, and Design Impact rationale | Investigation, requirements, design | REQ-001–REQ-002, REQ-006–REQ-008; AC-001–AC-002, AC-010–AC-015 | Complete; preserved untouched | N/A evidence | Retain and hand off |
+| `evidence/delivery/dr-004-base-refresh-and-integration.log` | Delivery-owned raw refresh evidence | Fetch, commits, paths, non-mutating preview, clean index | Investigation, requirements, design | REQ-001–REQ-002, REQ-006; AC-001–AC-002, AC-010 | Complete; preserved untouched | N/A evidence | Retain and hand off |
 
 ## Source Log
 
@@ -60,6 +63,13 @@ The finalized Universal Application Framework branch was completed, reviewed, te
 | 2026-08-22 | Code/data contract | Personal `application-execution-resource-configuration-*`, `execution-resources.ts`, feature launch service/store, current configuration tests/migration fixtures | Resolve AR-003 | Physical table is shared; valid Personal agent/team profile shapes become target sparse overrides unchanged when target uses `memberAddress`/`displayName`; feature `memberRouteKey`/`memberName` cannot be retained | One target store/current-rooted contract selected; no read-time rewrite/fallback |
 | 2026-08-22 | Code | Personal/final `startup/agent-tool-loader.ts`, `register-search-tool.ts`, core `register-tools.ts`, `agent-factory.ts`, background runner, lifecycle builder/tests, and every production `registerTools()` caller | Resolve remaining AR-001 | Final loader has six server specs, no Skills registrar exists, Search calls Core, and eager `defaultAgentFactory` construction calls Core through the normal host import graph | Use Core as the truthful seventh unit; one memoized lifecycle owner; remove all early/duplicate triggers and add exact order/once/failure/omission proof |
 | 2026-08-22 | Doc | Final feature requirements/design/review/delivery artifacts under prior ticket `done/` | Recover approved behavior | Same-package two hosts, four projections, scoped MCP, Codex/Luna, no compatibility, real parity passed | Preserve as characterization baseline |
+| 2026-08-23 | Delivery evidence | `latest-base-refresh-conflict-report.md`; `evidence/delivery/dr-004-base-refresh-and-integration.log` | Measure newest refresh without mutating the verified checkpoint | Personal advanced 31 commits; branch is 140/31; preview has 11 conflicts and zero actual unmerged index entries | Design-led resolution required before merge/build |
+| 2026-08-23 | Git/source revalidation | `git rev-parse origin/personal`; `git diff 1629441a3..7edfb1625`; `git merge-tree --write-tree HEAD origin/personal`; `git ls-files -u` | Reconfirm the target immediately before solution handoff | Personal advanced once more to `7edfb1625...`; the one new commit changes only two unrelated delivery documents; the non-mutating preview still has exactly the same 11 conflicts and leaves the index clean; branch divergence is 140/32 | Update target ref/count, accept the unrelated documents, preserve all semantic resolutions |
+| 2026-08-23 | Git/source probe | `git diff d7d4eace..origin/personal`, changed-both intersection, three-way `git merge-file` for marker-free overlaps | Separate clean latest-Personal changes from semantic overlaps | 13 changed-both paths; run binding auto-merges an import of a deleted helper; SDK README auto-merge is compatible | Record both marker-free decisions |
+| 2026-08-23 | Code | latest Personal `LLMFactory.requireCurrentModelIdentifier`, `CurrentModelSelectionRequiredError`, retired configuration service/launch-profile helper, and run-binding delta | Recover exact current-model behavior and ownership scope | Only AutoByteus pairs use exact current membership; Claude/Codex bypass; saved/direct team leaves validate before readiness or allocation | Relocate to one explicit current policy and current owners |
+| 2026-08-23 | Code | current `ApplicationLaunchConfigurationService`, `ApplicationLaunchHostCapabilityValidator`, `ApplicationLaunchOverrideStore`, `ApplicationRunBindingLaunchService` | Identify retained target boundaries | One current baseline/overlay/readiness/store owner exists; stale/unavailable values remain visible; direct command is a separate defensive boundary | No retired owner restoration |
+| 2026-08-23 | Code/contract | latest Personal provider error supplement and producer/native event diffs; current application projector, v6 SDK event/URL/producer validators and tests | Reconcile user-visible error behavior with strict application boundary | Native path carries code/message/safe metadata; application SDK intentionally carries only original safe message and exact v6 identity | Accept native path; project message only; reject extra keys |
+| 2026-08-23 | Git/tree | current tracked application SDK `dist`, package build scripts, modify/delete conflicts | Decide generated declaration treatment | Current ticket tracks no application SDK dist; source build generates it locally | Keep deletions; no second source truth |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -179,6 +189,32 @@ N/A. This is a repository-internal integration; no external source was required.
 - If Personal advances, this evidence becomes a prior-baseline input and delivery must repeat the refresh.
 - Actual provider/Electron checks require the project's normal environment.
 
+## SR-004 Latest-Base Refresh Findings
+
+### Newest-Personal Change Classification
+
+- Personal-authoritative clean changes: provider catalog/model definitions, pricing schedules and snapshots, missing-key handling, provider extraction/redaction, canonical native error code/message/metadata, native web/team transport, and their durable suites.
+- Application-boundary semantic changes: current-model selection currently targets retired configuration owners; provider message passthrough must combine with current v6 application identity and exact-key parsing.
+- Mechanical deletions: two generated application SDK declaration files plus the retired configuration service, launch-profile helper, and predecessor test remain deleted.
+- Marker-free defects if left to Git: `ApplicationRunBindingLaunchService` imports the deleted helper; the SDK README needs explicit combined wording.
+
+### Selected Target Owners
+
+1. `ApplicationLaunchConfigurationService` remains the only semantic baseline/overlay/readiness/Save owner.
+2. `ApplicationLaunchOverrideStore` remains the only physical launch-row owner.
+3. Add one explicit stateless `ApplicationCurrentModelSelectionPolicy` that normalizes runtime and delegates only AutoByteus identifiers to latest Personal's `LLMFactory` guard.
+4. `ApplicationLaunchHostCapabilityValidator` maps a stale AutoByteus selection to the current `ApplicationLaunchIssue` code `CURRENT_MODEL_SELECTION_REQUIRED`.
+5. `ApplicationRunBindingLaunchService` applies the same policy to every direct agent/team config before allocation/creation and does not import any retired helper.
+6. `ApplicationAgentStreamEventProjector` uses the latest safe nonblank event message while retaining diagnostic filtering and the closed message-only SDK projection.
+
+### Persisted-State Evidence
+
+No schema or stored-shape change exists in the 32-commit refresh; the 32nd commit is delivery-document-only. A removed AutoByteus model identifier remains an ordinary string in the existing sparse row. The target reads it without mutation, exposes the saved/effective value and provenance, blocks readiness with the exact current-selection issue, rejects an attempted stale Save before upsert, and allows only explicit Save/Reset to mutate. Package defaults and valid current rows remain directly usable. Decision remains `Directly Usable — No Migration`.
+
+### Verification Consequence
+
+Prior `ARCH-REV-003`, implementation/source review, API/E2E, provider, package, and Electron evidence remain characterization baselines only. The refreshed commit requires the focused current-model/error tests, retained latest-Personal provider suites, all application architecture/source checks, real Studio and standalone journeys, package parity/recovery/cleanup, and a new Electron build/smoke.
+
 ## Notes For Architecture Reviewer
 
-`SR-003` responds to `ARCH-REV-002`'s remaining bounded `AR-001`. Review the source-backed Core-plus-six-server-unit readiness contract, single-owner removals, exact file dispositions, and once/order/failure/omission proof in `integration-runtime-contracts.md` section 1. `AR-002`–`AR-003` remain preserved. No production source change has begun.
+`SR-004` responds to delivery `DR-004` latest-base Design Impact after the previously integrated design and behavior passed. Review `latest-base-refresh-design-analysis.md`: the exact current-model policy boundary, stale read/Save/direct-run results, provider-error message-only projection, 11 conflict decisions, two marker-free overlap decisions, add/modify/remove inventory, and complete verification delta. `ARCH-REV-003` remains the passed baseline for the unchanged platform architecture. No refresh production change or merge has begun.

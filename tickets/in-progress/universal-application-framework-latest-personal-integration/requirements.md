@@ -2,28 +2,30 @@
 
 ## Status
 
-Design-ready. The user explicitly authorized an isolated merge experiment and delegated selection of the safest integration method, with the governing outcome that the Universal Application Framework branch must be rebuilt on the latest `origin/personal` rather than merged into `personal` directly.
+Design-ready SR-004 revision for the mandatory latest-base refresh. The previously integrated ticket checkpoint is protected and verified, but the user requires the ticket branch to incorporate the current fetched `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`. Delivery found a bounded 11-path semantic conflict set at `1629441a3...`; solution-design revalidation against the one-commit-newer current ref confirms the same conflict set and adds only two unrelated delivery-document edits. Implementation and Electron rebuild remain paused until this revised package passes architecture review.
 
 ## Goal / Problem Statement
 
-Integrate the finalized Universal Application Dual-Host Foundation from `origin/codex/universal-application-framework-proposal-analysis@a5ffd289aa58293574e44dfa8b38ed8b1978ffd0` onto the latest tracked Personal baseline `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`. Preserve both the feature's proven Studio/standalone contract and Personal's newer agent/team/provider lifecycle, identity, model-availability, migration, and package behavior. Resolve the two histories semantically; do not overwrite either side wholesale.
+Refresh the completed Universal Application Framework integration checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b` from its previously integrated Personal base `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb` to current `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`. Preserve the proven Studio/standalone contract and all already-integrated current execution/identity behavior while adopting Personal's new provider catalog, current-model selection, pricing, provider-error, native transport, and unrelated current delivery-record behavior through the ticket's retained owners. Resolve the refresh semantically; do not restore retired authorities or select either side wholesale.
 
 ## Current And Desired Behavior
 
 | Behavior ID | Current Behavior | Desired Behavior | Preserved / Unchanged Behavior | Related Requirement / Acceptance-Criteria IDs |
 | --- | --- | --- | --- | --- |
-| BEH-001 | The finalized feature branch runs the same application package in Studio and standalone, but it is no longer based on latest Personal. Latest Personal does not contain the dual-host assembly. | A new ticket branch based exactly on latest Personal contains the dual-host foundation. | `personal` and the finalized feature branch remain unchanged until separate finalization instructions. | REQ-001, REQ-002; AC-001, AC-002 |
+| BEH-001 | The completed ticket checkpoint contains the proven dual-host foundation and the previously integrated Personal base, but it is 32 commits behind current Personal. | The same ticket branch history incorporates `origin/personal@7edfb1625...` once and remains the verification branch; `personal` itself is untouched by this ticket. | The protected checkpoint and source branches remain recoverable and are not rewritten. | REQ-001, REQ-002; AC-001, AC-002, AC-014 |
 | BEH-002 | The finalized feature provides `pnpm dev`, `dev:studio`, `build`, `validate`, and `start`; latest Personal applications still use custom package builders and mirrored/generated trees. | Retain the native application developer workflow and one canonical source tree, adapted to current Personal package contracts. | A package built once remains importable in Studio and runnable as standalone. | REQ-003; AC-003, AC-004 |
 | BEH-003 | Personal has newer agent/team execution state, rooted member identity, provider preparation/publication, and cleanup behavior. The feature branch has application-scoped execution/publication integration against older owners. | Dual-host application execution uses Personal's current lifecycle and identity owners while preserving application-scoped publication, messaging, cleanup, and projection. | No global/process fallback may replace an application-scoped dependency. Native provider tools and the external Studio MCP gateway remain outside the application transport change. | REQ-004, REQ-005; AC-005–AC-008 |
-| BEH-004 | The feature has self-contained package launch defaults, Studio sparse overrides, host readiness validation, and Codex/Luna defaults. Personal has newer provider/model availability semantics and current contract values. | Preserve package defaults and sparse overrides while using Personal's current availability semantics, identities, and serialized contract values. Brief and Socratic defaults remain Codex App Server with `gpt-5.6-luna`. | Studio overrides never mutate the imported package; invalid/unavailable selections remain visible and block launch rather than silently falling back. | REQ-005; AC-006, AC-009 |
-| BEH-005 | The two branches contain 177 textual conflicts and 227 paths changed by both; most conflicts are generated or obsolete outputs, while a bounded canonical set needs semantic resolution. | Resolve canonical source and tests owner-by-owner, remove obsolete/derived copies, then regenerate outputs only from the integrated source. | Do not hand-merge generated artifacts or restore deleted intermediate compatibility seams. | REQ-002, REQ-006; AC-002, AC-010 |
-| BEH-006 | Both branches have durable verification, but neither suite alone proves the combined latest-Personal candidate. | Re-run focused architecture/source checks, both real host journeys, provider/tool/publication behavior, package parity, current Personal regressions, and Electron build. | Existing passing evidence is characterization input, not proof of the new integrated state. | REQ-007; AC-011 |
+| BEH-004 | The verified ticket has self-contained Codex/Luna package defaults, Studio sparse overrides, and host readiness. New Personal removes old AutoByteus catalog IDs and rejects them through a current-model guard in legacy configuration owners that the ticket removed. | Preserve the ticket launch model while relocating exact AutoByteus current-model validation into the retained launch/readiness/direct-run boundaries. Stale values stay visible and block; Codex/Claude remain owned by their provider runtimes. | Studio overrides never mutate packages; no model alias, silent replacement, row rewrite, or package-default fallback is allowed. | REQ-005, REQ-008; AC-006, AC-009, AC-012 |
+| BEH-005 | The initial integration resolved its historical 177-conflict surface. The new 32-commit refresh has the same 11 conflicts and 13 production changed-both paths; five conflicts target paths deliberately deleted by the ticket and one marker-free auto-merge imports a deleted helper. The newest commit changes only two unrelated completed-ticket delivery documents. | Resolve the bounded refresh by current owner, keep retired/generated paths deleted, retain the unrelated delivery-document update, and record both marker and marker-free decisions. | Do not hand-merge generated application SDK output or restore deleted configuration seams. | REQ-002, REQ-006, REQ-008; AC-002, AC-010, AC-014 |
+| BEH-006 | The pre-refresh checkpoint has passed architecture, source, API/E2E, package, provider, and Electron verification, while the newest Personal release has its own passing provider evidence. Neither proves their refreshed combination. | Re-run focused current-model/error/contract checks, existing architecture/source checks, both real hosts, provider/tool/publication behavior, package parity, current Personal regressions, and Electron. | Prior evidence is a characterization baseline, not proof of the refreshed commit. | REQ-007, REQ-008; AC-011, AC-015 |
+| BEH-007 | New Personal preserves original redacted-safe provider messages and native safe metadata, while the verified application stream still emits a generic local message and has an exact closed v6 identity/field contract. | Accept the latest native error path and project only the original safe nonblank message through the application ERROR variant; preserve exact `agentRunId`/`memberAddress`/URL semantics and reject provider metadata at the application SDK boundary. | Diagnostic filtering and strict exclusion of raw errors, secrets, stacks, headers, provider IDs, and extra fields remain unchanged. | REQ-008; AC-013, AC-015 |
 
 ## Investigation Findings
 
-- The isolated no-commit merge produced **177 conflict paths**: 137 generated/derived, 2 obsolete custom builders, 3 canonical application files, 7 SDK/devkit files, 18 server files, 6 tests, and 4 web files.
-- Personal and the feature branch have 227 changed paths in common; 77 are canonical non-generated paths requiring semantic audit even when Git auto-merges them.
-- The conflict count therefore overstates the hard part: about 38 source/test conflicts require direct resolution, but the 77 auto-merged canonical overlaps still need review.
+- The historical integration conflict set was resolved and verified. The newest non-mutating merge preview adds **11 conflicts**: 6 content conflicts and 5 modify/delete conflicts.
+- This refresh has 13 changed-both paths. Two marker-free overlaps require explicit audit: the SDK README merges compatibly, while the run-binding service auto-merges an import of a legacy helper that the ticket deleted and therefore must be corrected semantically.
+- The new Personal provider behavior is sound but lands application current-model checks in the retired configuration service/normalizer. The behavior must move into `ApplicationLaunchConfigurationService`, host capability readiness, and the current run-binding owner without restoring those paths.
+- The latest provider error producer/native transport changes apply cleanly; the application SDK conflicts must combine the original safe message with the ticket's exact closed v6 target/producer contract.
 - Latest Personal has not independently absorbed the feature: its tree lacks the explicit Studio and standalone builders, the four-projection application platform boundary, the standalone host, and maintained application devkit configuration.
 - Rebase would replay the conflict surface through 115 feature commits. Selective cherry-pick/reimplementation risks omitting behavior distributed across the finalized branch. A single semantic merge on a branch created from latest Personal is the least risky and most auditable strategy.
 - Personal is authoritative for newer provider and agent/team execution behavior; the feature is authoritative for the same-package/two-host boundary and its tested developer experience. The integration requires a small structural adaptation where those authorities meet, not a wholesale selection of either version.
@@ -34,10 +36,13 @@ Integrate the finalized Universal Application Dual-Host Foundation from `origin/
 | --- | --- | --- | --- | --- | --- |
 | `integration-strategy-analysis.md` | Intended integration strategy and semantic authority matrix | REQ-001–REQ-007 | AC-001–AC-011 | Design-ready; approved by the user's delegated technical-direction instruction | Constrains how the merge may be resolved and verified. |
 | `integration-runtime-contracts.md` | Exact lifecycle, activation/provisioning, construction, launch persistence, and verification contract | REQ-004–REQ-007 | AC-005–AC-011 | Design-ready; within the approved preserved-behavior boundary | Closes the bounded architecture-review precision gaps without adding product scope. |
+| `latest-base-refresh-design-analysis.md` | Exact 32-commit refresh authority, conflict, current-model, provider-error, inventory, and verification design | REQ-001–REQ-008 | AC-001–AC-015 | Design-ready SR-004 supplement; pending architecture review | Defines how newest Personal behavior enters current owners without reopening the passed platform architecture. |
 | `merge-conflict-inventory.txt` | Evidence: exact no-commit conflict set | REQ-002, REQ-006 | AC-002, AC-010 | Complete; approval N/A | Supports conflict classification. |
 | `branch-overlap-inventory.txt` | Evidence: changed-both path inventory | REQ-002, REQ-006 | AC-002, AC-010 | Complete; approval N/A | Prevents reliance on conflict markers alone. |
 | `integration-path-inventory.txt` | Evidence: add/modify/remove/regenerate candidate inventory | REQ-003–REQ-007 | AC-003–AC-011 | Complete; approval N/A | Drives detailed implementation and review inventory. |
 | `merge-attempt.log` | Evidence: isolated merge transcript | REQ-002 | AC-002 | Complete; approval N/A | Proves the measured conflict surface. |
+| `latest-base-refresh-conflict-report.md` | Delivery blocker and original 31-commit refresh measurement | REQ-001–REQ-002, REQ-006–REQ-008 | AC-001–AC-002, AC-010–AC-015 | Complete delivery evidence; approval N/A | Triggers SR-004 and records why delivery stopped before merge/build. |
+| `evidence/delivery/dr-004-base-refresh-and-integration.log` | Raw fetch/ref/path/merge-tree evidence from delivery | REQ-001–REQ-002, REQ-006 | AC-001–AC-002, AC-010 | Complete delivery evidence; approval N/A | Grounds the original refresh measurement; solution-design revalidation extends it to current `7edfb1625...`. |
 
 ## Design Health Assessment
 
@@ -59,7 +64,7 @@ Integrate the finalized Universal Application Dual-Host Foundation from `origin/
 
 ## Scope Classification
 
-`Large` — 238 Personal-only commits, 115 feature-only commits, 177 textual conflicts, 77 canonical changed-both paths, multiple packages, and real Studio/standalone/Electron verification.
+`Large` overall ticket; **bounded Design Impact refresh** for SR-004 — 31 new Personal commits, 11 conflicts, 13 changed-both paths, one relocated model policy, one closed error projection, and mandatory full integrated verification.
 
 ## Scope Guardrail
 
@@ -72,6 +77,9 @@ Integrate the finalized Universal Application Dual-Host Foundation from `origin/
 - **UC-005:** Use application-scoped Agent Tools, team messaging, artifact publication, projection, recovery, and cleanup in both hosts.
 - **UC-006:** Regenerate disposable outputs and prove package/source parity.
 - **UC-007:** Verify current Personal behavior, dual-host behavior, and Electron packaging on the integrated candidate.
+- **UC-008:** Merge the newly fetched Personal ref into the protected ticket checkpoint and resolve all 11 conflicts plus both marker-free overlaps by the recorded owner map.
+- **UC-009:** Evaluate current and removed AutoByteus model selections through package/saved/direct agent and team paths without affecting Codex/Claude ownership or mutating stored/package values.
+- **UC-010:** Propagate a safe provider failure through native transports and the message-only application agent/team stream while retaining v6 identity and strict field exclusion.
 
 ### Out of Scope
 
@@ -84,7 +92,7 @@ Integrate the finalized Universal Application Dual-Host Foundation from `origin/
 
 ### Preserved Behavior Boundary
 
-BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal semantics except where the approved dual-host behavior explicitly extends them; Studio and standalone differ in hosting/ingress, not in application business behavior.
+BEH-001–BEH-007 govern. The integrated branch must preserve latest Personal semantics except where the approved dual-host behavior explicitly extends them; Studio and standalone differ in hosting/ingress, not in application business behavior.
 
 ### Review Authority
 
@@ -95,18 +103,19 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 
 ## Functional Requirements
 
-- **REQ-001 — Latest-base isolation:** The authoritative work must remain on a dedicated ticket branch created from the fetched `origin/personal@8ef282b...`; source branches remain untouched.
-- **REQ-002 — One semantic integration:** Merge the finalized feature ref once and resolve the resulting canonical overlaps by behavior and ownership, never by wholesale `ours`/`theirs` selection.
+- **REQ-001 — Latest-base isolation:** The authoritative work remains on the dedicated ticket branch and protected checkpoint; it must incorporate fetched `origin/personal@7edfb1625...` once without rewriting or directly modifying `personal` or the finalized feature history.
+- **REQ-002 — History-preserving semantic integration:** Preserve the completed feature integration history, merge the newly fetched Personal ref once, and resolve every new conflict and changed-both path by behavior and ownership, never by wholesale `ours`/`theirs` selection.
 - **REQ-003 — Dual-host developer experience:** The maintained Brief and Socratic packages retain devkit-owned `dev`, `dev:studio`, `build`, `validate`, and `start`, one canonical source tree, and build-once Studio/standalone use.
 - **REQ-004 — Current Personal execution authority:** Retain current Personal agent/team provisioning and preparation, claim-before-await activation, private candidates, metadata-before-publication, provider-identity validation, quarantine, rooted-member identity, event publication, exact teardown, provider availability, migration gates, and current package contract values.
 - **REQ-005 — Dual-host application authority:** Retain explicit Studio and standalone assembly roots, narrow application-platform projections, one awaited required-tool readiness owner, package-owned launch defaults, sparse non-mutating overrides, host readiness, scoped Agent Tools session/publication, application communication, projection, recovery, and ordered stop.
 - **REQ-006 — Clean source transition:** Remove obsolete mirrored/custom-builder/old-owner paths; regenerate derived outputs from the integrated canonical source; do not add compatibility wrappers or global fallbacks.
 - **REQ-007 — Integrated proof:** Validate architecture boundaries and omission cases, compile/build affected workspaces, run focused and broad regressions, exercise real Brief/Socratic flows in both hosts, prove package parity, and rebuild/test Electron.
+- **REQ-008 — Latest provider/model behavior on current boundaries:** Preserve newest Personal's exact AutoByteus current-model rejection, external-runtime ownership, original redacted-safe provider message, and native error metadata. Implement application current-model validation through the retained launch/readiness/direct-run owners, preserve stale values without rewrite or fallback, and keep the focused application-agent ERROR contract message-only with exact v6 identity and strict metadata/secret exclusion.
 
 ## Acceptance Criteria
 
-- **AC-001:** `git merge-base --is-ancestor origin/personal HEAD` succeeds on the integrated ticket branch; `origin/personal` and the finalized feature ref have not been rewritten.
-- **AC-002:** The merge commit has both source histories as parents, no unresolved index entries, no conflict markers, and every canonical conflict/overlap has a recorded semantic resolution owner.
+- **AC-001:** `git merge-base --is-ancestor 7edfb162559ec5a6eb4c00c23a929920eabe3dc1 HEAD` succeeds on the refreshed ticket branch; `origin/personal`, the protected checkpoint, and the finalized feature history have not been rewritten.
+- **AC-002:** The refresh merge preserves both histories, has no unresolved index entries or conflict markers, and records a semantic resolution for all 11 conflicts and both marker-free changed-both paths.
 - **AC-003:** From each maintained application directory, `pnpm dev` starts standalone, `pnpm dev:studio` targets Studio, `pnpm build` creates the importable package, `pnpm validate` accepts it, and `pnpm start` runs the built standalone package.
 - **AC-004:** One package build is byte/contract compatible with both the Studio import path and standalone selection path; canonical source is not duplicated into maintained editable mirrors.
 - **AC-005:** Current Personal provisioning/preparation/activation/publication semantics remain authoritative: claims precede provider awaits, candidates remain private until durable metadata commits, provider identity is validated, indeterminate cleanup/commit is quarantined, rooted `memberAddress` identifies team placement, and old feature-era manager/member-registry identity paths are absent.
@@ -116,6 +125,10 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 - **AC-009:** Current Personal readable-provider migration/startup gating, model availability, serialized manifest/bundle/SDK contract values, event-await semantics, and user-facing warnings remain intact.
 - **AC-010:** Generated/derived conflicts are resolved by removal and deterministic regeneration; obsolete custom builders, mirrored source directories, old runtime owners, and compatibility aliases are absent.
 - **AC-011:** The final candidate passes git integrity checks, architecture-boundary tests, affected workspace builds/typechecks, focused server/web/devkit/application suites, both real host journeys, package parity, current Personal regression suites identified during overlap review, and Electron build/smoke verification.
+- **AC-012:** A removed AutoByteus model already stored remains byte-for-byte visible and yields `HOST_REQUIREMENT_MISSING` with `CURRENT_MODEL_SELECTION_REQUIRED`; Save rejects before store upsert; direct agent/team launch rejects before run/team allocation; current AutoByteus and provider-owned Codex/Claude selections retain their existing owners and behavior.
+- **AC-013:** A representative provider failure reaches native clients with latest Personal's safe message/metadata contract and reaches the application agent/team SDK as exactly `{ type: "ERROR", message }`; diagnostic filtering remains, and provider metadata, details, raw errors, stacks, credentials, provider IDs, and extra keys do not cross the application boundary.
+- **AC-014:** The three retired application configuration paths and two generated SDK declaration paths remain absent; the current run-binding service has no import/reference to them; the SDK retains current launch/readiness types, unversioned iframe symbols, exact `agentRunId` URL codec, and the new issue code.
+- **AC-015:** The refreshed candidate passes newest Personal catalog/pricing/missing-key/provider/native-error suites, focused current-model and application-error tests, retained architecture/source checks, both real Studio/standalone package journeys, package parity, recovery/cleanup, and a new Electron build/smoke verification.
 
 ## Constraints / Dependencies
 
@@ -129,21 +142,21 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 
 - Stored subject / location: Personal server database and application data roots, including package records, launch overrides, run/history state, artifact revisions, and host-managed provider configuration.
 - Required outcome: `Directly Usable — No Migration`.
-- Existing data to preserve: all current Personal data and migration ledger; valid current `__autobyteus_resource_configurations.resource_ref_json` and `launch_profile_json` rows remain directly readable through one target store and are interpreted as sparse overrides using current rooted `memberAddress` identity. Invalid/stale rows remain visible and explicitly resettable rather than being silently rewritten, deleted, or replaced by package defaults.
+- Existing data to preserve: all current Personal data and migration ledger; valid current `__autobyteus_resource_configurations.resource_ref_json` and `launch_profile_json` rows remain directly readable through one target store and are interpreted as sparse overrides using current rooted `memberAddress` identity. Invalid/stale rows—including rows that reference a removed AutoByteus catalog ID—remain visible and explicitly resettable rather than being silently rewritten, deleted, remapped, or replaced by package defaults.
 - Unacceptable data loss or corruption: database replacement, copied/seeded defaults, launch override mutation, run/history loss, package mutation, or skipped Personal migrations.
 - Availability/rollout constraints: Personal's current migration gates must complete before either integrated host is ready; standalone uses its own data root and the same current migration authority. The physical table/columns remain unchanged. Normal reads never migrate data; explicit Save writes only the current-rooted sparse override and explicit Reset deletes the row.
-- Related IDs: REQ-004–REQ-007; AC-005, AC-006, AC-009, AC-011.
+- Related IDs: REQ-004–REQ-008; AC-005, AC-006, AC-009, AC-011–AC-015.
 
 ## Assumptions
 
-- `origin/personal@8ef282b...` and `origin/codex/...@a5ffd28...` are the explicit integration inputs until the user requests another refresh.
+- Protected ticket checkpoint `663f44d...` and `origin/personal@7edfb1625...` are the explicit refresh inputs. Implementation must re-fetch and stop for re-analysis if Personal moves again before the merge.
 - Generated application outputs are reproducible from canonical source and may be deleted/regenerated.
 - The user wants the existing finalized behavior, not a greenfield rewrite.
 
 ## Risks / Open Questions
 
 - Personal may advance again before finalization; delivery must refresh and repeat semantic integration against the then-current ref.
-- Auto-merged files can contain semantic regressions despite no conflict marker; the 77-path audit is mandatory.
+- Auto-merged files can contain semantic regressions despite no conflict marker; the two changed-both marker-free production paths and all application-facing clean provider paths in the 31-commit production delta require the recorded audit. The 32nd commit is separately verified as delivery-document-only.
 - Exact source-file inventory may change while adapting to Personal's current owners, but behavior and boundary IDs may not drift.
 - Full Electron/provider tests depend on the existing environment and credentials; unavailable infrastructure must be reported, not replaced by false proof.
 
@@ -151,27 +164,32 @@ BEH-001–BEH-006 govern. The integrated branch must preserve latest Personal se
 
 | Requirement | Use Cases |
 | --- | --- |
-| REQ-001 | UC-001 |
-| REQ-002 | UC-001, UC-002 |
+| REQ-001 | UC-001, UC-008 |
+| REQ-002 | UC-001, UC-002, UC-008 |
 | REQ-003 | UC-003, UC-006 |
-| REQ-004 | UC-002, UC-004, UC-005, UC-007 |
-| REQ-005 | UC-003–UC-005 |
-| REQ-006 | UC-002, UC-006 |
-| REQ-007 | UC-007 |
+| REQ-004 | UC-002, UC-004, UC-005, UC-007–UC-010 |
+| REQ-005 | UC-003–UC-005, UC-009–UC-010 |
+| REQ-006 | UC-002, UC-006, UC-008 |
+| REQ-007 | UC-007–UC-010 |
+| REQ-008 | UC-008–UC-010 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
 | Acceptance Criterion | Intended Scenario |
 | --- | --- |
-| AC-001–AC-002 | Git ancestry, parentage, worktree, conflict, and semantic-resolution audit |
+| AC-001–AC-002 | Latest-ref ancestry, refresh parentage, worktree, 11-conflict, and marker-free semantic-resolution audit |
 | AC-003–AC-004 | Maintained application CLI workflow and package parity |
 | AC-005 | Current Personal run/team identity and lifecycle characterization plus application-scope construction proof |
 | AC-006 | Fresh-root defaults and Studio override/reset/unavailable-model journeys |
 | AC-007–AC-008 | Real Studio/standalone Agent Tools, handoff, publication, projection, recovery, and cleanup |
-| AC-009 | Latest-Personal provider/migration/model/event regression matrix |
+| AC-009 | Retained Personal provider/migration/model/event regression matrix |
 | AC-010 | Source/derived/legacy inventory and regeneration proof |
 | AC-011 | Full integrated source, API/E2E, package, and Electron evidence |
+| AC-012 | Current/stale AutoByteus read, Save, direct agent/team, and external-runtime ownership matrix |
+| AC-013 | Native provider error plus strict application agent/team message-only projection |
+| AC-014 | Exact conflict deletion/contract/identity/no-retired-import audit |
+| AC-015 | Complete refreshed latest-Personal and dual-host verification matrix |
 
 ## Approval Status
 
-Approved through the user's explicit instruction to determine the safest integration approach while ensuring the result is based on latest `origin/personal`. No production implementation is authorized until architecture review passes.
+Approved requirements basis through the user's explicit instruction to keep the ticket on latest `origin/personal`; SR-004 is the bounded design response to delivery's newest-base Design Impact. No refresh implementation or Electron rebuild is authorized until architecture review passes.

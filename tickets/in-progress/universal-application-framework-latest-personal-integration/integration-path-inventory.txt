@@ -903,3 +903,49 @@ autobyteus-ts/src/tools/register-tools.ts
 autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts
 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+
+=== SR-004 NEWEST-PERSONAL REFRESH DELTA ===
+Protected checkpoint: 663f44d31deb05bf47f0eda780de4d754187a51b
+Prior integrated Personal base: d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+Newest Personal ref: 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+Measured delta: 32 commits; unchanged 11 conflicts; 13 production changed-both paths; newest commit adds two unrelated delivery-document modifications
+Normative semantic map: latest-base-refresh-design-analysis.md
+
+ADD
+----
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+
+MODIFY / SEMANTICALLY RESOLVE
+-----------------------------
+autobyteus-application-sdk-contracts/src/execution-resources.ts
+autobyteus-application-sdk-contracts/README.md
+autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts
+autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+
+KEEP REMOVED / RESOLVE AS DELETION
+----------------------------------
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+
+MARKER-FREE OVERLAP AUDIT
+-------------------------
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts: remove auto-merged import of deleted helper; use explicit current-model policy; validate all team pairs before allocation.
+autobyteus-application-sdk-contracts/README.md: retain current SDK content and add original-safe-message/message-only ERROR wording.
+
+LATEST PERSONAL CLEAN AUTHORITY
+-------------------------------
+Accept the remaining non-overlapping provider catalog/model/pricing/missing-key/error extraction/redaction/native transport/client changes from d7d4eace..1629441a3, subject to their retained suites and the strict application projection proof. Also accept the two unrelated completed-ticket delivery-document edits in 1629441a3..7edfb1625. No broad whole-tree replacement is authorized.

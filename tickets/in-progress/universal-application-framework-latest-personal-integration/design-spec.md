@@ -4,30 +4,32 @@
 
 Two valid but divergent states must be combined.
 
-- **Latest Personal** (`8ef282b...`) owns the current repository and product baseline. It has 238 commits after the merge base, including newer readable-provider/migration startup, provider preparation/publication, unavailable-model behavior, agent activation candidates, RootTeamRun execution trees, rooted `memberAddress` identity, current session and cleanup semantics, and current serialized application contracts.
+- **Previously integrated and verified checkpoint** (`663f44d...`) contains the completed dual-host feature plus Personal through `d7d4eace...`; it has passed architecture, source, API/E2E, provider, package, and Electron verification.
+- **Newest Personal** (`7edfb1625...`) is 32 commits beyond the integrated base. Its first 31 commits own the new provider catalog/current-model membership, pricing, missing-key/provider-error extraction and redaction, native error metadata, and related current regressions; its newest commit changes only two unrelated completed-ticket delivery documents.
 - **Finalized feature** (`a5ffd28...`) has 115 commits after the merge base and owns the proven Universal Application Dual-Host Foundation: one package in Studio and standalone, explicit host builders, one shared application platform boundary with four projections, standalone ingress, devkit workflow, package launch defaults/overrides/readiness, application-scoped Agent Tools publication, package-source cleanup, and real dual-host/Electron evidence.
 - Latest Personal does not contain the dual-host foundation. Conversely, the feature's execution construction targets older run/team owners and cannot replace Personal's current implementations wholesale.
-- A real isolated merge produced 177 conflicts. 139 are generated/derived or obsolete builders; about 38 are source/test conflicts. Seventy-seven canonical files changed on both sides and require semantic audit even where Git auto-merged them.
+- The historical merge produced 177 conflicts and is already resolved. The newest non-mutating refresh preview produces 11 conflicts and 13 changed-both paths. Five conflicts target paths intentionally removed by the completed design; a marker-free run-binding auto-merge imports one of those deleted helpers.
 - The finalized required-tool loader has six server specs but labels them seven. The actual seventh source-backed unit is Core `registerTools()`, currently reached early through both provisioned Search and eager `defaultAgentFactory` construction; no independent Skills tool registrar exists.
 
-The task pressure is therefore an **integration boundary problem**, not evidence that either whole branch is wrong. The target must preserve both behavior authorities and adapt only the intersecting construction/identity seams.
+The current task pressure is a **bounded latest-base integration boundary problem**, not evidence that the passed application-platform architecture should be reopened. The target must preserve the verified owners while relocating only the new current-model and application-error behavior that intersects them.
 
 ## Intended Change
 
-Create one integration commit on the dedicated latest-Personal-based ticket branch. Resolve canonical source by an explicit semantic authority matrix, remove derived/mirrored/obsolete paths, adapt the feature's application-scoped runtime construction to Personal's current run/team lifecycle and identities, regenerate package outputs, and re-prove the combined state.
+Merge `origin/personal@7edfb1625...` once into the protected ticket checkpoint. Accept non-overlapping Personal provider/runtime and unrelated delivery-document changes, resolve the unchanged 11 conflicts and two marker-free production overlaps through current owners, add one narrow current-model selection policy, keep retired/generated paths deleted, combine the safe provider message with the closed v6 application stream, and re-prove the combined state.
 
-No production file is changed during solution design. Implementation begins only after architecture review.
+No refresh production file is changed during solution design. Implementation and Electron rebuild begin only after architecture review.
 
 ## Relevant Behavior And Production-Path Map
 
 | Behavior ID | Kind | Approved Requirement / Intent And AC IDs | Approved Trigger Or Contract | Existing Evidence | Approved Change Or Preserved Outcome | Target Path / Spine IDs |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | REQ-001, REQ-002; AC-001, AC-002 | Integrate finalized feature onto latest Personal | Git refs, merge base, isolated trial merge | Keep Personal first-parent base and both immutable input histories | DS-001 |
+| BEH-001 | Operational | REQ-001, REQ-002; AC-001, AC-002, AC-014 | Refresh the verified checkpoint onto newest Personal | Protected checkpoint, new ref, merge-tree preview | Preserve both histories; merge the new Personal ref once without rewriting | DS-001, DS-010 |
 | BEH-002 | User | REQ-003; AC-003, AC-004 | Run application commands from maintained folder | Package/tree comparison | Preserve devkit native workflow and build-once package behavior | DS-002, DS-003 |
 | BEH-003 | System | REQ-004, REQ-005; AC-005–AC-008 | App launches agent/team and consumes return events | Personal current managers; feature final dual-host evidence | Use current Personal lifecycle/identity with exact application-scoped dependencies | DS-004–DS-006, DS-008 |
-| BEH-004 | User/Contract | REQ-005; AC-006, AC-009 | Evaluate package default or Studio override | Feature launch service plus Personal model availability and stored current-rooted rows | Preserve package baseline/sparse override and current availability blocking through one direct-use store | DS-002, DS-003, DS-009 |
-| BEH-005 | Operational | REQ-002, REQ-006; AC-002, AC-010 | Resolve merge | Conflict and overlap inventories | Resolve source semantically; remove/regenerate derived output | DS-001 |
-| BEH-006 | Contract | REQ-007; AC-011 | Review/test integrated candidate | Prior branch reports are non-integrated baselines | Execute complete integrated proof | DS-007 |
+| BEH-004 | User/Contract | REQ-005, REQ-008; AC-006, AC-009, AC-012 | Evaluate package default, saved sparse override, Save, or direct launch | Current launch owner/store plus newest AutoByteus membership behavior | Retain exact stored value/provenance, block stale AutoByteus selection, and preserve external-runtime ownership | DS-002, DS-003, DS-009, DS-011 |
+| BEH-005 | Operational | REQ-002, REQ-006, REQ-008; AC-002, AC-010, AC-014 | Resolve newest refresh | DR-004 conflict report plus 13-path changed-both audit | Resolve current source semantically; keep five retired/generated paths deleted | DS-010 |
+| BEH-006 | Contract | REQ-007, REQ-008; AC-011, AC-015 | Review/test refreshed candidate | Passed checkpoint and newest-Personal reports are separate baselines | Execute focused refresh proof plus complete retained dual-host/Electron proof | DS-007, DS-010–DS-012 |
+| BEH-007 | User/Contract | REQ-008; AC-013, AC-015 | Provider error reaches native and application consumers | Latest native error contract plus current v6 application stream | Native transport keeps safe metadata; application SDK carries only original safe message with exact identity | DS-012 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -35,20 +37,23 @@ No production file is changed during solution design. Implementation begins only
 | --- | --- | --- | --- | --- |
 | `integration-strategy-analysis.md` | Strategy, authority, critical seam, resolution and verification details | All | Defines the implementation policy used below | Design-ready / approved by delegated direction |
 | `integration-runtime-contracts.md` | Exact host lifecycle, current activation/provisioning adaptation, construction obligations, file dispositions, launch store/direct-use proof, and verification delta | REQ-004–REQ-007; AC-005–AC-011 | Normative detail for DS-002–DS-006 and the persisted-data decision | Design-ready / approved preserved-behavior precision |
+| `latest-base-refresh-design-analysis.md` | Exact newest-base authority, current-model/error boundaries, conflict/overlap map, inventory, and verification delta | REQ-001–REQ-008; AC-001–AC-015 | Normative SR-004 delta for DS-010–DS-012 | Design-ready / pending architecture review |
 | `merge-attempt.log` | Raw trial merge evidence | REQ-002; AC-002 | Grounds conflict measurement | Complete / N/A |
 | `merge-conflict-inventory.txt` | Exact conflict classification | REQ-002, REQ-006 | Drives conflict resolution classes | Complete / N/A |
 | `branch-overlap-inventory.txt` | Exact changed-both inventory | REQ-002, REQ-006 | Defines marker-free audit set | Complete / N/A |
 | `integration-path-inventory.txt` | Add/modify/remove/regenerate inventory | REQ-003–REQ-007 | Concrete starting file inventory | Complete / N/A |
+| `latest-base-refresh-conflict-report.md` | Delivery-owned original refresh blocker | REQ-001–REQ-002, REQ-006–REQ-008; AC-001–AC-002, AC-010–AC-015 | Triggering Design Impact evidence retained untouched | Complete / N/A |
+| `evidence/delivery/dr-004-base-refresh-and-integration.log` | Delivery-owned raw fetch/path/preview evidence | REQ-001–REQ-002, REQ-006; AC-001–AC-002, AC-010 | Grounds the original 31-commit measurement extended by the current-ref revalidation | Complete / N/A |
 
 ## Task Design Health Assessment
 
 - Change posture: `Refactor` / integration of a completed larger requirement.
-- Current design issue found: `Yes`, only at the branch-intersection boundary.
+- Current design issue found: `Yes`, now bounded to the newest-base current-model/error owner intersection; the previously approved production architecture remains passed.
 - Root cause classification: `Boundary Or Ownership Issue` and `Legacy Or Compatibility Pressure`.
-- Refactor needed now: `Yes`, bounded to current activation/session/publication construction and identity adaptation.
-- Evidence: directly selecting feature execution managers regresses Personal; using Personal defaults loses application-scoped publisher/session identity; the construction order otherwise cycles. Separately, the feature readiness owner labels six server registrars as seven while Core is triggered through Search and eager factory construction before lifecycle readiness.
-- Design response: keep current domain owners, extract one concrete activation-state owner required for acyclic application construction, explicitly inject scoped dependencies, and make `AgentToolRegistryReadiness` the sole application-host registration owner with Core first and provisioned Search last.
-- Refactor rationale: the application publisher must validate against the exact active run before provider factories and the full run manager exist. A narrow activation registry is the smallest truthful early owner.
+- Refactor needed now: `Yes`, bounded to one current-model policy plus existing readiness/Save/direct-run/error-projection seams; no activation/session/publication redesign.
+- Evidence: newest Personal places current-model behavior in configuration files removed by the verified ticket, while the marker-free run-binding auto-merge imports that deleted helper. Its provider error behavior is correct, but application conflicts must retain the exact closed v6 identity/field boundary.
+- Design response: preserve the approved activation/session/tool design unchanged; add one explicit stateless current-model selection policy used by the retained launch/readiness/direct-run owners, accept latest native error transport, and project only the original safe message through the application SDK.
+- Refactor rationale: AutoByteus membership is one cross-boundary policy exercised at read, Save, and direct command boundaries; one named policy prevents both restored legacy ownership and duplicated runtime-scoping rules.
 - Intentional deferrals: no generalized runtime framework, no repository-wide execution rewrite, no public SDK expansion, and no application-owned external MCP provisioning. These are not needed for the integration.
 
 ## Terminology
@@ -60,6 +65,7 @@ No production file is changed during solution design. Implementation begins only
 - **Application session scope:** the early application-owned index that records and revokes Agent Tools MCP session identities. It owns no dispatch or publication policy and exists before the scoped session manager to keep construction acyclic.
 - **Canonical source:** editable `frontend-src`, `backend-src`, definitions/configuration, and source contracts from which package output is generated.
 - **Derived output:** compiled/mirrored `ui`, `backend`, `dist`, vendored, and generated-client content.
+- **Current-model selection policy:** stateless application policy that normalizes the runtime and delegates only AutoByteus model identifiers to latest Personal's exact `LLMFactory` membership guard; it owns no catalog, store, cache, lifecycle, or external-runtime model namespace.
 
 ## Design Reading Order
 
@@ -82,7 +88,7 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 - Reader policy: store cells are safe-parsed as absent/parsed/malformed; `ApplicationLaunchConfigurationService` validates and evaluates. Read/list/preview never writes, deletes, seeds, normalizes, converts `launch_defaults_json`, or silently falls back. Invalid, stale, unavailable, legacy-default-only, or obsolete-member-field rows remain diagnosable and explicitly resettable.
 - Writer policy: only explicit Studio Save writes the normalized current-rooted sparse shape and `NULL` legacy defaults; only explicit Reset deletes the row. Package defaults remain computed from immutable definitions and are never copied into a DB.
 - Required invariants: no data reset/copy, no package mutation, no skipped migration, no launch override loss or silent repair, no run/history corruption.
-- Decision: `Directly Usable — No Migration` for valid current Personal rows; malformed/obsolete rows are not transformed and remain explicit non-runnable saved state.
+- Decision: `Directly Usable — No Migration` remains unchanged. Current valid rows are direct; removed-model rows keep the exact string and become explicit `HOST_REQUIREMENT_MISSING` / `CURRENT_MODEL_SELECTION_REQUIRED` state without transformation.
 - Rationale: physical storage and current rooted semantics already fit the target. A migration or read-time compatibility branch adds risk without benefit. Personal's tracked migrations still run before readiness.
 - Normative examples and outcome table: [integration-runtime-contracts.md](integration-runtime-contracts.md), section 3.
 - Supports: REQ-004–REQ-007; AC-005, AC-006, AC-009, AC-011.
@@ -100,6 +106,9 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 | DS-007 | Primary End-to-End | BEH-006 | Integrated source | Reviewed/tested/Electron candidate | Downstream review and coverage owners | Existing branch evidence is insufficient |
 | DS-008 | Bounded Local | BEH-003 | Host process prerequisite entry | READY or reverse unwind | Explicit host starter + `ApplicationPlatformLifecycle` | Prevents skipped/duplicated current Personal phases across hosts |
 | DS-009 | Primary End-to-End | BEH-004 | Package baseline or saved current-rooted row | Effective profile/readiness or explicit blocking issue | `ApplicationLaunchConfigurationService` + one override store | Proves Directly Usable — No Migration without fallback |
+| DS-010 | Primary End-to-End | BEH-001, BEH-005, BEH-006 | Protected verified checkpoint plus newest Personal ref | Refreshed reviewed/tested candidate | One history-preserving refresh merge and semantic resolution map | Prevents retired-owner resurrection and marker-free compile defects |
+| DS-011 | Primary + bounded defense | BEH-004 | Package/saved/Save/direct runtime-model pair | RUNNABLE, exact blocking issue, or pre-side-effect rejection | `ApplicationCurrentModelSelectionPolicy` with current launch/run owners | Preserves latest AutoByteus selection behavior without taking Claude/Codex ownership |
+| DS-012 | Return-Event | BEH-007 | Provider/runtime failure | Native client and closed application SDK error | Latest native error owners + `ApplicationAgentStreamEventProjector` | Preserves the safe original message without leaking metadata or breaking v6 identity |
 
 ## Primary Execution Spine(s)
 
@@ -124,6 +133,20 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 `immutable package resource/default definitions -> optional saved resource row from ApplicationLaunchOverrideStore -> selected-resource baseline -> current-rooted sparse override validation/overlay -> per-leaf effective profile/provenance -> current host availability -> RUNNABLE or explicit blocking state`
 
 Reads never write. Explicit Studio Save is the only upsert path; explicit Reset is the only delete path.
+
+### DS-010 — Newest Personal refresh
+
+`protected checkpoint 663f44d -> re-fetch/confirm 7edfb1625 -> one merge -> accept non-overlapping Personal provider and delivery-document changes -> resolve 11 conflicts and two marker-free production overlaps -> keep retired/generated paths deleted -> compile/test -> reviewed refreshed commit`
+
+### DS-011 — Current-model selection
+
+`package baseline or saved sparse override -> effective leaf pairs -> shared current-model policy -> AutoByteus exact LLMFactory membership or Codex/Claude bypass -> host catalog/credential readiness -> RUNNABLE or exact blocking issue`
+
+Explicit Save applies the same policy before upsert. Direct agent/team start applies it to all normalized configs before agent creation or team-run allocation. These are validation boundaries around one policy, not competing configuration authorities.
+
+### DS-012 — Provider error return
+
+`provider extractor/redactor -> canonical native ERROR(code + safe message + optional safe metadata) -> native consumers; canonical AgentRun/team event -> application projector -> diagnostic filter -> exact {type: ERROR, message} -> v6 envelope/strict SDK parser`
 
 ## Spine Narratives
 
@@ -164,6 +187,7 @@ Reads never write. Explicit Studio Save is the only upsert path; explicit Reset 
 | Runtime projections | exact REST, realtime, lifecycle, host-management contracts | private stores/managers or a 19-field service bag |
 | `ApplicationLaunchOverrideStore` | one physical table-row owner; safe parse and explicit upsert/delete only | baseline/overlay/readiness policy or read-time repair |
 | `ApplicationLaunchConfigurationService` | package and selected-resource baselines, current-rooted sparse override validation, effective profile, readiness/provenance, explicit Save/Reset | UI-side definition traversal, second store, read-time rewrite, package mutation |
+| `ApplicationCurrentModelSelectionPolicy` | runtime normalization and exact AutoByteus current-model membership delegation shared by readiness, Save, and direct launch | stores, provider discovery, credentials, package mutation, model remapping, or Claude/Codex model ownership |
 | `ApplicationAgentToolMcpSessionScope` | early session ownership index and exact revoke/block/close | route dispatch, catalog selection, publication |
 | `AgentRunResourceManager` | attach/release file, artifact, memory observers and exact application session revocation | backend termination or active-map policy |
 | `AgentRunActivationRegistry` | tokenized pending claims, active identity state, stop admission, identity-checked transitions | backend construction/termination, metadata, provider selection, lifecycle orchestration |
@@ -526,8 +550,40 @@ No temporary compatibility seam is retained after step 14.
 - Personal may advance again. Mitigation: delivery refresh and repeat classification.
 - Provider/Electron environment may be unavailable. Mitigation: truthfully block or record residual evidence gap; do not substitute mocks for the real journey.
 
+## SR-004 Latest-Base Refresh Delta
+
+### Authoritative Boundary Decisions
+
+1. Latest Personal remains authoritative for its provider catalog, pricing, missing-key, provider error extraction/redaction, canonical native error fields, and native client behavior.
+2. The verified ticket remains authoritative for launch baseline/overlay/readiness/store semantics, exact v6 application identity, Studio/standalone boundaries, and message-only application SDK shape.
+3. `ApplicationCurrentModelSelectionPolicy` is the single new policy. `create-application-orchestration-services.ts` constructs it with an explicit AutoByteus membership function and passes the same instance to launch configuration, host capability validation, and direct run binding. No optional default or process lookup is permitted in those application constructors.
+4. Saved stale AutoByteus values stay structurally visible; readiness maps the exact latest Personal code/message to `HOST_REQUIREMENT_MISSING`. Save blocks before upsert; direct start blocks before allocation. Codex/Claude skip only the AutoByteus membership guard and retain existing host/factory validation.
+5. The native error branch retains safe metadata. The application branch carries only the safe nonblank `message`, filters diagnostics, preserves exact producer `agentRunId`, and rejects extra provider/native fields.
+6. The three retired configuration paths and two generated SDK declaration paths remain absent. No alias, wrapper, migration, or restored predecessor test is allowed.
+
+### Exact Conflict And File Contract
+
+The normative 11-path conflict decisions, two marker-free overlap decisions, Add/Modify/Remove inventory, and implementation order are in `latest-base-refresh-design-analysis.md`. That supplement is part of this design; implementers must not substitute a whole-file side choice.
+
+### No-Data-Migration Decision
+
+No table, column, JSON shape, package schema, or contract version changes. Removed AutoByteus identifiers remain stored as entered and are rejected at evaluation/Save/run time. Reads never write; explicit Save and Reset remain the only launch-row mutations. Current pricing/error additions follow latest Personal's already-reviewed persistence behavior. Outcome: `Directly Usable — No Migration`.
+
+### Required Verification
+
+- exact policy unit tests for current/stale AutoByteus and external-runtime bypass;
+- launch read/Save/reset and direct agent/team pre-side-effect tests;
+- native provider error and strict application message-only projection tests;
+- exact current SDK types, URL codec, producer identity, no retired imports, no tracked generated application SDK declarations;
+- latest Personal provider/catalog/pricing/redaction suites;
+- retained architecture/source gates, real Studio/standalone Codex/Luna journeys, Agent Tools/publication/projection/recovery/cleanup, package parity, and a new Electron build/smoke.
+
 ## Guidance For Implementation
 
+- Treat `latest-base-refresh-design-analysis.md` as the exact SR-004 resolution map; do not restore a deleted side merely because Git reports modify/delete.
+- Construct one explicit current-model policy and inject it into all three application validation boundaries; do not duplicate `LLMFactory` scoping rules or add optional defaults.
+- Keep native provider metadata native and the application SDK message-only.
+- Preserve the six delivery-owned DR-004 files/evidence while implementing.
 - Begin from the saved inventories; do not improvise a second integration strategy.
 - Never resolve a canonical source directory wholesale with `ours` or `theirs`.
 - For every changed-both canonical file, record owner, selected behavior, and BEH/REQ/AC protection in the implementation handoff.

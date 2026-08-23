@@ -2,7 +2,14 @@
 
 ## Status
 
-DR-003 latest-base integrated Electron package is ready for explicit user verification.
+DR-004 is blocked before integration and Electron rebuild because the newest `origin/personal` creates 11 non-mechanical conflicts with the current application-platform architecture. The DR-003 package remains historical and must not be treated as the requested newest-base candidate.
+
+Canonical blocker:
+
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log
+
+Routing: **Design Impact → `/solution_designer`**. No actual merge or Electron rebuild has been performed for Personal `1629441a30dfce91d75b9bf7dcdd508b0f371bc5`.
 
 ## Current Integrated State
 

@@ -8,220 +8,282 @@
 - Supplemental Task Artifacts Reviewed:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-attempt.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-conflict-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/branch-overlap-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt`
-  - Finalized feature requirements, design, review, API/E2E, handoff, and delivery records under `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log`
+  - Previously passed implementation, source-review, API/E2E, proportional test-review, package-parity, and Electron evidence for protected checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b`.
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant Solution Revision IDs: `SR-001`–`SR-004`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Re-review of SR-003's bounded correction for remaining AR-001.
-- Prior Review Round Reviewed: `ARCH-REV-002` / `Fail — Design Impact`
-- Latest Authoritative Round: `ARCH-REV-003`
-- Current-State Evidence Basis: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`, finalized feature `origin/codex/universal-application-framework-proposal-analysis@a5ffd289aa58293574e44dfa8b38ed8b1978ffd0`, merge base `acb8985930ccce49b632cdca22b92f5b237e35bf`, retained merge inventories, and independent source reads of current startup/migrations, all production Core/tool-registration callers, activation/provisioning, team execution, launch persistence, and finalized-feature application-platform composition.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: Delivery's mandatory newest-Personal preview (`DR-004`) found 11 semantic conflicts and stopped before merge/build; SR-004 relocates the new current-model and provider-error behavior into the already-reviewed owners.
+- Prior Review Round Reviewed: `ARCH-REV-003` / `Pass`
+- Latest Authoritative Round: `ARCH-REV-004`
+- Current-State Evidence Basis: protected verified checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b`; previously integrated Personal base `d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`; current fetched `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`; independent fresh `git merge-tree --write-tree HEAD origin/personal` confirmation of the same 11 conflicts and a clean index; direct source reads of current launch configuration/readiness/run binding and newest Personal current-model/provider-error code.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: preserve latest Personal's evolved runtime/data/provider behavior while integrating the finalized same-package Studio/standalone framework once through a semantic merge.
-- Relevant existing behavior and evidence confirmed: the merge surface, current lifecycle/activation/rooted identity/persistence behavior, finalized dual-host behavior, and actual six server registrars plus Core registration path are source-backed.
-- Scope guardrail confirmed: UC-001–UC-007, BEH-001–BEH-006, stated exclusions, preserved behavior, and review authority are clear.
-- Approved change, preserved behavior, and outside scope understood: SR-003 makes an already-required startup behavior explicit; it adds no tool, host, route, migration, compatibility promise, public gateway, or new product workflow.
-- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `Yes`; there are no remaining blocking findings.
-- Remaining material ambiguity: none.
+- Approved requirements / intended behavior understood: refresh the verified dual-host checkpoint onto the current fetched Personal ref while preserving the passed application framework and adopting newest Personal provider/model/error semantics through the retained owners.
+- Relevant existing behavior and evidence confirmed: newest Personal owns exact AutoByteus membership and native provider-error behavior; the protected checkpoint owns the explicit hosts, four application-platform projections, sparse launch model/store, v6 identity, scoped Agent Tools/publication, and clean source policy.
+- Scope guardrail confirmed: UC-001–UC-010, BEH-001–BEH-007, stated exclusions, Directly Usable — No Migration, and the requirement that implementation stop if Personal moves are explicit.
+- Approved change, preserved behavior, and outside scope understood: SR-004 adds one internal stateless policy and resolves the refresh; it adds no host, route, public metadata contract, authentication scope, compatibility path, model alias, persistence schema, or migration.
+- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `Yes`; no blocking finding remains.
+- Remaining material ambiguity, if any: none.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | Pass | Pass — exact refs, ancestry, merge base, and trial-merge inventory are retained | Pass — one history-preserving semantic merge | Confirmed | Retain exact merge-parent and resolution evidence. |
-| BEH-002 | User | Pass | Pass — maintained application commands and package trees are evidenced | Pass — native devkit workflow and one build for two hosts | Confirmed | Implement and prove parity. |
-| BEH-003 | System | Pass | Pass — current activation/team/tool paths and finalized scoped application behavior are source-backed | Pass — current Personal lifecycle and rooted identity with exact graph-local application dependencies | Confirmed | Implement DS-004–DS-006 and DS-008. |
-| BEH-004 | User/Contract | Pass | Pass — physical rows, current-rooted identity, provider/model availability, and finalized sparse stages were compared | Pass — one non-mutating override owner with truthful blocking and no fallback | Confirmed | Implement DS-009. |
-| BEH-005 | Operational | Pass | Pass — canonical, integration-only, retained, removed, and generated classes have exact counts | Pass — semantic resolution and regeneration owners are explicit | Confirmed | Consume target dispositions, not raw Git classification alone. |
-| BEH-006 | Contract | Pass | Pass — prior results are correctly characterization-only | Pass — exact integrated architecture, source, host, package, regression, and Electron proof is required | Confirmed | Execute after implementation. |
+| BEH-001 | Operational | Pass | Pass — protected checkpoint, fetched ref, divergence, ancestry, and fresh merge-tree proof are exact | Pass — one history-preserving refresh merge with a stop-and-reclassify guard | Confirmed | Re-fetch immediately before implementation. |
+| BEH-002 | User | Pass | Pass — maintained package commands and prior dual-host package evidence remain applicable as characterization | Pass — developer workflow and build-once package design are unchanged | Confirmed | Re-prove on the refreshed commit. |
+| BEH-003 | System | Pass | Pass — current activation/team/session/publication owners and checkpoint dual-host behavior are source-backed | Pass — SR-004 does not reopen or bypass the reviewed graph | Confirmed | Preserve exact construction and cleanup. |
+| BEH-004 | User/Contract | Pass | Pass — supported Studio Save/Reset, package defaults, direct SDK start, current launch store, and newest membership guard establish the path | Pass — exact stored value remains visible; readiness/Save/direct run share the bounded rule without taking Codex/Claude ownership | Confirmed | Implement DS-011 and focused no-side-effect proof. |
+| BEH-005 | Operational | Pass | Pass — fresh preview independently confirms 6 content conflicts, 5 modify/delete conflicts, and two marker-free changed-both decisions | Pass — every path has an owner-based disposition and five retired/generated paths remain absent | Confirmed | Follow the map; do not select whole files mechanically. |
+| BEH-006 | Contract | Pass | Pass — checkpoint and newest-Personal results validate separate states only | Pass — focused delta proof plus full source/dual-host/provider/package/Electron proof is mandatory on one refreshed commit | Confirmed | Execute the complete matrix downstream. |
+| BEH-007 | User/Contract | Pass | Pass — ordinary application runs and newest Personal's approved provider-error contract establish the producer path | Pass — native safe metadata stays native; the application SDK remains exact message-only v6 | Confirmed | Prove agent and team paths and strict extra-key rejection. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `integration-strategy-analysis.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `integration-runtime-contracts.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `merge-attempt.log` | Pass | Pass | Pass | Pass | Pass | None. |
-| `merge-conflict-inventory.txt` | Pass | Pass | Pass | Pass | Pass | None. |
-| `branch-overlap-inventory.txt` | Pass | Pass | Pass | Pass | Pass | None. |
-| `integration-path-inventory.txt` | Pass | Pass | Pass | Pass | Pass | None; declared category counts were independently confirmed. |
-| Finalized-feature done package | Pass | Pass | Pass | Pass | Pass — characterization baseline | Preserve as evidence, not as proof of the future merged state. |
+| `integration-strategy-analysis.md` | Pass | Pass | Pass | Pass | Pass | None; its SR-004 addendum preserves the original one-merge strategy. |
+| `integration-runtime-contracts.md` | Pass | Pass | Pass | Pass | Pass | None; sections 1–4 remain the passed baseline and section 5 defines the bounded delta. |
+| `latest-base-refresh-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | None; this is the normative SR-004 conflict/policy/error map. |
+| Merge and overlap inventories | Pass | Pass | Pass | Pass | Pass — evidence, approval N/A | Retain unchanged and consume target dispositions rather than raw Git categories. |
+| `integration-path-inventory.txt` | Pass | Pass | Pass | Pass | Pass — evidence, approval N/A | None; SR-004 Add/Modify/Delete and marker-free sections match the normative supplement. |
+| `latest-base-refresh-conflict-report.md` | Pass | Pass | Pass | Pass | Pass — delivery trigger, approval N/A | Retain untouched. |
+| `dr-004-base-refresh-and-integration.log` | Pass | Pass | Pass | Pass | Pass — raw evidence, approval N/A | Retain untouched. |
+| Prior checkpoint reports/evidence | Pass | Pass | Pass | Pass | Pass — characterization only | Do not treat them as proof of the future refreshed commit. |
+
+The two older supplement-inventory rows still describe their original SR-003 responsibility ranges, while each artifact's current front matter and the dedicated SR-004 supplement make the added REQ-008/AC-012–AC-015 relationship explicit. This is non-blocking because the normative delta and implementation guidance are unambiguous; align those inventory ranges opportunistically in a later documentation edit.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The task is correctly classified as a large integration/refactor with bounded ownership intersections. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | The real merge and source graph establish the current-runtime/finalized-feature intersection. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design selects one activation-state extraction, one launch store, explicit host/lifecycle composition, and one tool-readiness owner. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Exact lifecycle, construction, state, persistence, file, removal, and proof inventories support each bounded change. | None. |
+| Assessment is present for the current task posture | Pass | The design correctly classifies SR-004 as a bounded latest-base integration refactor over a passed production architecture. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | New behavior lands in owners removed by the checkpoint, and the marker-free run-binding merge imports a deleted helper. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | One narrow policy plus existing readiness/Save/run/error seams; no activation/session/publication redesign. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Authority matrix, conflict map, exact inventory, dependency identity, transition table, and verification delta all support the bounded change. | None. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Semantic merge | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-002–DS-003 | Studio/standalone startup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001 | Original semantic merge/history | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-002–DS-003 | Studio/standalone package startup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004–DS-006 | Application run, return, activation, cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-007 | Integrated proof | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-008 | Current lifecycle integration | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-009 | Persisted launch override | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-008–DS-009 | Lifecycle and launch persistence | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-010 | Newest-Personal refresh | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-011 | Current-model read/Save/direct-run paths | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-012 | Provider-error native/application return split | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-The main and return spines remain complete: package/host startup reaches truthful readiness; business demand reaches current run/team authorities; MCP messaging/publication returns through the exact application graph; cleanup/recovery returns through the current lifecycle owners.
+The SR-004 spines start at independent supported surfaces or the mandatory merge operation and end at an integrated candidate, a truthful readiness/command outcome, or the exact SDK consumer. They do not stop at the new policy or projector.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Studio/standalone process startup | Pass | Pass | Pass | Pass | Host-specific process behavior remains in explicit starters/builders. |
-| `ApplicationPlatformRuntime` four projections | Pass | Pass | Pass | Pass | No broad service locator is exposed. |
-| `AgentToolRegistryReadiness` | Pass | Pass | Pass | Pass | One composition-owned instance owns Core-first, server-unit, Search-last readiness; alternate production triggers are removed. |
-| Current activation/application run construction | Pass | Pass | Pass | Pass | Claims, candidates, resources, sessions, provider factories, team propagation, and removal are exact. |
-| Launch configuration/persisted override | Pass | Pass | Pass | Pass | One store and one baseline/selection/override/effective owner are selected. |
-| Devkit/canonical source | Pass | Pass | Pass | Pass | Maintained source and generated output remain separated. |
+| Studio/standalone builders and `ApplicationPlatformRuntime` | Pass | Pass | Pass | Pass | The passed four projections and explicit hosts are unchanged. |
+| `ApplicationLaunchConfigurationService` | Pass | Pass | Pass | Pass | Still owns package/selected baseline, sparse overlay, effective view, readiness, Save, and Reset. |
+| `ApplicationLaunchOverrideStore` | Pass | Pass | Pass | Pass | Remains the only physical row owner; reads never mutate. |
+| `ApplicationCurrentModelSelectionPolicy` | Pass | Pass | Pass | Pass | Owns only runtime normalization plus AutoByteus membership delegation; no store/catalog/provider discovery. |
+| `ApplicationRunBindingLaunchService` | Pass | Pass | Pass | Pass | Uses the same policy as command-boundary defense; it does not become a second readiness owner. |
+| Native provider error owners / application projector | Pass | Pass | Pass | Pass | Rich safe metadata remains native; the application boundary intentionally narrows to message only. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Host starters -> application lifecycle | Pass | Pass | Pass | Pass | Exact 28-phase allocation preserves host differences. |
-| Lifecycle -> required tool readiness -> exact registrars | Pass | Pass | Pass | Pass | Core first; five independent server units; provisioned Search last; no factory/Search/background bypass. |
-| Application activation -> publisher -> scoped sessions -> providers -> manager | Pass | Pass | Pass | Pass | Exact constructor obligations and named general-process exemptions are closed. |
-| Current team graph -> graph-local dependencies | Pass | Pass | Pass | Pass | Current registries and rooted identity replace obsolete feature owners. |
-| Launch policy -> one override store | Pass | Pass | Pass | Pass | Reads remain side-effect free and writes remain explicit. |
-| Application source -> SDK/devkit | Pass | Pass | Pass | Pass | No application-to-host-internal dependency is introduced. |
+| Assembly -> current-model policy -> injected AutoByteus membership function | Pass | Pass | Pass | Pass | One exact instance is required by all three application validation boundaries. |
+| Launch service -> override store / host validator | Pass | Pass | Pass | Pass | UI traversal, read-time writes, old configuration owner, and model fallback stay forbidden. |
+| Host validator -> runtime availability -> current-model policy -> existing catalog/credentials | Pass | Pass | Pass | Pass | Runtime ownership and failure classification remain ordered and explicit. |
+| Direct run binding -> policy -> current run/team services | Pass | Pass | Pass | Pass | All team leaves validate before allocation or creation. |
+| Provider producer -> native transports or application projector | Pass | Pass | Pass | Pass | Application code cannot consume native metadata through a mixed-level shortcut. |
+| Merge operation -> semantic path map | Pass | Pass | Pass | Pass | Whole-directory/whole-file `ours` or `theirs` resolution is rejected. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `buildStudioServer` / `buildStandaloneApplicationServer` | Pass | Pass | Pass | Low | Pass |
-| `ApplicationPlatformRuntime` projections | Pass | Pass | Pass | Low | Pass |
-| `AgentToolRegistryReadiness.registerRequiredGroups` | Pass | Pass | Pass | Low | Pass |
-| `AgentRunActivationRegistry` and current candidate transitions | Pass | Pass | Pass | Low | Pass |
-| launch evaluate/preview/save/reset | Pass | Pass | Pass | Low | Pass |
-| rooted team member identity | Pass | Pass | Pass | Low | Pass |
+| `ApplicationCurrentModelSelectionPolicy` operation | Pass | Pass | Pass — runtime kind plus model identifier | Low | Pass |
+| launch configuration view/evaluate/Save/Reset | Pass | Pass | Pass — application ID, slot key, exact resource/override | Low | Pass |
+| direct agent/team launch | Pass | Pass | Pass — exact application/run/team/member identities remain | Low | Pass |
+| native ERROR transport | Pass | Pass | Pass | Low | Pass |
+| application ERROR projection/parser | Pass | Pass | Pass — exactly `{ type, message }` inside current v6 producer envelope | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Semantic Git integration | Pass | Pass | N/A | Pass | One merge is the most auditable strategy. |
-| Current process startup/migrations | Pass | Pass | N/A | Pass | Existing status/gate behavior is preserved exactly. |
-| Required tool registration | Pass | Pass | N/A | Pass | Existing Core and server registrars are reused under one source-truthful readiness owner. |
-| Current activation/provisioning | Pass | Pass | Pass | Pass | Narrow registry extraction breaks a real construction cycle without replacing current services. |
-| Current launch persistence | Pass | Pass | N/A | Pass | Direct use is evidenced; no migration is proportionate. |
-| Devkit/package generation | Pass | Pass | N/A | Pass | Canonical source and deterministic regeneration remain appropriate. |
+| AutoByteus current-model membership | Pass | Pass | Pass | Pass | Reuses newest `LLMFactory.requireCurrentModelIdentifier`; the policy limits it to the application runtime split. |
+| Launch view/persistence | Pass | Pass | N/A | Pass | Current launch service/store are extended rather than restoring retired owners. |
+| Direct run defense | Pass | Pass | N/A | Pass | Existing run-binding service remains the command boundary. |
+| Provider error extraction/redaction | Pass | Pass | N/A | Pass | Latest Personal producer/native path is retained wholesale where non-conflicting. |
+| Application error projection | Pass | Pass | N/A | Pass | Existing closed projector/parser are extended with the safe original message. |
+| Git integration | Pass | Pass | N/A | Pass | One semantic merge remains proportionate and auditable. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server compositions/lifecycle | Pass | Pass | Pass | Pass | Explicit hosts plus one application lifecycle. |
-| Application platform | Pass | Pass | Pass | Pass | Four projections and shared readiness/recovery/stop remain cohesive. |
-| Agent/tool registry | Pass | Pass | Pass | Pass | Core catalog bootstrap is separate from agent construction and provisioned Search replacement. |
-| Agent/team execution | Pass | Pass | Pass | Pass | Current Personal lifecycle and identities remain authoritative. |
-| Agent Tools/publication | Pass | Pass | Pass | Pass | Application-scoped and general-process authorities are distinct. |
-| Launch configuration/storage | Pass | Pass | Pass | Pass | One policy owner and one physical store. |
-| Devkit/application packages | Pass | Pass | Pass | Pass | Allocation is coherent. |
+| Application platform launch configuration | Pass | Pass | Pass | Pass | New policy belongs with the three launch validation paths. |
+| Agent/team orchestration | Pass | Pass | Pass | Pass | Current Personal run/team owners remain authoritative. |
+| Provider/LLM core | Pass | Pass | Pass | Pass | Owns the AutoByteus membership registry and native error semantics, not application overlays. |
+| Application agent streaming | Pass | Pass | Pass | Pass | Owns the closed message-only projection. |
+| SDK contracts | Pass | Pass | Pass | Pass | One new issue code; no resurrected old view/status family. |
+| Integration/delivery | Pass | Pass | Pass | Pass | Conflict resolution and proof responsibilities are separated correctly. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Required tool readiness results | Pass | Pass | Pass | Pass | Seven exact ordered keys and sticky memoized lifecycle are defined. |
-| Activation transition state/results | Pass | Pass | Pass | Pass | One owner per claim/candidate/active/resource state. |
-| Runtime projection contracts | Pass | Pass | Pass | Pass | Retain. |
-| Launch baseline/selection/override/effective stages | Pass | Pass | Pass | Pass | Meanings and provenance are explicit. |
-| Rooted member address | Pass | Pass | Pass | Pass | Current Personal owner is correct. |
+| AutoByteus runtime/model selection rule | Pass | Pass | Pass | Pass | Three reachable boundaries justify one stateless policy. |
+| Launch issue code/status | Pass | Pass | Pass | Pass | Existing application launch issue union is extended; old configuration union stays removed. |
+| Native vs application error projection | Pass | N/A | Pass | Pass | Separate specialized shapes are intentional; no kitchen-sink shared DTO is introduced. |
+| Existing launch baseline/selected/saved/effective model | Pass | Pass | Pass | Pass | Retained unchanged. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| required tool-unit result | Pass | Pass | Pass | Pass | Pass | Exact keys, display names, status, order, and failure semantics are specified. |
-| activation claim/candidate/active/resource records | Pass | Pass | Pass | Pass | Pass | State ownership and identity checks are explicit. |
-| `launch_profile_json` row | Pass | Pass | Pass | Pass | Pass | Current-rooted sparse meaning is explicit. |
-| runtime projection bundle | Pass | Pass | Pass | Pass | Pass | No service bag is exposed. |
+| `ApplicationLaunchIssueCode` | Pass | Pass | Pass | Pass | Pass | `CURRENT_MODEL_SELECTION_REQUIRED` is one blocking host-capability meaning. |
+| Launch slot view and saved override | Pass | Pass | Pass | Pass | Pass | Structural validity remains separate from aggregate host readiness. |
+| Native ERROR vs application ERROR | Pass | Pass | Pass | Pass | Pass | Rich native and closed application variants are intentionally specialized. |
+| Current v6 application envelope | Pass | Pass | Pass | Pass | Pass | Producer `agentRunId`, rooted address, sequence, and URL codec remain exact. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| host starters/builders and `application-platform-lifecycle.ts` | Pass | Pass | Pass | Pass | Process and application phases are allocated exactly. |
-| `startup/agent-tool-loader.ts` | Pass | Pass | Pass | Pass | Owns memoized seven-unit readiness and diagnostics only. |
-| Search registrar / core `register-tools.ts` / `agent-factory.ts` | Pass | Pass | Pass | Pass | Search replaces Search only; Core registers the base catalog; factory is registry-pure. |
-| `agent-run-manager.ts` / activation registry / provisioning owners | Pass | Pass | Pass | Pass | Mapping is implementation-ready. |
-| current mixed-team managers/handles | Pass | Pass | Pass | Pass | Exact graph-local injections and general exemptions are listed. |
-| launch configuration service/store | Pass | Pass | Pass | Pass | Competing Personal reader/writer is removed. |
-| devkit/application source | Pass | Pass | Pass | Pass | Mapping is adequate. |
+| `application-current-model-selection-policy.ts` | Pass | Pass | Pass | Pass | One explicit rule; no lifecycle or discovery. |
+| `application-launch-configuration-service.ts` | Pass | Pass | Pass | Pass | Candidate Save uses policy before the only store upsert. |
+| `application-launch-host-capability-validator.ts` | Pass | Pass | Pass | Pass | Readiness classifies the exact selection error without taking storage ownership. |
+| `create-application-orchestration-services.ts` | Pass | Pass | Pass | Pass | Constructs and injects one policy instance. |
+| `application-run-binding-launch-service.ts` | Pass | Pass | Pass | Pass | Pre-side-effect direct command defense; no deleted-helper import. |
+| `application-agent-stream-event-projector.ts` | Pass | Pass | Pass | Pass | Exact message-only application projection. |
+| SDK source/tests/README | Pass | Pass | Pass | Pass | Canonical source remains authoritative; generated declarations stay absent. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `src/compositions/` | Pass | Pass | Low | Pass | Explicit roots are appropriate. |
-| `src/application-platform/runtime/` | Pass | Pass | Low | Pass | Shared application boundary is coherent. |
-| `src/startup/agent-tool-loader.ts` | Pass | Pass | Low | Pass | Process tool-catalog readiness belongs in startup capability. |
-| `src/agent-execution/runtime/` activation registry | Pass | Pass | Low | Pass | Concrete live-state ownership. |
-| `src/application-platform/launch-configuration/` | Pass | Pass | Low | Pass | Policy location is correct. |
-| application canonical source/devkit | Pass | Pass | Low | Pass | Clear. |
+| `src/application-platform/launch-configuration/` | Pass | Pass | Low | Pass | Correct home for the new application selection policy. |
+| `src/application-orchestration/services/` run binding | Pass | Pass | Low | Pass | Direct run command boundary remains in orchestration. |
+| `src/application-agent-streaming/services/` | Pass | Pass | Low | Pass | Closed application transport mapping stays isolated from native transport. |
+| SDK `src` vs `dist` | Pass | Pass | Low | Pass | Source is maintained; generated output is build-only. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| hidden/duplicate tool registration | Pass | Pass | Pass | Pass | Direct Studio Search, background/wrapper loading, Search-to-Core chaining, and factory mutation are removed; no alias remains. |
-| custom builders/editable mirrors | Pass | Pass | Pass | Pass | Regenerate from canonical source. |
-| feature-era active/member registries | Pass | Pass | Pass | Pass | Current Personal owners remain. |
-| competing Personal launch service/store | Pass | Pass | Pass | Pass | One launch owner remains. |
-| broad engine/compatibility seams | Pass | Pass | Pass | Pass | No old manager or generic fallback is restored. |
+| Retired execution-resource launch-profile helper | Pass | Pass | Pass | Pass | Its new membership rule moves to the policy; the file stays deleted. |
+| Retired execution-resource configuration service | Pass | Pass | Pass | Pass | Current launch service owns view/readiness/Save/Reset. |
+| Retired predecessor test | Pass | Pass | Pass | Pass | Relevant behavior is ported to current-owner tests. |
+| Generated SDK declaration/map | Pass | N/A | Pass | Pass | Resolve modify/delete as deletion and generate only for build/package proof. |
+| Auto-merged retired import | Pass | Pass | Pass | Pass | Explicitly removed from run binding. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Required tool registration | No | Pass | Pass | `loadAllAgentTools` is removed rather than retained as an empty wrapper. |
-| Run/team internal owners | No | Pass | Pass | Obsolete registries are rejected. |
-| Launch persistence | No | Pass | Pass | Invalid legacy rows remain diagnosable/resettable, not converted or rewritten. |
-| Application package/source outputs | No | Pass | Pass | Canonical source and regeneration are explicit. |
-| Versioned internal aliases | No | Pass | Pass | Current serialized values remain while in-scope code symbols stay clean. |
+| Current-model validation | No | Pass | Pass | No alias/remap/fallback or old service restoration. |
+| Persisted stale model value | No | Pass | Pass | Exact value is normal current data evaluated truthfully, not a compatibility branch. |
+| Application error contract | No | Pass | Pass | No parallel metadata-rich application variant or generic-message fallback. |
+| SDK source/generated output | No | Pass | Pass | No second maintained source truth. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| application launch override row | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Representative current agent/team rows satisfy the target sparse contract; reads do not write. |
-| package/manifests/contracts | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Current serialized values remain authoritative. |
+| Application launch override rows | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Physical schema and sparse rooted meaning are unchanged; stale identifiers remain exact and visible, reads do not write, and only explicit Save/Reset mutates. |
+| Package definitions/defaults | Not Affected | Pass | Pass | N/A | Pass | Package bytes remain immutable; no default copying or model substitution. |
+| Provider pricing/error data | Directly Usable under newest Personal's reviewed behavior | Pass | Pass | N/A | Pass | The refresh adopts Personal's current persistence behavior rather than adding a ticket migration. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Semantic merge and regeneration | Pass | Pass | Pass | Pass |
-| Lifecycle/tool readiness integration | Pass | Pass | Pass | Pass |
-| Activation/session/publication adaptation | Pass | Pass | Pass | Pass |
-| Launch owner consolidation | Pass | Pass | Pass | Pass |
+| Re-fetch and one refresh merge | Pass | Pass — stop/reclassify if the ref moved | Pass | Pass |
+| Conflict resolution and policy wiring | Pass | Pass — no compatibility seam is retained | Pass | Pass |
+| Source/build/regeneration | Pass | Pass | Pass | Pass |
+| Focused then full verification | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Host lifecycle allocation | Yes | Pass | Pass | Pass | Exact 28-phase table and unwind order are actionable. |
-| Required tool readiness | Yes | Pass | Pass | Pass | Exact seven keys, registrar table, state transition, order, and forbidden callers are present. |
-| Activation transitions/construction obligations | Yes | Pass | Pass | Pass | Normal, failure, replacement, and general-process paths are explicit. |
-| Persisted agent/team rows | Yes | Pass | Pass | Pass | Representative direct-use examples and invalid cases are sufficient. |
+| Current-model read/Save/direct-run behavior | Yes | Pass | Pass | Pass | Spine, outcome table, and rejected alternatives are concrete. |
+| Native/application provider-error split | Yes | Pass | Pass | Pass | Both forward paths and excluded fields are explicit. |
+| Conflict resolution | Yes | Pass | Pass | Pass | Every conflict and marker-free overlap has a semantic disposition. |
+| Persisted stale row | Yes | Pass | Pass | Pass | Exact state/readiness/mutation matrix supports no-migration judgment. |
 
 ## Material Premise Validation (Only When Needed)
 
-None. The reviewed design and its verification obligations follow the established supported Studio/standalone commands, startup, business-run, tool, persistence, recovery, and stop paths. No finding or target machinery depends on an unsupported scenario.
+### MP-ARCH-004-001 — A removed AutoByteus model can remain in supported application configuration input
+
+- Related approved requirement or established contract: REQ-008; AC-012.
+- Relevant behavior ID(s): BEH-004.
+- Initiating basis kind: `User` / `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: a user saves a Studio launch override, or application code calls the supported direct start API, using a previously current AutoByteus model identifier.
+- Support evidence: Studio exposes Save/Reset for sparse overrides; the application SDK exposes direct agent/team start; newest Personal establishes exact current-model rejection.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: package/saved/direct runtime-model pair -> launch evaluation, Save candidate, or run binding -> shared policy -> newest Personal membership guard.
+- Lifecycle preconditions and material consequence at the claimed point: the identifier is structurally valid but absent from the current AutoByteus catalog; without the policy in current owners, the refresh either loses the approved rejection or restores a competing deleted owner.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: one stateless policy used at the three real boundaries is justified; no migration or fallback is justified.
+
+### MP-ARCH-004-002 — Codex and Claude model namespaces must not be subjected to the AutoByteus catalog
+
+- Related approved requirement or established contract: REQ-005, REQ-008; AC-006, AC-012.
+- Relevant behavior ID(s): BEH-004.
+- Initiating basis kind: `User` / `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: launch maintained Brief/Socratic package defaults (`codex_app_server` / Luna) or a supported Claude/Codex override.
+- Support evidence: maintained package defaults and runtime-specific factories/catalogs are supported product paths.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: effective profile -> shared policy runtime split -> provider-owned catalog/factory -> run creation.
+- Lifecycle preconditions and material consequence at the claimed point: the external runtime is available and owns its identifier; a catalog-wide AutoByteus guard would reject valid supported applications.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: bypass only the AutoByteus membership function while retaining existing availability/catalog/credential/factory checks.
+
+### MP-ARCH-004-003 — A provider failure reaches the application agent/team stream
+
+- Related approved requirement or established contract: REQ-008; AC-013.
+- Relevant behavior ID(s): BEH-007.
+- Initiating basis kind: `User` / `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: an ordinary application user starts an agent/team run whose provider returns a supported terminal failure; newest Personal defines the safe provider error contract.
+- Support evidence: current application run/stream surfaces and newest Personal provider-error producer/native consumer evidence.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: provider extractor/redactor -> canonical run/team event -> native transport or application projector -> SDK consumer.
+- Lifecycle preconditions and material consequence at the claimed point: the message is already redacted-safe and nonblank; selecting either conflicting side wholesale would discard it or expose native metadata through the closed application SDK.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: retain the native rich-safe path and project only the message through the application boundary.
+
+### MP-ARCH-004-004 — Generated SDK declarations would be resurrected by the refresh merge
+
+- Related approved requirement or established contract: REQ-002, REQ-006; AC-010, AC-014.
+- Relevant behavior ID(s): BEH-005.
+- Initiating basis kind: `Operational` / `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: the mandatory history-preserving merge and repository canonical-source/build policy.
+- Support evidence: fresh merge-tree output shows modify/delete conflicts for the two declarations; the verified checkpoint tracks source and generates build output.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: merge resolution -> source build/package generation -> SDK tests/package output.
+- Lifecycle preconditions and material consequence at the claimed point: choosing Personal's modify side would restore generated files as a second maintained truth.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: resolve as deletion and regenerate only for verification/output.
+
+### MP-ARCH-004-005 — The marker-free run-binding merge imports a deleted helper
+
+- Related approved requirement or established contract: REQ-002, REQ-006, REQ-008; AC-002, AC-012, AC-014.
+- Relevant behavior ID(s): BEH-005.
+- Initiating basis kind: `Operational`.
+- Independent product-supported initiating trigger or applicable governing contract: the mandatory merge of the named verified checkpoint and current Personal ref.
+- Support evidence: three-way source comparison and the fresh merge-tree preview.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Git auto-merge -> run-binding import resolution -> server compile/start or direct application launch.
+- Lifecycle preconditions and material consequence at the claimed point: no conflict marker is produced, but the helper remains deleted; the candidate would fail compilation and revive obsolete ownership if repaired mechanically.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: explicitly remove the import, inject the reviewed policy, and prove no retired references.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -231,7 +293,7 @@ None.
 
 `Pass`
 
-SR-003 resolves the remaining AR-001 branch. The complete SR-001–SR-003 integration package is architecture-ready for implementation.
+SR-004 is architecture-ready. The latest-base change is bounded, behavior-grounded, acyclic, and implementable through current owners. It preserves the passed framework, gives AutoByteus selection one precise shared policy, keeps external runtime ownership intact, preserves the closed application error boundary, names every semantic merge disposition, and requires truthful same-commit proof.
 
 ## Findings
 
@@ -247,13 +309,13 @@ N/A — `Pass`.
 
 ## Residual Risks
 
-- The implementation must still semantically audit all canonical overlaps and regenerate rather than hand-merge derived outputs.
-- Any later advancement of `origin/personal` requires delivery-owned refresh/integration and proportional rerun.
-- Existing branch-specific results remain characterization evidence until the merged candidate completes the required current-base source, dual-host, package-parity, regression, and Electron proof.
-- The readiness design intentionally supports one Studio or standalone application runtime per process; a future multi-runtime-in-one-process product would require a separate registry-scope decision rather than reuse by accident.
+- `origin/personal` may advance again. Implementation must re-fetch immediately before merging and stop for new semantic analysis if it no longer equals `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.
+- The passed checkpoint and newest-Personal reports are characterization evidence, not proof of the refreshed commit; focused current-model/error checks and the complete dual-host/provider/package/Electron matrix remain mandatory.
+- Provider/Electron environment availability must be reported truthfully; mocks or stale builds cannot substitute for the required integrated evidence.
+- The older core supplement-inventory rows can be aligned with the SR-004 front-matter ranges during a later documentation touch; the current normative links and behavior mapping are already unambiguous.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `ARCH-REV-003` resolves AR-001. AR-002 and AR-003 remain resolved. The semantic merge strategy, current Personal authority, dual-host application boundary, launch persistence decision, and complete verification plan are approved for implementation.
+- Notes: `ARCH-REV-004` supersedes the prior report result for SR-004. Prior findings AR-001–AR-003 remain resolved and unaffected. Implementation may resume against the exact fetched ref and reviewed semantic map; delivery does not resume until the normal implementation/source/API-E2E gates complete.

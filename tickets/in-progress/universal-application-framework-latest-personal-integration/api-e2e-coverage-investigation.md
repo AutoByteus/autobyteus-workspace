@@ -6,19 +6,19 @@
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
 - Supplemental Task Artifacts: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, merge/conflict/overlap/path inventories
-- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-003`)
+- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-004`)
 - Design Review Report: `design-review-report.md`
-- Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-003` Pass)
+- Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-004` Pass)
 - Implementation Handoff: `implementation-handoff.md`
-- Implementation Revision Record: `implementation-revision-record.md` (`IR-006`)
+- Implementation Revision Record: `implementation-revision-record.md` (`IR-007`)
 - Code Review Report: `code-review-report.md`
-- Code Review Revision Record: `code-review-revision-record.md` (`CRR-009` Pass / 93)
+- Code Review Revision Record: `code-review-revision-record.md` (`CRR-012` Pass / 94)
 - Delivery Revision Record: `delivery-revision-record.md` (`DR-001` packaged Electron baseline relevant)
-- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-005`; `API-REV-006` pending this rerun result)
-- Current API/E2E Revision ID: `API-REV-006` pending (recheck of `API-REV-005` Blocked / 88%; `API-REV-004` remains Pass / 98% for the approved application-framework scope)
-- Current Investigation Round: `6`
-- Trigger: user reports the DeepSeek balance for `APIE2E-BLOCKER-001` has been restored and requests the exact packaged-Electron journey rerun
-- Prior Investigation Reviewed: API-REV-005 Blocked / 88%, API-REV-004 Pass / 98%, and delivery DR-001 packaged-Electron evidence
+- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-007`)
+- Current API/E2E Revision ID: `API-REV-007` complete
+- Current Investigation Round: `7`
+- Trigger: `/code_reviewer` `CRR-012` Pass for newest-Personal semantic refresh `IR-007`
+- Prior Investigation Reviewed: API-REV-006 Pass / 99%, API-REV-004 Pass / 98%, CRR-010/011 proportional dispositions, and delivery DR-004 refresh evidence
 - Latest Authoritative Investigation: this document
 
 ## Current Requirement And Design Basis
@@ -508,3 +508,103 @@ This section supersedes the round-four planning status above.
 - Final confidence: **99%** for the added packaged real-provider scenario; every critical requested condition passed, no category is below 90%, and the default target is met.
 - Broader-validation result: **Required; executed; Pass**.
 - Required route: `/code_reviewer` for the workflow-required proportional test-code review, expected `Not Applicable` because this round changed no durable test file.
+
+## API-REV-007 Current-Personal Semantic Refresh Investigation
+
+- Trigger: `/code_reviewer` `CRR-012` Pass for `IR-007`, reviewed semantic merge `5cf9b8eb22a3b83c114dbb4199341a65aaee8cea`; current reviewer artifact HEAD `fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342`.
+- Current-round rule: prior `API-REV-004` dual-host Pass, `API-REV-006` packaged-provider Pass, `CRR-010` prior durable-test review and `DR-001` prior Electron result are **characterization only**, not proof of the refreshed current-base combination.
+- Required acceptance surface: `AC-001`–`AC-015`, with direct emphasis on `AC-003`–`AC-004` maintained CLI/package parity, `AC-006`/`AC-012` current/stale/external model behavior, `AC-007`–`AC-008` scoped tools/handoff/publication/recovery/cleanup, `AC-009` current Personal provider/migration behavior, `AC-013` native-versus-application error projection, and `AC-015` refreshed integrated execution.
+
+### Current Changed Boundaries
+
+1. **Merge/topology and legacy removal:** newest Personal ancestry, 11 semantic conflict resolutions, two marker-free overlaps, five retained deletions, no generated maintained truth.
+2. **Current-model selection:** one exact policy shared by readiness, Save and direct run; AutoByteus membership only; stale identifiers remain visible but block without mutation; Codex/Claude remain provider-owned.
+3. **Provider/native error:** safe original message plus native metadata at core transports; application agent/team projection remains exact message-only v6 ERROR with no metadata or extra keys.
+4. **Provider/catalog/pricing/secret behavior:** newest Personal catalog membership, model metadata, provider credentials, pricing and native streaming changes.
+5. **Dual-host executable system:** refreshed maintained Brief/Socratic packages, real provider/tool/messaging/publication behavior, same-data restart/remount, package bytes and cleanup.
+6. **Persisted data:** `Directly Usable — No Migration`; existing sparse rows are read directly, stale values are neither rewritten nor removed, and explicit Reset remains the sole deletion path.
+
+### Authoritative Execution Instructions Discovered
+
+- Root `package.json`: current repository E2E uses `pnpm test:e2e`; real provider checks use `pnpm test:e2e:real:preflight` / `pnpm test:e2e:real`; secret import uses `pnpm secrets:import`.
+- Maintained app directories expose the native `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate` and `pnpm start` journeys through `@autobyteus/application-devkit`.
+- `applications/brief-studio/README.md` defines the package-owned Brief team, launch slot, `publish_artifacts`, recipient handoff, durable projection and restart catch-up contract.
+- `applications/socratic-math-teacher/README.md` defines the package-owned `/tutor` exact identity, READY-before-input, first-turn/follow-up projection and current Codex App Server default.
+- `test-support/live-e2e/live-e2e-scenarios.mjs` defines the current live DeepSeek model as `deepseek-v4-flash`; owner-provided credentials are available through the supported isolated import workflow already proven in API-REV-006.
+- Execution will use Node 22, the installed absolute Codex executable, installed Chrome for web-equivalent journeys, unique loopback ports and caller-owned `/private/tmp/api-rev007-*` roots. It will not touch the ordinary Electron process or home data.
+
+### Durable Coverage Inventory And Validity Decisions
+
+| Durable path / group | Current decision | Reason / required action |
+| --- | --- | --- |
+| `tests/unit/application-platform/application-current-model-selection-policy.test.ts` | **Still Valid** | directly proves AutoByteus current/stale membership and Codex/Claude bypass at the single policy owner |
+| `tests/unit/application-platform/application-launch-host-capability-validator.test.ts` | **Still Valid** | proves stale saved/default selections remain visible but block readiness with exact issue |
+| `tests/unit/application-platform/application-launch-configuration-service.test.ts` | **Still Valid** | proves exact baseline/effective provenance, pre-upsert Save rejection, no mutation and Reset semantics |
+| `tests/unit/application-orchestration/application-run-binding-launch-service.test.ts` | **Still Valid** | proves direct agent/team stale rejection before allocation/creation and mixed external-runtime behavior |
+| `tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts` and application communication integrations | **Still Valid** | prove message-only application ERROR, exact v6 identity and metadata exclusion |
+| `autobyteus-application-frontend-sdk/tests/application-connections.test.mjs` | **Still Valid** | exact-key SDK validation rejects native/provider metadata at the application boundary |
+| core provider error/notifier/stream tests under `autobyteus-ts/tests/unit/...` | **Still Valid** | newest Personal native safe message/metadata owner; must be executed with the application tests to prove the intentional split |
+| model catalog/pricing/secret/e2e tests | **Still Valid** | current Personal regression coverage for membership/provenance/pricing/credential readiness |
+| architecture `application-framework-boundaries.test.ts` | **Still Valid** | retained removal/ownership/import/export guard after the semantic merge |
+| maintained Brief/Socratic integration tests and prior exact-identity fixtures | **Still Valid** | current-contract durable protection remains relevant; execute after canonical SDK/devkit build prerequisites |
+| prior API-owned real-browser/process scenarios | **Replace as current execution evidence, not durable code** | scenario definitions remain valid, but live results must be repeated on IR-007 current HEAD |
+| prior packaged Classroom scenario | **Out Of Scope for repetition in API-REV-007** | it proved the user-requested external package/provider permutation on the old checkpoint; refreshed Electron build/smoke is downstream delivery-owned after API/E2E Pass |
+| historical `APIE2E-REPO-005` broad-suite debt | **Unclear / separate characterization** | do not count as Pass or attribute to IR-007 without new supported origin evidence |
+
+### Coverage Gaps And Decisions
+
+- `APIE2E-CURRENT-MODEL-001`: repository coverage already directly exercises current/stale/external read, readiness, Save and direct-run boundaries. **No new durable case planned**; execute the exact grouped suites.
+- `APIE2E-PROVIDER-ERROR-001`: core native and application/SDK projections have direct durable cases. **No new durable case planned**; execute both sides together and add a temporary focused probe only if their combined evidence is ambiguous.
+- `APIE2E-DUAL-HOST-007`: refreshed real Brief and Socratic standalone/Studio behavior is not covered by source tests alone. **Use real browser/process execution**, reusing supported current harnesses and isolated data.
+- `APIE2E-RECOVERY-007`: same-data standalone restart, Studio restart/remount, scoped tool/session revocation and cleanup require real lifecycle evidence. **Use temporary executable probes**; promote only a reusable deterministic gap if discovered.
+- `APIE2E-PARITY-007`: exact maintained package/authoring bytes before/after `dev` and `dev:studio` need refreshed live evidence. **Use hashes plus devkit durable pack tests**.
+- Repository-resident durable coverage change before execution: **None planned**. Any failing assertion will first be revalidated against SR-004 current behavior before update/removal.
+
+### Planned Execution Order
+
+1. ancestry/index/retired-path/marker audit, canonical SDK/server/devkit prerequisites;
+2. focused current-model read/readiness/Save/direct agent/team suites;
+3. core native provider error plus application projector/communication/frontend SDK strictness;
+4. newest Personal provider/catalog/pricing/secret/web regression selections and affected server integrations;
+5. maintained app build/validate/typecheck and devkit full suite;
+6. pre-live exact hashes, both maintained `dev`/`dev:studio` command loops and `start` smoke;
+7. real Socratic first-turn/follow-up in standalone and Studio with exact provider-owned defaults;
+8. real Brief team handoff, Agent Tools publication/projection in standalone and Studio;
+9. same-data restart/recovery, Studio remount, route separation, active cleanup and post-live exact hashes;
+10. cleanup/leak checks, confidence reassessment, canonical `API-REV-007` reports and outcome routing.
+
+### Pre-Execution Confidence And Broader-Validation Gate
+
+| Category | Pre-execution confidence | Gap |
+| --- | ---: | --- |
+| Requirement/acceptance proof | 75% | current refreshed real hosts/packages not yet executed |
+| Changed-boundary directness | 90% | source tests are direct; live combined boundary pending |
+| Cross-boundary realism | 75% | prior live evidence is old-base characterization only |
+| Environment/config/identity fidelity | 85% | exact current packages/credentials/roots pending |
+| Failure/lifecycle/recovery | 75% | current merge restart/remount/cleanup pending |
+| User/browser/desktop-equivalent | 75% | current renderer journeys pending; Electron downstream |
+| Durable regression quality | 95% | direct current tests exist; grouped execution/reconciliation pending |
+
+- Overall pre-execution confidence: **81%** (simple average, rounded).
+- Critical acceptance criteria proven on current refreshed HEAD: **No**.
+- Broader validation: **Required**. Selected mode is repository + real browser/process dual-host execution; Electron rebuild/smoke remains the explicitly downstream delivery gate after API/E2E and proportional test review.
+
+### API-REV-007 Post-Execution Coverage Resolution (Authoritative)
+
+- Current-tree identity: reviewer HEAD `fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342`, semantic merge `5cf9b8eb22a3b83c114dbb4199341a65aaee8cea`, protected checkpoint parent `663f44d31deb05bf47f0eda780de4d754187a51b`, newest-Personal parent `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.
+- Topology and legacy-removal audit: **Pass**. Both reviewed parents are ancestors, the index has no unmerged entries, all five required deleted paths remain absent, retired-reference count is zero, and the exact Git conflict-marker scan is clean.
+- Focused repository evidence: **Pass**. Current-model read/readiness/Save/direct-run coverage passed `4 files / 26 tests`; the native-versus-application ERROR boundary passed `5 files / 37 tests`; architecture passed `15/15`; native provider behavior passed `8 files / 39 tests`; affected current integrations passed `4 files / 10 tests`; current web service coverage passed `5 files / 106 tests`; frontend SDK passed `12/12`; devkit passed `20/20`; server, web, SDK, Brief and Socratic build/type/validate gates passed.
+- Durable validity revision: the broad server run exposed two assertions that no longer represented the approved newest-Personal model catalog. They are now **Updated** rather than attributed to production:
+  - `autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts` now requires the current global GLM `glm-5.3` entry with its `1,000,000` context while retaining the independent custom Qwen `qwen:glm-5.2` lifecycle assertions.
+  - `autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts` now requires the current Gemini `gemini-3.7-flash` entry instead of the retired `gemini-3.5-flash` identifier.
+  - The reconciled six-file current-model selection passed **28/28** after a canonical server rebuild. No durable test was removed and no production source was changed.
+- Broad-suite characterization: full web execution produced `419 passed / 3 failed / 2 skipped` files (`2292 passed / 3 failed / 2 skipped` tests). The three focused failures are unchanged historical fixtures: an interrupt snapshot fixture, a deprecated zh-CN glossary string, and a lazy-hydration mock missing `stopPendingTeamIds`. Full server execution produced `527 passed / 69 failed / 32 skipped` files (`3011 passed / 187 failed / 119 skipped` tests). After the two stale model assertions were corrected and one token-analytics case passed on focused rerun, the remaining file/test count aligns with the separately recorded API-REV-003 inherited baseline. This remains `APIE2E-REPO-005` **Unclear / separate characterization**; it is neither current Pass evidence nor a finding against IR-007.
+- Maintained standalone execution: **Pass**. Socratic ran through installed Chrome and authenticated Codex Luna, solved `7x + 4 = 25` as `x = 3`, retained the two-message transcript across graceful same-data restart, and remained ready. Brief ran a real package-owned Researcher -> `/writer` team journey, dispatched real `publish_artifacts` and `send_message_to`, reached `in_review`, and projected research/final artifacts.
+- Maintained Studio execution: **Pass**. Exact current Brief and Socratic packages were imported into an isolated Studio. Socratic accepted the fresh first turn, returned `x = 5`, remounted with one iframe, and retained its transcript. Brief completed real Luna research, recipient-name writer handoff, final publication, two-artifact projection and explicit remount. A supported `dev:studio` refresh occurred while the Brief run was active; the worker restarted, catch-up continued, and the run finalized.
+- Route/lifecycle/persisted-data behavior: **Pass**. Standalone exposed its authenticated internal Agent Tools boundary while `/mcp/gateway` remained `404`; Studio retained the internal authenticated route and returned `200` for the external gateway initialize. Graceful Studio shutdown released workers, and the same isolated data root restarted with both applications, one iframe each, the Socratic transcript and Brief artifacts intact. This directly proves the approved `Directly Usable — No Migration` reader/recovery outcome without a compatibility path.
+- Maintained commands and package integrity: **Pass**. Both application `dev` loops restarted after an input edit, both `dev:studio` loops reloaded, and all **73/73** maintained package/authoring digests remained byte-identical before and after live execution. Default build/validate and production server/web builds also passed.
+- Harness-only observations: initial Studio preflight inherited a user `DATABASE_URL` and was stopped before business/package execution; the accepted run used the explicit isolated root. The first Nuxt command forwarded an incorrect port and was replaced by the supported direct command. A later concurrent production web build invalidated the already-completed dev server's `.nuxt` cache; it did not affect the accepted browser results and the production build itself passed. These were test-environment corrections, not product changes.
+- Cleanup and isolation: **Pass**. Owned ports `43271`, `43272`, `8027`, and `3027` are free; no owned process or `/private/tmp/api-rev007-*` root remains; generated build outputs were removed; the ordinary AutoByteus server on port `29695` remained health `200`; and a value comparison across 55 retained text artifacts found zero matches for 12 sensitive assignments.
+- Final coverage decision: `APIE2E-CURRENT-MODEL-001`, `APIE2E-PROVIDER-ERROR-001`, `APIE2E-DUAL-HOST-007`, `APIE2E-PUBLICATION-007`, `APIE2E-RECOVERY-007`, `APIE2E-REMOUNT-007`, and `APIE2E-PARITY-007` are **Pass** on the refreshed current tree. No current API/E2E failure ID remains.
+- Final validation confidence: **98%**. Every critical acceptance criterion has direct current-tree evidence, every applicable category is at least 95%, and broader validation was **Required; executed; Pass**. The historical broad-suite debt remains separately characterized, and refreshed Electron packaging/shell coordination remains downstream delivery-owned rather than an API/E2E blocker.
+- Required route: `/code_reviewer` for proportional review of the two repository-resident durable test updates before delivery resumes.

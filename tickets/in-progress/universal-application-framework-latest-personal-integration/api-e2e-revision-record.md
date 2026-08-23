@@ -10,6 +10,7 @@
 | `API-REV-004` | `code_reviewer` / `CRR-009` / round 4 | `SR-003`, `ARCH-REV-003`, `IR-006`, `CRR-009` | **Fail / 93%** | **Pass / 98%** |
 | `API-REV-005` | user-requested packaged Electron provider expansion / round 5 | `API-REV-004`, `CRR-010`, `DR-001` | **Pass / 98%** | **Blocked / 88%** |
 | `API-REV-006` | user-reported DeepSeek balance restoration / round 6 | `API-REV-005`, `API-REV-004`, `CRR-010`, `DR-001` | **Blocked / 88%** | **Pass / 99%** |
+| `API-REV-007` | `code_reviewer` / `CRR-012` / round 7 | `SR-004`, `ARCH-REV-004`, `IR-007`, `CRR-012`, `DR-004` | **Pass / 99%** | **Pass / 98%** |
 
 ## Revision Entries
 
@@ -163,3 +164,29 @@ None. `API-REV-004` had no unresolved current failure. Its approved application-
 - New or remaining current failure IDs: **None**.
 - Recommended recipient: `/code_reviewer` for proportional test-code review, expected `Not Applicable` because no durable test changed in API-REV-006.
 - Remaining risk: future live provider balance/availability or external-package changes are mutable external conditions; all requested critical behavior is directly proven for the recorded artifact/package identities.
+
+### API-REV-007 — Current-Personal refresh passes complete dual-host execution
+
+- Triggering role/report/round: `/code_reviewer`; `code-review-report.md` / `CRR-012`; round 7.
+- Triggering surface: `IR-007` semantic refresh against newest Personal, requiring current/stale/external model, native/application error, provider, real maintained host, publication/handoff, recovery/remount, parity and cleanup proof on the refreshed tree.
+- Related revisions: `SR-004`, `ARCH-REV-004`, `IR-007`, `CRR-012`, delivery re-entry `DR-004`.
+- Why recorded: prior `API-REV-004` and `API-REV-006` results were characterization only for the new semantic merge. This round establishes the first authoritative current-base repository and real dual-host evidence at reviewer HEAD `fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342`.
+- Durable coverage decisions:
+  - updated `autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts` from stale global `glm-5.2` to current `glm-5.3` plus its `1,000,000` context; custom Qwen `qwen:glm-5.2` lifecycle behavior remains unchanged;
+  - updated `autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts` from retired `gemini-3.5-flash` to current `gemini-3.7-flash`;
+  - canonical rebuild plus the six-file current-model reconciliation passed 28/28; no production file or durable test removal occurred.
+- Repository execution: topology/deletion/marker audit Pass; SDK/server/web and maintained app build gates Pass; frontend SDK 12/12; current-model 4 files/26; ERROR boundary 5/37; architecture 15/15; native provider 8/39; affected integration 4/10; current web 5/106; devkit 20/20.
+- Real execution: Socratic and Brief both passed standalone and Studio business journeys through real Chrome and authenticated Codex Luna. Socratic solved fresh problems and recovered its transcript. Brief dispatched real `publish_artifacts` and `/writer` `send_message_to`, projected research/final artifacts, survived active `dev:studio` worker refresh, explicitly remounted and recovered after same-data Studio restart. Internal-route/external-gateway separation passed.
+- Commands/parity/cleanup: all four maintained `dev`/`dev:studio` edit loops reloaded; exact 73/73 package/authoring hashes were unchanged; owned processes, ports, roots and generated outputs were cleaned; ordinary AutoByteus health remained 200; retained text evidence contained zero compared secret values.
+- Broad characterization: full web was 419 passed / 3 failed / 2 skipped files; full server was 527 passed / 69 failed / 32 skipped files. Focused origin/correlation established two stale current-model assertions (fixed here), one non-reproducing token-analytics case, and the remaining historical baseline. `APIE2E-REPO-005` remains separately **Unclear** and is neither current Pass evidence nor an IR-007 finding.
+
+#### Prior Failure Resolution
+
+None. `API-REV-006` had no unresolved current failure. Its packaged external-provider result remains valid for its recorded artifact identity but does not substitute for this refreshed-tree dual-host run.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record and `evidence/api-e2e/api-rev-007-*`.
+- Prior result/confidence: **Pass / 99%** for the separate API-REV-006 packaged-provider scenario; approved prior dual-host baseline was **Pass / 98%** in API-REV-004.
+- Current result/confidence: **Pass / 98%** for the complete refreshed current-base API/E2E scope.
+- New or remaining current failure IDs: **None**.
+- Recommended recipient: `/code_reviewer` for proportional test-code review of both updated durable test files before delivery resumes.
+- Remaining risk: historical `APIE2E-REPO-005` remains separate/Unclear; mutable live-provider availability remains external; current Electron packaging/shell coordination remains downstream delivery-owned.

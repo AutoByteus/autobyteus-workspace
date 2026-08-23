@@ -2,9 +2,9 @@
 
 ## Status And Authority
 
-- Status: Design-ready supplement for `SR-003`.
-- Purpose: Preserve the resolved `AR-002`–`AR-003` contracts and close the remaining bounded `AR-001` required-tool-readiness gap with a source-backed group set, one registration owner, exact ordering, file dispositions, and proof obligations.
-- Related behavior and requirements: BEH-003–BEH-006; REQ-004–REQ-007; AC-005–AC-011.
+- Status: Design-ready supplement preserved through `SR-004`. Sections 1–4 remain the passed runtime contract; section 5 defines the bounded newest-Personal model/error delta.
+- Purpose: Preserve the resolved lifecycle/activation/persistence/tool contracts and define the exact newest-Personal current-model and provider-error integration without reopening those owners.
+- Related behavior and requirements: BEH-003–BEH-007; REQ-004–REQ-008; AC-005–AC-015.
 - Scope: Internal integration behavior only. This supplement does not add a host, route, migration, compatibility path, or product workflow.
 - Governing rule: latest Personal owns evolved process/data/provider/run/team semantics; the finalized feature owns the dual-host boundary, shared application lifecycle, scoped publication/session behavior, and launch baseline/override/readiness model.
 
@@ -532,3 +532,50 @@ This is `Directly Usable — No Migration` because current valid Personal rows a
 ### Integrated proof
 
 All earlier Git integrity, overlap ledger, build/typecheck, durable source review, real Studio/standalone Codex/Luna publication/handoff/projection/recovery/cleanup, package parity, Personal regression, and Electron build/smoke requirements remain unchanged.
+
+## 5. SR-004 Current-Model And Error Contracts
+
+### 5.1 Construction and dependency identity
+
+`create-application-orchestration-services.ts` constructs exactly one `ApplicationCurrentModelSelectionPolicy` with a required callback to latest Personal's `LLMFactory.requireCurrentModelIdentifier`. That exact policy instance is required by:
+
+- `ApplicationLaunchConfigurationService` for candidate Save validation;
+- `ApplicationLaunchHostCapabilityValidator` for readiness issue classification;
+- `ApplicationRunBindingLaunchService` for direct command defense.
+
+No constructor field is optional. No caller imports the deleted application execution-resource launch-profile helper. The policy has no store, cache, lifecycle, model catalog, credential check, or external-runtime owner.
+
+### 5.2 Runtime/model transitions
+
+| Entry | Required transition | Outcome |
+| --- | --- | --- |
+| package/saved effective leaf | normalize runtime; after runtime availability, call policy | AutoByteus stale -> `HOST_REQUIREMENT_MISSING` / `CURRENT_MODEL_SELECTION_REQUIRED`; Codex/Claude -> existing catalog/factory checks |
+| candidate Save | build selected baseline + sparse effective config, call policy for every leaf before upsert | stale AutoByteus -> `ApplicationLaunchConfigurationError` with exact issue; zero store writes |
+| direct agent command | normalize pair and call policy before create | stale AutoByteus -> exact current-selection error; zero run creation |
+| direct team command | fully expand/normalize every member, validate all, then allocate team ID | any stale AutoByteus leaf -> zero allocation/create |
+| existing stale row | retain raw/saved/effective value and provenance | no rewrite, remap, fallback, or delete; explicit Save/Reset only |
+
+The policy invokes the AutoByteus guard only when the normalized runtime is `RuntimeKind.AUTOBYTEUS`. Claude Agent SDK and Codex App Server identifiers never cross this guard.
+
+### 5.3 Provider error transport split
+
+Latest Personal owns the upstream/native branch: provider extraction and redaction, required native transport `code`, original safe `message`, optional safe metadata, team/native websocket projection, and native web rendering.
+
+The application branch remains closed and message-only:
+
+- `ApplicationAgentStreamEventProjector` filters diagnostic errors;
+- a terminal error requires a nonblank already-safe event message;
+- the output is exactly `{ type: "ERROR", message }`;
+- the v6 envelope retains exact producer `agentRunId` and current address/sequence semantics;
+- code, provider status/code/request ID, details, raw errors, stack/cause, headers, credentials, provider runtime IDs, and extra keys are excluded and rejected by the frontend SDK parser.
+
+### 5.4 Exact refresh proof
+
+In addition to section 4:
+
+1. policy unit tests prove current/stale AutoByteus, default runtime normalization, and Claude/Codex bypass;
+2. launch tests prove stale read retention, exact issue, no-write Save rejection, and Reset-only deletion;
+3. direct launch tests prove no agent create or team allocation/create before all pairs pass;
+4. native/application error tests prove original safe message, diagnostic filtering, required message, exact v6 identity, and metadata/secret exclusion;
+5. source audits prove the retired helper/service/test and generated SDK declarations remain absent;
+6. newest Personal provider/catalog/pricing/redaction suites, retained application architecture tests, both real hosts, package parity, recovery/cleanup, and a new Electron build/smoke all pass on the same refreshed commit.

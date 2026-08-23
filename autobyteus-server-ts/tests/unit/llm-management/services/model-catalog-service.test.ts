@@ -42,7 +42,7 @@ describe('ModelCatalogService', () => {
     }
   });
 
-  it('surfaces Gemini 3.5 Flash through the Autobyteus runtime catalog path', async () => {
+  it('surfaces current Gemini 3.7 Flash through the Autobyteus runtime catalog path', async () => {
     const syncService = {
       ensureSyncedForCatalogRead: vi.fn().mockResolvedValue(undefined)
     };
@@ -71,11 +71,11 @@ describe('ModelCatalogService', () => {
     expect(syncService.ensureSyncedForCatalogRead).toHaveBeenCalledTimes(1);
     expect(remoteDiscovery.ensureDiscovered).toHaveBeenCalledWith('llm');
     expect(autobyteusModelCatalog.listModels).toHaveBeenCalledTimes(1);
-    expect(models.find((model) => model.model_identifier === 'gemini-3.5-flash')).toMatchObject({
-      model_identifier: 'gemini-3.5-flash',
-      display_name: 'gemini-3.5-flash',
-      value: 'gemini-3.5-flash',
-      canonical_name: 'gemini-3.5-flash'
+    expect(models.find((model) => model.model_identifier === 'gemini-3.7-flash')).toMatchObject({
+      model_identifier: 'gemini-3.7-flash',
+      display_name: 'gemini-3.7-flash',
+      value: 'gemini-3.7-flash',
+      canonical_name: 'gemini-3.7-flash'
     });
   });
 });
