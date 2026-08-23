@@ -16,7 +16,7 @@
 - Release target: `v1.4.55`
 - Local Electron test build: `Pass — macOS ARM64 enterprise package available`
 - Repository finalization: `Complete — ticket archived, merged into personal, pushed, and dedicated worktree/branches removed`
-- Release/publication/deployment: `Complete — v1.4.55 released; no separate deployment invoked`
+- Release/publication/deployment: `v1.4.55 GitHub Release published; desktop, iOS, Android, and messaging workflows passed; Docker publication remains asynchronous; no separate deployment invoked`
 - Open source/API/E2E/test-review findings: `None; CRR-015 classifies the LM Studio result as a non-gating API/E2E residual and CRR-016 confirms no new retained test delta`
 - Downstream review closure: `CRR-015 and CRR-016 complete; CRR-010/CRR-011 remain applicable; no further API/E2E execution is required`
 
