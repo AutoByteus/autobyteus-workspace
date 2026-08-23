@@ -1,134 +1,115 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Scope
 
-In scope: delivery integrated-state refresh, docs sync, handoff preparation, a local unsigned macOS ARM64 Electron package, and recording API-REV-006's actual credentialed packaged-Classroom verification.
+DR-003 integrates the newest tracked origin/personal, synchronizes delivery documentation, and rebuilds/verifies the local personal macOS ARM64 Electron package.
 
-Out of scope: hosted release, tag, publication, deployment, and merge/push to Personal.
+Hosted release, tag, publication, deployment, archive, final push, and Personal merge/push are not authorized.
 
-## Handoff Summary
+## Handoff
 
-- Handoff artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
-- Status: Updated
+- Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
 - Delivery record: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
-- Current revision: DR-002
-- Notes: ready for explicit user verification; finalization held.
+- Current revision: DR-003
+- Status: updated; user verification pending
 
-## Initial Delivery Integration Refresh
+## Latest-Base Integration
 
-- Bootstrap base: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
-- Latest tracked base checked: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
-- Base advanced: No
-- New base commits integrated: No
-- Local checkpoints: built/executed source 42496b808df16f4ed24ca66bac03372c578f1f89; cumulative API-REV-006/delivery safety checkpoint 083a3231c
-- Method: Already current
-- Integration result: Completed
-- Post-integration executable checks: Yes — Electron build, package verification, five-scenario packaged isolation, and API-REV-006 actual packaged Codex/DeepSeek Classroom journey
-- Verification result: Passed
-- Server/API no-rerun rationale: no new base commit or source/test delta; API-REV-006 executed the exact package, and CRR-011 confirmed a zero-path durable-test delta while CRR-009/CRR-010 remain valid
-- Delivery edits began only after current-state confirmation: Yes
-- Handoff current with latest base: Yes
-- Blocker: none before the verification hold
+- Prior base: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
+- Latest fetched base: origin/personal at d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+- Base advanced: Yes — 18 commits / 201 paths
+- Pre-integration local safety checkpoint: 0b607a5844f66e19ffb55162e91150a7383c030a
+- Merge-tree preview: Pass, no conflicts
+- Method: merge
+- Merge result: f8d0bf67a9cdb89da8e3cb24b8331744d9f61865
+- Merge parents: 0b607a5844f66e19ffb55162e91150a7383c030a and d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+- Unmerged paths: none
+- Post-merge divergence: 139 ahead / 0 behind
+- Post-build refetch: base unchanged; still an ancestor
+- Handoff current with newest tracked base: Yes
+
+## Post-Integration Verification
+
+- Full personal macOS ARM64 Electron pipeline: Pass.
+- Shared/server build, Prisma generation, and bootstrap smoke: Pass.
+- Web/localization/build boundaries: Pass.
+- Five-scenario packaged Electron isolation: Pass.
+- App and native node-pty ARM64 verification: Pass.
+- Real packaged terminal spawn: Pass.
+- Current application-framework owners: packaged.
+- Retired broad engine host: absent.
+- Latest token analytics owners and migration: packaged.
+- Latest absolute terminal cwd owner: packaged.
+- DMG and ZIP integrity: Pass.
+- Owned process/port/root and mount cleanup: Pass.
+
+No separate source/API matrix rerun was performed. The merge had no conflicts, the new base was already independently finalized, the complete server/Electron build passed, and packaged isolation passed. Prior application-framework source/API gates remain valid for the unchanged feature source.
+
+## Electron Artifacts
+
+- DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg
+- DMG SHA-256: 09ecfbe4b8fb45afdb1cb231fdc81d11d2cb17d145f6aba9be6f657542da7414
+- ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip
+- ZIP SHA-256: 12f3a5e82d9071e47671c33f3360f1e3b969be42330added102c34f1ce88224c
+- Signing/notarization: intentionally absent for local verification
+
+These hashes supersede DR-001/DR-002 while the package version/filenames remain 1.4.54.
 
 ## User Verification
 
-- Explicit completion/verification received: No
-- Acceptance reference: pending user verification after DR-002/API-REV-006 v1.4.54 package evidence
-- Renewed verification required: No at present
-- Renewed verification received: Not needed
+- Explicit verification of DR-003 package received: No
+- Acceptance reference: pending new-hash DMG test
+- Renewed verification required because base/package changed: Yes
+- Renewed verification received: No
 
-## Docs Sync Result
+## Docs Sync
 
 - Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
-- Result: Updated in DR-001; API-REV-006 has explicit no-additional-impact in DR-002
-- Docs: SDK contracts/backend SDK READMEs, custom application guide, server Applications/Engine/Orchestration docs, and Socratic README
+- DR-001 application-framework updates: remain accurate
+- DR-003 additional long-lived edit: No impact
+- Rationale: finalized base token analytics and terminal cwd changes arrived with complete canonical docs; merge was conflict-free and did not alter application-framework contracts
+- Delivery docs: refreshed
 
-## Ticket State Transition
+## Persisted Data
 
-- Moved to tickets/done: No
-- Archived path: N/A; user verification pending
-
-## Version / Tag / Release Commit
-
-- Existing desktop version: 1.4.54
-- Version bump: none
-- Tag: none
-- Release commit: none
-- Output: local unsigned/unnotarized macOS ARM64 DMG/ZIP only
+- Application-framework decision: Directly Usable — No Migration
+- New base-owned change: additive migration 20260822090000_add_token_usage_analytics
+- Effect: creates analytics coverage/daily-facet tables and indexes
+- Existing data: lifetime run records remain unchanged and are not historically backfilled
+- Manual test note: normal launch can apply this migration to ~/.autobyteus/server-data; backup is recommended for independently reversible testing
 
 ## Repository Finalization
 
-- Bootstrap source: requirements.md REQ-001 plus explicit out-of-scope constraints
-- Ticket branch: codex/universal-application-framework-latest-personal-integration
-- Ticket commit: local delivery safety checkpoints only; final delivery commit pending
-- Ticket push: pending verification
-- Remote: origin
-- Finalization target: ticket branch only under current approved scope
-- Target advanced after acceptance: N/A
-- Delivery edits protected before re-integration: Not needed
-- Re-integration: Not needed
-- Target update: pending verification
-- Merge into target: Not needed for ticket-branch-only finalization
-- Push target: pending verification
-- Status: Blocked
-- Blocker: explicit user verification. Personal integration is excluded unless separately requested.
+- Ticket: remains in tickets/in-progress
+- Ticket branch final commit: pending verification
+- Ticket branch push: pending verification
+- Approved finalization target: ticket branch only
+- Personal merge/push: not authorized
+- Status: Blocked by explicit user verification
 
-## Release / Publication / Deployment
+## Release / Deployment
 
-- Applicable: No
-- Method: N/A
-- Result: Not required
-- Release notes: Not required
+- Version bump: none
+- Tag: none
+- Release notes: not required
+- Hosted release/publication/deployment: not applicable
+- Status: not performed
 
-## Post-Finalization Cleanup
+## Cleanup
 
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration
-- Worktree cleanup: Blocked; retain for verification
-- Worktree prune: Not required
-- Local ticket branch cleanup: Blocked
-- Remote branch cleanup: Not required
+- Worktree and branch: retained for verification
+- Generated SDK dist output: removed after packaging
+- Electron output: retained locally for user testing
+- Ticket branch/worktree cleanup: blocked until authorized finalization completes
 
-## Escalation / Reroute
+## Rollback / Stop Criteria
 
-None.
-
-## Release Notes Summary
-
-- Created before verification: No
-- Used for release: No
-- Status: Not required
-
-## Deployment Steps
-
-None. This delivery produces a local verification package only.
-
-## Environment Or Persisted-Data Transition Notes
-
-- Approved decision: Directly Usable — No Migration
-- Delivery action required: None
-- Result/evidence: IR-006 changes no persistence or binding schema; API-REV-004 passed same-data recovery; the packaged isolation probe did not touch ordinary data.
-- Migration-specific evidence: N/A
-
-## Verification Checks
-
-- Latest-base fetch, ancestry, and divergence: Pass.
-- API-REV-004: Pass / 98; no current failure IDs.
-- CRR-010: Pass; cumulative durable delta approved.
-- API-REV-006: Pass / 99; actual packaged Electron/Codex/DeepSeek Classroom journey completed with correct file-backed result and graceful cleanup.
-- CRR-011: Not Applicable; no durable test path changed.
-- Personal macOS ARM64 Electron build: Pass.
-- Metadata, architecture, packaged owners, terminal spawn, DMG/ZIP: Pass.
-- Five-scenario isolation, fail-closed profiles, foreign-owner preservation, cleanup: Pass.
-- Docs/source consistency and git diff hygiene: Pass.
-
-## Rollback Criteria
-
-- Stop if user testing finds a requirement-linked defect.
-- Stop and re-integrate if origin/personal advances before finalization.
-- Require renewed verification if later integration materially changes source, package, or docs.
-- Do not push/merge Personal without a separate explicit user instruction.
-- Do not treat the unsigned local package as release evidence.
+- Stop if user finds a requirement-linked defect.
+- Stop and refresh again if origin/personal advances before finalization.
+- Require renewed verification whenever a later refresh materially changes source or package.
+- Do not use API-REV-006's pre-refresh real-provider journey as direct proof of the DR-003 binary.
+- Do not merge/push Personal without separate explicit instruction.
 
 ## Final Status
 
-DR-002 Pass — latest base remains integrated; docs remain synchronized; the same v1.4.54 package passed deterministic isolation plus an actual credentialed Classroom journey; explicit user verification is pending before ticket-branch-only finalization.
+DR-003 Pass — newest origin/personal merged without conflicts, Electron rebuilt and verified, explicit user verification pending.

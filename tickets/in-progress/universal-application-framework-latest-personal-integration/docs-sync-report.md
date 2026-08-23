@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: universal-application-framework-latest-personal-integration
-- Trigger: CRR-011 Not Applicable after API-REV-006 Pass / 99; DR-001 source/docs baseline remains SR-003, ARCH-REV-003, IR-006, CRR-009, API-REV-004, and CRR-010
+- Trigger: user-requested DR-003 integration of advanced origin/personal and Electron rebuild; prior source/docs baseline remains SR-003, ARCH-REV-003, IR-006, CRR-009, API-REV-004, CRR-010, API-REV-006, and CRR-011
 - Bootstrap base: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
-- Integrated base used for docs sync: origin/personal at 8ef282ba77705180d985e7000d801f0e0068cdc1
-- Post-integration reference: executed source 42496b808df16f4ed24ca66bac03372c578f1f89; cumulative checkpoint 083a3231c; evidence/delivery/dr-002-base-refresh-and-integration.log and DR-001 Electron build/isolation evidence
+- Integrated base used for docs sync: origin/personal at d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+- Post-integration reference: merge f8d0bf67a9cdb89da8e3cb24b8331744d9f61865; evidence/delivery/dr-003-base-refresh-and-integration.log plus DR-003 Electron build/isolation/verification evidence
 
 ## Why Docs Were Updated
 
@@ -74,10 +74,20 @@ IR-006 also establishes durable identity guidance: a configured logical member a
 - Delivery artifact impact: electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, and delivery-revision-record.md were refreshed to record the stronger actual Electron/Codex/DeepSeek evidence, value-safe credential handling, and cleanup result.
 - Latest-base confirmation: origin/personal remains 8ef282ba77705180d985e7000d801f0e0068cdc1; no new base documentation was integrated.
 
+## DR-003 Advanced-Base Documentation Impact
+
+- Base advancement: origin/personal advanced 18 commits and 201 paths to d7d4eace46dc6534d50e9150c3e84d4bd41fedfb.
+- New durable base behavior: token-usage analytics with compact daily/facet projections and additive schema setup; terminal run_bash/start_background_process accepts an absolute existing accessible cwd outside the configured workspace while rejecting relative values before process creation.
+- Canonical base docs reviewed: autobyteus-server-ts/docs/modules/token_usage.md, autobyteus-web/docs/settings.md, autobyteus-web/docs/agent_execution_architecture.md, autobyteus-ts/docs/terminal_tools.md, and autobyteus-ts/docs/tool_schema_and_configuration.md.
+- Result: No additional delivery-owned long-lived edit. The finalized base already documents its analytics coverage/no-backfill semantics, UI, absolute-cwd contract, and safety boundary. The conflict-free merge did not alter those docs.
+- Application-framework docs: DR-001 v6 contract corrections and logical member selector versus exact agentRunId guidance remain intact; the new base changes no application framework source or contract.
+- Electron packaging docs: No change. The existing documented build and packaged-isolation process remains accurate and passed.
+- Persisted-data clarification: the application-framework delta still introduces no migration, but the current integrated Personal base contains additive migration 20260822090000_add_token_usage_analytics. It creates analytics tables/coverage state and does not backfill or rewrite existing lifetime run records.
+
 ## Delivery Continuation
 
 - Result: Pass
-- Next action: present the same exact unsigned macOS ARM64 package, now backed by API-REV-006 actual credentialed packaged-Electron proof, for explicit user verification.
+- Next action: present the freshly rebuilt latest-base unsigned macOS ARM64 package for explicit user verification. API-REV-006 remains pre-refresh provider evidence and must not be described as direct proof of the new binary.
 - Hold: ticket remains in progress; no push, archive, Personal merge, release, deployment, or cleanup before explicit verification.
 
 ## Blocked Or Escalated Follow-Up

@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-010 Pass package enters delivery | N/A | Ready for explicit user verification | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-001-* |
 | DR-002 | CRR-011 Not Applicable returns API-REV-006 packaged Classroom proof | DR-001 ready for verification | Ready for explicit user verification with actual credentialed packaged-Electron proof | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-002-* |
+| DR-003 | User reports origin/personal advanced and requests latest-base integration plus Electron rebuild | DR-002 ready for verification on 8ef282ba7 | Latest-base integrated v1.4.54 Electron package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-003-* |
 
 ## Revision Entries
 
@@ -43,3 +44,20 @@
 - User/finalization state: explicit user verification has not been received. Ticket remains in progress. No final delivery commit/push, archive, Personal merge/push, version/tag, hosted release, deployment, or cleanup occurred.
 - Next action: user reviews/tests the same v1.4.54 package and replies with explicit approval/completion or a concrete issue.
 - Remaining risks/hold: live provider balance/availability and the external agent package may change after this recorded run. The local app is unsigned/unnotarized. Refresh origin/personal again after user verification and require renewed verification if the candidate materially changes. Finalization remains ticket-branch-only unless Personal integration is separately authorized.
+
+### DR-003 — Advanced Personal base merged and Electron rebuilt
+
+- Round/trigger: Round 3; user reports origin/personal advanced and asks that the ticket branch use the newest tracked Personal state and rebuild Electron.
+- Prior result: DR-002 ready for verification on origin/personal 8ef282ba77705180d985e7000d801f0e0068cdc1.
+- Current result: latest-base integrated v1.4.54 Electron package ready; explicit user verification pending.
+- Safety checkpoint: committed the uncommitted DR-002 delivery package locally as 0b607a5844f66e19ffb55162e91150a7383c030a before integration.
+- Latest-base integration: fetched origin/personal at d7d4eace46dc6534d50e9150c3e84d4bd41fedfb, 18 commits and 201 paths beyond the prior base. A merge-tree preview found no conflict. Delivery merged it without textual conflicts as f8d0bf67a9cdb89da8e3cb24b8331744d9f61865; the merge has the DR-002 checkpoint and new Personal as parents, origin/personal is an ancestor, and divergence is 139/0.
+- New base scope: finalized token-usage analytics with an additive Prisma migration and finalized absolute external terminal cwd support, plus their canonical docs, tests, generated GraphQL output, and archived ticket evidence.
+- Post-integration executable checks: the complete personal macOS ARM64 Electron pipeline passed, including web/localization guards, shared/server builds, Prisma generation, built-in bootstrap smoke, renderer/main/preload builds, native rebuild, and packaging. The five-scenario packaged Electron isolation probe passed. App/native metadata, packaged application-framework owners, latest-base token analytics and terminal cwd owners, real node-pty spawn, DMG/ZIP integrity, process cleanup, and mount cleanup passed.
+- Current artifacts: DMG SHA-256 09ecfbe4b8fb45afdb1cb231fdc81d11d2cb17d145f6aba9be6f657542da7414; ZIP SHA-256 12f3a5e82d9071e47671c33f3360f1e3b969be42330added102c34f1ce88224c. These supersede every DR-001/DR-002 artifact despite retaining version 1.4.54 and the same filenames.
+- Documentation result: the new base's token-usage and terminal cwd changes arrive with complete long-lived docs. No further application-framework doc edit is required; DR-001 exact-target/v6 corrections remain intact. Delivery artifacts were refreshed for the integrated state.
+- Persisted data: the application-framework ticket itself remains Directly Usable — No Migration. The newly integrated Personal base separately adds migration 20260822090000_add_token_usage_analytics, which creates compact analytics coverage/daily-facet tables without rewriting or backfilling existing lifetime run records. A normal launch can apply this base-owned additive migration.
+- Prior provider journey status: API-REV-006 remains valid evidence for the pre-refresh package/source checkpoint 42496b808, but it is not direct proof of the rebuilt f8d0bf67 package. The latest package has fresh full-build and packaged-isolation proof and now awaits user verification.
+- User/finalization state: no explicit verification for the DR-003 package has been received. Ticket remains in progress. No final delivery commit/push, archive, Personal merge/push, version/tag, hosted release, deployment, or cleanup occurred.
+- Next action: user tests the new-hash DMG and replies with explicit approval/completion or a concrete issue.
+- Remaining risks/hold: unsigned/unnotarized local package; new Personal migration changes schema additively; API-REV-006's real provider journey predates this base merge; live providers remain mutable. Refresh origin/personal again after verification and require renewed verification if the candidate materially changes. Finalization stays ticket-branch-only unless Personal integration is separately authorized.
