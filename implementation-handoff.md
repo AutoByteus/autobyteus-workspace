@@ -5,131 +5,147 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-spec.md`
-- Supplemental task artifacts:
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`
+- Triggering source/API review package:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-revision-record.md`
+- Investigation and execution evidence:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/nested-team-restart-reproduction.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/root-member-history-control.png`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/affected-codex-nested-member-post-restart.png`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/controlled-autobyteus-nested-member-post-restart.png`
-  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_f69ba7836a55__image.png`
-  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_57a57720cadc__image.png`
-  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_26ddbd968b85__image.png`
-  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_73e4b305a940__image.png`
-- Relevant repository references retained from investigation:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/docs/features/memory_sync.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/docs/memory.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `N/A`; this is the initial implementation of the `ARCH-REV-002` pass. The authoritative review is `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/`
+- Durable API/E2E coverage edited before this implementation rework:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts`
+- Real-provider fixture authority retained for downstream execution:
+  - `/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team.md`
+  - `/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agents/teacher/agent.md`
+  - `/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json`
+  - `/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md`
 
 ## Current Implementation Summary
 
-The implementation replaces the defective flat nested-Team writer with a required immutable physical scope owned by each live `TeamRunContext`, centralizes cold scope derivation in `TeamExecutionIndex`, and confines the released flat-layout interpretation to one registered startup migration. Root, configured-child, delegated task-Team, task-Agent, and deeply nested execution paths now derive canonical memory locations without logical-address inference or current-runtime fallback. The migration admits only valid current V1 packages, moves an eligible complete directory with one target-absent rename, reports exact bounded dispositions, and leaves the existing runner, Settings recovery path, application startup behavior, and Memory Sync v1 production code unchanged.
+The current implementation contains the completed SR-004 backend physical-scope and migration repair plus the bounded SR-005 Web correction approved by SR-007. The Web now has one explicit `LIVE_EXECUTION | HISTORICAL_INSPECTION` navigation purpose. The existing `TeamExecutionViewState` derives that purpose only from authoritative `rootActive` and uses one purpose-correct projection for row listing, exact focus, and focus repair. Live execution still excludes settled task subtrees. Inactive historical inspection retains persisted settled task Agents, task Teams, their members, and nested task executions already present in the V1 tree/context. Returning a view to active mode repairs a historical focus that is no longer live-eligible.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-004`
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-004`, `SR-005`, `SR-007`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`; `ARCH-RG-001` was resolved upstream before implementation.
+- Triggering finding IDs: `CR-001`, `NTH-BR-001`, `MP-003`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Restarted/current semantic history resolves the canonical containing-Team path. | `team-run-physical-scope.ts`; `TeamExecutionIndex.getTeamRunPhysicalScope`; `TeamRunExecutionTreeLocationService`; `AgentMemoryLocationService`; `RootTeamRun.getAgentExecution`. | Cold readers share one index-owned physical-scope authority. No flat fallback or compatibility reader was added. |
-| `BEH-002` | Every live configured member, task Agent, and task-Team member writes under its exact containing TeamRun scope. | `TeamRunContext`; mixed root/backend/sub-Team factories; task-Team registry; `MixedAgentMemberHandle.buildAgentRunConfig`. | Root creates `{root, []}`; each concrete child TeamRun appends its ID exactly once; task Agents remain leaves and consume the containing scope unchanged. Runtime/model kind is irrelevant to path construction. |
-| `BEH-003` | Direct root Agent history remains at the existing root/AgentRun location. | `createRootTeamRunPhysicalScope`; mixed root create/restore; `AgentMemoryLayout`. | Root scope has an empty non-root chain, preserving the current direct-root layout. |
-| `BEH-004` | Team Communication/task/history association remains unchanged. | Existing execution identities, handoffs, task records, event publication, and communication stores. | No Team Communication production code changed. Configured children inherit parent handoffs/application binding; delegated task Teams retain task handoffs and `null` application binding. |
-| `BEH-005` | Released flat nested histories are repaired at the existing startup migration boundary with truthful recovery state. | `TeamAgentMemoryLayoutAppDataMigration`; registry insertion after V1; new prerequisites on the two canonical-location snapshot migrations. | `requiredOnStartup: true`, `ANYTIME`, current-V1-only identity, one rename, post-move validation, exact counters, one bounded detail/reason, and at most five sorted relative paths. Generic ledger/prerequisite/manual-retry/GraphQL/Settings behavior is reused unchanged; no `server-runtime` gate or record reset was added. |
-| `BEH-006` | A valid canonical target remains the only semantic current result when flat residue also exists; Memory Sync v1 residue is preserved and named truthfully. | Migration conflict/residue dispositions plus unchanged canonical local/imported location services. | Only valid canonical targets may yield `SUCCEEDED_WITH_WARNINGS`; missing/invalid targets yield `FAILED`. Memory Sync scanner/planner/service and imported explorer production code are unchanged. |
+| `BEH-001` | Cold canonical history and exact settled delegated-member inspection work without changing live semantics. | Backend scope/index/migration from `IR-001`; `autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts`; `teamExecutionViewState.ts`. | Historical rows and exact focus now include persisted settled task subtrees when `rootActive` is false. Live settlement exclusion and focus repair remain intact. |
+| `BEH-002` | Live configured/task/deep writes retain exact containing-Team scope. | SR-004 `TeamRunContext`, construction factories, task-Team registry, and memory location path. | Preserved unchanged in IR-002. No backend production diff was introduced. |
+| `BEH-003` | Direct-root history remains unchanged. | Existing root physical scope and historical projection/open consumers. | Preserved. The purpose branch changes only settled task projection. |
+| `BEH-004` | Team Communication and its ordinary team/direct routes remain unchanged. | Existing communication/runtime/store/component owners. | No production change. Downstream `NTH-LIVE-002A/B` remains required. |
+| `BEH-005` | Deterministic startup migration/retry behavior remains the SR-004 result. | Existing registered `TeamAgentMemoryLayoutAppDataMigration` and runner/ledger/API/Settings boundaries. | Preserved unchanged in IR-002. |
+| `BEH-006` | Canonical semantic reads and approved Memory Sync v1 no-delete limitation remain unchanged. | Existing local/imported readers and Memory Sync v1 production. | Preserved unchanged; no filter, tombstone, cleanup, or gate was added. |
 
 ## Key Files Or Areas
 
-- Physical-scope domain and authorities: `autobyteus-server-ts/src/agent-team-execution/domain/team-run-physical-scope.ts`, `team-run-context.ts`, `services/team-execution-index.ts`.
-- Live construction and leaf use: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`, `mixed-sub-team-run-factory.ts`, `members/mixed-sub-team-member-handle.ts`, `mixed-task-team-execution-registry.ts`, and `mixed-agent-member-handle.ts`.
-- Cold canonical location: `autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts`, `src/agent-memory/domain/agent-memory-location.ts`, `src/agent-memory/services/agent-memory-location-service.ts`, and `src/agent-team-execution/domain/root-team-run.ts`.
-- Persisted transition: `autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`, registry, and the two dependent snapshot migration definitions.
-- Focused proof: `tests/unit/agent-team-execution/team-run-physical-scope.test.ts`, `mixed-sub-team-run-factory.test.ts`, `mixed-agent-member-handle-memory-invariant.test.ts`, `mixed-team-member-registry-task-agent-memory.test.ts`, and `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts`.
-- Required constructor and stale activation fixture repairs are limited to directly affected unit/integration fixtures.
+- New closed navigation-purpose contract and settled-task purpose gate: `autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts`.
+- Authoritative lifecycle-derived projection, exact focus, and live-transition repair: `autobyteus-web/services/teamExecution/teamExecutionViewState.ts`.
+- Owner regression: `autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts`.
+- Historical integration-contract regressions:
+  - `autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts`
+  - `autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts`
+  - `autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts`
+- Backend SR-004 implementation and its prior focused coverage remain as recorded in `IR-001`; no backend production file changed in this round.
 
 ## Important Assumptions
 
-- Migration attempts run under the reviewed production convention: one writer, stable process/power/device for the attempt, sufficient permissions, readable/writable same-filesystem storage, and normal filesystem behavior.
-- Current V1 execution-tree identity and `AgentMemoryLayout` containment are authoritative. Historical, predecessor, invalid, or guessed roots are outside this migration.
-- Source plus an independently valid canonical target is the approved no-mutation warning outcome even if their bytes differ; the canonical target remains the only semantic current path.
-- Existing Memory Sync v1 replace-only/no-delete behavior may retain both physical paths on the trusted hub. No independent deletion or cleanup contract was added.
+- `rootActive` remains the sole lifecycle authority for navigation purpose; callers do not supply an independent history flag.
+- Historical projection only exposes executions already persisted in the V1 tree and backed by existing contexts/task records. It does not create contexts, resume tasks, alter statuses, or connect streams.
+- Live execution eligibility continues to govern streaming/status membership through existing owners such as `collectLiveExecutionAgents`; historical discoverability is not live membership.
+- SR-004 migration attempts retain the reviewed stable-filesystem/single-writer prerequisites and bounded state table.
 
 ## Known Risks
 
-- Real startup/Settings Retry/GraphQL behavior, cold restart hydration, imported-memory exploration, and Memory Sync MP-001/MP-002 remain for independent downstream coverage investigation and executable validation.
-- Approved source-plus-target residue may retain duplicate bytes until an existing imported source is removed or a separately approved cleanup exists.
-- `pnpm typecheck` remains unusable because the repository `tsconfig.json` includes `tests` outside `rootDir: src` and produces baseline `TS6059`; `pnpm build` successfully compiles production source with `tsconfig.build.json`.
-- A direct companion run of the unchanged `remove-external-runtime-working-context-snapshots-migration.test.ts` still has two pre-existing metadata-classification assertion failures. This change adds only its prerequisite declaration and does not change that migration's `execute` path or its test. These failures are not classified as downstream API/E2E results.
-- No implementation-scoped check used a live user profile, Docker production volume, or remote Memory Sync hub.
+- `NTH-BR-001` has source-level regressions now passing, but its real cold-restart browser rerun remains pending and must not be reported as passed by implementation.
+- Configured nested browser `AC-001` and the separate real-provider `NTH-LIVE-002A/B/C` restart/continuation scenarios remain downstream API/E2E work.
+- `pnpm exec nuxi typecheck` cannot currently run because its transient `vue-tsc` resolves an incompatible TypeScript package export (`ERR_PACKAGE_PATH_NOT_EXPORTED`). The production Nuxt build succeeds.
+- The unchanged adjacent `HistoricalTeamLazyHydration.integration.spec.ts` currently fails before exercising its scenario because its existing `agentTeamRunStore` mock omits the `stopPendingTeamIds` ref now read by `WorkspaceAgentRunsTreePanel.vue`. Neither the fixture nor component is part of this IR-002 delta. The mapped row/index/ancestry/open integration regressions pass; downstream may separately repair/review this stale component fixture if it becomes part of durable coverage work.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Bug Fix` with targeted invariant refactor and persisted-layout repair.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, compounded by `Duplicated Policy Or Coordination` and `Shared Structure Looseness`.
+- Reviewed root-cause classification: `Boundary Or Ownership Issue`, compounded by the earlier backend coordination/structure issues; `CR-001` identified live visibility being applied as historical discoverability.
 - Reviewed refactor decision: `Refactor Needed Now`.
 - Implementation matched the reviewed assessment: `Yes`.
-- If challenged, routed as `Design Impact`: `N/A`.
-- Evidence / notes: `TeamRunContext` now owns the exact live scope, child factories own append sequencing, `TeamExecutionIndex` is the sole cold derivation authority, and old-location knowledge exists only in the migration. No design contradiction was found.
+- If challenged, routed as `Design Impact`: `N/A`; SR-005/SR-007 already resolved the design impact before this round.
+- Evidence / notes: the existing execution view remains authoritative for lifecycle, projection, focus, and repair. No store/component bypass or parallel eligibility policy was introduced.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
-- Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; the flat leaf writer and duplicate cold ancestry recipes were removed, redundant child root propagation was removed, and the defective flat-writer fixture expectation was replaced.
-- Shared structures remain tight: `Yes`; `AgentMemoryScope` aliases the one execution-domain physical-scope shape rather than creating a parallel DTO.
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no routing was needed.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; the largest changed implementations are 476 and 469 effective non-empty lines, and the cohesive migration is 200 effective non-empty lines.
-- Notes: Current runtime remains canonical-only. There is no dual read/write, flat fallback, compatibility wrapper, migration-status sync gate, or frontend workaround.
+- Legacy old-behavior retained in scope: `No`; live semantics are intentionally preserved, while the invalid use of live-only filtering for inactive history is removed.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; no new obsolete path was created, and no independent history flag or bypass exists.
+- Shared structures remain tight: `Yes`; one closed purpose union is added to the existing selector boundary.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no new design issue was found.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; selector is 259 and view state is 326 effective non-empty lines, with small production deltas.
+- Notes: `collectLiveExecutionAgents`, streams, status, task lifecycle, hydration, stores, coordinators, components, renderers, Team Communication, delegation, backend migration, and Memory Sync production remain unchanged unless named above.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Migration Required`.
-- Design-spec decision reference: `design-spec.md` — Persisted-Data Transition Design, Deterministic Physical-State Table, registration order, and `DS-006`.
+- Approved decision: `Migration Required` for the SR-004 backend physical layout; `Not Affected` by the IR-002 frontend projection change.
+- Design-spec decision reference: `design-spec.md` persisted-data transition sections and `DS-006`; frontend `DS-009` reads the current V1 tree/context without changing persistence.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: `N/A`.
-- Migration implementation and focused checks: one migration file classifies current V1 roots, enumerates non-root agents from the index, derives both paths through `AgentMemoryLayout`, performs exactly one target-absent directory rename, validates source absence/target directory, preserves both-path conflicts, returns failed state for invalid required targets, and caps sorted examples at five per reason. Temp-directory unit tests cover the complete state table, byte/directory preservation, conflict non-mutation, exact counts, bounded diagnostics, registration/prerequisites, and ordinary rerun/idempotence.
+- Direct-use evidence or discard/rebuild result, when applicable: the Web consumes the already-current V1 execution tree/context; no stored shape changes.
+- Migration implementation and focused checks, only when `Migration Required`: recorded in `IR-001`; no migration delta in IR-002.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- Dependencies were initially absent in this worktree. `pnpm install --offline --ignore-scripts --frozen-lockfile` restored the existing workspace lock state; no lockfile or dependency declaration changed.
-- Shared packages and Prisma generation are exercised by the server build.
-- Unit checks use the repository's isolated test SQLite database and temporary directories. No file under `/Users/normy/.autobyteus` was mutated.
+- Existing workspace dependencies were already installed. No dependency declaration or lockfile changed in IR-002.
+- Nuxt build completed with only existing Browserslist-age and large-chunk warnings.
+- Vitest emitted the existing KaTeX quirks-mode and Browserslist-age warnings.
+- No live provider, user profile, production storage, server restart environment, or desktop process was used in this implementation round.
 
 ## Local Implementation Checks Run
 
-- `pnpm build` in `autobyteus-server-ts` — pass. This includes shared package builds, Prisma generation, production TypeScript compilation, managed asset copy, built-in-agent bootstrap smoke, and sanitized built-module/bootstrap smoke.
-- Final focused Vitest run — pass: 18 files, 80 tests. It covers every changed unit fixture plus physical-scope, live root/nested/task paths, configured/task-Team construction semantics, cold memory location, migration state/idempotence/bounds/registration, dependent native snapshot ordering, runner prerequisite/recovery behavior, and imported run-view projection.
-- `git diff --check` — pass.
-- Static boundary audit — pass: Memory Sync v1 production, imported explorer, `server-runtime.ts`, and frontend production have no diff; all current production `TeamRunContext` constructors provide a physical scope; changed implementation files remain below the effective-line guardrail.
-- `pnpm typecheck` — baseline failure (`TS6059`) from the repository's `rootDir: src` plus included `tests`; the production build/typecheck path passes.
-- Non-authoritative check note: an accidentally unfiltered Vitest invocation was terminated after recognizing that it exceeded implementation scope. Its partial results are not used as implementation evidence or API/E2E classification.
-- No API, E2E, broader integration environment, live restart, or remote sync execution is claimed here.
+- Mapped owner/integration regressions: `pnpm test:nuxt services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts --run` — pass, 4 files / 23 tests.
+  - Covers active settlement hide/repair; inactive settled task-Agent and task-Team recursive visibility/focus; exact historical rows, index, ancestry; normal exact inactive open; and absent identity rejection.
+- Adjacent unchanged workspace interaction checks: `pnpm test:nuxt components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts --run` — pass, 2 files / 9 tests.
+- `pnpm guard:web-boundary && pnpm guard:localization-boundary` — pass.
+- `pnpm build` in `autobyteus-web` — pass; static Nuxt production output generated.
+- `pnpm exec nuxi typecheck` — tool/dependency failure before project diagnostics: transient `vue-tsc` cannot import TypeScript `./lib/tsc` under the installed package exports.
+- Adjacent unchanged `HistoricalTeamLazyHydration.integration.spec.ts` — failed before scenario execution because its current mock does not expose `stopPendingTeamIds.value`; recorded under Known Risks rather than treated as an IR-002 production regression.
+- `git diff --check`, selector-call-site audit, backend-production no-diff audit, and source effective-line audit — pass.
+- Prior IR-001 backend implementation checks remain recorded but were not reclassified or rerun as API/E2E evidence here.
+- No API, E2E, real cold restart, real provider, or broader environment result is claimed by implementation.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable. The approved change is backend runtime/storage/migration behavior, and no rendered frontend or interaction production code changed. Existing Settings status/Retry behavior is intentionally reused unchanged and remains a downstream executable-validation target.
+- Affected surfaces / journeys: inactive Workspace History Team tree, exact settled task-member selection, and transition back to active eligibility.
+- Approved references: `BEH-001`, `REQ-002`, `REQ-007`, `AC-002`, `AC-012`, `DS-004`, `DS-009`, `NTH-BR-001`, and the SR-007/ARCH-REV-003 review.
+- Existing design system/shared surfaces reviewed: current workspace history projection, `TeamWorkspaceView`, focus/send workflow, and unchanged Team member rendering consumers.
+- Project development / preview instructions and rendered surface used: project README/AGENTS guidance and Nuxt production build were used; component-level workspace surfaces were exercised through Vitest.
+- States and interactions inspected: inactive historical row/index/focus projection, exact open with no stream connection, active transition focus repair, and unchanged workspace view/focus workflow tests.
+- Visual or interaction issues found and corrected: the interaction defect was in projection eligibility, not layout/styling; no component or renderer change was required.
+- Supporting evidence and remaining limitation: mapped integration-contract tests and adjacent component tests pass. A real persisted settled-task cold-restart browser state was not rendered locally because architecture assigns the authoritative `NTH-BR-001`, configured AC-001, and `NTH-LIVE-002A/B/C` environment/rerun to API/E2E. No visual sign-off is claimed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-1. On isolated copied/synthetic released flat data, start the application and verify the required `ANYTIME` migration runs after V1, moves complete nested directories, preserves bytes, and lets cold reopened nested history hydrate from the canonical path.
-2. Exercise root configured Agents, nested configured Agents, nested task Agents, delegated task Teams, and deep configured/task recursion across AutoByteus/Codex/Claude runtimes; verify task Agents remain leaves and every concrete child TeamRun adds exactly one directory boundary.
-3. Verify source+valid-target conflict and unsupported-source+valid-target residue return sync-visible `SUCCEEDED_WITH_WARNINGS`, mutate neither side, and still present exactly one canonical semantic local/imported member.
-4. Verify missing/unsupported canonical targets return truthful `FAILED`, unrelated startup continues, not-yet-run dependent migrations stay prerequisite-blocked, and Settings/GraphQL Retry exposes `MANUAL_RETRY`/`canRetry` without resetting successful records.
-5. For MP-001/MP-002, prove the unchanged Memory Sync v1 replace/no-delete behavior may retain both paths while canonical imported exploration ignores flat residue. Do not add scanner filters, tombstones, cleanup, or a sync gate during coverage work without a new approved design.
-6. Confirm Team Communication/task records and configured versus task-Team handoff/application-binding semantics remain unchanged through realistic execution and restart.
+1. Rerun `NTH-BR-001` through the normal browser history path after a real cold restart; expand the persisted settled task Team, select the exact nested member, and verify non-empty conversation, Activity, Event Monitor, and last activity.
+2. Execute configured nested browser `AC-001` independently; task-Team evidence does not substitute for it.
+3. Execute `NTH-LIVE-002A`, `NTH-LIVE-002B`, and `NTH-LIVE-002C` as separate root runs with exact `/StudentStudyGroup` team messaging, exact `/StudentStudyGroup/student_one` direct messaging, and exact `/StudentStudyGroup` delegation respectively; cross a real cold restart and prove same-route/tool continuation with disjoint markers.
+4. Retain active-settlement controls: settled task rows remain hidden while active and any now-ineligible focus repairs to the root coordinator. Returning inactive restores historical discoverability without resuming tasks.
+5. Preserve SR-004 server lifecycle, retry, Memory Sync residue, canonical imported read, direct-root, genuinely empty, and Team Communication controls while rerunning the cumulative coverage package.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Independent API/E2E coverage investigation, durable coverage decisions, realistic environment setup, startup/restart/manual-retry execution, and Memory Sync/imported-reader evidence remain owned by `api_e2e_engineer` after source review passes.
+Yes. Source review must first approve IR-002. API/E2E then owns the real browser cold-restart rerun, configured nested control, separate live A/B/C provider scenarios, broader environment setup/execution, and any repository-resident durable coverage edits. If API/E2E adds, updates, or removes durable coverage, the cumulative package must return through code review before delivery.

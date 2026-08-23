@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Error: AgentRun 'student_one_83f7eac2a00e49f8a0b92c521dc0cee1' is not live.
+    at openTeamRun (http://127.0.0.1:3000/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:23:50)
+    at async openTeamMemberRunFromHistory (http://127.0.0.1:3000/_nuxt/stores/runHistorySelectionActions.ts:18:20)
+    at async Proxy.openTeamMemberRun (http://127.0.0.1:3000/_nuxt/stores/runHistoryStore.ts:347:7)
+    at async eval (eval at evaluate (:290:30), <anonymous>:10:5)
+    at async <anonymous>:316:30
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-phase-b.mjs:37:37
+
+Node.js v22.23.1

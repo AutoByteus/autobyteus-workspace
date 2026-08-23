@@ -7,6 +7,7 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-te
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `architecture_reviewer`; `ARCH-REV-002`; initial implementation round | `N/A` | `Initial Baseline` | `SR-004`, `ARCH-REV-002`; CRR/API/DR: `N/A` | Reviewed physical-scope refactor and bounded startup migration implemented; focused unit/build checks pass; ready for source review. |
+| `IR-002` | `architecture_reviewer`; `ARCH-REV-003`; post-`CRR-002`/`API-REV-001` rework | `CR-001`, `NTH-BR-001`, `MP-003` | `Design Impact` | `SR-005`, `SR-007`, `ARCH-REV-003`, `CRR-002`, `API-REV-001`; DR: `N/A` | Added lifecycle-purpose-aware historical navigation/focus and mapped integration regressions while preserving live/backend semantics; ready for source re-review. |
 
 ## Revision Entries
 
@@ -42,3 +43,35 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-te
   - The unchanged external-snapshot cleanup suite retains two pre-existing metadata-classification assertion failures; this implementation changes only that definition's prerequisite property, not its execution logic or test.
 - Next recipient or routing: `/code_reviewer` with the cumulative reviewed solution and implementation artifacts.
 - Remaining limitations or risks: API/E2E coverage investigation and execution remain required for realistic startup/restart hydration, Settings/GraphQL retry, prerequisite blocking, source-plus-target Memory Sync retention, canonical imported exploration, and Team Communication preservation. Approved sync-visible residue may retain duplicate trusted-hub bytes. No live user profile, production Docker volume, remote hub, frontend render, API, or E2E execution was used in this implementation round.
+
+### IR-002 — Purpose-aware settled-task historical navigation and exact focus
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`; `ARCH-REV-003` after `CRR-002` and `API-REV-001` rerouted the reachable historical-browser defect.
+- Triggering finding IDs: `CR-001`, `NTH-BR-001`, `MP-003`.
+- Classification: `Design Impact`.
+- Prior authoritative result: `IR-001` implemented SR-004 backend scope/migration correctly, but the unchanged Web reused live-only settled-task filtering for inactive history. Real cold execution kept the exact context/data yet removed its navigation row and rejected normal focus as `TEAM_AGENT_RUN_NOT_VISIBLE`.
+- Current authoritative result: SR-005's bounded Web correction, as finalized by SR-007, is implemented. Inactive historical inspection recursively projects persisted settled task Agent/task-Team subtrees and accepts their exact contexts; live execution still hides settled subtrees and repairs an ineligible historical focus on activation. The cumulative implementation is ready for `/code_reviewer` re-review.
+- Related solution revision IDs: `SR-005`, `SR-007` (with SR-004 backend result preserved).
+- Related architecture-review revision IDs: `ARCH-REV-003` (with prior `ARCH-REV-002` backend pass preserved).
+- Related code-review revision IDs: `CRR-001`, `CRR-002`.
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Resolves the reviewed `CR-001` design impact exposed by failing real browser scenario `NTH-BR-001`, and records the exact frontend production/test delta separately from the authoritative current handoff.
+- Approved behavior or requirement IDs affected: `BEH-001`; `REQ-002`, `REQ-007`; `AC-002`, browser portion of `AC-012`; `DS-004`, `DS-009`. `BEH-002`–`BEH-006` and the SR-004 transition remain preserved.
+- Implementation delta:
+  - Added required closed `LIVE_EXECUTION | HISTORICAL_INSPECTION` purpose to `projectNavigationRows`; only live purpose applies the settled-task subtree exclusion.
+  - Derived purpose exclusively from `TeamExecutionViewState.rootActive` and centralized row listing, exact focus eligibility, and focus repair on the same projection.
+  - Repaired focus when an inactive historical view becomes active and its exact settled-task target is no longer live-eligible.
+  - Added owner coverage for active exclusion/repair, inactive direct and recursive settled task-Team visibility/focus, active/inactive transitions, and absent-identity rejection.
+  - Added historical integration-contract coverage for rows/depth, exact index/ancestry, and normal inactive exact open without stream reconnection.
+  - Left hydration, stores/open production, components/renderers, live-agent collection, streams/status/task lifecycle, Team Communication, delegation, backend migration, and Memory Sync production unchanged.
+- Changed files or areas: `autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts`; `teamExecutionViewState.ts`; their owner test; `stores/__tests__/runHistoryTeamExecutionRows.spec.ts`; `runHistoryNavigationProjection.spec.ts`; `services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts`.
+- Local validation and result:
+  - Mapped owner/integration suite — 4 files / 23 tests passed.
+  - Adjacent `TeamWorkspaceView` and `TeamFocusSendWorkflow` component suites — 2 files / 9 tests passed.
+  - Web boundary/localization guards and Nuxt production build — passed.
+  - `git diff --check`, single-selector-call-site, no-backend-production-diff, and source-size audits — passed.
+  - Standalone Nuxt typecheck could not start project diagnostics because transient `vue-tsc` is incompatible with the resolved TypeScript package exports.
+  - Unchanged adjacent `HistoricalTeamLazyHydration.integration.spec.ts` retains a stale `agentTeamRunStore` mock missing `stopPendingTeamIds`; it failed before its scenario and was not altered outside the mapped regression scope.
+- Next recipient or routing: `/code_reviewer` with the complete SR-007/ARCH-REV-003 package, implementation handoff/revision record, prior code-review/API-E2E reports, durable E2E edits, and retained failure evidence.
+- Remaining limitations or risks: `NTH-BR-001` is not yet rerun through a real cold browser journey. Configured nested `AC-001` and independent live `NTH-LIVE-002A/B/C` provider scenarios remain mandatory API/E2E work. No implementation claim is made for those downstream outcomes.

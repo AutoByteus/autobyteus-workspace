@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]') to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-phase-a.mjs:51:21 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1

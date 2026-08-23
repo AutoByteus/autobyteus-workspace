@@ -1,0 +1,3 @@
+excluded_attempt_started_at=2026-08-23T09:05:45Z
+reason=DATABASE_URL was omitted; process read shared default database and was stopped before validation requests
+no_validation_requests_sent=true
