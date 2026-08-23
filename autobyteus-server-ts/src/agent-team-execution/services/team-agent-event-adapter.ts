@@ -78,6 +78,18 @@ const errorEvidence = (event: AgentRunEvent) => {
     default: return { errorScope: null, errorEffect: null, turnId: null };
   }
 };
+const providerErrorEvidence = (payload: Record<string, unknown>) => ({
+  ...(typeof payload.details === "string" ? { details: payload.details } : {}),
+  ...(typeof payload.provider_status === "number" || typeof payload.provider_status === "string" || payload.provider_status === null
+    ? { providerStatus: payload.provider_status }
+    : {}),
+  ...(typeof payload.provider_code === "string" || payload.provider_code === null
+    ? { providerCode: payload.provider_code }
+    : {}),
+  ...(typeof payload.provider_request_id === "string" || payload.provider_request_id === null
+    ? { providerRequestId: payload.provider_request_id }
+    : {}),
+});
 const statusHint = (event: AgentRunEvent): AgentRunStatusHint => event.statusHint ?? null;
 const correlated = <T extends TeamAgentEvent>(event: T): Readonly<{ kind: "publish"; event: T }> =>
   Object.freeze({ kind: "publish", event: Object.freeze(event) });
@@ -344,7 +356,12 @@ export class TeamAgentEventAdapter {
       case AgentRunEventType.FILE_CHANGE:
         return correlated({ eventType: "FILE_CHANGE", details: fileChange(event), statusHint: hint });
       case AgentRunEventType.ERROR:
-        return correlated({ eventType: "ERROR", details: { code: required(p.code, "code"), message: stringValue(p.message), ...errorEvidence(event) }, statusHint: hint });
+        return correlated({ eventType: "ERROR", details: {
+          code: required(p.code, "code"),
+          message: required(p.message, "message"),
+          ...providerErrorEvidence(p),
+          ...errorEvidence(event),
+        }, statusHint: hint });
       case AgentRunEventType.INTER_AGENT_MESSAGE:
       case AgentRunEventType.TEAM_COMMUNICATION_MESSAGE:
         return Object.freeze({ kind: "filtered_collaboration_duplicate" });

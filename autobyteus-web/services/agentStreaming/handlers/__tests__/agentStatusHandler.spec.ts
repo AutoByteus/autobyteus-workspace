@@ -456,7 +456,7 @@ describe('agentStatusHandler', () => {
       expect(lastMsg.segments).toHaveLength(1);
       expect(lastMsg.segments[0]).toEqual({
         type: 'error',
-        source: 'TEST_ERR',
+        code: 'TEST_ERR',
         message: 'Something went wrong'
       });
     });
@@ -538,7 +538,7 @@ describe('agentStatusHandler', () => {
       expect(aiMsg.segments).toHaveLength(2);
       expect(aiMsg.segments[1]).toEqual({
         type: 'error',
-        source: 'LLM_STREAM_ERROR',
+        code: 'LLM_STREAM_ERROR',
         message: 'stream exploded',
       });
       expect(aiMsg.isComplete).toBe(true);

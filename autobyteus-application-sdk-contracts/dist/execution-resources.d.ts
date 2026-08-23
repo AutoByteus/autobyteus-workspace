@@ -55,7 +55,7 @@ export type ApplicationConfiguredExecutionResource = {
     executionResourceRef: ApplicationExecutionResourceRef;
     launchProfile?: ApplicationConfiguredLaunchProfile | null;
 };
-export type ApplicationExecutionResourceConfigurationIssueCode = "INVALID_RESOURCE_SELECTION" | "PROFILE_KIND_MISMATCH" | "PROFILE_UNSUPPORTED_BY_SLOT" | "TEAM_TOPOLOGY_CHANGED" | "PROFILE_MALFORMED";
+export type ApplicationExecutionResourceConfigurationIssueCode = "INVALID_RESOURCE_SELECTION" | "PROFILE_KIND_MISMATCH" | "PROFILE_UNSUPPORTED_BY_SLOT" | "TEAM_TOPOLOGY_CHANGED" | "PROFILE_MALFORMED" | "CURRENT_MODEL_SELECTION_REQUIRED";
 export type ApplicationExecutionResourceConfigurationIssue = {
     severity: "blocking";
     code: ApplicationExecutionResourceConfigurationIssueCode;

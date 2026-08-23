@@ -76,7 +76,8 @@ export type ApplicationExecutionResourceConfigurationIssueCode =
   | "PROFILE_KIND_MISMATCH"
   | "PROFILE_UNSUPPORTED_BY_SLOT"
   | "TEAM_TOPOLOGY_CHANGED"
-  | "PROFILE_MALFORMED";
+  | "PROFILE_MALFORMED"
+  | "CURRENT_MODEL_SELECTION_REQUIRED";
 
 export type ApplicationExecutionResourceConfigurationIssue = {
   severity: "blocking";

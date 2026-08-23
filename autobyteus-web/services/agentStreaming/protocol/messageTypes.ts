@@ -245,7 +245,14 @@ export interface FileChangePayload {
   updatedAt: string;
 }
 
-export type ErrorPayload = Readonly<{ code: string; message: string }> & (
+export type ErrorPayload = Readonly<{
+  code: string;
+  message: string;
+  details?: string | null;
+  provider_status?: number | string | null;
+  provider_code?: string | null;
+  provider_request_id?: string | null;
+}> & (
   | Readonly<{ error_scope: 'turn'; error_effect: 'diagnostic' | 'terminal'; turn_id: string }>
   | Readonly<{ error_scope: 'runtime'; error_effect: 'terminal'; turn_id: null }>
   | Readonly<{ error_scope: null; error_effect: null; turn_id: null }>

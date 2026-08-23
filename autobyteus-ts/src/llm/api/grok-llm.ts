@@ -7,7 +7,7 @@ import type { LLMInvocationOptions } from '../base.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
-export type GrokReasoningEffort = 'low' | 'medium' | 'high';
+export type GrokReasoningEffort = 'low' | 'medium' | 'high' | 'xhigh';
 
 const GROK_INVALID_REQUEST_KEYS = [
   'stop',
@@ -20,7 +20,7 @@ const GROK_INVALID_REQUEST_KEYS = [
 ] as const;
 
 const isGrokReasoningEffort = (value: unknown): value is GrokReasoningEffort =>
-  value === 'low' || value === 'medium' || value === 'high';
+  value === 'low' || value === 'medium' || value === 'high' || value === 'xhigh';
 
 /**
  * Build a fully independent config before applying Grok's request policy.

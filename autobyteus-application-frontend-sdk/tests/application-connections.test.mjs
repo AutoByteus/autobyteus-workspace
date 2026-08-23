@@ -72,7 +72,7 @@ test('canonical WebSocket URL composition appends ordered business query values'
 test('standard agent connection derives the fixed target URL, opens on exact READY, and correlates input', async () => {
   const socket = createSocket();
   let openedUrl = '';
-  const address = { bindingId: 'binding/one', target: { kind: 'AGENT_TEAM_MEMBER', memberRouteKey: 'reviewer two' } };
+  const address = { bindingId: 'binding/one', target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer two' } };
   const connection = createTransport({
     agentCommunicationWebSocketFactory: (url) => { openedUrl = url; return socket; },
   }).connectAgentCommunication(address);
@@ -128,12 +128,9 @@ test('standard connection accepts exact events and rejects malformed nested payl
     address,
     runtimeSubject: 'AGENT_RUN',
     producer: {
-      runId: 'run-1',
-      memberRouteKey: 'root',
-      memberName: null,
+      agentRunId: 'run-1',
       displayName: null,
       runtimeKind: 'AGENT',
-      teamPath: [],
     },
     event: publicEvent,
   });
@@ -142,7 +139,7 @@ test('standard connection accepts exact events and rejects malformed nested payl
     event(2, { type: 'TEXT_DELTA', delta: ' exact \n' }),
     event(3, { type: 'TURN_COMPLETED' }),
     event(4, { type: 'TURN_INTERRUPTED' }),
-    event(5, { type: 'ERROR', message: 'The agent response failed.' }),
+    event(5, { type: 'ERROR', message: 'Provider request limit reached.' }),
   ];
   for (const exactEvent of exactEvents) {
     socket.emit('message', { data: JSON.stringify({
@@ -168,12 +165,9 @@ test('standard connection accepts exact events and rejects malformed nested payl
 test('standard connection rejects removed event shapes, nullable producers, and extra fields', async () => {
   const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
   const producer = {
-    runId: 'run-1',
-    memberRouteKey: 'root',
-    memberName: null,
+    agentRunId: 'run-1',
     displayName: null,
     runtimeKind: 'AGENT',
-    teamPath: [],
   };
   const envelope = (event, overrides = {}) => ({
     sequence: 1,
@@ -192,6 +186,14 @@ test('standard connection rejects removed event shapes, nullable producers, and 
     envelope({ type: 'TOOL_EXECUTION_STARTED', toolName: 'publish_artifacts' }),
     envelope({ type: 'TEAM_STATUS', status: 'IDLE' }),
     envelope({ type: 'TEXT_DELTA', delta: 'valid', providerThreadId: 'secret' }),
+    envelope({
+      type: 'ERROR',
+      message: 'Provider request limit reached.',
+      providerStatus: 429,
+      providerCode: 'rate_limit',
+      providerRequestId: 'request-123',
+      details: 'safe diagnostic detail',
+    }),
     envelope({ type: 'TURN_COMPLETED', content: 'not allowed' }),
     envelope({ type: 'TURN_STARTED' }, { producer: null }),
   ];

@@ -4,7 +4,7 @@
 
 This is a normative intended-behavior supplement to [`requirements.md`](./requirements.md) and [`design-spec.md`](./design-spec.md). It supersedes the earlier backend-proxy-only streaming contract.
 
-Status: `User-approved revised intended-behavior basis at source HEAD 3e48c0ea2c9ccabe52c3126f0db799b3865186a3. Binding/address/connection/input/lifecycle/builders are implemented. The unimplemented delta is the clean-cut contraction from the broad application event union to the five-variant text/turn/error stream and corresponding projector/consumer/generated-package updates.`
+Status: `User-approved revised intended-behavior basis at source HEAD 3e48c0ea2c9ccabe52c3126f0db799b3865186a3, reconciled for safe provider-message passthrough in CR-001. Binding/address/connection/input/lifecycle/builders are implemented. The remaining implementation delta is the five-variant text/turn/error stream plus projector/consumer/generated-package alignment; the public application ERROR remains message-only and provider-neutral.`
 
 The framework subject is **application-bound agent communication**. `assistant` is only a possible application role. Framework names use `agent`, `agent team`, `binding`, `target address`, `event`, and `connection`.
 
@@ -314,7 +314,7 @@ Codex / Claude / AutoByteus provider event
 
 `AgentRunEvent` event type plus its established canonical segment fields are the shared semantic source. The target design does **not** add another provider adapter, general event normalizer, native-message dependency, or application-specific alias parser. The native mapper and native frontend remain unchanged.
 
-The application projector has one narrow responsibility: select the five public variants from canonical internal events and construct new closed objects. It does not spread a source payload, infer provider aliases, assemble a full response, interpret thinking/tools/team coordination, or decide runtime lifecycle.
+The application projector has one narrow responsibility: select the five public variants from canonical internal events and construct new closed objects. For `ERROR`, it copies only the already-safe canonical `message`; it does not expose native transport `code` or provider status/code/request ID/details. It does not spread a source payload, infer provider aliases, assemble a full response, interpret thinking/tools/team coordination, or decide runtime lifecycle.
 
 ### 5.2 Exact projection table
 
@@ -324,7 +324,7 @@ The application projector has one narrow responsibility: select the five public 
 | `SEGMENT_CONTENT` with `payload.segment_type === "text"` and a nonempty string `payload.delta` within the owned text/frame bound | `{ type: "TEXT_DELTA", delta }` | preserve `delta` byte-for-byte; do not trim, normalize whitespace, concatenate, or copy segment/provider metadata |
 | `TURN_COMPLETED` | `{ type: "TURN_COMPLETED" }` | sole successful response-completion signal; source payload is ignored |
 | `TURN_INTERRUPTED` | `{ type: "TURN_INTERRUPTED" }` | source reason/details are not exposed in v1 |
-| `ERROR` | `{ type: "ERROR", message: "The agent response failed." }` | stable bounded message; never read/copy provider codes, error objects, stack, cause, or details |
+| `ERROR` | `{ type: "ERROR", message }` | preserve the safe canonical/original message; do not replace it with `The agent response failed.`; never read/copy native transport code, provider status/code/request ID/details, raw error objects, stack, cause, or unredacted payloads |
 | `SEGMENT_CONTENT` with reasoning/non-text/missing type | deliberate drop | no public event and no sequence consumed |
 | empty text delta | deliberate drop | no public event and no sequence consumed |
 | oversized or non-string text delta | isolated mapping failure | affected consumer receives existing `EVENT_MAPPING_FAILED` then `STREAM_FAILED`; no sequence consumed |
@@ -335,7 +335,7 @@ Important semantic decisions:
 - `TEXT_DELTA` is a presentation-safe application transformation of canonical text `SEGMENT_CONTENT`; it intentionally hides segment IDs/kinds and all thinking/reasoning.
 - `TURN_COMPLETED` is common to current AutoByteus, Codex, and Claude adapters and is already consumed as completion by the native frontend. It is therefore the only application success boundary.
 - `ASSISTANT_COMPLETE` remains a native AutoByteus event where currently supported, but the application projector drops it. `AGENT_RESPONSE_COMPLETED` is removed from all application contracts, validators, generated copies, sample code, and tests.
-- The framework never emits a full accumulated assistant response. Applications append `TEXT_DELTA` for ephemeral presentation; published artifacts remain the durable structured/whole-result mechanism.
+- The framework never emits a full accumulated assistant response. Applications append `TEXT_DELTA` for ephemeral presentation; published artifacts remain the durable structured/whole-result mechanism. The application `ERROR` message is the safe display text only; native transport metadata remains outside this provider-neutral public stream.
 - Whole-team subscriptions expose the same five agent-origin variants with producer attribution. Team status/delegation/communication internals are not application streaming v1 events.
 
 ### 5.3 Projector extension rule
@@ -394,7 +394,7 @@ The application projector never exposes:
 - segment IDs, segment kinds, metadata, or segment start/end details;
 - tool names, arguments, results, approvals, logs, or tool lifecycle;
 - token usage, compaction, internal status, todo, delegation, team communication, or member-input internals;
-- provider/native response objects, model/session/thread/item IDs, runtime configuration, raw exceptions, stacks, causes, or details;
+- provider/native response objects, transport codes, provider status/codes/request IDs, model/session/thread/item IDs, runtime configuration, raw exceptions, stacks, causes, credentials, headers, full payloads, or details;
 - artifacts, file changes, reference-file data, workspaces, or filesystem paths; or
 - complete accumulated response content.
 
@@ -402,11 +402,11 @@ The application projector never exposes:
 
 - real-shaped AutoByteus, Codex, and Claude canonical text fixtures each produce `TEXT_DELTA` with exact bytes;
 - whitespace-only canonical deltas are preserved; empty deltas are dropped; invalid/oversized deltas fail only the affected consumer;
-- real-shaped canonical `TURN_STARTED`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and `ERROR` fixtures produce the exact closed variants;
+- real-shaped canonical `TURN_STARTED`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and `ERROR` fixtures produce the exact closed variants; ERROR preserves the safe original message and never falls back to the stale generic replacement when a message exists;
 - same-input parity tests send one canonical text/completion event through the native mapper and application projector and prove identical text bytes/completion meaning while the native message shape remains unchanged;
 - standalone, whole-team, selected-member, and task-agent wrapper fixtures prove non-null correct producer attribution and filtering;
 - exhaustive current `AgentRunEventType` and `TeamRunEventSourceType` tables prove every non-v1 event is dropped and consumes no sequence;
-- application shared-contract/frontend-validator tests reject `SEGMENT_CONTENT`, `AGENT_RESPONSE_COMPLETED`, `ASSISTANT_COMPLETE`, tool/team public events, extra keys, nullable producer, and provider/native fields;
+- application shared-contract/frontend-validator tests reject `SEGMENT_CONTENT`, `AGENT_RESPONSE_COMPLETED`, `ASSISTANT_COMPLETE`, tool/team public events, extra keys, nullable producer, and native/provider metadata fields on `ERROR`;
 - Socratic session/runtime/renderer/browser tests append only increasing-sequence `TEXT_DELTA`, complete only on `TURN_COMPLETED`, fail safely on `TURN_INTERRUPTED`/`ERROR`, ignore no longer existent tool/thinking/full-response behavior, exercise both live-first and durable-first convergence, and prove double/cross-action one-turn admission without a second GraphQL/input send;
 - generated/vendor drift tests prove the contracted five-variant API propagates to the built-in application packages; and
 - the real Socratic journey proves nonempty text plus completion through the standard selected-member connection while artifact publication remains separately durable.

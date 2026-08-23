@@ -11,9 +11,12 @@ export type AgentErrorNotificationClassification =
   | { scope: 'runtime'; effect: 'terminal' };
 
 export type AgentErrorNotification = {
-  source: string;
+  code: string;
   message: string;
   details?: string;
+  provider_status?: number | string | null;
+  provider_code?: string | null;
+  provider_request_id?: string | null;
   classification: AgentErrorNotificationClassification;
 };
 
@@ -206,11 +209,16 @@ export class AgentExternalEventNotifier extends EventEmitter {
   }
 
   notifyAgentErrorOutputGeneration(notification: AgentErrorNotification): void {
+    if (!notification.code.trim()) throw new Error('Agent error notification code is required.');
+    if (!notification.message.trim()) throw new Error('Agent error notification message is required.');
     const classification = notification.classification;
     const payload = {
-      source: notification.source,
+      code: notification.code,
       message: notification.message,
-      details: notification.details,
+      ...(notification.details !== undefined ? { details: notification.details } : {}),
+      ...(notification.provider_status !== undefined ? { provider_status: notification.provider_status } : {}),
+      ...(notification.provider_code !== undefined ? { provider_code: notification.provider_code } : {}),
+      ...(notification.provider_request_id !== undefined ? { provider_request_id: notification.provider_request_id } : {}),
       error_scope: classification.scope,
       error_effect: classification.effect,
       ...(classification.scope === 'turn' ? { turn_id: classification.turnId } : {})

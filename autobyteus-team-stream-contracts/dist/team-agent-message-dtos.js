@@ -140,7 +140,11 @@ export const teamAgentPayloadSchemas = {
 };
 const errorCore = {
     code: nonEmptyStringSchema,
-    message: z.string(),
+    message: nonEmptyStringSchema,
+    details: z.string().nullable().optional(),
+    provider_status: z.union([z.number().finite(), nonEmptyStringSchema]).nullable().optional(),
+    provider_code: nullableNonEmptyStringSchema.optional(),
+    provider_request_id: nullableNonEmptyStringSchema.optional(),
     change_sequence: z.number().int().positive().nullable(),
     agent_run_id: nonEmptyStringSchema.nullable(),
 };

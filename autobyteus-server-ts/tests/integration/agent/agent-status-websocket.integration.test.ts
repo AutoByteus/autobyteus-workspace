@@ -541,13 +541,19 @@ describe("Agent status WebSocket contract integration", () => {
           turn_id: "turn-error",
           error_scope: "turn",
           error_effect: "diagnostic",
+          code: "TOOL_DIAGNOSTIC",
           message: "recoverable tool diagnostic",
         }),
         event(run.runId, AgentRunEventType.ERROR, {
           turn_id: "turn-error",
           error_scope: "turn",
           error_effect: "terminal",
+          code: "LLM_PROVIDER_ERROR",
           message: "terminal turn failure",
+          provider_status: 402,
+          provider_code: "balance_required",
+          provider_request_id: "provider-request-123",
+          details: "safe provider details",
         }),
       ]);
 
@@ -560,6 +566,21 @@ describe("Agent status WebSocket contract integration", () => {
         "ERROR",
         "AGENT_STATUS",
       ]);
+      expect(trace[3]).toEqual({
+        type: "ERROR",
+        payload: {
+          code: "LLM_PROVIDER_ERROR",
+          message: "terminal turn failure",
+          details: "safe provider details",
+          provider_status: 402,
+          provider_code: "balance_required",
+          provider_request_id: "provider-request-123",
+          error_scope: "turn",
+          error_effect: "terminal",
+          turn_id: "turn-error",
+        },
+      });
+      expect(JSON.stringify(trace[3])).not.toContain("raw-provider-secret");
       expectStatusOnlyPayload(trace[4]!, "error");
       expect(run.getStatusSnapshot().status).toBe("error");
 

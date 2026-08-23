@@ -51,7 +51,7 @@ export class LLMResponsePipeline {
           const turnId = options.turnId ?? context.state.activeTurn?.turnId ?? null;
           if (turnId) {
             notifier?.notifyAgentErrorOutputGeneration({
-              source: `LLMResponseProcessor.${processor.getName()}`,
+              code: `LLMResponseProcessor.${processor.getName()}`,
               message: String(error),
               classification: { scope: 'turn', effect: 'diagnostic', turnId }
             });

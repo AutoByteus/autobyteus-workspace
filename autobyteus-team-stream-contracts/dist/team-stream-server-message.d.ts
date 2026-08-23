@@ -1353,6 +1353,10 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         turn_id: z.ZodNull;
         code: z.ZodString;
         message: z.ZodString;
+        details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_status: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>>;
+        provider_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>, z.ZodObject<{
@@ -1364,6 +1368,10 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         turn_id: z.ZodString;
         code: z.ZodString;
         message: z.ZodString;
+        details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_status: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>>;
+        provider_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>, z.ZodObject<{
@@ -1372,6 +1380,10 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         turn_id: z.ZodNull;
         code: z.ZodString;
         message: z.ZodString;
+        details: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_status: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>>;
+        provider_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>]>;

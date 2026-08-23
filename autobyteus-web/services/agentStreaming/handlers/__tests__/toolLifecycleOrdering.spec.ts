@@ -393,7 +393,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(errorSegments).toEqual([
       {
         type: 'error',
-        source: 'OPENAI_COMPATIBLE_PROVIDER_ERROR',
+        code: 'OPENAI_COMPATIBLE_PROVIDER_ERROR',
         message: '400 Param Incorrect: Xiaomi/mimo-v2.5-pro continuation request rejected',
       },
     ]);

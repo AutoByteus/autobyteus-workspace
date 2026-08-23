@@ -104,9 +104,9 @@ describe('Stream payload factories', () => {
   });
 
   it('creates ErrorEventData', () => {
-    const payload = createErrorEventData({ source: 'test', message: 'error msg' });
+    const payload = createErrorEventData({ code: 'TEST_ERROR', message: 'error msg' });
     expect(payload).toBeInstanceOf(ErrorEventData);
-    expect(payload.source).toBe('test');
+    expect(payload.code).toBe('TEST_ERROR');
     expect(payload.message).toBe('error msg');
   });
 

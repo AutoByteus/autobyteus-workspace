@@ -148,8 +148,8 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
       ok: true,
       json: async () => ({
         models: [{
-          name: 'models/gemini-3-flash-preview',
-          baseModelId: 'gemini-3-flash-preview',
+          name: 'models/gemini-3.7-flash',
+          baseModelId: 'gemini-3.7-flash',
           inputTokenLimit: 2_097_152,
           outputTokenLimit: 98_304,
         }],
@@ -158,7 +158,7 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const models = await geminiModels();
-    const matched = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
+    const matched = models.find((model) => model.modelIdentifier === 'gemini-3.7-flash');
 
     expect(resolveSpy).toHaveBeenCalledWith({
       kind: 'llmMetadata',
@@ -177,7 +177,7 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
       metadataProvenance: 'LIVE',
     });
     expect(models.some((model) =>
-      model.modelIdentifier !== 'gemini-3-flash-preview'
+      model.modelIdentifier !== 'gemini-3.7-flash'
       && model.metadataProvenance === 'LIVE')).toBe(false);
     resolveSpy.mockRestore();
   });
@@ -201,7 +201,7 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const models = await geminiModels();
-    const target = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
+    const target = models.find((model) => model.modelIdentifier === 'gemini-3.7-flash');
 
     expect(resolveSpy).toHaveBeenCalledWith({
       kind: 'llmMetadata',
@@ -227,7 +227,7 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
       vi.stubGlobal('fetch', fetchMock);
 
       const models = await geminiModels();
-      const target = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
+      const target = models.find((model) => model.modelIdentifier === 'gemini-3.7-flash');
       const geminiLookups = resolveSpy.mock.calls.filter(
         ([consumer]) => consumer.providerId === LLMProvider.GEMINI,
       );
