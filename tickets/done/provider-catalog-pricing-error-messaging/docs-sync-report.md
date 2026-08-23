@@ -6,7 +6,7 @@
 - Trigger: API/E2E Round 6 feature-specific Pass and delivery entry
 - Bootstrap base reference: `origin/personal@d487c0859905a91650387c4af41f4fc5754f214a` recorded in `investigation-notes.md`
 - Integrated base reference used for docs sync: `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1`, merged by `09c9cb080`
-- Post-integration verification reference: `09c9cb080`; focused native/team/application integration and provider unit checks passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check.log`
+- Post-integration verification reference: `09c9cb080`; focused native/team/application integration and provider unit checks passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check.log`
 
 ## Why Docs Were Updated
 
@@ -75,7 +75,7 @@
 
 - Latest tracked base: `origin/personal@d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`, merged cleanly as `2cb19dc8e` after the prior `ffdf344f2` merge `e839e009a`.
 - Base-change impact: the newly integrated commits are unrelated token-analytics implementation/docs and terminal-ticket delivery metadata. The provider catalog, pricing, error transport, web bridge, and application SDK docs were re-read after integration; all six previously updated docs remain accurate and no additional long-lived docs edit is warranted.
-- Final-state evidence: the focused server suite passed 19/19, the provider/catalog suite passed 16/16, the final provider/error smoke passed 6/6, and `git diff --check` passed. See `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/in-progress/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
+- Final-state evidence: the focused server suite passed 19/19, the provider/catalog suite passed 16/16, the final provider/error smoke passed 6/6, and `git diff --check` passed. See `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
 - Documentation result: `Pass — durable docs synchronized; final Round 7 test-support residual has no additional long-lived documentation impact.`
 
 ## Blocked Or Escalated Follow-Up
