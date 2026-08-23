@@ -170,8 +170,9 @@ three ticket-owned documentation sections.
 ## Finalization Result
 
 - User status: `Accepted / complete`.
-- Release instruction: `No new version; no release, tag, publication, or
-  deployment.`
+- Release instruction at repository finalization: `No new version`. This was
+  later superseded by the explicit `v1.4.53` release authorization recorded
+  below.
 - Repository action: `Completed` — archived ticket commit `beb432dd2`, target
   merge `e1b22a7a7`, both required pushes, and ticket worktree/branch cleanup
   passed.
@@ -180,3 +181,73 @@ three ticket-owned documentation sections.
 - Packaged artifacts: The ignored local Electron package output was removed
   with the dedicated worktree. It was supplemental test evidence, not a
   published or retained release deliverable.
+
+## Post-Finalization Local Docker Result
+
+- Later user request: Rebuild the local server Docker from the newest
+  `personal`, remove the old container/image, preserve its configuration and
+  persistent state where possible, and do not release a new version.
+- Source authority: local `personal` and `origin/personal` both resolved to
+  `122adc91c184a75541489eea670ac29fcb43f4ab` before build.
+- Result: `Pass` — local `autobyteus-server:latest` rebuilt for `linux/arm64`
+  and the existing Compose service was force-recreated.
+- Continuity: The four named volumes, host ports `52704`-`52707`, Compose
+  project, and `unless-stopped` restart policy were retained.
+- New runtime: container `40bd2fa7d61c` on image
+  `sha256:52bff101c67d`; backend `/rest/health` and noVNC HTTP checks passed,
+  with restart count `0`.
+- Superseded runtime: container `0ec4a7e360ec` and image
+  `sha256:6d8e9f250b9c` were removed.
+- Publication status: Local test deployment only. No registry push, tag,
+  release, or version change occurred; version remains `1.4.52`.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
+
+## Product Release v1.4.53
+
+- Later release authorization: The user explicitly requested a new product
+  version after testing, superseding the earlier no-release instruction.
+- Release commit/tag:
+  `6ceaf2ec5349752d0afb6d9be3326833451a4aca` / `v1.4.53`.
+- Canonical release command ran exactly once; no duplicate default-image manual
+  dispatch was triggered. The later manual dispatch published only the separate
+  zh variant recorded below.
+- Desktop, Server Docker, Android, iOS App Store Connect, and Messaging Gateway
+  tag workflows all completed successfully.
+- Stable GitHub Release:
+  `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.53`
+  with 21 uploaded non-empty assets.
+- Server Docker publication: `autobyteus/autobyteus-server:1.4.53` and `latest`
+  share a verified `linux/amd64` plus `linux/arm64` OCI index.
+- Release evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-publication-verification.log`.
+
+## Local Docker Destruction
+
+- After confirming the latest version was running, the user requested removal
+  of the local DR-004 test Docker.
+- Removed: container `40bd2fa7d61c`, local image
+  `sha256:52bff101c67d`, Compose network, and port publications `52704`-`52707`.
+- Retained intentionally: all four named volumes for server data, workspace,
+  root-home state, and Chromium profile. No volume deletion was performed.
+- The published Docker Hub `1.4.53` and `latest` images are unaffected.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-006-local-docker-destroy.log`.
+
+## Manual zh Server Docker Publication
+
+- Later user request: Trigger the separately manual Chinese runtime server
+  Docker build for the completed `v1.4.53` release.
+- Workflow result: `Server Docker Release` manual run `32458399771` completed
+  successfully:
+  `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771`.
+- Dispatch inputs: `release_tag=v1.4.53`, `release_ref=v1.4.53`, and
+  `publish_zh=true` with the default image repository.
+- Published tags: `autobyteus/autobyteus-server:1.4.53-zh` and `latest-zh`.
+- Verification: Both tags resolve to OCI index
+  `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`
+  with `linux/amd64` and `linux/arm64` manifests.
+- Scope: This published the zh images only. It did not modify the default image
+  tags or restart any deployed runtime.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-publication.log`.

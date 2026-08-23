@@ -89,7 +89,6 @@ describe('teamRunConfigStore', () => {
         kind: 'set_member_override',
         memberAddress: '/Reviewer',
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'claude_agent_sdk',
         },
       })
@@ -113,7 +112,6 @@ describe('teamRunConfigStore', () => {
         kind: 'set_member_override',
         memberAddress: '/Reviewer',
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'claude_agent_sdk',
           llmModelIdentifier: 'claude-sonnet',
         },
@@ -136,16 +134,13 @@ describe('teamRunConfigStore', () => {
         llmConfig: { reasoning_effort: 'high' },
         memberOverrides: {
           '/MemberA': {
-            agentDefinitionId: 'agent-a',
             llmConfig: { reasoning_effort: 'xhigh' },
           },
           '/MemberB': {
-            agentDefinitionId: 'agent-b',
             autoExecuteTools: true,
             llmConfig: { reasoning_effort: 'medium' },
           },
           '/MemberC': {
-            agentDefinitionId: 'agent-c',
             llmModelIdentifier: 'member-model',
             llmConfig: { reasoning_effort: 'low' },
           },
@@ -156,11 +151,9 @@ describe('teamRunConfigStore', () => {
 
       expect(store.config?.memberOverrides).toEqual({
         '/MemberB': {
-          agentDefinitionId: 'agent-b',
           autoExecuteTools: true,
         },
         '/MemberC': {
-          agentDefinitionId: 'agent-c',
           llmModelIdentifier: 'member-model',
           llmConfig: { reasoning_effort: 'low' },
         },
@@ -176,16 +169,13 @@ describe('teamRunConfigStore', () => {
         llmConfig: { thinking_level: 5 },
         memberOverrides: {
           '/MemberA': {
-            agentDefinitionId: 'agent-a',
             llmConfig: { thinking_level: 3 },
           },
           '/MemberB': {
-            agentDefinitionId: 'agent-b',
             llmModelIdentifier: 'gpt-5.4',
             llmConfig: { thinking_level: 4 },
           },
           '/MemberC': {
-            agentDefinitionId: 'agent-c',
             runtimeKind: 'claude_agent_sdk',
             llmConfig: { temperature: 0.2 },
           },
@@ -196,11 +186,9 @@ describe('teamRunConfigStore', () => {
 
       expect(store.config?.memberOverrides).toEqual({
         '/MemberB': {
-          agentDefinitionId: 'agent-b',
           llmModelIdentifier: 'gpt-5.4',
         },
         '/MemberC': {
-          agentDefinitionId: 'agent-c',
           runtimeKind: 'claude_agent_sdk',
           llmConfig: { temperature: 0.2 },
         },

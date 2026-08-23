@@ -10,3 +10,64 @@ describe("CodexItemEventPayloadParser invocation identity", () => {
     expect(parser.resolveInvocationId({ item: { id: "nested_item" }, approvalId: "approval-2" })).toBe("nested_item");
   });
 });
+
+describe("CodexItemEventPayloadParser command arguments", () => {
+  it("projects cwd from a command execution item", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolArguments({
+      item: {
+        type: "commandExecution",
+        command: "/bin/bash -lc pwd",
+        cwd: "/workspace/nested",
+      },
+    }, "run_bash")).toEqual({
+      command: "/bin/bash -lc pwd",
+      cwd: "/workspace/nested",
+    });
+  });
+
+  it("projects top-level cwd from a command approval request", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolArguments({
+      command: "pnpm test",
+      cwd: "/repo/package",
+    }, "run_bash")).toEqual({
+      command: "pnpm test",
+      cwd: "/repo/package",
+    });
+  });
+
+  it("keeps explicit canonical cwd authoritative", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolArguments({
+      arguments: {
+        command: "pwd",
+        cwd: "/canonical",
+      },
+      cwd: "/top-level",
+      item: {
+        command: "ignored command",
+        cwd: "/nested",
+      },
+    }, "run_bash")).toEqual({
+      command: "pwd",
+      cwd: "/canonical",
+    });
+  });
+
+  it("does not invent cwd when no supported source supplies it", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolArguments({
+      workdir: "/raw-top-level",
+      item: {
+        type: "commandExecution",
+        command: "pwd",
+        workdir: "/raw-nested",
+      },
+    }, "run_bash")).toEqual({ command: "pwd" });
+  });
+});

@@ -1,6 +1,6 @@
 {
   "name": "autobyteus-message-gateway",
-  "version": "1.4.52",
+  "version": "1.4.55",
   "private": true,
   "type": "module",
   "main": "dist/index.js",

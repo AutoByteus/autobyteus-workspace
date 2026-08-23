@@ -54,7 +54,14 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'EXTERNAL_USER_MESSAGE': return { type: message.type, payload: { content: message.payload.content, received_at: message.payload.received_at, provider: message.payload.provider, transport: message.payload.transport, account_id: message.payload.account_id, peer_id: message.payload.peer_id, thread_id: message.payload.thread_id, external_message_id: message.payload.external_message_id, context_file_paths: message.payload.context_file_paths } };
     case 'MEMBER_INPUT_MESSAGE': return { type: message.type, payload: { message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key, content: message.payload.content, input_origin: message.payload.input_origin, received_at: message.payload.received_at, context_file_paths: message.payload.context_file_paths, sender_agent_run_id: message.payload.sender_agent_run_id, recipient_agent_run_id: message.payload.recipient_agent_run_id, parent_communication_message_id: message.payload.parent_communication_message_id } };
     case 'ERROR': {
-      const common = { code: message.payload.code, message: message.payload.message };
+      const common = {
+        code: message.payload.code,
+        message: message.payload.message,
+        ...(message.payload.details !== undefined ? { details: message.payload.details } : {}),
+        ...(message.payload.provider_status !== undefined ? { provider_status: message.payload.provider_status } : {}),
+        ...(message.payload.provider_code !== undefined ? { provider_code: message.payload.provider_code } : {}),
+        ...(message.payload.provider_request_id !== undefined ? { provider_request_id: message.payload.provider_request_id } : {}),
+      };
       if (message.payload.error_scope === null) {
         return { type: message.type, payload: { ...common, error_scope: null, error_effect: null, turn_id: null } };
       }

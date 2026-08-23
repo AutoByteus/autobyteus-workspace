@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
-import type { TokenUsageCostSummaryAggregate } from '~/types/tokenUsageStatistics';
+import type { TokenUsageCostSummaryAggregate } from '~/types/tokenUsageRunStatistics';
 import { createTokenUsageStatisticsFormatter } from './tokenUsageStatisticsUi';
 
 const props = defineProps<{

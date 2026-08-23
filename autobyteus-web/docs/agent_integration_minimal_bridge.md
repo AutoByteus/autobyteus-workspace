@@ -69,11 +69,15 @@ These handlers update the agent context and mark messages complete. In the curre
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy transition-field names.
-- `ERROR` preserves existing source/code/message/details fields and may add
+- `ERROR` preserves the safe original source/code/message/details fields and may add
   `{ error_scope: "turn", error_effect: "diagnostic" | "terminal", turn_id: string }`
   or `{ error_scope: "runtime", error_effect: "terminal" }`. A diagnostic or
   unclassified error is visible but does not settle a turn. Runtime-scoped
   terminal evidence has no `turn_id`.
+  Provider messages are redacted for secrets before transport; safe provider
+  status/code/request identifiers and details are supplemental native evidence,
+  not a reason to replace the displayed message with a locally invented
+  balance, quota, or authentication category.
 - Do not infer `running`, error recovery, or turn reopening from `SEGMENT_*`,
   tool, inter-agent, todo, or system-task activity. Late content for a completed
   turn remains displayable while the member stays `idle`; lifecycle changes

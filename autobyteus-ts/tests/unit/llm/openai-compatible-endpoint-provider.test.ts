@@ -57,7 +57,7 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     ]);
   });
 
-  it('constructs custom models with exact built-in metadata independent of endpoint URL', async () => {
+  it('constructs custom models with exact current built-in metadata independent of endpoint URL', async () => {
     const provider = new OpenAICompatibleEndpointModelProvider();
     const report = await provider.reloadSavedEndpoints([{
       endpoint: endpointA,
@@ -66,8 +66,8 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
 
     expect(report.models[0]).toMatchObject({
       maxContextTokens: 198_000,
-      maxInputTokens: 1_000_000,
-      maxOutputTokens: 128_000,
+      maxInputTokens: null,
+      maxOutputTokens: null,
       resolvedModelMetadata: {
         maxContextTokens: {
           value: 198_000,
@@ -75,6 +75,8 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
             kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'glm-5.2',
           },
         },
+        maxInputTokens: { value: null, source: { kind: 'unknown' } },
+        maxOutputTokens: { value: null, source: { kind: 'unknown' } },
       },
     });
 

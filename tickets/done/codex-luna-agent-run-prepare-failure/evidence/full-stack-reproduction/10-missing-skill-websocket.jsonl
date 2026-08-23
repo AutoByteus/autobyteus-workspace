@@ -1,0 +1,5 @@
+{"type":"SOCKET_OPEN"}
+{"type":"CONNECTED","payload":{"agent_id":"daily_assistant_3295ad24633341dbbf0e5addfebd3b32","session_id":"9498d095-1050-4efb-9e5b-b7b07e7a5b93"}}
+{"type":"AGENT_STATUS","payload":{"status":"offline","agent_id":"daily_assistant_3295ad24633341dbbf0e5addfebd3b32"}}
+{"type":"AGENT_STATUS","payload":{"status":"initializing","agent_id":"daily_assistant_3295ad24633341dbbf0e5addfebd3b32"}}
+{"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"daily_assistant_3295ad24633341dbbf0e5addfebd3b32","message_id":"fullstack-missing-1","dedupe_key":"agent_run_input:daily_assistant_3295ad24633341dbbf0e5addfebd3b32:fullstack-missing-1","state":"accepted","accepted":true,"duplicate":false,"status":{"status":"initializing","agent_id":"daily_assistant_3295ad24633341dbbf0e5addfebd3b32"}}}

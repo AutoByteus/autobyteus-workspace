@@ -177,7 +177,7 @@ describe('localUserSubmission', () => {
       isComplete: true,
       segments: [expect.objectContaining({
         type: 'error',
-        source: 'System',
+        code: 'LOCAL_SUBMISSION_ERROR',
         message: 'backend unavailable',
       })],
     });

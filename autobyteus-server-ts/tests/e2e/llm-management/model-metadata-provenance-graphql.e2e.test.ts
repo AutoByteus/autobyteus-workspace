@@ -151,7 +151,7 @@ describe('local Gemini model metadata GraphQL E2E', () => {
       vi.stubGlobal('fetch', fetchMock);
 
       const models = await geminiModels();
-      const target = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
+      const target = models.find((model) => model.modelIdentifier === 'gemini-3.7-flash');
       const geminiLookups = resolveSpy.mock.calls.filter(
         ([consumer]) => consumer.providerId === LLMProvider.GEMINI,
       );

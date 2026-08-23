@@ -19,6 +19,8 @@ import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
+import { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
+export { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 
 export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
 
@@ -254,6 +256,15 @@ export class LLMFactory {
     }
 
     throw new Error(`Model with identifier '${modelIdentifier}' not found.`);
+  }
+
+  /** Exact membership guard for persisted/direct AutoByteus catalog selections. */
+  static async requireCurrentModelIdentifier(modelIdentifier: string): Promise<void> {
+    await LLMFactory.ensureInitialized();
+    const normalized = typeof modelIdentifier === 'string' ? modelIdentifier.trim() : '';
+    if (!normalized || !LLMFactory.modelsByIdentifier.has(normalized)) {
+      throw new CurrentModelSelectionRequiredError(normalized || String(modelIdentifier));
+    }
   }
 
   static async listAvailableModels(): Promise<ModelInfo[]> {

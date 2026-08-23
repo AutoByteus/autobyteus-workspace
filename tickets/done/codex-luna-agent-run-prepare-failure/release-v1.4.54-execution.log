@@ -1,0 +1,49 @@
+# v1.4.54 release helper execution
+timestamp_utc=2026-08-21T19:29:39Z
+head_before=0fa1f49c409050eb9e2ee3537d0ddd535251e022
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+> bash scripts/desktop-release.sh release 1.4.54 -- --release-notes tickets/done/codex-luna-agent-run-prepare-failure/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.53 -> 1.4.54
+Updating autobyteus-message-gateway/package.json: 1.4.53 -> 1.4.54
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.54
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.54[0m
+[32mServer version: 0.1.1[0m
+[personal 8a2aff8c0] chore(release): bump workspace release version to 1.4.54
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 12 insertions(+), 41 deletions(-)
+remote:
+remote: GitHub found 822 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 353 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   0fa1f49c4..8a2aff8c0  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.54 -> v1.4.54
+Release complete and pushed: branch 'personal', tag 'v1.4.54'.
+head_after=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+tag_commit=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+web_version=1.4.54
+gateway_version=1.4.54
+manifest_tag=undefined
+origin_personal=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+origin_tag=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+release_helper_result=pass
+manifest_tag_correction_note=the helper verification command queried the array root as an object; the authoritative value is releases[0].releaseTag
+manifest_release_tag_verified=v1.4.54
+manifest_artifact_version_verified=1.4.54

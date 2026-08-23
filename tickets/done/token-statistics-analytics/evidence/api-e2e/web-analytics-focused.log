@@ -1,0 +1,126 @@
+
+> autobyteus@1.4.54 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/tokenUsageAnalytics.spec.ts components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts utils/__tests__/tokenUsageAnalyticsCsv.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web
+
+stderr | utils/__tests__/tokenUsageAnalyticsCsv.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageAnalytics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/tokenUsageAnalyticsCsv.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageAnalytics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/tokenUsageAnalyticsCsv.spec.ts > serializeTokenUsageAnalyticsCsv > exports captured API cost status separately from derived cost quality 2ms
+ ✓ utils/__tests__/tokenUsageAnalyticsCsv.spec.ts > serializeTokenUsageAnalyticsCsv > quotes commas, quotes, and newlines while preserving exact range, filters, grouping, and filename 1ms
+ × stores/__tests__/tokenUsageAnalytics.spec.ts > tokenUsageAnalytics store > creates exact inclusive UTC preset dates and sends one coherent half-open filtered request 10ms
+   → expected { appliedRange: { …(4) }, …(13) } to be { appliedRange: { …(4) }, …(13) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { appliedRange: { …(4) }, …(13) }
+Received: serializes to the same string
+
+ × stores/__tests__/tokenUsageAnalytics.spec.ts > tokenUsageAnalytics store > hides a stale result while loading and never lets an older response overwrite the latest selection 3ms
+   → expected { appliedRange: { …(4) }, …(13) } to be { appliedRange: { …(4) }, …(13) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { appliedRange: { …(4) }, …(13) }
+Received: serializes to the same string
+
+ ✓ stores/__tests__/tokenUsageAnalytics.spec.ts > tokenUsageAnalytics store > surfaces the current request error, keeps stale values hidden, and leaves retry-ready state 1ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts > TokenUsagePaceChart > aligns differing bucket counts by elapsed calendar position and exposes exact point evidence 83ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts > TokenUsagePaceChart > keeps a safely capped shorter previous month at its actual elapsed endpoint 0ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts > TokenUsageBreakdown > shows exact token share and never invents USD for local no-bill cost 78ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts > TokenUsageAnalytics controls and coherent states > uses labeled button/radio controls, validates Custom inline, and preserves selection on metric switch 16ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts > TokenUsageAnalytics controls and coherent states > hides result surfaces while loading and exposes an announced retryable error 7ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts > TokenUsageAnalytics controls and coherent states > distinguishes unavailable, covered-empty, and populated partial states without mixing surfaces 22ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts > TokenUsageBreakdown > marks local cost share not comparable and includes share/quality/status/currency in tooltip evidence 57ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts > TokenUsagePaceChart > keeps complete remote plus local no-bill cumulative quality aligned with the server summary 59ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/tokenUsageAnalytics.spec.ts > tokenUsageAnalytics store > creates exact inclusive UTC preset dates and sends one coherent half-open filtered request
+AssertionError: expected { appliedRange: { …(4) }, …(13) } to be { appliedRange: { …(4) }, …(13) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { appliedRange: { …(4) }, …(13) }
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ stores/__tests__/tokenUsageAnalytics.spec.ts:59:26
+     57|       } },
+     58|     }));
+     59|     expect(store.result).toBe(result);
+       |                          ^
+     60|     expect(store.filterOptions).toEqual(result.filterOptions);
+     61|     expect(store.loading).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  stores/__tests__/tokenUsageAnalytics.spec.ts > tokenUsageAnalytics store > hides a stale result while loading and never lets an older response overwrite the latest selection
+AssertionError: expected { appliedRange: { …(4) }, …(13) } to be { appliedRange: { …(4) }, …(13) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { appliedRange: { …(4) }, …(13) }
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ stores/__tests__/tokenUsageAnalytics.spec.ts:88:26
+     86|     second.resolve({ data: { tokenUsageAnalytics: latestResult } });
+     87|     await latestFetch;
+     88|     expect(store.result).toBe(latestResult);
+       |                          ^
+     89|     expect(store.loading).toBe(false);
+     90|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 11 passed (13)
+   Start at  12:43:27
+   Duration  6.28s (transform 3.39s, setup 26.08s, collect 699ms, tests 343ms, environment 1.51s, prepare 944ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

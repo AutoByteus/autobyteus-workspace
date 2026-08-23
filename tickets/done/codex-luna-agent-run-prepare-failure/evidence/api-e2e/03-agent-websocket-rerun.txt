@@ -1,0 +1,240 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:82246) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session 87c26d6f-96f3-44c5-a4ef-96463e71ed55 for run agent-e2e
+Agent WebSocket connected: session=87c26d6f-96f3-44c5-a4ef-96463e71ed55, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session 87c26d6f-96f3-44c5-a4ef-96463e71ed55
+Agent WebSocket disconnected: 87c26d6f-96f3-44c5-a4ef-96463e71ed55
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 8b6486bb-6a0a-49eb-87de-b564d101083c for run agent-e2e
+Agent WebSocket connected: session=8b6486bb-6a0a-49eb-87de-b564d101083c, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 8b6486bb-6a0a-49eb-87de-b564d101083c
+Agent WebSocket disconnected: 8b6486bb-6a0a-49eb-87de-b564d101083c
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session 1bc1474f-e6d6-4b8b-891e-3100729368f9 for run agent-e2e
+Agent WebSocket connected: session=1bc1474f-e6d6-4b8b-891e-3100729368f9, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session 1bc1474f-e6d6-4b8b-891e-3100729368f9
+Agent WebSocket disconnected: 1bc1474f-e6d6-4b8b-891e-3100729368f9
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session d6c57739-fb6e-4761-bae8-ab38b018134a for run agent-e2e
+Agent WebSocket connected: session=d6c57739-fb6e-4761-bae8-ab38b018134a, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session d6c57739-fb6e-4761-bae8-ab38b018134a
+Agent WebSocket disconnected: d6c57739-fb6e-4761-bae8-ab38b018134a
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session 965824fa-ab0d-4d44-b3ca-0aeb3186a286 for run agent-e2e
+Agent WebSocket connected: session=965824fa-ab0d-4d44-b3ca-0aeb3186a286, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] activation exploded
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Closed agent session 965824fa-ab0d-4d44-b3ca-0aeb3186a286
+Agent WebSocket disconnected: 965824fa-ab0d-4d44-b3ca-0aeb3186a286
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Agent websocket attached for run agent-interrupt-ack
+Created agent session 3ac687e1-a369-40cc-8b81-542f99c49581 for run agent-interrupt-ack
+Agent WebSocket connected: session=3ac687e1-a369-40cc-8b81-542f99c49581, run=agent-interrupt-ack
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+INTERRUPT_GENERATION rejected for agent run agent-interrupt-ack: [NO_ACTIVE_TURN] The provider has no active turn to interrupt.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 3ac687e1-a369-40cc-8b81-542f99c49581
+Agent WebSocket disconnected: 3ac687e1-a369-40cc-8b81-542f99c49581
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 0e93ab21-19c1-491b-b851-ec0baac9075d for run agent-e2e
+Agent WebSocket connected: session=0e93ab21-19c1-491b-b851-ec0baac9075d, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+INTERRUPT_GENERATION rejected for missing agent run agent-e2e.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 0e93ab21-19c1-491b-b851-ec0baac9075d
+Agent WebSocket disconnected: 0e93ab21-19c1-491b-b851-ec0baac9075d
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts (8 tests | 2 failed) 2213ms
+     × connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 53ms
+     ✓ does not downgrade an already-running standalone send to initializing 18ms
+     ✓ activates a prepared identity through SEND_MESSAGE rather than websocket connect 26ms
+     × returns duplicate and busy ACKs for same and different in-flight command ids 2039ms
+     ✓ publishes error status and failed ACK when prepared activation fails 17ms
+     ✓ returns exact same-socket interrupt acknowledgements without publishing lifecycle state 29ms
+     ✓ keeps non-SEND commands active-only after identity-only connect 15ms
+     ✓ returns SESSION_NOT_READY when command arrives before connect handshake 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+AssertionError: expected { command_type: 'SEND_MESSAGE', …(7) } to match object { command_type: 'SEND_MESSAGE', …(7) }
+
+- Expected
++ Received
+
+@@ -6,8 +6,8 @@
+    "message_id": "msg-restore-1",
+    "run_id": "agent-e2e",
+    "state": "accepted",
+    "status": {
+      "agent_id": "agent-e2e",
+-     "status": "running",
++     "status": "offline",
+    },
+  }
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:354:27
+    352|         2,
+    353|       );
+    354|       expect(ack.payload).toMatchObject({
+       |                           ^
+    355|         command_type: "SEND_MESSAGE",
+    356|         run_id: runId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Error: Timed out waiting for matching websocket message
+ ❯ waitForMessageMatching tests/integration/agent/agent-websocket.integration.test.ts:182:9
+    180|     await new Promise((resolve) => setTimeout(resolve, 10));
+    181|   }
+    182|   throw new Error("Timed out waiting for matching websocket message");
+       |         ^
+    183| };
+    184| 
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:515:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  19:45:06
+   Duration  6.85s (transform 3.04s, setup 16ms, import 4.16s, tests 2.21s, environment 0ms)
+

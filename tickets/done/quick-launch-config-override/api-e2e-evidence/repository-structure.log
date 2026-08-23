@@ -1,0 +1,16 @@
+===== git diff --check =====
+PASS: git diff --check
+===== removed override identity searches =====
+PASS: no obsolete override agentDefinitionId consumer
+===== compatibility/origin/version branch search in changed production paths =====
+PASS: no added compatibility/origin/version mechanism
+===== workspace status =====
+?? autobyteus-application-sdk-contracts/node_modules
+?? autobyteus-server-ts/node_modules
+?? autobyteus-team-stream-contracts/node_modules
+?? autobyteus-ts/node_modules
+?? node_modules
+?? tickets/in-progress/quick-launch-config-override/api-e2e-coverage-investigation.md
+?? tickets/in-progress/quick-launch-config-override/api-e2e-evidence/
+?? tickets/in-progress/quick-launch-config-override/code-review-report.md
+?? tickets/in-progress/quick-launch-config-override/code-review-revision-record.md

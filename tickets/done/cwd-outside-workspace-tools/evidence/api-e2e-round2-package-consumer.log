@@ -1,0 +1,40 @@
+consumer_root=/tmp/cwd-outside-package-consumer-round2-AcQjmJ
+tarball=/tmp/cwd-outside-package-consumer-round2-AcQjmJ/autobyteus-ts-1.0.0.tgz
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.2 → 11.22.0.      │
+   │     Changelog: https://pnpm.io/v/11.22.0      │
+   │   To update, run: corepack use pnpm@11.22.0   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+Progress: resolved 0, reused 0, downloaded 1, added 0
+Progress: resolved 149, reused 148, downloaded 1, added 0
+ WARN  2 deprecated subdependencies found: node-domexception@1.0.0, whatwg-encoding@3.1.1
+Packages: +180
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 180, reused 179, downloaded 1, added 144
+Progress: resolved 180, reused 179, downloaded 1, added 180, done
+
+dependencies:
++ autobyteus-ts 1.0.0
+
+devDependencies: skipped
+
+Done in 3.6s using pnpm v10.28.2
+{
+  "packageImport": "autobyteus-ts/tools/terminal/*",
+  "foregroundEffectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-round2-external-KofFjA",
+  "noWorkspaceEffectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-consumer-round2-external-KofFjA",
+  "backgroundLifecycle": {
+    "started": true,
+    "outputObserved": true,
+    "stopped": "stopped"
+  },
+  "relativeRejection": {
+    "foreground": true,
+    "background": true,
+    "records": 0
+  }
+}

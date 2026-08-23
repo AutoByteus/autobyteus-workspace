@@ -1,0 +1,6 @@
+{"type":"SOCKET_OPEN"}
+{"type":"CONNECTED","payload":{"agent_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8","session_id":"90586ac9-cadd-4669-b7d9-b64be376d098"}}
+{"type":"AGENT_STATUS","payload":{"status":"offline","agent_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8"}}
+{"type":"AGENT_STATUS","payload":{"status":"initializing","agent_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8"}}
+{"type":"AGENT_STATUS","payload":{"status":"error","agent_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8","error_message":"Failed to prepare agent run 'daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8'."}}
+{"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8","message_id":"fullstack-stale-1","dedupe_key":"agent_run_input:daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8:fullstack-stale-1","state":"failed","accepted":false,"duplicate":false,"code":"ACTIVATION_FAILED","message":"Failed to prepare agent run 'daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8'.","status":{"status":"error","agent_id":"daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8","error_message":"Failed to prepare agent run 'daily_assistant_ae4c8ad28c2843dc942dc9124e8426c8'."}}}

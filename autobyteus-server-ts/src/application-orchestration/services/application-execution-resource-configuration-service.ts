@@ -12,6 +12,8 @@ import {
   type TeamLeafAgentMember,
 } from "../../agent-team-execution/services/team-definition-traversal-service.js";
 import { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
+import { CurrentModelSelectionRequiredError, LLMFactory } from "autobyteus-ts/llm/index.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import {
   ApplicationPersistedExecutionResourceConfiguration,
   ApplicationExecutionResourceConfigurationStore,
@@ -22,6 +24,7 @@ import {
   buildLegacyLaunchProfile,
   LaunchProfileValidationError,
   normalizeConfiguredLaunchProfile,
+  expandEffectiveRuntimeModelSelections,
 } from "./application-execution-resource-configuration-launch-profile.js";
 
 type EffectiveExecutionResourceSelection = {
@@ -108,6 +111,7 @@ export class ApplicationExecutionResourceConfigurationService {
 
     const selection = await this.validateExecutionResourceSelection(applicationId, slot, effectiveExecutionResourceRef, persistedExecutionResourceRef ? "persisted_override" : "manifest_default");
     const launchProfile = await this.normalizeLaunchProfileForWrite(slot, selection, input.launchProfile ?? null);
+    await this.validateCurrentModelSelections(launchProfile);
 
     const persisted: ApplicationPersistedExecutionResourceConfiguration = {
       slotKey: slot.slotKey,
@@ -184,6 +188,16 @@ export class ApplicationExecutionResourceConfigurationService {
         ? await this.collectCurrentTeamMembers(selection.resolvedResource.definitionId)
         : undefined,
     });
+  }
+
+  private async validateCurrentModelSelections(
+    launchProfile: ApplicationConfiguredLaunchProfile | null,
+  ): Promise<void> {
+    if (!launchProfile) return;
+    for (const selection of expandEffectiveRuntimeModelSelections(launchProfile)) {
+      if (selection.runtimeKind !== RuntimeKind.AUTOBYTEUS) continue;
+      await LLMFactory.requireCurrentModelIdentifier(selection.llmModelIdentifier);
+    }
   }
 
   private async buildConfigurationView(
@@ -291,6 +305,7 @@ export class ApplicationExecutionResourceConfigurationService {
 
     try {
       const normalizedLaunchProfile = await this.normalizeLaunchProfileForWrite(slot, selection, candidateLaunchProfile);
+      await this.validateCurrentModelSelections(normalizedLaunchProfile);
       if (nextPersisted && JSON.stringify(nextPersisted.launchProfile ?? null) !== JSON.stringify(normalizedLaunchProfile ?? null)) {
         nextPersisted = await this.configurationStore.upsertConfiguration(applicationId, {
           slotKey: nextPersisted.slotKey,
@@ -311,6 +326,19 @@ export class ApplicationExecutionResourceConfigurationService {
       };
     } catch (error) {
       if (persisted) {
+        if (error instanceof CurrentModelSelectionRequiredError) {
+          return {
+            ...slotViewBase,
+            updatedAt: nextPersisted?.updatedAt ?? slotViewBase.updatedAt,
+            status: "INVALID_SAVED_CONFIGURATION",
+            configuration: null,
+            invalidSavedConfiguration: buildConfiguredExecutionResource(slot.slotKey, selection.executionResourceRef, candidateLaunchProfile),
+            issue: buildIssue(
+              error.code,
+              error.message,
+            ),
+          };
+        }
         const validationError = error instanceof LaunchProfileValidationError
           ? error
           : new LaunchProfileValidationError(

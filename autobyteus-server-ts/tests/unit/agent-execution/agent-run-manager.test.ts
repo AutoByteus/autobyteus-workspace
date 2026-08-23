@@ -85,6 +85,7 @@ describe("AgentRunManager candidate lifecycle", () => {
   afterEach(() => {
     resetAgentToolMcpSessionServiceForTests();
     resetAgentToolMcpSessionRegistryForTests();
+    vi.restoreAllMocks();
   });
 
   it("keeps a new run private until synchronous candidate publication", async () => {
@@ -243,6 +244,7 @@ describe("AgentRunManager candidate lifecycle", () => {
   it("rolls back already-attached sidecars when a later attachment fails", async () => {
     const detachRunFiles = vi.fn();
     const failure = new Error("artifact attachment failed");
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const backend = createBackend({ runId: "run-attach-failure" });
     const codexBackendFactory = {
       createBackend: vi.fn(async () => backend),
@@ -257,8 +259,15 @@ describe("AgentRunManager candidate lifecycle", () => {
     await expect(manager.prepareNewAgentRun({
       runId: "run-attach-failure",
       config: createConfig(),
-    })).rejects.toThrow("Failed to prepare agent run");
+    })).rejects.toMatchObject({
+      message: "Failed to prepare agent run 'run-attach-failure'.",
+      cause: failure,
+    });
 
+    expect(errorSpy).toHaveBeenCalledWith(
+      `Unexpected failure while preparing agent run 'run-attach-failure' for runtime '${RuntimeKind.CODEX_APP_SERVER}'.`,
+      failure,
+    );
     expect(detachRunFiles).toHaveBeenCalledOnce();
     expect(backend.terminate).toHaveBeenCalledOnce();
     expect(manager.getActiveRun("run-attach-failure")).toBeNull();

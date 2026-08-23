@@ -5,7 +5,7 @@ import type {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 
 export interface MemberConfigOverride {
-  agentDefinitionId: string
+  /** Supported launch-setting differences from the team globals; the map key owns member identity. */
   runtimeKind?: AgentRuntimeKind
   llmModelIdentifier?: string
   autoExecuteTools?: boolean

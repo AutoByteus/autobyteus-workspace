@@ -193,7 +193,6 @@ describe('MemberOverrideItem', () => {
     memberName: 'Reviewer',
     memberRouteKey: 'reviewer',
     memberAddress: '/reviewer',
-    agentDefinitionId: 'agent-reviewer',
     override: undefined,
     globalRuntimeKind: 'autobyteus',
     globalLlmModel: 'gpt-5.4',
@@ -228,7 +227,6 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'claude_agent_sdk',
         },
       },
@@ -248,7 +246,6 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'claude_agent_sdk',
         },
       },
@@ -264,7 +261,6 @@ describe('MemberOverrideItem', () => {
     expect(events[0]).toEqual([
       '/reviewer',
       {
-        agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
       },
@@ -278,7 +274,6 @@ describe('MemberOverrideItem', () => {
         globalRuntimeKind: 'codex_app_server',
         globalLlmConfig: { reasoning_effort: 'high' },
         override: {
-          agentDefinitionId: 'agent-reviewer',
           llmModelIdentifier: 'gpt-5.4',
           llmConfig: { reasoning_effort: 'medium' },
         },
@@ -295,7 +290,6 @@ describe('MemberOverrideItem', () => {
     expect(events.at(-1)).toEqual([
       '/reviewer',
       {
-        agentDefinitionId: 'agent-reviewer',
         llmModelIdentifier: 'gpt-5.3-codex',
       },
     ])
@@ -306,7 +300,6 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'autobyteus',
           llmModelIdentifier: 'gpt-5.4',
           llmConfig: { thinking_level: 3 },
@@ -324,7 +317,6 @@ describe('MemberOverrideItem', () => {
     expect(events.at(-1)).toEqual([
       '/reviewer',
       {
-        agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
       },
     ])
@@ -335,7 +327,6 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'codex_app_server',
           llmModelIdentifier: 'gpt-5.3-codex',
           llmConfig: { reasoning_effort: 'medium' },
@@ -363,7 +354,6 @@ describe('MemberOverrideItem', () => {
         globalRuntimeKind: 'codex_app_server',
         globalLlmConfig: { reasoning_effort: 'high' },
         override: {
-          agentDefinitionId: 'agent-reviewer',
           llmModelIdentifier: 'gpt-5.3-codex',
           llmConfig: { reasoning_effort: 'medium' },
         },
@@ -392,7 +382,6 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: {
-          agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'codex_app_server',
           llmModelIdentifier: 'gpt-5.3-codex',
           llmConfig: { reasoning_effort: 'medium' },
@@ -661,7 +650,6 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
       '/reviewer',
       {
-        agentDefinitionId: 'agent-reviewer',
         llmModelIdentifier: 'gpt-5.3-codex',
       },
     ])
@@ -700,7 +688,6 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
       '/reviewer',
       {
-        agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'codex_app_server',
       },
     ])

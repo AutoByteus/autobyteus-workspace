@@ -36,19 +36,35 @@ export class TurnLifecycleData extends BaseStreamPayload {
 }
 
 export class ErrorEventData extends BaseStreamPayload {
-  source: string;
+  code: string;
   message: string;
   details?: string;
+  provider_status?: number | string | null;
+  provider_code?: string | null;
+  provider_request_id?: string | null;
   error_scope?: string;
   error_effect?: string;
   turn_id?: string;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['source', 'message'], 'ErrorEventData');
+    assertRequiredKeys(data, ['code', 'message'], 'ErrorEventData');
+    if (typeof data.code !== 'string' || !data.code.trim()) {
+      throw new Error('ErrorEventData requires a non-empty code.');
+    }
+    if (typeof data.message !== 'string' || !data.message.trim()) {
+      throw new Error('ErrorEventData requires a non-empty message.');
+    }
     super(data);
-    this.source = String(data.source ?? '');
+    this.code = String(data.code ?? '');
     this.message = String(data.message ?? '');
     this.details = data.details ?? undefined;
+    this.provider_status = typeof data.provider_status === 'number' || typeof data.provider_status === 'string'
+      ? data.provider_status
+      : data.provider_status === null ? null : undefined;
+    this.provider_code = typeof data.provider_code === 'string' ? data.provider_code : data.provider_code === null ? null : undefined;
+    this.provider_request_id = typeof data.provider_request_id === 'string'
+      ? data.provider_request_id
+      : data.provider_request_id === null ? null : undefined;
     this.error_scope = typeof data.error_scope === 'string' ? data.error_scope : undefined;
     this.error_effect = typeof data.error_effect === 'string' ? data.error_effect : undefined;
     this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : undefined;

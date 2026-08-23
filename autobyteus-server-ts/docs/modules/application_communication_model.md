@@ -39,6 +39,14 @@ When the frontend calls `client.backend.command(name, input)`, the request flows
 
 `applicationClient.agentCommunication.connect(address)` is the framework-standard bidirectional path for a frontend to communicate with an application-bound agent, whole team, or selected static member. The trusted desktop host supplies the fixed application-scoped endpoint. Communication owns readiness/input/network state, Streaming owns exact provider-neutral event projection and per-consumer FIFO delivery, and Orchestration owns target authorization and binding lifecycle. This path does not invoke application backend handlers.
 
+The provider-neutral application stream is intentionally narrower than native
+AgentRun/Team transport. Its `ERROR` event is exactly
+`{ type: "ERROR", message: string }`: it carries the safe original message
+after redaction and does not expose native error codes, provider status/codes,
+request IDs, details, raw exceptions, or credentials. Provider-message meaning
+is preserved; only missing API-key configuration receives the explicit local
+setup message. Native transport remains the authority for diagnostic metadata.
+
 ### 6. Backend observation and custom WebSockets are optional advanced adapters
 
 An application backend may subscribe to the same provider-neutral event contract through `context.agentExecution.subscribeEventStream(...)`. Separately, `applicationClient.backend.connectWebSocket(...)` and `webSocketRoutes` support custom realtime business protocols. Neither adapter replaces or proxies the standard frontend agent connection, and neither changes notification or artifact durability semantics.

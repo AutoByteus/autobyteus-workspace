@@ -1,0 +1,61 @@
+DR-007 manual zh server Docker release verification
+verified_at_utc=2026-08-21T08:03:40Z
+dispatch=gh workflow run release-server-docker.yml --repo AutoByteus/autobyteus-workspace --ref personal -f release_tag=v1.4.53 -f release_ref=v1.4.53 -f publish_zh=true
+release_tag=v1.4.53
+release_ref=v1.4.53
+publish_zh=true
+release_tag_commit=6ceaf2ec5349752d0afb6d9be3326833451a4aca
+
+--- workflow result ---
+{"conclusion":"success","createdAt":"2026-08-21T07:23:15Z","databaseId":32458399771,"event":"workflow_dispatch","headBranch":"personal","headSha":"8812520ec0c86598479097bc151dc6827fff4946","status":"completed","updatedAt":"2026-08-21T07:53:10Z","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771","workflowName":"Server Docker Release"}
+
+--- workflow job/step summary ---
+
+✓ personal Server Docker Release · 32458399771
+Triggered via workflow_dispatch about 40 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 5s (ID 96700166687)
+✓ Build And Push Server Image in 29m33s (ID 96700234358)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, docker/build-push-action@v6, docker/login-action@v3, docker/setup-buildx-action@v3, docker/setup-qemu-action@v3. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build And Push Server Image: .github#2
+
+! ERROR: failed to remove one or more builders
+Build And Push Server Image: .github#9
+
+
+ARTIFACTS
+AutoByteus~autobyteus-workspace~VMUJ9P.dockerbuild
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771
+
+--- published 1.4.53-zh manifest ---
+Name:      docker.io/autobyteus/autobyteus-server:1.4.53-zh
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.53-zh@sha256:dd17497083d65b827c86e7c3ad940849213683598b17b7e54ec17fdbc5a4439e
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.53-zh@sha256:5a37deb99cfe55a999061d4c9451a2539ff63c9aae05a8d76b395736b8405282
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+--- published latest-zh manifest ---
+Name:      docker.io/autobyteus/autobyteus-server:latest-zh
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest-zh@sha256:dd17497083d65b827c86e7c3ad940849213683598b17b7e54ec17fdbc5a4439e
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest-zh@sha256:5a37deb99cfe55a999061d4c9451a2539ff63c9aae05a8d76b395736b8405282
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64

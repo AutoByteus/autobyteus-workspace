@@ -4,21 +4,23 @@ import {
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import {
   getCodexWorkspaceSkillMaterializer,
-  type CodexWorkspaceSkillMaterializer,
-  type MaterializedCodexWorkspaceSkill,
 } from "../codex-workspace-skill-materializer.js";
+import type {
+  MaterializedWorkspaceSkill,
+  WorkspaceSkillMaterializer,
+} from "../../shared/workspace-skill-materializer.js";
 
 export type CodexThreadCleanupTarget = {
   workingDirectory: string;
-  materializedConfiguredSkills?: MaterializedCodexWorkspaceSkill[] | null;
+  materializedConfiguredSkills?: MaterializedWorkspaceSkill[] | null;
 };
 
 export class CodexThreadCleanup {
-  private readonly workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer;
+  private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer;
   private readonly clientManager: CodexAppServerClientManager;
 
   constructor(
-    workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
@@ -26,7 +28,7 @@ export class CodexThreadCleanup {
   }
 
   async cleanupPreparedWorkspaceSkills(
-    materializedConfiguredSkills: MaterializedCodexWorkspaceSkill[] | null | undefined,
+    materializedConfiguredSkills: MaterializedWorkspaceSkill[] | null | undefined,
   ): Promise<void> {
     await this.cleanupMaterializedWorkspaceSkills(materializedConfiguredSkills);
   }
@@ -37,9 +39,9 @@ export class CodexThreadCleanup {
   }
 
   private async cleanupMaterializedWorkspaceSkills(
-    materializedConfiguredSkills: MaterializedCodexWorkspaceSkill[] | null | undefined,
+    materializedConfiguredSkills: MaterializedWorkspaceSkill[] | null | undefined,
   ): Promise<void> {
-    await this.workspaceSkillMaterializer.cleanupMaterializedCodexWorkspaceSkills(
+    await this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(
       materializedConfiguredSkills,
     );
   }

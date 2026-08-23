@@ -1,4 +1,5 @@
 export * from './llm-factory.js';
+export * from './errors/provider-error.js';
 export * from './base.js';
 export * from './models.js';
 export * from './discovery-endpoint-identity.js';

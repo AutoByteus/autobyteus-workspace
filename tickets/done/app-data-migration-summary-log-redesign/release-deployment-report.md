@@ -3,12 +3,17 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `app-data-migration-summary-log-redesign`.
-- Current delivery revision: `DR-003`.
-- Current status: `Pass — user accepted; ticket archived, committed, pushed,
-  merged and pushed to personal; cleanup complete; no release performed.`
-- Explicit user instruction: Finalize the task; do not release a new version.
-- Release/publication/deployment: Not applicable. No version bump, tag,
-  package publication, deployment, or rollout will be performed.
+- Current delivery revision: `DR-007`.
+- Current status: `Pass — v1.4.53 is released across all five tag publication
+  workflows, its separately dispatched zh server Docker variant is published,
+  and the earlier local test Docker was destroyed while its four named volumes
+  were retained.`
+- User-instruction chronology: The initial finalization instruction declined a
+  release; the user later explicitly requested a new product version after
+  testing, then requested destruction of the local test Docker.
+- Release/publication: `Completed — v1.4.53`.
+- Local deployment: The DR-004 test deployment passed and was later removed
+  under DR-006. Its persistent named volumes remain.
 
 ## Handoff Summary
 
@@ -17,7 +22,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-007`
 
 ## Delivery Integration Refreshes
 
@@ -82,10 +87,15 @@
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Not performed — explicitly declined by the user.`
-- Tag/release commit: `Not performed.`
-- Release notes: `Not required`; no release/publication/deployment is in scope.
-- Application version remains `1.4.52`.
+- Version bump: `1.4.52 -> 1.4.53` for desktop and Messaging Gateway.
+- Release commit:
+  `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
+- Tag: annotated `v1.4.53`, pushed once through the canonical helper.
+- Release notes:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+- GitHub Release:
+  `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.53`.
+- Current application release version: `1.4.53`.
 
 ## Repository Finalization
 
@@ -124,11 +134,44 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A.
-- Result: `Not required`
-- Release notes handoff: `Not required`
-- User instruction: No new version/release.
+- Versioned release/publication applicable: `Yes`, by later explicit user
+  instruction superseding the earlier no-release decision.
+- Method:
+  `pnpm release 1.4.53 --release-notes tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+- Result: `Pass`.
+- Five tag-triggered workflow results:
+  - Desktop Release `32451160615`: success.
+  - Server Docker Release `32451160682`: success.
+  - Android APK Release `32451160827`: success.
+  - iOS App Store Connect Release `32451160651`: success.
+  - Messaging Gateway Release `32451160597`: success.
+- GitHub Release: public, non-draft, non-prerelease, exact release commit, 21
+  uploaded non-empty assets for desktop platforms, Android, updater metadata,
+  and Messaging Gateway.
+- Server Docker: `autobyteus/autobyteus-server:1.4.53` and `:latest` share OCI
+  index `sha256:99c05052971f3845a3b127526501faed47578d9d03f42dd7ec6040d59788e179`
+  for `linux/amd64` and `linux/arm64`.
+- Separately dispatched zh Server Docker run `32458399771`: `success`.
+  `autobyteus/autobyteus-server:1.4.53-zh` and `:latest-zh` share OCI index
+  `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`
+  for `linux/amd64` and `linux/arm64`; the zh-only run did not rebuild the
+  default tags.
+- iOS: archive and App Store Connect upload job passed; later Apple processing
+  and review remain external.
+- Duplicate default-image manual dispatch: `Not performed`; the later DR-007
+  manual run intentionally published only the separate zh variant.
+- Evidence: `delivery-evidence/dr-005-*`.
+
+## Local Test Docker Cleanup
+
+- Result: `Pass` under `DR-006`.
+- Removed: local container `40bd2fa7d61c`, local image
+  `sha256:52bff101c67d`, and its Compose network.
+- Released ports: `52704`, `52705`, `52706`, `52707`.
+- Retained: all four named volumes holding server data, workspace, root-home,
+  and Chromium-profile state.
+- Published `1.4.53` Docker Hub tags are unaffected.
+- Evidence: `delivery-evidence/dr-006-local-docker-destroy.log`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -155,6 +198,13 @@
 | Second target integration | Pass; six commits, no conflicts | `delivery-evidence/dr-002-user-acceptance-final-refresh.log` |
 | Current actual-startup E2E | Initial host-tool failure; `RUST_LOG=info` rerun Pass 4/4 | `delivery-evidence/dr-002-post-second-integration-team-run-upgrade-e2e*.log` |
 | Current Settings/store tests | Pass 5/5 | `delivery-evidence/dr-002-post-second-integration-web-focused.log` |
+| Latest-personal local server Docker build and rollout | Pass; backend and noVNC healthy, restart count 0 | `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
+| Repository checkout-safety gate | Initial Fail on 57 long evidence paths; repaired with content-preserving moves/maps; final Pass | `delivery-evidence/dr-005-release-preflight.log`, commit `1ee4af48b` |
+| v1.4.53 tag workflows | Pass; 5/5 completed successfully | `delivery-evidence/dr-005-workflows.json` |
+| GitHub Release/assets | Pass; public stable release with 21 uploaded non-empty assets | `delivery-evidence/dr-005-github-release.json` |
+| Server Docker publication | Pass; version/latest identical dual-architecture OCI index | `delivery-evidence/dr-005-server-docker-manifest.json` |
+| Local test Docker destruction | Pass; container/image/network removed, volumes retained | `delivery-evidence/dr-006-local-docker-destroy.log` |
+| Manual v1.4.53 zh Server Docker publication | Pass; workflow `32458399771`, version/latest zh tags share the verified dual-architecture OCI index | `delivery-evidence/dr-007-zh-server-docker-*` |
 
 ## Known Residuals
 
@@ -182,5 +232,7 @@
 ## Final Status
 
 `Pass — user accepted; ticket archived, committed and pushed; personal merged
-and pushed; ticket worktree/branches cleaned; no release, deployment, tag, or
-version change performed.`
+and pushed; ticket worktree/branches cleaned; v1.4.53 committed, tagged,
+published, and verified across all five tag release workflows; the manual zh
+server Docker variant was subsequently published and verified; the local test
+Docker was removed while its named volumes were retained.`

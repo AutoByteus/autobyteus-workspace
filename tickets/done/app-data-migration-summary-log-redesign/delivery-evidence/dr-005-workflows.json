@@ -1,0 +1,67 @@
+[
+  {
+    "databaseId": 32451160827,
+    "name": "Android APK Release",
+    "displayTitle": "chore(release): bump workspace release version to 1.4.53",
+    "event": "push",
+    "headBranch": "v1.4.53",
+    "headSha": "6ceaf2ec5349752d0afb6d9be3326833451a4aca",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-08-21T05:36:17Z",
+    "updatedAt": "2026-08-21T05:39:54Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160827"
+  },
+  {
+    "databaseId": 32451160615,
+    "name": "Desktop Release",
+    "displayTitle": "chore(release): bump workspace release version to 1.4.53",
+    "event": "push",
+    "headBranch": "v1.4.53",
+    "headSha": "6ceaf2ec5349752d0afb6d9be3326833451a4aca",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-08-21T05:36:17Z",
+    "updatedAt": "2026-08-21T06:00:07Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160615"
+  },
+  {
+    "databaseId": 32451160597,
+    "name": "Release Messaging Gateway",
+    "displayTitle": "chore(release): bump workspace release version to 1.4.53",
+    "event": "push",
+    "headBranch": "v1.4.53",
+    "headSha": "6ceaf2ec5349752d0afb6d9be3326833451a4aca",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-08-21T05:36:17Z",
+    "updatedAt": "2026-08-21T05:39:05Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160597"
+  },
+  {
+    "databaseId": 32451160682,
+    "name": "Server Docker Release",
+    "displayTitle": "chore(release): bump workspace release version to 1.4.53",
+    "event": "push",
+    "headBranch": "v1.4.53",
+    "headSha": "6ceaf2ec5349752d0afb6d9be3326833451a4aca",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-08-21T05:36:17Z",
+    "updatedAt": "2026-08-21T06:10:28Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160682"
+  },
+  {
+    "databaseId": 32451160651,
+    "name": "iOS App Store Connect Release",
+    "displayTitle": "chore(release): bump workspace release version to 1.4.53",
+    "event": "push",
+    "headBranch": "v1.4.53",
+    "headSha": "6ceaf2ec5349752d0afb6d9be3326833451a4aca",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-08-21T05:36:17Z",
+    "updatedAt": "2026-08-21T05:46:57Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32451160651"
+  }
+]

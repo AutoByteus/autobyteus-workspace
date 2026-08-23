@@ -16,10 +16,10 @@ import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/ag
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
-import { CodexWorkspaceSkillMaterializer, type MaterializedCodexWorkspaceSkill } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import { WorkspaceSkillMaterializer, type MaterializedWorkspaceSkill } from "../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { DefaultCodexThreadBootstrapStrategy, type CodexThreadBootstrapStrategy } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -267,26 +267,17 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
     })),
     releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
-  const teamBootstrapStrategy: CodexThreadBootstrapStrategy = {
-    appliesTo: () => false,
-    prepare: () => {
-      throw new Error("team strategy should not be used for shared-agent runtime e2e");
-    },
-  };
-
   return new CodexThreadBootstrapper(
-    new CodexWorkspaceSkillMaterializer(),
+    new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE),
     workspaceResolver,
     AgentDefinitionService.getInstance(),
     SkillService.getInstance(),
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamBootstrapStrategy,
     clientManager,
   );
 };
 
 const expectMaterializedSkillSymlink = async (input: {
-  materialized: MaterializedCodexWorkspaceSkill | undefined;
+  materialized: MaterializedWorkspaceSkill | undefined;
   expectedName: string;
   expectedSourceRootPath: string;
   expectedContent: string;

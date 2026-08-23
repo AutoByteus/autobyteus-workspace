@@ -6,11 +6,12 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentRunConfig, AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
+import type { MemberConfigOverride, TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { collectConfiguredAgents } from './teamExecutionTreeSelectors';
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState';
+import { hasMeaningfulMemberOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils';
 
 const runtimeKind = (value: ConfiguredAgentExecutionDto['launch_configuration']['runtime_kind']): AgentRuntimeKind => {
   if (value === 'AUTOBYTEUS') return 'autobyteus';
@@ -39,6 +40,34 @@ const agentConfig = (input: {
   llmConfig: input.source.launch_configuration.llm_config,
   isLocked: true,
 });
+
+type TeamConfigurationBaseline = Pick<
+  TeamRunConfig,
+  'runtimeKind' | 'llmModelIdentifier' | 'llmConfig' | 'autoExecuteTools'
+>;
+
+const createMemberOverrideAgainstBaseline = (
+  source: ConfiguredAgentExecutionDto,
+  baseline: TeamConfigurationBaseline,
+): MemberConfigOverride | null => {
+  const override: MemberConfigOverride = {};
+  const sourceRuntimeKind = runtimeKind(source.launch_configuration.runtime_kind);
+
+  if (sourceRuntimeKind !== baseline.runtimeKind) {
+    override.runtimeKind = sourceRuntimeKind;
+  }
+  if (source.launch_configuration.llm_model_identifier !== baseline.llmModelIdentifier) {
+    override.llmModelIdentifier = source.launch_configuration.llm_model_identifier;
+  }
+  if (!modelConfigsEqual(source.launch_configuration.llm_config, baseline.llmConfig)) {
+    override.llmConfig = source.launch_configuration.llm_config;
+  }
+  if (source.launch_configuration.auto_execute_tools !== baseline.autoExecuteTools) {
+    override.autoExecuteTools = source.launch_configuration.auto_execute_tools;
+  }
+
+  return hasMeaningfulMemberOverride(override) ? Object.freeze(override) : null;
+};
 
 export const createTeamAgentContext = (input: {
   tree: TeamRunExecutionTreeDto;
@@ -70,23 +99,28 @@ export const createTeamConfigurationView = (input: {
   const coordinator = agents.find((agent) => agent.address === input.tree.root_team.coordinator_address);
   if (!coordinator) throw new Error('Root Team coordinator configuration is missing.');
   const primaryWorkspace = input.workspaceMetadataByAddress.get(coordinator.address) ?? null;
-  return Object.freeze({
-    teamDefinitionId: input.tree.root_team.team_definition_id,
-    teamDefinitionName: input.tree.root_team.team_definition_name,
+  const baseline: TeamConfigurationBaseline = {
     runtimeKind: runtimeKind(coordinator.launch_configuration.runtime_kind),
-    workspaceId: primaryWorkspace?.workspaceId ?? null,
-    workspaceMetadata: primaryWorkspace,
     llmModelIdentifier: coordinator.launch_configuration.llm_model_identifier,
     llmConfig: coordinator.launch_configuration.llm_config,
     autoExecuteTools: coordinator.launch_configuration.auto_execute_tools,
+  };
+  const memberOverrides = Object.fromEntries(agents.flatMap((agent) => {
+    const override = createMemberOverrideAgainstBaseline(agent, baseline);
+    return override ? [[agent.address, override]] : [];
+  }));
+
+  return Object.freeze({
+    teamDefinitionId: input.tree.root_team.team_definition_id,
+    teamDefinitionName: input.tree.root_team.team_definition_name,
+    runtimeKind: baseline.runtimeKind,
+    workspaceId: primaryWorkspace?.workspaceId ?? null,
+    workspaceMetadata: primaryWorkspace,
+    llmModelIdentifier: baseline.llmModelIdentifier,
+    llmConfig: baseline.llmConfig,
+    autoExecuteTools: baseline.autoExecuteTools,
     skillAccessMode: coordinator.launch_configuration.skill_access_mode as SkillAccessMode,
-    memberOverrides: Object.freeze(Object.fromEntries(agents.map((agent) => [agent.address, Object.freeze({
-      agentDefinitionId: agent.agent_definition_id,
-      runtimeKind: runtimeKind(agent.launch_configuration.runtime_kind),
-      llmModelIdentifier: agent.launch_configuration.llm_model_identifier,
-      autoExecuteTools: agent.launch_configuration.auto_execute_tools,
-      llmConfig: agent.launch_configuration.llm_config,
-    })]))),
+    memberOverrides: Object.freeze(memberOverrides),
     isLocked: true,
   });
 };

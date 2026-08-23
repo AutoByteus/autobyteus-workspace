@@ -49,9 +49,7 @@ const cloneWorkspaceMetadata = (
   : null
 
 const cloneMemberOverride = (override: MemberConfigOverride): MemberConfigOverride => {
-  const cloned: MemberConfigOverride = {
-    agentDefinitionId: override.agentDefinitionId,
-  }
+  const cloned: MemberConfigOverride = {}
   if (override.runtimeKind !== undefined) cloned.runtimeKind = override.runtimeKind
   if (override.llmModelIdentifier !== undefined) cloned.llmModelIdentifier = override.llmModelIdentifier
   if (override.autoExecuteTools !== undefined) cloned.autoExecuteTools = override.autoExecuteTools

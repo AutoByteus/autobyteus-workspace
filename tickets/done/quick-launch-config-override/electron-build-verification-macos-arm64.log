@@ -1,0 +1,69 @@
+verification_started=2026-08-21T07:30:57Z
+head=f8e2545e3be615dc072a7471382d5e226c8b0b3d
+base=8812520ec0c86598479097bc151dc6827fff4946
+app=/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+zip=/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+--- sizes ---
+1.4G	/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+442M	/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+449M	/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+472K	/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg.blockmap
+464K	/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.blockmap
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg 463788680 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip 457788275 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg.blockmap 483229 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.blockmap 472005 bytes
+--- sha256 ---
+daa5bc791bfb2d6b01ecb7571258208855dfa493330b28e8c61e281fbf2d5be4  /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg
+313ebe032551e05f00b74223a3358a8be35f22e8fe2eba5781161fc9a9092ff4  /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip
+bebe933472a2b23e128279f270fa8e57195196ecae6fdb17f1126254630fa9ce  /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg.blockmap
+a0e4a2c3b1c5c1bdd66d6584e332d8da70ace65d73357a74f189e90f124eb8b5  /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.blockmap
+--- app metadata ---
+com.autobyteus.app
+1.4.53
+1.4.53
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+arm64
+--- signing state (unsigned local test package is expected) ---
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+codesign_display=signature-present
+--- packaged node-pty helpers ---
+-rwxr-xr-x /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper: Mach-O 64-bit executable arm64
+-rwxr-xr-x /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper: Mach-O 64-bit executable x86_64
+-rwxr-xr-x /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+spawn_helper_count=3
+--- DMG integrity ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $C45743AE
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $80C23BCC
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $79B95337
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $F7974BF2
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $79B95337
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $58F5268B
+Die überprüfte CRC32-Prüfsumme ist $963F613E
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg" is VALID
+--- ZIP integrity ---
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/quick-launch-config-override/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.zip.
+zip_integrity=passed
+verification_finished=2026-08-21T07:31:15Z

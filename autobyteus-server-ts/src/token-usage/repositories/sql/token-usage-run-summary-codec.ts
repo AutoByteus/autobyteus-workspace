@@ -1,9 +1,9 @@
 import type { DistinctValueSummary } from "../../domain/token-usage-distinct-value-summary.js";
 import {
   TOKEN_USAGE_UNIT_PRICE_FIELDS,
-  type TokenUsageIdentitySummary,
   type TokenUsagePricingSummary,
-} from "../../domain/token-usage-run-record.js";
+} from "../../domain/token-usage-accounting-summary.js";
+import type { TokenUsageIdentitySummary } from "../../domain/token-usage-run-record.js";
 import type { TokenUsageUnitPriceSummary } from "../../domain/token-usage-unit-price-summary.js";
 
 const MAX_QUALITY_FLAGS = 32;

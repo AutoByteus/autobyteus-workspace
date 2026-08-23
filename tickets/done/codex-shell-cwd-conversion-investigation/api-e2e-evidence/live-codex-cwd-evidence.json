@@ -1,0 +1,50 @@
+{
+  "codexVersion": "codex-cli 0.149.0",
+  "modelIdentifier": "gpt-5.4-mini",
+  "runId": "run-codex-cwd-api-e2e-ca2e472d-82c4-48d8-9fea-6aadfc313ee4",
+  "nativeThreadId": "01a023db-8dee-7880-ad81-68627b57f2c5",
+  "targetDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target",
+  "realTargetDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target",
+  "approval": {
+    "method": "item/commandExecution/requestApproval",
+    "invocationId": "call_kSH5XaOvpDWEf9r0c4gunAw8",
+    "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target",
+    "canonicalArguments": {
+      "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+    }
+  },
+  "start": {
+    "nativeCommand": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+    "nativeCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target",
+    "canonicalArguments": {
+      "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+    }
+  },
+  "completion": {
+    "nativeCommand": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+    "nativeCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target",
+    "canonicalArguments": {
+      "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+    },
+    "exitCode": 0,
+    "proofFileContent": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+  },
+  "nativeHistoryToolArgs": {
+    "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+  },
+  "nativeThreadReadCommandExecutionCount": 0,
+  "nativeHistoryNormalizationSource": "live completed commandExecution",
+  "persistedToolArgs": {
+    "command": "/bin/bash -lc 'pwd > cwd-proof.txt'",
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-cwd-api-e2e-workspace-6QTKsJ/nested-target"
+  },
+  "legacyTraceToolArgs": {
+    "command": "pwd"
+  },
+  "legacyTraceBytesUnchanged": true
+}

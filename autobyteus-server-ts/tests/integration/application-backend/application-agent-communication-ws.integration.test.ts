@@ -9,9 +9,8 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execut
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
-  type TeamRunEventListener,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { RootEventListener } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
 import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
@@ -60,7 +59,7 @@ const agentBinding: ApplicationAgentBindingRecord = {
   executionResourceRef: { source: "bundle", kind: "AGENT", localId: "agent" },
   runtime: {
     subject: "AGENT_RUN",
-    runId: "agent-run",
+    agentRunId: "agent-run",
     definitionId: "agent-definition",
     members: [{
       memberName: "agent",
@@ -85,23 +84,19 @@ const teamBinding: ApplicationAgentBindingRecord = {
   executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run",
+    teamRunId: "team-run",
     definitionId: "team-definition",
     members: [
       {
-        memberName: "researcher",
-        memberRouteKey: "researcher",
+        memberAddress: "/researcher",
         displayName: "Researcher",
-        teamPath: ["researcher"],
-        runId: "researcher-run",
+        agentRunId: "researcher-run",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
-        memberName: "writer",
-        memberRouteKey: "writer",
+        memberAddress: "/writer",
         displayName: "Writer",
-        teamPath: ["writer"],
-        runId: "writer-run",
+        agentRunId: "writer-run",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
@@ -128,7 +123,8 @@ describe("Application agent communication WebSocket integration", () => {
   let baseUrl: string;
   let lifecycleHub: ApplicationRunBindingLifecycleHub;
   let agentListeners: Set<(event: AgentRunEvent) => void>;
-  let teamListeners: Set<TeamRunEventListener>;
+  let teamListeners: Set<RootEventListener<TeamRunEvent>>;
+  let teamChangeSequence: number;
   let agentPostUserMessage: ReturnType<typeof vi.fn>;
   let teamPostMessage: ReturnType<typeof vi.fn>;
   const connections: ApplicationAgentConnection[] = [];
@@ -137,6 +133,7 @@ describe("Application agent communication WebSocket integration", () => {
     lifecycleHub = new ApplicationRunBindingLifecycleHub();
     agentListeners = new Set();
     teamListeners = new Set();
+    teamChangeSequence = 0;
     agentPostUserMessage = vi.fn(async () => ({ accepted: true }));
     teamPostMessage = vi.fn(async () => ({ accepted: true }));
 
@@ -183,7 +180,7 @@ describe("Application agent communication WebSocket integration", () => {
       } as never,
       teamRunManager: {
         getActiveTeamRun: (runId: string) => runId === "team-run" ? {
-          subscribeToEvents: (listener: TeamRunEventListener) => {
+          subscribeToEvents: (listener: RootEventListener<TeamRunEvent>) => {
             teamListeners.add(listener);
             return () => teamListeners.delete(listener);
           },
@@ -232,7 +229,7 @@ describe("Application agent communication WebSocket integration", () => {
     } as const satisfies ApplicationAgentTargetAddress;
     const memberAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-run" },
     } as const satisfies ApplicationAgentTargetAddress;
 
     const agentConnection = client.agentCommunication.connect(agentAddress);
@@ -264,7 +261,7 @@ describe("Application agent communication WebSocket integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ content: "member input" }),
-      { kind: "route_key", memberRouteKey: "researcher" },
+      "/researcher",
     );
 
     for (const listener of agentListeners) listener({
@@ -280,34 +277,24 @@ describe("Application agent communication WebSocket integration", () => {
       },
     });
     const emitTeam = (event: TeamRunEvent): void => {
-      for (const listener of teamListeners) listener(event);
+      const sequenced = { changeSequence: ++teamChangeSequence, event };
+      for (const listener of teamListeners) listener(sequenced);
     };
-    emitTeam({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: "team-run",
-      sourcePath: [],
-      data: { status: "idle" } as never,
-    });
-    for (const [memberRouteKey, memberName, memberRunId, turnId] of [
-      ["writer", "writer", "writer-run", "turn-writer"],
-      ["researcher", "researcher", "researcher-run", "turn-researcher"],
+    for (const [memberRouteKey, memberRunId, turnId] of [
+      ["writer", "writer-run", "turn-writer"],
+      ["researcher", "researcher-run", "turn-researcher"],
     ] as const) {
       emitTeam({
         eventSourceType: TeamRunEventSourceType.AGENT,
-        teamRunId: "team-run",
-        sourcePath: [memberRouteKey],
-        data: {
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          memberName,
-          memberRunId,
-          memberPath: [memberRouteKey],
-          memberRouteKey,
-          agentEvent: {
-            eventType: AgentRunEventType.TURN_STARTED,
-            runId: memberRunId,
-            statusHint: null,
-            payload: { turnId, providerSecret: "must-not-cross" },
-          },
+        execution: {
+          rootTeamRunId: "team-run",
+          memberAddress: `/${memberRouteKey}`,
+          agentRunId: memberRunId,
+        },
+        payload: {
+          eventType: "TURN_STARTED",
+          statusHint: null,
+          details: { turnId },
         },
       });
     }
@@ -321,7 +308,7 @@ describe("Application agent communication WebSocket integration", () => {
       applicationId: APPLICATION_ID,
       address: agentAddress,
       runtimeSubject: "AGENT_RUN",
-      producer: { runId: "agent-run", runtimeKind: "AGENT" },
+      producer: { agentRunId: "agent-run", displayName: null, runtimeKind: "AGENT" },
       event: { type: "TEXT_DELTA", delta: "hello" },
     });
     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
@@ -333,9 +320,67 @@ describe("Application agent communication WebSocket integration", () => {
     expect(memberEvents[0]).toMatchObject({
       sequence: 1,
       address: memberAddress,
-      producer: { memberRouteKey: "researcher", runId: "researcher-run" },
+      producer: { agentRunId: "researcher-run", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" },
       event: { type: "TURN_STARTED" },
     });
+
+    for (const listener of agentListeners) listener({
+      eventType: AgentRunEventType.ERROR,
+      runId: "agent-run",
+      statusHint: null,
+      payload: {
+        turn_id: "turn-agent-error",
+        error_scope: "turn",
+        error_effect: "terminal",
+        code: "LLM_PROVIDER_ERROR",
+        message: "The provider rejected the agent request.",
+        provider_status: 402,
+        provider_code: "balance_required",
+        provider_request_id: "agent-provider-request",
+        details: "safe native detail",
+        error: { message: "raw-provider-secret", stack: "private-stack" },
+      },
+    });
+    emitTeam({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      execution: {
+        rootTeamRunId: "team-run",
+        memberAddress: "/researcher",
+        agentRunId: "researcher-run",
+      },
+      payload: {
+        eventType: "ERROR",
+        statusHint: null,
+        details: {
+          code: "LLM_PROVIDER_ERROR",
+          message: "The provider rejected the team request.",
+          providerStatus: 402,
+          providerCode: "balance_required",
+          providerRequestId: "team-provider-request",
+          details: "safe team detail",
+          errorScope: "turn",
+          errorEffect: "terminal",
+          turnId: "turn-team-error",
+        },
+      },
+    });
+    await waitFor(
+      () => agentEvents.length === 2 && teamEvents.length === 3 && memberEvents.length === 2,
+      "projected application terminal errors",
+    );
+    expect(agentEvents[1]).toMatchObject({
+      event: { type: "ERROR", message: "The provider rejected the agent request." },
+    });
+    expect(agentEvents[1]?.event).not.toHaveProperty("providerStatus");
+    expect(teamEvents[2]).toMatchObject({
+      event: { type: "ERROR", message: "The provider rejected the team request." },
+    });
+    expect(teamEvents[2]?.event).not.toHaveProperty("providerRequestId");
+    expect(memberEvents[1]).toMatchObject({
+      event: { type: "ERROR", message: "The provider rejected the team request." },
+    });
+    expect(JSON.stringify({ agentEvents, teamEvents, memberEvents })).not.toContain("raw-provider-secret");
+    expect(JSON.stringify({ agentEvents, teamEvents, memberEvents })).not.toContain("provider-request");
 
     const closePromise = waitForClose(agentConnection);
     lifecycleHub.publishTerminal({

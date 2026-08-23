@@ -36,13 +36,13 @@ const buildSlot = (
 
 const currentTeamMembers = [
   {
-    memberRouteKey: 'researcher',
-    memberName: 'researcher',
+    memberAddress: '/researcher',
+    displayName: 'researcher',
     agentDefinitionId: 'bundle-agent__researcher',
   },
   {
-    memberRouteKey: 'writer',
-    memberName: 'writer',
+    memberAddress: '/writer',
+    displayName: 'writer',
     agentDefinitionId: 'bundle-agent__writer',
   },
 ]
@@ -147,22 +147,22 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       launchProfile: {
         kind: 'AGENT_TEAM',
         defaults: {
-          llmModelIdentifier: 'qwen3.5',
-          runtimeKind: 'lmstudio',
+          llmModelIdentifier: 'claude-sonnet-4',
+          runtimeKind: 'claude_agent_sdk',
           workspaceRootPath: '/tmp/briefs',
         },
         memberProfiles: [
           {
-            memberRouteKey: 'researcher',
-            memberName: 'researcher',
+            memberAddress: '/researcher',
+            displayName: 'researcher',
             agentDefinitionId: 'bundle-agent__researcher',
           },
           {
-            memberRouteKey: 'writer',
-            memberName: 'writer',
+            memberAddress: '/writer',
+            displayName: 'writer',
             agentDefinitionId: 'bundle-agent__writer',
-            runtimeKind: 'lmstudio',
-            llmModelIdentifier: 'qwen3.5',
+            runtimeKind: 'claude_agent_sdk',
+            llmModelIdentifier: 'claude-sonnet-4',
           },
         ],
       },
@@ -180,22 +180,22 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
         launchProfile: {
           kind: 'AGENT_TEAM',
           defaults: {
-            llmModelIdentifier: 'qwen3.5',
-            runtimeKind: 'lmstudio',
+            llmModelIdentifier: 'claude-sonnet-4',
+            runtimeKind: 'claude_agent_sdk',
             workspaceRootPath: '/tmp/briefs',
           },
           memberProfiles: [
             {
-              memberRouteKey: 'researcher',
-              memberName: 'researcher',
+              memberAddress: '/researcher',
+              displayName: 'researcher',
               agentDefinitionId: 'bundle-agent__researcher',
             },
             {
-              memberRouteKey: 'writer',
-              memberName: 'writer',
+              memberAddress: '/writer',
+              displayName: 'writer',
               agentDefinitionId: 'bundle-agent__writer',
-              runtimeKind: 'lmstudio',
-              llmModelIdentifier: 'qwen3.5',
+              runtimeKind: 'claude_agent_sdk',
+              llmModelIdentifier: 'claude-sonnet-4',
             },
           ],
         },
@@ -211,8 +211,8 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       launchProfile: {
         kind: 'AGENT_TEAM',
         defaults: {
-          llmModelIdentifier: 'qwen3.5',
-          runtimeKind: 'lmstudio',
+          llmModelIdentifier: 'claude-sonnet-4',
+          runtimeKind: 'claude_agent_sdk',
           workspaceRootPath: '/tmp/briefs',
         },
       },
@@ -237,20 +237,20 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       },
       launchProfile: {
         kind: 'AGENT_TEAM',
-        defaults: null,
-        memberProfiles: [
-          {
-            memberRouteKey: 'researcher',
-            memberName: 'researcher',
+          defaults: null,
+          memberProfiles: [
+            {
+            memberAddress: '/researcher',
+            displayName: 'researcher',
             agentDefinitionId: 'bundle-agent__researcher',
             runtimeKind: 'autobyteus',
-            llmModelIdentifier: 'openai/gpt-5',
+            llmModelIdentifier: 'grok-4.6',
           },
           {
-            memberRouteKey: 'writer',
-            memberName: 'writer',
+            memberAddress: '/writer',
+            displayName: 'writer',
             agentDefinitionId: 'bundle-agent__writer',
-            runtimeKind: 'lmstudio',
+            runtimeKind: 'claude_agent_sdk',
           },
         ],
       },
@@ -258,6 +258,36 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       "Application execution resource slot 'draftingTeam' requires an effective llmModelIdentifier for team member 'writer'.",
     )
 
+    expect(savedConfigurations).toHaveLength(0)
+  })
+
+  it('rejects a stale AutoByteus model on save before persisting the profile', async () => {
+    const savedConfigurations: unknown[] = []
+    const service = buildService({
+      upsertConfiguration: async (record) => {
+        savedConfigurations.push(record)
+        return record
+      },
+    })
+
+    await expect(service.upsertConfiguration(applicationId, 'draftingTeam', {
+      executionResourceRef: {
+        source: 'shared',
+        kind: 'AGENT_TEAM',
+        definitionId: 'shared-writing-team',
+      },
+      launchProfile: {
+        kind: 'AGENT_TEAM',
+        defaults: {
+          runtimeKind: 'autobyteus',
+          llmModelIdentifier: 'grok-4.5',
+        },
+        memberProfiles: currentTeamMembers,
+      },
+    })).rejects.toMatchObject({
+      code: 'CURRENT_MODEL_SELECTION_REQUIRED',
+      message: 'The selected model is no longer supported. Select a current supported model.',
+    })
     expect(savedConfigurations).toHaveLength(0)
   })
 
@@ -271,8 +301,8 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       },
       launchProfile: null,
       legacyLaunchDefaults: {
-        runtimeKind: 'lmstudio',
-        llmModelIdentifier: 'qwen3.5',
+        runtimeKind: 'claude_agent_sdk',
+        llmModelIdentifier: 'claude-sonnet-4',
         workspaceRootPath: '/tmp/briefs',
       },
       updatedAt: '2026-04-20T12:00:00.000Z',
@@ -293,9 +323,9 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       slotKey: 'draftingTeam',
       launchProfile: {
         kind: 'AGENT_TEAM',
-        defaults: {
-          runtimeKind: 'lmstudio',
-          llmModelIdentifier: 'qwen3.5',
+          defaults: {
+          runtimeKind: 'claude_agent_sdk',
+          llmModelIdentifier: 'claude-sonnet-4',
           workspaceRootPath: '/tmp/briefs',
         },
         memberProfiles: currentTeamMembers,
@@ -309,8 +339,8 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
         launchProfile: {
           kind: 'AGENT_TEAM',
           defaults: {
-            runtimeKind: 'lmstudio',
-            llmModelIdentifier: 'qwen3.5',
+            runtimeKind: 'claude_agent_sdk',
+            llmModelIdentifier: 'claude-sonnet-4',
             workspaceRootPath: '/tmp/briefs',
           },
           memberProfiles: currentTeamMembers,
@@ -333,19 +363,19 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
       launchProfile: {
         kind: 'AGENT_TEAM',
         defaults: {
-          runtimeKind: 'lmstudio',
-          llmModelIdentifier: 'qwen3.5',
+          runtimeKind: 'claude_agent_sdk',
+          llmModelIdentifier: 'claude-sonnet-4',
         },
         memberProfiles: [
           {
-            memberRouteKey: 'researcher',
-            memberName: 'researcher',
+            memberAddress: '/researcher',
+            displayName: 'researcher',
             agentDefinitionId: 'bundle-agent__researcher-old',
-            runtimeKind: 'lmstudio',
+            runtimeKind: 'claude_agent_sdk',
           },
           {
-            memberRouteKey: 'editor',
-            memberName: 'editor',
+            memberAddress: '/editor',
+            displayName: 'editor',
             agentDefinitionId: 'bundle-agent__editor',
           },
         ],
@@ -378,15 +408,15 @@ describe('ApplicationExecutionResourceConfigurationService', () => {
     })
     expect(view.issue?.staleMembers).toEqual([
       {
-        memberRouteKey: 'researcher',
-        memberName: 'researcher',
+        memberAddress: '/researcher',
+        displayName: 'researcher',
         agentDefinitionId: 'bundle-agent__researcher-old',
         reason: 'AGENT_CHANGED',
         currentAgentDefinitionId: 'bundle-agent__researcher',
       },
       {
-        memberRouteKey: 'editor',
-        memberName: 'editor',
+        memberAddress: '/editor',
+        displayName: 'editor',
         agentDefinitionId: 'bundle-agent__editor',
         reason: 'MISSING_FROM_TEAM',
       },

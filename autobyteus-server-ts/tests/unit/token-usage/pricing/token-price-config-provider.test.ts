@@ -80,4 +80,49 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
       });
     },
   );
+
+  it.each([
+    ['2026-01-01T02:00:00.000Z', 'peak', 0.44, 1.32, 0.014],
+    ['2025-01-01T05:00:00.000Z', 'off_peak', 0.22, 0.66, 0.007],
+  ] as const)('selects the current DeepSeek V4 period from UTC time-of-day (%s)', async (observedAt, period, input, output, cacheRead) => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'autobyteus',
+      model_provider: 'DEEPSEEK',
+      model_identifier: 'deepseek-v4-flash',
+      model_value: null,
+      observed_at: observedAt,
+    });
+
+    expect(policy).toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: input,
+      output_price_per_million: output,
+      cached_input_read_price_per_million: cacheRead,
+      pricing_schedule_id: 'deepseek-v4-2026-08-17',
+      pricing_schedule_period_id: period,
+      pricing_schedule_effective_from: '2026-08-16T16:00:00Z',
+      pricing_schedule_timezone: 'UTC',
+    });
+    expect(policy.pricing_policy_key).toContain(`:deepseek-v4-2026-08-17:${period}`);
+  });
+
+  it('does not guess a DeepSeek price when the scheduled timestamp is invalid', async () => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'autobyteus',
+      model_provider: 'DEEPSEEK',
+      model_identifier: 'deepseek-v4-pro',
+      model_value: null,
+      observed_at: 'not-a-timestamp',
+    });
+
+    expect(policy).toMatchObject({
+      pricing_status: 'missing',
+      missing_reason: 'pricing_schedule_time_invalid',
+      input_price_per_million: null,
+      output_price_per_million: null,
+      cached_input_read_price_per_million: null,
+      pricing_schedule_id: 'deepseek-v4-2026-08-17',
+      pricing_schedule_period_id: null,
+    });
+  });
 });

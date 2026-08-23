@@ -1,0 +1,36 @@
+# Delivery integration refresh evidence — DR-001
+
+captured_at=2026-08-23T15:45:08Z
+fetch_command=git fetch --prune origin
+fetch_result=PASS
+bootstrap_base=122adc91c184a75541489eea670ac29fcb43f4ab
+checkpoint_head=16b5696716c4cab025ddb9b6bf420d8dea796f89
+merge_head=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+latest_origin_personal=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+bootstrap_to_latest_commit_count=78
+checkpoint_vs_latest_left_right=1/78
+integration_command=git merge --no-edit origin/personal
+integration_result=BLOCKED_CONTENT_CONFLICTS
+
+## Unmerged paths
+autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+autobyteus-ts/src/llm/llm-factory.ts
+autobyteus-web/localization/messages/en/settings.ts
+autobyteus-web/localization/messages/zh-CN/settings.ts
+
+## Porcelain status for unresolved paths
+UU autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+UU autobyteus-ts/src/llm/llm-factory.ts
+UU autobyteus-web/localization/messages/en/settings.ts
+UU autobyteus-web/localization/messages/zh-CN/settings.ts
+
+## Conflict marker counts
+autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts=3
+autobyteus-ts/src/llm/llm-factory.ts=6
+autobyteus-web/localization/messages/en/settings.ts=3
+autobyteus-web/localization/messages/zh-CN/settings.ts=3
+
+post_integration_checks=NOT_RUN_NO_RESOLVED_INTEGRATED_CANDIDATE
+conflict_resolution_by_delivery=NONE
+classification=LOCAL_FIX
+recommended_recipient=/implementation_engineer

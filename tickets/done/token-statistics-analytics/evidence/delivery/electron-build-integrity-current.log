@@ -1,0 +1,36 @@
+$ ls -lh artifacts
+-rw-r--r--@ 1 normy  staff   442M Aug 22 21:40 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+-rw-r--r--@ 1 normy  staff   437M Aug 22 21:43 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+
+$ shasum -a 256 artifacts
+60893fa5e646b1116569e67da456834a7c80d409775b5705215bb7bbba585e26  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg
+f65c9950b62bfbcf29097c159c4bf5acd7cb9e6ff2af119be9ec4afa617b5116  /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip
+
+$ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $A5B30610
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F47BA749
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $6728556C
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $F4722D4D
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $6728556C
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $A7127673
+Die überprüfte CRC32-Prüfsumme ist $866592F6
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg" is VALID
+
+$ unzip -tq ZIP
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip.
+ZIP integrity: PASS
+
+$ file packaged executable
+/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-analytics/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+$ test bundled server and Prisma schema
+Bundled server directory: PASS
+Bundled Prisma schema: PASS

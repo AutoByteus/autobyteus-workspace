@@ -1,0 +1,102 @@
+# v1.4.54 rollout verification
+timestamp_utc=2026-08-21T20:01:08Z
+temporary_metadata_dir=/tmp/codex-luna-v1.4.54-assets.t07s4m
+--- refs and synchronized source metadata ---
+local_tag_commit=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+remote_tag_commit=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+personal_head=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+remote_personal=8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34
+web_version=1.4.54
+gateway_version=1.4.54
+managed_manifest_release_tag=v1.4.54
+managed_manifest_artifact_version=1.4.54
+--- workflow final states ---
+32518756823	iOS App Store Connect Release	push	completed	success	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	2026-08-21T19:41:18Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756823
+32518756896	Android APK Release	push	completed	success	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	2026-08-21T19:33:28Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756896
+32518756836	Desktop Release	push	completed	success	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	2026-08-21T19:47:47Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756836
+32518756861	Release Messaging Gateway	push	completed	success	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	2026-08-21T19:32:37Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756861
+32518756788	Server Docker Release	push	completed	success	8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34	2026-08-21T19:29:50Z	2026-08-21T19:59:01Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32518756788
+--- GitHub release metadata ---
+{
+  "tagName": "v1.4.54",
+  "name": "v1.4.54",
+  "isDraft": false,
+  "isPrerelease": false,
+  "publishedAt": "2026-08-21T19:32:34Z",
+  "targetCommitish": "8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.54",
+  "assetCount": 21,
+  "assetNames": [
+    "autobyteus-message-gateway-1.4.54-node-generic.tar.gz",
+    "autobyteus-message-gateway-1.4.54-node-generic.tar.gz.json",
+    "autobyteus-message-gateway-1.4.54-node-generic.tar.gz.sha256",
+    "AutoByteus_personal_android-1.4.54-release.apk",
+    "AutoByteus_personal_android-1.4.54-release.apk.sha256",
+    "AutoByteus_personal_linux-arm64-1.4.54.AppImage",
+    "AutoByteus_personal_linux-x64-1.4.54.AppImage",
+    "AutoByteus_personal_macos-arm64-1.4.54.dmg",
+    "AutoByteus_personal_macos-arm64-1.4.54.dmg.blockmap",
+    "AutoByteus_personal_macos-arm64-1.4.54.zip",
+    "AutoByteus_personal_macos-arm64-1.4.54.zip.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.54.dmg",
+    "AutoByteus_personal_macos-x64-1.4.54.dmg.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.54.zip",
+    "AutoByteus_personal_macos-x64-1.4.54.zip.blockmap",
+    "AutoByteus_personal_windows-1.4.54.exe",
+    "latest-linux-arm64.yml",
+    "latest-linux.yml",
+    "latest-mac.yml",
+    "latest.yml",
+    "release-manifest.json"
+  ],
+  "body": "## Improvements\n- Improved Codex and Claude agent startup so configured workspace skills are reconciled consistently before a run begins.\n- Improved server diagnostics for agent preparation failures while keeping user-facing error messages safe and stable.\n\n## Fixes\n- Fixed agent startup failures caused by stale or broken workspace skill links after a configured skill moves or becomes unavailable.\n- Fixed Codex skill discovery bypassing repair of the canonical configured workspace link.\n- Fixed unavailable optional skills leaving broken runtime links that could block otherwise valid agent runs.\n"
+}
+--- download and inspect small release metadata ---
+latest-linux-arm64.yml: version: 1.4.54
+latest-linux.yml: version: 1.4.54
+latest-mac.yml: version: 1.4.54
+latest.yml: version: 1.4.54
+published_manifest_release_tag=v1.4.54
+published_manifest_artifact_version=1.4.54
+gateway_metadata:
+{
+  "packageName": "autobyteus-message-gateway",
+  "packageVersion": "1.4.54",
+  "artifactVersion": "1.4.54",
+  "platformKey": "node-generic",
+  "archiveType": "tar.gz",
+  "archiveFileName": "autobyteus-message-gateway-1.4.54-node-generic.tar.gz",
+  "sha256": "c69d4d4610e00a2a276a6cdf7e482f6ae71ece5e73e880d793d9262647c95c66",
+  "entrypoint": "dist/index.js",
+  "packageRoot": ".",
+  "generatedAt": "2026-08-21T19:31:52.067Z"
+}
+--- Docker Hub immutable and latest tags ---
+Name:      docker.io/autobyteus/autobyteus-server:1.4.54
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.54@sha256:7932e61253b3046c3a3c7d2377c58f7e4a6f6f68a28d88d2c655781533c02c9f
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.54@sha256:509c9d2c7ae8f46798cc0a1111bb15ac7cd4e5a085c539eefe5ddafacac4d598
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+--- latest ---
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:7932e61253b3046c3a3c7d2377c58f7e4a6f6f68a28d88d2c655781533c02c9f
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:509c9d2c7ae8f46798cc0a1111bb15ac7cd4e5a085c539eefe5ddafacac4d598
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+version_digest=sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f
+latest_digest=sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f
+ROLLOUT VERIFICATION RESULT: PASS

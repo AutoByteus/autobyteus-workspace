@@ -1,0 +1,142 @@
+$ codex --version
+codex-cli 0.149.0
+$ RUN_CODEX_E2E=1 pnpm exec vitest run tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts -t "repairs a broken canonical link" --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:78977) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts > CodexThreadBootstrapper integration (live skill discovery) > repairs a broken canonical link when live Codex discovery already exposes the configured logical name
+[CodexAppServerClient] stderr: 2026-08-21T17:42:58.530753Z ERROR codex_app_server: Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-bootstrapper-live-stale-link-nTsXcH/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-bootstrapper-live-stale-link-nTsXcH as a trusted project in /Users/normy/.codex/config.toml.
+
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts > CodexThreadBootstrapper integration (live skill discovery) > repairs a broken canonical link when live Codex discovery already exposes the configured logical name
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-server-ts
+
+ ❯ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (3 tests | 1 failed | 2 skipped) 103ms
+     ↓ discovers a real repo-local Codex skill by logical name and skips runtime materialization for the same configured skill
+     × repairs a broken canonical link when live Codex discovery already exposes the configured logical name 102ms
+     ↓ materializes a configured skill when live discovery does not already expose the skill name
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts > CodexThreadBootstrapper integration (live skill discovery) > repairs a broken canonical link when live Codex discovery already exposes the configured logical name
+Error: Agent definition name must be non-blank.
+ ❯ requirePromptScalar src/agent-execution/prompt/carpenter-prompt-sections.ts:17:11
+     15|   const normalized = normalizeScalar(value);
+     16|   if (!normalized) {
+     17|     throw new Error(`${label} must be non-blank.`);
+       |           ^
+     18|   }
+     19|   return normalized;
+ ❯ renderAgentIdentitySection src/agent-execution/prompt/carpenter-prompt-sections.ts:23:54
+ ❯ buildSharedCarpenterPromptSections src/agent-execution/prompt/carpenter-prompt-composer.ts:35:31
+ ❯ composeSharedCarpenterPrompt src/agent-execution/prompt/carpenter-prompt-composer.ts:54:38
+ ❯ CodexThreadBootstrapper.bootstrapInternal src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:235:35
+ ❯ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts:370:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  19:42:54
+   Duration  4.37s (transform 2.59s, setup 15ms, import 3.76s, tests 103ms, environment 0ms)
+

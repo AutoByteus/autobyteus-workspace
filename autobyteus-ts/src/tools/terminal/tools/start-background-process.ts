@@ -27,8 +27,7 @@ argumentSchema.addParameter(new ParameterDefinition({
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'cwd',
   type: ParameterType.STRING,
-  description:
-    "Optional working-directory path for this process. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory.",
+  description: 'Optional working directory for the process.',
   required: false
 }));
 
@@ -40,7 +39,7 @@ export function registerStartBackgroundProcessTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Start a long-running non-interactive shell command in a working directory and return its PID as pid. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. The result includes effectiveCwd so you can confirm where the process started.',
+        'Start a long-running non-interactive shell command in a working directory and return its PID as pid. Any provided cwd must be an absolute path to an existing accessible local directory, including one outside the workspace. If cwd is omitted, the workspace root is used when available, otherwise the system temporary directory. cwd applies only to this process and does not change workspace identity or persist across calls. The result includes effectiveCwd so you can confirm where the process started.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd']

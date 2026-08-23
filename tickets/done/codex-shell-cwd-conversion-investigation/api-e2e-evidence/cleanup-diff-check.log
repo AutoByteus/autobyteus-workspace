@@ -1,0 +1,7 @@
+temporary probe removed: yes
+tracked implementation paths:
+autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts

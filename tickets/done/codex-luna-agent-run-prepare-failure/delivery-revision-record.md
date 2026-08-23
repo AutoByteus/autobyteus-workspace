@@ -1,0 +1,95 @@
+# Delivery Revision Record
+
+## Revision Index
+
+| Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
+| --- | --- | --- | --- | --- |
+| `DR-001` | Initial delivery-stage entry after `API-REV-001 Pass` at 97% and `CRR-002 Pass` confirmed both API/E2E-changed durable tests have no findings | N/A | Pass — reviewed state checkpointed, five latest-base commits merged cleanly, affected live/API checks and TypeScript passed, durable docs synchronized and validated, user-verification handoff ready; repository finalization intentionally held | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/delivery-integrated-state-refresh.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/post-integration-validation.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-validation.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/delivery-pre-verification-validation.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-report.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/handoff-summary.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/release-deployment-report.md` |
+| `DR-002` | User requested a README-guided Electron build for manual testing | `DR-001 Pass` with repository finalization held | Pass — unsigned local macOS ARM64 DMG/ZIP version 1.4.53 built and verified; user-test path recorded; repository finalization still held | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/handoff-summary.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/release-deployment-report.md` |
+| `DR-003` | User explicitly accepted the tested ticket and requested finalization plus a new release | `DR-002 Pass` with finalization held | Pass — final remote refresh found the accepted state still current with `origin/personal`; no re-integration or renewed verification was required; release `1.4.54` was confirmed as the next unused patch and curated release notes were prepared | `delivery-finalization-refresh.log`; `release-notes.md`; `handoff-summary.md`; `release-deployment-report.md` |
+| `DR-004` | Repository finalization after `DR-003 Pass` | `DR-003 Pass` with release prepared | Pass — archived ticket committed and pushed on the ticket branch, latest `personal` confirmed current, ticket merged without conflict, focused changed cases and production TypeScript passed on merged `personal`, and target push was verified | `repository-finalization-validation.log`; `handoff-summary.md`; `release-deployment-report.md` |
+| `DR-005` | Authorized `v1.4.54` publication, rollout verification, and cleanup | `DR-004 Pass` with repository finalized | Pass — synchronized release commit/tag pushed, all five tag workflows succeeded, 21-asset stable GitHub release and updater/messaging metadata verified, Docker version/latest multi-arch indexes matched, and ticket worktree/branches were removed | `release-v1.4.54-execution.log`; `release-v1.4.54-workflows.log`; `release-v1.4.54-rollout-verification.log`; `post-release-cleanup.log`; `handoff-summary.md`; `release-deployment-report.md` |
+| `DR-006` | User requested the documented manual build/publish of the latest Chinese server image | `DR-005 Pass` with stable `v1.4.54` released | Pass — manually dispatched the server-Docker workflow against `v1.4.54` with `publish_zh=true`; only the zh build step ran, workflow `32548635553` succeeded, and `1.4.54-zh` / `latest-zh` were verified as matching amd64+arm64 OCI indexes | `release-v1.4.54-zh-docker-dispatch.log`; `release-v1.4.54-zh-docker-workflow.log`; `release-v1.4.54-zh-docker-rollout-verification.log`; `handoff-summary.md`; `release-deployment-report.md` |
+
+## Revision Entries
+
+### DR-001 — Initial integrated refresh, docs sync, and verification handoff
+
+- Delivery round and trigger: Initial delivery-stage result after solution revisions `SR-001`/`SR-002`, architecture re-review `ARCH-REV-002 Pass`, implementation `IR-001`, source review `CRR-001 Pass` at 9.5/10 with no findings, API/E2E `API-REV-001 Pass` at 97% final validation confidence, and proportional test-code review `CRR-002 Pass` with no findings.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-test-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/api-e2e-execution-coverage-report.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/code-review-revision-record.md`.
+- Prior authoritative result: N/A.
+- Current authoritative result: `Pass` for reviewed-candidate preservation, latest-base integration, post-integration verification, durable docs sync, docs validation, and user-verification handoff. Repository finalization remains intentionally held.
+- Integration and post-integration verification: `git fetch origin personal --prune` found `origin/personal` advanced from bootstrap `a098b205ca990bf86b5e452950a49fc5dc39c8d1` to `a80105ada35455ec14fd5b9f75045799449db13e`. Delivery checkpointed the two CRR-002-reviewed test edits and API/E2E artifacts at `944f46a5066a4b58c42a676cbe4c9925826b5816`, then merged the latest base without conflict at `13e926358e7b83ff484644b62e4aecf1c6361296`. The corrected `RUN_CODEX_E2E=1` selected execution passed both changed cases in two files, and `pnpm exec tsc -p tsconfig.build.json --noEmit` passed. Evidence: `delivery-integrated-state-refresh.log` and `post-integration-validation.log`.
+- Docs sync result: Updated four authoritative module docs for configured-skill bindings, the shared Codex/Claude materializer, broken-link/collision/cleanup invariants, package projection, and safe diagnostic separation. Validation passed. Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/docs-sync-report.md`.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/handoff-summary.md`.
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/release-deployment-report.md`.
+- Why recorded: Delivery requires an explicit `DR-001` baseline and must not infer delivery state from missing history.
+- User verification/finalization state: Explicit completion for this ticket has not been received. The ticket remains in progress. No final delivery commit, ticket-branch push, target refresh/merge/push, archival transition, release, deployment, or cleanup has occurred.
+- Next recipient/action: The user verifies/accepts the integrated candidate. After acceptance, delivery refreshes `origin/personal` again and finalizes only if the verified state remains current; materially changed state requires renewed verification.
+- Residuals carried forward: One unrelated AutoByteus compaction-runner fixture failure and two unrelated WebSocket inactive-restore/busy fixture failures remain in broader full-file evidence; focused changed cases pass. Electron pixel presentation and live Claude inference were not rerun because those boundaries did not change. The shared materializer has limited file-size growth headroom. No critical acceptance criterion is unproven.
+- Rollback concern: Stop finalization for broken-link repair failure, target traversal/deletion, unsafe collision overwrite/trust, optional-skill startup regression, model drift, private-cause leakage, or any failed post-refresh executable check. No persisted-data rollback migration is needed.
+
+### DR-002 — Local Electron build for user verification
+
+- Delivery round and trigger: The user asked the delivery engineer to read the README and build Electron for hands-on testing. This requests a local verification artifact, not repository-finalization acceptance or a release.
+- Prior authoritative result: `DR-001 Pass` with the integrated, documented, API/E2E-validated candidate ready and finalization held.
+- Guidance used: Root `README.md` plus `autobyteus-web/README.md`, especially **Desktop Application Build**, **macOS Build With Logs (No Notarization)**, and **Desktop Application with Integrated Backend**.
+- Build command: From `autobyteus-web`, `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac`.
+- Build result: `Pass`. Web/localization guards, localization audit, shared/server builds, Prisma generation, sanitized built-in-agent bootstrap, mobile assets, integrated server staging, Electron native runtime preparation, renderer generation, Electron TypeScript, and unsigned DMG/ZIP packaging completed with exit code 0.
+- User-test artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-luna-agent-run-prepare-failure/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.53.dmg`.
+- Verification result: `Pass`. The app executable is ARM64 with bundle ID `com.autobyteus.app` and version `1.4.53`; the packaged backend contains the shared broken-link repair, Codex binding reconciliation, and original-error diagnostic changes; staged and Electron-Node `node-pty` checks passed; DMG and ZIP integrity passed; hashes were recorded.
+- DMG SHA-256: `7a0a75536ae3c77b5bbcd9100769fd25e4b6ec238901e959a72c2d4f8648a7f4`.
+- ZIP SHA-256: `51c719945c6a25a9e2b4c2b603781660f7e33a8fb2572aa3a9de932e06a70c69`.
+- Signing/publication scope: Local verification build only. Apple signing identity, timestamping, notarization, publication, and deployment were intentionally disabled/not performed. The executable has an ad-hoc/linker signature rather than a distribution identity.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-luna-agent-run-prepare-failure/electron-build-verification-macos-arm64.log`.
+- Current authoritative result: `DR-002 Pass` — local Electron package ready for user testing. Repository finalization remains intentionally held pending the user's explicit completion/verification signal.
+- Next recipient/action: The user manually tests the DMG/app and then either reports a problem or explicitly authorizes finalization, stating separately if a release is desired.
+
+### DR-003 — User acceptance, final refresh, and release preparation
+
+- Delivery round and trigger: The user explicitly stated that the task is done and requested finalization and a new release.
+- Prior authoritative result: `DR-002 Pass` with the integrated, documented, and locally packaged candidate held for user verification.
+- User verification result: `Accepted`. This is the required completion signal for archival, repository finalization, and cleanup, and it separately authorizes release work.
+- Final refresh result: `Pass`. Delivery fetched `origin/personal` and all tags again on 2026-08-21. `origin/personal` remained `a80105ada35455ec14fd5b9f75045799449db13e`, the exact base already merged and executable-checked before the user-accepted build. The ticket branch remained five commits ahead and zero behind with that revision as merge base.
+- Re-integration and renewed verification decision: `Not required`. No remote base commit was added after the accepted state, so effective behavior did not change and the existing focused 2/2 integration result, production TypeScript pass, and verified Electron package remain applicable.
+- Release preparation: Existing synchronized application versions and the latest normal release are `1.4.53`; local and remote `v1.4.54` are absent. Delivery selected the next unused patch version `1.4.54` and prepared concise curated notes at `release-notes.md` for the documented release helper.
+- Evidence: `delivery-finalization-refresh.log`; `release-notes.md`.
+- Current authoritative result: `DR-003 Pass` — user acceptance and mandatory final refresh are complete; the ticket is ready for archival, branch finalization into `personal`, and release `v1.4.54`.
+- Rollback concern: Stop release if the target advances before merge, any final validation fails, the release helper cannot preserve synchronized versions/notes, a required workflow fails, or published artifacts do not resolve to the release tag.
+
+### DR-004 — Repository finalization
+
+- Delivery round and trigger: Finalize the accepted, refreshed candidate into the recorded target branch before beginning the separately authorized release.
+- Prior authoritative result: `DR-003 Pass` with the archived ticket and `v1.4.54` release inputs prepared.
+- Ticket branch finalization: Committed archival and delivery preparation as `ee32b64193d54ec173acb8885eb8f799b2fd30b3`, then pushed and verified `origin/codex/codex-luna-agent-run-prepare-failure` at that commit.
+- Target refresh and merge: Fetched `origin/personal` again; it remained `a80105ada35455ec14fd5b9f75045799449db13e`. Fast-forward update was already current. Merged the ticket branch with no conflict as `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c`.
+- Post-merge verification: `RUN_CODEX_E2E=1` selected both changed integration cases and passed 2/2 in two files. `pnpm exec tsc -p tsconfig.build.json --noEmit` passed.
+- Target push: Pushed and verified `origin/personal` at `577a3c81021cd4a63fda3dbf334cbbd9da7cbd2c`; the ticket branch is an ancestor.
+- Evidence: `repository-finalization-validation.log`.
+- Current authoritative result: `DR-004 Pass` — repository finalization is complete and release `v1.4.54` may proceed using the documented helper.
+- Remaining action: Publish and verify `v1.4.54`, record rollout evidence, then clean up the dedicated worktree and ticket branches.
+
+### DR-005 — Release publication, rollout verification, and cleanup
+
+- Delivery round and trigger: Execute and verify the new release explicitly authorized with user acceptance, then remove ticket-specific repository resources.
+- Prior authoritative result: `DR-004 Pass` with repository finalization complete on `origin/personal`.
+- Release helper result: `Pass`. The documented command synchronized web and messaging-gateway versions from `1.4.53` to `1.4.54`, synchronized curated notes and the managed messaging release manifest, created release commit/tag `8a2aff8c05dc70dd5dae6e3636cd8b9b27ca7e34` / `v1.4.54`, and pushed `personal` plus the tag.
+- Workflow result: `Pass`. Desktop, Android APK, iOS App Store Connect, messaging-gateway, and server-Docker tag workflows all completed successfully. The iOS result proves archive/upload into App Store Connect/TestFlight; Apple review and public-store approval remain external.
+- Publication verification: `Pass`. Stable non-draft/non-prerelease release `v1.4.54` targets the release commit and publishes 21 assets. Four updater metadata files declare `1.4.54`; managed messaging metadata/manifests declare `v1.4.54` / `1.4.54`; curated notes match the ticket artifact.
+- Container verification: `Pass`. Docker Hub tags `autobyteus/autobyteus-server:1.4.54` and `:latest` both resolve OCI index `sha256:13557c02722cfb03ec9d6177db445234a0fde1686057d6cd97b1659c09e6f65f` with `linux/amd64` and `linux/arm64` manifests.
+- Cleanup result: `Pass`. Removed and pruned the dedicated ticket worktree, deleted the local ticket branch, deleted the remote ticket branch, and verified all four are absent. The pre-existing untracked `.article-work/` was preserved outside release commits and restored after final evidence commit.
+- Evidence: `release-v1.4.54-execution.log`; `release-v1.4.54-workflows.log`; `release-v1.4.54-rollout-verification.log`; `post-release-cleanup.log`.
+- Current authoritative result: `DR-005 Pass` — ticket finalization, release publication, rollout verification, and ticket-resource cleanup are complete.
+- Rollback visibility: Use the prior stable GitHub release for desktop/mobile rollback and pin the prior immutable server tag instead of `latest`; no database or persisted-data rollback is required.
+
+### DR-006 — Manual zh Docker publication follow-up
+
+- Delivery round and trigger: The user requested a build for the latest zh Docker image and recalled that this variant requires manual workflow dispatch.
+- Prior authoritative result: `DR-005 Pass` with stable release `v1.4.54` and default Docker tags already published and verified.
+- Latest-release refresh: `Pass`. `v1.4.54` remained the latest stable release and `personal` remained synchronized with `origin/personal` before dispatch.
+- Documented/manual method: Dispatched `.github/workflows/release-server-docker.yml` on `personal` with `release_tag=v1.4.54`, `release_ref=v1.4.54`, and `publish_zh=true`. This keeps the workflow definition current while building source from the immutable release tag.
+- Workflow result: `Pass`. [Server Docker Release run 32548635553](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32548635553) completed successfully. The default multi-architecture step was skipped, the zh multi-architecture step succeeded, and no normal release workflow was re-dispatched.
+- Publication verification: `Pass`. `autobyteus/autobyteus-server:1.4.54-zh` and `autobyteus/autobyteus-server:latest-zh` both resolve OCI index digest `sha256:3ad48d29a262defaaf369054ad1698e0b4564e2053fd3d38237cff481bf6a5a2` with `linux/amd64` and `linux/arm64` manifests.
+- Evidence: `release-v1.4.54-zh-docker-dispatch.log`; `release-v1.4.54-zh-docker-workflow.log`; `release-v1.4.54-zh-docker-rollout-verification.log`.
+- Current authoritative result: `DR-006 Pass` — the latest stable zh server image was manually rebuilt, published, and verified under both immutable and rolling zh tags.
+- Rollback visibility: Pin a prior immutable `X.Y.Z-zh` tag if rollback is needed; do not rely on the rolling `latest-zh` tag for rollback selection.

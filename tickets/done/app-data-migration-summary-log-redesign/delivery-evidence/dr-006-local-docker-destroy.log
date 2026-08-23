@@ -1,0 +1,27 @@
+Local Docker destroy started: 2026-08-21T07:11:54Z
+Target container: 40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326
+Target image: sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0
+/bin/bash: line 15: mapfile: command not found
+
+Portable retry started: 2026-08-21T07:12:14Z
+Target container: 40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326
+Target image: sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0
+Retained named volumes:
+  electron-agent-input-controls-regression-dr005_autobyteus-server-chromium-profile
+  electron-agent-input-controls-regression-dr005_autobyteus-server-data
+  electron-agent-input-controls-regression-dr005_autobyteus-server-root-home
+  electron-agent-input-controls-regression-dr005_autobyteus-server-workspace
+ Container electron-agent-input-controls-regression-dr005-autobyteus-server-1  Stopping
+ Container electron-agent-input-controls-regression-dr005-autobyteus-server-1  Stopped
+ Container electron-agent-input-controls-regression-dr005-autobyteus-server-1  Removing
+ Container electron-agent-input-controls-regression-dr005-autobyteus-server-1  Removed
+ Network electron-agent-input-controls-regression-dr005_default  Removing
+ Network electron-agent-input-controls-regression-dr005_default  Removed
+Container removal verification: PASS
+Untagged: autobyteus-server:latest
+Deleted: sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0
+Local image removal verification: PASS
+Named-volume retention verification: PASS
+Former port publication verification: PASS
+Local Docker destroy completed: 2026-08-21T07:12:19Z
+LOCAL_DOCKER_DESTROY=PASS

@@ -1,0 +1,139 @@
+{
+  "result": "PASS",
+  "assertions": [
+    "live current frontend received tokenUsageAnalytics from the Electron backend",
+    "current analytics aggregate is populated",
+    "current analytics has admitted post-coverage reports",
+    "current-month coverage truthfully remains PARTIAL",
+    "trend buckets reconcile exactly to selected total tokens",
+    "trend buckets reconcile exactly to selected report count",
+    "breakdown rows reconcile exactly to selected total tokens",
+    "at least one post-coverage active day is reported",
+    "Analytics is selected by default",
+    "Analytics active background is transparent",
+    "Analytics active text is blue-700",
+    "Analytics active tab has the approved blue 2px underline",
+    "Analytics no longer uses the black selected-tab class",
+    "Run details active background is transparent",
+    "Run details active text is blue-700",
+    "Run details active tab has the approved blue 2px underline",
+    "Run details no longer uses the black selected-tab class",
+    "mobile Analytics active background remains transparent",
+    "mobile Analytics retains the blue 2px underline",
+    "mobile document has no horizontal page overflow",
+    "browser page has no runtime errors",
+    "browser has no application HTTP failures",
+    "browser has no application console errors"
+  ],
+  "response": {
+    "status": 200,
+    "summary": {
+      "coverage": {
+        "status": "PARTIAL",
+        "coverageStart": "2026-08-22T10:52:04.812Z",
+        "__typename": "TokenUsageAnalyticsCoverageGraphql"
+      },
+      "appliedRange": {
+        "preset": "THIS_MONTH",
+        "startTime": "2026-08-01T00:00:00.000Z",
+        "endTimeExclusive": "2026-08-23T00:00:00.000Z",
+        "granularity": "DAY",
+        "__typename": "TokenUsageAnalyticsAppliedRangeGraphql"
+      },
+      "selectedAggregate": {
+        "grossInputTokens": 120758396,
+        "standardInputTokens": 5633404,
+        "cacheMissInputTokens": 5633404,
+        "cacheReadInputTokens": 115124992,
+        "cacheCreationInputTokens": 0,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 0,
+        "outputTokens": 472251,
+        "reasoningOutputTokens": 124222,
+        "billableOutputTokens": 472251,
+        "totalTokens": 121230647,
+        "cacheReadInputTokenRate": 0.9533497944109824,
+        "standardInputTokenRate": 0.04665020558901759,
+        "cacheCreationInputTokenRate": 0,
+        "cacheState": "positive",
+        "estimatedApiInputCost": 51.547317279999994,
+        "estimatedApiStandardInputCost": 15.322196,
+        "estimatedApiCacheReadInputCost": 36.22512128000007,
+        "estimatedApiCacheCreationInputCost": null,
+        "estimatedApiCacheCreation5mInputCost": null,
+        "estimatedApiCacheCreation1hInputCost": null,
+        "estimatedApiOutputCost": 7.827526799999996,
+        "estimatedApiReasoningOutputCost": 2.1953351999999997,
+        "estimatedApiTotalCost": 59.37484408,
+        "currency": "USD",
+        "apiCostStatus": "estimated",
+        "missingPriceDimensions": [],
+        "pricingPolicyKey": null,
+        "selectedPricingTierId": "standard_le_272k",
+        "usageReportCount": 870,
+        "updatedAt": "2026-08-22T19:13:55.429Z",
+        "observedRuntimeKinds": [
+          "codex_app_server"
+        ],
+        "observedModelIdentifiers": [
+          "gpt-5.6-luna",
+          "gpt-5.6-sol"
+        ],
+        "observedModelProviders": [
+          "OPENAI"
+        ],
+        "__typename": "TokenUsageCostSummaryAggregateGraphql"
+      },
+      "selectedCostQuality": {
+        "kind": "COMPLETE",
+        "currency": "USD",
+        "missingPriceDimensions": [],
+        "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+      },
+      "activeDayCount": 1,
+      "trendBucketCount": 22,
+      "trendTokenSum": 121230647,
+      "trendReportSum": 870,
+      "breakdownRowCount": 2,
+      "breakdownTokenSum": 121230647,
+      "filterRuntimeKinds": [
+        "codex_app_server"
+      ],
+      "filterModels": [
+        "gpt-5.6-luna",
+        "gpt-5.6-sol"
+      ]
+    }
+  },
+  "styles": {
+    "desktopAnalytics": {
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "color": "rgb(29, 78, 216)",
+      "borderBottomColor": "rgb(37, 99, 235)",
+      "borderBottomWidth": "2px",
+      "className": "border-b-2 bg-transparent px-0.5 pb-[11px] pt-[3px] text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 border-blue-600 text-blue-700",
+      "ariaSelected": "true"
+    },
+    "desktopRuns": {
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "color": "rgb(29, 78, 216)",
+      "borderBottomColor": "rgb(37, 99, 235)",
+      "borderBottomWidth": "2px",
+      "className": "border-b-2 bg-transparent px-0.5 pb-[11px] pt-[3px] text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 border-blue-600 text-blue-700",
+      "ariaSelected": "true"
+    },
+    "mobileAnalytics": {
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "color": "rgb(29, 78, 216)",
+      "borderBottomColor": "rgb(37, 99, 235)",
+      "borderBottomWidth": "2px",
+      "className": "border-b-2 bg-transparent px-0.5 pb-[11px] pt-[3px] text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 border-blue-600 text-blue-700",
+      "ariaSelected": "true"
+    }
+  },
+  "mobile": {
+    "innerWidth": 390,
+    "bodyScrollWidth": 390,
+    "docScrollWidth": 390
+  }
+}

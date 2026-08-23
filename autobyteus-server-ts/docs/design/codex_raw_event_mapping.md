@@ -206,7 +206,8 @@ canonical replay shape:
 - `mcpToolCall` -> canonical `tool_call` row pair with the MCP server name
   qualified into the tool name when the item exposes one.
 - `webSearch` -> `search_web` replay row pair.
-- `commandExecution` -> `run_bash` replay row pair.
+- `commandExecution` -> `run_bash` replay row pair, retaining stable item
+  `command` and `cwd` as canonical arguments when present.
 - `fileChange` -> `edit_file` replay row pair.
 
 Those diagnostic rows should preserve stable invocation id, tool name, parsed
@@ -218,6 +219,25 @@ application-owned replay trace contains the expected display facts.
 
 Unsupported tool-like `thread/read` items are logged only under
 `CODEX_THREAD_HISTORY_DEBUG=1` or `CODEX_THREAD_EVENT_DEBUG=1`.
+
+## Command Execution CWD Projection
+
+Codex App Server remains the command executor. AutoByteus only projects its
+stable command facts into the canonical runtime lifecycle:
+
+- `item/started` and `item/completed` `commandExecution` items map item
+  `command` and item `cwd` to `run_bash.arguments.command` and
+  `run_bash.arguments.cwd`.
+- `item/commandExecution/requestApproval` maps top-level request `command` and
+  `cwd` to the same canonical argument keys.
+- Missing `cwd` remains missing. The model-facing raw `workdir` name is not a
+  production projection source, and the converter does not invent a default.
+
+The same shared argument parser feeds live lifecycle conversion, approval
+presentation, and diagnostic native-history normalization. Local raw-trace
+recording therefore persists `cwd` for future command calls through the
+existing arguments object. Pre-change command-only traces remain valid and are
+neither rewritten nor backfilled.
 
 ## Local Replay Reasoning Persistence
 
@@ -344,8 +364,8 @@ card do not receive that prefix.
 | `turn/completed` | turn lifecycle end | close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }` | `codex-turn-event-converter.ts` | Keep |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
-| `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
-| `item/completed` | `item.type = commandExecution` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED` | `codex-item-event-converter.ts` | Keep |
+| `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; projection only, with no command execution or fabricated CWD |
+| `item/completed` | `item.type = commandExecution` | `TOOL_DENIED`, `TOOL_EXECUTION_FAILED`, or `TOOL_EXECUTION_SUCCEEDED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; future local traces retain CWD in the existing argument object |
 | `item/started` | `item.type = dynamicToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = dynamicToolCall` | `TOOL_EXECUTION_FAILED` when `success === false` or status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = mcpToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED`; also tracks pending MCP call data on `CodexThread` | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |
@@ -355,7 +375,7 @@ card do not receive that prefix.
 | `item/completed` | `item.type = webSearch` | Terminal lifecycle with authoritative action arguments: `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep; storage appends call first when deferred, then a minimal result |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
-| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
+| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; `commandExecution` preserves stable item `command` and `cwd` when present; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | matching `SEGMENT_END(reasoning)` when active, then `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/delta` | legacy reasoning text delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
 | `item/reasoning/summaryPartAdded` | legacy reasoning summary delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
@@ -363,7 +383,7 @@ card do not receive that prefix.
 | `item/reasoning/completed` | reasoning snapshot completion | `SEGMENT_CONTENT(reasoning)` using the current allocator-owned block id; insert one blank-line separator only between adjacent completed provider items; when no turn can be resolved, immediately follow with the matching `SEGMENT_END(reasoning)` | `codex-item-event-converter.ts`, `codex-reasoning-block-tracker.ts` | Keep |
 | `item/completed` | `item.type = reasoning` completed item snapshot | `SEGMENT_CONTENT(reasoning)` using the current allocator-owned block id; repeated same-known-item completion is idempotent; when no turn can be resolved, immediately follow with the matching `SEGMENT_END(reasoning)` | `codex-item-event-converter.ts`, `codex-reasoning-event-normalizer.ts`, `codex-reasoning-block-tracker.ts` | Keep |
 | `item/plan/delta` | plan/todo delta | `TODO_LIST_UPDATE` | `codex-item-event-converter.ts` | Keep |
-| `item/commandExecution/requestApproval` | command approval request | `TOOL_APPROVAL_REQUESTED` | `codex-item-event-converter.ts` | Keep |
+| `item/commandExecution/requestApproval` | command approval request | `TOOL_APPROVAL_REQUESTED(run_bash)` with exact top-level stable `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; approval routing and policy are unchanged |
 | `item/fileChange/requestApproval` | file-change approval request | `TOOL_APPROVAL_REQUESTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `codex/local/toolApproved` | local approval acknowledgement | `TOOL_APPROVED` | `codex-item-event-converter.ts` | Keep |
 | `item/fileChange/outputDelta` | file-change status/log text | `TOOL_LOG(edit_file)` | `codex-item-event-converter.ts` | Keep |

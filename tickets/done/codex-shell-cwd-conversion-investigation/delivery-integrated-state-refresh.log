@@ -1,0 +1,25 @@
+Delivery integrated-state refresh
+Date: 2026-08-21
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-shell-cwd-conversion-investigation
+Ticket branch: codex/codex-shell-cwd-conversion-investigation
+Bootstrap base: origin/personal at a098b205ca990bf86b5e452950a49fc5dc39c8d1
+
+Command: git fetch origin personal --prune
+Result: PASS
+Fetched reference: origin/personal
+Latest tracked remote base: a098b205ca990bf86b5e452950a49fc5dc39c8d1
+Ticket HEAD before delivery-owned edits: 322c3db2b68d977d42934b27fa0ff9ea81291db3
+Merge base: a098b205ca990bf86b5e452950a49fc5dc39c8d1
+Ahead/behind (HEAD...origin/personal): 2/0
+New base commits since bootstrap: none
+
+Checkpoint commit: NOT NEEDED
+Reason: Reviewed implementation and ticket artifacts were already protected by two local commits, the tracked base had not advanced, and no integration mutation was required. Untracked API/E2E and review artifacts did not need protection from a merge because no merge/rebase was performed.
+
+Integration method: ALREADY CURRENT
+Integration result: PASS
+New base commits integrated: no
+Post-integration executable rerun: no
+No-rerun rationale: The fetched base exactly matched the bootstrap base and no code or dependency state changed during refresh. API-REV-001 and CRR-002 therefore remain applicable to the unchanged reviewed candidate. Delivery-owned documentation validation is recorded separately.
+
+Delivery-owned edits began only after this refresh established the current integrated state.

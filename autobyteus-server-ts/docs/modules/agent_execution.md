@@ -56,11 +56,15 @@ for the authoring contract and concrete foundation, Bash, skill, and tool
 examples.
 
 Configured agent skills are resolved before runtime-specific bootstrap through
-`SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`. Native
-AutoByteus, Codex, Claude, and team-member launch paths should consume that
-resolved `Skill[]` shape instead of calling global skill catalog lookup by name.
-This preserves package-private and owning-team-shared skill context while still
-allowing configured skill-directory fallback for explicitly named skills.
+the contextual configured-skill resolver. Native AutoByteus consumes
+`SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`, the
+resolved-only `Skill[]` projection. Codex and Claude consume
+`resolveConfiguredSkillBindingsForAgent(agentDefinition)`, which preserves safe
+unresolved names so their workspace materializer can reconcile stale broken
+links before omitting an unavailable optional skill. No runtime should call the
+global skill catalog lookup by name. This preserves package-private and
+owning-team-shared skill context while still allowing configured
+skill-directory fallback for explicitly named skills.
 
 Launch flows no longer expose a user-facing skill-access choice. A standalone
 agent run receives the skills configured on its selected agent definition, and a
@@ -178,6 +182,13 @@ availability do not clear or replace the overlay. If activation fails
 before runtime command evidence is available, the overlay moves to
 non-interruptible `error` and the acknowledgement includes the failure
 code/message.
+
+Unexpected backend preparation failures are logged by `AgentRunManager` with
+the run ID, runtime kind, and original error object before failed-candidate
+cleanup. The command/WebSocket boundary still exposes the stable generic
+preparation failure rather than the private filesystem/provider cause; the
+status and acknowledgement therefore remain user-safe while server diagnostics
+retain the actionable cause and stack.
 
 New standalone first-message flow uses `prepareAgentRun(...)`, not
 `createAgentRun(...)`, before the WebSocket command. Preparation creates a

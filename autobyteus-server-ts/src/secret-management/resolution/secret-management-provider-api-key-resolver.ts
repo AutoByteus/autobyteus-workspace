@@ -3,7 +3,9 @@ import type {
   ProviderApiKeySlot,
   SecretValue,
 } from 'autobyteus-ts';
+import { MissingApiKeyError as MissingApiKeyErrorClass } from 'autobyteus-ts';
 import type { SecretConsumerIdentity } from '../domain/secret-id.js';
+import { SecretVaultError } from '../domain/secret-vault-types.js';
 import type { SecretManagementService } from '../services/secret-management-service.js';
 import { getSecretVaultRuntime } from '../secret-vault-runtime.js';
 
@@ -19,8 +21,19 @@ export class SecretManagementProviderApiKeyResolver implements ProviderApiKeyRes
       getSecretVaultRuntime().requireService(),
   ) {}
 
-  resolve(providerId: string, slot: ProviderApiKeySlot = 'apiKey'): Promise<SecretValue> {
-    return this.managementProvider().resolveForUse(this.consumer(providerId, slot));
+  async resolve(providerId: string, slot: ProviderApiKeySlot = 'apiKey'): Promise<SecretValue> {
+    try {
+      const secret = await this.managementProvider().resolveForUse(this.consumer(providerId, slot));
+      if (!secret.revealToTrustedConsumer().trim()) {
+        throw new MissingApiKeyErrorClass(providerId);
+      }
+      return secret;
+    } catch (error) {
+      if (error instanceof SecretVaultError && error.code === 'NOT_FOUND') {
+        throw new MissingApiKeyErrorClass(providerId);
+      }
+      throw error;
+    }
   }
 
   private consumer(providerId: string, credentialSlot: ProviderApiKeySlot): SecretConsumerIdentity {

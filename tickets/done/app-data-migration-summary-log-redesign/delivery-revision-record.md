@@ -11,6 +11,10 @@ initial completed delivery-stage result and will retain later delivery deltas.
 | `DR-001` | `/code_reviewer` handoff after `CRR-002` proportional durable-test pass | `N/A` | `Pass — latest base integrated, post-integration checks passed, docs synchronized, user handoff ready; finalization held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-001-*`, three long-lived docs |
 | `DR-002` | `/code_reviewer` `CRR-003` intake after packaged `API-REV-002`, followed by explicit user acceptance | `DR-001 — integrated handoff awaiting verification` | `Pass — packaged supplement recorded, later target integrated and checked, user accepted, ticket archived, finalization authorized; no release` | All delivery reports, `delivery-evidence/dr-002-*`, archived ticket package |
 | `DR-003` | User-authorized repository finalization | `DR-002 — accepted and archived; finalization authorized` | `Pass — ticket pushed, merged and pushed to personal; worktree/branches cleaned; no release` | All delivery reports, `delivery-evidence/dr-003-repository-finalization-cleanup.log` |
+| `DR-004` | User-requested post-finalization local server Docker refresh | `DR-003 — repository finalized; no release` | `Pass — latest personal source built locally, old container/image replaced, persistent volumes and ports retained, rollout healthy; no release` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-004-latest-personal-server-docker-build.log` |
+| `DR-005` | User superseded the earlier no-release decision and explicitly requested a product release | `DR-004 — finalized product plus healthy local test Docker; no release` | `Pass — v1.4.53 committed, tagged, published, and verified across Desktop, Server Docker, Android, iOS, and Messaging Gateway` | `release-notes.md`, all delivery reports, `delivery-evidence/dr-005-*`, `.github/release-notes/release-notes.md` |
+| `DR-006` | User requested destruction of the completed local test Docker | `DR-005 — v1.4.53 released; local test Docker still present` | `Pass — local test container/image removed, ports released, all four named volumes retained` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-006-local-docker-destroy.log` |
+| `DR-007` | User requested the separately dispatched `zh` server Docker build for the completed release | `DR-006 — v1.4.53 released and local test Docker removed; zh runtime variant not yet published for this version` | `Pass — manual zh-only workflow completed and published matching dual-architecture 1.4.53-zh/latest-zh indexes` | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-007-*` |
 
 ## Revision Entries
 
@@ -185,3 +189,200 @@ initial completed delivery-stage result and will retain later delivery deltas.
   aggregate server E2E failures, local unqualified Prisma host behavior,
   attempt-log cardinality, and no immediate SQLite `VACUUM` remain bounded.
 - Final action: None. Ticket delivery is complete.
+
+### DR-004 — Latest-personal local server Docker refresh
+
+- Delivery round and trigger: After repository finalization, the user requested
+  a fresh locally built server Docker from the newest `personal` state, removal
+  of the two-day-old container/image, reuse of its configuration and volumes
+  where possible, and no new versioned release.
+- Prior authoritative result: `DR-003 — repository finalized, cleanup complete,
+  and no release performed.`
+- Current authoritative result: `Pass — delivery fetched origin/personal,
+  confirmed local personal and origin/personal at
+  122adc91c184a75541489eea670ac29fcb43f4ab, built
+  autobyteus-server:latest for linux/arm64, force-recreated the existing Compose
+  service with the same project/runtime state, verified the backend and noVNC,
+  and deleted the superseded container and image.`
+- Build and replacement:
+  - Command:
+    `./docker-start.sh up -p electron-agent-input-controls-regression-dr005 --build-local`
+    from `autobyteus-server-ts/docker`.
+  - Old container:
+    `0ec4a7e360ecda2410bf1aa3b8d7b952edd21bb464dddf82295b75b030b3431e`
+    — removed.
+  - Old image:
+    `sha256:6d8e9f250b9ce094142970e2e7a0c1b31ccb574990b3369a03fec28d429a4efa`
+    — removed.
+  - New container:
+    `40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326`.
+  - New image:
+    `sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0`,
+    tagged `autobyteus-server:latest`.
+- Configuration continuity:
+  - Compose project and container name remain
+    `electron-agent-input-controls-regression-dr005` /
+    `electron-agent-input-controls-regression-dr005-autobyteus-server-1`.
+  - Existing named volumes were retained for server data, workspace, root home,
+    and Chromium profile.
+  - Existing host ports were retained: backend `52704`, VNC `52705`, noVNC
+    `52706`, Chrome debug `52707`.
+  - Restart policy remains `unless-stopped`.
+- Rollout verification:
+  - `GET http://127.0.0.1:52704/rest/health` returned HTTP success with
+    `{"status":"ok","message":"Server is running"}`.
+  - `GET http://127.0.0.1:52706/` returned HTTP success.
+  - Container state was `running` with restart count `0`; its image ID matched
+    the newly tagged image ID.
+  - Evidence:
+    `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-004-latest-personal-server-docker-build.log`.
+- Release/publication result: `Not performed`. This is a local test deployment,
+  not a versioned release or publication. Application version remains `1.4.52`.
+- Rollback: The old image was intentionally deleted at user request. The four
+  retained named volumes preserve the prior persistent state, but reverting the
+  executable now requires rebuilding a selected older revision or pulling a
+  known prior published image.
+- Remaining blockers or risks: No rollout blocker. The local image was built for
+  the current Docker host architecture (`linux/arm64`) and was not pushed to a
+  registry or validated as a multi-architecture release image.
+
+### DR-005 — Product release v1.4.53
+
+- Delivery round and trigger: The user later superseded the earlier no-release
+  instruction and explicitly requested a new product version after testing the
+  finalized state.
+- Prior authoritative result: `DR-004 — repository finalized and local server
+  Docker verified; no versioned release had occurred.`
+- Current authoritative result: `Pass — delivery prepared aggregate release
+  notes, cleared the repository checkout-safety gate, ran the canonical release
+  helper exactly once, and verified every tag-triggered publication path.`
+- Release preparation:
+  - Next patch version selected from repository policy: `1.4.53` after
+    `v1.4.52`; local and remote `v1.4.53` were absent.
+  - Curated notes:
+    `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+  - Release-notes preparation commit:
+    `f158f10d6d7537b4762f69017c84e36692558b41`.
+  - Initial repository artifact hygiene failed on 57 tracked evidence paths
+    longer than 200 characters. Delivery moved those files without content
+    changes, recorded original/new paths plus SHA-256 in three ticket-local
+    maps, and passed the gate with longest tracked path `199` characters.
+  - Checkout-safety repair commit:
+    `1ee4af48ba31b5825c1980e131000ab8e021790d`.
+  - All 20 secret names referenced by the five tag workflows were visible, and
+    GitHub authentication had the required repository/workflow scopes.
+- Release execution:
+  - Canonical command:
+    `pnpm release 1.4.53 --release-notes tickets/done/app-data-migration-summary-log-redesign/release-notes.md`.
+  - Release commit:
+    `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
+  - Annotated tag: `v1.4.53`, pushed once; no duplicate manual dispatch of the
+    default release was created.
+  - `autobyteus-web` and `autobyteus-message-gateway` versions are `1.4.53`;
+    the managed messaging manifest targets `v1.4.53`.
+- Publication and rollout:
+  - Desktop Release run `32451160615`: `success`.
+  - Server Docker Release run `32451160682`: `success`.
+  - Android APK Release run `32451160827`: `success`.
+  - iOS App Store Connect Release run `32451160651`: `success`, including
+    archive/upload.
+  - Messaging Gateway Release run `32451160597`: `success`.
+  - GitHub Release:
+    `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.53`
+    — public, non-draft, non-prerelease, exact release commit, 21 uploaded
+    non-empty assets.
+  - Docker Hub tags `autobyteus/autobyteus-server:1.4.53` and `:latest` resolve
+    to the same OCI index
+    `sha256:99c05052971f3845a3b127526501faed47578d9d03f42dd7ec6040d59788e179`
+    with `linux/amd64` and `linux/arm64` manifests.
+  - Published updater metadata and Messaging Gateway release manifest reference
+    `1.4.53` / `v1.4.53`.
+  - The first local publication-verifier pass used the wrong JSON selector for
+    the downloaded Messaging Gateway manifest and stopped after the preceding
+    checks passed. The corrected selector for the actual `releases[]` schema
+    passed; no publication or release workflow was retried.
+- Evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-release-preflight.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-release-command.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-workflows.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-github-release.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-server-docker-manifest.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-005-publication-verification.log`
+- Rollback visibility: The published tag and immutable assets must not be
+  rewritten. Correct release defects with a later patch release. The ticket's
+  forward-only database migration still requires a matching database/application
+  restore pair or corrective forward migration rather than binary-only rollback.
+- Remaining blockers or risks: No release blocker. App Store Connect processing
+  after successful upload remains Apple-controlled; the workflow verified the
+  archive and upload handoff, not later store-review completion.
+
+### DR-006 — Local test Docker destruction
+
+- Delivery round and trigger: After reporting that the latest release was
+  running, the user requested destruction of the local Docker created in
+  `DR-004`.
+- Prior authoritative result: `DR-005 — v1.4.53 published successfully; local
+  DR-004 test container/image remained on the Docker host.`
+- Current authoritative result: `Pass — delivery stopped and removed the exact
+  Compose container and network, removed the exact locally built image, released
+  its four published ports, and deliberately retained all four named volumes.`
+- Execution note: The first local cleanup wrapper encountered macOS Bash's lack
+  of `mapfile` before any Docker mutation. Its portable retry then completed and
+  passed every removal/retention check.
+- Removed local resources:
+  - Container:
+    `40bd2fa7d61c658a05ed0d9a3dc530907c88c5a88bc9389af89b513d094dc326`.
+  - Image:
+    `sha256:52bff101c67dd5ce08619fffce88af61b614e6023a65e9e8d4e05979c3b39ed0`
+    and local tag `autobyteus-server:latest`.
+  - Compose network: `electron-agent-input-controls-regression-dr005_default`.
+  - Former published ports `52704`, `52705`, `52706`, and `52707` are no longer
+    owned by a Docker container.
+- Retained data: Named volumes for server data, workspace, root home, and
+  Chromium profile remain present. No `--volumes` action was used.
+- Publication impact: None. This removed only the local DR-004 test build; the
+  published multi-architecture Docker Hub `1.4.53` and `latest` tags remain
+  available.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-006-local-docker-destroy.log`.
+- Remaining blockers or risks: None. The retained volumes continue to consume
+  local Docker storage and intentionally preserve recoverable user state.
+
+### DR-007 — Manual zh server Docker publication
+
+- Delivery round and trigger: After the normal `v1.4.53` release and local test
+  Docker cleanup, the user recalled that the Chinese runtime server image is a
+  separate manual build and explicitly requested its GitHub pipeline.
+- Prior authoritative result: `DR-006 — default v1.4.53 publication complete;
+  local test container/image removed; persistent local volumes retained.`
+- Current authoritative result: `Pass — the Server Docker Release workflow was
+  dispatched once with release_tag/release_ref v1.4.53 and publish_zh enabled,
+  completed successfully, and published the two intended zh-only tags.`
+- Execution:
+  - Workflow: `Server Docker Release` / `workflow_dispatch`.
+  - Run: `32458399771` — `success`.
+  - Run URL:
+    `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32458399771`.
+  - Inputs: `release_tag=v1.4.53`, `release_ref=v1.4.53`,
+    `publish_zh=true`; no image-name override.
+  - Checkout/release source: annotated tag `v1.4.53`, release commit
+    `6ceaf2ec5349752d0afb6d9be3326833451a4aca`.
+  - The default-image build step was skipped as intended; the zh multi-arch
+    build-and-push step passed.
+- Publication verification:
+  - `autobyteus/autobyteus-server:1.4.53-zh` and `:latest-zh` both resolve to
+    OCI index
+    `sha256:32d22154af0243f2a3a84d030499e226ec3f2527e0f2c37a53cece00b32a67c2`.
+  - Both tags contain `linux/amd64` and `linux/arm64` image manifests.
+  - This zh-only dispatch did not rebuild or replace the default `1.4.53` and
+    `latest` tags.
+- Evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-workflow.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/app-data-migration-summary-log-redesign/delivery-evidence/dr-007-zh-server-docker-publication.log`
+- Rollback visibility: Published release tags are immutable delivery outputs and
+  should not be rewritten. Correct a defective zh image with a later patch
+  release; operators can remain on the default tags if the zh runtime is not
+  required.
+- Remaining blockers or risks: None for publication. Runtime adoption remains
+  operator-controlled; this action published the images but did not restart or
+  replace any deployed server.

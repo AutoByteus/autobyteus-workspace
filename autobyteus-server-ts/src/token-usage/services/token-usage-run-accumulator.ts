@@ -5,6 +5,7 @@ import {
   foldTokenUsageObservation,
 } from "../projections/token-usage-run-fold.js";
 import { SqlTokenUsageRunRepository } from "../repositories/sql/token-usage-run-repository.js";
+import { TokenUsageAnalyticsProjectionWriter } from "./token-usage-analytics-projection-writer.js";
 
 const runQueues = new Map<string, Promise<unknown>>();
 
@@ -23,6 +24,7 @@ export class TokenUsageRunAccumulator {
   constructor(
     private readonly repository = new SqlTokenUsageRunRepository(),
     private readonly costCalculator = new TokenCostCalculator(),
+    private readonly analyticsWriter = new TokenUsageAnalyticsProjectionWriter(),
   ) {}
 
   recordObservation(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
@@ -38,6 +40,9 @@ export class TokenUsageRunAccumulator {
         const persisted = folded.kind === "CHANGED" && folded.record
           ? await this.repository.save(transaction, folded.record)
           : folded.record;
+        if (folded.kind === "CHANGED" && folded.record) {
+          await this.analyticsWriter.record(transaction, folded.authoritativePayload);
+        }
         return { authoritativePayload: folded.authoritativePayload, persisted };
       });
       return {

@@ -1,0 +1,30 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cwd-outside-workspace-tools/autobyteus-ts
+
+stdout | tests/integration/tools/terminal/terminal-tools.test.ts
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash executes simple echo 143ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash executes inside the explicit cwd 189ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash executes inside an explicit external cwd 159ms
+ ✓ tests/integration/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager Integration > starts process and captures output 900ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > start_background_process manages a process in an explicit external cwd 873ms
+ ✓ tests/integration/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager Integration > stops running process 511ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > start_background_process accepts an absolute cwd without a configured workspace 767ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash does not preserve cwd across calls 268ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash respects timeout 1003ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash interrupts a foreground command through the execution signal 153ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > run_bash adopts an ordinary bash background process 1069ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > background process lifecycle 858ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > can manage multiple background processes independently 1608ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > stop_background_process reports missing process 1ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > get_process_output reports missing process 1ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  07:43:15
+   Duration  7.35s (transform 211ms, setup 33ms, import 235ms, tests 8.50s, environment 0ms)

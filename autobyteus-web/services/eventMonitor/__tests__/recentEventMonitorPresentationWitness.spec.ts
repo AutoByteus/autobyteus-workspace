@@ -68,7 +68,7 @@ const buildItems = (): RecentEventMonitorPresentationItem[] => [{
         recipientRoleName: 'Reviewer', messageType: 'handoff', content: 'please review',
       },
       { type: 'media', mediaType: 'image', urls: ['https://example/a.png', 'https://example/b.png'] },
-      { type: 'error', source: 'hidden-source', message: 'failed', details: 'details' },
+      { type: 'error', code: 'hidden-source', message: 'failed', details: 'details' },
     ],
   },
 }, {

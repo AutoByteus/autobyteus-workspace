@@ -11,7 +11,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | `IR-003` | `/architecture_reviewer` / `design-review-report.md` / `ARCH-REV-007` | `RG-001`, `DI-004`, `DI-005` | `Local Fix` | `SR-005`, `SR-006`, `ARCH-REV-007`; `CRR/API-REV/DR: N/A` | Replaced by `IR-004` after failed `CRR-001` |
 | `IR-004` | `/code_reviewer` / `code-review-report.md` / `CRR-001`, then `/architecture_reviewer` / `ARCH-REV-008` | `CODE-001`–`CODE-004` | `Local Fix` | `SR-007`, `ARCH-REV-008`, `CRR-001`; `API-REV/DR: N/A` | Failed `CRR-002`; replaced by `IR-005` |
 | `IR-005` | `/code_reviewer` / `code-review-report.md` / `CRR-002` | `CODE-002`, `CODE-003` | `Local Fix` | `SR-007`, `ARCH-REV-008`, `CRR-002`; `API-REV/DR: N/A` | Failed `CRR-003`; replaced by `IR-006` |
-| `IR-006` | `/code_reviewer` / `code-review-report.md` / `CRR-003` | `CODE-005`, `CODE-006` | `Local Fix` | `SR-007`, `ARCH-REV-008`, `CRR-003`; `API-REV/DR: N/A` | Corrections complete and ready for code re-review |
+| `IR-006` | `/code_reviewer` / `code-review-report.md` / `CRR-003` | `CODE-005`, `CODE-006` | `Local Fix` | `SR-007`, `ARCH-REV-008`, `CRR-003`, `CRR-004`, `API-REV-002`, `CRR-006`; `DR: N/A` | Passed implementation review, API/E2E, and proportional durable-test review; protected checkpoint superseded by `IR-007` integration |
+| `IR-007` | `/delivery_engineer` / `delivery-integration-blocker.md` / `DR-001` | `DR-001` merge integration blocker | `Local Fix` | `SR-007`, `ARCH-REV-008`, `IR-006`, `CRR-004`, `API-REV-002`, `CRR-006`, `DR-001` | Latest-base conflicts resolved; integrated candidate ready for repeat code review |
 
 ## Revision Entries
 
@@ -136,3 +137,22 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: downstream API/E2E coverage investigation/execution remains required after source review passes; durable legacy aggregate GraphQL coverage must still be classified; delivery-owned docs remain; persisted data is `Not Affected` and no migration, rewrite, durable cache, or compatibility path exists.
 
+### IR-007 — Latest-base conflict integration
+
+- Triggering role, report path, and round: `/delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/delivery-integration-blocker.md`; delivery round `DR-001`
+- Triggering finding IDs: `DR-001` merge integration blocker (four content conflicts)
+- Classification: `Local Fix`
+- Prior authoritative result: the protected checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89` had passed implementation source review (`CRR-004`), API/E2E (`API-REV-002`), and proportional durable-test review (`CRR-006`), but delivery was blocked with the latest-base merge in progress.
+- Current authoritative result: all four conflicts between that checkpoint and `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1` are resolved; no unmerged index entries remain; focused integrated checks pass; the merged candidate is ready for repeat code review.
+- Related solution revision IDs: `SR-005`, `SR-006`, `SR-007`
+- Related architecture-review revision IDs: `ARCH-REV-008`
+- Related code-review revision IDs: `CRR-004`, `CRR-006`
+- Related API/E2E revision IDs: `API-REV-002`
+- Related delivery revision IDs: `DR-001`
+- Why this implementation revision is recorded: the mandatory delivery refresh advanced the tracked base by 78 commits and produced semantic conflicts where latest-base current-selection/pricing, Gemini metadata, and Token Usage localization overlapped ticket-owned registry/source-local and removed-contract behavior. Delivery correctly withheld mechanical conflict selection.
+- Approved behavior or requirement IDs affected: preserved `BEH-001`–`BEH-008`, `REQ-001`–`REQ-018`, and `AC-001`–`AC-022`; no new product behavior was introduced.
+- Implementation delta: combined ticket source-indexed registry ownership and dynamic reload construction with latest-base current-model selection and canonical pricing types/schedule; kept the Gemini 3.7 static snapshot credential-free/network-free while retaining live metadata capability elsewhere; retained the localization-module split and registered all current Token Usage Analytics keys in English and zh-CN; updated one focused SDK expectation to exact current built-in GLM-5.2 metadata after the latest base removed its prior provider definition.
+- Changed files or areas: `autobyteus-ts/src/llm/llm-factory.ts`; `autobyteus-ts/src/llm/llm-model-pricing.ts`; `autobyteus-ts/tests/unit/llm/openai-compatible-endpoint-provider.test.ts`; `autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts`; `autobyteus-web/localization/messages/{en,zh-CN}/{settings,token-usage-settings}.ts`; current implementation handoff/revision artifacts and rendered evidence.
+- Local validation and result: SDK 3 files/15 tests plus build pass; server current-base 3 files/23 tests, ticket 4 files/20 tests, build/bootstrap, TypeScript build check, and narrow conflicted actual-schema 1 file/3 tests pass; web Token Usage/localization 6 files/15 tests and ticket 5 files/43 tests pass; web/localization guards, literal audit, production build, rendered English/zh-CN inspection, conflict-marker/index audit, scoped whitespace check, removed-contract scan, duplicate-key audit, and source-size audit pass.
+- Next recipient or routing: `/code_reviewer`; after pass, proportional merged-state coverage/execution returns to `/api_e2e_engineer` before delivery re-entry.
+- Remaining limitations or risks: prior API/E2E evidence is pre-integration and is not claimed for the merged state; `BASELINE-E2E-001`–`BASELINE-E2E-004` remain unrelated whole-suite failures; optional real-provider success remains unavailable; Electron shell remains outside the changed boundary; whole staged whitespace audit reports inherited latest-base historical evidence-log formatting only. The ticket persisted-data decision remains `Not Affected`; IR-007 adds no migration, while preserving the latest base's unrelated Token Usage Analytics migration unchanged.

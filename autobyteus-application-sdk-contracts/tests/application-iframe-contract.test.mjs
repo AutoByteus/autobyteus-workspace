@@ -6,9 +6,9 @@ import {
   APPLICATION_IFRAME_READY_EVENT,
   createApplicationHostBootstrapEnvelopeV4,
   createApplicationUiReadyEnvelopeV4,
-  decodeApplicationAgentTargetPath,
+  decodeApplicationAgentTargetUrl,
   doesApplicationHostOriginMatch,
-  encodeApplicationAgentTargetPath,
+  encodeApplicationAgentTargetUrl,
   isApplicationHostBootstrapEnvelopeV4,
   isApplicationUiReadyEnvelopeV4,
   normalizeApplicationHostOrigin,
@@ -20,11 +20,11 @@ const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
 test('application agent target path codec round-trips encoded binding and member identities', () => {
   const address = {
     bindingId: 'binding/one',
-    target: { kind: 'AGENT_TEAM_MEMBER', memberRouteKey: 'reviewer two' },
+    target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer two' },
   };
-  const encoded = encodeApplicationAgentTargetPath(address);
+  const encoded = encodeApplicationAgentTargetUrl(address);
   assert.equal(encoded, '/binding%2Fone/targets/agent-team-member/reviewer%20two');
-  assert.deepEqual(decodeApplicationAgentTargetPath(encoded), address);
+  assert.deepEqual(decodeApplicationAgentTargetUrl(encoded), address);
 });
 
 test('application agent target path decoder rejects non-canonical and incomplete paths', () => {
@@ -35,7 +35,7 @@ test('application agent target path decoder rejects non-canonical and incomplete
     '/binding/targets/unknown',
     '/binding/targets/agent-run?view=compact',
   ]) {
-    assert.equal(decodeApplicationAgentTargetPath(pathValue), null);
+    assert.equal(decodeApplicationAgentTargetUrl(pathValue), null);
   }
 });
 

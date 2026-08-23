@@ -200,6 +200,12 @@ export class AgentRunManager {
         abort: () => this.abortCandidate(exactRun, claim),
       });
     } catch (error) {
+      if (!(error instanceof AgentCreationError || error instanceof AgentRunActivationError)) {
+        logger.error(
+          `Unexpected failure while preparing agent run '${input.runId}' for runtime '${input.runtimeKind}'.`,
+          error,
+        );
+      }
       const cleanup = await this.cleanupFailedPreparation(input.runId, claim, run, backend);
       if (cleanup.kind === "quarantined") throw this.cleanupError(input.runId, cleanup.error);
       if (error instanceof AgentCreationError || error instanceof AgentRunActivationError) throw error;

@@ -17,7 +17,8 @@ import {
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
-import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
+import type { WorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
@@ -32,13 +33,14 @@ const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
   memberTeamContext?: MemberTeamContext | null;
+  llmModelIdentifier?: string;
 } = {}) =>
   new AgentRunContext({
     runId: "run-1",
     config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       agentDefinitionId: "agent-def",
-      llmModelIdentifier: "gpt-test",
+      llmModelIdentifier: input.llmModelIdentifier ?? "gpt-test",
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
@@ -121,20 +123,21 @@ const createAgentToolMcpDescriptor = (enabledTools: string[] = ["send_message_to
 });
 
 const createMaterializerMock = () => ({
-  materializeConfiguredCodexWorkspaceSkills: vi.fn(async (input: {
+  materializeConfiguredWorkspaceSkills: vi.fn(async (input: {
     workingDirectory: string;
-    configuredSkills?: Skill[] | null;
+    requests?: Array<{ kind: string; skill?: Skill }> | null;
   }) =>
-    (input.configuredSkills ?? []).map((skill) => ({
-      name: skill.name,
-      sourceRootPath: skill.rootPath,
-      materializedRootPath: path.join(input.workingDirectory, ".codex", "skills", skill.name),
-      registryKey: `${input.workingDirectory}::${skill.rootPath}`,
+    (input.requests ?? []).filter((request) => request.kind === "expose-resolved").map((request) => ({
+      name: request.skill!.name,
+      sourceRootPath: request.skill!.rootPath,
+      materializedRootPath: path.join(input.workingDirectory, ".codex", "skills", request.skill!.name),
+      registryKey: `${input.workingDirectory}::${request.skill!.rootPath}`,
     }))),
-}) as unknown as CodexWorkspaceSkillMaterializer;
+}) as unknown as WorkspaceSkillMaterializer;
 
 const createBootstrapper = (input: {
   skills: Skill[];
+  bindings?: ConfiguredAgentSkillBinding[];
   requestImplementation: () => Promise<unknown>;
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
@@ -145,7 +148,8 @@ const createBootstrapper = (input: {
   } as unknown as CodexWorkspaceResolver;
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async () => ({
-      skillNames: input.skills.map((skill) => skill.name),
+      skillNames: (input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill })))
+        .map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
       toolNames: input.toolNames ?? [],
       name: "Codex test agent",
       instructions: "Run the test.",
@@ -153,7 +157,8 @@ const createBootstrapper = (input: {
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillsForAgent: vi.fn(() => input.skills),
+    resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
+      input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill }))),
   } as unknown as SkillService;
   const client = {
     request: vi.fn(input.requestImplementation),
@@ -337,7 +342,7 @@ describe("CodexThreadBootstrapper", () => {
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("read-only");
   });
 
-  it("filters out configured skills that Codex already discovers by name", async () => {
+  it("reconciles configured skills that Codex already discovers by name", async () => {
     const skill = createSkill("installed_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
       skills: [skill],
@@ -362,16 +367,48 @@ describe("CodexThreadBootstrapper", () => {
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
 
     expect(
-      workspaceSkillMaterializer.materializeConfiguredCodexWorkspaceSkills,
+      workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         workingDirectory: WORKING_DIRECTORY,
-        configuredSkills: [],
+        runId: "run-1",
+        requests: [{ kind: "reconcile-discoverable", skill }],
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
+  });
+
+  it("maps every binding exactly once while discovery changes only resolved request intent", async () => {
+    const installed = createSkill("installed_skill");
+    const missing = createSkill("missing_skill");
+    const bindings: ConfiguredAgentSkillBinding[] = [
+      { kind: "resolved", skill: installed },
+      { kind: "unresolved", name: "unresolved_skill" },
+      { kind: "resolved", skill: missing },
+    ];
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
+      skills: [installed, missing],
+      bindings,
+      requestImplementation: async () => ({
+        data: [{ cwd: WORKING_DIRECTORY, skills: [{ name: installed.name, enabled: true }], errors: [] }],
+      }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith({
+      runId: "run-1",
+      workingDirectory: WORKING_DIRECTORY,
+      requests: [
+        { kind: "reconcile-discoverable", skill: installed },
+        { kind: "reconcile-unresolved", name: "unresolved_skill" },
+        { kind: "expose-resolved", skill: missing },
+      ],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    });
+    expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
   });
 
   it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
@@ -391,6 +428,19 @@ describe("CodexThreadBootstrapper", () => {
 
     expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe("high");
     expect(runContext.runtimeContext.codexThreadConfig.serviceTier).toBe("fast");
+  });
+
+  it("passes gpt-5.6-luna to Codex thread configuration unchanged", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
+      llmModelIdentifier: "gpt-5.6-luna",
+    }));
+
+    expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
   });
 
   it.each([
@@ -445,6 +495,10 @@ describe("CodexThreadBootstrapper", () => {
     const skill = createSkill("missing_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
       skills: [skill],
+      bindings: [
+        { kind: "resolved", skill },
+        { kind: "unresolved", name: "still_missing" },
+      ],
       requestImplementation: async () => {
         throw new Error("skills/list failed");
       },
@@ -453,11 +507,15 @@ describe("CodexThreadBootstrapper", () => {
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
 
     expect(
-      workspaceSkillMaterializer.materializeConfiguredCodexWorkspaceSkills,
+      workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         workingDirectory: WORKING_DIRECTORY,
-        configuredSkills: [skill],
+        runId: "run-1",
+        requests: [
+          { kind: "expose-resolved", skill },
+          { kind: "reconcile-unresolved", name: "still_missing" },
+        ],
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );

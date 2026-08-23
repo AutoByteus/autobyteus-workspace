@@ -21,7 +21,14 @@ type TeamAgentErrorEvidence =
   | Readonly<{ errorScope: "runtime"; errorEffect: "terminal"; turnId: null }>
   | Readonly<{ errorScope: null; errorEffect: null; turnId: null }>;
 
-type TeamAgentErrorDetails = Readonly<{ code: string; message: string }> & TeamAgentErrorEvidence;
+type TeamAgentErrorDetails = Readonly<{
+  code: string;
+  message: string;
+  details?: string | null;
+  providerStatus?: number | string | null;
+  providerCode?: string | null;
+  providerRequestId?: string | null;
+}> & TeamAgentErrorEvidence;
 
 export type TeamTokenUsageDetails = Readonly<{
   usageEventId: string;
