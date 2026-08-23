@@ -105,8 +105,8 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
       schema,
       source: `
         query ClaudeModelDescriptions($runtimeKind: String) {
-          availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-            models {
+          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+            llmModels {
               modelIdentifier
               name
               description
@@ -127,8 +127,8 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
     }
 
     const graphQlModels = (result.data as {
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{
           modelIdentifier: string;
           name: string;
           description: string | null;
@@ -138,7 +138,7 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
           runtime: string;
         }>;
       }>;
-    }).availableLlmProvidersWithModels.flatMap((provider) => provider.models);
+    }).providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
     const graphQlModelsByIdentifier = new Map(
       graphQlModels.map((model) => [model.modelIdentifier, model]),
     );

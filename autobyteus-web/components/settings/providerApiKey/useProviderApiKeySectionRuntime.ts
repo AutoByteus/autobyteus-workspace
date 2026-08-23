@@ -7,7 +7,7 @@ import {
   useLLMProviderConfigStore,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
-  type ProviderSettingsGroup,
+  type ProviderCredentialSetting,
 } from '~/stores/llmProviderConfig'
 import { createGeminiConfigurationActions } from './providerApiKeyGeminiActions'
 
@@ -15,14 +15,13 @@ export interface ProviderSummary {
   id: string
   name: string
   label: string
-  totalModels: number
+  totalModels: number | null
   isCustom: boolean
   isDraft?: boolean
   providerType: string
   baseUrl?: string | null
   apiKeyConfigured: boolean
-  status: ProviderSettingsGroup['provider']['status']
-  statusMessage?: string | null
+  catalogMode: ProviderCredentialSetting['provider']['catalogMode']
 }
 
 export interface ProviderSectionNotification {
@@ -37,16 +36,13 @@ export function useProviderApiKeySectionRuntime() {
   const store = useLLMProviderConfigStore()
   const { t } = useLocalization()
   const {
-    isLoadingProviderSettings,
-    isReloadingModels,
-    isReloadingProviderModels,
-    reloadingProvider,
-    providerSettingsGroups,
+    providerCredentialSettings,
     geminiSetup,
     qwenSetup,
   } = storeToRefs(store)
 
   const loading = ref(import.meta.env.MODE !== 'test')
+  const credentialError = ref<string | null>(null)
   const saving = ref(false)
   const activating = ref(false)
   const notification = ref<ProviderSectionNotification | null>(null)
@@ -64,6 +60,40 @@ export function useProviderApiKeySectionRuntime() {
   const lastCustomProviderProbeFingerprint = ref<string | null>(null)
   let notificationTimer: ReturnType<typeof setTimeout> | null = null
 
+  const catalog = computed(() => store.catalogSnapshot(PROVIDER_SETTINGS_RUNTIME_KIND))
+  const selectedCatalog = computed(() =>
+    store.providerSnapshot(PROVIDER_SETTINGS_RUNTIME_KIND, selectedProviderId.value))
+  const selectedSources = computed(() => selectedCatalog.value?.sources ?? [])
+  const isLoadingModels = computed(() => selectedSources.value.some(source => source.state === 'LOADING')
+    || (!selectedCatalog.value && catalog.value.state === 'loading'))
+  const isRefreshingModels = computed(() =>
+    selectedSources.value.some(source => source.state === 'REFRESHING'))
+  const modelErrorMessage = computed(() => selectedSources.value
+    .find(source => source.safeMessage)?.safeMessage ?? catalog.value.errorMessage)
+  const hasCurrentModelRows = computed(() => selectedSources.value.some(source =>
+    (source.state === 'READY' || source.state === 'PARTIAL') && source.modelCount > 0))
+  const hasStaleModelRows = computed(() => selectedSources.value.some(source =>
+    source.state === 'STALE_ERROR' && source.modelCount > 0))
+  const hasModelSourceProblem = computed(() => selectedSources.value.some(source =>
+    source.state === 'PARTIAL' || source.state === 'ERROR' || source.state === 'STALE_ERROR'))
+  const hasPartialModelResult = computed(() => selectedSources.value.some(source =>
+    source.state === 'PARTIAL') || (hasCurrentModelRows.value && hasModelSourceProblem.value))
+  const hasStaleModelResult = computed(() => !hasPartialModelResult.value
+    && !hasCurrentModelRows.value
+    && hasStaleModelRows.value)
+  const hasUnavailableModelSource = computed(() => !hasCurrentModelRows.value
+    && !hasStaleModelRows.value
+    && selectedSources.value.some(source =>
+      source.state === 'ERROR' || source.state === 'STALE_ERROR'))
+  const selectedCatalogHasTerminalPayload = computed(() => Boolean(selectedCatalog.value)
+    && (selectedSources.value.length === 0
+      || selectedSources.value.every(source =>
+        source.state === 'READY' || source.state === 'PARTIAL' || source.state === 'STALE_ERROR')))
+  const selectedRequestKey = computed(() =>
+    `${PROVIDER_SETTINGS_RUNTIME_KIND}:${selectedProviderId.value}`)
+  const isReloadingSelectedProvider = computed(() =>
+    store.providerRequestModeByKey[selectedRequestKey.value] === 'reload')
+
   const getDraftProviderLabel = () => t('settings.components.settings.ProviderAPIKeyManager.new_custom_provider')
   const buildCustomProviderFingerprint = (value: CustomLlmProviderDraftInput): string =>
     JSON.stringify({
@@ -71,35 +101,48 @@ export function useProviderApiKeySectionRuntime() {
       baseUrl: value.baseUrl.trim(),
       apiKey: value.apiKey.trim(),
     })
+  const modelsForProvider = (providerId: string, kind: 'llm' | 'audio' | 'image' | 'video') => {
+    const snapshot = store.providerSnapshot(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+    if (!snapshot) return []
+    if (kind === 'llm') return snapshot.llmModels
+    if (kind === 'audio') return snapshot.audioModels
+    if (kind === 'image') return snapshot.imageModels
+    return snapshot.videoModels
+  }
+  const modelCountForProvider = (providerId: string): number | null => {
+    const snapshot = store.providerSnapshot(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+    if (!snapshot) return null
+    if (snapshot.sources.some(source =>
+      source.state === 'IDLE' || source.state === 'LOADING' || source.state === 'ERROR')) return null
+    return modelsForProvider(providerId, 'llm').length
+      + modelsForProvider(providerId, 'audio').length
+      + modelsForProvider(providerId, 'image').length
+      + modelsForProvider(providerId, 'video').length
+  }
 
   const allProvidersWithModels = computed<ProviderSummary[]>(() => {
-    const providers: ProviderSummary[] = providerSettingsGroups.value.map((group) => ({
-      id: group.provider.id,
-      name: group.provider.name,
-      label: group.provider.name,
-      totalModels: group.llmModels.length
-        + group.audioModels.length
-        + group.imageModels.length
-        + group.videoModels.length,
-      isCustom: group.provider.isCustom,
-      providerType: group.provider.providerType,
-      baseUrl: group.provider.baseUrl ?? null,
-      apiKeyConfigured: group.provider.apiKeyConfigured,
-      status: group.provider.status,
-      statusMessage: group.provider.statusMessage ?? null,
+    const providers = providerCredentialSettings.value.map(setting => ({
+      id: setting.provider.id,
+      name: setting.provider.name,
+      label: setting.provider.name,
+      totalModels: modelCountForProvider(setting.provider.id),
+      isCustom: setting.provider.isCustom,
+      providerType: setting.provider.providerType,
+      baseUrl: setting.provider.baseUrl ?? null,
+      apiKeyConfigured: setting.apiKeyConfigured,
+      catalogMode: setting.provider.catalogMode,
     })).sort((left, right) => left.label.localeCompare(right.label))
     providers.push({
       id: NEW_CUSTOM_PROVIDER_ID,
       name: getDraftProviderLabel(),
       label: getDraftProviderLabel(),
-      totalModels: 0,
+      totalModels: null,
       isCustom: true,
       isDraft: true,
       providerType: CUSTOM_PROVIDER_TYPE,
       baseUrl: null,
       apiKeyConfigured: false,
-      status: 'NOT_APPLICABLE',
-      statusMessage: null,
+      catalogMode: 'STATIC',
     })
     return providers
   })
@@ -108,15 +151,11 @@ export function useProviderApiKeySectionRuntime() {
     allProvidersWithModels.value.find(({ id }) => id === selectedProviderId.value) ?? null)
   const selectedProviderLabel = computed(() =>
     selectedProviderSummary.value?.label ?? selectedProviderId.value)
-  const selectedProviderGroup = computed(() =>
-    providerSettingsGroups.value.find(({ provider }) => provider.id === selectedProviderId.value) ?? null)
-  const selectedProviderLlmModels = computed(() => selectedProviderGroup.value?.llmModels ?? [])
-  const selectedProviderAudioModels = computed(() => selectedProviderGroup.value?.audioModels ?? [])
-  const selectedProviderImageModels = computed(() => selectedProviderGroup.value?.imageModels ?? [])
-  const selectedProviderVideoModels = computed(() => selectedProviderGroup.value?.videoModels ?? [])
-  const selectedProviderConfigured = computed(() =>
-    selectedProviderSummary.value?.apiKeyConfigured === true)
-
+  const selectedProviderLlmModels = computed(() => modelsForProvider(selectedProviderId.value, 'llm'))
+  const selectedProviderAudioModels = computed(() => modelsForProvider(selectedProviderId.value, 'audio'))
+  const selectedProviderImageModels = computed(() => modelsForProvider(selectedProviderId.value, 'image'))
+  const selectedProviderVideoModels = computed(() => modelsForProvider(selectedProviderId.value, 'video'))
+  const selectedProviderConfigured = computed(() => selectedProviderSummary.value?.apiKeyConfigured === true)
   const isProviderConfigured = (providerId: string): boolean =>
     allProvidersWithModels.value.find(({ id }) => id === providerId)?.apiKeyConfigured === true
 
@@ -136,13 +175,8 @@ export function useProviderApiKeySectionRuntime() {
     && !isSavingCustomProvider.value,
   ))
   const canReloadSelectedProvider = computed(() =>
-    Boolean(selectedProviderSummary.value) && selectedProviderSummary.value?.isDraft !== true)
-  const isReloadingSelectedProvider = computed(() => Boolean(
-    selectedProviderId.value
-    && selectedProviderId.value !== NEW_CUSTOM_PROVIDER_ID
-    && isReloadingProviderModels.value
-    && reloadingProvider.value === selectedProviderId.value,
-  ))
+    selectedProviderSummary.value?.catalogMode === 'DISCOVERED'
+      && selectedProviderSummary.value?.isDraft !== true)
 
   const clearNotificationTimer = () => {
     if (notificationTimer) clearTimeout(notificationTimer)
@@ -184,17 +218,33 @@ export function useProviderApiKeySectionRuntime() {
       ?? NEW_CUSTOM_PROVIDER_ID
   }
 
+  const loadSelectedSpecialtySetup = async (providerId: string) => {
+    if (providerId === 'GEMINI') await store.fetchGeminiSetupConfig()
+    if (providerId === 'QWEN') await store.fetchQwenSetupStatus()
+  }
+
+  const ensureSelectedDynamicProvider = async (providerId: string) => {
+    if (!providerId || providerId === NEW_CUSTOM_PROVIDER_ID) return
+    await store.fetchProvidersWithModels(PROVIDER_SETTINGS_RUNTIME_KIND)
+    const snapshot = store.providerSnapshot(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+    if (snapshot?.ownerProvider.catalogMode !== 'DISCOVERED') return
+    if (!snapshot.sources.some(source => source.state === 'IDLE')) return
+    await store.ensureProviderModelCatalog(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+  }
+
   const initialize = async () => {
     loading.value = true
+    credentialError.value = null
+    const catalogRequest = store.fetchProvidersWithModels(PROVIDER_SETTINGS_RUNTIME_KIND)
     try {
-      await Promise.all([
-        store.fetchProviderSettings(),
-        store.fetchGeminiSetupConfig(),
-        store.fetchQwenSetupStatus(),
-      ])
+      await store.fetchProviderCredentialSettings()
       selectedProviderId.value = resolvePreferredProviderId()
+      void loadSelectedSpecialtySetup(selectedProviderId.value).catch(() => undefined)
+      void catalogRequest
+        .then(() => ensureSelectedDynamicProvider(selectedProviderId.value))
+        .catch(() => undefined)
     } catch (error) {
-      console.error('Failed to load provider settings:', error)
+      credentialError.value = error instanceof Error ? error.message : String(error)
       showNotification(t('settings.components.settings.ProviderAPIKeyManager.failed_to_load_providers_and_models'), 'error')
     } finally {
       loading.value = false
@@ -202,18 +252,15 @@ export function useProviderApiKeySectionRuntime() {
   }
 
   const selectProvider = async (providerId: string) => {
+    if (selectedProviderId.value !== providerId) providerEditorResetVersion.value += 1
     selectedProviderId.value = providerId
-    if (providerId === 'GEMINI') await store.fetchGeminiSetupConfig()
-    if (providerId === 'QWEN') await store.fetchQwenSetupStatus()
-  }
-
-  const reloadAllModels = async () => {
     try {
-      await store.reloadModels(PROVIDER_SETTINGS_RUNTIME_KIND)
-      showNotification(t('settings.components.settings.ProviderAPIKeyManager.models_reloaded_successfully'), 'success')
+      await Promise.all([
+        loadSelectedSpecialtySetup(providerId),
+        ensureSelectedDynamicProvider(providerId),
+      ])
     } catch (error) {
-      console.error('Failed to reload models:', error)
-      showNotification(t('settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models'), 'error')
+      showNotification(error instanceof Error ? error.message : String(error), 'error')
     }
   }
 
@@ -221,20 +268,12 @@ export function useProviderApiKeySectionRuntime() {
     if (!providerId || providerId === NEW_CUSTOM_PROVIDER_ID) return
     const providerLabel = allProvidersWithModels.value.find(({ id }) => id === providerId)?.label ?? providerId
     try {
-      await store.reloadModelsForProvider(providerId, PROVIDER_SETTINGS_RUNTIME_KIND)
-      showNotification(t(
-        'settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider',
-        { provider: providerLabel },
-      ), 'success')
+      await store.reloadProvider(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+      showNotification(t('settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider', { provider: providerLabel }), 'success')
     } catch (error) {
-      console.error('Failed to reload provider models:', error)
-      showNotification(t(
-        'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models_for_provider',
-        { provider: providerLabel },
-      ), 'error')
+      showNotification(t('settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models_for_provider', { provider: providerLabel }), 'error')
     }
   }
-
   const geminiActions = createGeminiConfigurationActions({
     saving,
     activating,
@@ -252,10 +291,15 @@ export function useProviderApiKeySectionRuntime() {
     try {
       await store.setLLMProviderApiKey(providerId, apiKey)
       providerEditorResetVersion.value += 1
+      saving.value = false
       showNotification(t(
         'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully',
         { provider: providerLabel },
       ), 'success')
+      if (providerId === 'AUTOBYTEUS') {
+        void store.ensureProviderModelCatalog(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
+          .catch(() => undefined)
+      }
       return true
     } catch (error) {
       console.error('Failed to save API key:', error)
@@ -263,9 +307,8 @@ export function useProviderApiKeySectionRuntime() {
         'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key',
         { provider: providerLabel },
       ), 'error')
-      return false
-    } finally {
       saving.value = false
+      return false
     }
   }
 
@@ -302,15 +345,6 @@ export function useProviderApiKeySectionRuntime() {
       t('settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved'),
       'success',
     )
-    try {
-      await store.refreshProviderDataAfterQwenSave()
-    } catch (error) {
-      console.error('Qwen configuration saved, but provider data refresh failed:', error)
-      showNotification(
-        t('settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved_refresh_failed'),
-        'warning',
-      )
-    }
     return true
   }
 
@@ -335,8 +369,8 @@ export function useProviderApiKeySectionRuntime() {
     isSavingCustomProvider.value = true
     customProviderError.value = null
     try {
-      const providerId = await store.createCustomProvider({ ...customProviderDraft })
-      selectedProviderId.value = providerId
+      const setting = await store.createCustomProvider({ ...customProviderDraft })
+      selectedProviderId.value = setting.provider.id
       resetCustomProviderDraft()
       showNotification(t('settings.components.settings.ProviderAPIKeyManager.custom_provider_saved_successfully'), 'success')
       return true
@@ -376,6 +410,7 @@ export function useProviderApiKeySectionRuntime() {
 
   return {
     loading,
+    credentialError,
     saving,
     activating,
     notification,
@@ -383,11 +418,13 @@ export function useProviderApiKeySectionRuntime() {
     selectedProviderSummary,
     selectedProviderLabel,
     providerEditorResetVersion,
-    isLoadingModels: isLoadingProviderSettings,
-    isReloadingModels,
-    isReloadingProviderModels,
-    reloadingProvider,
-    providerSettingsGroups,
+    isLoadingModels,
+    isRefreshingModels,
+    modelErrorMessage,
+    hasPartialModelResult,
+    hasStaleModelResult,
+    hasUnavailableModelSource,
+    catalogHasSuccessfulPayload: selectedCatalogHasTerminalPayload,
     geminiSetup,
     qwenSetup,
     qwenFormResetVersion,
@@ -413,7 +450,6 @@ export function useProviderApiKeySectionRuntime() {
     canSaveCustomProvider,
     initialize,
     selectProvider,
-    reloadAllModels,
     reloadSelectedProvider,
     ...geminiActions,
     saveProviderApiKey,

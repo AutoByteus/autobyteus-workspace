@@ -1,0 +1,147 @@
+{
+  "result": "Pass",
+  "timings": {
+    "fullDocumentCredentialSurfaceMs": 1613,
+    "domContentLoadedMs": 300,
+    "credentialSurfaceAfterDomContentLoadedMs": 1313
+  },
+  "assertions": [
+    "credential surface visible within 1500ms of browser route DOM entry while Ollama discovery was pending",
+    "static OpenAI rows/form are independent and expose no Reload",
+    "dynamic model loading remains local and leaves the credential editor enabled",
+    "first targeted discovery publishes only Ollama and exposes provider-local Reload",
+    "same-authority path change clears only Ollama rows before replacement and remains usable after navigation",
+    "host save request order is UpdateServerSetting -> targeted EnsureProviderModelCatalog -> GetServerSettings",
+    "failed replacement shows localized unavailable/Retry state without restoring old rows or blocking credentials",
+    "768px tablet rendering has no document-level horizontal overflow"
+  ],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787494536237
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787494536237
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787494536412
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787494536523
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787494536543
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787494536543
+    },
+    {
+      "operationName": "GetWorkingContextCompactionStrategies",
+      "at": 1787494536552
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "at": 1787494536562
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "at": 1787494536563
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "at": 1787494536564
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "at": 1787494536564
+    },
+    {
+      "operationName": "GetSearchConfig",
+      "at": 1787494536564
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787494536618
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787494536624
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787494536625
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787494536858
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787494536863
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787494536865
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/path-a/api/tags",
+      "source": "path-a",
+      "at": 1787494536418
+    },
+    {
+      "method": "GET",
+      "path": "/path-a/api/ps",
+      "source": "path-a",
+      "at": 1787494536478
+    },
+    {
+      "method": "POST",
+      "path": "/path-a/api/show",
+      "source": "path-a",
+      "at": 1787494536482
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/tags",
+      "source": "path-b",
+      "at": 1787494536620
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/ps",
+      "source": "path-b",
+      "at": 1787494536724
+    },
+    {
+      "method": "POST",
+      "path": "/path-b/api/show",
+      "source": "path-b",
+      "at": 1787494536727
+    },
+    {
+      "method": "GET",
+      "path": "/path-c/api/tags",
+      "source": "path-c",
+      "at": 1787494536860
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "frontendUrl": "http://127.0.0.1:51296",
+  "backendUrl": "http://127.0.0.1:51294",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+}

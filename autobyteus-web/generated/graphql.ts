@@ -414,6 +414,16 @@ export type CancelPreparedAgentRunResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CatalogProviderObject = {
+  __typename?: 'CatalogProviderObject';
+  baseUrl?: Maybe<Scalars['String']['output']>;
+  catalogMode: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  isCustom: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  providerType: Scalars['String']['output'];
+};
+
 export type ConfigureMcpServerResult = {
   __typename?: 'ConfigureMcpServerResult';
   savedConfig: McpServerConfigUnion;
@@ -534,6 +544,12 @@ export type DeleteAgentTeamDefinitionResult = {
   __typename?: 'DeleteAgentTeamDefinitionResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type DeleteCustomProviderResult = {
+  __typename?: 'DeleteCustomProviderResult';
+  deleted: Scalars['Boolean']['output'];
+  providerId: Scalars['String']['output'];
 };
 
 export type DeleteMcpServerResult = {
@@ -759,6 +775,12 @@ export type ExternalChannelTeamLaunchPresetInput = {
   workspaceRootPath: Scalars['String']['input'];
 };
 
+export type GeminiConfigurationCommandResult = {
+  __typename?: 'GeminiConfigurationCommandResult';
+  credentialSetting: ProviderCredentialSettingObject;
+  setup: GeminiSetupStateObject;
+};
+
 export enum GeminiSetupMode {
   AiStudio = 'AI_STUDIO',
   VertexExpress = 'VERTEX_EXPRESS',
@@ -895,18 +917,6 @@ export type ImportMcpServerConfigsResult = {
   importedCount: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
-};
-
-export type LlmProviderObject = {
-  __typename?: 'LlmProviderObject';
-  apiKeyConfigured: Scalars['Boolean']['output'];
-  baseUrl?: Maybe<Scalars['String']['output']>;
-  id: Scalars['String']['output'];
-  isCustom: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  providerType: Scalars['String']['output'];
-  status: Scalars['String']['output'];
-  statusMessage?: Maybe<Scalars['String']['output']>;
 };
 
 export type ManagedMessagingGatewayPeerCandidateListObject = {
@@ -1121,10 +1131,10 @@ export type MemorySyncStatusGql = {
 
 export type MemoryTraceEvent = {
   __typename?: 'MemoryTraceEvent';
-  scope: Scalars['String']['output'];
   content?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   media?: Maybe<Scalars['JSON']['output']>;
+  scope: Scalars['String']['output'];
   seq?: Maybe<Scalars['Int']['output']>;
   sourceEvent?: Maybe<Scalars['String']['output']>;
   toolArgs?: Maybe<Scalars['JSON']['output']>;
@@ -1163,6 +1173,16 @@ export enum ModelMetadataProvenance {
   Live = 'LIVE'
 }
 
+export type ModelSourceStatusObject = {
+  __typename?: 'ModelSourceStatusObject';
+  failedUnitCount: Scalars['Int']['output'];
+  modelCount: Scalars['Int']['output'];
+  modelKind: Scalars['String']['output'];
+  safeMessage?: Maybe<Scalars['String']['output']>;
+  state: Scalars['String']['output'];
+  successfulUnitCount: Scalars['Int']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addSkillSource: Array<SkillSource>;
@@ -1176,14 +1196,14 @@ export type Mutation = {
   createAgentRun: CreateAgentRunResult;
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
-  createCustomProvider: Scalars['String']['output'];
+  createCustomProvider: ProviderCredentialSettingObject;
   createFileOrFolder: Scalars['String']['output'];
   createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   createSkill: Skill;
   createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
   deleteAgentTeamDefinition: DeleteAgentTeamDefinitionResult;
-  deleteCustomProvider: Scalars['Boolean']['output'];
+  deleteCustomProvider: DeleteCustomProviderResult;
   deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
@@ -1197,6 +1217,7 @@ export type Mutation = {
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
   enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
+  ensureProviderModelCatalog: ProviderModelCatalogSnapshotObject;
   importAgentPackage: Array<AgentPackage>;
   importApplicationPackage: Array<ApplicationPackage>;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
@@ -1207,8 +1228,7 @@ export type Mutation = {
   refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
   regenerateMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   reloadAgentPackage: Array<AgentPackage>;
-  reloadLlmModels: Scalars['String']['output'];
-  reloadLlmProviderModels: Scalars['String']['output'];
+  reloadProviderModelCatalog: ProviderModelCatalogSnapshotObject;
   reloadSkillCatalog: SkillCatalogReloadResult;
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
@@ -1220,12 +1240,12 @@ export type Mutation = {
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
-  saveGeminiAiStudio: GeminiSetupStateObject;
-  saveGeminiVertexExpress: GeminiSetupStateObject;
-  saveGeminiVertexProject: GeminiSetupStateObject;
+  saveGeminiAiStudio: GeminiConfigurationCommandResult;
+  saveGeminiVertexExpress: GeminiConfigurationCommandResult;
+  saveGeminiVertexProject: GeminiConfigurationCommandResult;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
-  saveProviderApiKey: Scalars['Boolean']['output'];
-  saveQwenConfiguration: QwenSetupStatus;
+  saveProviderApiKey: ProviderCredentialSettingObject;
+  saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
@@ -1245,7 +1265,7 @@ export type Mutation = {
   updateSkill: Skill;
   uploadSkillFile: Scalars['Boolean']['output'];
   upsertExternalChannelBinding: ExternalChannelBindingGql;
-  useGeminiMode: GeminiSetupStateObject;
+  useGeminiMode: GeminiConfigurationCommandResult;
   writeFileContent: Scalars['String']['output'];
 };
 
@@ -1404,6 +1424,12 @@ export type MutationEnableSkillArgs = {
 };
 
 
+export type MutationEnsureProviderModelCatalogArgs = {
+  providerId: Scalars['String']['input'];
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationImportAgentPackageArgs = {
   input: ImportAgentPackageInput;
 };
@@ -1446,12 +1472,7 @@ export type MutationReloadAgentPackageArgs = {
 };
 
 
-export type MutationReloadLlmModelsArgs = {
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type MutationReloadLlmProviderModelsArgs = {
+export type MutationReloadProviderModelCatalogArgs = {
   providerId: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1656,19 +1677,21 @@ export type PrepareAgentRunResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type ProviderSettingsGroup = {
-  __typename?: 'ProviderSettingsGroup';
+export type ProviderCredentialSettingObject = {
+  __typename?: 'ProviderCredentialSettingObject';
+  apiKeyConfigured: Scalars['Boolean']['output'];
+  provider: CatalogProviderObject;
+};
+
+export type ProviderModelCatalogSnapshotObject = {
+  __typename?: 'ProviderModelCatalogSnapshotObject';
   audioModels: Array<ModelDetail>;
   imageModels: Array<ModelDetail>;
   llmModels: Array<ModelDetail>;
-  provider: LlmProviderObject;
+  ownerProvider: CatalogProviderObject;
+  runtimeKind: Scalars['String']['output'];
+  sources: Array<ModelSourceStatusObject>;
   videoModels: Array<ModelDetail>;
-};
-
-export type ProviderWithModels = {
-  __typename?: 'ProviderWithModels';
-  models: Array<ModelDetail>;
-  provider: LlmProviderObject;
 };
 
 export type Query = {
@@ -1684,16 +1707,12 @@ export type Query = {
   applicationPackageDetails?: Maybe<ApplicationPackageDetails>;
   applicationPackages: Array<ApplicationPackage>;
   applicationsCapability: ApplicationsCapability;
-  availableAudioProvidersWithModels: Array<ProviderWithModels>;
-  availableImageProvidersWithModels: Array<ProviderWithModels>;
-  availableLlmProvidersWithModels: Array<ProviderWithModels>;
   availableOptionalInputProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLifecycleProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLlmResponseProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
-  availableVideoProvidersWithModels: Array<ProviderWithModels>;
   externalChannelBindings: Array<ExternalChannelBindingGql>;
   externalChannelCapabilities: ExternalChannelCapabilities;
   externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
@@ -1742,7 +1761,8 @@ export type Query = {
   managedMessagingGatewayWeComAccounts: Array<ManagedMessagingGatewayWeComAccountObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
-  providerSettings: Array<ProviderSettingsGroup>;
+  providerCredentialSettings: Array<ProviderCredentialSettingObject>;
+  providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
@@ -1781,26 +1801,6 @@ export type QueryApplicationArgs = {
 
 export type QueryApplicationPackageDetailsArgs = {
   packageId: Scalars['String']['input'];
-};
-
-
-export type QueryAvailableAudioProvidersWithModelsArgs = {
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryAvailableImageProvidersWithModelsArgs = {
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryAvailableLlmProvidersWithModelsArgs = {
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryAvailableVideoProvidersWithModelsArgs = {
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1988,7 +1988,12 @@ export type QueryPreviewMcpServerToolsArgs = {
 };
 
 
-export type QueryProviderSettingsArgs = {
+export type QueryProviderCredentialSettingsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryProviderModelCatalogSnapshotsArgs = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2054,6 +2059,12 @@ export type QueryWorkspaceRunHistoryArgs = {
   workspaceId: Scalars['String']['input'];
 };
 
+export type QwenConfigurationCommandResult = {
+  __typename?: 'QwenConfigurationCommandResult';
+  credentialSetting: ProviderCredentialSettingObject;
+  setup: QwenSetupStatus;
+};
+
 export type QwenConfigurationInput = {
   apiKey: Scalars['String']['input'];
   baseUrl: Scalars['String']['input'];
@@ -2066,7 +2077,6 @@ export enum QwenEndpointSource {
 
 export type QwenSetupStatus = {
   __typename?: 'QwenSetupStatus';
-  apiKeyConfigured: Scalars['Boolean']['output'];
   effectiveBaseUrl: Scalars['String']['output'];
   endpointSource: QwenEndpointSource;
 };
@@ -2430,18 +2440,18 @@ export enum TeamMemberType {
   AgentTeam = 'AGENT_TEAM'
 }
 
-export type TeamRunResumeConfigPayload = {
-  __typename?: 'TeamRunResumeConfigPayload';
-  executionTree: Scalars['JSON']['output'];
-  isActive: Scalars['Boolean']['output'];
-  teamRunId: Scalars['String']['output'];
-};
-
 export type TeamRunExecutionCheckpointPayload = {
   __typename?: 'TeamRunExecutionCheckpointPayload';
   changeSequence: Scalars['Int']['output'];
   hasOpenExecutionWork: Scalars['Boolean']['output'];
   rootTeamRunId: Scalars['String']['output'];
+};
+
+export type TeamRunResumeConfigPayload = {
+  __typename?: 'TeamRunResumeConfigPayload';
+  executionTree: Scalars['JSON']['output'];
+  isActive: Scalars['Boolean']['output'];
+  teamRunId: Scalars['String']['output'];
 };
 
 export type TerminateAgentRunResult = {
@@ -3053,35 +3063,40 @@ export type CreateFileOrFolderMutationVariables = Exact<{
 
 export type CreateFileOrFolderMutation = { __typename?: 'Mutation', createFileOrFolder: string };
 
+export type CredentialSettingFieldsFragment = { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } };
+
+export type GeminiCommandFieldsFragment = { __typename?: 'GeminiConfigurationCommandResult', setup: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } };
+
 export type SaveProviderApiKeyMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
   apiKey: Scalars['String']['input'];
 }>;
 
 
-export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: boolean };
+export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } };
 
 export type SaveQwenConfigurationMutationVariables = Exact<{
   input: QwenConfigurationInput;
 }>;
 
 
-export type SaveQwenConfigurationMutation = { __typename?: 'Mutation', saveQwenConfiguration: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
+export type SaveQwenConfigurationMutation = { __typename?: 'Mutation', saveQwenConfiguration: { __typename?: 'QwenConfigurationCommandResult', setup: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } } };
 
-export type ReloadLlmModelsMutationVariables = Exact<{
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type ReloadLlmModelsMutation = { __typename?: 'Mutation', reloadLlmModels: string };
-
-export type ReloadLlmProviderModelsMutationVariables = Exact<{
+export type EnsureProviderModelCatalogMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ReloadLlmProviderModelsMutation = { __typename?: 'Mutation', reloadLlmProviderModels: string };
+export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+
+export type ReloadProviderModelCatalogMutationVariables = Exact<{
+  providerId: Scalars['String']['input'];
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ProbeCustomProviderMutationVariables = Exact<{
   input: CustomProviderInputObject;
@@ -3095,14 +3110,14 @@ export type CreateCustomProviderMutationVariables = Exact<{
 }>;
 
 
-export type CreateCustomProviderMutation = { __typename?: 'Mutation', createCustomProvider: string };
+export type CreateCustomProviderMutation = { __typename?: 'Mutation', createCustomProvider: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } };
 
 export type DeleteCustomProviderMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
 }>;
 
 
-export type DeleteCustomProviderMutation = { __typename?: 'Mutation', deleteCustomProvider: boolean };
+export type DeleteCustomProviderMutation = { __typename?: 'Mutation', deleteCustomProvider: { __typename?: 'DeleteCustomProviderResult', providerId: string, deleted: boolean } };
 
 export type SaveGeminiAiStudioMutationVariables = Exact<{
   apiKey: Scalars['String']['input'];
@@ -3110,7 +3125,7 @@ export type SaveGeminiAiStudioMutationVariables = Exact<{
 }>;
 
 
-export type SaveGeminiAiStudioMutation = { __typename?: 'Mutation', saveGeminiAiStudio: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+export type SaveGeminiAiStudioMutation = { __typename?: 'Mutation', saveGeminiAiStudio: { __typename?: 'GeminiConfigurationCommandResult', setup: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } } };
 
 export type SaveGeminiVertexExpressMutationVariables = Exact<{
   apiKey: Scalars['String']['input'];
@@ -3118,7 +3133,7 @@ export type SaveGeminiVertexExpressMutationVariables = Exact<{
 }>;
 
 
-export type SaveGeminiVertexExpressMutation = { __typename?: 'Mutation', saveGeminiVertexExpress: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+export type SaveGeminiVertexExpressMutation = { __typename?: 'Mutation', saveGeminiVertexExpress: { __typename?: 'GeminiConfigurationCommandResult', setup: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } } };
 
 export type SaveGeminiVertexProjectMutationVariables = Exact<{
   project: Scalars['String']['input'];
@@ -3127,14 +3142,14 @@ export type SaveGeminiVertexProjectMutationVariables = Exact<{
 }>;
 
 
-export type SaveGeminiVertexProjectMutation = { __typename?: 'Mutation', saveGeminiVertexProject: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+export type SaveGeminiVertexProjectMutation = { __typename?: 'Mutation', saveGeminiVertexProject: { __typename?: 'GeminiConfigurationCommandResult', setup: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } } };
 
 export type UseGeminiModeMutationVariables = Exact<{
   mode: GeminiSetupMode;
 }>;
 
 
-export type UseGeminiModeMutation = { __typename?: 'Mutation', useGeminiMode: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+export type UseGeminiModeMutation = { __typename?: 'Mutation', useGeminiMode: { __typename?: 'GeminiConfigurationCommandResult', setup: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null }, credentialSetting: { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } } } };
 
 export type ConfigureMcpServerMutationVariables = Exact<{
   input: McpServerInput;
@@ -3393,19 +3408,21 @@ export type GetFolderChildrenQueryVariables = Exact<{
 
 export type GetFolderChildrenQuery = { __typename?: 'Query', folderChildren: string };
 
-export type GetProviderSettingsQueryVariables = Exact<{
+export type GetProviderCredentialSettingsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetProviderSettingsQuery = { __typename?: 'Query', providerSettings: Array<{ __typename?: 'ProviderSettingsGroup', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }> }> };
+export type GetProviderCredentialSettingsQuery = { __typename?: 'Query', providerCredentialSettings: Array<{ __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } }> };
 
-export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
+export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
+
+export type GetProviderModelCatalogSnapshotsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3415,7 +3432,7 @@ export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupCo
 export type GetQwenSetupStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
+export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3980,6 +3997,35 @@ export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
   }
 }
     `;
+export const CredentialSettingFieldsFragmentDoc = gql`
+    fragment CredentialSettingFields on ProviderCredentialSettingObject {
+  provider {
+    id
+    name
+    providerType
+    isCustom
+    baseUrl
+    catalogMode
+  }
+  apiKeyConfigured
+}
+    `;
+export const GeminiCommandFieldsFragmentDoc = gql`
+    fragment GeminiCommandFields on GeminiConfigurationCommandResult {
+  setup {
+    activeMode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
+  }
+  credentialSetting {
+    ...CredentialSettingFields
+  }
+}
+    ${CredentialSettingFieldsFragmentDoc}`;
 export const MemorySyncStatusFieldsFragmentDoc = gql`
     fragment MemorySyncStatusFields on MemorySyncStatusGql {
   hub {
@@ -4079,6 +4125,79 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
+export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
+    fragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {
+  runtimeKind
+  ownerProvider {
+    id
+    name
+    providerType
+    isCustom
+    baseUrl
+    catalogMode
+  }
+  sources {
+    modelKind
+    state
+    modelCount
+    successfulUnitCount
+    failedUnitCount
+    safeMessage
+  }
+  llmModels {
+    modelIdentifier
+    name
+    description
+    value
+    canonicalName
+    providerId
+    providerName
+    providerType
+    runtime
+    hostUrl
+    configSchema
+    maxContextTokens
+    activeContextTokens
+    maxInputTokens
+    maxOutputTokens
+    metadataProvenance
+  }
+  audioModels {
+    modelIdentifier
+    name
+    value
+    canonicalName
+    providerId
+    providerName
+    providerType
+    runtime
+    hostUrl
+  }
+  imageModels {
+    modelIdentifier
+    name
+    description
+    value
+    canonicalName
+    providerId
+    providerName
+    providerType
+    runtime
+    hostUrl
+  }
+  videoModels {
+    modelIdentifier
+    name
+    value
+    canonicalName
+    providerId
+    providerName
+    providerType
+    runtime
+    hostUrl
+  }
+}
+    `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
     fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
   beforeCursor
@@ -5466,9 +5585,11 @@ export function useCreateFileOrFolderMutation(options: VueApolloComposable.UseMu
 export type CreateFileOrFolderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>;
 export const SaveProviderApiKeyDocument = gql`
     mutation SaveProviderApiKey($providerId: String!, $apiKey: String!) {
-  saveProviderApiKey(providerId: $providerId, apiKey: $apiKey)
+  saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
+    ...CredentialSettingFields
+  }
 }
-    `;
+    ${CredentialSettingFieldsFragmentDoc}`;
 
 /**
  * __useSaveProviderApiKeyMutation__
@@ -5495,12 +5616,16 @@ export type SaveProviderApiKeyMutationCompositionFunctionResult = VueApolloCompo
 export const SaveQwenConfigurationDocument = gql`
     mutation SaveQwenConfiguration($input: QwenConfigurationInput!) {
   saveQwenConfiguration(input: $input) {
-    effectiveBaseUrl
-    endpointSource
-    apiKeyConfigured
+    setup {
+      effectiveBaseUrl
+      endpointSource
+    }
+    credentialSetting {
+      ...CredentialSettingFields
+    }
   }
 }
-    `;
+    ${CredentialSettingFieldsFragmentDoc}`;
 
 /**
  * __useSaveQwenConfigurationMutation__
@@ -5523,61 +5648,66 @@ export function useSaveQwenConfigurationMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>(SaveQwenConfigurationDocument, options);
 }
 export type SaveQwenConfigurationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>;
-export const ReloadLlmModelsDocument = gql`
-    mutation ReloadLLMModels($runtimeKind: String) {
-  reloadLlmModels(runtimeKind: $runtimeKind)
+export const EnsureProviderModelCatalogDocument = gql`
+    mutation EnsureProviderModelCatalog($providerId: String!, $runtimeKind: String) {
+  ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) {
+    ...ProviderModelCatalogSnapshotFields
+  }
 }
-    `;
+    ${ProviderModelCatalogSnapshotFieldsFragmentDoc}`;
 
 /**
- * __useReloadLlmModelsMutation__
+ * __useEnsureProviderModelCatalogMutation__
  *
- * To run a mutation, you first call `useReloadLlmModelsMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useReloadLlmModelsMutation` returns an object that includes:
+ * To run a mutation, you first call `useEnsureProviderModelCatalogMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useEnsureProviderModelCatalogMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useReloadLlmModelsMutation({
- *   variables: {
- *     runtimeKind: // value for 'runtimeKind'
- *   },
- * });
- */
-export function useReloadLlmModelsMutation(options: VueApolloComposable.UseMutationOptions<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables>(ReloadLlmModelsDocument, options);
-}
-export type ReloadLlmModelsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables>;
-export const ReloadLlmProviderModelsDocument = gql`
-    mutation ReloadLLMProviderModels($providerId: String!, $runtimeKind: String) {
-  reloadLlmProviderModels(providerId: $providerId, runtimeKind: $runtimeKind)
-}
-    `;
-
-/**
- * __useReloadLlmProviderModelsMutation__
- *
- * To run a mutation, you first call `useReloadLlmProviderModelsMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useReloadLlmProviderModelsMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useReloadLlmProviderModelsMutation({
+ * const { mutate, loading, error, onDone } = useEnsureProviderModelCatalogMutation({
  *   variables: {
  *     providerId: // value for 'providerId'
  *     runtimeKind: // value for 'runtimeKind'
  *   },
  * });
  */
-export function useReloadLlmProviderModelsMutation(options: VueApolloComposable.UseMutationOptions<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables>(ReloadLlmProviderModelsDocument, options);
+export function useEnsureProviderModelCatalogMutation(options: VueApolloComposable.UseMutationOptions<EnsureProviderModelCatalogMutation, EnsureProviderModelCatalogMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<EnsureProviderModelCatalogMutation, EnsureProviderModelCatalogMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<EnsureProviderModelCatalogMutation, EnsureProviderModelCatalogMutationVariables>(EnsureProviderModelCatalogDocument, options);
 }
-export type ReloadLlmProviderModelsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables>;
+export type EnsureProviderModelCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<EnsureProviderModelCatalogMutation, EnsureProviderModelCatalogMutationVariables>;
+export const ReloadProviderModelCatalogDocument = gql`
+    mutation ReloadProviderModelCatalog($providerId: String!, $runtimeKind: String) {
+  reloadProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) {
+    ...ProviderModelCatalogSnapshotFields
+  }
+}
+    ${ProviderModelCatalogSnapshotFieldsFragmentDoc}`;
+
+/**
+ * __useReloadProviderModelCatalogMutation__
+ *
+ * To run a mutation, you first call `useReloadProviderModelCatalogMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useReloadProviderModelCatalogMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useReloadProviderModelCatalogMutation({
+ *   variables: {
+ *     providerId: // value for 'providerId'
+ *     runtimeKind: // value for 'runtimeKind'
+ *   },
+ * });
+ */
+export function useReloadProviderModelCatalogMutation(options: VueApolloComposable.UseMutationOptions<ReloadProviderModelCatalogMutation, ReloadProviderModelCatalogMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadProviderModelCatalogMutation, ReloadProviderModelCatalogMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ReloadProviderModelCatalogMutation, ReloadProviderModelCatalogMutationVariables>(ReloadProviderModelCatalogDocument, options);
+}
+export type ReloadProviderModelCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadProviderModelCatalogMutation, ReloadProviderModelCatalogMutationVariables>;
 export const ProbeCustomProviderDocument = gql`
     mutation ProbeCustomProvider($input: CustomProviderInputObject!) {
   probeCustomProvider(input: $input) {
@@ -5612,9 +5742,11 @@ export function useProbeCustomProviderMutation(options: VueApolloComposable.UseM
 export type ProbeCustomProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ProbeCustomProviderMutation, ProbeCustomProviderMutationVariables>;
 export const CreateCustomProviderDocument = gql`
     mutation CreateCustomProvider($input: CustomProviderInputObject!) {
-  createCustomProvider(input: $input)
+  createCustomProvider(input: $input) {
+    ...CredentialSettingFields
+  }
 }
-    `;
+    ${CredentialSettingFieldsFragmentDoc}`;
 
 /**
  * __useCreateCustomProviderMutation__
@@ -5639,7 +5771,10 @@ export function useCreateCustomProviderMutation(options: VueApolloComposable.Use
 export type CreateCustomProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateCustomProviderMutation, CreateCustomProviderMutationVariables>;
 export const DeleteCustomProviderDocument = gql`
     mutation DeleteCustomProvider($providerId: String!) {
-  deleteCustomProvider(providerId: $providerId)
+  deleteCustomProvider(providerId: $providerId) {
+    providerId
+    deleted
+  }
 }
     `;
 
@@ -5667,16 +5802,10 @@ export type DeleteCustomProviderMutationCompositionFunctionResult = VueApolloCom
 export const SaveGeminiAiStudioDocument = gql`
     mutation SaveGeminiAiStudio($apiKey: String!, $activateAfterSave: Boolean!) {
   saveGeminiAiStudio(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
-    activeMode
-    aiStudioConfigured
-    vertexExpressConfigured
-    vertexProject {
-      project
-      location
-    }
+    ...GeminiCommandFields
   }
 }
-    `;
+    ${GeminiCommandFieldsFragmentDoc}`;
 
 /**
  * __useSaveGeminiAiStudioMutation__
@@ -5703,16 +5832,10 @@ export type SaveGeminiAiStudioMutationCompositionFunctionResult = VueApolloCompo
 export const SaveGeminiVertexExpressDocument = gql`
     mutation SaveGeminiVertexExpress($apiKey: String!, $activateAfterSave: Boolean!) {
   saveGeminiVertexExpress(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
-    activeMode
-    aiStudioConfigured
-    vertexExpressConfigured
-    vertexProject {
-      project
-      location
-    }
+    ...GeminiCommandFields
   }
 }
-    `;
+    ${GeminiCommandFieldsFragmentDoc}`;
 
 /**
  * __useSaveGeminiVertexExpressMutation__
@@ -5743,16 +5866,10 @@ export const SaveGeminiVertexProjectDocument = gql`
     location: $location
     activateAfterSave: $activateAfterSave
   ) {
-    activeMode
-    aiStudioConfigured
-    vertexExpressConfigured
-    vertexProject {
-      project
-      location
-    }
+    ...GeminiCommandFields
   }
 }
-    `;
+    ${GeminiCommandFieldsFragmentDoc}`;
 
 /**
  * __useSaveGeminiVertexProjectMutation__
@@ -5780,16 +5897,10 @@ export type SaveGeminiVertexProjectMutationCompositionFunctionResult = VueApollo
 export const UseGeminiModeDocument = gql`
     mutation UseGeminiMode($mode: GeminiSetupMode!) {
   useGeminiMode(mode: $mode) {
-    activeMode
-    aiStudioConfigured
-    vertexExpressConfigured
-    vertexProject {
-      project
-      location
-    }
+    ...GeminiCommandFields
   }
 }
-    `;
+    ${GeminiCommandFieldsFragmentDoc}`;
 
 /**
  * __useUseGeminiModeMutation__
@@ -7099,187 +7210,74 @@ export function useGetFolderChildrenLazyQuery(variables?: GetFolderChildrenQuery
   return VueApolloComposable.useLazyQuery<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>(GetFolderChildrenDocument, variables, options);
 }
 export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>;
-export const GetProviderSettingsDocument = gql`
-    query GetProviderSettings($runtimeKind: String) {
-  providerSettings(runtimeKind: $runtimeKind) {
+export const GetProviderCredentialSettingsDocument = gql`
+    query GetProviderCredentialSettings($runtimeKind: String) {
+  providerCredentialSettings(runtimeKind: $runtimeKind) {
     provider {
       id
       name
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
-      status
-      statusMessage
+      catalogMode
     }
-    llmModels {
-      modelIdentifier
-      name
-      providerType
-    }
-    audioModels {
-      modelIdentifier
-      name
-      providerType
-    }
-    imageModels {
-      modelIdentifier
-      name
-      providerType
-    }
-    videoModels {
-      modelIdentifier
-      name
-      providerType
-    }
+    apiKeyConfigured
   }
 }
     `;
 
 /**
- * __useGetProviderSettingsQuery__
+ * __useGetProviderCredentialSettingsQuery__
  *
- * To run a query within a Vue component, call `useGetProviderSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProviderSettingsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetProviderCredentialSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProviderCredentialSettingsQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetProviderSettingsQuery({
+ * const { result, loading, error } = useGetProviderCredentialSettingsQuery({
  *   runtimeKind: // value for 'runtimeKind'
  * });
  */
-export function useGetProviderSettingsQuery(variables: GetProviderSettingsQueryVariables | VueCompositionApi.Ref<GetProviderSettingsQueryVariables> | ReactiveFunction<GetProviderSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>(GetProviderSettingsDocument, variables, options);
+export function useGetProviderCredentialSettingsQuery(variables: GetProviderCredentialSettingsQueryVariables | VueCompositionApi.Ref<GetProviderCredentialSettingsQueryVariables> | ReactiveFunction<GetProviderCredentialSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>(GetProviderCredentialSettingsDocument, variables, options);
 }
-export function useGetProviderSettingsLazyQuery(variables: GetProviderSettingsQueryVariables | VueCompositionApi.Ref<GetProviderSettingsQueryVariables> | ReactiveFunction<GetProviderSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>(GetProviderSettingsDocument, variables, options);
+export function useGetProviderCredentialSettingsLazyQuery(variables: GetProviderCredentialSettingsQueryVariables | VueCompositionApi.Ref<GetProviderCredentialSettingsQueryVariables> | ReactiveFunction<GetProviderCredentialSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>(GetProviderCredentialSettingsDocument, variables, options);
 }
-export type GetProviderSettingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>;
-export const GetAvailableLlmProvidersWithModelsDocument = gql`
-    query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
-  availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-    provider {
-      id
-      name
-      providerType
-      isCustom
-      baseUrl
-      status
-      statusMessage
-    }
-    models {
-      modelIdentifier
-      name
-      description
-      value
-      canonicalName
-      providerId
-      providerName
-      providerType
-      runtime
-      hostUrl
-      configSchema
-      maxContextTokens
-      activeContextTokens
-      maxInputTokens
-      maxOutputTokens
-      metadataProvenance
-    }
-  }
-  availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
-    provider {
-      id
-      name
-      providerType
-      isCustom
-      baseUrl
-      status
-      statusMessage
-    }
-    models {
-      modelIdentifier
-      name
-      value
-      canonicalName
-      providerId
-      providerName
-      providerType
-      runtime
-      hostUrl
-    }
-  }
-  availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
-    provider {
-      id
-      name
-      providerType
-      isCustom
-      baseUrl
-      status
-      statusMessage
-    }
-    models {
-      modelIdentifier
-      name
-      value
-      canonicalName
-      providerId
-      providerName
-      providerType
-      runtime
-      hostUrl
-    }
-  }
-  availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
-    provider {
-      id
-      name
-      providerType
-      isCustom
-      baseUrl
-      status
-      statusMessage
-    }
-    models {
-      modelIdentifier
-      name
-      value
-      canonicalName
-      providerId
-      providerName
-      providerType
-      runtime
-      hostUrl
-    }
+export type GetProviderCredentialSettingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProviderCredentialSettingsQuery, GetProviderCredentialSettingsQueryVariables>;
+export const GetProviderModelCatalogSnapshotsDocument = gql`
+    query GetProviderModelCatalogSnapshots($runtimeKind: String) {
+  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+    ...ProviderModelCatalogSnapshotFields
   }
 }
-    `;
+    ${ProviderModelCatalogSnapshotFieldsFragmentDoc}`;
 
 /**
- * __useGetAvailableLlmProvidersWithModelsQuery__
+ * __useGetProviderModelCatalogSnapshotsQuery__
  *
- * To run a query within a Vue component, call `useGetAvailableLlmProvidersWithModelsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAvailableLlmProvidersWithModelsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetProviderModelCatalogSnapshotsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProviderModelCatalogSnapshotsQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetAvailableLlmProvidersWithModelsQuery({
+ * const { result, loading, error } = useGetProviderModelCatalogSnapshotsQuery({
  *   runtimeKind: // value for 'runtimeKind'
  * });
  */
-export function useGetAvailableLlmProvidersWithModelsQuery(variables: GetAvailableLlmProvidersWithModelsQueryVariables | VueCompositionApi.Ref<GetAvailableLlmProvidersWithModelsQueryVariables> | ReactiveFunction<GetAvailableLlmProvidersWithModelsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, variables, options);
+export function useGetProviderModelCatalogSnapshotsQuery(variables: GetProviderModelCatalogSnapshotsQueryVariables | VueCompositionApi.Ref<GetProviderModelCatalogSnapshotsQueryVariables> | ReactiveFunction<GetProviderModelCatalogSnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>(GetProviderModelCatalogSnapshotsDocument, variables, options);
 }
-export function useGetAvailableLlmProvidersWithModelsLazyQuery(variables: GetAvailableLlmProvidersWithModelsQueryVariables | VueCompositionApi.Ref<GetAvailableLlmProvidersWithModelsQueryVariables> | ReactiveFunction<GetAvailableLlmProvidersWithModelsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, variables, options);
+export function useGetProviderModelCatalogSnapshotsLazyQuery(variables: GetProviderModelCatalogSnapshotsQueryVariables | VueCompositionApi.Ref<GetProviderModelCatalogSnapshotsQueryVariables> | ReactiveFunction<GetProviderModelCatalogSnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>(GetProviderModelCatalogSnapshotsDocument, variables, options);
 }
-export type GetAvailableLlmProvidersWithModelsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>;
+export type GetProviderModelCatalogSnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProviderModelCatalogSnapshotsQuery, GetProviderModelCatalogSnapshotsQueryVariables>;
 export const GetGeminiSetupConfigDocument = gql`
     query GetGeminiSetupConfig {
   getGeminiSetupConfig {
@@ -7318,7 +7316,6 @@ export const GetQwenSetupStatusDocument = gql`
   qwenSetupStatus {
     effectiveBaseUrl
     endpointSource
-    apiKeyConfigured
   }
 }
     `;
@@ -8481,7 +8478,16 @@ export const GetTeamRunExecutionCheckpointDocument = gql`
  * __useGetTeamRunExecutionCheckpointQuery__
  *
  * To run a query within a Vue component, call `useGetTeamRunExecutionCheckpointQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTeamRunExecutionCheckpointQuery` returns an object from Apollo Client that contains result, loading and error properties.
+ * When your component renders, `useGetTeamRunExecutionCheckpointQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamRunExecutionCheckpointQuery({
+ *   teamRunId: // value for 'teamRunId'
+ * });
  */
 export function useGetTeamRunExecutionCheckpointQuery(variables: GetTeamRunExecutionCheckpointQueryVariables | VueCompositionApi.Ref<GetTeamRunExecutionCheckpointQueryVariables> | ReactiveFunction<GetTeamRunExecutionCheckpointQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>> = {}) {
   return VueApolloComposable.useQuery<GetTeamRunExecutionCheckpointQuery, GetTeamRunExecutionCheckpointQueryVariables>(GetTeamRunExecutionCheckpointDocument, variables, options);

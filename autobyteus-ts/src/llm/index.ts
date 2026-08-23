@@ -1,6 +1,7 @@
 export * from './llm-factory.js';
 export * from './base.js';
 export * from './models.js';
+export * from './discovery-endpoint-identity.js';
 export * from './providers.js';
 export * from './provider-display-names.js';
 export * from './runtimes.js';

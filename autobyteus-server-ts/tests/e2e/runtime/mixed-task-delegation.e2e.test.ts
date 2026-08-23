@@ -471,11 +471,11 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   };
 
   const fetchModelIdentifier = async (runtimeKind: RuntimeKind, selector: (models: string[]) => string | null): Promise<string> => {
-    const result = await execGraphql<{ availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }> }>(
-      `query Models($runtimeKind: String) { availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { models { modelIdentifier } } }`,
+    const result = await execGraphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+      `query Models($runtimeKind: String) { providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }`,
       { runtimeKind },
     );
-    const models = result.availableLlmProvidersWithModels.flatMap((provider) => provider.models.map((model) => model.modelIdentifier).filter(Boolean));
+    const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean));
     const selected = selector(models);
     if (!selected) throw new Error(`No matching model for ${runtimeKind}. Available models: ${models.join(", ")}`);
     return selected;

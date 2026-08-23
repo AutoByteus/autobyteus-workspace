@@ -2,7 +2,6 @@ import {
   Arg,
   Field,
   InputType,
-  Int,
   Mutation,
   ObjectType,
   Query,
@@ -10,26 +9,17 @@ import {
   Resolver,
 } from 'type-graphql';
 import { GraphQLError } from 'graphql';
-import { GraphQLJSON } from 'graphql-scalars';
-import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
-import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
-import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
-import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
-import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
-import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
-import {
-  getBuiltInLlmProviderCatalog,
-  type BuiltInLlmProviderCatalog,
-} from '../../../llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js';
 import {
   getLlmProviderService,
   type LlmProviderService,
-  type ProviderSettings,
+  type GeminiConfigurationCommandResult,
   QWEN_CONFIGURATION_REPAIR_REQUIRED,
   QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
   QwenConfigurationError,
 } from '../../../llm-management/llm-providers/services/llm-provider-service.js';
 import type {
+  ProviderCredentialSetting,
+  QwenConfigurationCommandResult,
   QwenSetupStatus,
 } from '../../../llm-management/llm-providers/domain/models.js';
 import type {
@@ -37,244 +27,83 @@ import type {
   GeminiConfigurationState,
   GeminiSetupStatus,
 } from '../../../llm-management/services/gemini-configuration-service.js';
-import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
-import type { ModelMetadataProvenanceValue } from '../../../llm-management/services/model-metadata-provisioning-service.js';
+import {
+  getModelCatalogService,
+  type ModelCatalogService,
+} from '../../../llm-management/services/model-catalog-service.js';
 import {
   GeminiSetupModeGraphql,
   GeminiSetupStateObject,
 } from './gemini-configuration.js';
-
-enum ModelMetadataProvenanceGraphql {
-  LIVE = 'LIVE',
-  CURATED_FALLBACK = 'CURATED_FALLBACK',
-  CURATED_ONLY = 'CURATED_ONLY',
-}
-
-registerEnumType(ModelMetadataProvenanceGraphql, { name: 'ModelMetadataProvenance' });
+import {
+  CatalogProviderObject,
+  ProviderModelCatalogSnapshotObject,
+  mapProviderDescriptor,
+  mapProviderModelCatalogSnapshot,
+} from './llm-provider-model-catalog.js';
 
 @ObjectType()
-class ModelDetail {
-  @Field(() => String)
-  modelIdentifier!: string;
-
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String, { nullable: true })
-  description?: string | null;
-
-  @Field(() => String)
-  value!: string;
-
-  @Field(() => String)
-  canonicalName!: string;
-
-  @Field(() => String)
-  providerId!: string;
-
-  @Field(() => String)
-  providerName!: string;
-
-  @Field(() => String)
-  providerType!: string;
-
-  @Field(() => String)
-  runtime!: string;
-
-  @Field(() => String, { nullable: true })
-  hostUrl?: string | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  configSchema?: Record<string, unknown> | null;
-
-  @Field(() => Int, { nullable: true })
-  maxContextTokens?: number | null;
-
-  @Field(() => Int, { nullable: true })
-  activeContextTokens?: number | null;
-
-  @Field(() => Int, { nullable: true })
-  maxInputTokens?: number | null;
-
-  @Field(() => Int, { nullable: true })
-  maxOutputTokens?: number | null;
-
-  @Field(() => ModelMetadataProvenanceGraphql, { nullable: true })
-  metadataProvenance?: ModelMetadataProvenanceGraphql | null;
-}
-
-@ObjectType()
-class LlmProviderObject {
-  @Field(() => String)
-  id!: string;
-
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  providerType!: string;
-
-  @Field(() => Boolean)
-  isCustom!: boolean;
-
-  @Field(() => String, { nullable: true })
-  baseUrl!: string | null;
-
-  @Field(() => Boolean)
-  apiKeyConfigured!: boolean;
-
-  @Field(() => String)
-  status!: string;
-
-  @Field(() => String, { nullable: true })
-  statusMessage!: string | null;
-}
-
-@ObjectType()
-class ProviderWithModels {
-  @Field(() => LlmProviderObject)
-  provider!: LlmProviderObject;
-
-  @Field(() => [ModelDetail])
-  models!: ModelDetail[];
-}
-
-@ObjectType()
-class ProviderSettingsGroup {
-  @Field(() => LlmProviderObject)
-  provider!: LlmProviderObject;
-
-  @Field(() => [ModelDetail])
-  llmModels!: ModelDetail[];
-
-  @Field(() => [ModelDetail])
-  audioModels!: ModelDetail[];
-
-  @Field(() => [ModelDetail])
-  imageModels!: ModelDetail[];
-
-  @Field(() => [ModelDetail])
-  videoModels!: ModelDetail[];
+class ProviderCredentialSettingObject {
+  @Field(() => CatalogProviderObject) provider!: CatalogProviderObject;
+  @Field(() => Boolean) apiKeyConfigured!: boolean;
 }
 
 @ObjectType()
 class CustomProviderProbeModelObject {
-  @Field(() => String)
-  id!: string;
-
-  @Field(() => String)
-  name!: string;
+  @Field(() => String) id!: string;
+  @Field(() => String) name!: string;
 }
 
 @ObjectType()
 class CustomProviderProbeResultObject {
-  @Field(() => [CustomProviderProbeModelObject])
-  discoveredModels!: CustomProviderProbeModelObject[];
+  @Field(() => [CustomProviderProbeModelObject]) discoveredModels!: CustomProviderProbeModelObject[];
 }
 
 @InputType()
 class CustomProviderInputObject {
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  baseUrl!: string;
-
-  @Field(() => String)
-  apiKey!: string;
+  @Field(() => String) name!: string;
+  @Field(() => String) baseUrl!: string;
+  @Field(() => String) apiKey!: string;
 }
 
 enum QwenEndpointSourceGraphql {
   DEFAULT = 'DEFAULT',
   CONFIGURED = 'CONFIGURED',
 }
-
 registerEnumType(QwenEndpointSourceGraphql, { name: 'QwenEndpointSource' });
 
 @ObjectType('QwenSetupStatus')
 class QwenSetupStatusObject {
-  @Field(() => String)
-  effectiveBaseUrl!: string;
+  @Field(() => String) effectiveBaseUrl!: string;
+  @Field(() => QwenEndpointSourceGraphql) endpointSource!: QwenEndpointSourceGraphql;
+}
 
-  @Field(() => QwenEndpointSourceGraphql)
-  endpointSource!: QwenEndpointSourceGraphql;
+@ObjectType('QwenConfigurationCommandResult')
+class QwenConfigurationCommandResultObject {
+  @Field(() => QwenSetupStatusObject) setup!: QwenSetupStatusObject;
+  @Field(() => ProviderCredentialSettingObject) credentialSetting!: ProviderCredentialSettingObject;
+}
 
-  @Field(() => Boolean)
-  apiKeyConfigured!: boolean;
+@ObjectType('GeminiConfigurationCommandResult')
+class GeminiConfigurationCommandResultObject {
+  @Field(() => GeminiSetupStateObject) setup!: GeminiSetupStateObject;
+  @Field(() => ProviderCredentialSettingObject) credentialSetting!: ProviderCredentialSettingObject;
+}
+
+@ObjectType('DeleteCustomProviderResult')
+class DeleteCustomProviderResultObject {
+  @Field(() => String) providerId!: string;
+  @Field(() => Boolean) deleted!: boolean;
 }
 
 @InputType('QwenConfigurationInput')
 class QwenConfigurationInputObject {
-  @Field(() => String)
-  baseUrl!: string;
-
-  @Field(() => String)
-  apiKey!: string;
+  @Field(() => String) baseUrl!: string;
+  @Field(() => String) apiKey!: string;
 }
-
-type ModelInfoWithMetadataProvenance = ModelInfo & {
-  metadata_provenance?: ModelMetadataProvenanceValue | null;
-};
-
-const mapMetadataProvenance = (
-  value: ModelMetadataProvenanceValue | null | undefined,
-): ModelMetadataProvenanceGraphql | null => value
-  ? ModelMetadataProvenanceGraphql[value]
-  : null;
-
-const mapLlmModel = (model: ModelInfoWithMetadataProvenance): ModelDetail => ({
-  modelIdentifier: model.model_identifier,
-  name: model.display_name,
-  description: model.description ?? null,
-  value: model.value,
-  canonicalName: model.canonical_name,
-  providerId: model.provider_id,
-  providerName: model.provider_name,
-  providerType: model.provider_type,
-  runtime: model.runtime,
-  hostUrl: model.host_url ?? null,
-  configSchema: model.config_schema ?? null,
-  maxContextTokens: model.max_context_tokens ?? null,
-  activeContextTokens: model.active_context_tokens ?? null,
-  maxInputTokens: model.max_input_tokens ?? null,
-  maxOutputTokens: model.max_output_tokens ?? null,
-  metadataProvenance: mapMetadataProvenance(model.metadata_provenance),
-});
-
-const mapMultimediaModel = (
-  model: AudioModel | ImageModel | VideoModel,
-): ModelDetail => ({
-  modelIdentifier: model.modelIdentifier,
-  name: model.name,
-  value: model.value,
-  canonicalName: model.name,
-  providerId: String(model.provider),
-  providerName: getLlmProviderDisplayName(String(model.provider) as LLMProvider),
-  providerType: String(model.provider),
-  runtime: String(model.runtime),
-  hostUrl: model.hostUrl ?? null,
-  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
-  maxContextTokens: null,
-  activeContextTokens: null,
-  maxInputTokens: null,
-  maxOutputTokens: null,
-  metadataProvenance: null,
-});
-
-const sortModels = (models: ModelDetail[]): ModelDetail[] =>
-  models.slice().sort((left, right) => left.name.localeCompare(right.name));
-
-const groupModelsByProvider = (models: ModelDetail[]): Map<string, ModelDetail[]> => {
-  const grouped = new Map<string, ModelDetail[]>();
-  for (const model of models) {
-    grouped.set(model.providerId, [...(grouped.get(model.providerId) ?? []), model]);
-  }
-  return grouped;
-};
 
 const configuredBoolean = (state: GeminiConfigurationState): boolean | null =>
   state === 'UNAVAILABLE' ? null : state === 'CONFIGURED';
-
 const mapGeminiSetup = (setup: GeminiSetupStatus): GeminiSetupStateObject => ({
   activeMode: setup.activeMode,
   aiStudioConfigured: configuredBoolean(setup.aiStudioStatus),
@@ -283,52 +112,60 @@ const mapGeminiSetup = (setup: GeminiSetupStatus): GeminiSetupStateObject => ({
     ? { project: setup.project, location: setup.location }
     : null,
 });
-
-const mapProviderSettings = (group: ProviderSettings): ProviderSettingsGroup => ({
-  provider: group.provider,
-  llmModels: sortModels(group.llmModels.map(mapLlmModel)),
-  audioModels: sortModels(group.audioModels.map(mapMultimediaModel)),
-  imageModels: sortModels(group.imageModels.map(mapMultimediaModel)),
-  videoModels: sortModels(group.videoModels.map(mapMultimediaModel)),
+const mapCredentialSetting = (
+  setting: ProviderCredentialSetting,
+): ProviderCredentialSettingObject => ({
+  provider: mapProviderDescriptor(setting.provider),
+  apiKeyConfigured: setting.apiKeyConfigured,
 });
-
 const mapQwenSetupStatus = (status: QwenSetupStatus): QwenSetupStatusObject => ({
   effectiveBaseUrl: status.effectiveBaseUrl,
   endpointSource: status.endpointSource as QwenEndpointSourceGraphql,
-  apiKeyConfigured: status.apiKeyConfigured,
 });
-
+const mapQwenCommandResult = (
+  result: QwenConfigurationCommandResult,
+): QwenConfigurationCommandResultObject => ({
+  setup: mapQwenSetupStatus(result.setup),
+  credentialSetting: mapCredentialSetting(result.credentialSetting),
+});
+const mapGeminiCommandResult = (
+  result: GeminiConfigurationCommandResult,
+): GeminiConfigurationCommandResultObject => ({
+  setup: mapGeminiSetup(result.setup),
+  credentialSetting: mapCredentialSetting(result.credentialSetting),
+});
 const throwSanitizedQwenConfigurationError = (error: unknown): never => {
   if (!(error instanceof QwenConfigurationError)) throw error;
   const repairRequired = error.code === QWEN_CONFIGURATION_REPAIR_REQUIRED;
-  const code = repairRequired
-    ? QWEN_CONFIGURATION_REPAIR_REQUIRED
-    : QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED;
-  const message = repairRequired
-    ? 'Qwen configuration needs repair. Save a valid Base URL and API key again before using Qwen.'
-    : 'Could not save Qwen configuration. Your previous configuration is still active.';
-  throw new GraphQLError(message, { extensions: { code } });
+  throw new GraphQLError(
+    repairRequired
+      ? 'Qwen configuration needs repair. Save a valid Base URL and API key again before using Qwen.'
+      : 'Could not save Qwen configuration. Your previous configuration is still active.',
+    { extensions: { code: repairRequired
+      ? QWEN_CONFIGURATION_REPAIR_REQUIRED
+      : QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED } },
+  );
 };
 
 @Resolver()
 export class LlmProviderResolver {
-  private get runtimeModelCatalogService() {
-    return getModelCatalogService();
-  }
+  private get modelCatalogService(): ModelCatalogService { return getModelCatalogService(); }
+  private get llmProviderService(): LlmProviderService { return getLlmProviderService(); }
 
-  private get llmProviderService(): LlmProviderService {
-    return getLlmProviderService();
-  }
-
-  private get builtInLlmProviderCatalog(): BuiltInLlmProviderCatalog {
-    return getBuiltInLlmProviderCatalog();
-  }
-
-  @Query(() => [ProviderSettingsGroup])
-  async providerSettings(
+  @Query(() => [ProviderCredentialSettingObject])
+  async providerCredentialSettings(
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<ProviderSettingsGroup[]> {
-    return (await this.llmProviderService.listProviderSettings(runtimeKind)).map(mapProviderSettings);
+  ): Promise<ProviderCredentialSettingObject[]> {
+    return (await this.llmProviderService.listProviderCredentialSettings(runtimeKind))
+      .map(mapCredentialSetting);
+  }
+
+  @Query(() => [ProviderModelCatalogSnapshotObject])
+  async providerModelCatalogSnapshots(
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<ProviderModelCatalogSnapshotObject[]> {
+    return (await this.modelCatalogService.listProviderModelCatalogSnapshots(runtimeKind))
+      .map(mapProviderModelCatalogSnapshot);
   }
 
   @Query(() => GeminiSetupStateObject)
@@ -341,57 +178,40 @@ export class LlmProviderResolver {
     return mapQwenSetupStatus(await this.llmProviderService.getQwenSetupStatus());
   }
 
-  @Query(() => [ProviderWithModels])
-  async availableLlmProvidersWithModels(
+  @Mutation(() => ProviderModelCatalogSnapshotObject)
+  async ensureProviderModelCatalog(
+    @Arg('providerId', () => String) providerId: string,
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<ProviderWithModels[]> {
-    return this.llmProviderService.listProvidersWithModels(runtimeKind, mapLlmModel);
-  }
-
-  @Query(() => [ProviderWithModels])
-  async availableAudioProvidersWithModels(
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<ProviderWithModels[]> {
-    return this.groupMultimediaModels(
-      await this.runtimeModelCatalogService.listAudioModels(runtimeKind),
+  ): Promise<ProviderModelCatalogSnapshotObject> {
+    return mapProviderModelCatalogSnapshot(
+      await this.modelCatalogService.ensureProviderModelCatalog(providerId, runtimeKind),
     );
   }
 
-  @Query(() => [ProviderWithModels])
-  async availableImageProvidersWithModels(
+  @Mutation(() => ProviderModelCatalogSnapshotObject)
+  async reloadProviderModelCatalog(
+    @Arg('providerId', () => String) providerId: string,
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<ProviderWithModels[]> {
-    return this.groupMultimediaModels(
-      await this.runtimeModelCatalogService.listImageModels(runtimeKind),
+  ): Promise<ProviderModelCatalogSnapshotObject> {
+    return mapProviderModelCatalogSnapshot(
+      await this.modelCatalogService.reloadProviderModelCatalog(providerId, runtimeKind),
     );
   }
 
-  @Query(() => [ProviderWithModels])
-  async availableVideoProvidersWithModels(
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<ProviderWithModels[]> {
-    return this.groupMultimediaModels(
-      await this.runtimeModelCatalogService.listVideoModels(runtimeKind),
-    );
-  }
-
-  @Mutation(() => Boolean)
+  @Mutation(() => ProviderCredentialSettingObject)
   async saveProviderApiKey(
     @Arg('providerId', () => String) providerId: string,
     @Arg('apiKey', () => String) apiKey: string,
-  ): Promise<boolean> {
-    await this.llmProviderService.setProviderApiKey(providerId, apiKey);
-    return true;
+  ): Promise<ProviderCredentialSettingObject> {
+    return mapCredentialSetting(await this.llmProviderService.setProviderApiKey(providerId, apiKey));
   }
 
-  @Mutation(() => QwenSetupStatusObject)
+  @Mutation(() => QwenConfigurationCommandResultObject)
   async saveQwenConfiguration(
     @Arg('input', () => QwenConfigurationInputObject) input: QwenConfigurationInputObject,
-  ): Promise<QwenSetupStatusObject> {
+  ): Promise<QwenConfigurationCommandResultObject> {
     try {
-      return mapQwenSetupStatus(
-        await this.llmProviderService.saveQwenConfiguration(input),
-      );
+      return mapQwenCommandResult(await this.llmProviderService.saveQwenConfiguration(input));
     } catch (error) {
       return throwSanitizedQwenConfigurationError(error);
     }
@@ -404,93 +224,57 @@ export class LlmProviderResolver {
     return this.llmProviderService.probeCustomProvider(input);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => ProviderCredentialSettingObject)
   async createCustomProvider(
     @Arg('input', () => CustomProviderInputObject) input: CustomProviderInputObject,
-  ): Promise<string> {
-    return this.llmProviderService.createCustomProvider(input);
+  ): Promise<ProviderCredentialSettingObject> {
+    return mapCredentialSetting(await this.llmProviderService.createCustomProvider(input));
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => DeleteCustomProviderResultObject)
   async deleteCustomProvider(
     @Arg('providerId', () => String) providerId: string,
-  ): Promise<boolean> {
-    await this.llmProviderService.deleteCustomProvider(providerId);
-    return true;
+  ): Promise<DeleteCustomProviderResultObject> {
+    return this.llmProviderService.deleteCustomProvider(providerId);
   }
 
-  @Mutation(() => GeminiSetupStateObject)
+  @Mutation(() => GeminiConfigurationCommandResultObject)
   async saveGeminiAiStudio(
     @Arg('apiKey', () => String) apiKey: string,
     @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
-  ): Promise<GeminiSetupStateObject> {
-    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
-      { option: 'AI_STUDIO', apiKey },
-      activateAfterSave,
+  ): Promise<GeminiConfigurationCommandResultObject> {
+    return mapGeminiCommandResult(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'AI_STUDIO', apiKey }, activateAfterSave,
     ));
   }
 
-  @Mutation(() => GeminiSetupStateObject)
+  @Mutation(() => GeminiConfigurationCommandResultObject)
   async saveGeminiVertexExpress(
     @Arg('apiKey', () => String) apiKey: string,
     @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
-  ): Promise<GeminiSetupStateObject> {
-    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
-      { option: 'VERTEX_EXPRESS', apiKey },
-      activateAfterSave,
+  ): Promise<GeminiConfigurationCommandResultObject> {
+    return mapGeminiCommandResult(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'VERTEX_EXPRESS', apiKey }, activateAfterSave,
     ));
   }
 
-  @Mutation(() => GeminiSetupStateObject)
+  @Mutation(() => GeminiConfigurationCommandResultObject)
   async saveGeminiVertexProject(
     @Arg('project', () => String) project: string,
     @Arg('location', () => String) location: string,
     @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
-  ): Promise<GeminiSetupStateObject> {
-    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
-      { option: 'VERTEX_PROJECT', project, location },
-      activateAfterSave,
+  ): Promise<GeminiConfigurationCommandResultObject> {
+    return mapGeminiCommandResult(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'VERTEX_PROJECT', project, location }, activateAfterSave,
     ));
   }
 
-  @Mutation(() => GeminiSetupStateObject)
+  @Mutation(() => GeminiConfigurationCommandResultObject)
   async useGeminiMode(
     @Arg('mode', () => GeminiSetupModeGraphql) mode: GeminiSetupModeGraphql,
-  ): Promise<GeminiSetupStateObject> {
-    return mapGeminiSetup(await this.llmProviderService.activateGeminiOption(
+  ): Promise<GeminiConfigurationCommandResultObject> {
+    return mapGeminiCommandResult(await this.llmProviderService.activateGeminiOption(
       mode as GeminiConfigurationOption,
     ));
-  }
-
-  @Mutation(() => String)
-  async reloadLlmModels(
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<string> {
-    await this.runtimeModelCatalogService.reloadLlmModels(runtimeKind);
-    await this.runtimeModelCatalogService.reloadAudioModels(runtimeKind);
-    await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
-    await this.runtimeModelCatalogService.reloadVideoModels(runtimeKind);
-    return 'All models (LLM and Multimedia) reloaded successfully.';
-  }
-
-  @Mutation(() => String)
-  async reloadLlmProviderModels(
-    @Arg('providerId', () => String) providerId: string,
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<string> {
-    const count = await this.llmProviderService.reloadProviderModels(providerId, runtimeKind);
-    return `Reloaded ${count} models for provider ${providerId} successfully.`;
-  }
-
-  private groupMultimediaModels(
-    models: Array<AudioModel | ImageModel | VideoModel>,
-  ): ProviderWithModels[] {
-    const grouped = groupModelsByProvider(models.map(mapMultimediaModel));
-    return Array.from(grouped.entries())
-      .map(([providerId, items]) => ({
-        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
-        models: sortModels(items),
-      }))
-      .sort((left, right) => left.provider.name.localeCompare(right.provider.name));
   }
 }

@@ -1,100 +1,67 @@
-import { LLMFactory, OpenAICompatibleEndpointDiscovery } from 'autobyteus-ts';
-import type {
-  OpenAICompatibleEndpointReloadReport,
-  OpenAICompatibleEndpointReloadStatus,
+import {
+  OpenAICompatibleEndpointDiscovery,
+  OpenAICompatibleEndpointModelProvider,
+  type CustomLlmProviderRecord,
+  type OpenAICompatibleEndpointDiscoveredModel,
+  type OpenAICompatibleEndpointModel,
 } from 'autobyteus-ts';
-import type { CustomProviderReloadStatus } from '../domain/models.js';
 import { getSecretVaultRuntime } from '../../../secret-management/secret-vault-runtime.js';
 import {
   getCustomLlmProviderStore,
   type CustomLlmProviderStore,
 } from '../stores/custom-llm-provider-store.js';
 
-const buildNeverLoadedStatus = (providerId: string): CustomProviderReloadStatus => ({
-  providerId,
-  status: 'ERROR',
-  message: null,
-  modelCount: 0,
-  preservedPreviousModels: false,
-});
-
-const mapStatus = (status: OpenAICompatibleEndpointReloadStatus): CustomProviderReloadStatus => ({
-  providerId: status.endpointId,
-  status: status.status === 'NEVER_LOADED' ? 'ERROR' : status.status,
-  message: status.message ?? null,
-  modelCount: status.modelCount,
-  preservedPreviousModels: status.preservedPreviousModels,
-});
+export type PreparedCustomProviderModels = {
+  endpoint: CustomLlmProviderRecord;
+  models: OpenAICompatibleEndpointModel[];
+};
 
 export class CustomLlmProviderRuntimeSyncService {
-  private hasEverSynced = false;
-  private lastStatusesByProviderId = new Map<string, CustomProviderReloadStatus>();
-  private syncPromise: Promise<OpenAICompatibleEndpointReloadReport> | null = null;
+  private readonly modelProvider = new OpenAICompatibleEndpointModelProvider();
 
   constructor(
     private readonly customProviderStore: CustomLlmProviderStore = getCustomLlmProviderStore(),
   ) {}
 
-  async ensureSyncedForCatalogRead(): Promise<void> {
-    if (this.hasEverSynced) {
-      return;
+  async prepareProvider(providerId: string): Promise<PreparedCustomProviderModels> {
+    const endpoint = await this.customProviderStore.getProviderById(providerId);
+    if (!endpoint) throw new Error('CUSTOM_PROVIDER_NOT_FOUND');
+    let apiKey: string;
+    try {
+      const resolved = await getSecretVaultRuntime()
+        .requireService()
+        .resolveForUse({ kind: 'llmMetadata', providerId: endpoint.id, credentialSlot: 'apiKey' });
+      apiKey = resolved.revealToTrustedConsumer();
+    } catch {
+      throw new Error('CUSTOM_PROVIDER_CREDENTIAL_UNAVAILABLE');
     }
-    await this.syncSavedProviders();
-  }
-
-  async syncSavedProviders(): Promise<OpenAICompatibleEndpointReloadReport> {
-    if (!this.syncPromise) {
-      this.syncPromise = this.performSync().finally(() => {
-        this.syncPromise = null;
+    let discoveredModels: OpenAICompatibleEndpointDiscoveredModel[];
+    try {
+      discoveredModels = await OpenAICompatibleEndpointDiscovery.probeEndpoint({
+        baseUrl: endpoint.baseUrl,
+        apiKey,
       });
+    } catch {
+      throw new Error('CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE');
     }
-    return this.syncPromise;
+    return this.prepareRows(endpoint, discoveredModels);
   }
 
-  async clearUnavailableProviders(): Promise<void> {
-    await this.syncPromise?.catch(() => undefined);
-    await LLMFactory.syncOpenAICompatibleEndpointModels([]);
-    this.hasEverSynced = true;
-    this.lastStatusesByProviderId.clear();
-  }
-
-  getStatus(providerId: string): CustomProviderReloadStatus {
-    return this.lastStatusesByProviderId.get(providerId) ?? buildNeverLoadedStatus(providerId);
-  }
-
-  private async performSync(): Promise<OpenAICompatibleEndpointReloadReport> {
-    const savedProviders = await this.customProviderStore.listProviders();
-    const discoveryResults = await Promise.all(savedProviders.map(async (endpoint) => {
-      try {
-        const apiKey = await getSecretVaultRuntime()
-          .requireService()
-          .resolveForUse({ kind: 'llmMetadata', providerId: endpoint.id, credentialSlot: 'apiKey' });
-        const discoveredModels = await OpenAICompatibleEndpointDiscovery.probeEndpoint({
-          baseUrl: endpoint.baseUrl,
-          apiKey: apiKey.revealToTrustedConsumer(),
-        });
-        return { endpoint, discoveredModels };
-      } catch {
-        return { endpoint, errorMessage: 'CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE' };
-      }
-    }));
-    const report = await LLMFactory.syncOpenAICompatibleEndpointModels(discoveryResults);
-    this.hasEverSynced = true;
-    this.lastStatusesByProviderId = new Map(
-      report.statuses.map((status) => {
-        const mappedStatus = mapStatus(status);
-        return [mappedStatus.providerId, mappedStatus];
-      }),
-    );
-    return report;
+  async prepareRows(
+    endpoint: CustomLlmProviderRecord,
+    discoveredModels: OpenAICompatibleEndpointDiscoveredModel[],
+  ): Promise<PreparedCustomProviderModels> {
+    const report = await this.modelProvider.reloadSavedEndpoints([
+      { endpoint, discoveredModels },
+    ]);
+    const status = report.statuses[0];
+    if (!status || status.status !== 'READY') throw new Error('CUSTOM_PROVIDER_MODEL_MAPPING_FAILED');
+    return { endpoint, models: report.models };
   }
 }
 
-let cachedCustomLlmProviderRuntimeSyncService: CustomLlmProviderRuntimeSyncService | null = null;
-
+let singleton: CustomLlmProviderRuntimeSyncService | null = null;
 export const getCustomLlmProviderRuntimeSyncService = (): CustomLlmProviderRuntimeSyncService => {
-  if (!cachedCustomLlmProviderRuntimeSyncService) {
-    cachedCustomLlmProviderRuntimeSyncService = new CustomLlmProviderRuntimeSyncService();
-  }
-  return cachedCustomLlmProviderRuntimeSyncService;
+  singleton ??= new CustomLlmProviderRuntimeSyncService();
+  return singleton;
 };

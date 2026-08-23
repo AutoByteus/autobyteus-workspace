@@ -1,0 +1,336 @@
+## Removed aggregate operations in production sources
+autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:565:    providerSettings: {
+autobyteus-web/docs/settings.md:12:- `providerSettings` returns each provider once with one provider-owned
+
+## Removed aggregate operations in durable executable coverage
+rg: autobyteus-server-ts/test-support: No such file or directory (os error 2)
+autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:565:    providerSettings: {
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:193:      'providerSettings',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:194:      'availableLlmProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:195:      'availableAudioProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:196:      'availableImageProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:197:      'availableVideoProvidersWithModels',
+
+## Current split operations in edited durable coverage
+rg: autobyteus-server-ts/test-support: No such file or directory (os error 2)
+test-support/live-e2e/live-e2e-harness.ts:1442:        providerCredentialSettings: Array<{
+test-support/live-e2e/live-e2e-harness.ts:1448:          providerCredentialSettings(runtimeKind: "autobyteus") {
+test-support/live-e2e/live-e2e-harness.ts:1454:      const provider = data.providerCredentialSettings.find(
+autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts:702:          providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts:723:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts:733:    const geminiProvider = data.providerModelCatalogSnapshots.find(
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:67:      providerModelCatalogSnapshots: GraphqlProvider[];
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:70:        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:92:    const resultProvider = result.providerModelCatalogSnapshots.find(
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:281:      reloadProviderModelCatalog: GraphqlProvider;
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:284:        reloadProviderModelCatalog(
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:303:    expect(refreshed.reloadProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:335:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:341:        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:347:    expect(afterDelete.providerModelCatalogSnapshots).not.toEqual(expect.arrayContaining([
+autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts:350:    const remainingModelProviderIds = afterDelete.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts:45:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts:51:        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts:63:    return result.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:46:  providerCredentialSettings: Array<{
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:84:    providerCredentialSettings(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:105:    providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:139:  const credential = data.providerCredentialSettings.find(
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:412:        providerModelCatalogSnapshots: CatalogProvider[];
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:413:      }>(firstServer.serverUrl, catalogQuery)).providerModelCatalogSnapshots;
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:471:        providerModelCatalogSnapshots: CatalogProvider[];
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:472:      }>(secondServer.serverUrl, catalogQuery)).providerModelCatalogSnapshots;
+autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:321:          providerModelCatalogSnapshots: [],
+autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts:108:          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts:130:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts:141:    }).providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
+autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts:203:            providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts:220:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts:223:      }).providerModelCatalogSnapshots;
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:73:  providerModelCatalogSnapshots: [snapshot(
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:106:      data: { providerCredentialSettings: [setting('OPENAI', true)] },
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:159:      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'READY', ['known'])] },
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:162:      .mockResolvedValueOnce({ data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['known']) } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:168:    await store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:177:    reload.resolve({ data: { reloadProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current']) } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:186:      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'IDLE')] },
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:193:    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:195:    current.resolve({ data: { reloadProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current']) } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:197:    old.resolve({ data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['old']) } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:210:    const oldAction = store.ensureProviderModelCatalog('autobyteus', 'AUTOBYTEUS')
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:231:    current.resolve({ data: { ensureProviderModelCatalog: autobyteusMultimediaSnapshot('current') } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:233:    old.resolve({ data: { ensureProviderModelCatalog: autobyteusMultimediaSnapshot('old') } })
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:255:      data: { ensureProviderModelCatalog: snapshot('AUTOBYTEUS', 'READY', ['current-endpoint']) },
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:261:        providerModelCatalogSnapshots: [
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:295:    store.providerCredentialSettings = [{
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:304:    expect(store.providerCredentialSettings).toEqual([])
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:308:        providerModelCatalogSnapshots: [
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts:326:      data: { providerModelCatalogSnapshots: [snapshot('AUTOBYTEUS', 'READY', ['known'])] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:53:        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:69:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:80:      const minimaxModels = result.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:129:        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:147:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:160:      const anthropicModels = result.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:584:    providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:587:      providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } }
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:590:  const modelIdentifier = models.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:776:    providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:779:      providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } }
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:782:  const modelIdentifier = models.providerModelCatalogSnapshots
+autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts:35:    providerCredentialSettings: Array<{
+autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts:45:      providerCredentialSettings(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts:54:  const provider = result.providerCredentialSettings.find(
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:51:  providerCredentialSettings: Array<{
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:403:const providerCredentialSettings = (
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:408:      providerCredentialSettings(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:424:    ensureProviderModelCatalog: ProviderCatalogSnapshot;
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:427:      ensureProviderModelCatalog(
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:437:  const credentials = await providerCredentialSettings(serverUrl);
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:438:  const setting = credentials.providerCredentialSettings.find(
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:442:  expect(catalog.ensureProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:449:    catalog: catalog.ensureProviderModelCatalog,
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:562:    expect((await providerCredentialSettings(first.serverUrl)).providerCredentialSettings.some(
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:665:    expect((await providerCredentialSettings(server.serverUrl)).providerCredentialSettings.some(
+autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts:688:    expect((await providerCredentialSettings(server.serverUrl)).providerCredentialSettings.some(
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:54:  const providerCredentialSettings = () => execute<{
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:55:    providerCredentialSettings: ProviderCredentialSetting[];
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:58:      providerCredentialSettings(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:73:    (await providerCredentialSettings()).providerCredentialSettings.find(
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:78:    providerModelCatalogSnapshots: ProviderCatalogSnapshot[];
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:81:      providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:93:    (await providerCatalogSnapshots()).providerModelCatalogSnapshots.find(
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:189:      'providerCredentialSettings',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:190:      'providerModelCatalogSnapshots',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:208:      'ensureProviderModelCatalog',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:209:      'reloadProviderModelCatalog',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:220:    await providerCredentialSettings();
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:224:      const result = await providerCredentialSettings();
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:226:      expect(result.providerCredentialSettings.length).toBeGreaterThan(0);
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:384:    expect(catalogs.providerModelCatalogSnapshots.length).toBeGreaterThan(0);
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:385:    expect(catalogs.providerModelCatalogSnapshots.some(
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:442:          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:451:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:458:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts:331:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts:340:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts:345:    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:474:    const result = await execGraphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:475:      `query Models($runtimeKind: String) { providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }`,
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts:478:    const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean));
+autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts:472:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts:478:            providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts:488:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:363:          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:373:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:380:      const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:267:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:276:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:283:    const allModelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:289:      throw new Error("No Claude runtime model was returned by providerModelCatalogSnapshots.");
+autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts:398:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts:404:          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts:414:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:245:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:251:          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:261:    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts:281:      throw new Error("No Codex model identifier was returned by providerModelCatalogSnapshots.");
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:401:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:410:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:417:    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:455:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:464:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:471:    const allModelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts:482:        "No Codex runtime model was returned by providerModelCatalogSnapshots.",
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:222:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:231:      providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:238:    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:246:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:256:          providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:271:        const allModels = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:291:              : "No Codex runtime model was returned by providerModelCatalogSnapshots.",
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:440:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:446:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:450:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:479:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:485:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:489:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:522:        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:528:        providerModelCatalogSnapshots: Array<{
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:532:      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts:81:    await expect(createService().reloadProviderModelCatalog(LLMProvider.OPENAI, 'autobyteus'))
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts:111:    const first = await service.ensureProviderModelCatalog(LLMProvider.AUTOBYTEUS, 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts:120:    await service.ensureProviderModelCatalog(LLMProvider.AUTOBYTEUS, 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:13:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:29:    expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:34:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:49:    expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('OLLAMA', 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:53:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:72:    expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('AUTOBYTEUS', 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:76:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:87:    expect(catalog.ensureProviderModelCatalog).not.toHaveBeenCalled();
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:96:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:111:    expect(catalog.ensureProviderModelCatalog).toHaveBeenCalledWith('OLLAMA', 'autobyteus');
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:116:    const catalog = { ensureProviderModelCatalog: vi.fn().mockResolvedValue(undefined) };
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts:130:    expect(catalog.ensureProviderModelCatalog).not.toHaveBeenCalled();
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:6:  ensureProviderModelCatalog: vi.fn(),
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:7:  reloadProviderModelCatalog: vi.fn(),
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:78:    await expect(new LlmProviderResolver().providerCredentialSettings('autobyteus'))
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:196:    await expect(new LlmProviderResolver().providerModelCatalogSnapshots('autobyteus'))
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:217:    mockModelCatalogService.ensureProviderModelCatalog.mockResolvedValue(snapshot);
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:218:    mockModelCatalogService.reloadProviderModelCatalog.mockResolvedValue(snapshot);
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:221:    await expect(resolver.ensureProviderModelCatalog('AUTOBYTEUS', 'autobyteus'))
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:223:    await expect(resolver.reloadProviderModelCatalog('AUTOBYTEUS', 'autobyteus'))
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:225:    expect(mockModelCatalogService.ensureProviderModelCatalog)
+autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts:227:    expect(mockModelCatalogService.reloadProviderModelCatalog)
+
+## Intentional removed-schema absence assertions
+193:      'providerSettings',
+194:      'availableLlmProvidersWithModels',
+
+## Patch hygiene
+git diff --check: PASS
+
+## Worktree state
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts
+ M autobyteus-server-ts/src/api/graphql/types/llm-provider.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts
+ D autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+ D autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+ D autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+ M autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.ts
+ M autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts
+ D autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+ D autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+ D autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+ D autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+ D autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+ D autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+ D autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+ D autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+ M autobyteus-server-ts/src/services/server-settings-service.ts
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts
+ M autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts
+ M autobyteus-server-ts/tests/unit/llm-management/autobyteus-remote-model-discovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+ D autobyteus-server-ts/tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts
+ D autobyteus-server-ts/tests/unit/llm-management/providers/cached-llm-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/llm-management/providers/llm-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/llm-management/services/llm-model-service.test.js
+ M autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/audio-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/audio-model-provider.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-audio-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-audio-model-provider.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-image-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-image-model-provider.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/image-model-provider.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/providers/image-model-provider.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/services/audio-model-service.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/services/audio-model-service.test.ts
+ D autobyteus-server-ts/tests/unit/multimedia-management/services/image-model-service.test.js
+ D autobyteus-server-ts/tests/unit/multimedia-management/services/image-model-service.test.ts
+ M autobyteus-ts/src/clients/autobyteus-client-utils.ts
+ M autobyteus-ts/src/clients/autobyteus-client.ts
+ M autobyteus-ts/src/llm/autobyteus-provider.ts
+ M autobyteus-ts/src/llm/index.ts
+ M autobyteus-ts/src/llm/llm-factory.ts
+ M autobyteus-ts/src/llm/lmstudio-provider.ts
+ M autobyteus-ts/src/llm/models.ts
+ M autobyteus-ts/src/llm/ollama-provider.ts
+ M autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts
+ M autobyteus-ts/src/multimedia/audio/audio-client-factory.ts
+ M autobyteus-ts/src/multimedia/audio/audio-model.ts
+ M autobyteus-ts/src/multimedia/audio/autobyteus-audio-provider.ts
+ M autobyteus-ts/src/multimedia/image/autobyteus-image-provider.ts
+ M autobyteus-ts/src/multimedia/image/image-client-factory.ts
+ M autobyteus-ts/src/multimedia/image/image-model.ts
+ M autobyteus-ts/src/multimedia/index.ts
+ M autobyteus-ts/tests/unit/llm/autobyteus-provider.test.ts
+ M autobyteus-ts/tests/unit/llm/openai-compatible-endpoint-provider.test.ts
+ M autobyteus-web/components/settings/ProviderAPIKeyManager.vue
+ M autobyteus-web/components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+ M autobyteus-web/components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/ProviderApiKeyEditor.vue
+ M autobyteus-web/components/settings/providerApiKey/ProviderModelBrowser.vue
+ M autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue
+ M autobyteus-web/components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/customProvider/CustomProviderDetailsCard.vue
+ M autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts
+ M autobyteus-web/components/settings/useMediaDefaultModelsCard.ts
+ M autobyteus-web/composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts
+ M autobyteus-web/composables/messaging-binding-flow/launch-preset-model-selection.ts
+ M autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+ M autobyteus-web/generated/graphql.ts
+ M autobyteus-web/graphql/mutations/llm_provider_mutations.ts
+ M autobyteus-web/graphql/queries/llm_provider_queries.ts
+ M autobyteus-web/localization/messages/en/index.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/index.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+ M autobyteus-web/stores/agentRunStore.ts
+ M autobyteus-web/stores/llmProviderConfig.ts
+ M autobyteus-web/stores/llmProviderConfigSupport.ts
+ M autobyteus-web/stores/runHistoryDraftActions.ts
+ M autobyteus-web/stores/serverSettings.ts
+ M autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue
+ M autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs
+ M autobyteus-web/tests/stores/llmProviderConfigStore.test.ts
+ M autobyteus-web/tests/stores/serverSettingsStore.test.ts
+ M test-support/live-e2e/live-e2e-harness.ts
+?? autobyteus-server-ts/src/agent-execution/backends/autobyteus/available-llm-construction.ts
+?? autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts
+?? autobyteus-server-ts/src/llm-management/services/dynamic-model-source-lifecycle.ts
+?? autobyteus-server-ts/src/llm-management/services/model-availability-service.ts
+?? autobyteus-server-ts/tests/unit/llm-management/llm-providers/services/
+?? autobyteus-server-ts/tests/unit/llm-management/services/dynamic-model-source-lifecycle.test.ts
+?? autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts
+?? autobyteus-ts/src/llm/discovery-endpoint-identity.ts
+?? autobyteus-ts/src/llm/llm-model-pricing.ts
+?? autobyteus-ts/src/multimedia/model-identifier.ts
+?? autobyteus-ts/tests/unit/clients/autobyteus-client-utils.test.ts
+?? autobyteus-ts/tests/unit/llm/discovery-endpoint-identity.test.ts
+?? autobyteus-ts/tests/unit/llm/dynamic-model-identifiers.test.ts
+?? autobyteus-ts/tests/unit/multimedia/autobyteus-model-providers.test.ts
+?? autobyteus-web/components/settings/providerApiKey/ProviderModelSection.vue
+?? autobyteus-web/components/settings/providerApiKey/ProviderModelSectionGroup.vue
+?? autobyteus-web/components/settings/providerApiKey/customProvider/__tests__/
+?? autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+?? autobyteus-web/localization/messages/en/api-key-settings.ts
+?? autobyteus-web/localization/messages/en/package-migration-settings.ts
+?? autobyteus-web/localization/messages/en/token-usage-settings.ts
+?? autobyteus-web/localization/messages/zh-CN/api-key-settings.ts
+?? autobyteus-web/localization/messages/zh-CN/package-migration-settings.ts
+?? autobyteus-web/localization/messages/zh-CN/token-usage-settings.ts
+?? autobyteus-web/stores/llmProviderCatalogPublication.ts
+?? tickets/in-progress/api-key-management-panel-performance/

@@ -64,6 +64,8 @@ export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
 
   private static modelsByIdentifier: Map<string, ImageModel> = new Map();
+  private static modelIdsBySource = new Map<string, Set<string>>();
+  private static sourceByModelId = new Map<string, string>();
   private static initialized = false;
 
   constructor() {
@@ -83,11 +85,10 @@ export class ImageClientFactory extends Singleton {
 
   static reinitialize(): void {
     ImageClientFactory.ensureInitialized();
-    const retainedGatewayModels = Array.from(ImageClientFactory.modelsByIdentifier.values())
-      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
     ImageClientFactory.modelsByIdentifier.clear();
+    ImageClientFactory.modelIdsBySource.clear();
+    ImageClientFactory.sourceByModelId.clear();
     ImageClientFactory.initializeRegistry();
-    for (const model of retainedGatewayModels) ImageClientFactory.registerModel(model);
     ImageClientFactory.initialized = true;
   }
 
@@ -243,6 +244,57 @@ export class ImageClientFactory extends Singleton {
     ImageClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
+  static replaceSourceModels(sourceId: string, models: readonly ImageModel[]): number {
+    ImageClientFactory.ensureInitialized();
+    const source = sourceId.trim();
+    if (!source) throw new Error('IMAGE_MODEL_SOURCE_REQUIRED');
+    const identifiers = new Set<string>();
+    for (const model of models) {
+      const identifier = model.modelIdentifier;
+      if (identifiers.has(identifier)) throw new Error(`IMAGE_MODEL_SOURCE_DUPLICATE:${identifier}`);
+      identifiers.add(identifier);
+      const existing = ImageClientFactory.modelsByIdentifier.get(identifier);
+      if (existing && ImageClientFactory.sourceByModelId.get(identifier) !== source) {
+        throw new Error(`IMAGE_MODEL_SOURCE_COLLISION:${identifier}`);
+      }
+    }
+    for (const identifier of ImageClientFactory.modelIdsBySource.get(source) ?? []) {
+      ImageClientFactory.modelsByIdentifier.delete(identifier);
+      ImageClientFactory.sourceByModelId.delete(identifier);
+    }
+    ImageClientFactory.modelIdsBySource.set(source, new Set());
+    for (const model of models) {
+      ImageClientFactory.modelsByIdentifier.set(model.modelIdentifier, model);
+      ImageClientFactory.sourceByModelId.set(model.modelIdentifier, source);
+      ImageClientFactory.modelIdsBySource.get(source)!.add(model.modelIdentifier);
+    }
+    return models.length;
+  }
+
+  static removeSourceModels(sourceId: string): void {
+    ImageClientFactory.replaceSourceModels(sourceId, []);
+  }
+
+  static retainSourceModels(
+    sourceId: string,
+    predicate: (model: ImageModel) => boolean,
+  ): number {
+    const retained = ImageClientFactory.listSourceModels(sourceId).filter(predicate);
+    return ImageClientFactory.replaceSourceModels(sourceId, retained);
+  }
+
+  static listSourceModels(sourceId: string): ImageModel[] {
+    ImageClientFactory.ensureInitialized();
+    return Array.from(ImageClientFactory.modelIdsBySource.get(sourceId.trim()) ?? [])
+      .map((identifier) => ImageClientFactory.modelsByIdentifier.get(identifier))
+      .filter((model): model is ImageModel => Boolean(model));
+  }
+
+  static hasRegisteredModel(modelIdentifier: string): boolean {
+    ImageClientFactory.ensureInitialized();
+    return ImageClientFactory.modelsByIdentifier.has(modelIdentifier);
+  }
+
   private static requireModel(modelIdentifier: string): ImageModel {
     ImageClientFactory.ensureInitialized();
     const model = ImageClientFactory.modelsByIdentifier.get(modelIdentifier);
@@ -275,11 +327,7 @@ export class ImageClientFactory extends Singleton {
   static syncRuntimeModels(runtime: MultimediaRuntime, models: ImageModel[]): number {
     ImageClientFactory.ensureInitialized();
     if (models.some((model) => model.runtime !== runtime)) throw new Error('IMAGE_RUNTIME_MODEL_SYNC_INVALID');
-    for (const [identifier, model] of ImageClientFactory.modelsByIdentifier) {
-      if (model.runtime === runtime) ImageClientFactory.modelsByIdentifier.delete(identifier);
-    }
-    for (const model of models) ImageClientFactory.registerModel(model);
-    return models.length;
+    return ImageClientFactory.replaceSourceModels(String(runtime), models);
   }
 
   static listModels(): ImageModel[] {

@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-08-23T14:18:30.915Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "probe-readiness-timeout",
+      "url": "http://127.0.0.1:51421/__interrupt-result-presentation-probe?wsPort=51420",
+      "body": "Error 500\n\nCannot read properties of undefined (reading 'getRootTeamRunId')\n\nTypeError: Cannot read properties of undefined (reading 'getRootTeamRunId')\n    at Proxy.addTeamContext (http://127.0.0.1:51421/_nuxt/stores/agentTeamContextsStore.ts:38:42)\n    at Proxy.wrappedAction (http://127.0.0.1:51421/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=5f12ba4c:1067:18)\n    at store.<computed> (http://127.0.0.1:51421/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=5f12ba4c:745:44)\n    at http://127.0.0.1:51421/_nuxt/pages/__interrupt-result-presentation-probe.vue:104:25\n    at http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:3103:40\n    at callWithErrorHandling (http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:197:19)\n    at callWithAsyncErrorHandling (http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:204:17)\n    at hook.__weh.hook.__weh (http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:3083:19)\n    at flushPostFlushCbs (http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:382:28)\n    at flushJobs (http://127.0.0.1:51421/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=5f12ba4c:424:5)\nGo back home"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Fail",
+      "failure": {
+        "id": "SR008-BR-001",
+        "message": "page.waitForFunction: Timeout 30000ms exceeded.",
+        "stack": "page.waitForFunction: Timeout 30000ms exceeded.\n    at openFixture (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:304:18)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:324:31\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:198:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:323:3"
+      }
+    }
+  },
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "finalizer",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 12014,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic/evidence.json"
+    }
+  },
+  "failures": [
+    {
+      "id": "SR008-BR-001",
+      "message": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "stack": "page.waitForFunction: Timeout 30000ms exceeded.\n    at openFixture (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:304:18)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:324:31\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:198:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:323:3"
+    },
+    {
+      "id": "probe",
+      "message": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "stack": "page.waitForFunction: Timeout 30000ms exceeded.\n    at openFixture (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:304:18)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:324:31\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:198:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:323:3"
+    }
+  ],
+  "wsPort": 51420,
+  "nuxtPort": 51421,
+  "completedAt": "2026-08-23T14:19:34.600Z"
+}

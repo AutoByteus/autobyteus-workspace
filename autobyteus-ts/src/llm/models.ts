@@ -60,6 +60,46 @@ export interface ModelInfo {
   resolved_model_metadata: ResolvedModelMetadata | null;
 }
 
+export type HostScopedLlmModelIdentifier = {
+  modelName: string;
+  runtime: LLMRuntime.OLLAMA | LLMRuntime.LMSTUDIO | LLMRuntime.AUTOBYTEUS;
+  host: string;
+};
+
+const HOST_SCOPED_LLM_RUNTIMES = [
+  LLMRuntime.OLLAMA,
+  LLMRuntime.LMSTUDIO,
+  LLMRuntime.AUTOBYTEUS,
+] as const;
+
+export const buildHostScopedLlmModelIdentifier = (
+  modelName: string,
+  runtime: HostScopedLlmModelIdentifier['runtime'],
+  hostUrl: string,
+): string => {
+  let host = hostUrl;
+  try {
+    host = new URL(hostUrl).host;
+  } catch {
+    // Preserve the existing fallback for non-URL host values.
+  }
+  return `${modelName}:${runtime.toLowerCase()}@${host}`;
+};
+
+export const parseHostScopedLlmModelIdentifier = (
+  identifier: string,
+): HostScopedLlmModelIdentifier | null => {
+  for (const runtime of HOST_SCOPED_LLM_RUNTIMES) {
+    const marker = `:${runtime.toLowerCase()}@`;
+    const markerIndex = identifier.lastIndexOf(marker);
+    if (markerIndex <= 0) continue;
+    const host = identifier.slice(markerIndex + marker.length);
+    if (!host) return null;
+    return { modelName: identifier.slice(0, markerIndex), runtime, host };
+  }
+  return null;
+};
+
 export class LLMModel {
   private _name: string;
   private _value: string;
@@ -132,14 +172,11 @@ export class LLMModel {
       throw new Error(`hostUrl is required for runtime '${this.runtime}' on model '${this.name}'`);
     }
 
-    try {
-      const url = new URL(this.hostUrl);
-      const hostAndPort = url.host;
-      return `${this.name}:${this.runtime.toLowerCase()}@${hostAndPort}`;
-    } catch (error) {
-      console.error(`Failed to parse hostUrl '${this.hostUrl}' for identifier generation: ${error}`);
-      return `${this.name}:${this.runtime.toLowerCase()}@${this.hostUrl}`;
-    }
+    return buildHostScopedLlmModelIdentifier(
+      this.name,
+      this.runtime as HostScopedLlmModelIdentifier['runtime'],
+      this.hostUrl,
+    );
   }
 
   get name(): string { return this._name; }

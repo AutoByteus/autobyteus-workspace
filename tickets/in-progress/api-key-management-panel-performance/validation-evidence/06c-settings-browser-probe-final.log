@@ -1,0 +1,44 @@
+{
+  "result": "Fail",
+  "timings": {
+    "fullDocumentCredentialSurfaceMs": 1640,
+    "domContentLoadedMs": 326,
+    "credentialSurfaceAfterDomContentLoadedMs": 1314
+  },
+  "assertions": [
+    "credential surface visible within 1500ms of browser route DOM entry while Ollama discovery was pending"
+  ],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787494259032
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787494259033
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/path-a/api/tags",
+      "source": "path-a",
+      "at": 1787494256562
+    },
+    {
+      "method": "POST",
+      "path": "/path-a/api/show",
+      "source": "path-a",
+      "at": 1787494259206
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "error": "locator.waitFor: Error: strict mode violation: getByRole('heading', { name: 'Models' }) resolved to 4 elements:\n    1) <h3 id=\"provider-model-section-title\" class=\"text-sm font-semibold text-gray-900\">Models</h3> aka getByRole('heading', { name: 'Models', exact: true })\n    2) <h4 class=\"mb-2 text-xs font-bold uppercase tracking-wider text-gray-500\">LLM Models</h4> aka getByRole('heading', { name: 'LLM Models' })\n    3) <h4 class=\"mb-2 text-xs font-bold uppercase tracking-wider text-gray-500\">Audio Models</h4> aka getByRole('heading', { name: 'Audio Models' })\n    4) <h4 class=\"mb-2 text-xs font-bold uppercase tracking-wider text-gray-500\">Image Models</h4> aka getByRole('heading', { name: 'Image Models' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: 'Models' }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:251:55"
+}

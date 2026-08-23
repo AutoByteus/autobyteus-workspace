@@ -8,6 +8,11 @@ import {
   UPDATE_SERVER_SETTING,
 } from '~/graphql/mutations/server_settings_mutations'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
+import {
+  PROVIDER_SETTINGS_RUNTIME_KIND,
+  useLLMProviderConfigStore,
+  type DiscoverySettingCatalogTarget,
+} from '~/stores/llmProviderConfig'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
 export interface ServerSetting {
@@ -49,6 +54,32 @@ const defaultSearchConfig = (): SearchConfigState => ({
 })
 
 const APPLICATIONS_SETTING_KEY = 'ENABLE_APPLICATIONS'
+const DISCOVERY_SETTING_CATALOG_TARGETS: Readonly<Record<string, DiscoverySettingCatalogTarget>> = {
+  AUTOBYTEUS_LLM_SERVER_HOSTS: {
+    ownerProviderId: 'AUTOBYTEUS',
+    modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
+  },
+  OLLAMA_HOSTS: {
+    ownerProviderId: 'OLLAMA',
+    modelKinds: ['LLM'],
+  },
+  LMSTUDIO_HOSTS: {
+    ownerProviderId: 'LMSTUDIO',
+    modelKinds: ['LLM'],
+  },
+}
+
+const convergeModelCatalogAfterSettingCommit = (key: string): void => {
+  const target = DISCOVERY_SETTING_CATALOG_TARGETS[key]
+  if (!target) return
+  try {
+    void useLLMProviderConfigStore()
+      .convergeAfterDiscoverySettingCommit(PROVIDER_SETTINGS_RUNTIME_KIND, target)
+      .catch(() => undefined)
+  } catch {
+    // The confirmed settings write is authoritative; detached catalog convergence is best effort.
+  }
+}
 
 type ServerSettingsBindingAwareStore = {
   settings: ServerSetting[]
@@ -377,6 +408,7 @@ export const useServerSettingsStore = defineStore('serverSettings', {
         const responseMessage = data?.updateServerSetting
         
         if (responseMessage && responseMessage.includes("successfully")) {
+          convergeModelCatalogAfterSettingCommit(key)
           // Reload settings from server to ensure state is consistent
           await this.reloadServerSettings();
           if (key.trim().toUpperCase() === APPLICATIONS_SETTING_KEY) {

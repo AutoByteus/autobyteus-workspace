@@ -1,53 +1,55 @@
-import { LLMFactory } from 'autobyteus-ts';
 import type { AutobyteusDiscoveryAuthentication } from 'autobyteus-ts/clients/autobyteus-discovery-authentication.js';
 import { AutobyteusModelProvider } from 'autobyteus-ts/llm/autobyteus-provider.js';
-import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
-import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
+import { tryNormalizeDiscoveryEndpointIdentity } from 'autobyteus-ts/llm/discovery-endpoint-identity.js';
+import type { LLMModel } from 'autobyteus-ts/llm/models.js';
 import { AutobyteusAudioModelProvider } from 'autobyteus-ts/multimedia/audio/autobyteus-audio-provider.js';
-import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
+import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import { AutobyteusImageModelProvider } from 'autobyteus-ts/multimedia/image/autobyteus-image-provider.js';
-import { MultimediaRuntime } from 'autobyteus-ts/multimedia/runtimes.js';
+import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
 import { appConfigProvider } from '../../config/app-config-provider.js';
 import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-id.js';
 import { getSecretVaultRuntime } from '../../secret-management/secret-vault-runtime.js';
 import type { SecretManagementService } from '../../secret-management/services/secret-management-service.js';
+import type { DynamicSourcePreparation } from './dynamic-model-source-lifecycle.js';
 
 export type AutobyteusRemoteModelKind = 'llm' | 'audio' | 'image';
+export type AutobyteusRemoteModel = LLMModel | AudioModel | ImageModel;
+export const AUTOBYTEUS_MODEL_DISCOVERY_DEADLINE_MS = 30_000;
 
-const REMOTE_MODEL_KINDS = ['llm', 'audio', 'image'] as const;
-
-type InFlightDiscovery = {
-  generation: number;
-  hostsKey: string;
-  token: symbol;
-  promise: Promise<number>;
-};
-
+type DiscoveryRequestOptions = { signal?: AbortSignal | null };
 type DiscoveryPorts = {
-  discoverLlm: typeof AutobyteusModelProvider.getModels;
-  discoverAudio: typeof AutobyteusAudioModelProvider.getModels;
-  discoverImage: typeof AutobyteusImageModelProvider.getModels;
-  syncLlm: typeof LLMFactory.syncRuntimeModels;
-  syncAudio: typeof AudioClientFactory.syncRuntimeModels;
-  syncImage: typeof ImageClientFactory.syncRuntimeModels;
+  discoverLlm: (
+    host: string,
+    authentication: AutobyteusDiscoveryAuthentication,
+    options?: DiscoveryRequestOptions,
+  ) => Promise<LLMModel[]>;
+  discoverAudio: (
+    host: string,
+    authentication: AutobyteusDiscoveryAuthentication,
+    options?: DiscoveryRequestOptions,
+  ) => Promise<AudioModel[]>;
+  discoverImage: (
+    host: string,
+    authentication: AutobyteusDiscoveryAuthentication,
+    options?: DiscoveryRequestOptions,
+  ) => Promise<ImageModel[]>;
 };
+
+type HostAttempt =
+  | { kind: 'success'; models: AutobyteusRemoteModel[] }
+  | { kind: 'failure' };
 
 const defaultPorts: DiscoveryPorts = {
   discoverLlm: AutobyteusModelProvider.getModels.bind(AutobyteusModelProvider),
   discoverAudio: AutobyteusAudioModelProvider.getModels.bind(AutobyteusAudioModelProvider),
   discoverImage: AutobyteusImageModelProvider.getModels.bind(AutobyteusImageModelProvider),
-  syncLlm: LLMFactory.syncRuntimeModels.bind(LLMFactory),
-  syncAudio: AudioClientFactory.syncRuntimeModels.bind(AudioClientFactory),
-  syncImage: ImageClientFactory.syncRuntimeModels.bind(ImageClientFactory),
+};
+
+const isValidHost = (host: string): boolean => {
+  return tryNormalizeDiscoveryEndpointIdentity(host) !== null;
 };
 
 export class AutobyteusRemoteModelDiscoveryService {
-  private readonly completedHostsByKind = new Map<AutobyteusRemoteModelKind, string>();
-  private readonly modelCountsByKind = new Map<AutobyteusRemoteModelKind, number>();
-  private readonly generationsByKind = new Map<AutobyteusRemoteModelKind, number>();
-  private readonly inFlightByKind = new Map<AutobyteusRemoteModelKind, InFlightDiscovery>();
-  private readonly syncTailsByKind = new Map<AutobyteusRemoteModelKind, Promise<void>>();
-
   constructor(
     private readonly managementProvider: () => SecretManagementService = () =>
       getSecretVaultRuntime().requireService(),
@@ -56,56 +58,28 @@ export class AutobyteusRemoteModelDiscoveryService {
       return value.split(',').map((host) => host.trim()).filter(Boolean);
     },
     private readonly ports: DiscoveryPorts = defaultPorts,
+    private readonly signalFactory: (deadlineMs: number) => AbortSignal =
+      (deadlineMs) => AbortSignal.timeout(deadlineMs),
+    private readonly deadlineMs = AUTOBYTEUS_MODEL_DISCOVERY_DEADLINE_MS,
   ) {}
 
-  async ensureDiscovered(kind: AutobyteusRemoteModelKind): Promise<number> {
-    const hosts = this.hostsProvider();
-    const hostsKey = hosts.join(',');
-    if (this.completedHostsByKind.get(kind) === hostsKey) {
-      return this.modelCountsByKind.get(kind) ?? 0;
-    }
-    return this.run(kind, hosts, hostsKey);
+  configuredHosts(): string[] {
+    return this.hostsProvider()
+      .map((host) => host.trim())
+      .filter(Boolean)
+      .map((host) => tryNormalizeDiscoveryEndpointIdentity(host) ?? host);
   }
 
-  async refresh(kind: AutobyteusRemoteModelKind): Promise<number> {
-    const hosts = this.hostsProvider();
-    return this.run(kind, hosts, hosts.join(','));
+  fingerprint(kind: AutobyteusRemoteModelKind, credentialRevision: number): string {
+    return `${kind}|${this.configuredHosts().join(',')}|credential:${credentialRevision}`;
   }
 
-  invalidateAfterCredentialReplacement(): void {
-    this.invalidateDiscoveryLifecycle();
-  }
-
-  private run(kind: AutobyteusRemoteModelKind, hosts: string[], hostsKey: string): Promise<number> {
-    const currentGeneration = this.generationsByKind.get(kind) ?? 0;
-    const existing = this.inFlightByKind.get(kind);
-    if (
-      existing
-      && existing.generation === currentGeneration
-      && existing.hostsKey === hostsKey
-    ) return existing.promise;
-
-    const generation = this.advanceGeneration(kind);
-    const token = Symbol(`${kind}:${generation}`);
-    const operation = this.discoverAndSync(kind, hosts, hostsKey, generation)
-      .finally(() => {
-        if (this.inFlightByKind.get(kind)?.token === token) {
-          this.inFlightByKind.delete(kind);
-        }
-      });
-    this.inFlightByKind.set(kind, { generation, hostsKey, token, promise: operation });
-    return operation;
-  }
-
-  private async discoverAndSync(
-    kind: AutobyteusRemoteModelKind,
-    hosts: string[],
-    hostsKey: string,
-    generation: number,
-  ): Promise<number> {
-    if (hosts.length === 0) {
-      return this.publish(kind, generation, hostsKey, () => this.clear(kind));
-    }
+  async prepare(kind: AutobyteusRemoteModelKind): Promise<DynamicSourcePreparation<AutobyteusRemoteModel>> {
+    const hosts = this.configuredHosts();
+    if (hosts.length === 0) return { models: [], successfulUnitCount: 0, failedUnitCount: 0 };
+    const validHosts = hosts.filter(isValidHost);
+    const invalidHostCount = hosts.length - validHosts.length;
+    if (validHosts.length === 0) throw new Error('AUTOBYTEUS_MODEL_DISCOVERY_INVALID_HOSTS');
 
     const consumer: SecretConsumerIdentity = {
       kind: 'modelDiscovery',
@@ -113,96 +87,42 @@ export class AutobyteusRemoteModelDiscoveryService {
       providerId: 'AUTOBYTEUS',
       credentialSlot: 'apiKey',
     };
+    let authentication: AutobyteusDiscoveryAuthentication;
     try {
-      const apiKey = await this.managementProvider().resolveForUse(consumer);
-      const authentication: AutobyteusDiscoveryAuthentication = { apiKey };
-      return await this.discover(kind, hosts, hostsKey, generation, authentication);
+      authentication = { apiKey: await this.managementProvider().resolveForUse(consumer) };
     } catch {
-      if (!this.isCurrentGeneration(kind, generation)) {
-        return this.modelCountsByKind.get(kind) ?? 0;
-      }
-      throw new Error(`AUTOBYTEUS_${kind.toUpperCase()}_DISCOVERY_FAILED`);
+      throw new Error('AUTOBYTEUS_MODEL_DISCOVERY_CREDENTIAL_UNAVAILABLE');
     }
+
+    const attempts = await Promise.all(validHosts.map((host) =>
+      this.attemptHost(kind, host, authentication)));
+    const successes = attempts.filter(
+      (attempt): attempt is Extract<HostAttempt, { kind: 'success' }> => attempt.kind === 'success',
+    );
+    if (successes.length === 0) throw new Error('AUTOBYTEUS_MODEL_DISCOVERY_UNAVAILABLE');
+    return {
+      models: successes.flatMap((attempt) => attempt.models),
+      successfulUnitCount: successes.length,
+      failedUnitCount: invalidHostCount + attempts.length - successes.length,
+    };
   }
 
-  private async discover(
+  private async attemptHost(
     kind: AutobyteusRemoteModelKind,
-    hosts: string[],
-    hostsKey: string,
-    generation: number,
+    host: string,
     authentication: AutobyteusDiscoveryAuthentication,
-  ): Promise<number> {
-    switch (kind) {
-      case 'llm': {
-        const models = await this.ports.discoverLlm(hosts, authentication);
-        return this.publish(kind, generation, hostsKey, () =>
-          this.ports.syncLlm(LLMRuntime.AUTOBYTEUS, models));
+  ): Promise<HostAttempt> {
+    try {
+      const options = { signal: this.signalFactory(this.deadlineMs) };
+      if (kind === 'llm') {
+        return { kind: 'success', models: await this.ports.discoverLlm(host, authentication, options) };
       }
-      case 'audio': {
-        const models = await this.ports.discoverAudio(hosts, authentication);
-        return this.publish(kind, generation, hostsKey, () =>
-          this.ports.syncAudio(MultimediaRuntime.AUTOBYTEUS, models));
+      if (kind === 'audio') {
+        return { kind: 'success', models: await this.ports.discoverAudio(host, authentication, options) };
       }
-      case 'image': {
-        const models = await this.ports.discoverImage(hosts, authentication);
-        return this.publish(kind, generation, hostsKey, () =>
-          this.ports.syncImage(MultimediaRuntime.AUTOBYTEUS, models));
-      }
-    }
-  }
-
-  private publish(
-    kind: AutobyteusRemoteModelKind,
-    generation: number,
-    hostsKey: string,
-    synchronize: () => number | Promise<number>,
-  ): Promise<number> {
-    const predecessor = this.syncTailsByKind.get(kind) ?? Promise.resolve();
-    const operation = predecessor.catch(() => undefined).then(async () => {
-      if (!this.isCurrentGeneration(kind, generation)) {
-        return this.modelCountsByKind.get(kind) ?? 0;
-      }
-
-      const count = await synchronize();
-      if (!this.isCurrentGeneration(kind, generation)) {
-        return this.modelCountsByKind.get(kind) ?? 0;
-      }
-
-      this.completedHostsByKind.set(kind, hostsKey);
-      this.modelCountsByKind.set(kind, count);
-      return count;
-    });
-    this.syncTailsByKind.set(kind, operation.then(() => undefined, () => undefined));
-    return operation;
-  }
-
-  private advanceGeneration(kind: AutobyteusRemoteModelKind): number {
-    const generation = (this.generationsByKind.get(kind) ?? 0) + 1;
-    this.generationsByKind.set(kind, generation);
-    return generation;
-  }
-
-  private invalidateDiscoveryLifecycle(): void {
-    for (const kind of REMOTE_MODEL_KINDS) {
-      this.advanceGeneration(kind);
-      this.inFlightByKind.delete(kind);
-      this.completedHostsByKind.delete(kind);
-      this.modelCountsByKind.delete(kind);
-    }
-  }
-
-  private isCurrentGeneration(kind: AutobyteusRemoteModelKind, generation: number): boolean {
-    return this.generationsByKind.get(kind) === generation;
-  }
-
-  private async clear(kind: AutobyteusRemoteModelKind): Promise<number> {
-    switch (kind) {
-      case 'llm':
-        return this.ports.syncLlm(LLMRuntime.AUTOBYTEUS, []);
-      case 'audio':
-        return this.ports.syncAudio(MultimediaRuntime.AUTOBYTEUS, []);
-      case 'image':
-        return this.ports.syncImage(MultimediaRuntime.AUTOBYTEUS, []);
+      return { kind: 'success', models: await this.ports.discoverImage(host, authentication, options) };
+    } catch {
+      return { kind: 'failure' };
     }
   }
 }

@@ -360,8 +360,8 @@ runLiveContextFileRuntimeE2e(
     const fetchModelIdentifier = async (): Promise<string> => {
       const query = `
         query Models($runtimeKind: String) {
-          availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-            models {
+          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+            llmModels {
               modelIdentifier
               activeContextTokens
             }
@@ -370,14 +370,14 @@ runLiveContextFileRuntimeE2e(
       `;
 
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          models: DiscoveredModel[];
+        providerModelCatalogSnapshots: Array<{
+          llmModels: DiscoveredModel[];
         }>;
       }>(query, {
         runtimeKind: "autobyteus",
       });
 
-      const models = result.availableLlmProvidersWithModels.flatMap((provider) => provider.models);
+      const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
       if (models.length === 0) {
         throw new Error("No AutoByteus LM Studio model identifier was returned for context-file E2E.");
       }

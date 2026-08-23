@@ -64,7 +64,7 @@
             {{ $t('settings.components.settings.ProviderAPIKeyManager.api_key') }}
           </label>
           <span
-            v-if="setup.apiKeyConfigured"
+            v-if="configured"
             class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700"
             data-testid="qwen-api-key-configured"
           >
@@ -82,7 +82,7 @@
             :disabled="saving"
             :aria-invalid="Boolean(validationMessage)"
             aria-describedby="qwen-validation-error"
-            :placeholder="setup.apiKeyConfigured
+            :placeholder="configured
               ? $t('settings.components.settings.ProviderAPIKeyManager.enter_new_key_to_update')
               : $t('settings.components.settings.ProviderAPIKeyManager.enter_api_key')"
             @input="emit('clear-error')"
@@ -157,6 +157,7 @@ import type { QwenConfigurationInput, QwenSetupStatus } from '~/stores/llmProvid
 
 const props = defineProps<{
   setup: QwenSetupStatus
+  configured: boolean
   saving: boolean
   resetVersion: number
   errorMessage?: string | null

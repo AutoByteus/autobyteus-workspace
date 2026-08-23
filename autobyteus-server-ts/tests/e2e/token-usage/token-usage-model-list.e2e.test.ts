@@ -50,11 +50,11 @@ describe('token usage related model-list GraphQL coverage', () => {
 
     const query = `
       query AvailableModels {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider {
+        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+          ownerProvider {
             id
           }
-          models {
+          llmModels {
             modelIdentifier
             name
             value
@@ -66,9 +66,9 @@ describe('token usage related model-list GraphQL coverage', () => {
 
     try {
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          provider: { id: string };
-          models: Array<{
+        providerModelCatalogSnapshots: Array<{
+          ownerProvider: { id: string };
+          llmModels: Array<{
             modelIdentifier: string;
             name: string;
             value: string;
@@ -77,9 +77,9 @@ describe('token usage related model-list GraphQL coverage', () => {
         }>;
       }>(query);
 
-      const minimaxModels = result.availableLlmProvidersWithModels
-        .filter((row) => row.provider.id === 'MINIMAX')
-        .flatMap((row) => row.models);
+      const minimaxModels = result.providerModelCatalogSnapshots
+        .filter((row) => row.ownerProvider.id === 'MINIMAX')
+        .flatMap((row) => row.llmModels);
       const identifiers = minimaxModels.map((model) => model.modelIdentifier);
       const namesAndValues = minimaxModels.flatMap((model) => [
         model.name,
@@ -126,11 +126,11 @@ describe('token usage related model-list GraphQL coverage', () => {
 
     const query = `
       query AnthropicModels {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider {
+        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+          ownerProvider {
             id
           }
-          models {
+          llmModels {
             modelIdentifier
             name
             value
@@ -144,9 +144,9 @@ describe('token usage related model-list GraphQL coverage', () => {
 
     try {
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          provider: { id: string };
-          models: Array<{
+        providerModelCatalogSnapshots: Array<{
+          ownerProvider: { id: string };
+          llmModels: Array<{
             modelIdentifier: string;
             name: string;
             value: string;
@@ -157,9 +157,9 @@ describe('token usage related model-list GraphQL coverage', () => {
         }>;
       }>(query);
 
-      const anthropicModels = result.availableLlmProvidersWithModels
-        .filter((row) => row.provider.id === 'ANTHROPIC')
-        .flatMap((row) => row.models);
+      const anthropicModels = result.providerModelCatalogSnapshots
+        .filter((row) => row.ownerProvider.id === 'ANTHROPIC')
+        .flatMap((row) => row.llmModels);
       const byIdentifier = new Map(anthropicModels.map((model) => [model.modelIdentifier, model]));
       const identifiers = anthropicModels.map((model) => model.modelIdentifier);
       const namesAndValues = anthropicModels.flatMap((model) => [

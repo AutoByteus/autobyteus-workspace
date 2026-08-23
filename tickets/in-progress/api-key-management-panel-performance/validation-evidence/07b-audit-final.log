@@ -1,0 +1,1380 @@
+## Production executable source: removed GraphQL contract names (expect none)
+RESULT: no removed GraphQL operation is executable in production source.
+
+## Durable executable coverage: removed GraphQL contract names
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:194:      'availableLlmProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:195:      'availableAudioProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:196:      'availableImageProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:197:      'availableVideoProvidersWithModels',
+RESULT: no executable durable query uses a removed operation.
+
+## Intentional schema-absence assertions (not executable queries)
+193:      'providerSettings',
+194:      'availableLlmProvidersWithModels',
+195:      'availableAudioProvidersWithModels',
+196:      'availableImageProvidersWithModels',
+197:      'availableVideoProvidersWithModels',
+
+## Non-contract lexical false positive
+565:    providerSettings: {
+CLASSIFICATION: evidence-object label only; not a GraphQL operation or compatibility alias.
+
+## Documentation follow-up signal
+/bin/bash: line 26: providerSettings: command not found
+1:# Agent Execution Architecture
+2:
+3:## Overview
+4:
+5:This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
+6:
+7:## Provider Credential Settings
+8:
+9:Settings -> API Key Management is a write-only credential surface backed by the
+10:server's centralized encrypted vault:
+11:
+12:- `providerSettings` returns each provider once with one provider-owned
+13:  `apiKeyConfigured` fact and credential-independent subordinate LLM, audio,
+14:  image, and video model lists;
+15:- stored credential values are never returned;
+16:- ordinary built-in providers support Save/create-or-overwrite and value-free
+17:  configured status, with no standalone credential-removal action;
+18:- Gemini uses its specialized three-option Settings flow for Save/overwrite,
+19:  first-time Save-and-use, and Use-this-mode;
+20:- Gemini initially renders three compact option rows. Configure expands and
+21:  focuses exactly one editor at a time. Key inputs remain write-only password
+22:  fields, the visibility control affects only the transient typed value, and a
+23:  successful save clears that input;
+24:- Qwen uses a dedicated Base URL + API-key form rather than the ordinary
+25:  built-in key-only editor. Both values are required; the URL must be absolute
+26:  HTTP(S), and the server probes its `/models` contract before persistence. The
+27:  key stays write-only and is cleared after a successful committed mutation;
+28:- Qwen renders the server-owned `DEFAULT` or `CONFIGURED` endpoint source and
+29:  value-free key status. It never infers configured state by comparing the
+30:  effective URL with a frontend default. A failed durable URL commit reports
+31:  that the previous pair was restored; the bounded double-failure result tells
+32:  the user to save a valid pair again before using Qwen;
+33:- configured and active state are value-free badges derived from the
+34:  authoritative setup state and remain accurate after a Settings reload; and
+35:- successful commands refetch the provider-centered Settings read so the UI
+36:  reflects authoritative provider and catalog state.
+37:
+38:A successful Qwen mutation is the committed setup result. The client then
+39:refreshes both provider settings and the model catalog so the saved endpoint and
+40:the exact Qwen catalog (`qwen3.8-max`, `deepseek-v4-pro`,
+41:`deepseek-v4-flash-0731`, and `glm-5.2`) converge in the UI. Live catalog rows
+42:show the friendly names `DeepSeek V4 Pro (Qwen)`,
+43:`DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` across Settings and the
+44:shared agent, team, application/member, and binding selection paths. Their
+45:option values remain the collision-safe `qwen:...` model identifiers, and Qwen
+46:provider requests continue to send the exact unprefixed model values. A stored
+47:selector missing from the live catalog remains visible by its raw identifier
+48:for repair instead of receiving a guessed friendly name. If a subordinate
+49:refresh fails, the UI keeps the committed configured state and shows a warning
+50:rather than relabeling the save as failed. Global and selected-provider reloads
+51:likewise await both provider-settings and catalog refresh owners before showing
+52:success; either refresh failure keeps the operation in its failure path. The
+53:removed `qwen3.8-max-preview` value must not reappear after save, reload, or
+54:recovery.
+55:
+56:Custom OpenAI-compatible provider drafts still accept an API key for the probe
+57:and create transaction, but only non-secret provider metadata is persisted in
+58:the strict V3 custom-provider JSON file. The server derives an immutable
+59:readable ID from the normalized name (for example `provider_alibaba_cloud`) and
+60:atomically rejects invalid names or canonical-name/ID collisions; the browser
+61:does not submit an ID. The credential is stored separately, and deleting the
+62:custom provider through the provider-entity lifecycle removes both its
+63:credential and metadata. AutoByteus gateway models retain their downstream
+64:display provider while credential configuration remains owned by the
+65:`AUTOBYTEUS` gateway provider.
+66:
+67:An upgrade from legacy UUID providers deliberately resets provider records,
+68:Base URLs, and credentials after migrating only exact allowlisted selector
+69:prefixes. The user recreates each desired provider through the same custom
+70:provider form with name, Base URL, and a new key. Reusing the same canonical
+71:name regenerates the readable prefix embedded in migrated selectors; a changed
+72:name or missing model suffix requires manual reselection. During the
+73:provider-absent interval, saved selectors remain visible as unavailable and
+74:block launch/resume instead of silently clearing or falling back. In
+75:particular, application agent launch profiles retain the raw missing value and
+76:show unavailable guidance until the user selects an advertised model.
+77:
+78:See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
+79:migration, runtime resolution, Claude authentication, and real-E2E operator
+80:contracts.
+81:
+82:## Server Settings: Working-Context Compaction
+83:
+84:Settings -> Server Settings -> Basics contains the global Compaction card. Its
+85:strategy selector is registry-backed and node-bound:
+86:
+87:- `getWorkingContextCompactionStrategies` supplies available `{ id, name }`
+88:  options from the bound server;
+89:- `getEffectiveWorkingContextCompactionStrategyId` supplies the normalized ID
+90:  runtime will attempt and is the card's clean baseline; and
+91:- generic server settings supply trigger ratio, active-context token override,
+92:  and detailed-log values.
+93:
+94:Absent or blank strategy configuration is returned as effective
+95:`structured-json` without writing that default merely because the card loaded or
+96:another field was saved. An explicit unknown ID remains visible as unavailable
+97:until the user selects a catalog option. Catalog or effective-read failures keep
+98:strategy selection unavailable and expose Retry rather than guessing from a web
+99:constant or catalog order.
+100:
+101:Save builds a deterministic list of changed valid fields and awaits the existing
+102:one-setting mutation for each key. It stops on the first failure; prior successful
+103:writes remain authoritative, while the failed and unsent drafts stay dirty for a
+104:remaining-only retry. The card never claims transactionality or whole-card
+105:success after a partial failure. Initial settings-read failure is owned by the
+106:Server Settings manager and also provides an accessible Retry path.
+107:
+108:The Compaction card does not fetch agent definitions or expose a compactor-agent
+109:selector. `structured-json` uses the server's fixed built-in Memory Compactor and
+110:inherits its blank runtime/model launch fields from the parent run. The card
+111:stacks navigation/content and uses full-width controls on narrow screens while
+112:retaining the desktop sidebar row.
+113:
+114:## Server Migrations: Status Evidence
+115:
+116:Settings -> Server Migrations consumes the server-owned migration-record
+117:projection. A completed attempt exposes one nullable plain-text summary in the
+118:canonical form `Scanned N; migrated N; skipped N; failed N.` together with its
+119:status, attempt/timing metadata, concise error, and detailed-log path. A record
+120:with no terminal attempt may have no summary.
+121:
+122:The table renders that summary as opaque text; it does not parse counts, accept
+123:the released `summary_json` shape, or expose expandable item details. The
+124:runner's per-attempt filesystem log remains the detailed evidence destination:
+125:it contains the four counts and every item diagnostic returned by the
+126:migration definition, while the database, GraphQL response, store, and Settings
+127:table stay independent of source cardinality. The displayed `logPath` is a
+128:reference only; the frontend does not read or validate historical log files.
+129:
+130:## Server Migrations: Recovery Actions
+131:
+132:Settings -> Server Migrations renders recovery policy supplied by the server;
+133:it does not derive policy from migration IDs, statuses, or execution metadata.
+134:Each migration status carries one action:
+135:
+136:- `MANUAL_RETRY`: Retry is enabled and dispatches the existing retry mutation;
+137:- `RESTART_TO_RETRY`: Retry stays disabled, no mutation is dispatched, and the
+138:  card shows localized guidance that AutoByteus must be restarted for another
+139:  ordinary startup attempt; or
+140:- `NONE`: no retry action or restart promise is presented.
+141:
+142:The restart-only guidance is available in English and zh-CN. It describes the
+143:actual startup runner path, not a frontend workaround: a failed or stale
+144:required startup-only migration may run on the next ordinary application
+145:startup, while direct manual execution remains unavailable. Transport and UI
+146:state retain the non-null server action; `canRetry` remains true only for
+147:`MANUAL_RETRY`.
+148:
+149:## Server Settings: Live Response Streaming
+150:
+151:Settings -> Server Settings -> Basics contains a node-bound **Live response
+152:update interval (ms)** card. It controls the sole normal WebSocket content
+153:cadence on the server selected by the current window; it is not a per-agent,
+154:per-team, runtime, provider, or frontend-renderer preference.
+155:
+156:- `getEffectiveStreamingContentFlushIntervalMs` returns the bound server's
+157:  effective value. An absent or invalid direct configuration resolves to the
+158:  recommended default of 500 ms without writing configuration merely because
+159:  the card loaded.
+160:- Save accepts only whole milliseconds from 100 through 2,000 and persists the
+161:  canonical `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` setting through the
+162:  existing server-setting mutation. Reset writes 500 ms.
+163:- A successful change affects the next newly opened content window on active
+164:  and future streams without restarting the application or server. A window
+165:  already in flight keeps the interval captured when it opened.
+166:- The value configures the pipeline's one content scheduler only. The same
+167:  per-connection pipeline also forwards first/changed `AGENT_STATUS` payloads
+168:  and suppresses exact repeats by enriched standalone/member/task identity;
+169:  that status policy is not a user-tunable cadence setting. Reconnect creates a
+170:  fresh status baseline, and canonical runtime subscribers remain unfiltered.
+171:- Smaller values display live progress more frequently; larger values reduce
+172:  transport and UI update work. The frontend adds no second cadence timer.
+173:- Loading, mutation, validation, and unavailable-node failures remain explicit.
+174:  Rebinding the window reads the newly bound server's effective value, so two
+175:  nodes can legitimately retain different settings without cross-node leakage.
+176:
+177:The data flow follows a top-down approach:
+178:
+179:1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.
+180:2.  **Service Layer (Event Routing)**: Dispatches incoming structured WebSocket events to specific handlers.
+181:3.  **Segment Processing (Handlers)**: Updates the reactive `AgentContext` and sidecar stores based on event payloads.
+182:
+183:```mermaid
+184:graph TD
+185:    User-->|Input| Store[Pinia Store Layer]
+186:    Store-->|Mutation| Backend[Backend API]
+187:    Backend-->|WebSocket Event| Store
+188:    Store-->|Event Data| Service[Service Layer]
+189:
+190:    Service-->|Dispatch| Handler{Event Handlers}
+191:
+192:    Handler-->|Segment Created/Updated| Context[Agent Context State]
+193:    Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
+194:    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+195:    Handler-->|Activity Log| ActivityStore[Activity Store]
+196:    Handler-->|Backend TODO/progress update| TodoStore[Todo Store]
+197:    Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
+198:
+199:    Context-->|Reactivity| UI[Vue Component UI]
+200:    RunFileChangeStore-->|Reactivity| UI
+201:    TeamCommunicationStore-->|Reactivity| UI
+202:    ActivityStore-->|Reactivity| UI
+203:    UsageMeterStore-->|Reactivity| UI
+204:```
+205:
+206:---
+207:
+208:## Level 1: Orchestration Layer (Stores)
+209:
+210:The Pinia stores act as the primary interface for the UI components to interact with the agent backend. They are responsible for initiating actions (Mutations) and listening for updates (WebSocket streams).
+211:
+212:### `agentRunStore.ts` (Single Agents)
+213:
+214:- **Role**: Manages the execution lifecycle of individual agents.
+215:- **Key Actions**:
+216:  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+217:  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
+218:  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
+219:  - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
+220:  - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
+221:  - `closeAgent()`: Cleans up local state and unsubscribes.
+222:
+223:### `agentTeamRunStore.ts` (Agent Teams)
+224:
+225:- **Role**: Owns Team launch, restore, exact execution focus, Team stream
+226:  attachment, message submission, interrupt, and termination.
+227:- **Key Actions**:
+228:  - `launchDraft()`: synchronously admits the selected immutable draft before
+229:    allocation, validates rooted member-address launch readiness, creates the
+230:    backend TeamRun, hydrates its canonical topology/execution state, transfers
+231:    draft inputs, promotes the draft exactly once, and releases the launch lock
+232:    on success or failure. Pending edits, focus/input/workspace/removal/clear,
+233:    selection changes, and duplicate launch allocation are rejected.
+234:  - `connectToTeamStream(rootTeamRunId)`: attaches one `TeamStreamingService` to
+235:    the root TeamRun and its canonical `AgentTeamContext`. Transport readiness is
+236:    separate from root Team liveness and leaf Agent status. The service accepts
+237:    the initial structural snapshot as its sequence base and then requires exact
+238:    next-sequence admission for every live execution message. The first gap is
+239:    rejected before Team or Agent conversation mutation, enters the persistent
+240:    `reopen_required` phase once, closes the stale transport, and blocks commands
+241:    and ordinary reconnect rather than silently dropping later output.
+242:  - Team-stream recovery is an explicit history-selection workflow, not a
+243:    structural-snapshot refresh. Reselecting a member performs a root execution
+244:    checkpoint, exact per-Agent conversation hydration, and a second checkpoint;
+245:    open work or a changed checkpoint produces localized wait/retry feedback and
+246:    leaves the failed context selected. Only a candidate stream whose snapshot
+247:    base equals the stable checkpoint can atomically replace the failed service
+248:    and fully hydrated context.
+249:  - `sendMessageToFocusedMember()`: uses the focused exact
+250:    `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
+251:    `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
+252:    necessary, requires an exact Agent execution, begins one local submission,
+253:    finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
+254:    required `message_id`, and required `dedupe_key`. Invalid, stale, non-Agent,
+255:    or cross-root identity fails closed; there is no structural-template,
+256:    route-key, display-name, or generated-id fallback.
+257:  - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
+258:    fresh command id and the exact execution address. `TeamStreamingService`
+259:    completes the pending command only when `AGENT_COMMAND_ACK` matches both.
+260:    Accepted acknowledgement is admission, not an optimistic status change.
+261:  - `postToolExecutionApproval()`: reuses the exact execution address captured
+262:    from the authoritative `agent_execution` event. It never rebuilds a target
+263:    from current focus or invocation-id/display aliases.
+264:  - `terminateTeamRun()`: calls backend termination before local teardown for a
+265:    persisted TeamRun and preserves the active local state on failure.
+266:
+267:### Stopped-Run Follow-Up Recovery
+268:
+269:Single-agent and team follow-up chat share the same backend-owned recovery
+270:principle, but the standalone runtime activation boundary is now the
+271:`SEND_MESSAGE` command:
+272:
+273:- frontend single-agent stores do not call `RestoreAgentRun` as a send precondition; team stores may still use the team restore/resolve path owned by the team container;
+274:- standalone WebSocket connect can attach to an inactive durable run identity without restoring it, and standalone `SEND_MESSAGE` is the backend-owned recoverable command that publishes `initializing`, restores/activates, and forwards the message;
+275:- team WebSocket connect and `SEND_MESSAGE` remain restore-aware through the team container, so follow-up chat can still recover stopped-but-persisted team runs when the frontend cache is stale, missing, or was updated after a local stop;
+276:- accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
+277:- interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
+278:
+279:Tool approval controls use the selected active context only. Inline approval
+280:buttons route `APPROVE_TOOL` / `DENY_TOOL` through the appropriate streaming
+281:service. For Team streams, each tool event carries a strict `agent_execution`
+282:binding. `TeamToolApprovalTargetTracker` captures its exact
+283:`TeamExecutionAddress` by invocation id, and approval/denial serializes
+284:`{invocation_id, execution_address, reason}`. A focus change cannot retarget the
+285:command. Missing or malformed execution identity fails closed; the frontend does
+286:not reconstruct it from member paths, route aliases, generated instance ids, or
+287:invocation ids. Authoritative lifecycle remains the backend's later
+288:`TOOL_APPROVED`, `TOOL_DENIED`, `TOOL_EXECUTION_*`, `ERROR`, and status events.
+289:A visible tool card is not by itself approval authority.
+290:
+291:Interrupt dispatch and interrupt result are control traffic, not lifecycle or
+292:transcript events. Both streaming services register the fresh command id and
+293:exact target before send, reject non-connected states locally, roll back a
+294:synchronous send failure, and delete-guard acknowledgement/disconnect completion
+295:so each admitted command completes at most once. Team acknowledgement matching
+296:runs before member/task projection. A rejected/failed result or local transport
+297:failure creates one target-aware toast; it does not append an `ErrorSegment`,
+298:change agent/member/root activity, retry, or fabricate a server acknowledgement.
+299:An accepted result means provider/runtime admission only. The frontend keeps the
+300:affected single run or focused team member in its current sending state until
+301:`TURN_COMPLETED`, `AGENT_STATUS`, or terminal stream handling clears that state,
+302:so Stop remains visible until the provider cancellation boundary has settled.
+303:
+304:### Runtime Status And Interrupt Authority
+305:
+306:The frontend lifecycle model deliberately separates leaf status, root liveness,
+307:and transport state:
+308:
+309:- single-agent and exact leaf-agent status uses `offline`, `initializing`, `idle`, `running`, and `error`;
+310:- single-agent `AGENT_STATUS` payloads are
+311:  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+312:- root team liveness uses `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` and is
+313:  stored as `AgentTeamContext.isActive`;
+314:- WebSocket connection state is stored separately as `AgentTeamContext.isSubscribed`;
+315:- team member interrupt authority comes from the selected member's most recent
+316:  `AGENT_STATUS.can_interrupt` value, never from root liveness; and
+317:- legacy transition-field names and detailed runtime
+318:  phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
+319:  are not part of the frontend WebSocket status contract.
+320:
+321:Runtime adapters may still use richer provider/native status internally. The
+322:server boundary projects those details into the coarse API status and computes
+323:`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+324:remains a local submit-flight and disabled-input signal only; it must not be
+325:used to show the stop button or to infer that an interrupt can be accepted.
+326:When the backend accepts a standalone `SEND_MESSAGE` command for an inactive or
+327:prepared run identity, `AgentRunCommandCoordinator` is responsible for
+328:publishing non-interruptible `initializing` before slow restore/start/activation
+329:work; the frontend displays that streamed status or `AGENT_COMMAND_ACK.status`
+330:instead of inventing a lifecycle placeholder. Restored runtime readiness or a
+331:restored status snapshot is not a frontend-visible replacement for this
+332:overlay; keep showing backend `initializing` until command-correlated
+333:`TURN_STARTED`, `AGENT_STATUS`, terminal/error, or coordinator failure evidence
+334:arrives. When the backend accepts a
+335:focused team-member command for an `offline` or `idle` member, the team backend
+336:publishes member-scoped non-interruptible `initializing` before slow member
+337:startup/send work.
+338:Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
+339:and active `uninitialized` project as active non-interruptible
+340:`initializing`; they keep send readiness blocked without granting the red
+341:interrupt affordance. Active processing/tool/LLM tokens project as `running`.
+342:When the selected context is a Team, text send and stop/interrupt dispatch use
+343:the same focused exact `TeamExecutionAddress`, but remain separate commands.
+344:`SEND_MESSAGE` carries that address with message/dedupe identity;
+345:`INTERRUPT_GENERATION` carries it with a fresh command id. The focused address
+346:must resolve to an exact Agent execution in the current root TeamRun. Missing,
+347:stale, structural-Team, or cross-root targets are rejected locally or by the
+348:strict server boundary instead of falling back to another member. Tool approval
+349:uses the execution address recorded for the invocation rather than current focus.
+350:
+351:Run-history refresh, active recovery, and run-open hydration must preserve an
+352:already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
+353:single run or focused team member while that live stream remains authoritative,
+354:but terminal `offline` or `error` history projections must clear stale
+355:`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
+356:`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+357:browser-visible stop affordance.
+358:
+359:Active team recovery and refresh must keep root liveness, transport state, and
+360:member status separate. `isActive=true` does not imply that any particular
+361:member is `running` or `initializing`; members keep their own scoped status or
+362:default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
+363:Frontend reconciliation must never fan root activity out to member rows.
+364:
+365:Workspace presentation may render that binary root fact without restoring a
+366:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+367:accessible copy. Each exact history or running team-run row passes only that
+368:run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+369:gray dot, and neither state pulses or encodes a five-state lifecycle. A rendered
+370:team-definition group derives a presentation-only `hasActiveRuns` value from
+371:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+372:any-active cue remains visible while the group is collapsed, reacts when the
+373:last active child becomes inactive, and is not a persisted/transported
+374:definition field. Representative ordering, leaf-agent status, socket
+375:subscription, and Stop/pending state must not influence either the exact-run
+376:cue or the group projection.
+377:
+378:Delegated task executions are task-scoped execution projections rather than
+379:structural topology. Every Team Agent event carries one `agent_execution`
+380:binding with `kind`, exact `execution_address`, and an `agent_run_id` only when
+381:that execution owns an Agent runtime. A task-Agent address keeps the rooted
+382:logical member and sets `taskAgentRunId`; a task-Team child appends the concrete
+383:child TeamRun id to ordered `taskTeamRunIds` and carries the rooted child Agent
+384:address. The strict contract contains no task instance ids, execution-kind
+385:aliases, member/source path or route-key fallbacks, represented-subteam fields,
+386:or generated-run-id inference. Complete task snapshots and live events reconcile
+387:through the same execution model and exact serialized address.
+388:
+389:Delegated task visibility is intentionally split across two surfaces. The
+390:global Workspaces/run-history tree owns live execution identity and hierarchy:
+391:it composes stable history rows with pure renderer-only transient display rows
+392:from `AgentTeamContext.memberTree`, keeps durable members visually solid, and
+393:renders task-agent, task-team root, and task-team child executions inline with
+394:explicit transient row kinds. A transient row has a light ghost background and
+395:exactly one visible transient marker in the leading status-dot slot: an
+396:explicit eight-dot SVG ring (`h-2.5 w-2.5`) whose eight `currentColor` circles
+397:preserve status color semantics. It must not use the superseded CSS dotted-border
+398:or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
+399:add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
+400:Selecting either a stable or transient Workspaces row uses the existing
+401:team-member focus path. A team-member row is current only when its owning
+402:`teamRunId` is the authoritative selected team run and its route key matches
+403:that team's roster/history focus; a route key alone must not select same-named
+404:members in another historical team run. Stable and transient current rows
+405:expose the single `aria-current="true"` navigation state, while focus, hover,
+406:status, and transient presentation remain separate visual states. The right-
+407:side Team tab owns task detail/content through its Tasks section; it is not the
+408:primary execution hierarchy or status surface.
+409:
+410:`TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
+411:remains the default for a selected team run with no delegated task entries, but
+412:the panel opens Tasks automatically when the selected team run already has
+413:persisted delegated task entries or when a new delegated-task identity appears
+414:while the same run is mounted. The auto-open signature is derived from the same
+415:`deriveDelegatedTaskEntries(...)` entries consumed by
+416:`TeamDelegatedTasksSection`, keyed by persisted task id and live execution
+417:identity when available, so unrelated messages or refreshes do not open Tasks. A
+418:user may still collapse Tasks for the same task set; the panel reopens only for
+419:a different delegated-task signature or a selected-run change to a run that has
+420:delegated tasks. When the selected team run changes and there are no delegated
+421:tasks, the panel opens Messages.
+422:
+423:`TeamDelegatedTasksSection` derives entries from persisted task-delegation
+424:records in `taskDelegationStore`, filtered by the focused sender/receiver
+425:address perspective. Live task-agent/task-team projection nodes in
+426:`AgentTeamContext` are optional enrichment for matching records and provisional
+427:visibility for not-yet-refreshed live tasks; they are not the durable display
+428:source. Opening or reloading active and historical team runs hydrates records via
+429:`getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
+430:schedule a debounced records refresh.
+431:
+432:Inside that section, `deriveDelegatedTaskEntries(...)` projects every current-
+433:schema task record into one ordered conversation: the assignment root followed
+434:by every submission, review, and interruption in the record's durable update
+435:order. Submission ordinals and review-to-submission linkage are derived from the
+436:strict record instead of inferred from display text. A task-Team submission is
+437:attributed to the readable task Team because the record does not identify a
+438:more specific submitting member; the UI must not invent one.
+439:
+440:`TeamDelegatedTaskNavigator` keeps that complete conversation on the left. The
+441:assignment row shows its description, readable delegator-to-assignee direction,
+442:last-activity time, and one human lifecycle badge: In progress, Awaiting review,
+443:Revision requested, Accepted, or Interrupted. Each update appears exactly once
+444:below the assignment as a selectable message-style row with a localized event
+445:label, result ordinal when applicable, readable direction or system attribution,
+446:timestamp, content preview, and only that item's reference rows. Assignment and
+447:update references have visible selected state and no separate visible
+448:`References` heading.
+449:
+450:Assignment, update, and reference clicks update only exact section-local
+451:selection keys. A live full-record replacement retains the selected item or
+452:reference while its stable identity still exists; otherwise selection falls
+453:back to that task's assignment. These actions must not focus the center
+454:conversation/composer, replace it with a task team card, or repeat the Workspaces
+455:execution hierarchy. The Tasks UI does not render raw task/run ids, routing JSON,
+456:target-kind metadata, raw arguments, a Technical details disclosure, responsible
+457:actor/member hierarchy rows, `Focus agent` / `Focus team` controls, or approval
+458:controls. Exact ids remain internal selection and reference-routing keys only.
+459:
+460:`TeamDelegatedTaskDetailPane` renders exactly one selected assignment/update
+461:detail or one selected task-owned reference preview. Item detail uses a readable
+462:localized title, direction, timestamp, Markdown content, and the assignment's
+463:current human status when the assignment is selected. The right pane does not
+464:duplicate the lifecycle timeline, reference navigation, actor roster, focus
+465:controls, or removed technical metadata. Messages remains an independent,
+466:unchanged message-owned surface.
+467:
+468:The global Workspaces/run-history tree remains the navigation and execution-focus
+469:surface for workspaces, runs, teams, durable members, and live transient
+470:execution identities. `runHistoryStore` owns one cached, indexed navigation
+471:projection that includes completed stable-plus-transient `executionRows` and
+472:focused-member identity for every team. Components consume those rows rather
+473:than reading live `AgentTeamContext` or rebuilding rows per workspace. The
+474:projection may reuse the shared status-dot presentation for workspace rows and
+475:stable member rows, but transient task executions remain navigation-only rows
+476:rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
+477:task-team roots with child rows are collapsed by default; their
+478:user-controlled disclosure state is keyed by the transient execution row identity
+479:so simultaneous task-team executions do not accidentally share expansion state.
+480:When a transient task-team row has children, activating the row body toggles that
+481:identity-keyed disclosure state while also selecting/focusing the transient row;
+482:the explicit disclosure control remains a stopped toggle-only target.
+483:Workspaces must not render delegated-task summary blocks, task reference rows,
+484:raw task arguments, approval controls, or delegated-task Technical details.
+485:Tasks is not an approval action surface: pending approval can appear only as
+486:non-actionable human task context there, and Activity remains the owner for
+487:Approve/Deny controls and approval command routing. Task reference
+488:files come from persisted task-delegation records and open in the Tasks right
+489:pane through the task-owned reference route; Messages remains message-owned and
+490:its content/reference UX is not routed through task identity.
+491:The center workspace remains the focused conversation/event/composer surface and
+492:must not render `TeamActiveTaskExecutionsBar` or any replacement center list.
+493:
+494:Running and awaiting-acceptance task executions must remain visible as
+495:Workspaces transient identity rows and as Team → Tasks detail entries after
+496:active team reopen/hydration when live projection is present. Persisted delegated
+497:task records must remain visible in Team → Tasks for active, accepted,
+498:awaiting-review, and historical tasks even after those transient runtime rows
+499:settle, disappear, or the backend restarts. Run-open hydration therefore loads
+500:root-run task records and uses live projection/identity only as enrichment
+501:instead of collapsing tasks into the logical member or team parent.
+502:Stream routing is projection-first: task-team root/scoped child identity wins before
+503:task-agent identity, then exact logical route/path identity, then compatible
+504:run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
+505:generated-run-id heuristic or any other run-id-format parser as a routing
+506:authority. After delegator acceptance and backend settlement or offline cleanup,
+507:the frontend removes the transient task execution root, scoped children, and
+508:nested task-agent projections while preserving the structural member/team
+509:topology and the history that records the delegated task completion.
+510:
+511:When a single-agent run is terminated successfully, the backend publishes
+512:`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+513:stream before teardown. Frontend live state and history merge logic should treat
+514:`offline` as the canonical inactive non-error terminal state instead of waiting
+515:for a socket close or a later history reload to infer that transition.
+516:
+517:### Compaction Lifecycle Activity And Center Feed
+518:
+519:Native AutoByteus memory compaction status is projected as Activity lifecycle
+520:state first. The right-side Activity panel should retain the full compaction
+521:operation identity and phase progression, including requested/queued,
+522:execution, terminal success/failure, timestamps, and surrounding tool-result
+523:detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+524:LLM-facing text and must not replace the backend memory artifact contract.
+525:
+526:The center conversation feed is narrower. Requested/queued compaction phases are
+527:internal scheduling states and stay out of the center feed so a pending
+528:tool-call turn is not split before tool results arrive. The first
+529:center-eligible execution phase for a compaction operation marks the current
+530:frontend assistant visual block complete, allowing the `Memory compacted` row to
+531:appear after the tool-call/result block and before the post-compaction assistant
+532:continuation. Completed/failed execution rows may be shown in the center feed;
+533:requested/queued rows must not.
+534:
+535:Historical run reopen uses the backend replay bundle as the display source for
+536:actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
+537:projection reads only the active raw-trace file, reconstructs its lifecycle
+538:evidence, and selects its newest 100 canonical replay events; it does not open
+539:archived raw-trace segments. Native compaction projection cards are
+540:intentionally live-only center feedback in this slice: reopened historical
+541:conversations should replay that active-file recent window and should not
+542:synthesize center compaction cards from compaction lifecycle/status entries.
+543:Archived segments and manifests remain unchanged and directly usable by their
+544:own storage lifecycle. The Event Monitor never pages into those archives; its
+545:explicit earlier-browsing path is bounded to the current active trace.
+546:
+547:Native AutoByteus memory ingestion persists every non-empty completed reasoning
+548:value as a distinct replay-authoritative `reasoning` raw trace immediately
+549:before its ordinary assistant trace. The pair shares turn, source-event, and
+550:timestamp identity while retaining unique trace IDs and monotonic sequence
+551:order; working-context provenance references both. The existing standalone and
+552:team replay transformers therefore hydrate reasoning and assistant rows in
+553:order, allowing Thinking to survive history reopen, hard reload, and member
+554:reselection. Pre-contract raw traces that omitted reasoning remain readable but
+555:incomplete; the product does not rewrite them, infer reasoning from ordinary
+556:assistant narration, or fall back to working-context snapshots.
+557:
+558:### Run Reopen Projection Hydration
+559:
+560:Run-history reopen consumes a backend replay bundle with sibling
+561:`conversation` and `activities` projections. Frontend open coordinators must
+562:apply those siblings together when replacing from projection, or preserve both
+563:existing live surfaces when an already-subscribed live context is kept. They
+564:must not hydrate projected Activity rows into a context whose live conversation
+565:is being preserved, because that can create right-pane-only tool entries after
+566:restart. For active team reopen, projected Activity hydration is limited to
+567:newly materialized member contexts whose projected conversation is also being
+568:applied.
+569:
+570:### Bounded Recent Event Monitor Window
+571:
+572:The Event Monitor is a recent operational view rather than a complete run
+573:archive. The backend projection keeps the existing GraphQL bundle shape, but
+574:`LocalMemoryRunViewProjectionProvider` reads only `raw_traces_active.jsonl`,
+575:normalizes the complete active-file lifecycle, and then applies
+576:`RECENT_RUN_PROJECTION_EVENT_LIMIT` (`100`) before building conversation and
+577:Activity projections. Selection must happen after lifecycle reconstruction;
+578:raw-record tail slicing can separate related tool-call and result evidence.
+579:
+580:When the active trace contains earlier events, the normal projection exposes
+581:only availability and does not expand its latest-100 payload. Earlier paging is
+582:feed-native rather than a visible load control: one fresh bounded direct-input
+583:session that crosses the top threshold may request one server-fixed page. Wheel,
+584:touch, keyboard, and an actually exposed native scrollbar are supported input
+585:sources; mount, selection, automatic bottom-follow, anchor restoration, queued
+586:scroll delivery, layout reflow, continued momentum, or remaining near the top
+587:cannot request or chain another page. A 24 px entry / 96 px exit hysteresis,
+588:input-quiet period, and two stable frames keep each session single-use. The
+589:internal page size remains 50 but is not rendered or exposed through visible or
+590:accessibility copy.
+591:
+592:The first page response establishes one consistent snapshot containing the
+593:current latest 100 plus at most 50 immediately preceding canonical events, and
+594:each opaque-cursor continuation prepends at most 50 more. Standalone and
+595:team-member queries use a dedicated central-only typed projection; raw tool
+596:results, logs, Activity detail, and generic payload objects are not transported.
+597:Cursors are bound to the authorized subject and active-trace generation, remain
+598:valid across ordinary appends, and expire on rewrite or compaction instead of
+599:falling back to an archive.
+600:
+601:Browse presentation remains separate from canonical live conversation and
+602:Activity state while live updates continue independently. It retains and mounts
+603:at most 300 central visual events, releases the farthest newer page block when
+604:necessary, and uses stable event/subvisual identities for scroll anchors, Vue
+605:keys, and disclosure ownership. Paging states consume no normal-flow height: a
+606:delayed three-dot loading indicator and compact retry affordance occupy one
+607:absolute top overlay slot, the active-trace beginning is silent, and expiry
+608:keeps retained content while offering the same return-to-latest affordance.
+609:
+610:One icon-only downward arrow is the only persistent recovery overlay when an
+611:ordinary unseen update or frozen/released/expired browse state requires an
+612:explicit return to live truth. It is centered against the feed at an 8 px bottom
+613:inset, with a minimum 44 px target, a quiet neutral 36 px white circular surface,
+614:and a simple dark 16 px glyph. Ordinary, browse, released, and expired states
+615:share the same treatment: no visible label, tooltip, badge, count, pulse,
+616:warning color, or right-side fallback. The button keeps a localized non-visual
+617:accessible name and visible keyboard focus. It remains independent from the
+618:right-aligned conditional **improve skills** composer action and the two must not
+619:overlap or create horizontal overflow at wide or narrow widths.
+620:
+621:The frontend defensively applies the same `100`-visual-event bound during
+622:historical hydration and every standalone, team, or local-submission mutation.
+623:A user message is one visual event, each assistant segment or tool card is one,
+624:and each center compaction row is one. Eviction removes the oldest completed
+625:candidate before a mutable candidate. If more than 100 candidates remain
+626:mutable, the hard-cap fallback removes the oldest mutable candidate and a later
+627:stable-identity update may re-enter only once at the newest edge. Per-run
+628:Activity state is independently capped at 100 with the same completion rules.
+629:
+630:`eventMonitorPresentationRevision` describes the final bounded center
+631:presentation, not transport traffic. The shared stream projector receives an
+632:explicit `NONE`, `PRESENTATION`, or `STRUCTURAL` Event Monitor effect from the
+633:handler transaction. `NONE` performs no witness or window work;
+634:`PRESENTATION` compares the final display against the cached baseline; and
+635:`STRUCTURAL` first enforces the latest-100 window, then compares the final
+636:display. The coordinator increments the revision once only when the final
+637:lightweight ordered witness differs. The witness uses shallow rendered and
+638:retained-interaction values such as content, attachment identity and preview
+639:inputs, displayed usage text, and tool name/summary/status/error/action state.
+640:It excludes generic timestamps, raw object identity, tool logs/results that are
+641:Activity-only, and recursive argument serialization. Equal retained
+642:member-echo attachment metadata is therefore revision-neutral, while adding,
+643:refreshing, or removing a rendered executable attachment revises the
+644:presentation.
+645:
+646:The witness baseline is keyed by `AgentContext`. Context/open/hydration owners
+647:reset it before wholesale replacement or removal and prime it only after both
+648:conversation and Activity hydration have reached their final state. Active and
+649:historical open, live recovery, and lazy member hydration each have one final
+650:prime owner; already-subscribed live contexts preserve their final baseline.
+651:This prevents a partial hydration witness and removes the former full
+652:before/after rebuild from every background message.
+653:
+654:When pinned, a real presentation change follows the bottom. In latest mode,
+655:manual return to the bottom clears ordinary unseen state. A frozen browse
+656:snapshot remains separate even if the user scrolls to its bottom; only explicit
+657:arrow activation discards its pages/cursors and restores the current live
+658:latest-100 presentation. Net no-op protocol traffic does not show the arrow,
+659:and streaming tokens are not exposed through a feed-wide live region. Thinking
+660:and tool disclosures remain collapsed by default. The former conversation-copy
+661:control and its eager full-conversation string were removed without a
+662:replacement export action, and usage totals shown in this surface describe only
+663:the retained recent window.
+664:
+665:### Workspace History Row Titles
+666:
+667:Workspace history rows render `RunTreeRow.summary` as the visible one-line task
+668:title. For standalone agent runs that title should represent the initial
+669:non-empty user message, not the latest follow-up. When the history tree is
+670:merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
+671:overlays active status and the live context's activity timestamp while using the
+672:live conversation's first non-empty user message as the row summary when
+673:available. Persisted standalone rows arrive from GraphQL with `createdAt` plus
+674:derived live status fields. Team rows arrive with `createdAt`, binary
+675:`isActive`, and exact leaf-member statuses. Neither catalog persists
+676:`lastActivityAt`, `lastKnownStatus`, or delete-lifecycle fields. The frontend
+677:read model maps
+678:`createdAt` into the shared tree sort field for stored rows and derives local
+679:team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
+680:catalog facts plus live status. This prevents an active persisted row with a
+681:stale latest-message summary from overriding the known initial-message title in
+682:the sidebar while keeping backend history catalogs out of live-status storage.
+683:
+684:If no live first-user-message summary is available, the frontend keeps the
+685:backend-provided history summary. Team row title behavior remains owned by the
+686:team-history path and is not reinterpreted by the standalone live-context
+687:overlay.
+688:
+689:### Workspace History Progressive Disclosure
+690:
+691:The Workspaces sidebar history tree uses progressive disclosure for its
+692:ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+693:from `useWorkspaceHistoryTreeState(...)`, and
+694:`WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
+695:current expansion state.
+696:
+697:- Top-level workspace rows come from `workspaceStore.allWorkspaces`, which is
+698:  loaded from the backend `workspaces()` query and its registered/visible
+699:  workspace list. The run-history read model accepts registered filesystem
+700:  workspaces and the fixed default temp workspace (`temp_ws_default`) as run
+701:  workspace descriptors, ignores unrelated transient descriptors such as skill
+702:  workspaces, and does not let history-only roots for unregistered or removed
+703:  workspaces create desktop top-level rows.
+704:- The panel delegates its initial workspace-catalog transaction to
+705:  `runHistoryStore.loadWorkspaceCatalogForNavigation()`. If the catalog has not
+706:  yet been fetched, that transaction awaits the backend load and performs one
+707:  navigation-topology refresh only after successful population. Later calls
+708:  are no-ops once `workspacesFetched` is true. This prevents an empty cached
+709:  navigation projection created before the asynchronous catalog response from
+710:  remaining stale, without adding a watcher, eager global history fetch, or
+711:  per-read topology rebuild.
+712:- If multiple visible descriptors resolve to the same normalized root, the tree
+713:  renders one workspace row for that root. The fixed temp descriptor wins over a
+714:  same-root filesystem descriptor so the default temp workspace stays
+715:  non-removable.
+716:- Workspace rows default collapsed after history loads, so the initial tree
+717:  shows workspace names only.
+718:- Expanding a workspace reveals the next-level standalone-agent groups and
+719:  team-definition groups for that visible workspace. Registered filesystem ids
+720:  resolve through the backend workspace registry; `temp_ws_default` resolves
+721:  through the temp workspace lifecycle.
+722:- Local standalone run rows are projected under their visible workspace
+723:  descriptor even after a draft run is promoted from a `temp-...` id to its
+724:  permanent run id, then deduplicated when backend history catches up. Local
+725:  draft/live rows without a matching visible workspace descriptor are ignored
+726:  instead of creating their own top-level workspace.
+727:- Standalone run rows and team-run rows stay collapsed until the user expands
+728:  the specific agent group or team-definition group.
+729:- Team-definition group rows and individual team-run rows use the same compact
+730:  standalone chevron size, shape, and gray color. The row button remains the
+731:  single interaction boundary, and team-run rows expose `aria-expanded` so
+732:  visual, keyboard, and assistive-technology state stay in sync.
+733:- Manual workspace, agent-group, team-definition-group, team-run, and nested
+734:  team-member/subteam expansion choices are kept in component-local tree state
+735:  and are not reset by quiet history refreshes while the history panel remains
+736:  mounted.
+737:- Newly added workspaces are explicitly opened after creation so the add flow
+738:  still lands the user in the workspace they just created.
+739:
+740:When an existing run or team run is selected before its history ancestry is
+741:visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
+742:reveal. The reveal expands only the selected run/team's workspace and containing
+743:agent or team-definition group, and for selected team runs opens the matching
+744:team-run row. After the selected path has been revealed for the stable selection
+745:key, later quiet refreshes must not reopen the same path if the user manually
+746:collapses it. When a user opens/selects a team run that has a focused nested
+747:member, or selects a nested member row directly,
+748:`useWorkspaceHistorySelectionActions(...)` asks
+749:`useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
+750:needed to keep that nested focus visible.
+751:
+752:For team-run member rows, selection state uses roster/history visual focus, not
+753:active-execution command focus. The current-row predicate is scoped to the
+754:authoritative selected team run plus that run's focused member route; clearing
+755:the team selection or having no valid target leaves no member row current. The
+756:Workspace history tree renders recursive
+757:`memberTree` structure when available, with `team.members` only as the flat
+758:fallback. Nested `agent_team` member rows appear as subteam rows with a Team
+759:badge and their own disclosure control; they are collapsed by default, expand
+760:children recursively with indentation, and disclosure-bearing subteam row-body
+761:activation toggles children while preserving row selection/focus. The explicit
+762:disclosure control remains visible and toggles children without selecting the
+763:row or bubbling into the row-body handler. Leaf member rows without children
+764:remain select-only. Clicking a member or subteam row whose route key exists in
+765:the team's `memberTree` should keep that route key selected in the history tree
+766:and Focus display even when the member is offline or has no active runtime
+767:context. Live/hydrated team-context merges must preserve the persisted history
+768:row's workspace grouping and use this roster focus for selected-row
+769:highlighting; the shared composer remains active-execution-owned separately.
+770:
+771:Topology operations build and index the complete run-history navigation
+772:projection once, retaining equal workspace/team branches by reference. The
+773:indexes cover standalone runs, team runs, team members, ancestry, completed
+774:execution rows, and cached focus. Actual activity/status/summary/focus changes
+775:patch only the indexed row and its containing branches; repeated or final-equal
+776:updates are no-ops. Task source projection classifies identity/path/kind/order/
+777:depth/child changes as `TOPOLOGY`, existing-row display-name or visible-status
+778:changes as field-tight `PRESENTATION`, and task-detail-only changes as `NONE`.
+779:The task router reports that result on every outcome, `TeamStreamingService`
+780:commits it before returning, and member resolution is read-only. Selection
+781:reveal consumes ancestry indexes, while labels that depend on elapsed time use
+782:a minute clock rather than background stream traffic.
+783:
+784:### Workspace History Archive And Delete Actions
+785:
+786:`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+787:workspace history tree wiring and delegates row rendering to
+788:`WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
+789:archive, termination, draft removal, and permanent delete separate:
+790:
+791:- active standalone runs and active team runs expose stop/terminate actions, not
+792:  archive;
+793:- temporary draft rows use local remove/discard behavior and are not sent to the
+794:  archive API;
+795:- inactive persisted standalone runs call `runHistoryStore.archiveRun(runId)`,
+796:  which uses the backend `archiveStoredRun` mutation; and
+797:- inactive persisted team runs call `runHistoryStore.archiveTeamRun(teamRunId)`,
+798:  which uses the backend `archiveStoredTeamRun` mutation.
+799:
+800:Successful archive removes the row from the current default history tree,
+801:clears selected/open local context for the hidden run or team when applicable,
+802:and refreshes history from the backend. Failed archive leaves the visible tree
+803:and current selection unchanged and reports the error. The destructive delete
+804:affordance remains separate and continues to use the existing permanent-delete
+805:confirmation path for users who intend to remove stored memory. There is
+806:currently no archived-history browser or unarchive UI in this frontend slice.
+807:
+808:### Uploaded Context Attachment Orchestration
+809:
+810:Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, team, and application-backed conversations:
+811:
+812:1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
+813:2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
+814:3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
+815:4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
+816:5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+817:6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
+818:7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
+819:
+820:This separation keeps draft attachment transport concerns out of UI components,
+821:keeps runtime consumers dependent only on finalized eligible locators, and
+822:prevents an unsupported local URL from becoming executable merely because its
+823:inferred file type is an image or another supported viewer family.
+824:
+825:### Editable Run Workspace Selection
+826:
+827:For editable single-agent and team launches,
+828:`components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
+829:not a separate workspace-loading step. Existing mode emits the selected visible
+830:workspace id immediately. New mode keeps only a pending absolute path and emits
+831:that pending path to `RunConfigPanel.vue`; it does not render a user-facing
+832:**Load** button, pressing Enter in the path input does not preload the
+833:workspace, and the helper copy must indicate that the path will be loaded when
+834:the user runs the agent or team.
+835:
+836:`RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
+837:with a non-empty pending path, **Run Agent** / **Run Team** first calls the
+838:workspace creation/registration path, updates the active launch config with the
+839:registered workspace metadata, and only then creates the local standalone or
+840:team run. The pending New path takes precedence over any previously selected
+841:workspace. If registration fails or the New path is blank, no run is created and
+842:the workspace error is shown in the config panel. While this submit-time load is
+843:in progress, duplicate run clicks are blocked; the Run button is otherwise
+844:allowed to be enabled before any explicit preload when the pending path and the
+845:rest of the launch config are valid.
+846:
+847:### Existing Run Configuration Inspection
+848:
+849:`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
+850:editable new-run launch configuration and inspect-only configuration for an
+851:already selected run. When `selectionStore.selectedRunId` is present, the panel
+852:passes read-only mode to the agent/team configuration forms instead of treating
+853:the selected run's config as a launch buffer.
+854:
+855:Selected existing single-agent and team run configuration is intentionally
+856:inspect-only:
+857:
+858:- runtime, model, workspace, auto-approve, and team-member override controls
+859:  render disabled;
+860:- form update handlers and shared runtime/model normalization emissions no-op in
+861:  read-only mode so historical context is not locally mutated;
+862:- the launch/run button is absent while an existing run is selected;
+863:- localized read-only notices explain that the selected run can be inspected but
+864:  not edited; and
+865:- advanced model/thinking controls remain visible or expandable so persisted
+866:  values such as backend-provided `reasoning_effort: "xhigh"` can be inspected.
+867:
+868:The frontend consumes historical model configuration exactly as provided by the
+869:backend. If the backend-provided `llmConfig` is missing/null, the model config UI
+870:may show a localized `Not recorded for this historical run` state, but it must
+871:not infer a current default, recover a runtime value, or materialize metadata.
+872:Backend/runtime/history recovery or persistence semantics belong to a separate
+873:backend ticket, not this frontend inspection boundary.
+874:
+875:The model-config surface is schema-driven, not thinking-only. It renders
+876:explicit `llmConfig` values first and valid schema defaults second; showing a
+877:default does not write that value into the launch buffer. The top-level
+878:**Thinking** state is computed from provider schema keys such as
+879:`reasoning_effort`, `thinking_enabled`, `thinking_type`, `thinking_level`, and
+880:`include_thoughts`, not from model/display names. If a schema-backed model has
+881:reasoning enabled by default but no supported off value, the UI can show
+882:**Thinking** on in a non-disable-capable state instead of emitting an unsupported
+883:off payload.
+884:
+885:Runtime-scoped model catalog rows can also carry an optional plain-text
+886:description independently from their display name and executable identifier.
+887:`useRuntimeScopedModelSelection` projects that metadata into the shared
+888:`SearchableGroupedSelect`: the open option list renders a wrapping secondary
+889:line and search matches the identifier, display/selected labels, and description
+890:case-insensitively. The closed control remains compact, and selection still
+891:emits only the model identifier. Null, empty, or whitespace-only descriptions
+892:fall back to the existing name-only row without a placeholder. Claude Agent SDK
+893:descriptions come from its live runtime catalog and must not be hard-coded in
+894:the frontend.
+895:
+896:Editable primary/global agent and team launch config initializes **Advanced**
+897:from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
+898:by default so users can see defaults such as Codex `reasoning_effort: "medium"`
+899:or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
+900:unavailable leaves **Advanced** collapsed initially, but still openable.
+901:Toggling a supported **Thinking** control ON opens **Advanced** automatically;
+902:toggling OFF after inspection does not force-collapse the section.
+903:
+904:Editable launch forms intentionally do not expose a skill-access dropdown.
+905:Standalone runs inherit the selected agent definition's configured skills, and
+906:team runs apply each leaf member's configured skills. Reopened historical
+907:configuration may still carry an internal `skillAccessMode` field for backend
+908:resume compatibility, but the only normal launch behavior is configured skills
+909:only.
+910:
+911:Desktop run-configuration forms use quieter light-blue filled-field controls on
+912:dense Agent and Team launch surfaces while keeping the shared select components'
+913:default bordered styling available for callers that do not opt in. The
+914:light-blue treatment is presentation-only and preserves hover plus
+915:keyboard-focus affordance. Team launch configuration keeps the global **Auto
+916:approve tools** switch beside other global
+917:setup fields, directly after workspace selection, before the member-specific
+918:override disclosure. The **Team Members Override** disclosure defaults
+919:collapsed, shows the label followed by a visible chevron plus member/override
+920:counts, and remains openable in read-only inspection mode; when expanded,
+921:member rows render as a connected list with stronger shared separators to avoid
+922:overwhelming large teams. They still display inherited/effective defaults when
+923:expanded, and explicit member-local runtime or model selections that resolve to
+924:an effective-ON model can open only that member's **Advanced** controls.
+925:Display-only inherited or schema-default values must not create member
+926:overrides. Non-thinking runtime/model parameters render through the same
+927:advanced schema component; for Codex, a fast-capable model can therefore expose
+928:`service_tier` with the user-facing label **Fast mode** beside reasoning
+929:settings.
+930:
+931:
+932:### Skill Improvement Manual Composer Action
+933:
+934:Skill Improvement is current-target owned, not definition-owned and not
+935:launch-config owned. Frontend run-config types no longer carry `skillImprovement`
+936:overrides for standalone runs, team runs, or team agent-member launch records,
+937:and the backend no longer snapshots `skillImprovementEffective` into run/member
+938:metadata for new runs. Agent/team definition forms and persisted definition
+939:defaults must not add `skillImprovement`.
+940:
+941:The visible launch forms do not expose Skill Improvement eligibility controls. The
+942:only user-facing manual start entrypoint is the concise composer-adjacent **Self
+943:improve** CTA for the selected active standalone run or team member. That CTA is
+944:hidden when the global capability is disabled, hidden for Retrospective Skill Improver
+945:improver runs, and lazy-loads backend eligibility before rendering. The UI must
+946:not show technical backend ineligibility reasons in chat and must not recompute
+947:eligibility from current definitions or local skill lists.
+948:
+949:`useSkillImprovementCapabilityStore` owns the global typed capability query/mutation
+950:for `ENABLE_SKILL_IMPROVEMENT`. `useSkillImprovementStore` owns backend eligibility and
+951:manual start calls. Run-history rows do not expose Skill Improvement controls.
+952:Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
+953:or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
+954:current global Skill Improvement settings, current target state, and current
+955:configured writable skill roots; it first ensures work trace files are current
+956:for the selected target, then activates or reuses a visible target-scoped
+957:improver `AgentRun`. The returned record summary is stored only internally and
+958:the UI may show at most a short transient toast/status after start. It must not
+959:render a persistent composer card, improvement record id, or improver-run
+960:navigation button.
+961:
+962:Meaningful completion communication is helper-authored only after durable skill
+963:package file changes: the visible improver may call `send_message_to` once with
+964:`message_type: "skill_update"`, the exact active target run id supplied by the
+965:backend, concise content explaining what changed, why it matters, and how the
+966:target should use or reload the updated guidance, plus dynamic references as
+967:absolute paths to changed or directly relevant surviving files inside editable
+968:roots. The backend records whether that direct outcome was sent, rejected,
+969:target-inactive, or not attempted. The skill update message is separate from any
+970:runtime/model skill-refresh instruction, and team-member live reload remains
+971:next-run-only in the MVP. The MVP does not expose a metrics/reporting query and
+972:the UI must not imply improver completion proves downstream improvement.
+973:
+974:### New Run From Existing Run
+975:
+976:When the user clicks the workspace header add/new-run action while an existing
+977:single-agent or team run is selected, the frontend treats that selected run as a
+978:launch template for the new editable draft. The selected run itself remains
+979:inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
+980:the selected run config, including runtime kind, model identifier, workspace,
+981:auto-approve settings, `llmConfig`, and team member overrides.
+982:
+983:That source-copy path must preserve backend-provided model-thinking fields such
+984:as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
+985:loading. Schema arrival may sanitize invalid model-config keys after a real
+986:schema is available, but an empty/loading schema must not clear the copied
+987:`llmConfig`. Explicit user runtime/model changes remain the owner for stale
+988:model-config cleanup.
+989:
+990:Schema arrival is also the cleanup boundary for runtime-specific non-thinking
+991:parameters. For example, when a copied or default Codex config contains
+992:`service_tier: "fast"` and the user switches to a model whose active schema does
+993:not include `service_tier`, the stale key is removed before launch.
+994:
+995:If there is no selected same-definition source run, workspace add/new-run flows
+996:fall back to the existing definition/default launch preferences instead of
+997:inventing historical config.
+998:
+999:---
+1000:
+1001:## Level 2: Service Layer (Event Routing)
+1002:
+1003:The service layer bridges the gap between the WebSocket transport and the application's business logic. It essentially functions as a router.
+1004:
+1005:### `AgentStreamingService.ts`
+1006:
+1007:- **Role**: WebSocket facade for single-agent streams.
+1008:- **Responsibilities**:
+1009:  1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
+1010:  2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
+1011:  3.  Passes generic standalone messages to the shared
+1012:      `dispatchAgentStreamMessage(...)` projector. Team routing resolves exact
+1013:      task/member identity and required task-navigation mutation first, then
+1014:      uses the same projector for the resolved context.
+1015:  4.  Applies each `SEGMENT_CONTENT` message once and immediately because the
+1016:      server has already shaped the transport cadence.
+1017:
+1018:### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
+1019:
+1020:Standalone and team WebSocket sessions use the same server-side
+1021:`AgentStreamWebSocketEgress`. Runtime and provider adapters still publish every
+1022:fine-grained canonical event; only the client-bound WebSocket content lane is
+1023:shaped. The policy does not select a different path for AutoByteus, Codex,
+1024:Claude, a particular provider, or a particular model.
+1025:
+1026:- The shared per-connection presentation pipeline runs identity-aware filters,
+1027:  one content scheduler, the terminal sink, and non-mutating observers. Its
+1028:  default status filter forwards the first and every changed `AGENT_STATUS` for
+1029:  an exact standalone/member/task identity and suppresses only an exact repeated
+1030:  payload. Reconnect starts with fresh filter state; canonical runtime status
+1031:  companions and non-WebSocket subscribers remain unchanged.
+1032:- The first pending `SEGMENT_CONTENT` receipt opens a fixed, non-sliding window.
+1033:  The interval is read when that window opens from
+1034:  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`; the effective default is
+1035:  500 ms and valid configured values are whole milliseconds from 100 through
+1036:  2,000. A setting change therefore applies to the next newly opened window of
+1037:  an already-active stream without a restart.
+1038:- Adjacent content messages are mergeable only when every payload field other
+1039:  than `delta` is equal. Their delta bytes are concatenated in receipt order;
+1040:  different run/turn/segment/member/task identity remains a separate ordered
+1041:  content group.
+1042:- Policy-declared routine companions (`CONNECTED`, command acknowledgements,
+1043:  token-usage updates, and non-terminal `initializing`/`running` status) remain
+1044:  immediate and visible without flushing, resetting, or splitting the pending
+1045:  content lane. Terminal/dependent status, segment boundaries, tool/lifecycle
+1046:  transitions, errors, completion, interruption, and conservative unknown
+1047:  messages flush earlier content before they are sent.
+1048:- `AgentStreamingService`, `TeamStreamingService`, and the team generic
+1049:  dispatcher pass each shaped content message through the shared projector's
+1050:  normal immediate handler transaction. There is no frontend stream-content
+1051:  scheduler, presentation timer, or second cadence delay.
+1052:- Team routing still resolves structural members and transient task-agent or
+1053:  task-team children before applying the message. The server egress preserves
+1054:  the mapped identity and does not guess frontend context.
+1055:
+1056:The WebSocket payload type and final content remain unchanged. Raw runtime
+1057:events, internal subscribers, raw traces, working-context snapshots, run
+1058:history, and other persisted data remain fine-grained/unchanged and require no
+1059:migration. A physically lost/closed socket still has no replay guarantee; the
+1060:session disposes pending unsendable state instead of claiming delivery.
+1061:
+1062:### Explicit Stream Mutation Effects
+1063:
+1064:`agentStreamMessageProjector.ts` is the single generic message-to-context
+1065:projection boundary for standalone and team-member streams. Each handler
+1066:reports actual effects instead of relying on message type alone:
+1067:
+1068:- `conversationChanged` controls the one authoritative `conversation.updatedAt`
+1069:  assignment;
+1070:- Event Monitor work is `NONE`, `PRESENTATION`, or `STRUCTURAL`; and
+1071:- run-history work is `NONE`, minute-bucketed `ACTIVITY`, or exact
+1072:  `PRESENTATION`.
+1073:
+1074:The projector commits those effects once after the handler transaction.
+1075:Duplicate, invalid, final-equal, Activity-only-detail, or other unrepresented
+1076:traffic remains a no-op for unrelated consumers. Team task projection keeps a
+1077:separate required mutation result: topology changes rebuild the cached
+1078:navigation once, visible display/status changes patch an exact indexed row, and
+1079:right-pane task details do not invalidate navigation. This prevents an
+1080:unfocused stream from multiplying complete Event Monitor and workspace-tree
+1081:projections while preserving the selected stream's progressive rendering.
+1082:
+1083:### Progressive Rich Text/Reasoning Presentation
+1084:
+1085:The frontend presents active, completed, historical, and hydrated text through
+1086:one rich path. `AIMessage.vue` dispatches typed segments without deriving a
+1087:presentation-completion selector. `TextSegment.vue` passes the current
+1088:accumulated text directly to the reactive `MarkdownRenderer.vue` on each
+1089:server-shaped revision. `ThinkSegment.vue` remains collapsed by default; while
+1090:expanded, it passes current accumulated reasoning through the same renderer and
+1091:updates it progressively. Markdown parsing, sanitization, syntax highlighting,
+1092:math, Mermaid, images, links, and enabled file actions therefore retain one
+1093:authoritative owner throughout the segment lifecycle.
+1094:
+1095:`SEGMENT_END`, turn completion, interruption, and error paths still finalize
+1096:segment and message state for lifecycle, terminalization, and Event Monitor
+1097:consumers. That completion metadata no longer chooses a presentation renderer
+1098:or causes a live-to-final renderer switch. Server-owned WebSocket cadence is
+1099:the only normal content-shaping delay; the frontend adds no presentation timer.
+1100:Background streams now avoid blanket Event Monitor witness work and dynamic
+1101:run-history reconstruction through explicit mutation effects and the cached
+1102:navigation projection. Very large or feature-heavy focused Markdown revisions
+1103:can still be expensive; higher-scale parsing/worker isolation remains a
+1104:separate deferred optimization rather than part of this contract.
+1105:
+1106:### Dispatch Logic
+1107:
+1108:Incoming events are routed based on their `type`:
+1109:
+1110:| Event Type                | Handler Function                                   | Purpose                                                         |
+1111:| :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
+1112:| `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
+1113:| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`                | Immediately appends the already server-shaped ordered delta to the existing segment; the frontend has no additional cadence scheduler. |
+1114:| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
+1115:| `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
+1116:| `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
+1117:| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+1118:| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+1119:| `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
+1120:| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
+1121:| `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
+1122:| `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
+1123:| `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain concrete task-agent run id and logical member route/path, while task-team scoped approvals retain task-team run id plus relative child selector for card-level approve/deny routing. |
+1124:| `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
+1125:| `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
+1126:| `TOOL_EXECUTION_STARTED`  | `toolLifecycleHandler.handleToolExecutionStarted`  | Sets segment status to `executing`.                            |
+1127:| `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload; hydrates arguments when the terminal payload carries them. |
+1128:| `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details; hydrates arguments when the terminal payload carries them. |
+1129:| `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
+1130:| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
+1131:| `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
+1132:| `EXTERNAL_USER_MESSAGE`   | `externalUserMessageHandler.handleExternalUserMessage` | Inserts or updates a user/input row for true external-channel ingress by backend `message_id` / `dedupe_key`. It remains external-channel-specific; repeated rows with no identity remain separate. |
+1133:| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-subteam delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
+1134:| `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
+1135:| `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
+1136:| `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
+1137:| `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Projects backend-owned plan/progress TODO updates into the UI; native `autobyteus-ts` no longer emits this event. |
+1138:| `TOKEN_USAGE_UPDATED`    | `tokenUsageHandler.handleTokenUsageUpdated`        | Applies server-accounted token/cost deltas to `tokenUsageMeterStore`; the frontend does not compute authoritative accounting or pricing. |
+1139:
+1140:---
+1141:
+1142:## Level 3: Segment Processing & State Management
+1143:
+1144:Unlike the previous architecture, the frontend **does not** parse raw text/XML tags. The backend is responsible for all parsing and sends "Segments" as its primary unit of communication.
+1145:
+1146:### Segment Handlers (`services/agentStreaming/handlers`)
+1147:
+1148:These handlers are pure functions that take a payload and an `AgentContext`, and mutate the context.
+1149:
+1150:#### `segmentHandler.ts`
+1151:
+1152:- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
+1153:- **`handleSegmentContent`**: Finds the segment by backend-provided
+1154:  `segment_type` + `id`, appends string deltas, and reports whether visible
+1155:  presentation state changed. Live services call it once per already-shaped
+1156:  WebSocket message and commit that normal handler transaction immediately.
+1157:  The server egress—not a frontend projector—decouples Vue mutation cadence
+1158:  from provider chunk size. The frontend intentionally trusts the identity contract; provider
+1159:  adapters must emit different ids for distinct text blocks that belong on
+1160:  different sides of tool cards instead of relying on frontend runtime-specific
+1161:  reorder logic.
+1162:- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). When the backend sends `interrupted` or `failed` terminal metadata, it marks the segment/tool row terminal (`interrupted` or `error`) and stores the reason/error instead of leaving a spinner. It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for successful execution and terminal result/error state.
+1163:
+1164:Reasoning/Thinking rendering follows the same generic identity contract. Live
+1165:`SEGMENT_CONTENT(segment_type=reasoning)` events with the same backend-provided
+1166:id append to one `ThinkSegment`, while a different id creates a distinct
+1167:Thinking block in stream order. Run-projection hydration likewise creates one
+1168:`ThinkSegment` per projected reasoning row. Runtime adapters therefore own
+1169:contiguous reasoning-block identity and semantic boundaries; the frontend must
+1170:not parse Codex provider item ids, infer adjacency, merge neighboring reasoning
+1171:rows, or repair pre-fix history. For Codex, allocator-owned ids let consecutive
+1172:completed provider reasoning items remain one live/persisted block until a new
+1173:ordered conversation card, assistant text, turn boundary, or terminal error.
+1174:A matching result/status/log/completion that updates an already-positioned tool
+1175:card is not a new ordered boundary; a result-first lifecycle event that causes
+1176:the generic handlers to synthesize a missing tool card is. The Codex adapter
+1177:uses completed reasoning item snapshots as the sole supported summary-content
+1178:source and permanently ignores `item/reasoning/summaryTextDelta` with no output
+1179:or state effect. The frontend neither consumes that provider method nor adds a
+1180:fallback for it.
+1181:
+1182:Card synthesis depends on valid normalized invocation identity and tool name,
+1183:not on argument readiness. Therefore an unseen terminal with identity/name but
+1184:absent arguments is already a visible boundary. A later matching terminal that
+1185:supplies authoritative arguments updates that card and must not move the
+1186:boundary past reasoning rendered after the first terminal. A malformed terminal
+1187:that lifecycle parsing rejects creates no card and has no grouping effect.
+1188:
+1189:Live/reload Thinking-boundary equivalence depends on durable normalized
+1190:evidence. If a provider tool card was observed while authoritative call
+1191:arguments were unavailable and the process fails before any physical call can
+1192:be written, that process-local observation is intentionally not reconstructed;
+1193:reload must not fabricate a missing tool card or promise exact boundary parity
+1194:for that evidence-free case.
+1195:
+1196:#### `systemTaskNotificationHandler.ts`
+1197:
+1198:- **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.
+1199:- `AIMessage.vue` delegates `system_task_notification` segments to `SystemTaskNotificationSegment.vue`. That component renders the content through the normal markdown message renderer while retaining semantic hooks (`system-task-notification`, test id, `role="note"`, and an accessible label). The default presentation should read like ordinary chat content rather than a prominent alert card.
+1200:
+1201:#### `toolLifecycleHandler.ts`
+1202:
+1203:- Routes explicit lifecycle events through dedicated parse/state modules.
+1204:- Enforces normal non-terminal progress while allowing provider order where `TOOL_EXECUTION_STARTED` can arrive before `TOOL_APPROVAL_REQUESTED`; in that case `awaiting-approval` remains the active UI state until approval/denial/terminal events arrive.
+1205:- Enforces terminal precedence: `success` / `error` / `denied` are terminal and cannot be regressed by later non-terminal events or logs.
+1206:- Hydrates arguments from lifecycle payloads. `TOOL_APPROVAL_REQUESTED` and `TOOL_EXECUTION_STARTED` are the primary sources; `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` may also carry arguments as a defensive result-first recovery path for runtimes whose start event is missed or arrives out of order.
+1207:- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by exact invocation id only.
+1208:
+1209:#### `toolActivityProjection.ts`
+1210:
+1211:- Owns the shared live Activity projection policy used by both segment and lifecycle handlers.
+1212:- Seeds pending/running Activity visibility from eligible tool-like `SEGMENT_START` payloads so the right-side Activity panel appears when the middle tool card appears.
+1213:- Deduplicates segment-first and lifecycle-first paths by exact invocation id only, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+1214:- Treats backend/provider invocation ids as opaque identity tokens for distinct tool calls. Colon suffixes are never stripped or aliased by frontend projection: provider-generated ordinals such as `run_bash:0`, `run_bash:1`, semantic-looking suffixes such as `call_1:write_file`, and approval metadata suffixes such as `call_1:approval-1` are distinct ids unless the backend emits the same canonical id on every related event. Producer adapters must keep approval ids and other provider metadata out of public `invocation_id`.
+1215:- Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
+1216:
+1217:### Sidecar Store Pattern
+1218:
+1219:A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
+1220:
+1221:1.  **Run File Changes (`RunFileChangesStore`)**:
+1222:    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+1223:    - Owns the run-scoped projection for touched files and generated outputs.
+1224:    - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
+1225:    - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
+1226:2.  **Team Communication (`TeamCommunicationStore`)**:
+1227:    - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+1228:    - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
+1229:    - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
+1230:    - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
+1231:    - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+1232:    - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
+1233:3.  **Activity (`AgentActivityStore`)**:
+1234:    - Tracks run activities as a discriminated `RunActivity` history. Tool calls, file writes, and terminal commands are `kind: 'tool'`; compaction lifecycle/boundary rows are `kind: 'compaction'`.
+1235:    - Is updated through shared tool Activity projection from eligible live transcript segment events and lifecycle events, and through `compactionActivityProjection.ts` for live `COMPACTION_STATUS` payloads.
+1236:    - Segment events provide immediate pending tool visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration. Tool mutations are constrained to `kind: 'tool'` rows.
+1237:    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+1238:    - Powers the right-side Progress/Activity feed UI and the mobile run Activity list.
+1239:    - Feeds intentionally different presentation surfaces:
+1240:      - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation and routes non-awaiting cards into the matching tool activity item by `activityId`/invocation id.
+1241:      - `components/workspace/agent/CompactionStatusRow.vue` renders compact compaction rows inside the event monitor feed.
+1242:      - `components/progress/ToolActivityItem.vue` renders the right-side tool activity row, including the textual status chip and short invocation id.
+1243:      - `components/progress/CompactionActivityItem.vue` renders the right-side compaction activity row without pretending it is a tool invocation.
+1244:    - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual tool activity-status changes should stay in `ToolActivityItem.vue`; compaction row presentation should stay in the compaction row components.
+1245:4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
+1246:    - Listens to live `TOKEN_USAGE_UPDATED` events through the standalone/team handlers and hydrates reopened/focused subjects through current-run-record GraphQL summary queries. An individual live update becomes display-ready only from the strict post-persist `run_summary_after_event` cumulative snapshot; raw meter deltas are not treated as durable hydration.
+1247:    - The server summary builder narrows the broader statistics aggregate to the exact public cumulative-summary contract before either transport branches. Statistics-only `observed_*` diagnostics must never leak into standalone or Team events; strict transport parsing remains fail-closed rather than loosening the DTO to admit internal aggregate fields.
+1248:    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `usageReportCount` admission prevents an equal or older GraphQL/live result from replacing a newer cumulative summary.
+1249:    - Team aggregates use explicit `live_partial`, `refresh_required`, and `record_backed` states. Persisted Team events may extend a provisional aggregate before hydration; after a record-backed aggregate exists, a later event marks it refresh-required instead of blindly adding a delta to a result that may already include that event. The store permits at most one aggregate request at a time and repeats the GraphQL refresh sequentially until no Team event arrived during the request; only the stable response marks the Team total hydrated.
+1250:    - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
+1251:    - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
+1252:    - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
+1253:    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
+1254:    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+1255:    - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
+1256:    - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
+1257:    - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
+1258:    - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
+1259:    - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
+1260:    - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
+1261:    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+1262:    - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
+1263:    - Live store coverage must preserve the complete strict cumulative snapshot from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the Token Meter. Post-persist event snapshots and hydrated GraphQL summaries converge to the same display shape and generation rules. The durable Team transport regression must construct its snapshot through the production observation/fold/record/aggregate/public-summary builders and parse the final strict stream message, proving both complete field preservation and absence of aggregate-only diagnostics.
+1264:    - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, unit-price hydration across run/team/member/statistics summaries, and built-process restart reads of existing current records. Frontend store/component tests cover null/partial live events before reopen hydration, exact Team/member identity, higher-only individual generations, stable single-flight Team refresh, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
+1265:5.  **Settings Token Statistics (`tokenUsageStatisticsStore`)**:
+1266:    - Owns Settings > Token Statistics separately from the live/focused Token Meter. It fetches current-run-record task/team and runtime/model projections. The date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and every selected row displays its lifetime cumulative totals.
+1267:    - The selected Settings sidebar item is the visible page identity; the main content starts with one compact filter/control card instead of repeating a visible `Token Statistics` page title. The card orders controls as grouping select (`Task` / `Model`), start/end dates, then `Fetch Statistics`, followed by one concise creation-time/lifetime-total explanation.
+1268:    - The page defaults to the `Task` grouping. Top-level rows are standalone agent runs or root team runs; backend-provided `children` contain concrete member runs, including delegated/task-created agent runs with exact canonical run identity. Member usage is rendered only under its root team so totals are not double-counted. The current backend emits the supported Team-to-member level; deeper execution topology is not reconstructed by Token Usage.
+1269:    - The store/table consume server-owned `children`, `rootTeamRunId`, `runId`, and task metadata. They must not reconstruct hierarchy from task records, migration-only execution paths, memory paths, or display names.
+1270:    - Row labels use token-usage-owned display fields captured or migrated into current run records. Created time uses `runCreatedAt` when available; otherwise the store/table preserve `createdTimeSource` and label the timestamp as first usage observed rather than true run creation. Settings statistics does not add workspace display fields or inactive no-usage roster rows.
+1271:    - Model rows render server-owned `modelDisplayName` beside the unchanged raw `llmModel` identity. Task rows render `modelDisplayNames` positionally beside raw `models`; these arrays are derived from one ordered backend projection and the frontend does not parse opaque provider identifiers. AutoByteus custom-provider labels prefer the persisted provider-name identity summary and fall back to current provider metadata only when a migrated/current record has no recoverable snapshot; built-in and non-AutoByteus labels retain their current behavior.
+1272:    - The Task table is a reduced nine-column scan view: `Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, and `Created Time`. It does not render standalone `Type` or `Status` columns; row kind is conveyed by hierarchy/metadata, complete-estimate status is suppressed in main rows, and non-complete price status remains visible through formatted `Total Cost` text plus the expanded breakdown.
+1273:    - Sortable Task headers (`Task / Run`, `Runtime`, `Input`, `Output`, `Total Cost`, `Created Time`) show compact two-triangle neutral/active direction glyphs and accessible sort state. `Model(s)`, `Input Cost`, and `Output Cost` remain non-sortable plain headers. Row cost details open through one always-visible value-plus-solid-triangle button in the `Total Cost` cell; the visible formatted cost/status is the button text and is repeated in the localized show/hide accessible label/title with `aria-expanded` and `aria-controls`. `Input Cost` and `Output Cost` are plain values, not duplicate hover-only toggles.
+1274:    - The frontend sends no `rangeMode`. It renders the approved creation-time/lifetime-total helper but not `Usage during period`, `Select Date Range:`, `Group by:`, a separate `By Task` / `By Model` tab row, or a mode selector. Exact observation-period reporting would require a separately designed time-bucket/history contract.
+1275:    - `Model` remains a secondary diagnostics grouping by runtime/model pair, with runtime fallbacks and the same server-owned cost/status semantics as the task table.
+1276:    - Focused coverage includes current-record GraphQL E2E plus store/page/table component specs for Task default grouping, exact root/run grouping, member children, creation-time selection, lifetime copy, first-usage fallback, reduced Task columns, compact sort affordances, Total Cost disclosure controls, cost-inclusive accessible labels, absence of `rangeMode`, degraded-history guidance, and runtime/model diagnostics. Browser evidence also exercises normal lifetime results and degraded/fatal server states without claiming Electron-shell coverage.
+1277:6.  **Backend-owned TODO progress (`AgentTodoStore`)**:
+1278:    - Maintains backend-provided plan/progress TODO updates separately from the chat history; native `autobyteus-ts` no longer emits this event.
+1279:
+1280:### Run-Level Compaction Activity
+1281:
+1282:Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
+1283:visible history is projected through `AgentActivityStore` as `CompactionActivity`
+1284:rows.
+1285:
+1286:- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
+1287:- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
+1288:- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
+1289:- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
+1290:- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
+1291:- Frontend compaction rows animate the arrow-path/sync icon only for the active `started` phase using motion-safe animation classes; queued, completed, and failed states stay visually still.
+1292:- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
+1293:- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
+1294:
+1295:---
+1296:
+1297:## Error Event Nuance (Tool vs System)
+1298:
+1299:The backend can emit:
+1300:
+1301:- Explicit tool terminal lifecycle events (`TOOL_EXECUTION_FAILED`, `TOOL_DENIED`) for invocation-scoped failures.
+1302:- A generic `ERROR` event for visible runtime/turn failures and diagnostics.
+1303:  Additive `error_scope`, `error_effect`, and conditional `turn_id` fields
+1304:  distinguish turn diagnostics from matching turn-terminal and runtime-terminal
+1305:  evidence; an unclassified error has no lifecycle authority.
+1306:- Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`,
+1307:  `TURN_INTERRUPTED`) for one accepted user turn.
+1308:
+1309:`AGENT_STATUS` is run-scoped or exact team-member state.
+1310:`TEAM_RUN_LIFECYCLE` is only the root team active/inactive fact.
+1311:`TURN_COMPLETED` is the preferred signal when a client needs to know that one
+1312:exact turn has finished. Correlate terminal boundaries
+1313:and turn-scoped errors by `turn_id`; delayed events for turn A must not settle a
+1314:newer turn B. Ordinary segment/tool/inter-agent/todo/system-task activity is
+1315:content/progress only and must not infer `running` or recover/reopen a terminal
+1316:turn.
+1317:
+1318:`TOOL_LOG` is diagnostic-only and never the lifecycle authority for completion/failure.
+1319:
+1320:## Related Documentation
+1321:
+1322:- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
+1323:- **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
+1324:- **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
+1325:- **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.
+CLASSIFICATION: stale durable documentation; delivery documentation sync required, not executable coverage.
+
+## Patch hygiene
+git diff --check: PASS
+
+## Updated durable API/E2E paths
+     1	autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+     2	autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+     3	autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+     4	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+     5	autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts
+     6	autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+     7	autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+     8	autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+     9	autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+    10	autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+    11	autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+    12	autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+    13	autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+    14	autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+    15	autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+    16	autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+    17	autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+    18	autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts
+    19	autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts
+    20	autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+    21	autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+    22	autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts
+    23	autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+    24	autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue
+    25	autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs
+    26	test-support/live-e2e/live-e2e-harness.ts

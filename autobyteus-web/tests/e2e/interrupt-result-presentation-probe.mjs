@@ -26,6 +26,40 @@ const executablePath = browserArg >= 0
   : process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH ||
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const timeoutMs = 45_000;
+const TEAM_RUN_ID = 'browser-team-run';
+const TEAM_MEMBER_ADDRESS = '/review_group/critic';
+const TEAM_MEMBER_RUN_ID = 'browser-task-team-critic-run';
+const teamExecutionTree = {
+  schema_version: 1,
+  created_at: '2026-08-03T00:00:00.000Z',
+  archived_at: null,
+  application_binding: null,
+  handoffs: [],
+  root_team: {
+    team_definition_id: 'browser-team-definition',
+    team_definition_name: 'Browser Team',
+    team_run_id: TEAM_RUN_ID,
+    coordinator_address: TEAM_MEMBER_ADDRESS,
+    members: [{
+      kind: 'configured_agent',
+      address: TEAM_MEMBER_ADDRESS,
+      agent_definition_id: 'browser-critic-definition',
+      role: null,
+      description: null,
+      agent_run_id: TEAM_MEMBER_RUN_ID,
+      platform_agent_run_id: null,
+      launch_configuration: {
+        runtime_kind: 'AUTOBYTEUS',
+        llm_model_identifier: 'browser-probe-model',
+        llm_config: null,
+        auto_execute_tools: false,
+        skill_access_mode: 'NONE',
+        workspace_root_path: null,
+      },
+    }],
+    task_executions: [],
+  },
+};
 
 const getFreePort = () => new Promise((resolve, reject) => {
   const server = net.createServer();
@@ -100,9 +134,8 @@ const normalizeTarget = (kind, command) => kind === 'standalone'
   ? { target_kind: 'standalone_run', run_id: 'browser-agent-run' }
   : {
       target_kind: 'team_member',
-      team_run_id: 'browser-team-run',
-      member_route_key: command.payload.target_member_route_key,
-      member_run_id: command.payload.target_member_run_id ?? null,
+      team_run_id: TEAM_RUN_ID,
+      agent_run_id: command.payload.agent_run_id,
     };
 
 const sendJson = (socket, message) => socket.send(JSON.stringify(message));
@@ -123,18 +156,27 @@ const startWsServer = async () => {
       sendJson(socket, { type: 'CONNECTED', payload: { agent_id: 'browser-agent-run' } });
       sendJson(socket, { type: 'AGENT_STATUS', payload: { status: 'running', agent_id: 'browser-agent-run' } });
     } else {
-      sendJson(socket, { type: 'CONNECTED', payload: { team_run_id: 'browser-team-run' } });
+      sendJson(socket, { type: 'CONNECTED', payload: { session_id: 'browser-team-session', root_team_run_id: TEAM_RUN_ID } });
       sendJson(socket, {
-        type: 'AGENT_STATUS',
+        type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
         payload: {
-          status: 'running',
-          agent_id: 'browser-task-team-critic-run',
-          team_run_id: 'browser-team-run',
-          member_route_key: 'review_group/critic',
-          member_run_id: 'browser-task-team-critic-run',
+          root_team_run_id: TEAM_RUN_ID,
+          base_change_sequence: 0,
+          execution_tree: teamExecutionTree,
+          tasks: [],
+          messages: [],
+          agent_statuses: [{
+            agent_run_id: TEAM_MEMBER_RUN_ID,
+            member_address: TEAM_MEMBER_ADDRESS,
+            status: 'running',
+            trigger: null,
+            tool_name: null,
+            error_message: null,
+            error_details: null,
+          }],
         },
       });
-      sendJson(socket, { type: 'TEAM_RUN_LIFECYCLE', payload: { team_run_id: 'browser-team-run', is_active: true } });
+      sendJson(socket, { type: 'TEAM_RUN_LIFECYCLE', payload: { is_active: true } });
     }
     socket.on('message', (raw) => {
       const command = JSON.parse(raw.toString());
@@ -146,23 +188,18 @@ const startWsServer = async () => {
       }
       const target = normalizeTarget(kind, command);
       const accepted = mode === 'standalone-accepted';
-      const payload = accepted
-        ? {
-            command_type: 'INTERRUPT_GENERATION',
-            command_id: command.payload.command_id,
-            state: 'accepted',
-            target,
-          }
-        : {
-            command_type: 'INTERRUPT_GENERATION',
-            command_id: command.payload.command_id,
-            state: 'failed',
-            code: kind === 'team' ? 'NO_ACTIVE_MEMBER_TURN' : 'NO_ACTIVE_TURN',
-            message: kind === 'team'
-              ? 'The nested member has no active provider turn.'
-              : 'The provider has no active turn.',
-            target,
-          };
+      const payload = {
+        command_type: 'INTERRUPT_GENERATION',
+        command_id: command.payload.command_id,
+        state: accepted ? 'accepted' : 'failed',
+        ...(!accepted ? {
+          code: kind === 'team' ? 'NO_ACTIVE_MEMBER_TURN' : 'NO_ACTIVE_TURN',
+          message: kind === 'team'
+            ? 'The nested member has no active provider turn.'
+            : 'The provider has no active turn.',
+        } : {}),
+        ...(kind === 'team' ? { agent_run_id: target.agent_run_id } : { target }),
+      };
       const response = { type: 'AGENT_COMMAND_ACK', payload };
       evidence.frames.push({ direction: 'server-to-client', kind, mode, message: response });
       sendJson(socket, response);
@@ -281,7 +318,7 @@ try {
       contentType: 'application/json',
       body: JSON.stringify({
         data: {
-          availableLlmProvidersWithModels: [],
+          providerModelCatalogSnapshots: [],
           applicationsCapability: {
             enabled: false,
             scope: 'BOUND_NODE',
@@ -300,7 +337,16 @@ try {
     page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
     page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
     await page.goto(`${baseUrl}${routePath}?wsPort=${ws.port}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window.__interruptProbe?.ready === true);
+    try {
+      await page.waitForFunction(() => window.__interruptProbe?.ready === true);
+    } catch (error) {
+      evidence.browserEvents.push({
+        type: 'probe-readiness-timeout',
+        url: page.url(),
+        body: (await page.locator('body').innerText()).slice(0, 4000),
+      });
+      throw error;
+    }
     await waitFor('both browser WebSockets', () => connections.standalone.size > 0 && connections.team.size > 0);
     if (selected === 'team') await page.locator('[data-test="select-team"]').click();
     await page.locator('button[title="Stop generation"]').waitFor({ state: 'visible' });
@@ -387,8 +433,8 @@ try {
       await waitFor('one nested team failure toast', async () => (await toastTexts(page)).length === 1);
       const after = await snapshot(page);
       const toasts = await toastTexts(page);
-      assert.match(toasts[0], /Could not stop review_group\/critic.*no active provider turn/i);
-      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not stop review_group\/critic/i);
+      assert.match(toasts[0], /Could not stop browser-task-team-critic-run.*no active provider turn/i);
+      assert.match(await page.locator('.fixed.top-5.right-5').innerText(), /Could not stop browser-task-team-critic-run/i);
       assert.equal(await page.locator('button[title="Stop generation"]').count(), 1);
       assert.equal(after.teamIsActive, true);
       assert.equal(after.teamMemberStatus, 'running');
@@ -396,8 +442,7 @@ try {
       const sent = evidence.frames.find((frame) =>
         frame.mode === mode && frame.direction === 'client-to-server' && frame.kind === 'team');
       assert.match(sent.message.payload.command_id, /^client_interrupt_/);
-      assert.equal(sent.message.payload.target_member_route_key, 'review_group/critic');
-      assert.equal(sent.message.payload.target_member_run_id, 'browser-task-team-critic-run');
+      assert.equal(sent.message.payload.agent_run_id, TEAM_MEMBER_RUN_ID);
       return { before, after, toasts, sent: sent.message };
     } finally {
       await closeTrackedContext(context);

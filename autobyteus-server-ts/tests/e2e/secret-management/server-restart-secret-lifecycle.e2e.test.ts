@@ -32,8 +32,9 @@ const credentialStatus = async (serverUrl: string) =>
       health: string;
       instructionCode: string | null;
     };
-    providerSettings: Array<{
-      provider: { id: string; apiKeyConfigured: boolean };
+    providerCredentialSettings: Array<{
+      provider: { id: string };
+      apiKeyConfigured: boolean;
     }>;
   }>(serverUrl, `
     query Status {
@@ -41,21 +42,22 @@ const credentialStatus = async (serverUrl: string) =>
         health
         instructionCode
       }
-      providerSettings(runtimeKind: "autobyteus") {
-        provider { id apiKeyConfigured }
+      providerCredentialSettings(runtimeKind: "autobyteus") {
+        provider { id }
+        apiKeyConfigured
       }
     }
   `);
 
 const autoByteusStatus = async (serverUrl: string) => {
   const result = await credentialStatus(serverUrl);
-  const provider = result.providerSettings.find(
+  const provider = result.providerCredentialSettings.find(
     ({ provider: candidate }) => candidate.id === 'AUTOBYTEUS',
   );
   if (!provider) throw new Error('AUTOBYTEUS_PROVIDER_STATUS_MISSING');
   return {
     vaultHealth: result.getSecretVaultStatus.health,
-    storageState: provider.provider.apiKeyConfigured ? 'CONFIGURED' : 'MISSING',
+    storageState: provider.apiKeyConfigured ? 'CONFIGURED' : 'MISSING',
     instructionCode: result.getSecretVaultStatus.instructionCode,
   };
 };
@@ -125,12 +127,20 @@ describe('server restart one-database secret-vault lifecycle', () => {
       storageState: 'MISSING',
       instructionCode: null,
     });
-    const saved = await executeGraphql<{ saveProviderApiKey: boolean }>(firstServer.serverUrl, `
+    const saved = await executeGraphql<{
+      saveProviderApiKey: { provider: { id: string }; apiKeyConfigured: boolean };
+    }>(firstServer.serverUrl, `
       mutation Save($providerId: String!, $apiKey: String!) {
-        saveProviderApiKey(providerId: $providerId, apiKey: $apiKey)
+        saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
+          provider { id }
+          apiKeyConfigured
+        }
       }
     `, { providerId: 'AUTOBYTEUS', apiKey: syntheticCanary });
-    expect(saved.saveProviderApiKey).toBe(true);
+    expect(saved.saveProviderApiKey).toEqual({
+      provider: { id: 'AUTOBYTEUS' },
+      apiKeyConfigured: true,
+    });
     expect(JSON.stringify(saved)).not.toContain(syntheticCanary);
     expect((await autoByteusStatus(firstServer.serverUrl)).storageState).toBe('CONFIGURED');
     await firstServer.stop();

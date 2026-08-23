@@ -1,0 +1,72 @@
+## Production executable source: removed GraphQL contract names (expect none)
+RESULT: no removed GraphQL operation is executable in production source.
+
+## Durable executable coverage: removed GraphQL contract names
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:194:      'availableLlmProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:195:      'availableAudioProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:196:      'availableImageProvidersWithModels',
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:197:      'availableVideoProvidersWithModels',
+RESULT: no executable durable query uses a removed operation; lines above are schema-absence assertions only.
+
+## Intentional schema-absence assertions (not executable queries)
+    `);
+    const queryFields = schema.queryType.fields.map(({ name }) => name);
+    const mutationFields = schema.mutationType.fields.map(({ name }) => name);
+
+    expect(queryFields).toEqual(expect.arrayContaining([
+      'providerCredentialSettings',
+      'providerModelCatalogSnapshots',
+    ]));
+    expect(queryFields).not.toEqual(expect.arrayContaining([
+      'providerSettings',
+      'availableLlmProvidersWithModels',
+      'availableAudioProvidersWithModels',
+      'availableImageProvidersWithModels',
+      'availableVideoProvidersWithModels',
+    ]));
+    expect(mutationFields).toEqual(expect.arrayContaining([
+      'saveProviderApiKey',
+      'saveGeminiAiStudio',
+      'saveGeminiVertexExpress',
+
+## Non-contract lexical false positive
+565:    providerSettings: {
+CLASSIFICATION: evidence-object label only; not a GraphQL operation or compatibility alias.
+
+## Documentation follow-up signal
+6:- `providerSettings` returns each provider once with one provider-owned
+29:- successful commands refetch the provider-centered Settings read so the UI
+44:rather than relabeling the save as failed. Global and selected-provider reloads
+45:likewise await both provider-settings and catalog refresh owners before showing
+CLASSIFICATION: stale durable documentation; delivery documentation sync required, not executable coverage.
+
+## Patch hygiene
+git diff --check: PASS
+
+## Updated durable API/E2E paths
+     1	autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+     2	autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+     3	autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+     4	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+     5	autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts
+     6	autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+     7	autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+     8	autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+     9	autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+    10	autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+    11	autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+    12	autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+    13	autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+    14	autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+    15	autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+    16	autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+    17	autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+    18	autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts
+    19	autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts
+    20	autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+    21	autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+    22	autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts
+    23	autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+    24	autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue
+    25	autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs
+    26	test-support/live-e2e/live-e2e-harness.ts

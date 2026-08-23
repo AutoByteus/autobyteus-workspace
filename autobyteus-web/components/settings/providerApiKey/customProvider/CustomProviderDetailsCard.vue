@@ -26,21 +26,7 @@
       <span class="rounded-full border border-gray-100 bg-gray-50 px-2.5 py-1 font-medium text-gray-600">
         {{ $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: provider.totalModels }) }}
       </span>
-      <span
-        class="rounded-full border px-2.5 py-1 font-medium"
-        :class="provider.status === 'READY'
-          ? 'border-green-100 bg-green-50 text-green-700'
-          : provider.status === 'STALE_ERROR'
-            ? 'border-amber-100 bg-amber-50 text-amber-700'
-            : 'border-red-100 bg-red-50 text-red-700'"
-      >
-        {{ provider.status }}
-      </span>
     </div>
-
-    <p v-if="provider.statusMessage" class="text-xs text-gray-600">
-      {{ provider.statusMessage }}
-    </p>
   </section>
 </template>
 

@@ -243,8 +243,8 @@ describeCodexRuntime(
       async (requiredReasoningEffort?: string): Promise<string> => {
         const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models {
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels {
             modelIdentifier
             configSchema
           }
@@ -253,8 +253,8 @@ describeCodexRuntime(
     `;
 
         const result = await execGraphql<{
-          availableLlmProvidersWithModels: Array<{
-            models: Array<{
+          providerModelCatalogSnapshots: Array<{
+            llmModels: Array<{
               modelIdentifier: string;
               configSchema?: {
                 parameters?: Array<{
@@ -268,9 +268,9 @@ describeCodexRuntime(
           runtimeKind: "codex_app_server",
         });
 
-        const allModels = result.availableLlmProvidersWithModels.flatMap(
+        const allModels = result.providerModelCatalogSnapshots.flatMap(
           (provider) =>
-            provider.models.filter(
+            provider.llmModels.filter(
               (model) => model.modelIdentifier.length > 0,
             ),
         );
@@ -288,7 +288,7 @@ describeCodexRuntime(
           throw new Error(
             requiredReasoningEffort
               ? `No Codex runtime model advertises reasoning effort '${requiredReasoningEffort}'.`
-              : "No Codex runtime model was returned by availableLlmProvidersWithModels.",
+              : "No Codex runtime model was returned by providerModelCatalogSnapshots.",
           );
         }
 

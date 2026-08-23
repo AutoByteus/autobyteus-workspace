@@ -1,4 +1,3 @@
-import { createGeminiRuntimeResolver } from '../../../llm-management/services/gemini-runtime-resolver-adapter.js';
 import fs from "node:fs/promises";
 import {
   AgentConfig,
@@ -17,7 +16,6 @@ import {
   defaultLifecycleEventProcessorRegistry,
   defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
-  LLMFactory,
   waitForAgentToBeIdle,
 } from "autobyteus-ts";
 import type { BaseLLM, LLMFactoryConfigInput } from "autobyteus-ts";
@@ -47,9 +45,9 @@ import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-con
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
 import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
-import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
+import { createAvailableLlm } from "./available-llm-construction.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -142,16 +140,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.agentFactory = options.agentFactory ?? defaultAgentFactory;
     this.agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
-    this.createLLM = options.createLLM ??
-      (async (modelIdentifier, configInput) =>
-        LLMFactory.createLLM(
-          modelIdentifier,
-          configInput,
-          createLlmProviderApiKeyResolver(),
-          await LLMFactory.requiresGeminiRuntimeResolver(modelIdentifier)
-            ? createGeminiRuntimeResolver()
-            : undefined,
-        ));
+    this.createLLM = options.createLLM ?? createAvailableLlm;
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
     this.registries = {

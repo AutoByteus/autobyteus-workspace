@@ -177,15 +177,17 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
   });
 });
 
-describe('LLMFactory custom provider sync', () => {
+describe('LLMFactory custom source registration', () => {
   beforeEach(() => LLMFactory.resetForTests());
 
   it('registers discovered models and instantiates with separately supplied authentication', async () => {
-    const report = await LLMFactory.syncOpenAICompatibleEndpointModels([{
+    const report = await new OpenAICompatibleEndpointModelProvider().reloadSavedEndpoints([{
       endpoint: endpointA,
       discoveredModels: [discovered('model-a')],
     }]);
     expect(report.statuses[0]).toMatchObject({ endpointId: endpointA.id, status: 'READY' });
+    await LLMFactory.ensureInitialized();
+    LLMFactory.replaceSourceModels(`${endpointA.id}:LLM`, report.models);
 
     const models = await LLMFactory.listModelsByProvider(LLMProvider.OPENAI_COMPATIBLE);
     expect(models).toHaveLength(1);

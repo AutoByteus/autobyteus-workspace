@@ -27,7 +27,7 @@ type GeminiGraphqlModel = {
   metadataProvenance: 'LIVE' | 'CURATED_FALLBACK' | 'CURATED_ONLY' | null;
 };
 
-describe('assembled Gemini metadata provenance GraphQL E2E', () => {
+describe('local Gemini model metadata GraphQL E2E', () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let tempDirectory: string;
@@ -42,15 +42,15 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
 
   const geminiModels = async (): Promise<GeminiGraphqlModel[]> => {
     const result = await execute<{
-      availableLlmProvidersWithModels: Array<{
-        provider: { id: string };
-        models: GeminiGraphqlModel[];
+      providerModelCatalogSnapshots: Array<{
+        ownerProvider: { id: string };
+        llmModels: GeminiGraphqlModel[];
       }>;
     }>(`
       query GeminiMetadataProvenance {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider { id }
-          models {
+        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+          ownerProvider { id }
+          llmModels {
             modelIdentifier
             maxContextTokens
             maxInputTokens
@@ -60,9 +60,9 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
         }
       }
     `);
-    return result.availableLlmProvidersWithModels
-      .filter((row) => row.provider.id === LLMProvider.GEMINI)
-      .flatMap((row) => row.models);
+    return result.providerModelCatalogSnapshots
+      .filter((row) => row.ownerProvider.id === LLMProvider.GEMINI)
+      .flatMap((row) => row.llmModels);
   };
 
   const selectMode = (mode: 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT') => {
@@ -140,84 +140,8 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
     }
   });
 
-  it('projects LIVE only for a matching AI Studio Developer API record', async () => {
-    selectMode('AI_STUDIO');
-    const management = getSecretVaultRuntime().requireService();
-    const resolveSpy = vi.spyOn(management, 'resolveForUse');
-    const fetchMock = vi.fn(async () => ({
-      ok: true,
-      json: async () => ({
-        models: [{
-          name: 'models/gemini-3-flash-preview',
-          baseModelId: 'gemini-3-flash-preview',
-          inputTokenLimit: 2_097_152,
-          outputTokenLimit: 98_304,
-        }],
-      }),
-    }) as Response);
-    vi.stubGlobal('fetch', fetchMock);
-
-    const models = await geminiModels();
-    const matched = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
-
-    expect(resolveSpy).toHaveBeenCalledWith({
-      kind: 'llmMetadata',
-      providerId: LLMProvider.GEMINI,
-      credentialSlot: 'geminiAiStudioApiKey',
-    });
-    expect(resolveSpy).not.toHaveBeenCalledWith(expect.objectContaining({
-      providerId: LLMProvider.GEMINI,
-      credentialSlot: 'geminiVertexExpressApiKey',
-    }));
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(matched).toMatchObject({
-      maxContextTokens: 2_097_152,
-      maxInputTokens: 2_097_152,
-      maxOutputTokens: 98_304,
-      metadataProvenance: 'LIVE',
-    });
-    expect(models.some((model) =>
-      model.modelIdentifier !== 'gemini-3-flash-preview'
-      && model.metadataProvenance === 'LIVE')).toBe(false);
-    resolveSpy.mockRestore();
-  });
-
-  it('projects CURATED_FALLBACK when the exact AI Studio definition is unavailable', async () => {
-    vi.unstubAllGlobals();
-    selectMode('AI_STUDIO');
-    const management = getSecretVaultRuntime().requireService();
-    const resolveForUse = management.resolveForUse.bind(management);
-    const resolveSpy = vi.spyOn(management, 'resolveForUse').mockImplementation(async (consumer) => {
-      if (
-        consumer.kind === 'llmMetadata'
-        && consumer.providerId === LLMProvider.GEMINI
-        && consumer.credentialSlot === 'geminiAiStudioApiKey'
-      ) {
-        throw new Error('SYNTHETIC_METADATA_CAPABILITY_UNAVAILABLE');
-      }
-      return resolveForUse(consumer);
-    });
-    const fetchMock = vi.fn();
-    vi.stubGlobal('fetch', fetchMock);
-
-    const models = await geminiModels();
-    const target = models.find((model) => model.modelIdentifier === 'gemini-3-flash-preview');
-
-    expect(resolveSpy).toHaveBeenCalledWith({
-      kind: 'llmMetadata',
-      providerId: LLMProvider.GEMINI,
-      credentialSlot: 'geminiAiStudioApiKey',
-    });
-    expect(fetchMock).not.toHaveBeenCalled();
-    expect(target).toMatchObject({
-      maxContextTokens: 1_048_576,
-      metadataProvenance: 'CURATED_FALLBACK',
-    });
-    resolveSpy.mockRestore();
-  });
-
-  it.each(['VERTEX_EXPRESS', 'VERTEX_PROJECT'] as const)(
-    'projects CURATED_ONLY with zero Gemini metadata lookup or HTTP in %s mode',
+  it.each(['AI_STUDIO', 'VERTEX_EXPRESS', 'VERTEX_PROJECT'] as const)(
+    'projects curated rows with zero credential lookup or HTTP in %s mode',
     async (mode) => {
       vi.unstubAllGlobals();
       selectMode(mode);
@@ -236,9 +160,11 @@ describe('assembled Gemini metadata provenance GraphQL E2E', () => {
       expect(fetchMock).not.toHaveBeenCalled();
       expect(target).toMatchObject({
         maxContextTokens: 1_048_576,
-        metadataProvenance: 'CURATED_ONLY',
+        maxInputTokens: 1_048_576,
+        maxOutputTokens: 65_536,
+        metadataProvenance: null,
       });
-      expect(models.every((model) => model.metadataProvenance === 'CURATED_ONLY')).toBe(true);
+      expect(models.every((model) => model.metadataProvenance === null)).toBe(true);
       resolveSpy.mockRestore();
     },
   );

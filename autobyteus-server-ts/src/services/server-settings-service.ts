@@ -30,6 +30,7 @@ import {
   resolveStreamingContentFlushIntervalMs,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../config/streaming-content-flush-interval-setting.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -333,6 +334,11 @@ export class ServerSettingsService {
   }
 
   private refreshDependentSettingsAfterUpdate(key: string): void {
+    if (key === 'AUTOBYTEUS_LLM_SERVER_HOSTS'
+      || key === 'OLLAMA_HOSTS'
+      || key === 'LMSTUDIO_HOSTS') {
+      getModelCatalogService().notifySettingsChange(key);
+    }
     if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {
       reloadMediaToolSchemas();
     }
