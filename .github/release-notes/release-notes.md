@@ -1,8 +1,11 @@
+## What's New
+- Updated the curated provider catalog to the current flagship model identifiers, with explicit reselection for retired saved model IDs.
+- Added auditable latest-schedule DeepSeek V4 pricing selection using UTC peak/off-peak windows.
+
 ## Improvements
-- Improved Codex and Claude agent startup so configured workspace skills are reconciled consistently before a run begins.
-- Improved server diagnostics for agent preparation failures while keeping user-facing error messages safe and stable.
+- Preserved safe original provider messages after redaction while carrying canonical native error codes and supplemental provider evidence.
+- Kept the application-agent SDK error stream provider-neutral with the exact `{ type: "ERROR", message: string }` shape.
 
 ## Fixes
-- Fixed agent startup failures caused by stale or broken workspace skill links after a configured skill moves or becomes unavailable.
-- Fixed Codex skill discovery bypassing repair of the canonical configured workspace link.
-- Fixed unavailable optional skills leaving broken runtime links that could block otherwise valid agent runs.
+- Stabilized missing or blank provider-key mapping with actionable provider-specific setup messages.
+- Corrected native, Team, and application error transport and the related live-E2E trace-store API usage.
