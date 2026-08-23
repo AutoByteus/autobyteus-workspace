@@ -14,7 +14,10 @@ import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../../
 import type { TeamRunService, TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type {
+  ApplicationCurrentModelSelectionPolicy,
+} from "../../application-platform/launch-configuration/application-current-model-selection-policy.js";
 import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
@@ -46,6 +49,7 @@ export class ApplicationRunBindingLaunchService {
     agentRunService: AgentRunService;
     teamRunService: TeamRunService;
     agentDefinitionService: AgentDefinitionService;
+    currentModelSelectionPolicy: ApplicationCurrentModelSelectionPolicy;
   }) {}
   private get resolver() { return this.dependencies.executionResourceResolver; }
   private get bindings() { return this.dependencies.bindingStore; }
@@ -53,6 +57,7 @@ export class ApplicationRunBindingLaunchService {
   private get agents() { return this.dependencies.agentRunService; }
   private get teams() { return this.dependencies.teamRunService; }
   private get definitions() { return this.dependencies.agentDefinitionService; }
+  private get currentModels() { return this.dependencies.currentModelSelectionPolicy; }
 
   async startAgentRunBinding(applicationId: string, input: ApplicationStartAgentInput): Promise<ApplicationAgentBindingRecord> {
     if (input.launch.kind !== "AGENT") throw new Error("startAgent requires launch.kind 'AGENT'.");
@@ -71,6 +76,10 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startAgent(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationAgentRunLaunch): Promise<ApplicationAgentBindingRecord> {
+    const runtimeKind = await this.currentModels.requireCurrentSelection({
+      runtimeKind: launch.runtimeKind,
+      llmModelIdentifier: launch.llmModelIdentifier,
+    });
     const definition = await this.definitions.getAgentDefinitionById(resource.definitionId);
     const displayName = definition?.name?.trim() || resource.name;
     const run = await this.agents.createAgentRun({
@@ -81,7 +90,7 @@ export class ApplicationRunBindingLaunchService {
       autoExecuteTools: Boolean(launch.autoExecuteTools),
       llmConfig: launch.llmConfig ?? null,
       skillAccessMode: skillMode(launch.skillAccessMode),
-      runtimeKind: launch.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
+      runtimeKind,
       applicationBinding: {
         applicationId: seed.applicationId,
         bindingId: seed.bindingId,
@@ -99,21 +108,31 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startTeam(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationTeamRunLaunch): Promise<ApplicationAgentBindingRecord> {
-    const teamRunId = await this.teams.allocateTeamRunId(resource.definitionId);
     const configs = launch.mode === "preset"
       ? await this.teams.buildMemberConfigsFromLaunchPreset({ teamDefinitionId: resource.definitionId, launchPreset: {
           workspaceRootPath: launch.launchPreset.workspaceRootPath,
           llmModelIdentifier: launch.launchPreset.llmModelIdentifier,
           autoExecuteTools: Boolean(launch.launchPreset.autoExecuteTools),
           skillAccessMode: skillMode(launch.launchPreset.skillAccessMode),
-          runtimeKind: (launch.launchPreset.runtimeKind ?? RuntimeKind.AUTOBYTEUS) as RuntimeKind,
+          runtimeKind: this.requireNormalizedRuntimeKind(launch.launchPreset.runtimeKind),
           llmConfig: launch.launchPreset.llmConfig ?? null,
         } })
       : launch.memberConfigs.map((config) => this.explicitConfig(config));
+    const normalizedConfigs = configs.map((config) => ({
+      ...config,
+      runtimeKind: this.requireNormalizedRuntimeKind(config.runtimeKind),
+    }));
+    for (const config of normalizedConfigs) {
+      await this.currentModels.requireCurrentSelection({
+        runtimeKind: config.runtimeKind,
+        llmModelIdentifier: config.llmModelIdentifier,
+      });
+    }
+    const teamRunId = await this.teams.allocateTeamRunId(resource.definitionId);
     const teamRun = await this.teams.createTeamRun({
       teamDefinitionId: resource.definitionId,
       teamRunId,
-      memberConfigs: configs,
+      memberConfigs: normalizedConfigs,
       applicationBinding: { applicationId: seed.applicationId, bindingId: seed.bindingId },
     });
     const members: ApplicationAgentTeamBindingMember[] = configuredAgents(teamRun.getExecutionTreeSnapshot().rootTeam.members).map((node) => ({
@@ -140,8 +159,16 @@ export class ApplicationRunBindingLaunchService {
       skillAccessMode: skillMode(input.skillAccessMode),
       workspaceRootPath: input.workspaceRootPath?.trim() || null,
       llmConfig: input.llmConfig ?? null,
-      runtimeKind: input.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
+      runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
     };
+  }
+
+  private requireNormalizedRuntimeKind(value: unknown): RuntimeKind {
+    const runtimeKind = this.currentModels.normalizeRuntimeKind(value);
+    if (!runtimeKind) {
+      throw new Error(`Unsupported application runtimeKind '${String(value)}'.`);
+    }
+    return runtimeKind;
   }
 
   private async persist(binding: ApplicationAgentBindingRecord): Promise<ApplicationAgentBindingRecord> {

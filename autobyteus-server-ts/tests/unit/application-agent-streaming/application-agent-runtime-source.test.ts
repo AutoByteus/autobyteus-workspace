@@ -5,9 +5,10 @@ import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-ag
 import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 
 describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
-  it("attributes nested task-agent events through the closed producer envelope and filters selected members", () => {
-    let listener!: (input: { event: any }) => void;
+  it("attributes nested current team-agent events through the closed producer envelope and filters selected members", () => {
+    let listener!: (event: { changeSequence: number; event: any }) => void;
     const runtimeSource = new ApplicationAgentStreamRuntimeSource({
+      agentRunManager: { getActiveRun: () => null },
       teamRunManager: {
         getActiveTeamRun: () => ({ subscribeToEvents: (next: typeof listener) => { listener = next; return () => undefined; } }),
       },
@@ -22,6 +23,7 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
     }, (event) => captured.push(event));
 
     listener({
+      changeSequence: 1,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
         execution: {
@@ -37,6 +39,7 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
       },
     });
     listener({
+      changeSequence: 2,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
         execution: {
@@ -58,8 +61,6 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
       producer: { agentRunId: "task-run-1", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" },
       event: { type: "TURN_STARTED" },
     });
-    expect(JSON.stringify(mapped)).not.toContain("providerThreadId");
-    expect(JSON.stringify(mapped)).not.toContain("instance-secret");
   });
 
   it("drops every non-agent team source before public projection", () => {

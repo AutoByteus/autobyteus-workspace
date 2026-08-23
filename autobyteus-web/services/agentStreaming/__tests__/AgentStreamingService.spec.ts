@@ -395,7 +395,7 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages[0].segments).toContainEqual(
             expect.objectContaining({
                 type: 'error',
-                source: 'RUN_COMMAND_IN_PROGRESS',
+                code: 'RUN_COMMAND_IN_PROGRESS',
                 message: 'Another command is already running.',
             }),
         );

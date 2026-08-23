@@ -27,6 +27,8 @@ import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { ToolInvocation } from '../tool-invocation.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
+import { MissingApiKeyError } from '../../secrets/provider-api-key-error.js';
+import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
@@ -59,7 +61,7 @@ export class LlmPhase {
     if (!llmInstance) {
       const errorMessage = `Agent '${agentId}' requires an initialized LLM instance.`;
       notifier?.notifyAgentErrorOutputGeneration({
-        source: 'LlmPhase.pre_llm_check',
+        code: 'LLM_NOT_INITIALIZED',
         message: errorMessage,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: turn.turnId }
       });
@@ -211,7 +213,7 @@ export class LlmPhase {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
         notifier?.notifyAgentErrorOutputGeneration({
-          source: 'LlmPhase.prepareRequest',
+          code: 'LLM_REQUEST_PREPARATION_FAILED',
           message: error.message,
           details: String(error.cause ?? error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
@@ -362,8 +364,13 @@ export class LlmPhase {
         throw error;
       }
 
-      const errorDetails = String(error);
-      const errorMessage = `Error processing your request with the LLM: ${errorDetails.slice(0, 1000)}`;
+      const evidence = error instanceof MissingApiKeyError
+        ? { message: error.message, providerCode: error.kind }
+        : extractProviderErrorEvidence(error);
+      const errorMessage = evidence.message;
+      const errorCode = error instanceof MissingApiKeyError
+        ? error.kind
+        : evidence.providerCode || 'LLM_PROVIDER_ERROR';
       if (!recoverySettled) {
         restoreRequest('provider or response ingestion failed before a usable response', 'LlmPhase.stream');
       }
@@ -378,9 +385,12 @@ export class LlmPhase {
         currentReasoningPartId = null;
       }
       notifier?.notifyAgentErrorOutputGeneration({
-        source: 'LlmPhase.stream',
+        code: errorCode,
         message: errorMessage,
-        details: errorDetails,
+        ...(evidence.details ? { details: evidence.details } : {}),
+        ...(evidence.providerStatus !== undefined ? { provider_status: evidence.providerStatus } : {}),
+        ...(evidence.providerCode ? { provider_code: evidence.providerCode } : {}),
+        ...(evidence.providerRequestId ? { provider_request_id: evidence.providerRequestId } : {}),
         classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
       });
       return {
@@ -419,7 +429,7 @@ export class LlmPhase {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         notifier?.notifyAgentErrorOutputGeneration({
-          source: 'LlmPhase.immediateCompaction',
+          code: 'LLM_IMMEDIATE_COMPACTION_FAILED',
           message: errorMessage,
           details: String(error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }

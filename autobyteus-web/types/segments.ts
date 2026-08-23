@@ -98,9 +98,12 @@ export interface MediaSegment {
 
 export interface ErrorSegment {
   type: 'error';
-  source: string;
+  code: string;
   message: string;
   details?: string | null;
+  providerStatus?: number | string | null;
+  providerCode?: string | null;
+  providerRequestId?: string | null;
 }
 
 export type AIResponseSegment = 

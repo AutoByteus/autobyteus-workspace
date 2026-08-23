@@ -3,6 +3,7 @@ import type {
   ApplicationExecutionResourceSlotDeclaration,
   ApplicationResolvedResourceLaunchBaseline,
 } from "@autobyteus/application-sdk-contracts";
+import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ApplicationLaunchConfigurationService,
@@ -13,6 +14,9 @@ import {
 import {
   ApplicationLaunchResourceBaselineError,
 } from "../../../src/application-platform/launch-configuration/application-launch-resource-baseline-builder.js";
+import {
+  ApplicationCurrentModelSelectionPolicy,
+} from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 import type {
   ApplicationLaunchOverrideWrite,
   StoredApplicationLaunchOverride,
@@ -123,6 +127,7 @@ const createHarness = (input: {
     provenance: "PACKAGE" | "SELECTED_RESOURCE",
   ) => ApplicationResolvedResourceLaunchBaseline | Promise<ApplicationResolvedResourceLaunchBaseline>;
   initialStored?: StoredApplicationLaunchOverride | null;
+  requireCurrentAutoByteusModelIdentifier?: (modelIdentifier: string) => Promise<void>;
 } = {}) => {
   let stored = input.initialStored ? structuredClone(input.initialStored) : null;
   const listOverrides = vi.fn(async () => stored ? [structuredClone(stored)] : []);
@@ -158,6 +163,12 @@ const createHarness = (input: {
       : alternateBaseline();
   });
   const validate = vi.fn(async () => []);
+  const requireCurrentAutoByteusModelIdentifier = vi.fn(
+    input.requireCurrentAutoByteusModelIdentifier ?? (async () => undefined),
+  );
+  const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    requireCurrentAutoByteusModelIdentifier,
+  });
   const service = new ApplicationLaunchConfigurationService({
     applicationBundleService: {
       getApplicationById: vi.fn(async () => ({
@@ -172,6 +183,7 @@ const createHarness = (input: {
     } as never,
     baselineBuilder: { build } as never,
     hostCapabilityValidator: { validate } as never,
+    currentModelSelectionPolicy,
     resolveWorkspaceRootPath: () => "/runtime/brief-app",
   });
   return {
@@ -181,6 +193,7 @@ const createHarness = (input: {
     listOverrides,
     upsertOverride,
     removeOverride,
+    requireCurrentAutoByteusModelIdentifier,
     getStored: () => stored ? structuredClone(stored) : null,
   };
 };
@@ -368,6 +381,67 @@ describe("ApplicationLaunchConfigurationService selected-resource resolution", (
         memberProfiles: memberIdentityOnly(baseline),
       },
     });
+  });
+
+
+  it("rejects a stale AutoByteus Save before writing the prior row", async () => {
+    const harness = createHarness({
+      initialStored: {
+        slotKey: slot.slotKey,
+        executionResourceRef: { state: "absent" },
+        launchOverride: { state: "absent" },
+        legacyLaunchDefaults: { state: "absent" },
+        updatedAt: "2026-08-23T10:00:00.000Z",
+      },
+      requireCurrentAutoByteusModelIdentifier: async (modelIdentifier) => {
+        if (modelIdentifier === "removed-model") {
+          throw new CurrentModelSelectionRequiredError(modelIdentifier);
+        }
+      },
+      buildBaseline: (ref, provenance) => {
+        const baseline = resourceKey(ref) === resourceKey(packageRef)
+          ? packageBaseline()
+          : alternateBaseline();
+        return {
+          ...baseline,
+          leaves: baseline.leaves.map((leaf) => ({
+            ...leaf,
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "removed-model",
+            provenance: {
+              ...leaf.provenance,
+              runtimeKind: { kind: provenance === "PACKAGE" ? "PACKAGE_AGENT_DEFAULT" : "SELECTED_RESOURCE_AGENT_DEFAULT", agentDefinitionId: leaf.agentDefinitionId },
+              llmModelIdentifier: { kind: provenance === "PACKAGE" ? "PACKAGE_AGENT_DEFAULT" : "SELECTED_RESOURCE_AGENT_DEFAULT", agentDefinitionId: leaf.agentDefinitionId },
+            },
+          })),
+        };
+      },
+    });
+    const prior = harness.getStored();
+
+    await expect(harness.service.upsertOverride(applicationId, slot.slotKey, {
+      executionResourceRef: packageRef,
+      launchOverride: null,
+    })).rejects.toMatchObject({
+      readiness: {
+        status: "HOST_REQUIREMENT_MISSING",
+        issues: [
+          expect.objectContaining({
+            scope: "HOST_CAPABILITY",
+            code: "CURRENT_MODEL_SELECTION_REQUIRED",
+            memberAddress: "/researcher",
+          }),
+          expect.objectContaining({
+            scope: "HOST_CAPABILITY",
+            code: "CURRENT_MODEL_SELECTION_REQUIRED",
+            memberAddress: "/writer",
+          }),
+        ],
+      },
+    });
+
+    expect(harness.upsertOverride).not.toHaveBeenCalled();
+    expect(harness.getStored()).toEqual(prior);
   });
 
   it("preserves deleted and stale saved rows as blocking until explicit Reset", async () => {

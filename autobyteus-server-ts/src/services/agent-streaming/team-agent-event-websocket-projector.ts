@@ -105,6 +105,18 @@ export const projectTeamAgentEventMessage = (
     case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: projectTeamMemberExecutionIdentityDto(event.details.sender.identity) }, content: event.details.content } });
     case "ARTIFACT_PERSISTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
     case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
-    case "ERROR": return parseTeamStreamServerMessage({ type: "ERROR", payload: { code: event.details.code, message: event.details.message, change_sequence: changeSequence, agent_run_id: execution.agentRunId, error_scope: event.details.errorScope, error_effect: event.details.errorEffect, turn_id: event.details.turnId } });
+    case "ERROR": return parseTeamStreamServerMessage({ type: "ERROR", payload: {
+      code: event.details.code,
+      message: event.details.message,
+      ...(event.details.details !== undefined ? { details: event.details.details } : {}),
+      ...(event.details.providerStatus !== undefined ? { provider_status: event.details.providerStatus } : {}),
+      ...(event.details.providerCode !== undefined ? { provider_code: event.details.providerCode } : {}),
+      ...(event.details.providerRequestId !== undefined ? { provider_request_id: event.details.providerRequestId } : {}),
+      change_sequence: changeSequence,
+      agent_run_id: execution.agentRunId,
+      error_scope: event.details.errorScope,
+      error_effect: event.details.errorEffect,
+      turn_id: event.details.turnId,
+    } });
   }
 };

@@ -114,7 +114,7 @@ export const failLocalSubmission = (
     isComplete: true,
     segments: [{
       type: 'error',
-      source: 'System',
+      code: 'LOCAL_SUBMISSION_ERROR',
       message,
       details: error instanceof Error ? error.toString() : String(error),
     }],

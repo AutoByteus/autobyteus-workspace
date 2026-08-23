@@ -139,7 +139,7 @@ test('standard connection accepts exact events and rejects malformed nested payl
     event(2, { type: 'TEXT_DELTA', delta: ' exact \n' }),
     event(3, { type: 'TURN_COMPLETED' }),
     event(4, { type: 'TURN_INTERRUPTED' }),
-    event(5, { type: 'ERROR', message: 'The agent response failed.' }),
+    event(5, { type: 'ERROR', message: 'Provider request limit reached.' }),
   ];
   for (const exactEvent of exactEvents) {
     socket.emit('message', { data: JSON.stringify({
@@ -186,6 +186,14 @@ test('standard connection rejects removed event shapes, nullable producers, and 
     envelope({ type: 'TOOL_EXECUTION_STARTED', toolName: 'publish_artifacts' }),
     envelope({ type: 'TEAM_STATUS', status: 'IDLE' }),
     envelope({ type: 'TEXT_DELTA', delta: 'valid', providerThreadId: 'secret' }),
+    envelope({
+      type: 'ERROR',
+      message: 'Provider request limit reached.',
+      providerStatus: 429,
+      providerCode: 'rate_limit',
+      providerRequestId: 'request-123',
+      details: 'safe diagnostic detail',
+    }),
     envelope({ type: 'TURN_COMPLETED', content: 'not allowed' }),
     envelope({ type: 'TURN_STARTED' }, { producer: null }),
   ];

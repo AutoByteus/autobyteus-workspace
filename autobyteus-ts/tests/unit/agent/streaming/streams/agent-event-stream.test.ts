@@ -147,7 +147,7 @@ describe('AgentEventStream', () => {
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentErrorOutputGeneration({
-        source: 'Test.Source',
+        code: 'TEST_SOURCE',
         message: 'A test error occurred.',
         details: 'Detailed traceback.',
         classification: { scope: 'turn', effect: 'diagnostic', turnId: 'turn-1' }
@@ -160,7 +160,7 @@ describe('AgentEventStream', () => {
     expect(event.event_type).toBe(StreamEventType.ERROR_EVENT);
     expect(event.data).toBeInstanceOf(ErrorEventData);
     const payload = event.data as ErrorEventData;
-    expect(payload.source).toBe('Test.Source');
+    expect(payload.code).toBe('TEST_SOURCE');
     expect(payload.message).toBe('A test error occurred.');
     expect(payload.details).toBe('Detailed traceback.');
     expect(payload.error_scope).toBe('turn');

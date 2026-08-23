@@ -169,7 +169,7 @@ export class AgentTurnRunner {
         });
         const recoveredToolInvocationIds = repair?.repairs.map(({ toolCallId }) => toolCallId) ?? [];
         this.notifier?.notifyAgentErrorOutputGeneration({
-          source: 'AgentTurnRunner.Recovered',
+          code: 'AgentTurnRunner.Recovered',
           message: errorMessage,
           details: error instanceof Error ? error.stack : String(error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId }
@@ -179,7 +179,7 @@ export class AgentTurnRunner {
       } catch (recoveryError) {
         const terminalMessage = `Agent turn '${turnId}' recovery failed: ${String(recoveryError)}`;
         this.notifier?.notifyAgentErrorOutputGeneration({
-          source: 'AgentTurnRunner.RecoveryFailed',
+          code: 'AgentTurnRunner.RecoveryFailed',
           message: terminalMessage,
           details: recoveryError instanceof Error ? recoveryError.stack : String(recoveryError),
           classification: { scope: 'turn', effect: 'terminal', turnId }

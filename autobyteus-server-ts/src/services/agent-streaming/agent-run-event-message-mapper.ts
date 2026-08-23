@@ -59,6 +59,19 @@ const projectErrorEvidence = (event: AgentRunEvent) => {
   }
 };
 
+const projectProviderErrorEvidence = (payload: Record<string, unknown>): Record<string, unknown> => ({
+  ...(typeof payload.details === "string" ? { details: payload.details } : {}),
+  ...(typeof payload.provider_status === "number" || typeof payload.provider_status === "string" || payload.provider_status === null
+    ? { provider_status: payload.provider_status }
+    : {}),
+  ...(typeof payload.provider_code === "string" || payload.provider_code === null
+    ? { provider_code: payload.provider_code }
+    : {}),
+  ...(typeof payload.provider_request_id === "string" || payload.provider_request_id === null
+    ? { provider_request_id: payload.provider_request_id }
+    : {}),
+});
+
 export class AgentRunEventMessageMapper {
   map(event: AgentRunEvent): ServerMessage {
     const payload = serializePayload(event.payload);
@@ -118,7 +131,12 @@ export class AgentRunEventMessageMapper {
       case AgentRunEventType.FILE_CHANGE:
         return new ServerMessage(ServerMessageType.FILE_CHANGE, payload);
       case AgentRunEventType.ERROR:
-        return new ServerMessage(ServerMessageType.ERROR, { code: payload.code, message: payload.message, ...projectErrorEvidence(event) });
+        return new ServerMessage(ServerMessageType.ERROR, {
+          code: payload.code,
+          message: payload.message,
+          ...projectProviderErrorEvidence(payload),
+          ...projectErrorEvidence(event),
+        });
       default:
         return new ServerMessage(ServerMessageType.ERROR, {
           code: "UNKNOWN_AGENT_RUN_EVENT",

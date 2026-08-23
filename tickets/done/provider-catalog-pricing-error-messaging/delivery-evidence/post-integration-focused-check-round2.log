@@ -1,0 +1,295 @@
+$ pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts tests/integration/application-backend/application-agent-communication-ws.integration.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:10320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-autobyteus
+Created agent session 5ea258bc-ca0e-499d-b283-3da7db46198b for run run-autobyteus
+Agent WebSocket connected: session=5ea258bc-ca0e-499d-b283-3da7db46198b, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-server-ts
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-autobyteus
+Created agent session 999c0157-eb28-4723-8073-7147db7aa869 for run run-autobyteus
+Agent WebSocket connected: session=999c0157-eb28-4723-8073-7147db7aa869, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 999c0157-eb28-4723-8073-7147db7aa869
+Agent WebSocket disconnected: 999c0157-eb28-4723-8073-7147db7aa869
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 5ea258bc-ca0e-499d-b283-3da7db46198b
+Agent WebSocket disconnected: 5ea258bc-ca0e-499d-b283-3da7db46198b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-codex_app_server
+Created agent session 30fe0f2e-f7c1-4d10-aa9b-6ff739948457 for run run-codex_app_server
+Agent WebSocket connected: session=30fe0f2e-f7c1-4d10-aa9b-6ff739948457, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-codex_app_server
+Created agent session e89901b2-60ad-4051-9ec0-f96d9275a27a for run run-codex_app_server
+Agent WebSocket connected: session=e89901b2-60ad-4051-9ec0-f96d9275a27a, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Closed agent session e89901b2-60ad-4051-9ec0-f96d9275a27a
+Agent WebSocket disconnected: e89901b2-60ad-4051-9ec0-f96d9275a27a
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 30fe0f2e-f7c1-4d10-aa9b-6ff739948457
+Agent WebSocket disconnected: 30fe0f2e-f7c1-4d10-aa9b-6ff739948457
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session 689cc656-d6b6-4988-acee-02cba22edfe0 for run run-claude_agent_sdk
+Agent WebSocket connected: session=689cc656-d6b6-4988-acee-02cba22edfe0, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session 425e02b1-c9f5-4c53-b0ad-4770e7908f54 for run run-claude_agent_sdk
+Agent WebSocket connected: session=425e02b1-c9f5-4c53-b0ad-4770e7908f54, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 425e02b1-c9f5-4c53-b0ad-4770e7908f54
+Agent WebSocket disconnected: 425e02b1-c9f5-4c53-b0ad-4770e7908f54
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Closed agent session 689cc656-d6b6-4988-acee-02cba22edfe0
+Agent WebSocket disconnected: 689cc656-d6b6-4988-acee-02cba22edfe0
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Agent websocket attached for run run-default-window-rate
+Created agent session 98441465-d960-406d-90be-b3a7612f1e8a for run run-default-window-rate
+Agent WebSocket connected: session=98441465-d960-406d-90be-b3a7612f1e8a, run=run-default-window-rate
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Closed agent session 98441465-d960-406d-90be-b3a7612f1e8a
+Agent WebSocket disconnected: 98441465-d960-406d-90be-b3a7612f1e8a
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Agent websocket attached for run run-live-interval-change
+Created agent session cf8467b8-3014-495b-a5ba-7935dca18259 for run run-live-interval-change
+Agent WebSocket connected: session=cf8467b8-3014-495b-a5ba-7935dca18259, run=run-live-interval-change
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Closed agent session cf8467b8-3014-495b-a5ba-7935dca18259
+Agent WebSocket disconnected: cf8467b8-3014-495b-a5ba-7935dca18259
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 48148509-6048-4357-8b18-a1dc989b905f for run run-retired-turn-ordering
+Agent WebSocket connected: session=48148509-6048-4357-8b18-a1dc989b905f, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session f77587c6-af6d-4728-a59e-8b3f6268da9d for run run-retired-turn-ordering
+Agent WebSocket connected: session=f77587c6-af6d-4728-a59e-8b3f6268da9d, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Closed agent session f77587c6-af6d-4728-a59e-8b3f6268da9d
+Agent WebSocket disconnected: f77587c6-af6d-4728-a59e-8b3f6268da9d
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 4e4b242b-d314-4308-bf17-c276af7e348b for run run-retired-turn-ordering
+Agent WebSocket connected: session=4e4b242b-d314-4308-bf17-c276af7e348b, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+Closed agent session 4e4b242b-d314-4308-bf17-c276af7e348b
+Agent WebSocket disconnected: 4e4b242b-d314-4308-bf17-c276af7e348b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Closed agent session 48148509-6048-4357-8b18-a1dc989b905f
+Agent WebSocket disconnected: 48148509-6048-4357-8b18-a1dc989b905f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Agent websocket attached for run run-error-contract
+Created agent session 10fe8f6b-5844-48e5-94e2-528e26ac7b2c for run run-error-contract
+Agent WebSocket connected: session=10fe8f6b-5844-48e5-94e2-528e26ac7b2c, run=run-error-contract
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session 10fe8f6b-5844-48e5-94e2-528e26ac7b2c
+Agent WebSocket disconnected: 10fe8f6b-5844-48e5-94e2-528e26ac7b2c
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (7 tests) 2617ms
+     ✓ coalesces a representative fine-grained canonical stream into one default-window content frame  661ms
+     ✓ uses a changed interval only for the active socket's next newly opened window  1813ms
+(node:10341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 57ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:10343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (11 tests) 14ms
+
+ Test Files  3 passed (3)
+      Tests  19 passed (19)
+   Start at  21:58:37
+   Duration  10.31s (transform 3.31s, setup 25ms, import 6.88s, tests 2.69s, environment 0ms)
+
+
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/errors/provider-error.test.ts tests/unit/llm/api/grok-llm.test.ts tests/unit/llm/api/glm-llm.test.ts tests/unit/llm/api/kimi-llm.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-ts
+
+ ✓ tests/unit/llm/errors/provider-error.test.ts (2 tests) 3ms
+ ✓ tests/unit/llm/api/kimi-llm.test.ts (2 tests) 4ms
+ ✓ tests/unit/llm/api/glm-llm.test.ts (6 tests) 6ms
+ ✓ tests/unit/llm/api/grok-llm.test.ts (2 tests) 5ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (4 tests) 4ms
+
+ Test Files  5 passed (5)
+      Tests  16 passed (16)
+   Start at  21:58:48
+   Duration  771ms (transform 738ms, setup 89ms, import 1.50s, tests 23ms, environment 0ms)
+
+
+$ git diff --check
+
+--- latest-base merge smoke after docs-only base advance ---
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/errors/provider-error.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-ts
+
+ ✓ tests/unit/llm/errors/provider-error.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (4 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  21:59:24
+   Duration  862ms (transform 301ms, setup 34ms, import 786ms, tests 6ms, environment 0ms)
+
+
+$ git diff --check

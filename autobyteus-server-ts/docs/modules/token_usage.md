@@ -280,6 +280,23 @@ include component `unitPrices`, policy/tier identifiers, currency/status, and
 missing dimensions so the UI can explain costs without recalculating them.
 Reasoning tokens remain a visible subset of output and are not double-counted.
 
+### Latest pricing schedule selection
+
+The pricing resolver always uses the latest catalog configuration. For DeepSeek
+V4 Flash and Pro, the latest schedule is effective from
+`2026-08-16T16:00:00Z` and uses UTC half-open peak windows `[01:00,04:00)` and
+`[06:00,10:00)`; all other times use the latest off-peak period. Input,
+cache-read, and output rates are selected from that schedule, while unsupported
+cache-write dimensions remain explicitly untrusted. The usage event timestamp
+selects only the latest schedule period; it never selects a retired price table
+based on the event's calendar date.
+
+The applied schedule ID, period ID, effective timestamp, and timezone are
+retained in the pricing snapshot and policy key for auditability. Existing token
+dimensions and input-size tier selection remain authoritative, and missing or
+unverified prices continue to produce an explicit non-estimated status rather
+than a fabricated zero-cost result.
+
 ## Production Data Transition
 
 ### Expansion And Legacy Boundary

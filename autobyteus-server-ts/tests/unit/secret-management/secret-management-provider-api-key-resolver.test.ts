@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SecretValue } from 'autobyteus-ts';
+import { MissingApiKeyError, SecretValue } from 'autobyteus-ts';
 import { SecretManagementProviderApiKeyResolver } from '../../../src/secret-management/resolution/secret-management-provider-api-key-resolver.js';
+import { SecretVaultError } from '../../../src/secret-management/domain/secret-vault-types.js';
 
 describe('SecretManagementProviderApiKeyResolver', () => {
   it.each([
@@ -40,5 +41,36 @@ describe('SecretManagementProviderApiKeyResolver', () => {
       'consumer',
       'resolve',
     ]);
+  });
+
+  it('maps a missing or blank vault value to the stable provider setup error', async () => {
+    const notFoundResolver = new SecretManagementProviderApiKeyResolver(
+      { kind: 'llm' },
+      () => ({
+        resolveForUse: vi.fn().mockRejectedValue(
+          new SecretVaultError('NOT_FOUND', false, 'SECRET_NOT_FOUND'),
+        ),
+      }) as never,
+    );
+    await expect(notFoundResolver.resolve('GEMINI')).rejects.toMatchObject({
+      kind: 'missing_api_key',
+      message: 'API key not provided for GEMINI. Configure the GEMINI API key before sending a request.',
+    });
+
+    const blankResolver = new SecretManagementProviderApiKeyResolver(
+      { kind: 'llm' },
+      () => ({ resolveForUse: vi.fn().mockResolvedValue(SecretValue.fromString('  ')) }) as never,
+    );
+    await expect(blankResolver.resolve('GEMINI')).rejects.toBeInstanceOf(MissingApiKeyError);
+  });
+
+  it('preserves non-missing vault failures', async () => {
+    const vaultError = new SecretVaultError('ACCESS_DENIED', false, 'SECRET_ACCESS_DENIED');
+    const resolver = new SecretManagementProviderApiKeyResolver(
+      { kind: 'llm' },
+      () => ({ resolveForUse: vi.fn().mockRejectedValue(vaultError) }) as never,
+    );
+
+    await expect(resolver.resolve('GEMINI')).rejects.toBe(vaultError);
   });
 });

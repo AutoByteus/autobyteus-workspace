@@ -6,7 +6,9 @@ import type {
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
+import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { ApplicationCurrentModelSelectionPolicy } from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 
 const applicationId = "app-1";
 
@@ -39,7 +41,7 @@ const buildAgentInput = (): ApplicationStartAgentInput => ({
   launch: {
     kind: "AGENT",
     workspaceRootPath: "/tmp/agent-workspace",
-    llmModelIdentifier: "gpt-test",
+    llmModelIdentifier: "grok-4.6",
   },
 });
 
@@ -81,13 +83,14 @@ const buildService = () => {
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async () => ({ name: "Sample Agent" })),
   };
-  const agentTeamDefinitionService = {
-    getDefinitionById: vi.fn(async () => ({
-      id: "team-def-1",
-      ownershipScope: "shared",
-      nodes: [],
-    })),
-  };
+  const requireCurrentAutoByteusModelIdentifier = vi.fn(async (modelIdentifier: string) => {
+    if (modelIdentifier === "grok-4.5") {
+      throw new CurrentModelSelectionRequiredError(modelIdentifier);
+    }
+  });
+  const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    requireCurrentAutoByteusModelIdentifier,
+  });
 
   return {
     service: new ApplicationRunBindingLaunchService({
@@ -97,13 +100,14 @@ const buildService = () => {
       agentRunService: agentRunService as never,
       teamRunService: teamRunService as never,
       agentDefinitionService: agentDefinitionService as never,
-      agentTeamDefinitionService: agentTeamDefinitionService as never,
+      currentModelSelectionPolicy,
     }),
     executionResourceResolver,
     bindingStore,
     lookupStore,
     agentRunService,
     teamRunService,
+    requireCurrentAutoByteusModelIdentifier,
   };
 };
 
@@ -128,6 +132,36 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
   });
 
+  it("rejects a stale AutoByteus model before agent creation", async () => {
+    const { service, agentRunService, teamRunService } = buildService();
+
+    await expect(service.startAgentRunBinding(applicationId, {
+      ...buildAgentInput(),
+      launch: { ...buildAgentInput().launch, llmModelIdentifier: "grok-4.5" },
+    })).rejects.toMatchObject({
+      code: "CURRENT_MODEL_SELECTION_REQUIRED",
+      message: "The selected model is no longer supported. Select a current supported model.",
+    });
+    expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("leaves external runtime model ownership outside the AutoByteus catalog guard", async () => {
+    const { service, agentRunService, requireCurrentAutoByteusModelIdentifier } = buildService();
+
+    await service.startAgentRunBinding(applicationId, {
+      ...buildAgentInput(),
+      launch: {
+        ...buildAgentInput().launch,
+        runtimeKind: "claude_agent_sdk",
+        llmModelIdentifier: "provider-owned-claude-model",
+      },
+    });
+
+    expect(agentRunService.createAgentRun).toHaveBeenCalledOnce();
+    expect(requireCurrentAutoByteusModelIdentifier).not.toHaveBeenCalled();
+  });
+
   it("routes a valid startAgentTeam request only through team creation", async () => {
     const { service, bindingStore, lookupStore, agentRunService, teamRunService } = buildService();
 
@@ -146,6 +180,36 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).toHaveBeenCalledOnce();
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
+  });
+
+  it("validates every AutoByteus team member before allocating a team run", async () => {
+    const { service, teamRunService } = buildService();
+
+    await expect(service.startAgentTeamRunBinding(applicationId, {
+      ...buildTeamInput(),
+      launch: {
+        kind: "AGENT_TEAM",
+        mode: "memberConfigs",
+        memberConfigs: [
+          {
+            memberAddress: "/researcher",
+            agentDefinitionId: "agent-def-1",
+            llmModelIdentifier: "grok-4.6",
+            autoExecuteTools: false,
+            skillAccessMode: "PRELOADED_ONLY" as never,
+          },
+          {
+            memberAddress: "/writer",
+            agentDefinitionId: "agent-def-1",
+            llmModelIdentifier: "grok-4.5",
+            autoExecuteTools: false,
+            skillAccessMode: "PRELOADED_ONLY" as never,
+          },
+        ],
+      },
+    })).rejects.toMatchObject({ code: "CURRENT_MODEL_SELECTION_REQUIRED" });
+    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
   });
 
   it("rejects an AGENT_TEAM launch passed to startAgent before resolution or side effects", async () => {

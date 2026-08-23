@@ -33,6 +33,7 @@ import { ApplicationAvailabilityService } from "../../../src/application-orchest
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationStartupGate } from "../../../src/application-orchestration/services/application-orchestration-startup-gate.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { ApplicationCurrentModelSelectionPolicy } from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
 import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
 import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
@@ -687,8 +688,12 @@ describe("Brief Studio imported package integration", () => {
       executionResourceResolver,
       bindingStore,
       lookupStore,
+      agentRunService: { createAgentRun: vi.fn() } as never,
       teamRunService: fakeTeamRunService as never,
       agentDefinitionService: fakeAgentDefinitionService as never,
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
     });
 
     const launchConfigurationService = {

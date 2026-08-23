@@ -15,7 +15,18 @@ const policyKey = (info: Pick<ResolvedTokenPricingPolicy, "price_config_id" | "m
       : null
   );
 
-const toPolicy = (info: ModelPricingInfo | null): ResolvedTokenPricingPolicy => {
+const scheduleSelection = (schedule: NonNullable<ModelPricingInfo["pricing_schedule"]>, observedAt: string) => {
+  const instant = new Date(observedAt);
+  if (Number.isNaN(instant.getTime())) return null;
+  const minuteUtc = instant.getUTCHours() * 60 + instant.getUTCMinutes();
+  const periodId = schedule.peakWindows.some((window) =>
+    minuteUtc >= window.startMinuteUtc && minuteUtc < window.endMinuteUtc)
+    ? "peak"
+    : schedule.defaultPeriodId;
+  return schedule.periods.find((period) => period.periodId === periodId) ?? null;
+};
+
+const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTokenPricingPolicy => {
   const trustedDimensions = info?.trusted_dimensions
     ? {
         input: info.trusted_dimensions.input,
@@ -26,6 +37,31 @@ const toPolicy = (info: ModelPricingInfo | null): ResolvedTokenPricingPolicy => 
         cached_input_write_1h: info.trusted_dimensions.cached_input_write_1h,
       }
     : emptyTrustedDimensions();
+  const schedule = info?.pricing_schedule ?? null;
+  const selectedPeriod = schedule ? scheduleSelection(schedule, observedAt) : null;
+  const selectedDimensions = selectedPeriod
+    ? {
+        input: selectedPeriod.trustedDimensions.input,
+        output: selectedPeriod.trustedDimensions.output,
+        cached_input_read: selectedPeriod.trustedDimensions.cachedInputRead,
+        cached_input_write: selectedPeriod.trustedDimensions.cachedInputWrite,
+        cached_input_write_5m: selectedPeriod.trustedDimensions.cachedInputWrite5m,
+        cached_input_write_1h: selectedPeriod.trustedDimensions.cachedInputWrite1h,
+      }
+    : schedule ? emptyTrustedDimensions() : trustedDimensions;
+  const selectedPricingStatus = schedule && !selectedPeriod ? "missing" : info?.pricing_status ?? "missing";
+  const selectedMissingReason = schedule && !selectedPeriod
+    ? "pricing_schedule_time_invalid"
+    : info?.missing_reason ?? (info ? null : "model_not_found");
+  const selectedInputPrice = schedule && !selectedPeriod
+    ? null
+    : selectedPeriod?.inputTokenPricing ?? info?.input_price_per_million ?? null;
+  const selectedOutputPrice = schedule && !selectedPeriod
+    ? null
+    : selectedPeriod?.outputTokenPricing ?? info?.output_price_per_million ?? null;
+  const selectedCacheReadPrice = schedule && !selectedPeriod
+    ? null
+    : selectedPeriod?.cachedInputReadTokenPricing ?? info?.cached_input_read_price_per_million ?? null;
   const base: ResolvedTokenPricingPolicy = {
     pricing_policy_key: null,
     price_config_id: info?.price_config_id ?? null,
@@ -34,13 +70,13 @@ const toPolicy = (info: ModelPricingInfo | null): ResolvedTokenPricingPolicy => 
     model_value: info?.model_value ?? null,
     canonical_name: info?.canonical_name ?? null,
     currency: info?.currency ?? null,
-    input_price_per_million: info?.input_price_per_million ?? null,
-    output_price_per_million: info?.output_price_per_million ?? null,
-    cached_input_read_price_per_million: info?.cached_input_read_price_per_million ?? null,
+    input_price_per_million: selectedInputPrice,
+    output_price_per_million: selectedOutputPrice,
+    cached_input_read_price_per_million: selectedCacheReadPrice,
     cached_input_write_price_per_million: info?.cached_input_write_price_per_million ?? null,
     cached_input_write_5m_price_per_million: info?.cached_input_write_5m_price_per_million ?? null,
     cached_input_write_1h_price_per_million: info?.cached_input_write_1h_price_per_million ?? null,
-    input_price_tiers: (info?.input_price_tiers ?? []).map((tier) => ({
+    input_price_tiers: schedule && !selectedPeriod ? [] : (info?.input_price_tiers ?? []).map((tier) => ({
       tier_id: tier.tier_id,
       max_input_tokens: tier.max_input_tokens,
       input_price_per_million: tier.input_price_per_million,
@@ -58,17 +94,22 @@ const toPolicy = (info: ModelPricingInfo | null): ResolvedTokenPricingPolicy => 
         cached_input_write_1h: tier.trusted_dimensions.cached_input_write_1h,
       },
     })),
-    pricing_status: info?.pricing_status ?? "missing",
-    trusted_dimensions: trustedDimensions,
-    missing_reason: info?.missing_reason ?? (info ? null : "model_not_found"),
+    pricing_status: selectedPricingStatus,
+    trusted_dimensions: selectedDimensions,
+    missing_reason: selectedMissingReason,
     source: info?.pricing_source ?? null,
-    effective_from: null,
+    effective_from: schedule?.effectiveFrom ?? null,
     effective_to: null,
     version: null,
+    pricing_schedule_id: schedule?.scheduleId ?? null,
+    pricing_schedule_period_id: selectedPeriod?.periodId ?? null,
+    pricing_schedule_effective_from: schedule?.effectiveFrom ?? null,
+    pricing_schedule_timezone: schedule?.timezone ?? null,
   };
+  const scheduleSuffix = schedule && selectedPeriod ? `:${schedule.scheduleId}:${selectedPeriod.periodId}` : "";
   return {
     ...base,
-    pricing_policy_key: policyKey(base),
+    pricing_policy_key: policyKey(base) ? `${policyKey(base)}${scheduleSuffix}` : null,
   };
 };
 
@@ -101,6 +142,10 @@ const localPolicy = (payload: Pick<TokenUsageUpdatedPayload, "model_provider" | 
   effective_from: null,
   effective_to: null,
   version: null,
+  pricing_schedule_id: null,
+  pricing_schedule_period_id: null,
+  pricing_schedule_effective_from: null,
+  pricing_schedule_timezone: null,
 });
 
 export class TokenPriceConfigProvider {
@@ -113,6 +158,6 @@ export class TokenPriceConfigProvider {
       modelIdentifier: payload.model_identifier,
       modelValue: payload.model_value,
     });
-    return toPolicy(info);
+    return toPolicy(info, payload.observed_at);
   }
 }

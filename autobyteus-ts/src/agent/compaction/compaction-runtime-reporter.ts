@@ -121,7 +121,7 @@ export class CompactionRuntimeReporter {
       ...details,
     });
     this.notifier?.notifyAgentErrorOutputGeneration({
-      source: 'CompactionThresholdGate',
+      code: 'CompactionThresholdGate',
       message,
       details: JSON.stringify(details),
       classification: { scope: 'turn', effect: 'diagnostic', turnId: input.turnId },

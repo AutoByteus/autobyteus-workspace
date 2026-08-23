@@ -11,21 +11,19 @@ function normalizeGlmExtraParams(extraParams?: Record<string, unknown>): Record<
   if (!extraParams) return {};
 
   const params = { ...extraParams };
-  const thinkingType = params.thinking_type;
+  const reasoningEffort = params.reasoning_effort;
   delete params.thinking_type;
+  delete params.reasoning_effort;
 
-  if (thinkingType !== undefined) {
-    const thinking =
-      params.thinking && typeof params.thinking === 'object'
-        ? { ...(params.thinking as Record<string, unknown>) }
-        : {};
-    thinking.type = thinkingType;
-    params.thinking = thinking;
-
-    if (thinkingType === 'disabled') {
-      delete params.reasoning_effort;
-    }
-  }
+  const thinking =
+    params.thinking && typeof params.thinking === 'object'
+      ? { ...(params.thinking as Record<string, unknown>) }
+      : {};
+  thinking.type = 'enabled';
+  params.thinking = thinking;
+  params.reasoning_effort = reasoningEffort === 'low' || reasoningEffort === 'high' || reasoningEffort === 'max'
+    ? reasoningEffort
+    : 'max';
 
   return params;
 }
@@ -43,15 +41,8 @@ export class GlmLLM extends OpenAICompatibleLLM {
     return normalizeGlmExtraParams(kwargs);
   }
 
-  protected override getRequestConfig(kwargs: Record<string, unknown>): LLMConfig {
-    const thinking = kwargs.thinking;
-    if (!thinking || typeof thinking !== 'object' || (thinking as Record<string, unknown>).type !== 'disabled') {
-      return this.config;
-    }
-
-    const config = this.config.clone();
-    delete config.extraParams.reasoning_effort;
-    return config;
+  protected override getRequestConfig(_kwargs: Record<string, unknown>): LLMConfig {
+    return this.config;
   }
 
   protected override async _sendMessagesToLLM(

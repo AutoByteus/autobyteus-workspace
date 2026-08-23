@@ -144,7 +144,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
         usage: this.createTokenUsage(response.usage),
       });
     } catch (e) {
-      throw new Error(`Error in API request: ${e}`);
+      throw e;
     }
   }
 
@@ -194,7 +194,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       }
 
     } catch (e) {
-      throw new Error(`Error in API streaming: ${e}`);
+      throw e;
     }
   }
 }

@@ -138,6 +138,17 @@ error_effect: "diagnostic" | "terminal" | null
 turn_id:      string | null
 ```
 
+The canonical error payload also requires a non-empty protocol `code`, separate
+from the user-visible `message`. The message is the safe provider/runtime text
+after secret redaction; transport must not replace a meaningful provider
+message with a locally invented balance, quota, or authentication message.
+Native standalone and Team wire payloads may additionally carry safe
+`provider_status`, `provider_code`, `provider_request_id`, and redacted
+`details`. Raw exceptions, stacks, causes, authorization headers, and secret
+values never cross this boundary. The application-agent projector deliberately
+narrows the same event to `{ type: "ERROR", message: string }` and does not
+expose native/provider metadata.
+
 Evidence must be absent together or complete together. Turn scope requires a
 turn ID; runtime scope forbids one. Turn/runtime diagnostics are visible without
 closing an open segment/tool, failing an application, or changing status.

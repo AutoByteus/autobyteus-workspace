@@ -12,6 +12,9 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-conflict-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/branch-overlap-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-design-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
@@ -49,161 +52,111 @@
 
 ## Current Implementation Summary
 
-The implementation performs the reviewed history-preserving semantic merge of finalized feature input `a5ffd289aa58293574e44dfa8b38ed8b1978ffd0` into latest-Personal input `8ef282ba77705180d985e7000d801f0e0068cdc1`. It retains current Personal lifecycle, activation/provisioning, rooted run identity, provider/model, persistence, and contract authorities while incorporating the explicit Studio/standalone application platform, SDKs, devkit workflow, maintained applications, scoped application sessions/publication, sparse launch overrides, and clean generated-output policy. Required server tools have one composition-owned memoized readiness path with Core first, five non-Search units next, and provisioned Search last. IR-002 restores standalone lifecycle phases 5–10 and genuinely read-only launch override reads. IR-003 reconciles that read-only boundary with pending-event recovery. IR-004 restores exact Socratic target projection and exclusive process-run ownership. IR-005 closes the fresh-root provider-readiness precondition. IR-006 closes the remaining application-to-root identity translation mismatch: exact-member input now forwards the authorized binding-owned `agentRunId`, while initial `targetMemberAddress` is validated and resolved through the binding member projection before `RootTeamRun` dispatch.
+IR-007 implements the reviewed `SR-004` newest-Personal refresh. The branch now contains one history-preserving merge from protected checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b` to reviewed `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`. All expected 11 conflicts were resolved semantically, the five retired/generated paths remain deleted, and latest Personal's provider catalog/pricing/native-error behavior is combined with the established dual-host application platform and closed v6 application SDK.
 
-- Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
-- Current implementation revision ID: `IR-006`
-- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
-- Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`–`CRR-008`
-- Related API/E2E revision IDs: `API-REV-001`–`API-REV-003`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-007`; `APIE2E-SOCRATIC-002` / `APIE2E-F004`
+One composition-owned `ApplicationCurrentModelSelectionPolicy` is injected into readiness, explicit Save, and direct run binding. It delegates only AutoByteus identifiers to `LLMFactory.requireCurrentModelIdentifier`; Codex/Claude remain under their existing runtime owners. Stale AutoByteus values remain visible without mutation or fallback, but block readiness and Save with `CURRENT_MODEL_SELECTION_REQUIRED`, and block direct agent/team creation before side effects. Application agent/team errors preserve only the redacted-safe original nonblank message; provider/native metadata remains excluded and strict SDK validation rejects extra keys.
+
+- Implementation cycle: `Rework / newest-base semantic refresh`
+- Current implementation revision ID: `IR-007`
+- Related solution revision IDs: `SR-001`–`SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001`–`CRR-008` (retained baseline; no new code-review round yet)
+- Related API/E2E revision IDs: `API-REV-001`–`API-REV-003` (retained baseline)
+- Related delivery revision IDs: `DR-004`
+- Triggering finding IDs: newest-Personal semantic refresh; `AR-001`–`AR-003` remain resolved
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Integrate the finalized feature onto latest Personal while retaining both immutable histories. | Two-parent semantic merge; dispositions from `integration-path-inventory.txt`; composition/runtime resolution under `autobyteus-server-ts/src/compositions/`, `src/application-platform/`, and `src/server-runtime.ts`. | Implemented with latest Personal as first parent and finalized feature as second parent; all 177 textual conflicts resolved semantically and no unmerged path remains. |
-| BEH-002 | Run real application commands from maintained application folders using canonical source and build-once packages. | `autobyteus-application-devkit/src/`; `applications/brief-studio/`; `applications/socratic-math-teacher/`; application SDK contract packages; `autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts`; `src/application-storage/services/application-storage-lifecycle-service.ts`. | Native `dev`, `dev:studio`, `build`, `validate`, and build-free `start` workflow retained. On a fresh data root, each selected application's canonical runtime workspace is explicitly materialized before provider readiness can use it as a process cwd. Migration and exclusive process-owner ordering remains unchanged. |
-| BEH-003 | Preserve current Personal run/team lifecycle and rooted identity while using exact application-scoped session, publication, and cleanup authorities. | `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`; `autobyteus-server-ts/src/application-platform/runtime/`; `src/application-storage/`; `src/agent-execution/`; `src/agent-team-execution/`; `src/run-history/services/team-run-execution-tree-location-service.ts`; `src/agent-tools/mcp/`; `src/application-orchestration/`. | The shared Studio/standalone lifecycle sequences selected-application runtime directory preparation through `ApplicationStorageLifecycleService` before definition/provider readiness. The exact per-application path and credential validation are preserved; preparation failure enters the existing failed state and later stop still unwinds every owned boundary. Exact-member application input now preserves the binding-owned `agentRunId` through `ApplicationOrchestrationHostService` into `RootTeamRun`; public initial `targetMemberAddress` is validated against the binding and translated once to that exact identity. Coordinator targeting, rooted identity, lazy activation, observer-before-input ordering, passive history lookup, exclusive manager ownership, scoped session, publication, recovery, and cleanup remain intact. |
-| BEH-004 | Preserve package defaults and sparse Studio overrides while honoring current provider/model availability and contract values. | `autobyteus-server-ts/src/application-platform/launch-configuration/`; `src/application-orchestration/stores/application-launch-override-store.ts`; `src/application-storage/stores/application-platform-state-store.ts`; REST/GraphQL application surfaces; `autobyteus-web/components/applications/`; maintained application manifests/configs. | One current-rooted sparse override store remains authoritative. Get/list open only existing platform state through a read-only SQLite handle and return empty state when the DB/table is absent; they never create, alter, seed, or repair schema. Explicit Save creates the current table as needed; explicit Reset mutates only existing state. |
-| BEH-005 | Resolve source overlaps semantically and remove/regenerate derived or obsolete output. | Repository-wide merge guided by conflict/overlap/path inventories; maintained source packages and build configurations. | Semantic resolutions replace whole-side selection. 656 generated/mirrored paths and obsolete wrappers were removed rather than hand-merged; generated outputs created during checks were cleaned. |
-| BEH-006 | Prepare the integrated candidate for independent complete review and execution. | Architecture checks, focused unit/component checks, builds/typechecks, application build/validation, source-size and legacy-path audits recorded below. | IR-006 exact identity forwarding, binding-owned address resolution, invalid-target rejection, non-mocked `RootTeamRun` lookup, and architecture checks pass. API/E2E must rerun F004 first after source review; the remaining matrix stays downstream-owned. |
+| BEH-001 | Refresh the protected, verified checkpoint onto the exact reviewed newest Personal history. | Two-parent merge; `latest-base-refresh-design-analysis.md`; conflict inventory; repository source. | Re-fetched `origin/personal`, verified exact `7edfb1625...`, merged once, resolved exactly 11 reviewed conflicts, and preserved both histories. |
+| BEH-002 | Preserve native application development/build/start workflows and canonical package source. | Application SDKs, devkit, maintained applications, and existing shared host lifecycle. | Existing workflow and build-once package behavior remain unchanged; generated products used for checks were cleaned. |
+| BEH-003 | Preserve current Personal run/team identity, lifecycle, provider, session, publication, recovery, and cleanup authorities. | Existing `application-platform`, run/team, Agent Tools, publication, and orchestration paths. | No application global fallback, duplicate manager family, identity remap, or lifecycle reordering was introduced. |
+| BEH-004 | Retain sparse launch semantics while applying exact current AutoByteus model membership at read/Save/run boundaries. | New policy/guard in `src/application-platform/launch-configuration/`; host validator; configuration service; run-binding service; composition assembly. | Current AutoByteus proceeds; stale values stay visible and block without writes; Save rejects before upsert; direct teams validate every leaf before allocation; Codex/Claude bypass only the AutoByteus guard. |
+| BEH-005 | Resolve changed-both paths semantically and keep retired/generated paths deleted. | Exact 11-path conflict map plus marker-free run-binding overlap. | v6 symbols/identities retained; latest safe error messages adopted; deleted configuration helpers/service/test and two generated declarations remain absent. |
+| BEH-006 | Prepare the refreshed combination for independent review and downstream complete verification. | Focused checks, architecture suite, production builds, package integrations, guards, audits below. | Implementation-scoped source/build/check matrix passes. Full real-host, package parity, recovery/cleanup, provider, Electron, and browser verification remain downstream-owned. |
+| BEH-007 | Keep native safe provider evidence native while exposing only the safe message through the application SDK. | Latest Personal provider extraction/redaction; `ApplicationAgentStreamEventProjector`; v6 contracts/frontend parser. | Agent/team application events are exactly `{ type: "ERROR", message }`; diagnostic events remain filtered and metadata/raw secrets are excluded. |
 
 ## Key Files Or Areas
 
-- `autobyteus-server-ts/src/server-runtime.ts`, `src/standalone-application-host/start-standalone-application-host.ts`, and `src/compositions/`: merged process readiness and explicit Studio/standalone lifecycle/compositions.
-- `autobyteus-server-ts/src/application-platform/`: explicit runtime graph, lifecycle projections, launch configuration, package registry/commands, reconciliation, and scoped run authorities.
-- `autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts`, `build-application-platform-runtime.ts`, and `src/application-storage/services/application-storage-lifecycle-service.ts`: shared pre-listen sequencing and explicit selected-application runtime-directory materialization before provider readiness.
-- `autobyteus-server-ts/src/startup/agent-tool-loader.ts`: sole memoized seven-unit registration authority and ordered Search provisioning.
-- `autobyteus-server-ts/src/agent-execution/`, `src/agent-team-execution/`, and `src/agent-tools/mcp/`: current rooted identities, activation/session ownership, publication, messaging, recovery, and cleanup.
-- `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts` and `src/run-history/services/team-run-execution-tree-location-service.ts`: exact process-manager ownership plus explicit passive stored-history lookup for migration and run-file dependencies.
-- `autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts`: explicit journal mutation setup and non-mutating existing-state recovery inspection.
-- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` and `application-runtime-input-normalizer.ts`: binding-owned translation from public member address/exact application target to the `RootTeamRun` agentRunId contract.
-- `autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts`: real root-index dispatch coverage for both targeting forms and invalid identities.
-- `autobyteus-application-sdk-contracts/`, `autobyteus-application-backend-sdk/`, `autobyteus-application-frontend-sdk/`: current application contracts.
-- `autobyteus-application-devkit/`: native command/build/watch/atomic package workflow.
-- `applications/brief-studio/` and `applications/socratic-math-teacher/`: maintained canonical sources and exact configurations, including exact bound Socratic `/tutor` runtime identity projection.
-- `autobyteus-web/components/applications/`, application stores/composables/utilities: Studio launch/setup and embedded application behavior.
-- `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`: current structural boundary enforcement.
+- `autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts`: runtime normalization and AutoByteus-only membership delegation.
+- `autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-guard.ts`: Save-boundary translation of the exact current-model error into current launch diagnostics.
+- `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts`: stale stored/package readiness issue without mutation or fallback.
+- `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts`: explicit Save rejection before upsert while preserving existing read/reset semantics.
+- `autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts`: direct agent/team pre-side-effect validation and normalized runtime forwarding.
+- `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts`: one exact policy instance injected into all three boundaries.
+- `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts` and SDK contract/parser tests: redacted-safe message-only application error projection.
+- Latest Personal provider/catalog/pricing/native-event files under `autobyteus-ts`, server native projections, team-stream contracts, and web streaming services are accepted non-overlapping source.
 
 ## Important Assumptions
 
-- The two reviewed immutable inputs are exactly `origin/personal@8ef282ba77705180d985e7000d801f0e0068cdc1` and `origin/codex/universal-application-framework-proposal-analysis@a5ffd289aa58293574e44dfa8b38ed8b1978ffd0`.
-- `integration-path-inventory.txt` and `integration-runtime-contracts.md` are normative for conflicting and overlapping paths.
-- Current persisted sparse override rows use current rooted identities and remain directly readable; no migration is required.
-- Application-owned external MCP provisioning remains outside this ticket.
+- The reviewed refresh inputs are exactly protected checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b` and `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`; the mandatory re-fetch matched.
+- `latest-base-refresh-design-analysis.md` is the normative semantic conflict/current-model/error map.
+- Current sparse override rows are directly usable without migration; stale identifiers remain stored exactly as entered.
+- Codex/Claude model ownership, native provider tools, and external Studio MCP gateway behavior remain outside the new AutoByteus membership policy.
 
 ## Known Risks
 
-- The broad server unit/architecture characterization still contains pre-existing latest-Personal failures. The integrated candidate improved the result from the exact Personal baseline (`54` failed files / `166` failed tests) to `44` failed files / `147` failed tests, with zero candidate-only failing files. This is baseline debt, not a claim of full-suite success.
-- API-REV-003 confirms F001–F003 resolved and completes the maintained fresh-root/Brief paths, then exposes F004 on the immediate Socratic exact-member input. IR-006 corrects the deterministic `/tutor`-address-versus-agentRunId mismatch locally, but the exact Studio journey must be rerun after source review. Remaining publication/restart/parity/browser/cleanup and Electron preparation stay downstream-owned.
-- macOS watcher correctness is locally covered with polling and focused devkit tests, but real edit/rebuild/reload behavior remains a downstream journey.
+- Full real Studio/standalone, provider, publication, recovery/cleanup, package-parity, browser, and Electron evidence is intentionally not claimed at implementation stage.
+- The repository-wide server `tsconfig.json` typecheck remains unusable because it combines `rootDir: src` with `include: tests`, producing the known `TS6059` test-tree mismatch. The production `tsconfig.build.json --noEmit` check passes.
+- The Brief import integration requires generated package prerequisites; after building the contracts/backend SDK/devkit and Brief package, all three affected tests pass. Generated output was removed afterward.
+- Whole staged-merge `git diff --check` reports two trailing-space warnings in the newest-Personal archived Electron build log at `tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log`. That immutable imported evidence was not rewritten; current-ticket implementation/artifact diffs are clean.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: completed integration plus bounded `Local Fix` rework.
-- Reviewed root-cause classification: `Missing Invariant`; the orchestration boundary authorized exact rooted identities but translated them back to member addresses before calling the exact-agentRunId `RootTeamRun` contract.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed`; the binding projection and `RootTeamRun` contract are already authoritative, so the correction is one explicit translation at the host boundary.
-- Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: exact addressed input forwards its already-authorized `agentRunId`; initial `targetMemberAddress` is normalized, resolved through `binding.runtime.members`, and rejected if absent. Focused coverage uses a real `RootTeamRun` and execution index, so an address accidentally passed as an ID would return `RUN_NOT_FOUND` and fail.
+- Reviewed change posture: history-preserving semantic integration with one missing-invariant policy correction.
+- Root-cause classification: `Duplicated Policy Or Coordination` avoided by introducing one explicit current-model policy; conflict resolution remains bounded integration work.
+- Refactor needed now: `Yes, bounded and reviewed`—the removed Personal configuration owners could not remain authoritative, so current-model selection was relocated into retained application boundaries.
+- Implementation matched reviewed assessment: `Yes`.
+- Design-impact reroute required: `No`.
+- Evidence: composition creates one policy and injects it into all required boundaries; no optional default, store, provider lookup, compatibility branch, or external-runtime ownership transfer exists.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
-- Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: obsolete dev-server/frontend-startup/application-engine-host paths and generated/mirrored package trees were removed. IR-002 removes request-time `ALTER TABLE` compatibility repair and ordinary-read table creation from the launch override store. IR-003 removes journal/cursor setup from pending-event read paths. IR-004 retains exact SDK/manager authority. IR-005 adds no fallback or compatibility path. IR-006 removes the misleading target-selector name and introduces no address fallback, retry, delay, legacy identity, or duplicate manager path. No changed production source file exceeds 500 effective non-empty lines.
+- Retired paths restored: `No`; the three retired configuration paths and two generated SDK declaration paths remain deleted.
+- Aliases, model remaps, package fallback, stored-row rewrite, or global lookup introduced: `None`.
+- Changed production source size guard: `Pass`; no changed implementation source exceeds 500 effective non-empty lines and no implementation source delta exceeds 220 lines. Tests are excluded from the hard source limit.
 
-## Persisted Data Transition Check (When Applicable)
+## Persisted Data Transition Check
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`.
-- Design-spec decision reference: DS-009 and the Persisted Data Transition section in `design-spec.md`.
-- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: the current-rooted sparse override store and current readers are retained; package baseline and saved overrides are evaluated without schema migration or legacy dual-read logic. IR-005 creates only the selected application's runtime directory before readiness; focused fresh-root checks prove neither `platform.sqlite` nor `app.sqlite` is created. IR-006 changes no persistence or binding schema; it reads the already-durable binding member projection. Existing get/list no-write SQLite coverage remains passing.
-- Migration implementation and focused checks, only when `Migration Required`: `N/A`.
-- Deviation from the reviewed transition decision: `None`.
+- Approved decision: `Directly Usable — No Migration`.
+- Design reference: DS-009, DS-011, SR-004 no-data-migration decision.
+- Result: existing package defaults and sparse rows are read unchanged. Stale AutoByteus identifiers remain visible with exact provenance; readiness/Save/run validation performs no read-time write, fallback, alias, or migration. Save and Reset remain the only launch-row mutation boundaries.
 
 ## Environment Or Dependency Notes
 
-- Package-manager checks used the repository's existing pnpm workspace and lockfile.
-- On this macOS host, chokidar's native backend did not emit the required add event in a disposable reproduction; the devkit watcher uses macOS polling (`100 ms`) while retaining normal behavior elsewhere.
-- Build products generated by implementation checks were removed; source and package generation remain reproducible commands rather than checked-in mirrors.
+- Validation used the existing pnpm workspace and lockfile.
+- SDK/devkit/application generated outputs were built as prerequisites for focused checks and then removed; no generated application package was staged.
+- The full server production build passed with sanitized built-in-agent bootstrap smoke.
 
 ## Local Implementation Checks Run
 
-- IR-006 direct identity translation selection: `3` files / `12` tests passed, including `4` real `RootTeamRun` dispatch cases for exact addressed input, initial member-address input, unknown address, and unknown exact member ID.
-- IR-006 application-framework architecture suite: `1` file / `15` tests passed.
-- IR-006 server build-config TypeScript no-emit and full production build passed, including the sanitized built-in-agent bootstrap smoke; `git diff --check` passed.
-- The repository's broader `pnpm -C autobyteus-server-ts typecheck` command remains unusable because `tsconfig.json` combines `rootDir: src` with `include: tests`, producing pre-existing `TS6059` errors for the test tree. The authoritative build-config no-emit check passes.
-- IR-005 affected selection: `6` files / `42` tests passed, covering fresh-root runtime storage, actual provider credential adapter acquisition with the exact canonical cwd, lifecycle ordering/failure cleanup, prior read-only journal recovery, launch-store no-write behavior, standalone prerequisites, and all `15` application-framework architecture checks.
-- IR-005 direct lifecycle regression: `1` file / `4` tests passed. It proves only the selected application is prepared, the runtime directory exists before the real credential adapter acquires/releases its client, no application/platform database is created, and a preparation failure skips definition readiness while retaining complete stop cleanup.
-- IR-005 server build-config TypeScript no-emit and full production build passed, including the sanitized built-in-agent bootstrap smoke.
-- IR-004 affected server selection: `7` files / `53` tests passed, covering exact Socratic target projection, migration-to-supervisor ownership, supervisor failure unwind/restart, run-file changes, agent-memory locations, migration execution, and all `15` application-framework architecture checks.
-- IR-004 direct new regressions: `2` files / `4` tests passed. They prove `/tutor` selects its exact bound `agentRunId`, missing configuration fails explicitly, app-data migration registry construction is passive, the supervisor initializes exactly one process manager family, close is idempotent/restart-safe, and an agent owner is released after team-owner initialization failure.
-- IR-004 backend SDK exact target-address contract: `1` file / `6` tests passed.
-- IR-004 server build-config TypeScript no-emit, full production build (including sanitized built-in-agent bootstrap smoke), and Socratic backend typecheck passed.
-- An adjacent broad migration selection retained two latest-Personal baseline failures in `remove-external-runtime-working-context-snapshots-migration.test.ts`; both concern invalid future/mismatched metadata diagnostics and do not traverse the corrected manager-ownership or Socratic target paths.
-- IR-003 affected selection: `8` files / `50` tests passed, including `15` architecture checks, `5` real-SQLite absent/existing journal plus lifecycle/reentry recovery cases, and all retained CR-001/CR-002 focused checks.
-- IR-003 direct recovery regression: `1` file / `5` tests passed. It proves absent state creates no DB, an existing no-journal DB remains byte-for-byte unchanged, an appended journal is read through a new read-only store without changing bytes, and lifecycle/reentry recovery reaches ready/active and dispatches the retained event.
-- IR-003 server build-config TypeScript no-emit and full production build passed, including the sanitized built-in-agent bootstrap smoke.
-- IR-003 current-delta `git diff --check`, `withExistingDatabase` consumer audit, and changed-source size check passed. The only production consumers are the launch override store and execution-event journal store; both now perform read-only-compatible operations.
-- IR-002 focused lifecycle/storage selection: `7` files / `37` tests passed, covering standalone phases 5–10, current/degraded readiness, catalog warning/failure, readable-provider gating, unwind, real-SQLite no-write reads, launch configuration, state-store reads, TeamRun readiness, and existing event-dispatch reads.
-- IR-002 direct focused regression: `2` files / `13` tests passed (`9` standalone lifecycle and `4` SQLite launch override tests).
-- IR-002 server build-config TypeScript no-emit passed after shared package preparation.
-- IR-002 full server production build passed, including Prisma generation and sanitized built-in-agent bootstrap smoke.
-- IR-002 application framework architecture suite: `1` file / `15` tests passed.
-- One adjacent recovery-service check retained two latest-Personal baseline fixture failures (`Provided value cannot be bound to SQLite parameter 6`) while the affected event-dispatch read check passed; neither failure traverses the IR-002 read-only launch override path.
-- `autobyteus-server-ts`: production build passed; build-config TypeScript no-emit passed.
-- Server architecture check: `1` file / `15` tests passed.
-- Feature add/adapt focused server units: `16` files / `55` tests passed.
-- Changed-both focused server units: `4` files / `24` tests passed.
-- Brief startup reconciliation focused check: `1/1` passed.
-- Application launch configuration focused check after source split: `5/5` passed.
-- Mixed-agent member termination focused check: `4/4` passed.
-- `autobyteus-ts`: AgentFactory focused checks `13/13` passed; build passed.
-- Application SDK contracts: `6/6` tests and build passed.
-- Backend SDK: `2` files / `10` tests and build passed.
-- Frontend SDK: `12/12` tests, type test, and build passed.
-- Application devkit: full `20/20` test suite and build passed.
-- Brief Studio: build, validate, and backend typecheck passed.
-- Socratic Math Teacher: build, validate, and backend typecheck passed.
-- Web: application boundary, localization boundary, and literal audits passed; focused launch/setup checks `3` files / `7` tests passed; production build passed with only existing browserslist/chunk-size warnings.
-- Implementation/current-ticket scoped `git diff --check`, unmerged-path check, retired-path/tool-loader audits, and changed-source size audit passed. A whole-merge `git diff --check` still reports pre-existing whitespace in imported archived feature evidence logs and the archived proposal source; those historical artifacts were preserved byte-for-byte rather than rewritten during integration.
-- Broad server unit/architecture characterization: candidate `44` failed / `422` passed files and `147` failed / `2513` passed / `1` skipped tests; exact latest-Personal baseline `54` failed / `399` passed files and `166` failed / `2447` passed / `1` skipped tests. Set comparison found zero candidate-only failing files after the focused mixed-termination correction.
+- Mandatory ref refresh: `origin/personal` remained exactly `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.
+- Conflict audit: exactly 11 reviewed conflicts resolved; no unmerged path or conflict marker remains.
+- Current-model launch selection: 4 files / 26 tests passed (policy, host readiness, configuration Save/no-write, direct agent/team/external-runtime defense).
+- Combined application stream/launch selection: 7 files / 45 tests passed, including real SDK/WebSocket agent/team safe-message projection.
+- Application package integrations: context capabilities 2/2 passed; Brief imported package 3/3 passed after normal generated-package prerequisites.
+- Architecture/lifecycle/tool readiness: 4 files / 33 tests passed, including all 15 AFB checks, shared lifecycle, standalone lifecycle, and required-tool ordering/failure policy.
+- Latest Personal provider/runtime regression selection: `autobyteus-ts` 8 files / 39 tests passed; server provider/team/pricing selection 3 files / 24 tests passed.
+- SDKs: application contracts 6/6 passed; frontend SDK 12/12 plus type tests passed; builds passed.
+- Team-stream contracts: build and 2/2 tests passed.
+- Web: boundary/localization/literal guards passed; changed streaming/submission/presentation selection 5 files / 106 tests passed.
+- Builds/types: `autobyteus-ts` build/runtime-dependency verification passed; message gateway build passed; server `tsconfig.build.json --noEmit` passed; full server production build and sanitized bootstrap smoke passed.
+- Source audits: generated/retired path check, changed-source size/delta check, current-ticket implementation/artifact `git diff --check`, and merge-marker/unmerged checks passed. Whole staged-merge diff checking reports only the two preserved trailing-space warnings in the imported archived Electron build log noted above.
+- Known non-authoritative command: `tsc -p autobyteus-server-ts/tsconfig.json --noEmit` reports the pre-existing repository `TS6059` rootDir/include mismatch; production build-config typecheck is clean.
 
-## Frontend Rendered-Result Check (When Applicable)
+## Frontend Rendered-Result Check
 
-- IR-006 current rework: `Not Applicable` for rendered inspection. It changes server-side application target translation and focused unit coverage only; no frontend source or user-interface rendering changed.
-- IR-005 prior rework: `Not Applicable` for rendered inspection. It changes shared server lifecycle/storage ordering and unit coverage only; no frontend source or user-interface rendering changed.
-- IR-004 current rework: `Not Applicable` for rendered inspection. It changes backend target projection and server construction dependencies only; no Vue/template/style/interaction source changed.
-- Affected surfaces / journeys: Studio application launch/setup, package/selected-resource defaults, sparse overrides, readiness, and embedded application entry/remount behavior.
-- Approved UI/UX, interaction, requirement, or design references: BEH-002, BEH-004, DS-002, DS-009, `requirements.md`, `design-spec.md`, and `integration-runtime-contracts.md`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: existing application setup panels, agent/team/member editors, runtime-scoped model selection, application shell, and related Nuxt stores/composables.
-- Project development / preview instructions and rendered surface used: project Nuxt build plus focused Nuxt-mounted component tests.
-- States, layouts, viewports, and interactions inspected: readiness, package and selected-resource inheritance, sparse editing/clearing, invalid selection, and team/member editor interactions through component rendering.
-- Visual or interaction issues found and corrected: semantic merge retained the current unavailable-model blocking and sparse inherited editing behavior; no new layout styling was required.
-- Supporting evidence and remaining unverified states or limitations: focused component checks (`3` files / `7` tests) and the production web build pass. A live Studio/standalone host and controlled browser were not started because full host setup and end-to-end journeys remain API/E2E-owned; live visual behavior, responsive states, iframe remount, and real command feedback remain unverified here.
+- `Not Applicable` for IR-007. The semantic refresh changes provider/runtime streaming services and tests but no Vue component, template, layout, styling, or approved user interaction surface. Web guards and 106 focused service-level tests passed; live rendered host journeys remain downstream API/E2E-owned.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- First rerun `APIE2E-SOCRATIC-002` / F004: mount the maintained Socratic Studio application, Start Lesson, observe READY, and prove the immediate exact-member input reaches the configured `/tutor` run without `RUN_NOT_FOUND`.
-- Exercise initial `targetMemberAddress` through the supported application start API and prove it resolves to the binding member's exact `agentRunId`; verify an unknown valid address is rejected without coordinator fallback.
-- Retain API-REV-003's passed authenticated fresh-root standalone and shared Studio readiness evidence while resuming the remaining matrix.
-- Prove Studio and standalone each initialize one exact general-process manager family only after migrations, retain passive history/run-file lookup, and release manager ownership on normal close and startup failure.
-- Execute real `dev`, `dev:studio`, `build`, `validate`, and build-free `start` from both maintained application folders, including repeated watched edits and manifest/config identity changes.
-- Exercise Studio package import/refresh, setup/save/reset, iframe mount/remount, real Brief and Socratic runs, provider/model availability, and package-default/sparse-override behavior.
-- Exercise standalone static/SPA/origin behavior, scoped Agent Tools route authentication, publication, recipient-name messaging, and absence of the Studio-only external gateway.
-- Verify worker exit/restart, same-data restart, current rooted run/team identity, event ordering, artifact projection/history, and cleanup of runs, sessions, event pipeline, vault, Prisma, and application engines.
-- Recompute maintained package parity/digests from canonical source and verify generated metadata contains only canonical output roots.
-- Run the proportional integrated server/web/SDK/devkit/application matrix and Electron build/verification required by downstream roles.
+- Run the complete reviewed SR-004 matrix on this exact merge commit: real maintained Studio/standalone commands, current Codex/Luna defaults, stale/current AutoByteus read/Save/direct-run, provider errors, application message-only projection, Agent Tools publication/messaging, same-data recovery, cleanup, and package parity.
+- Verify stored stale values remain byte-identical and visible while readiness blocks, rejected Save performs no upsert, Reset deletes, and every team leaf is checked before allocation.
+- Verify native transports retain approved safe metadata while application agent/team SDK events contain only `type` and the redacted-safe `message` with exact v6 producer/target identities.
+- Rebuild and verify Electron only after source review and API/E2E pass.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. API-REV-003 exposed `APIE2E-SOCRATIC-002` / `APIE2E-F004` after confirming F001–F003 resolved. After source review passes IR-006, API/E2E must rerun F004 first, then resume the complete Studio/standalone, provider, publication, recovery, cleanup, parity, browser, and Electron-preparation matrix. This handoff claims implementation-scoped validation only.
+Yes. This handoff claims implementation-scoped validation only. After source review passes IR-007, API/E2E must investigate/reconcile durable coverage and execute the complete SR-004 dual-host/provider/current-model/error/package/recovery/cleanup/browser matrix before proportional test review and Electron/delivery resume.

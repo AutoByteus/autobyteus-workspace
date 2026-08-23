@@ -3,12 +3,15 @@ import type {
   ApplicationLaunchIssue,
 } from "@autobyteus/application-sdk-contracts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import type { ModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
-import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   ApplicationProviderCredentialReadinessPort,
 } from "./application-provider-credential-readiness-adapter.js";
+import type {
+  ApplicationCurrentModelSelectionPolicy,
+} from "./application-current-model-selection-policy.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
@@ -35,6 +38,7 @@ export class ApplicationLaunchHostCapabilityValidator {
     runtimeAvailabilityService: RuntimeAvailabilityReader;
     modelCatalogService: ModelCatalogReader;
     providerCredentialReadiness: ApplicationProviderCredentialReadinessPort;
+    currentModelSelectionPolicy: ApplicationCurrentModelSelectionPolicy;
   }) {}
 
   async validate(
@@ -47,7 +51,8 @@ export class ApplicationLaunchHostCapabilityValidator {
       Awaited<ReturnType<ApplicationProviderCredentialReadinessPort["getReadiness"]>>
     >();
     for (const leaf of configuration.leaves) {
-      const runtimeKind = runtimeKindFromString(leaf.runtimeKind);
+      const runtimeKind = this.dependencies.currentModelSelectionPolicy
+        .normalizeRuntimeKind(leaf.runtimeKind);
       if (!runtimeKind) {
         issues.push(issue(
           configuration,
@@ -66,6 +71,22 @@ export class ApplicationLaunchHostCapabilityValidator {
           "RUNTIME_UNAVAILABLE",
           availability.reason
             ?? `Runtime '${leaf.runtimeKind}' is unavailable for '${this.describeLeaf(leaf)}'.`,
+        ));
+        continue;
+      }
+
+      try {
+        await this.dependencies.currentModelSelectionPolicy.requireCurrentSelection({
+          runtimeKind,
+          llmModelIdentifier: leaf.llmModelIdentifier,
+        });
+      } catch (error) {
+        if (!(error instanceof CurrentModelSelectionRequiredError)) throw error;
+        issues.push(issue(
+          configuration,
+          leaf,
+          "CURRENT_MODEL_SELECTION_REQUIRED",
+          error.message,
         ));
         continue;
       }

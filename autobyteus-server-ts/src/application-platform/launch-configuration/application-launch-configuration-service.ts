@@ -31,25 +31,21 @@ import {
   ApplicationLaunchOverrideResolutionError,
   applyApplicationLaunchOverride,
 } from "./application-launch-override-overlay.js";
-import {
-  ApplicationLaunchConfigurationError,
-  buildApplicationLaunchIssue as issue,
-} from "./application-launch-configuration-diagnostics.js";
+import { ApplicationLaunchConfigurationError, buildApplicationLaunchIssue as issue } from "./application-launch-configuration-diagnostics.js";
 import { isSameApplicationExecutionResourceRef } from "./application-execution-resource-ref.js";
 import {
   parseStoredExecutionResourceRef,
   readParsedStoredJsonCell,
   readRawStoredApplicationLaunchOverride,
 } from "./application-launch-stored-override-reader.js";
+import type { ApplicationCurrentModelSelectionPolicy } from "./application-current-model-selection-policy.js";
+import { requireApplicationCurrentModelSelections } from "./application-current-model-selection-guard.js";
 
 type SlotBaselineResult = { baseline: ApplicationResolvedResourceLaunchBaseline | null; issue: ApplicationLaunchIssue | null };
 
 type StoredEvaluation = {
-  savedOverride: ApplicationExecutionResourceOverride | null;
-  state: ApplicationHostOverrideState;
-  selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null;
-  effectiveConfiguration: ApplicationEffectiveLaunchConfiguration | null;
-  issues: ApplicationLaunchIssue[];
+  savedOverride: ApplicationExecutionResourceOverride | null; state: ApplicationHostOverrideState;
+  selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null; effectiveConfiguration: ApplicationEffectiveLaunchConfiguration | null; issues: ApplicationLaunchIssue[];
 };
 
 export class ApplicationLaunchConfigurationService {
@@ -58,6 +54,7 @@ export class ApplicationLaunchConfigurationService {
     overrideStore: ApplicationLaunchOverrideStore;
     baselineBuilder: ApplicationLaunchResourceBaselineBuilder;
     hostCapabilityValidator: ApplicationLaunchHostCapabilityValidator;
+    currentModelSelectionPolicy: ApplicationCurrentModelSelectionPolicy;
     resolveWorkspaceRootPath: (applicationId: string) => string;
   }) {}
 
@@ -230,6 +227,9 @@ export class ApplicationLaunchConfigurationService {
         issues: evaluation.issues,
       });
     }
+    if (evaluation.effectiveConfiguration) await requireApplicationCurrentModelSelections(
+      this.dependencies.currentModelSelectionPolicy, evaluation.effectiveConfiguration,
+    );
     await this.dependencies.overrideStore.upsertOverride(applicationId, {
       slotKey: stored.slotKey,
       executionResourceRef: input.executionResourceRef

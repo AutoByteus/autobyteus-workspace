@@ -133,6 +133,7 @@ export type ApplicationLaunchIssueCode =
   | "SAVED_MEMBER_TOPOLOGY_STALE"
   | "RUNTIME_UNAVAILABLE"
   | "MODEL_UNAVAILABLE"
+  | "CURRENT_MODEL_SELECTION_REQUIRED"
   | "RUNTIME_AUTHENTICATION_UNAVAILABLE";
 
 export type ApplicationLaunchIssue = {

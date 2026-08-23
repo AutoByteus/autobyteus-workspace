@@ -16,6 +16,7 @@ import { ApplicationStorageLifecycleService } from "../../../src/application-sto
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { ApplicationCurrentModelSelectionPolicy } from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
 import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
 import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
@@ -437,19 +438,9 @@ describe("Application context capability integration", () => {
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async (definitionId: string) => ({ id: definitionId, name: "Sample Agent" })),
       } as never,
-      agentTeamDefinitionService: {
-        getDefinitionById: vi.fn(async (definitionId: string) => ({
-          id: definitionId,
-          name: "Sample Team",
-          coordinatorMemberName: "researcher",
-          nodes: [{
-            memberName: "researcher",
-            ref: "researcher",
-            refType: "agent",
-            refScope: "team_local",
-          }],
-        })),
-      } as never,
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
     });
 
     let journalSequence = 0;

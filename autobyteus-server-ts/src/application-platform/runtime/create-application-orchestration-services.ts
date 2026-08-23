@@ -45,6 +45,8 @@ import { getLlmProviderService } from "../../llm-management/llm-providers/servic
 import { getCodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildApplicationStorageLayout } from "../../application-storage/utils/application-storage-paths.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
+import { ApplicationCurrentModelSelectionPolicy } from "../launch-configuration/application-current-model-selection-policy.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 
 export const createApplicationOrchestrationServices = (input: {
   appConfig: AppConfig;
@@ -128,15 +130,21 @@ export const createApplicationOrchestrationServices = (input: {
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
   });
+  const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    requireCurrentAutoByteusModelIdentifier: (modelIdentifier) =>
+      LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
+  });
   const configurationService = new ApplicationLaunchConfigurationService({
     applicationBundleService: input.bundleService,
     overrideStore,
     baselineBuilder,
+    currentModelSelectionPolicy,
     resolveWorkspaceRootPath: (applicationId) =>
       buildApplicationStorageLayout(input.appConfig, applicationId).runtimeDir,
     hostCapabilityValidator: new ApplicationLaunchHostCapabilityValidator({
       runtimeAvailabilityService: getRuntimeAvailabilityService(),
       modelCatalogService: getModelCatalogService(),
+      currentModelSelectionPolicy,
       providerCredentialReadiness: new ApplicationProviderCredentialReadinessAdapter({
         llmProviderService: getLlmProviderService(),
         codexClientManager: getCodexAppServerClientManager(),
@@ -150,6 +158,7 @@ export const createApplicationOrchestrationServices = (input: {
     agentRunService: runServices.agentRunService,
     teamRunService: runServices.teamRunService,
     agentDefinitionService: input.agentDefinitionService,
+    currentModelSelectionPolicy,
   });
   const targetAuthorizationService = new ApplicationAgentTargetAuthorizationService({
     startupGate,
