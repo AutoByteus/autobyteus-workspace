@@ -22,6 +22,11 @@ import type { TeamMemberExecutionCommand } from "../../../src/agent-team-executi
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "../../../src/agent-team-execution/services/team-run-persistence-coordinator.js";
@@ -96,7 +101,7 @@ class TestTeamBackend implements TeamRunBackend {
   active = true;
 
   constructor(
-    readonly rootTeamRunId: string,
+    readonly physicalScope: TeamRunPhysicalScope,
     readonly teamNode: TeamRunAgentTeamNode,
     readonly config: TeamRunConfig,
   ) {
@@ -110,7 +115,7 @@ class TestTeamBackend implements TeamRunBackend {
         })),
     });
     this.context = new TeamRunContext({
-      rootTeamRunId,
+      physicalScope,
       teamRunId: teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode,
@@ -119,6 +124,7 @@ class TestTeamBackend implements TeamRunBackend {
     });
   }
 
+  get rootTeamRunId(): string { return this.physicalScope.rootTeamRunId; }
   get teamRunId(): string { return this.teamNode.teamRunId; }
   getRuntimeContext(): MixedTeamRunContext { return this.runtimeContext; }
   isActive(): boolean { return this.active; }
@@ -129,7 +135,11 @@ class TestTeamBackend implements TeamRunBackend {
     if (existing) return new TeamRun(existing.context, existing);
     const node = this.teamNode.children.find((child) => child.kind === "agent_team" && child.teamRunId === teamRunId);
     if (!node || node.kind !== "agent_team") throw new Error(`Configured child TeamRun '${teamRunId}' was not found.`);
-    const child = new TestTeamBackend(this.rootTeamRunId, node, this.config);
+    const child = new TestTeamBackend(
+      createChildTeamRunPhysicalScope(this.physicalScope, node.teamRunId),
+      node,
+      this.config,
+    );
     this.children.set(teamRunId, child);
     return new TeamRun(child.context, child);
   }
@@ -151,7 +161,11 @@ class TestTeamBackend implements TeamRunBackend {
   }
   async prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
     this.preparedTeams.push(input);
-    const taskBackend = new TestTeamBackend(this.rootTeamRunId, input.teamNode, this.config);
+    const taskBackend = new TestTeamBackend(
+      createChildTeamRunPhysicalScope(this.physicalScope, input.teamNode.teamRunId),
+      input.teamNode,
+      this.config,
+    );
     this.children.set(input.teamRunId, taskBackend);
     const coordinator = input.teamNode.children.find((node) =>
       node.kind === "agent" && node.address === input.teamNode.coordinatorAddress,
@@ -239,7 +253,11 @@ const createHarness = async () => {
     taskStore.write(rootDir, tasks),
     communicationStore.write(rootDir, messages),
   ]);
-  const backend = new TestTeamBackend(rootTeamRunId, currentConfig.rootTeam, currentConfig);
+  const backend = new TestTeamBackend(
+    createRootTeamRunPhysicalScope(rootTeamRunId),
+    currentConfig.rootTeam,
+    currentConfig,
+  );
   const publisher = new TeamRunEventPublisher();
   let root: RootTeamRun | null = null;
   const persistence = new TeamRunPersistenceCoordinator({

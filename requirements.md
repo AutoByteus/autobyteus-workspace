@@ -2,189 +2,202 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-**Design-ready — scope approved by the user.**
+`Refined`
 
 ## Goal / Problem Statement
 
-Bring the named provider integrations in `autobyteus-ts` to the current model generation, remove the named legacy model entries rather than retaining compatibility aliases, correct DeepSeek V4 pricing effective 17 August 2026 with its time-of-day rates, and make provider/configuration failures truthful across the Docker-node/team stream path.
-
-The user-visible Docker error is not accepted as a provider message until the runtime path proves it. The current repository evidence already identifies a local event-contract defect that can turn a provider failure into `Rejected ERROR: code is required`; the target behavior must correct that translation while preserving genuine required-field validation errors.
+Correct a persisted-memory scope mismatch that makes historical conversation and Activity/Event Monitor history appear empty for agents executed inside nested AgentTeams after a Docker-hosted node is restarted. The run index, nested execution tree, and raw trace files survive restart, but the writer stores nested AgentRun memory directly below the root TeamRun while cold readers resolve the same AgentRun through its physical ancestor TeamRun chain. The change must make current writes and reads agree, restore already-affected history without data loss, preserve working direct-root member history and root-scoped Team Communication, and preserve/document Memory Sync v1's already-supported no-delete behavior without complicating the directory migration.
 
 ## Current And Desired Behavior (Mandatory)
 
 | Behavior ID | Current Behavior | Desired Behavior | Preserved / Unchanged Behavior | Related Requirement / Acceptance-Criteria IDs |
 | --- | --- | --- | --- | --- |
-| B-001 | The curated catalog exposes `grok-4.5` through `GrokLLM`; no `grok-4.6` entry is present. | Expose `grok-4.6` as the only curated Grok flagship entry in this change, with its verified metadata, pricing tiers, and supported reasoning options. Remove `grok-4.5` from the catalog and test fixtures. | Other providers and unrelated runtimes remain unchanged. | REQ-001, REQ-002; AC-001, AC-002 |
-| B-002 | DeepSeek V4 Flash and Pro use stale flat prices (`0.14/0.28` and `0.435/0.87` USD per million input/output, respectively) and do not represent the provider's 17 August peak/off-peak schedule. | Use the provider-published latest schedule for both current V4 variants: peak windows 01:00–04:00 and 06:00–10:00 UTC; off-peak otherwise; cache-hit, cache-miss, and output rates are selected from the request time-of-day. The resolver never selects an older price based on the event date. | DeepSeek model identifiers, token accounting dimensions, and unaffected provider pricing remain intact. | REQ-003, REQ-004; AC-003, AC-004 |
-| B-003 | The checked catalog contains `gemini-3-flash-preview` and `gemini-3.5-flash`; it contains no `gemini-3.6-flash`, despite the user’s screenshot/request wording. | Support `gemini-3.7-flash` as the current Gemini Flash entry and remove all pre-3.7 Gemini Flash entries, including any `gemini-3.6-flash` variant if present in another runtime/package. Keep unrelated Gemini Pro entries unless the user explicitly expands the removal boundary. | Gemini non-Flash model families and media capabilities remain unchanged. | REQ-001, REQ-002; AC-001, AC-002, AC-005 |
-| B-004 | The curated Kimi catalog exposes `kimi-k2.6`, `kimi-k2.7-code`, and `kimi-k2.7-code-highspeed`; Kimi request normalization is K2-specific. | Support the current Kimi flagship `kimi-k3` only in this catalog family, remove the K2 entries and their K2-only policy, and send K3-compatible reasoning/request parameters. | Provider key resolution, OpenAI-compatible transport, and unrelated providers remain intact. | REQ-001, REQ-002; AC-001, AC-006 |
-| B-005 | The curated GLM catalog exposes `glm-5.2`; its schema allows disabling thinking and its adapter has a BigModel coding endpoint policy. | Support the current `glm-5.3` entry only for the curated GLM flagship family, remove `glm-5.2`, and enforce the provider-documented always-enabled thinking contract (`low`, `high`, `max`). Verify the exact endpoint and price before assigning trusted pricing; do not copy GLM-5.2 pricing by assumption. | The existing GLM provider integration remains OpenAI-compatible and secret-safe. | REQ-001, REQ-002, REQ-005; AC-001, AC-007 |
-| B-006 | A missing provider key is read through the secret vault and surfaces as `SECRET_NOT_FOUND`/a generic secret-related error before or during LLM setup. | Missing/blank required provider credentials produce a stable `missing_api_key` category and an actionable message naming the provider configuration, without exposing secret values. | Invalid credentials, locked/corrupt vaults, and provider authentication responses remain distinguishable. | REQ-006, REQ-009; AC-008, AC-009 |
-| B-007 | LLM adapters wrap provider failures into generic `Error in API request`/`Error in API streaming` text; the agent phase then truncates and emits that text without preserving a stable provider message. | Preserve the original provider error message on the user-visible path. Do not semantically classify or replace it with a generic balance/quota/authentication message. Only redact secrets and attach safe transport metadata such as provider status/code/request ID. | Retry/abort semantics and successful completions remain unchanged. | REQ-007, REQ-009; AC-010, AC-011, AC-012 |
-| B-008 | Agent error notifications emit `source`, while downstream team error admission requires non-empty `code`; the adapter therefore rejects a valid error event with `Rejected ERROR: code is required`. | Repair the transport contract with a non-empty protocol `code` separate from the display `message`. Carry the original provider message unchanged; if the provider supplies no code, use an internal transport fallback only to satisfy the protocol. | A genuine tool/schema error whose actual cause is a missing `code` field remains a validation error. | REQ-008, REQ-009; AC-013, AC-014 |
-| B-009 | The web error segment renders the received message under a generic “An Error Occurred” heading, and the malformed team/application message can hide the original cause. | Render the original provider error message, after secret redaction only, in the existing native web error segment and supported application-agent ERROR event. The focused application-agent SDK remains message-only; it does not become a second provider-error metadata protocol. Do not replace a meaningful provider message with a locally invented category/action message. | Existing successful tool cards, error-segment layout, focused application stream variants, and genuine validation meaning remain intact. | REQ-007, REQ-009, REQ-010; AC-011, AC-014, AC-015 |
-| B-010 | The catalog already exposes `minimax-m3` / `MiniMax-M3`, and tests already keep M2.7 absent, but its static metadata reports only 204,800 context tokens and its pricing tiers do not reflect the current 1M-context M3 API shape. | Keep MiniMax M3 as the only curated MiniMax text flagship, remove any older MiniMax text rows if discovered, update metadata to the official 1M context, and verify the current M3 endpoint/pricing tiers. | MiniMax audio, video, image, and music model families are outside this text-LLM change. | REQ-001, REQ-002, REQ-011; AC-001, AC-002, AC-016, AC-017 |
+| BEH-001 | After restart, selecting a nested configured or task-team member can return a successful projection with `conversation: []`, `activities: []`, and `lastActivityAt: null` even though that AgentRun has persisted raw traces. The UI therefore renders a blank conversation and `0 Events` / `No activity history yet.` | Reopening any persisted nested member resolves its real raw traces and hydrates the same conversation and Activity/Event Monitor history recorded for that AgentRun. | A genuinely trace-empty member still renders the existing successful empty state; no new history UI or error-state policy is introduced. | REQ-001, REQ-002, REQ-003; AC-001, AC-002, AC-006, AC-007, AC-011 |
+| BEH-002 | The runtime writer passes an empty ancestor list for every team AgentRun. Cold readers derive the exact physical ancestor TeamRun IDs from the V1 execution tree. These paths agree only for direct root members. | Every configured member, delegated task agent, task-team member, and deeper nested member uses one exact, runtime-independent memory scope consistently at write and read boundaries. | Standalone AgentRun memory layout and the direct-root team member layout remain unchanged. | REQ-001, REQ-003, REQ-006; AC-001 through AC-003, AC-007, AC-010 |
+| BEH-003 | Direct root members already restore conversation and Activity history after restart because their canonical ancestor chain is empty. | Direct root member restoration continues to work through the same public history APIs and UI journey. | Conversation ordering, activity mapping, timestamps, and current empty-state behavior remain unchanged. | REQ-004; AC-003, AC-011 |
+| BEH-004 | Root-scoped Team Communication survives restart independently of member raw traces; the affected user run still returns all 6 inter-agent messages. | Team message counts, participants, content, ordering, timestamps, and reference-file associations remain unchanged. | Team Communication storage and projection are not redesigned by this ticket. | REQ-004; AC-004 |
+| BEH-005 | Runs created by the defective writer contain usable nested-member directories at a flat root-relative path that the canonical reader will not inspect. | Existing affected member-memory directories are transformed to the canonical execution-tree-derived location before normal use, preserving the entire owned directory without cross-association or silent overwrite. A failed folder move remains capability-scoped, does not abort application startup, and can be retried through the existing Server Migrations Retry action. | Already-canonical directories and unrelated historical residue remain untouched; migration status remains truthful rather than presenting a missing canonical target as success. | REQ-005; AC-005, AC-006, AC-008, AC-009, AC-014 |
+| BEH-006 | Memory Sync v1 recursively mirrors files below `memory/agent_teams` through replace-only operations and intentionally does not propagate deletes. It can therefore export both physical paths in a source-plus-canonical conflict or retain a pre-upgrade flat import after the source relocates locally. Imported Memory Explorer nevertheless resolves members through the V1 execution tree and canonical path. | Preserve this existing Memory Sync v1 contract as an explicitly approved, bounded nonfatal limitation: application startup and Memory Sync continue; the layout migration reports `SUCCEEDED_WITH_WARNINGS` when a valid canonical target exists beside sync-visible flat residue; imported semantic reads remain canonical; and durable docs disclose that the hub may retain both physical copies. | No Memory Sync scanner filter, delete/tombstone protocol, imported-corpus cleanup, sync gate, or UI redesign is introduced. A missing/invalid canonical target remains `FAILED` and is not covered by this exception. | REQ-008; AC-015, AC-016 |
 
 ## Investigation Findings
 
-- The curated catalog is in `autobyteus-ts/src/llm/supported-model-definitions.ts` and currently contains the legacy/current IDs listed in B-001–B-010.
-- Official provider research identifies `grok-4.6`, `gemini-3.7-flash`, `kimi-k3`, `glm-5.3`, and MiniMax `MiniMax-M3` as the current targets. The repository already contains MiniMax M3, but its context metadata is stale. The exact GLM API endpoint/price for the target deployment must be verified during implementation because the repository currently uses a BigModel coding endpoint while the current Z.ai API documentation distinguishes general and coding endpoints.
-- The DeepSeek pricing page reports V4 Flash/Pro peak and off-peak rates effective from the Beijing-time 17 August 2026 change. The authoritative accounting path currently supports model and input-size selection but not schedule selection by `observed_at`.
-- The Docker screenshot’s exact text is generated locally: `AgentErrorNotification` emits `source`, but `TeamAgentEventAdapter` requires `p.code`, producing `Rejected ERROR: code is required`. The screenshot does not prove that the original provider rejection was insufficient balance; preserve whatever original provider message is available instead of classifying or inventing a balance message.
+- The issue was reproduced on the requested Docker node and then reproduced again with the private **Nested Classroom Test Team** fixture using AutoByteus and `deepseek-v4-flash`.
+- A controlled Docker restart retained the history index, V1 execution tree, raw traces, and root Team Communication files.
+- In the user's existing Codex/GPT-5.6 run, the direct root member returned 3 conversation entries and 1 activity after restart, while the nested product prototyper returned a successful empty projection despite a 505,163-byte active trace and a 1,070,029-byte rotated trace segment.
+- In the controlled AutoByteus/DeepSeek run, the direct Teacher returned 13 conversation entries and 5 activities after restart, while nested task-team `student_one` returned a successful empty projection despite a 10,297-byte active trace containing the delegated task, reasoning, and a `submit_task_result` invocation.
+- `MixedAgentMemberHandle.buildAgentRunConfig()` hard-codes `ancestorTeamRunIds: []`; `TeamRunExecutionTreeLocationService` derives root-exclusive physical TeamRun ancestry from the V1 execution tree. Server logs show the reader requesting the resulting absent hierarchical file.
+- Current docs, layout services, reader tests, and one already-hierarchical stored nested run establish the ancestry-aware layout as the current canonical contract. Existing affected flat directories therefore require migration rather than a second runtime fallback.
+- Repository history confirms this is a regression: the topology-reflecting layout was implemented and documented on 2026-06-11, preserved through the rooted-identity refactor on 2026-08-05, and still enforced by the nested writer unit test immediately before the 2026-08-15 universal-delegation checkpoint. That checkpoint removed the derivation and reversed only the writer-side expectation while the reader and documentation retained the hierarchical contract. An older pre-2026-06-11 flat layout also restored nested members because its writer and reader agreed, but it predates the current concrete TeamRun/AgentRun identity contract and is not a current alternative.
+- The repository's canonical production data-migration convention requires a deterministic known-source-to-fixed-target transformation under one writer, stable process/power/device, sufficient permissions, and normal same-filesystem behavior. It rejects bespoke shutdown/power-loss journals, backup copies, syscall-failure state machines, and unbounded warning evidence. Relaunch is covered once through ordinary runner idempotence.
+- Architecture review identified an omitted existing observer: **Nodes -> Memory Sync -> Sync now** recursively scans both flat and canonical files, and its documented v1 replace-only/no-delete protocol can retain a flat remote import after a clean local rename. Imported Memory Explorer still derives the exact canonical member location from V1 topology rather than treating both physical copies as competing current runs.
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `provider-error-and-pricing-contract.md` | Evidence-backed provider catalog, pricing schedule, latest-model request policy, provider-message passthrough, and event contract. | REQ-001–REQ-012 | AC-001–AC-018 | Design supplement; aligned to the approved requirements basis. | Keeps volatile provider facts and cross-boundary transport rules reviewable without moving authority out of this requirements doc. |
-| `tickets/done/application-agent-streaming/application-agent-communication-contract.md` | Normative application-agent stream and message-only public ERROR boundary: original safe message with no generic replacement. | REQ-007–REQ-010 | AC-011, AC-014–AC-015 | Design supplement; narrowed during SR-013 scope audit. | Keeps the focused application stream explicit without creating a second provider-error metadata protocol or exposing raw provider data. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/nested-team-restart-reproduction.md` | Evidence supplement retaining browser, GraphQL, filesystem, log, runtime/model, and Docker restart results | REQ-001 through REQ-006 | AC-001 through AC-012 | Complete evidence; approval N/A | Demonstrates the current defect, controls, persistence outcome, and runtime independence used by this requirements basis. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/root-member-history-control.png` | Browser evidence: healthy direct-root control | REQ-004 | AC-003 | Complete evidence; approval N/A | Locks the unchanged direct-root cold-hydration outcome. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/affected-codex-nested-member-post-restart.png` | Browser evidence: existing Codex nested-member failure | REQ-001, REQ-002, REQ-006 | AC-001, AC-010 | Complete evidence; approval N/A | Shows the user-visible successful-empty result after restart. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/controlled-autobyteus-nested-member-post-restart.png` | Browser evidence: controlled AutoByteus task-team failure | REQ-001–REQ-003, REQ-006, REQ-007 | AC-002, AC-010, AC-012 | Complete evidence; approval N/A | Proves task-team and runtime/model-independent scope. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_f69ba7836a55__image.png` | User screenshot: affected department topology and populated Team panel | REQ-004 | AC-004 | Retained evidence; approval N/A | Establishes the original hierarchy and independent Team messages. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_57a57720cadc__image.png` | User screenshot: remote node `localhost:8001` | REQ-002 | AC-001 | Retained evidence; approval N/A | Establishes the requested Docker node context. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_26ddbd968b85__image.png` | User screenshot: historical Team messages/reference files | REQ-004 | AC-004 | Retained evidence; approval N/A | Supports the preserved Team Communication control. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_73e4b305a940__image.png` | User screenshot: prior nested-classroom false empty | REQ-001–REQ-003 | AC-001, AC-002 | Retained evidence; approval N/A | Establishes the earlier reported nested symptom; controlled reproduction supplies causality. |
 
 ## Design Health Assessment (Mandatory)
 
-- Change posture: `Larger Requirement` combining feature/model-catalog updates, pricing behavior, bug fixes, and contract repair.
-- Initial design issue signal: `Yes`.
-- Root cause classification: `Boundary Or Ownership Issue`, `Missing Invariant`, `Shared Structure Looseness`, and `Legacy Or Compatibility Pressure`.
-- Refactor posture: `Likely Needed`.
-- Evidence basis: provider-specific request policy is distributed across catalog defaults and adapters; pricing has no time schedule dimension; the error event producer and team contract disagree on the required field name; request wrappers replace original provider messages.
-- Requirement or scope impact: a catalog-only patch would leave request invalidity, stale pricing selection, missing-key messaging, and the Docker/team error translation unresolved.
+- Change posture: `Bug Fix`
+- Initial design issue signal: `Yes`
+- Root cause classification: `Boundary Or Ownership Issue`
+- Refactor posture: `Needed`
+- Evidence basis: the member handle owns AgentRun activation but is not given the physical TeamRun memory scope that the execution tree and cold readers treat as authoritative. It substitutes `[]`, while several downstream services independently and correctly derive ancestry from the V1 tree. A contradictory writer unit test codifies the substitution instead of the persisted layout invariant.
+- Requirement or scope impact: the implementation must repair scope ownership at the TeamRun/member activation boundary, not add a reader-only fallback or special-case the frontend. A startup migration is required for data already written by the defect.
 
 ## Recommendations
 
-Use clean-cut replacement for the named legacy catalog entries and their provider-specific schemas/adapters. The schema and adapter are part of the normal model-selection production path; update them together to describe and send the current model contract. No separate request-validation feature is added. Preserve provider error messages through one shared error transport contract and one canonical event `code` field rather than adding provider/message checks to the web UI. Only the missing-key case receives a purpose-built configuration message; other provider messages are not semantically rewritten. Represent the latest DeepSeek UTC schedule and select its peak/off-peak branch by request time-of-day. Keep the applied latest schedule in the existing pricing snapshot for auditability, but do not retain or execute historical price tables.
-
-Do not infer or invent an insufficient-balance message. If the provider returns a meaningful balance/quota message, show that original message; otherwise show the original provider/transport error available. Redact secrets only.
+- Keep the ancestry-aware layout as the single current contract and make the owning TeamRun context carry the exact root-exclusive physical TeamRun path needed by its direct AgentRuns.
+- Treat every concrete configured or delegated task TeamRun as one physical directory boundary. Treat a delegated Task Agent as a leaf under its owning TeamRun rather than as an extra TeamRun boundary; treat a delegated Task Team as a real child TeamRun whose members live beneath its concrete TeamRun ID.
+- Apply that scope uniformly to configured members, delegated task agents, task-team members, and recursive nested teams for every runtime kind.
+- Add a one-time startup migration that uses each validated V1 execution tree to map only affected flat nested AgentRun directories to their canonical location, preserving the complete member directory and refusing ambiguous/conflicting mutation.
+- Preserve and explicitly document Memory Sync v1's approved replace-only/no-delete behavior. Treat a source-plus-valid-target state as a bounded warning even though the flat residue is sync-visible, because current semantic history and imported-memory readers remain canonical and no delete-propagation or immediate-retention contract is in scope.
+- Correct contradictory tests and add cold-read/restart-equivalent coverage at memory, runtime, GraphQL, migration, and browser-visible boundaries. Do not add dual path lookup, compatibility wrappers, or a frontend false-empty workaround.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
-`Large` — five provider catalog/request-policy updates, time-dependent pricing, missing-key handling, original-error passthrough, event-contract repair, web-visible behavior, and Docker/team coverage.
+`Medium` — the source defect is a focused scope-propagation error, but the complete correction spans mixed-team runtime activation, recursive task/configured team construction, canonical memory layout, startup migration of valid user data, projection APIs, and browser-visible cold hydration. Memory Sync adds preserved-behavior documentation/coverage only; it does not expand the production migration or sync implementation.
 
 ## Scope Guardrail (Mandatory)
 
 ### In-Scope Use Cases
 
-- UC-001: list/select/execute the current Grok, Gemini Flash, Kimi, GLM, and MiniMax text catalog targets.
-- UC-002: calculate DeepSeek V4 Flash/Pro cost using the 17 August 2026 effective UTC schedule.
-- UC-003: execute a provider-backed request with no required API key and receive an explicit missing-key action.
-- UC-004: execute through a local or Docker node when the provider rejects a request and see the original provider error message preserved through transport.
-- UC-005: transport an agent/provider error through the single-agent and team-agent streams without protocol admission failure or message rewriting.
-- UC-006: preserve genuine tool/schema validation errors and secret redaction.
+- `UC-001`: Run and later reopen a configured Agent member inside one or more nested AgentTeams.
+- `UC-002`: Delegate work to a nested task team or task agent and later reopen the concrete nested AgentRun.
+- `UC-003`: Stop/restart or recreate the Docker server container, reconnect the frontend, and inspect historical nested member conversation and Activity/Event Monitor history.
+- `UC-004`: Upgrade/restart a node containing runs already written with flat nested-member directories and recover their history through the current canonical path.
+- `UC-005`: Exercise direct-root team members and root Team Communication as preserved controls.
+- `UC-006`: Run Memory Sync before and/or after migration and observe the approved v1 outcome when both physical paths are exported or a pre-upgrade flat import remains on the hub.
 
 ### Out of Scope
 
-- Automatic online model discovery or future self-updating catalog behavior.
-- Removing every older model from every provider or removing unrelated Gemini Pro/non-Flash model families.
-- Automatic account top-up, live balance inspection, retry-policy redesign, or provider billing-account changes.
-- Historical pricing tables, date-based price selection, or recalculation of old usage using retired prices.
-- Migration, silent remapping, or compatibility fallback for persisted profiles using removed model IDs; those profiles require explicit user reselection.
-- General redesign of the chat error UI or Docker networking.
-- Semantic provider-message classification or replacing provider messages with application-authored balance/quota/authentication text.
+- Redesigning the workspace tree, conversation composer, Activity/Event Monitor presentation, loading/empty/error UI, or Team Communication panel.
+- Changing raw-trace event schemas, replay normalization, trace rotation/compaction semantics, model behavior, task lifecycle, or AgentTeam orchestration policy.
+- Changing standalone AgentRun memory layout, introducing cross-node memory synchronization, or recovering arbitrary manually deleted/corrupt data.
+- Replacing the canonical ancestry-aware layout with a flat layout, adding dual-path runtime reads, or retaining a compatibility fallback after migration.
+- Migrating unrelated predecessor/historical residue that is not admitted by a validated current V1 execution tree.
+- Adding Memory Sync filtering, delete/tombstone propagation, remote imported-corpus cleanup, a migration-status sync gate, or new Memory Sync UI. The approved v1 replace-only/no-delete behavior is documented and preserved.
 
 ### Preserved Behavior Boundary
 
-Preserve B-001–B-010 outcomes not explicitly changed, existing successful provider/tool execution, provider key secrecy, token-count semantics, error scope/effect semantics, and genuine schema validation. Runtime ownership is also preserved: the AutoByteus current-model catalog guard applies only to `RuntimeKind.AUTOBYTEUS`; Claude Agent SDK and Codex App Server selections continue through their existing runtime-owned factories and are not rejected by the AutoByteus catalog. The clean-cut removals are limited to the named legacy model entries, obsolete model-specific transformations/defaults, generic provider-error wrappers, and legacy model/price aliases. No compatibility aliases or fallback behavior for removed models/prices are retained.
+Preserve BEH-003, BEH-004, and the existing Memory Sync v1 transport behavior in BEH-006. Preserve the unaffected outcomes in REQ-004 / AC-003 / AC-004 / AC-011. Across semantic runtime/history paths, history must remain ordered, attributed to the exact root/team/member execution, and free of duplicate current-run presentation, silent omission, or cross-run association. BEH-006 explicitly permits duplicate physical storage paths in the read-only imported corpus as a documented no-delete limitation; canonical V1 readers must not present them as competing current runs.
 
 ### Review Authority
 
-This requirements basis and the intended-behavior parts of its supplement require explicit user approval. Provider documentation/current API behavior governs model IDs and prices; repository evidence governs current-path and contract facts; architecture review governs structural readiness after approval. Any proposal to migrate old persisted launch profiles or broaden removal to unrelated model families is a requirement gap requiring renewed user approval.
+- Every blocking `Design Impact` or implementation-correction finding must cite an approved requirement, acceptance criterion, or preserved-behavior ID that it protects.
+- A finding that would introduce new product behavior, policy, threat model, migration obligation, or operational contract is a `Requirement Gap`; it must return for explicit user approval before becoming authoritative.
+- An adjacent concern outside the approved boundary may be recorded as a non-blocking risk, recommendation, or separate-ticket candidate. It must not be treated as a required design correction.
+- A downstream reviewer comment does not amend this requirements basis. The solution designer must update the canonical requirements and obtain renewed user approval before a scope-changing proposal can govern design or implementation.
 
 ## Functional Requirements
 
-| Requirement ID | Requirement |
-| --- | --- |
-| REQ-001 | The curated catalog must expose the approved latest target IDs `grok-4.6`, `gemini-3.7-flash`, `kimi-k3`, `glm-5.3`, and MiniMax `MiniMax-M3` (`minimax-m3`); the named legacy IDs must be removed from the active catalog, metadata fallback index, and durable tests. DeepSeek V4 Flash and Pro remain current variants and are not removed by this ticket. |
-| REQ-002 | Each replacement model must use its exact current provider model ID and endpoint and a provider-specific schema/default configuration describing the current documented parameters. Update the owning adapter to construct the current provider request shape and remove obsolete model-specific transformations, aliases, and defaults; do not silently translate old model semantics into the new model. |
-| REQ-003 | DeepSeek V4 Flash and Pro must use the latest official rates introduced at `2026-08-16T16:00:00Z` (00:00 Beijing on 17 August 2026), with UTC peak windows `[01:00,04:00)` and `[06:00,10:00)`, off-peak otherwise, and separate cache-hit/cache-miss/output prices. The effective date is provenance only, not a historical-policy selector. |
-| REQ-004 | The pricing resolver must always use the latest DeepSeek pricing configuration, use the usage event’s time-of-day only to choose the latest peak/off-peak branch, use existing token dimensions and input-size tier selection, and record the applied latest schedule in the pricing snapshot. It must not select retired prices for older events. |
-| REQ-005 | GLM-5.3 pricing and endpoint metadata must be verified for the actual selected provider endpoint before being marked trusted; unknown/unverified pricing must remain explicitly unpriced rather than inherit GLM-5.2 values. |
-| REQ-006 | A missing or blank required provider API key must fail before a provider request and surface the stable `missing_api_key` category with an actionable provider-specific message. Secret-vault health failures must retain their own category. |
-| REQ-007 | Provider failures must preserve the original provider message after redaction through the runtime and every supported user-visible path, including native web and application-agent streams. Safe provider status/code/request ID metadata remains supplemental native transport/diagnostic data; the focused application-agent SDK is intentionally message-only. The application must not semantically reclassify or replace provider messages. Only absent/blank API-key configuration is translated into the explicit `missing_api_key` setup message required by REQ-006. |
-| REQ-008 | Native agent error events must use a canonical non-empty protocol `code` field from `autobyteus-ts` through stream parsing, AgentRun mapping, team adaptation, websocket projection, and the native client contract, while keeping `message` as the original safe error text. The focused application-agent projection carries the safe `message` in its existing message-only ERROR variant and is not a second provider-error metadata protocol. A malformed native event must not rewrite a valid provider error into `code is required`. |
-| REQ-009 | User-visible provider errors must show the original provider message after redacting credentials or other sensitive material. Native transport and diagnostics may carry safe status/code/request identifiers and redacted details; the application-agent public stream carries only the safe message. Keys, authorization headers, raw exceptions, stacks, and full sensitive payloads must not cross any public boundary. |
-| REQ-010 | Durable unit/API/E2E coverage must verify catalog removal/addition, latest-model request fields/endpoints, latest DeepSeek schedule selection, missing-key mapping, provider-message passthrough, canonical error-code transport, Docker-equivalent stream behavior, redaction, and preserved genuine validation errors. |
-| REQ-011 | MiniMax M3 metadata and pricing must match the current official API contract: 1M maximum context, the verified ≤512K and >512K pricing tiers, cache-read prices, effective date, and the endpoint/model identifier used by the selected MiniMax API deployment. |
-| REQ-012 | Removed legacy model IDs and legacy prices must not be accepted or silently remapped, and obsolete model-specific request-policy branches must be removed. A saved configuration using a removed model must fail with an explicit “select a current supported model” message and require user reselection. |
+- `REQ-001`: The system shall use the same canonical team-member memory scope for AgentRun creation/writes and all current readers. That scope shall preserve the root TeamRun ID, the ordered root-exclusive physical ancestor TeamRun IDs, and the concrete AgentRun ID.
+- `REQ-002`: After a cold server/container restart, selecting a persisted nested member shall hydrate its stored conversation, Activity projection, Event Monitor active-trace page, summary/last-activity metadata, and earlier-active-trace indicator through the existing public history contracts.
+- `REQ-003`: Scope resolution shall support configured nested teams, delegated task agents, delegated task teams and their members, and arbitrary supported nesting depth without relying on leaf name, definition ID, address basename, or an ancestor-free substitution.
+- `REQ-004`: The change shall preserve standalone runs, direct-root team member history, root Team Communication (including reference-file associations), task records, history-index visibility, and existing live streaming behavior.
+- `REQ-005`: A required-on-startup, manually retryable app-data migration shall preserve existing affected data by moving each unambiguous flat nested AgentRun directory identified by a validated current V1 execution tree to its canonical scoped location. It shall be one deterministic whole-directory rename under the documented normal migration operating assumptions, preserve the complete directory, be rerun-safe through the existing runner, leave canonical/unrelated data unchanged, never abort application startup for an item-level move failure, and never silently merge, overwrite, or delete conflicting evidence.
+- `REQ-006`: The corrected persistence and restoration contract shall be runtime/model independent, including AutoByteus, Codex App Server, and Claude Agent SDK team members.
+- `REQ-007`: Durable coverage shall exercise the shared scope invariant, recursive configured/task construction, affected-data migration, current projection APIs, a restart-equivalent browser-visible nested/member flow, and the approved Memory Sync conflict/retention outcome while retaining direct-root and Team Communication controls.
+- `REQ-008`: The change shall preserve and document Memory Sync v1's existing recursive replace-only/no-delete contract. When a real canonical member directory independently satisfies the current layout, a preserved flat conflict source or a pre-upgrade flat hub import is an explicitly approved sync-visible, nonfatal residue: local runtime and imported Memory Explorer continue resolving the canonical V1 location, application startup and Memory Sync remain available, and no scanner filter, delete/tombstone operation, remote cleanup, or sync gate is added.
 
 ## Acceptance Criteria
 
-| Acceptance Criteria ID | Scenario intent | Expected outcome |
-| --- | --- | --- |
-| AC-001 | Catalog list for named providers | The catalog contains `grok-4.6`, `gemini-3.7-flash`, `kimi-k3`, `glm-5.3`, and `minimax-m3`; it does not contain `grok-4.5`, pre-3.7 Gemini Flash entries, Kimi K2 entries, `glm-5.2`, or older MiniMax text entries. |
-| AC-002 | Latest model metadata/request routing | Each target has the intended adapter, verified context/output metadata, and current schema/default options. Removed model IDs fail model resolution rather than silently falling back. |
-| AC-003 | DeepSeek latest off-peak pricing | A usage event outside both UTC peak windows selects the latest off-peak schedule and exact V4 Flash/Pro cache-hit, cache-miss, and output rates. |
-| AC-004 | DeepSeek peak pricing/latest-only behavior | Events at both peak windows select the latest peak rates; events outside them select the latest off-peak rates; an event with an older calendar date still uses the latest configured rates rather than a retired policy; the applied latest schedule is visible in `pricing_snapshot_json`. |
-| AC-005 | Gemini 3.7 request | `gemini-3.7-flash` defaults to a supported thinking level (medium) and sends the current thinking shape; the catalog no longer generates the obsolete `minimal` setting. |
-| AC-006 | Kimi K3 request | `kimi-k3` sends the current K3 reasoning/always-thinking shape and its adapter contains no K2-only policy branch. |
-| AC-007 | GLM 5.3 request | `glm-5.3` schema/defaults produce `thinking.type=enabled` and an allowed reasoning effort; the adapter does not generate a disabled-thinking shape from the current schema. |
-| AC-008 | Missing provider key | With no key record or a blank key, no provider request is attempted and the caller receives `missing_api_key` plus a provider-specific setup action, not `SECRET_NOT_FOUND` or secret internals. |
-| AC-009 | Other vault failures | Locked, unavailable, corrupt, and access-denied secret states retain distinct safe categories/messages and do not expose secret material. |
-| AC-010 | Provider balance/quota response | A fixture containing a meaningful provider balance/quota message reaches the user with that original message intact after safe redaction; no application-authored replacement is used. |
-| AC-011 | Provider authentication/rate/request response | Representative provider messages reach the user unchanged after safe redaction; safe status/provider code/request ID may remain available as supplemental native transport/diagnostic metadata, but the application-agent SDK exposes only the message. |
-| AC-012 | Provider/transport failure | An unrecognized provider or transport failure preserves the original available error text; no misleading semantic category is substituted. |
-| AC-013 | Single-agent error event | An LLM/provider error emits a non-empty protocol `code`, preserves its original `message`, and survives stream parsing and AgentRun mapping without `code is required`. |
-| AC-014 | Team/Docker/application-agent error event | The original provider error message reaches the team websocket/client contract and supported application-agent SDK ERROR event, including the Docker-node path, and renders in the relevant UI; `Rejected ERROR: code is required` is absent for valid native/team provider failures. The application-agent event remains message-only. |
-| AC-015 | Genuine schema and redaction regressions | A real missing required tool `code` remains a validation error, while API keys/authorization headers are absent from user text and diagnostics. |
-| AC-016 | MiniMax catalog | The MiniMax catalog contains `minimax-m3` / `MiniMax-M3`, reports the official 1,000,000-token context, and contains no older MiniMax text model row such as M2.7 or M2.5. |
-| AC-017 | MiniMax pricing/request path | MiniMax M3 uses the verified current API endpoint/model identifier and exact official pricing tiers for ≤512K and >512K input; request capture confirms no stale model or endpoint is sent. |
-| AC-018 | Removed model configuration | A saved configuration using a removed model or legacy price cannot execute or silently fall back; it receives an explicit current-model reselection message. |
+- `AC-001`: Given a configured nested member with persisted raw traces, after server/container restart the existing `getTeamMemberRunProjection` and Event Monitor page queries return the events for that exact AgentRun, and the workspace conversation and Activity surfaces display them.
+- `AC-002`: Given a delegated task-team member with persisted raw traces, the same cold-reopen journey resolves through the delegated task TeamRun ancestry and displays its task input, reasoning/messages, tool activity, and last-activity metadata instead of a successful empty projection.
+- `AC-003`: A direct-root team member continues to restore the same conversation and Activity data after restart; its physical member directory remains directly below the root TeamRun directory.
+- `AC-004`: Root Team Communication for the affected run returns the same message count, participants, content, ordering, timestamps, and reference-file associations before and after the change and restart.
+- `AC-005`: On first startup with an affected current V1 run, every unambiguous flat nested member directory is relocated to the execution-tree-derived canonical path and becomes readable through normal projection APIs without manual intervention.
+- `AC-006`: Migration preserves every file and byte owned by the affected member directory, including active/rotated raw traces, trace manifests, file-change projection, and working-context snapshot when present; no event is duplicated, reordered, attributed to a different AgentRun, or lost.
+- `AC-007`: A fixture with at least two nested TeamRun levels proves the ordered ancestor chain is preserved for configured and task-originated AgentRuns; two same-named members under different team paths cannot read or overwrite each other's memory.
+- `AC-008`: Re-running the migration after success is a no-op. If both an affected flat source and a structurally valid canonical target exist, the migration leaves both untouched and records the bounded `SUCCEEDED_WITH_WARNINGS` outcome approved in AC-015: semantic runtime/imported-memory owners use only the exact canonical target, while Memory Sync may physically mirror the disclosed residue. A missing/invalid canonical target that cannot be established is reported truthfully as `FAILED`; malformed or non-current TeamRun roots remain outside current-V1 admission. No merge, overwrite, deletion, or content-preference guess is allowed.
+- `AC-009`: Already-canonical nested member directories and current V1 roots with no affected flat nested directory remain byte-for-byte in place; historical residue outside current V1 admission is not moved.
+- `AC-010`: Focused coverage demonstrates the same scoped write/read result for AutoByteus, Codex App Server, and Claude Agent SDK runtime kinds; model/provider selection does not alter memory location.
+- `AC-011`: A genuinely trace-empty nested or direct member still receives the existing successful empty projection and existing empty UI; the correction does not manufacture history or introduce a new UI state contract.
+- `AC-012`: Automated API/E2E coverage includes a fresh nested run, a restart-equivalent cold reload, an affected-data migration fixture, direct-root and Team Communication controls, and browser validation of non-empty nested conversation/Activity after cold reopen.
+- `AC-013`: Migration design and coverage follow `docs/design/production_data_migration_conventions.md`: assume one writer and a stable normal attempt; use the existing required-on-startup runner with `ANYTIME` execution policy and atomic same-filesystem rename; cover ordinary rerun/idempotence once; create no bespoke journal, backup/quarantine copy, parent-directory `fsync` protocol, post-rename-indeterminacy state machine, arbitrary shutdown/kernel/device failure matrix, or unbounded per-item warning log.
+- `AC-014`: An item-level directory move failure does not abort server/application startup. Because the required canonical target was not established, the migration record is `FAILED` rather than success-with-warning; the existing runner exposes `MANUAL_RETRY` / `canRetry: true`, Settings enables Retry, and clicking it reruns the same idempotent migration. Completed moves are skipped, remaining eligible moves are attempted, and successful completion updates the record without new frontend or migration-framework behavior.
+- `AC-015`: Given both a real flat source directory and an independently valid canonical target for the same admitted V1 AgentRun, the migration mutates neither directory, records a bounded `SUCCEEDED_WITH_WARNINGS` disposition explicitly identifying sync-visible conflict residue, and permits application startup and Memory Sync to continue. A subsequent v1 sync may export both physical paths; semantic local and imported history reads resolve only the canonical V1 target and must not present a duplicate current run.
+- `AC-016`: Given a successful Memory Sync before upgrade that exported the defective flat path, followed by successful local relocation and another v1 sync, the hub may retain the prior flat import beside the new canonical import because v1 does not propagate deletes. This approved physical-retention limitation is disclosed in durable Memory Sync/migration documentation, does not change migration success, does not authorize destructive cleanup or protocol expansion, and does not apply when the canonical target is missing or invalid.
 
 ## Constraints / Dependencies
 
-- Provider IDs, request rules, and prices are time-sensitive; implementation must re-verify official documentation at the implementation date and record any changed fact as a requirement gap.
-- `autobyteus-ts`, server/backend, team stream contracts, application SDK contracts, and web rendering are separate package boundaries and must be changed as one error behavior. The focused application-agent stream remains closed, provider-neutral, and message-only; its normative contract must be updated from the stale generic fallback to original safe message passthrough, but it does not gain provider metadata fields in this ticket.
-- Docker port 8001 may run a different build; integrated validation must identify the tested build/version.
-- Existing pricing snapshots are persisted as JSON and usage records carry the observed timestamp; the applied latest schedule may be recorded for auditability, but no historical price selection or repricing feature is required.
-- Removed model IDs may remain in saved user configuration as data, but the active runtime must reject them and require current-model reselection; no compatibility migration is performed.
-- No API key, authorization header, or full raw provider payload may be committed or emitted.
+- The authoritative code base is refreshed `origin/personal` at bootstrap commit `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`, on dedicated branch `codex/nested-team-history-restart-hydration`.
+- Docker restart/recreation with the existing durable data volume is a supported lifecycle and must remain sufficient; no manual filesystem repair can be required.
+- The V1 execution tree is the current authoritative topology/identity source for admitted TeamRun packages.
+- The app-data migration framework runs required migrations during startup and records per-migration status; the transition must stay isolated there rather than leak predecessor/defective path handling into normal runtime readers.
+- `server-runtime.ts` runs pending app-data migrations and rebuilds the current TeamRun V1 package catalog before building the Fastify application, so the transition can complete before GraphQL/history access.
+- The migration shall use `executionPolicy: "ANYTIME"` (or the equivalent current default), so `FAILED` and `SUCCEEDED_WITH_WARNINGS` records receive the existing `MANUAL_RETRY` action and Settings Retry button. It shall not use `STARTUP_ONLY`, which would require a server restart and disable the button.
+- `autobyteus-server-ts/README.md` and `autobyteus-server-ts/docs/design/production_data_migration_conventions.md` govern migration reachability, normal operating assumptions, forward-only runtime ownership, final-current-state classification, bounded diagnostics, and proportionate recovery.
+- The user-requested private fixture and DeepSeek provider were available and used only for controlled evidence; production correctness cannot depend on that package or model.
+- The user explicitly approved preserving and documenting Memory Sync v1's observable replace-only/no-delete residue rather than expanding this ticket into scanner filtering, tombstones, remote cleanup, or synchronization gating.
 
 ## Persisted Data Outcome (When Applicable)
 
-- Stored subject / location: usage events and summaries in `autobyteus-server-ts` include `pricing_snapshot_json`, `observed_at`, selected tier, and model identifiers; launch profiles/application manifests store `llmModelIdentifier` strings.
-- Required outcome: `Directly Usable — No Migration` for existing usage/pricing snapshots and saved configuration records; removed-model configurations are rejected at runtime and require user reselection.
-- Existing data to preserve, discard/rebuild, transform, or quarantine: preserve existing usage/error records as recorded evidence; do not rewrite or reprice old pricing snapshots. Preserve saved configuration records, but reject removed model IDs with an actionable reselection message.
-- Unacceptable data loss or corruption: losing existing recorded cost data, changing recorded model identifiers, or silently routing a user’s saved profile to a different model.
-- Relevant availability, maintenance-window, or rollout constraints: catalog replacement can deploy without data migration because stale profiles are rejected until the user selects a current model.
-- Related requirement and acceptance-criteria IDs: REQ-001, REQ-004, REQ-010, REQ-011, REQ-012; AC-001, AC-003, AC-004, AC-014, AC-016, AC-017, AC-018.
+- Stored subject / location: complete team-member memory directories under `memory/agent_teams/<rootTeamRunId>/...`, including raw traces, rotation manifest/segments, file changes, and working-context snapshots.
+- Required outcome: `Migration Required`
+- Existing data to preserve, discard/rebuild, transform, or quarantine: preserve and relocate each unambiguous flat directory for a nested AgentRun in a validated current V1 tree; keep already-canonical directories and unrelated residue in place; preserve ambiguous/conflicting evidence without destructive mutation and report it.
+- Unacceptable data loss or corruption: missing or duplicated events, reordered history, lost rotated segments/manifests/snapshots/file changes, wrong-run/member association, silent overwrite/merge, or deletion of evidence that cannot be mapped safely.
+- Relevant availability, maintenance-window, or rollout constraints: migration is attempted during normal startup but item-level move failure does not block application availability; the same migration is manually retryable through existing Settings. A valid-target conflict remains a warning while Memory Sync stays available under its approved v1 no-delete limitation. No separate maintenance window, ongoing dual-read compatibility path, sync gate, or remote cleanup is authorized.
+- Related requirement and acceptance-criteria IDs: REQ-001, REQ-002, REQ-003, REQ-005, REQ-006, REQ-008; AC-001, AC-002, AC-005 through AC-010, AC-012 through AC-016.
 
 ## Assumptions
 
-- “Latest” is interpreted as the latest official target in each named provider/model family at the investigation date, not automatic discovery of every future model.
-- `gemini-3.6-flash` is a user/environment naming discrepancy; the checked source has `gemini-3.5-flash`, so all pre-3.7 Gemini Flash entries are treated as legacy.
-- `kimi-k3`, `glm-5.3`, and MiniMax `MiniMax-M3` are intended for the existing text/code LLM integration, not multimedia model factories.
-- The balance hypothesis may explain the original provider rejection; the original provider message should be preserved rather than classified or rewritten.
+- Validated V1 execution trees enumerate the configured and task-originated AgentRun IDs and exact physical TeamRun ancestry needed to map affected directories unambiguously.
+- A member memory directory is one owned unit; moving only `raw_traces_active.jsonl` would be incomplete because current readers also resolve sibling trace segments/manifests, file changes, and working context through the same directory.
+- One startup migration writer, a stable process/power/device for an attempt, sufficient permissions, readable/writable same-filesystem storage, and normal filesystem behavior are operating prerequisites rather than additional product failure scenarios.
+- Memory Sync's recursive scanner is a physical replication observer, while local and imported semantic memory readers remain V1-tree/canonical-path owners. The approved v1 contract intentionally permits remote files deleted or relocated at the source to remain in the read-only imported corpus.
 
 ## Risks / Open Questions
 
-1. **Approval boundary:** confirm that “latest-only” means the clean-cut provider-family set above, while retaining unrelated Gemini Pro and current DeepSeek V4 variants.
-2. **Persisted launch profiles:** resolved as reject/reselect; old IDs are not migrated or silently remapped.
-3. **GLM endpoint/pricing:** confirm whether this deployment should use BigModel coding endpoint, Z.ai general endpoint, or another provider credential/price contract; implementation must not mark unverified values trusted.
-4. **MiniMax deployment:** confirm whether the selected deployment uses the global OpenAI-compatible endpoint or the `chatcompletion_v2` endpoint, while keeping the official model value `MiniMax-M3`.
-5. **Provider error evidence:** collect representative safe fixtures/status codes for provider responses and verify message preservation/redaction; no live account balance is required.
+- The convention-aligned design uses a same-filesystem whole-directory rename plus post-operation current-state validation. Abrupt termination is not modeled as a bespoke branch: an ordinary later startup observes either the source or target and reruns idempotently through the existing runner.
+- Existing writer-invariant tests contain a stale external-runtime activation fixture failure and assert the defective flat nested scope; implementation must replace the invariant rather than treating the current test text as authority.
+- Representative node data included one already-canonical historical nested directory and four affected flat nested directories after the controlled test. Mixed canonical/affected roots require root-local, item-level migration decisions rather than a global layout guess.
+- Arbitrary filesystem corruption, hostile tampering, adversarial concurrent writers, kernel/device/syscall failure, and insufficient permissions are outside the supported migration attempt; they do not justify recovery machinery in this ticket.
+- Status wording must remain distinct from application availability: `FAILED` means at least one required canonical target was not established, while the existing application startup remains available and exposes manual retry. `SUCCEEDED_WITH_WARNINGS` requires an independently valid canonical target and only explicitly approved bounded nonfatal residue, including the sync-visible v1 case in AC-015/AC-016.
+- The approved Memory Sync exception means source-plus-valid-target residue is not physically inert: it is observable/exportable and may remain remotely. It is nevertheless an explicitly accepted nonfatal warning because semantic readers use only the independently valid canonical target and Memory Sync v1 already documents no delete propagation. This can consume additional trusted-hub storage and retain duplicate bytes until the imported source is removed through existing operations or future separately approved cleanup.
 
 ## Requirement-To-Use-Case Coverage
 
-| Use Case | Covered Requirements |
+| Requirement ID | Use Case IDs |
 | --- | --- |
-| UC-001 | REQ-001, REQ-002, REQ-005, REQ-010, REQ-011 |
-| UC-002 | REQ-003, REQ-004, REQ-010 |
-| UC-003 | REQ-006, REQ-009, REQ-010 |
-| UC-004 | REQ-007, REQ-008, REQ-009, REQ-010 |
-| UC-005 | REQ-008, REQ-009, REQ-010, REQ-012 |
-| UC-006 | REQ-006, REQ-008, REQ-009, REQ-010, REQ-012 |
+| REQ-001 | UC-001, UC-002, UC-003 |
+| REQ-002 | UC-001, UC-002, UC-003 |
+| REQ-003 | UC-001, UC-002 |
+| REQ-004 | UC-005 |
+| REQ-005 | UC-004 |
+| REQ-006 | UC-001, UC-002, UC-003 |
+| REQ-007 | UC-001 through UC-006 |
+| REQ-008 | UC-004, UC-006 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
-| Acceptance Criteria ID | Scenario / coverage intent |
+| Acceptance Criterion | Scenario Intent |
 | --- | --- |
-| AC-001–AC-002 | `autobyteus-ts` catalog and factory unit/integration coverage |
-| AC-003–AC-004 | pricing policy unit tests at boundary timestamps and persisted snapshot assertions |
-| AC-005–AC-007 | provider adapter request-capture tests plus provider-gated integration tests |
-| AC-008–AC-009 | secret resolver and LLM setup unit/API tests |
-| AC-010–AC-012 | original provider-message fixture tests, redaction, and transport mapping |
-| AC-013–AC-014 | stream/team contract API/E2E coverage, including Docker-equivalent deployment validation |
-| AC-015 | tool/schema regression and redaction tests |
-| AC-016–AC-017 | MiniMax catalog metadata, pricing, endpoint, and request-capture coverage |
-| AC-018 | removed-model configuration validation and reselection coverage |
+| AC-001 | Configured nested member cold restoration through API and UI |
+| AC-002 | Delegated task-team member cold restoration through physical task-team ancestry |
+| AC-003 | Direct-root member regression control |
+| AC-004 | Root Team Communication regression control |
+| AC-005 | Existing affected flat data becomes normally readable at startup |
+| AC-006 | Whole-member-directory preservation and projection fidelity |
+| AC-007 | Deep nesting and same-name isolation |
+| AC-008 | Migration idempotency, current-target conflict warning, and invalid/non-current input disposition |
+| AC-009 | Canonical and non-admitted data remain untouched |
+| AC-010 | Runtime/model-independent memory location |
+| AC-011 | Legitimate empty-history behavior remains unchanged |
+| AC-012 | Durable system and browser coverage across the restart boundary |
+| AC-013 | Convention-aligned deterministic migration, bounded diagnostics, and proportionate rerun coverage |
+| AC-014 | Non-blocking application startup plus existing clickable manual retry for a truthful failed move |
+| AC-015 | Source-plus-valid-target warning while existing Memory Sync may export both physical paths and semantic readers remain canonical |
+| AC-016 | Approved pre-upgrade flat hub retention under v1 no-delete behavior, with durable disclosure and no protocol expansion |
 
 ## Approval Status
 
-**Scope approved by the user for design production.** The approved scope is latest-only replacement of the named provider model entries, latest DeepSeek pricing, the original missing-API-key correction, and preservation of original provider errors through the Docker/team stream. No historical pricing or legacy model/price aliases are included. GLM/MiniMax endpoint and pricing values remain implementation-time verification items; they do not expand the approved scope.
+Initially approved by the user on 2026-08-23 after review of the topology-reflecting canonical memory layout, regression history, migration obligation, preserved behavior, and requirements basis. On the same date, the user explicitly directed the migration design to follow the repository's canonical production data-migration convention and to remove speculative shutdown/mechanical failure machinery. The user then clarified the approved operational outcome: a folder-move failure must not affect application startup and the user must be able to click the existing Retry action. This refined basis applies the convention's already-documented status distinction to that outcome: application availability is independent of migration success, and a missing canonical target is truthfully `FAILED`, not success-with-warning. After `ARCH-RG-001` identified the already-supported Memory Sync observer, the user explicitly approved the solution designer's recommendation to preserve the simple migration and accept/document Memory Sync v1's replace-only/no-delete residue: a valid canonical target plus sync-visible flat residue remains `SUCCEEDED_WITH_WARNINGS`, application startup and Memory Sync continue, and no filtering, deletion protocol, remote cleanup, or sync gate is added. Evidence supplements are context-only and do not require separate approval.

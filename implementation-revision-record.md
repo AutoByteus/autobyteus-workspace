@@ -1,74 +1,44 @@
 # Implementation Revision Record
 
+The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/implementation-handoff.md` remain authoritative. This record locates implementation baselines and later deltas; it is not proof that a review finding is resolved.
+
 ## Revision Index
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer`; `ARCH-REV-003`; initial implementation round | N/A | `Initial Baseline` | `SR-011`, `ARCH-REV-003`; CRR/API/DR: N/A | Implementation complete and ready for source review; implementation-scoped checks pass. |
-| IR-002 | `solution_designer` / `architecture_reviewer`; `SR-013`, `ARCH-REV-004`; CR-001 rework round | `CR-001` | `Local Fix / Scope Correction` | `SR-013`, `ARCH-REV-004`, `CRR-001`; API/DR: N/A | Application boundary revalidated as provider-neutral message-only; focused SDK/frontend/projector contract tests pass; ready for CR-001 source re-review. |
+| `IR-001` | `architecture_reviewer`; `ARCH-REV-002`; initial implementation round | `N/A` | `Initial Baseline` | `SR-004`, `ARCH-REV-002`; CRR/API/DR: `N/A` | Reviewed physical-scope refactor and bounded startup migration implemented; focused unit/build checks pass; ready for source review. |
 
 ## Revision Entries
 
-### IR-001 — Runtime-aware provider catalog, pricing, error transport, and launch validation
+### IR-001 — Canonical nested-Team history writer and persisted-layout repair
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`; architecture round `ARCH-REV-003`, followed by the initial implementation round.
-- Triggering finding IDs: N/A. The approved architecture review passed with `ARCH-DI-001` through `ARCH-DI-005` resolved.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`; architecture round `ARCH-REV-002`, followed by the initial implementation round.
+- Triggering finding IDs: `N/A`; upstream `ARCH-RG-001` was resolved before the pass.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
-- Current authoritative result: The reviewed design is implemented across catalog/adapters, current DeepSeek pricing, secret resolution, canonical provider-error transport, application/web projections, and runtime-scoped saved/direct model validation. The cumulative package is ready for `/code_reviewer`.
-- Related solution revision IDs: `SR-011` (with `SR-009` and `SR-010` retained upstream).
-- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Current authoritative result: The passed SR-004 design is implemented. Live and cold TeamRun scope now share one immutable physical-lineage meaning, new writes are canonical for configured/delegated/deep TeamRuns, and released flat nested AgentRun directories have one registered, bounded, retryable migration. The cumulative package is ready for `/code_reviewer`.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-002`.
 - Related code-review revision IDs: `N/A`.
 - Related API/E2E revision IDs: `N/A`.
 - Related delivery revision IDs: `N/A`.
-- Why this baseline or implementation revision is recorded: Records the first completed implementation handoff and the local validation evidence for the approved design.
-- Approved behavior or requirement IDs affected: `B-001`–`B-010`, `REQ-001`–`REQ-012`, `AC-001`–`AC-018`.
+- Why this baseline or implementation revision is recorded: Records the first completed implementation handoff, actual code boundaries, and implementation-scoped validation for the reviewed nested-Team restart-hydration repair.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-008`; `AC-001`–`AC-016`; `DS-001`–`DS-006`.
 - Implementation delta:
-  - Replaced named legacy catalog rows and provider request policies with Grok 4.6, Gemini 3.7 Flash, Kimi K3, GLM 5.3, and current MiniMax M3 metadata/configuration; removed Kimi K2 policy and legacy Gemini mapping rows.
-  - Added serialized DeepSeek V4 UTC peak/off-peak pricing schedule and resolved period/provenance fields in the server pricing policy, including invalid-time missing pricing behavior.
-  - Added safe provider-error extraction/redaction and stable `MissingApiKeyError`; mapped missing/blank vault credentials while preserving non-missing vault failures.
-  - Replaced error-event `source` with required non-empty `code`, preserved provider message/evidence through AgentRun/team/websocket/web parsing, and stopped application projection from replacing terminal provider messages with a generic sentence.
-  - Added effective `{runtimeKind, llmModelIdentifier}` expansion and AutoByteus-only exact current-model validation for saved profiles and direct agent/team launches before persistence, allocation, or creation side effects. External Claude/Codex selections retain existing backend ownership.
-- Changed files or areas: `autobyteus-ts/src/llm`, `autobyteus-ts/src/secrets`, `autobyteus-ts/src/agent`; `autobyteus-server-ts/src/{secret-management,token-usage/pricing,agent-team-execution,services/agent-streaming,application-agent-streaming,application-orchestration}`; `autobyteus-team-stream-contracts`; `autobyteus-application-sdk-contracts`; and `autobyteus-web` stream/projection types and handlers. Focused durable unit fixtures were updated for the canonical contracts and current runtime/model identities.
+  - Added required, normalized, frozen `TeamRunPhysicalScope`; made `TeamRunContext` the live authority and validated that its scope ends at the exact containing TeamRun.
+  - Added `TeamExecutionIndex.getTeamRunPhysicalScope` as the cold authority and removed duplicated reverse/root-trim derivations from root execution projection and run-history location.
+  - Changed mixed root/child construction to create root scope once and append one concrete configured or delegated child TeamRun ID per boundary while preserving their distinct handoff/application-binding policies. Direct task Agents consume the containing scope as leaves.
+  - Replaced the leaf's hard-coded empty ancestor list with the context scope and aligned `AgentMemoryScope` to the shared execution-domain type.
+  - Added `20260823_repair_team_agent_memory_layout` after current V1 with `requiredOnStartup: true`, `executionPolicy: ANYTIME`, deterministic source/target classification, target-absent whole-directory rename, post-move validation, exact counters, capped sorted examples, truthful warning/failure states, and no current-runtime fallback.
+  - Added the layout prerequisite to the two canonical-location working-context migrations. The generic runner/ledger/prerequisite/manual-retry/API/Settings mechanisms and prior successful records remain unchanged.
+  - Repaired affected stale activation/writer fixtures to the current activation-candidate and durability-commit contracts instead of preserving the defective flat layout.
+  - Left Memory Sync v1, imported explorer, `server-runtime.ts`, frontend production, Team Communication, and public recovery surfaces unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/agent-team-execution/{domain,services,backends/mixed}`; `src/agent-memory/{domain,services}`; `src/run-history/services/team-run-execution-tree-location-service.ts`; `src/app-data-migrations/{app-data-migration-registry.ts,migrations}`; focused unit tests and constructor-shape integration fixtures under `autobyteus-server-ts/tests`.
 - Local validation and result:
-  - `pnpm -C autobyteus-ts build` — pass.
-  - `pnpm -C autobyteus-team-stream-contracts build` — pass.
-  - `pnpm -C autobyteus-application-sdk-contracts build` — pass.
-  - `pnpm -C autobyteus-server-ts build` — pass, including Prisma generation and sanitized built-in-agent bootstrap smoke.
-  - Focused `autobyteus-ts` unit tests — 8 files, 39 tests passed.
-  - Focused `autobyteus-server-ts` unit tests — 6 files, 51 tests passed.
-  - Focused `autobyteus-web` unit tests — 4 files, 71 tests passed; `pnpm -C autobyteus-web build` passed.
-  - `pnpm -C autobyteus-server-ts typecheck` — fails on the repository's existing `tsconfig.json` `rootDir: src` versus `include: tests` (`TS6059` across test files); source/build compilation passes.
-- Frontend self-validation: The changed web surface is stream state/protocol handling; the existing `ErrorSegment.vue` already renders `segment.message` and was not visually restyled. Nuxt production build and focused stream/handler tests passed. A browser session against a live backend was not run because no rendered component/layout changed and the provider/team path requires downstream API/E2E environment setup.
-- Next recipient or routing: `/code_reviewer` with the cumulative solution and implementation artifacts.
-- Remaining limitations or risks: GLM 5.3 and MiniMax M3 deployment endpoint/pricing evidence remains an explicit residual integration check; provider balance causality and Docker build identity remain unverified. API/E2E coverage investigation and execution remain with `api_e2e_engineer`. No integration/API/E2E test was run and no vault import was performed in this implementation round; if live integration is required downstream, use `pnpm import /Users/normy/.autobyteus/server-data/.env` as instructed by the user and do not expose imported secrets.
-
-### IR-002 — CR-001 scope correction: preserve the message-only application boundary
-
-- Triggering role, report path, and round: `solution_designer` / `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md` (`SR-013`); `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md` (`ARCH-REV-004`); application-boundary rework after `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` (`CR-001`).
-- Triggering finding IDs: `CR-001`; `ARCH-DI-001`–`ARCH-DI-005` remain resolved.
-- Classification: `Local Fix / Scope Correction`.
-- Prior authoritative result: `CRR-001` was `Fail` because the then-current design incorrectly required native provider evidence through the application SDK while the public SDK and normative contract remained message-only.
-- Current authoritative result: The current source and contract are aligned to `ARCH-REV-004`: application-agent `ERROR` remains `{ type: "ERROR"; message: string }`; the projector preserves the safe canonical message and excludes native `code`, provider status/code/request ID, details, raw errors, and credentials. Native/team/web transport retains its separate safe evidence contract.
-- Related solution revision IDs: `SR-013` (with `SR-009`–`SR-011` retained upstream).
-- Related architecture-review revision IDs: `ARCH-REV-004` (with `ARCH-REV-001`–`ARCH-REV-003` retained upstream).
-- Related code-review revision IDs: `CRR-001` / `CR-001`, pending source re-review.
-- Related API/E2E revision IDs: `N/A`.
-- Related delivery revision IDs: `N/A`.
-- Why this implementation revision is recorded: The architecture-approved scope correction required a fresh implementation audit and a return through source review; it must not be treated as an application metadata extension.
-- Approved behavior or requirement IDs affected: `B-007`–`B-009`, `REQ-007`–`REQ-010`, `AC-011`, `AC-014`, and `AC-015`.
-- Implementation delta:
-  - Confirmed no source change was needed in `autobyteus-application-sdk-contracts/src/application-agent-events.ts` or `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts`; both already matched the narrowed `SR-013` message-only boundary from IR-001.
-  - Added projector unit coverage for agent and team terminal errors with canonical native evidence, proving only the safe message crosses the application boundary and diagnostic filtering remains intact.
-  - Updated application frontend mock-WebSocket fixtures to current `agentRunId`/producer shapes, replaced the stale generic error fixture with a meaningful provider message, and added rejection coverage for native/provider metadata on application ERROR events.
-  - Updated application SDK contract fixtures to current target-URL API names and `agentRunId` member identity so generated SDK/consumer parity checks execute against the current contract.
-  - Synchronized the implementation handoff to distinguish native evidence from the message-only application SDK and to include the CR-001/ARCH-REV-004 cumulative package.
-- Changed files or areas: `autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts`; `autobyteus-application-frontend-sdk/tests/application-connections.test.mjs`; `autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs`; `implementation-handoff.md`; and the upstream SR-013/ARCH-REV-004 artifacts supplied with this round. No application SDK metadata fields or compatibility wrapper were added.
-- Local validation and result:
-  - `pnpm -C autobyteus-application-sdk-contracts test` — pass, generated build plus 6 tests.
-  - `pnpm -C autobyteus-application-frontend-sdk test` — pass, generated build, 12 tests, and type tests.
-  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts --no-watch` — pass, 16 tests.
-  - `git diff --check` — pass.
-- Frontend self-validation: The package mock-WebSocket consumer path was exercised; the rendered `ErrorSegment.vue` remains unchanged because this correction is an application contract/projection boundary change, not a visual layout change. No live browser or provider session was run.
-- Next recipient or routing: `/code_reviewer` for mandatory `CR-001` source re-review before API/E2E coverage investigation.
-- Remaining limitations or risks: No provider/API/E2E/live server WebSocket integration execution or vault import was performed. GLM/MiniMax deployment evidence, balance causality, Docker build identity, and unsupported-runtime validation remain downstream checks. If live integration is required, use `pnpm import /Users/normy/.autobyteus/server-data/.env` as instructed by the user and do not expose imported secrets.
+  - `pnpm build` in `autobyteus-server-ts` — pass, including shared builds, Prisma generation, production TypeScript compilation, and sanitized bootstrap smokes.
+  - Final focused unit run — 18 files, 80 tests passed.
+  - `git diff --check` and static protected-surface/source-size audit — pass.
+  - `pnpm typecheck` retains the repository baseline `TS6059` test/rootDir mismatch; production build compilation passes.
+  - The unchanged external-snapshot cleanup suite retains two pre-existing metadata-classification assertion failures; this implementation changes only that definition's prerequisite property, not its execution logic or test.
+- Next recipient or routing: `/code_reviewer` with the cumulative reviewed solution and implementation artifacts.
+- Remaining limitations or risks: API/E2E coverage investigation and execution remain required for realistic startup/restart hydration, Settings/GraphQL retry, prerequisite blocking, source-plus-target Memory Sync retention, canonical imported exploration, and Team Communication preservation. Approved sync-visible residue may retain duplicate trusted-hub bytes. No live user profile, production Docker volume, remote hub, frontend render, API, or E2E execution was used in this implementation round.

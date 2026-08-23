@@ -11,6 +11,7 @@ import type {
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
@@ -82,7 +83,7 @@ const createFactory = (input: {
       configuredMemberActivationMode,
     });
     const context = new TeamRunContext({
-      rootTeamRunId: teamRunId,
+      physicalScope: createRootTeamRunPhysicalScope(teamRunId),
       teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode: config.rootTeam,

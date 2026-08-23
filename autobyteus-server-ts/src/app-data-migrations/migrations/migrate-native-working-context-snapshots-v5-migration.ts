@@ -25,6 +25,7 @@ import type {
   AppDataMigrationItemDetail,
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
+import { TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID } from "./team-agent-memory-layout-app-data-migration.js";
 
 const MIGRATION_ID = "20260731_migrate_native_working_context_snapshots_v5";
 const OBSOLETE_FILE_NAMES = [
@@ -61,6 +62,7 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
   readonly description =
     "Converts exact native pre-lineage snapshots to strict v5 while preserving raw evidence and current-lineage locations.";
   readonly requiredOnStartup = true;
+  readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
 
   private readonly classifier: RuntimeMemoryLocationClassifier;
   private readonly converter = new NativeWorkingContextSnapshotV5Converter();

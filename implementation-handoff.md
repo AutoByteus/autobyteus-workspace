@@ -2,134 +2,134 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md` (`IR-001`, `IR-002`); `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md` (`CR-001`); `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md` (`CRR-001`).
-- Scope-correction artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-application-sdk-contracts/README.md`.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-spec.md`
+- Supplemental task artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/nested-team-restart-reproduction.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/root-member-history-control.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/affected-codex-nested-member-post-restart.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/controlled-autobyteus-nested-member-post-restart.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_f69ba7836a55__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_57a57720cadc__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_26ddbd968b85__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_73e4b305a940__image.png`
+- Relevant repository references retained from investigation:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/docs/design/production_data_migration_conventions.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/docs/features/memory_sync.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/docs/memory.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence: `N/A`; this is the initial implementation of the `ARCH-REV-002` pass. The authoritative review is `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-review-report.md`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-009`, `SR-010`, `SR-011`, `SR-013`
-- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` / `CR-001` pending re-review
+The implementation replaces the defective flat nested-Team writer with a required immutable physical scope owned by each live `TeamRunContext`, centralizes cold scope derivation in `TeamExecutionIndex`, and confines the released flat-layout interpretation to one registered startup migration. Root, configured-child, delegated task-Team, task-Agent, and deeply nested execution paths now derive canonical memory locations without logical-address inference or current-runtime fallback. The migration admits only valid current V1 packages, moves an eligible complete directory with one target-absent rename, reports exact bounded dispositions, and leaves the existing runner, Settings recovery path, application startup behavior, and Memory Sync v1 production code unchanged.
+
+- Implementation cycle: `Initial`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/implementation-revision-record.md`
+- Current implementation revision ID: `IR-001`
+- Related solution revision IDs: `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `N/A`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`; `ARCH-DI-001`–`ARCH-DI-005` remain resolved upstream.
-
-The implementation follows the passed runtime-aware design and the `SR-013` scope correction. Provider catalog entries and request policies are clean-cut current-only replacements. DeepSeek V4 pricing is schedule-aware by UTC time-of-day and records selected-period provenance. Native provider errors retain the safe original message and optional transport evidence; the application-agent SDK deliberately projects only the safe message in its existing provider-neutral `ERROR` variant. Saved/direct application launches expand effective runtime/model pairs and apply the AutoByteus current-model guard only for `RuntimeKind.AUTOBYTEUS`, before persistence or run side effects.
+- Triggering finding IDs: `N/A`; `ARCH-RG-001` was resolved upstream before implementation.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| B-001 | Current Grok flagship and metadata; remove Grok 4.5 | `autobyteus-ts/src/llm/supported-model-definitions.ts`, `api/grok-llm.ts`, `llm/llm-factory.ts` | `grok-4.6` is the curated row, with `xhigh` reasoning and current tier metadata; exact guard rejects removed IDs. |
-| B-002 | DeepSeek V4 latest peak/off-peak pricing by UTC time-of-day | `llm/utils/token-pricing-schedule.ts`, `llm/utils/llm-config.ts`, `server-ts/src/token-usage/pricing/*` | Peak windows use half-open UTC minute ranges; older calendar dates still use the current schedule; invalid timestamps produce missing pricing rather than a guessed price. |
-| B-003 | Gemini 3.7 Flash only among the changed Flash rows | `supported-model-definitions.ts`, `utils/gemini-model-mapping.ts`, `api/gemini-llm.ts` | `gemini-3.7-flash` defaults to medium thinking; old curated Flash rows and minimal default are removed. |
-| B-004 | Kimi K3 current always-thinking request; remove K2 policy | `supported-model-definitions.ts`, `api/kimi-llm.ts`; deleted `api/kimi-k2-7-code-policy.ts` | K3 sends enabled thinking with low/high/max effort; K2-specific normalizer/policy is gone. |
-| B-005 | GLM 5.3 always-enabled thinking and no assumed legacy price | `supported-model-definitions.ts`, `api/glm-llm.ts` | Schema and adapter force `thinking.type=enabled` with low/high/max; GLM 5.3 is explicitly unpriced pending deployment evidence. |
-| B-006 | Stable missing-key category/action; preserve other vault failures | `secrets/provider-api-key-error.ts`, `secret-management-provider-api-key-resolver.ts`, `agent/loop/llm-phase.ts` | Missing/blank keys map to `missing_api_key` with provider-specific setup text; non-missing `SecretVaultError` values pass through. |
-| B-007 | Original provider error message after safe redaction, no generic wrappers/classification | `llm/errors/provider-error.ts`, `api/openai-compatible-llm.ts`, `agent/loop/llm-phase.ts` | Provider text is preserved; safe status/code/request ID/details are supplemental; API request/stream wrappers and LLM-phase truncation/prefix are removed. |
-| B-008 | Canonical non-empty `code` separate from display `message` on native transport | `agent/events/notifiers.ts`, `agent/streaming/events/stream-event-payload-lifecycle.ts`, server/team DTOs/adapters/projectors, web parser/types | `source` is removed from the native provider error contract; missing code/message remains a validation failure instead of being rewritten. The application boundary intentionally stops at the safe message. |
-| B-009 | User-facing error segment and application stream render supplied provider message | `application-agent-stream-event-projector.ts`, `autobyteus-application-sdk-contracts/src/application-agent-events.ts`, application/frontend SDK tests, web `agentStatusHandler.ts`, `types/segments.ts`, existing `ErrorSegment.vue` | Terminal application projection uses the safe event message without native/provider metadata; the application SDK remains `{ type: "ERROR", message }`. Native web preserves message/evidence and existing component renders it. |
-| B-010 | MiniMax M3 current metadata/pricing shape | `supported-model-definitions.ts` | `minimax-m3` / `MiniMax-M3` reports 1,000,000 context and retains verified ≤512K/>512K tiers; endpoint/deployment evidence remains downstream residual validation. |
+| `BEH-001` | Restarted/current semantic history resolves the canonical containing-Team path. | `team-run-physical-scope.ts`; `TeamExecutionIndex.getTeamRunPhysicalScope`; `TeamRunExecutionTreeLocationService`; `AgentMemoryLocationService`; `RootTeamRun.getAgentExecution`. | Cold readers share one index-owned physical-scope authority. No flat fallback or compatibility reader was added. |
+| `BEH-002` | Every live configured member, task Agent, and task-Team member writes under its exact containing TeamRun scope. | `TeamRunContext`; mixed root/backend/sub-Team factories; task-Team registry; `MixedAgentMemberHandle.buildAgentRunConfig`. | Root creates `{root, []}`; each concrete child TeamRun appends its ID exactly once; task Agents remain leaves and consume the containing scope unchanged. Runtime/model kind is irrelevant to path construction. |
+| `BEH-003` | Direct root Agent history remains at the existing root/AgentRun location. | `createRootTeamRunPhysicalScope`; mixed root create/restore; `AgentMemoryLayout`. | Root scope has an empty non-root chain, preserving the current direct-root layout. |
+| `BEH-004` | Team Communication/task/history association remains unchanged. | Existing execution identities, handoffs, task records, event publication, and communication stores. | No Team Communication production code changed. Configured children inherit parent handoffs/application binding; delegated task Teams retain task handoffs and `null` application binding. |
+| `BEH-005` | Released flat nested histories are repaired at the existing startup migration boundary with truthful recovery state. | `TeamAgentMemoryLayoutAppDataMigration`; registry insertion after V1; new prerequisites on the two canonical-location snapshot migrations. | `requiredOnStartup: true`, `ANYTIME`, current-V1-only identity, one rename, post-move validation, exact counters, one bounded detail/reason, and at most five sorted relative paths. Generic ledger/prerequisite/manual-retry/GraphQL/Settings behavior is reused unchanged; no `server-runtime` gate or record reset was added. |
+| `BEH-006` | A valid canonical target remains the only semantic current result when flat residue also exists; Memory Sync v1 residue is preserved and named truthfully. | Migration conflict/residue dispositions plus unchanged canonical local/imported location services. | Only valid canonical targets may yield `SUCCEEDED_WITH_WARNINGS`; missing/invalid targets yield `FAILED`. Memory Sync scanner/planner/service and imported explorer production code are unchanged. |
 
 ## Key Files Or Areas
 
-- Catalog and adapters: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-ts/src/llm/supported-model-definitions.ts`, `api/{grok,gemini,kimi,glm,openai-compatible}-llm.ts`, `utils/llm-config.ts`, `utils/token-pricing-schedule.ts`, `model-pricing-types.ts`, `current-model-selection-error.ts`.
-- Error and credential boundary: `autobyteus-ts/src/llm/errors/provider-error.ts`, `autobyteus-ts/src/secrets/provider-api-key-error.ts`, `autobyteus-server-ts/src/secret-management/resolution/secret-management-provider-api-key-resolver.ts`.
-- Canonical event transport: `autobyteus-ts/src/agent/events/notifiers.ts`, `agent/streaming/events/stream-event-payload-lifecycle.ts`, server AgentRun mapper/team adapter/domain/websocket projector, `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts`, and web protocol/parser/adapters.
-- Application boundary: `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts`, `autobyteus-application-sdk-contracts/src/application-agent-events.ts`, `autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts`, and their focused tests. Native `code`/provider evidence is intentionally not projected into this SDK.
-- Application launch ownership: `autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts`, `application-execution-resource-configuration-service.ts`, and `application-run-binding-launch-service.ts`.
-- Pricing policy: `autobyteus-server-ts/src/token-usage/pricing/token-price-config-provider.ts` and `token-pricing-policy.ts`.
-- Application projection: `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts`.
+- Physical-scope domain and authorities: `autobyteus-server-ts/src/agent-team-execution/domain/team-run-physical-scope.ts`, `team-run-context.ts`, `services/team-execution-index.ts`.
+- Live construction and leaf use: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`, `mixed-sub-team-run-factory.ts`, `members/mixed-sub-team-member-handle.ts`, `mixed-task-team-execution-registry.ts`, and `mixed-agent-member-handle.ts`.
+- Cold canonical location: `autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts`, `src/agent-memory/domain/agent-memory-location.ts`, `src/agent-memory/services/agent-memory-location-service.ts`, and `src/agent-team-execution/domain/root-team-run.ts`.
+- Persisted transition: `autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`, registry, and the two dependent snapshot migration definitions.
+- Focused proof: `tests/unit/agent-team-execution/team-run-physical-scope.test.ts`, `mixed-sub-team-run-factory.test.ts`, `mixed-agent-member-handle-memory-invariant.test.ts`, `mixed-team-member-registry-task-agent-memory.test.ts`, and `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts`.
+- Required constructor and stale activation fixture repairs are limited to directly affected unit/integration fixtures.
 
 ## Important Assumptions
 
-- `RuntimeKind` normalization follows the approved existing fallback: unknown/blank values default to `RuntimeKind.AUTOBYTEUS`; external Claude/Codex values are not passed through the AutoByteus catalog guard.
-- GLM 5.3 deployment pricing is intentionally untrusted/unpriced until its actual selected endpoint is evidenced. MiniMax metadata/prices use the approved current deployment evidence in the solution package, with endpoint confirmation still a downstream check.
-- Existing usage snapshots remain immutable and readable. Saved launch-profile strings are preserved; removed AutoByteus identifiers are rejected with explicit reselection rather than aliased or migrated.
-- Error text is safe before transport. Provider messages are redacted only for credential-bearing patterns; no balance/quota/authentication category is invented.
+- Migration attempts run under the reviewed production convention: one writer, stable process/power/device for the attempt, sufficient permissions, readable/writable same-filesystem storage, and normal filesystem behavior.
+- Current V1 execution-tree identity and `AgentMemoryLayout` containment are authoritative. Historical, predecessor, invalid, or guessed roots are outside this migration.
+- Source plus an independently valid canonical target is the approved no-mutation warning outcome even if their bytes differ; the canonical target remains the only semantic current path.
+- Existing Memory Sync v1 replace-only/no-delete behavior may retain both physical paths on the trusted hub. No independent deletion or cleanup contract was added.
 
 ## Known Risks
 
-- GLM/MiniMax endpoint and pricing verification, provider balance causality, and Docker 8001 build identity remain open implementation/integration evidence items from architecture review.
-- Existing full server `typecheck` is blocked by repository `tsconfig.json` including tests outside `rootDir: src`; package source/build compilation passes.
-- No API/E2E/integration run was performed by implementation. Downstream coverage investigation and execution must validate Docker-equivalent team transport, API reselection routing, provider fixtures, and live deployment details. If live integration is run, import credentials with `pnpm import /Users/normy/.autobyteus/server-data/.env` as the user instructed; do not commit or display imported keys.
+- Real startup/Settings Retry/GraphQL behavior, cold restart hydration, imported-memory exploration, and Memory Sync MP-001/MP-002 remain for independent downstream coverage investigation and executable validation.
+- Approved source-plus-target residue may retain duplicate bytes until an existing imported source is removed or a separately approved cleanup exists.
+- `pnpm typecheck` remains unusable because the repository `tsconfig.json` includes `tests` outside `rootDir: src` and produces baseline `TS6059`; `pnpm build` successfully compiles production source with `tsconfig.build.json`.
+- A direct companion run of the unchanged `remove-external-runtime-working-context-snapshots-migration.test.ts` still has two pre-existing metadata-classification assertion failures. This change adds only its prerequisite declaration and does not change that migration's `execute` path or its test. These failures are not classified as downstream API/E2E results.
+- No implementation-scoped check used a live user profile, Docker production volume, or remote Memory Sync hub.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement`.
-- Reviewed root-cause classification: boundary/ownership issue, missing invariant, shared structure looseness, and legacy/compatibility pressure.
-- Reviewed refactor decision: `Refactor Needed Now` for the affected catalog policy, pricing, error boundary, and runtime launch paths.
+- Reviewed change posture: `Bug Fix` with targeted invariant refactor and persisted-layout repair.
+- Reviewed root-cause classification: `Boundary Or Ownership Issue`, compounded by `Duplicated Policy Or Coordination` and `Shared Structure Looseness`.
+- Reviewed refactor decision: `Refactor Needed Now`.
 - Implementation matched the reviewed assessment: `Yes`.
-- If challenged, routed as `Design Impact`: `N/A`; no design contradiction was found during implementation.
-- Evidence / notes: Added narrow owned structures for safe provider evidence, current schedule, pricing DTO typing, current-model reselection error, and effective runtime/model expansion; did not introduce a generic rejection subsystem or external-runtime catalog dependency.
+- If challenged, routed as `Design Impact`: `N/A`.
+- Evidence / notes: `TeamRunContext` now owns the exact live scope, child factories own append sequencing, `TeamExecutionIndex` is the sole cold derivation authority, and old-location knowledge exists only in the migration. No design contradiction was found.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for named provider rows/policies, generic wrappers, and source-only error path; stale application test fixtures were aligned to the current target/producers and message-only ERROR contract; older API/E2E fixtures remain downstream coverage work.
-- Shared structures remain tight: `Yes`.
-- Canonical shared design guidance was reapplied and file-level weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; `llm-factory.ts` was split to keep the changed source below 500 effective non-empty lines, and large changed test files are outside the source limit.
-- Notes: The canonical provider error contract intentionally has optional safe metadata fields while retaining required `code` and `message`; external runtime identity remains separate from AutoByteus catalog identity.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; the flat leaf writer and duplicate cold ancestry recipes were removed, redundant child root propagation was removed, and the defective flat-writer fixture expectation was replaced.
+- Shared structures remain tight: `Yes`; `AgentMemoryScope` aliases the one execution-domain physical-scope shape rather than creating a parallel DTO.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no routing was needed.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; the largest changed implementations are 476 and 469 effective non-empty lines, and the cohesive migration is 200 effective non-empty lines.
+- Notes: Current runtime remains canonical-only. There is no dual read/write, flat fallback, compatibility wrapper, migration-status sync gate, or frontend workaround.
 
-## Persisted Data Transition Check
+## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Directly Usable — No Migration`.
-- Design-spec decision reference: `design-spec.md` DS-001/DS-002 and the persisted-data transition sections.
+- Approved decision: `Migration Required`.
+- Design-spec decision reference: `design-spec.md` — Persisted-Data Transition Design, Deterministic Physical-State Table, registration order, and `DS-006`.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence: Existing pricing snapshots are not rewritten; current schedule/provenance is additive for new resolution. Saved configuration rows retain stale model strings and return `INVALID_SAVED_CONFIGURATION`/`CURRENT_MODEL_SELECTION_REQUIRED` where applicable.
-- Migration implementation and focused checks: No migration implementation. Legacy flat launch defaults continue through the existing approved shape migration path only; no model alias or price history was added.
+- Direct-use evidence or discard/rebuild result, when applicable: `N/A`.
+- Migration implementation and focused checks: one migration file classifies current V1 roots, enumerates non-root agents from the index, derives both paths through `AgentMemoryLayout`, performs exactly one target-absent directory rename, validates source absence/target directory, preserves both-path conflicts, returns failed state for invalid required targets, and caps sorted examples at five per reason. Temp-directory unit tests cover the complete state table, byte/directory preservation, conflict non-mutation, exact counts, bounded diagnostics, registration/prerequisites, and ordinary rerun/idempotence.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- Ran `pnpm install --frozen-lockfile` in the task worktree because dependencies were initially absent; no source lockfile change was introduced.
-- Unit tests used local fixtures and server test SQLite reset only. No provider credential was imported and no secret value was emitted.
+- Dependencies were initially absent in this worktree. `pnpm install --offline --ignore-scripts --frozen-lockfile` restored the existing workspace lock state; no lockfile or dependency declaration changed.
+- Shared packages and Prisma generation are exercised by the server build.
+- Unit checks use the repository's isolated test SQLite database and temporary directories. No file under `/Users/normy/.autobyteus` was mutated.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-ts build` — pass.
-- `pnpm -C autobyteus-team-stream-contracts build` — pass.
-- `pnpm -C autobyteus-application-sdk-contracts test` — pass; generated SDK build and six contract tests pass.
-- `pnpm -C autobyteus-application-frontend-sdk test` — pass; generated frontend build, twelve hosted/connection tests, and type tests pass. Mock WebSocket fixtures now use the current `agentRunId`/producer contract and assert provider metadata is rejected at the application boundary.
-- `pnpm -C autobyteus-server-ts build` — pass, including Prisma generation and sanitized built-in-agent bootstrap smoke.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts --no-watch` — pass; 16 tests, including agent/team message-only ERROR projection and native-evidence exclusion.
-- `pnpm -C autobyteus-ts exec vitest run ...` focused canonical event/provider/catalog tests — 8 files, 39 tests passed.
-- `pnpm -C autobyteus-server-ts exec vitest run ...` focused projection/runtime/secret/pricing tests — 6 files, 51 tests passed.
-- `pnpm -C autobyteus-web exec vitest run ...` focused stream/handler/submission tests — 4 files, 71 tests passed.
-- `pnpm -C autobyteus-web build` — pass; Nuxt static build/prerender completed.
-- `pnpm -C autobyteus-server-ts typecheck` — fails due existing `TS6059` test inclusion/rootDir configuration; this is not a source-build failure.
-- No provider/API/E2E or live server WebSocket integration execution was run; those checks are intentionally downstream-owned. The package-level application SDK/frontend mock WebSocket checks above are implementation-scoped contract tests and did not require vault credentials.
+- `pnpm build` in `autobyteus-server-ts` — pass. This includes shared package builds, Prisma generation, production TypeScript compilation, managed asset copy, built-in-agent bootstrap smoke, and sanitized built-module/bootstrap smoke.
+- Final focused Vitest run — pass: 18 files, 80 tests. It covers every changed unit fixture plus physical-scope, live root/nested/task paths, configured/task-Team construction semantics, cold memory location, migration state/idempotence/bounds/registration, dependent native snapshot ordering, runner prerequisite/recovery behavior, and imported run-view projection.
+- `git diff --check` — pass.
+- Static boundary audit — pass: Memory Sync v1 production, imported explorer, `server-runtime.ts`, and frontend production have no diff; all current production `TeamRunContext` constructors provide a physical scope; changed implementation files remain below the effective-line guardrail.
+- `pnpm typecheck` — baseline failure (`TS6059`) from the repository's `rootDir: src` plus included `tests`; the production build/typecheck path passes.
+- Non-authoritative check note: an accidentally unfiltered Vitest invocation was terminated after recognizing that it exceeded implementation scope. Its partial results are not used as implementation evidence or API/E2E classification.
+- No API, E2E, broader integration environment, live restart, or remote sync execution is claimed here.
 
-## Frontend Rendered-Result Check
+## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: canonical `ERROR` stream payload handling, diagnostic/terminal error segment projection, and local-submission error state.
-- Approved UI/UX, interaction, requirement, or design references: `requirements.md` B-008/B-009 and AC-013–AC-015; `design-spec.md` DS-003; existing `ErrorSegment.vue`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: `autobyteus-web/components/conversation/segments/ErrorSegment.vue`, `AIMessage.vue`, stream handlers, protocol parser, and existing focused tests.
-- Project development / preview instructions and rendered surface used: README/AGENTS instructions reviewed; Nuxt production build and prerendered surface completed with `pnpm -C autobyteus-web build`.
-- States, layouts, viewports, and interactions inspected: Unit-level diagnostic/terminal message projection, protocol validation, tool-error routing, and reentrant stream handling were exercised. The existing ErrorSegment markup already renders `segment.message`; no layout or template changes were needed.
-- Visual or interaction issues found and corrected: The server application's generic terminal error replacement was already removed in IR-001; this round verified the message-only application projection and native web message/evidence split without visual redesign.
-- Supporting evidence and remaining unverified states or limitations: No live browser session was started because the changed frontend path is data/projection-only and the provider/team journey requires downstream API/E2E environment setup. Nuxt build and 71 focused tests passed.
+Not Applicable. The approved change is backend runtime/storage/migration behavior, and no rendered frontend or interaction production code changed. Existing Settings status/Retry behavior is intentionally reused unchanged and remains a downstream executable-validation target.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Verify the user-provided vault import path before any live provider integration: `pnpm import /Users/normy/.autobyteus/server-data/.env`; confirm only a safe missing-key category/message reaches the client.
-- Add/refresh provider fixtures for balance/quota, authentication, rate, request, and unrecognized transport failures; assert original message, redaction, provider status/code/request ID, and no semantic replacement.
-- Validate Docker-equivalent single-agent/team websocket paths and application API projection with a known build/version; assert absence of `Rejected ERROR: code is required` and absence of `The agent response failed.` for valid provider errors. Application-agent ERROR must remain message-only and must reject native/provider metadata fields.
-- Cover exact current catalog additions/removals, GLM/MiniMax deployment endpoint/pricing evidence, DeepSeek schedule boundaries plus persisted pricing snapshot provenance, and stale saved/direct AutoByteus reselection behavior.
-- Cover mixed-runtime teams and Claude/Codex factory ownership/dispatch, including member runtime overrides and pre-allocation validation ordering.
+1. On isolated copied/synthetic released flat data, start the application and verify the required `ANYTIME` migration runs after V1, moves complete nested directories, preserves bytes, and lets cold reopened nested history hydrate from the canonical path.
+2. Exercise root configured Agents, nested configured Agents, nested task Agents, delegated task Teams, and deep configured/task recursion across AutoByteus/Codex/Claude runtimes; verify task Agents remain leaves and every concrete child TeamRun adds exactly one directory boundary.
+3. Verify source+valid-target conflict and unsupported-source+valid-target residue return sync-visible `SUCCEEDED_WITH_WARNINGS`, mutate neither side, and still present exactly one canonical semantic local/imported member.
+4. Verify missing/unsupported canonical targets return truthful `FAILED`, unrelated startup continues, not-yet-run dependent migrations stay prerequisite-blocked, and Settings/GraphQL Retry exposes `MANUAL_RETRY`/`canRetry` without resetting successful records.
+5. For MP-001/MP-002, prove the unchanged Memory Sync v1 replace/no-delete behavior may retain both paths while canonical imported exploration ignores flat residue. Do not add scanner filters, tombstones, cleanup, or a sync gate during coverage work without a new approved design.
+6. Confirm Team Communication/task records and configured versus task-Team handoff/application-binding semantics remain unchanged through realistic execution and restart.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` must investigate whether existing API/E2E coverage is valid or stale before durable coverage edits or execution, then run the broader contract, provider fixture, Docker-equivalent, and runtime ownership scenarios. This implementation handoff does not claim API/E2E or live integration sign-off. If durable coverage code is added/updated/removed after this handoff, route the cumulative package back through `/code_reviewer` before delivery.
+Yes. Independent API/E2E coverage investigation, durable coverage decisions, realistic environment setup, startup/restart/manual-retry execution, and Memory Sync/imported-reader evidence remain owned by `api_e2e_engineer` after source review passes.

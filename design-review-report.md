@@ -2,315 +2,256 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/provider-error-and-pricing-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/application-agent-streaming/application-agent-communication-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-application-sdk-contracts/README.md`
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009`, `SR-010`, `SR-011`, `SR-012`, `SR-013`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: Re-review of `SR-013` after downstream `CRR-001`/`CR-001`, confirming the provider-neutral message-only application-agent boundary.
-- Prior Review Round Reviewed: `ARCH-REV-003` — Pass; downstream `CRR-001` exposed a provisional design contradiction at the application public boundary.
-- Latest Authoritative Round: `ARCH-REV-004`
-- Downstream Triggering Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/implementation-revision-record.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/code-review-revision-record.md`
-- Current-State Evidence Basis: Corrected requirements, DS-003, provider/error supplement, normative application communication contract, SDK README, investigation evidence, and current application projector/SDK source were rechecked against the supported application-agent path.
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/design-spec.md`
+- Supplemental Task Artifacts Reviewed:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/nested-team-restart-reproduction.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/root-member-history-control.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/affected-codex-nested-member-post-restart.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/investigation-evidence/controlled-autobyteus-nested-member-post-restart.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_f69ba7836a55__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_57a57720cadc__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_26ddbd968b85__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_69a0c3857b704306a0b271f747d13dfc/solution_designer_da640a17b8f94512a236c6c3975039c2/context_files/ctx_73e4b305a940__image.png`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/solution-revision-record.md`
+- Relevant Solution Revision IDs: `SR-001`–`SR-004`; `SR-004` is current.
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/architecture-review-revision-record.md`
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: Re-review after `SR-004` resolved `ARCH-RG-001` through explicit user approval of the existing Memory Sync v1 replace-only/no-delete disposition.
+- Prior Review Round Reviewed: `ARCH-REV-001` — Fail, Requirement Gap `ARCH-RG-001`.
+- Latest Authoritative Round: `ARCH-REV-002`
+- Current-State Evidence Basis: All round-1 evidence plus the approved `BEH-006`/`REQ-008`/`AC-015`/`AC-016` basis; Memory Sync README/feature docs and scanner/planner/service source; source selection and imported `TeamMemoryExplorerService`/member-target code proving imported queries use the imported root, V1 tree, and canonical locations.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: **Confirmed**.
-- Approved requirements / intended behavior understood: `B-001`–`B-010`, `REQ-001`–`REQ-012`, and `AC-001`–`AC-018` remain authoritative. `SR-013` clarifies the already-approved provider-message-preservation scope: native/platform/team transport may carry safe metadata, while the provider-neutral application SDK remains message-only.
-- Relevant existing behavior and evidence confirmed: AutoByteus catalog/factory/adapters, external runtime dispatch, pricing, secret resolution, native agent/team event transport, application configuration/launch, and the supported application-agent stream/projector path were rechecked.
-- Scope guardrail confirmed: Confirmed. No alias, historical pricing, provider taxonomy, generic request-rejection subsystem, or unrelated runtime/model-family removal is introduced.
-- Approved change, preserved behavior, and outside scope understood: Confirmed.
-- Every prospective blocking finding is traceable to approved authority: Yes; no blocking finding remains.
-- Remaining material ambiguity: GLM/MiniMax deployment evidence, provider balance causality, and Docker build identity remain implementation/integration evidence items only. The application boundary is now explicit; source parity and CR-001 re-review remain downstream code-review gates.
+- Approved requirements / intended behavior understood: Yes. The user expressly approved preserving the simple migration and existing Memory Sync v1 behavior, accepting/disclosing duplicate physical hub storage only when a canonical target independently validates.
+- Relevant existing behavior and evidence confirmed: Yes. Live/cold scope, runner/retry/prerequisites, recursive Memory Sync replace export, no delete propagation, and singular canonical imported semantic selection are verified in current source and docs.
+- Scope guardrail confirmed: Yes. No filter, tombstone/delete protocol, remote cleanup, sync gate, new UI, or speculative mechanical recovery is authorized.
+- Approved change, preserved behavior, and outside scope understood: Yes.
+- Every prospective blocking `Design Impact` finding is traceable to approved authority: Yes; none remains.
+- Remaining material ambiguity: None. `ARCH-RG-001` is resolved. The accepted trusted-hub storage consequence remains a disclosed residual risk, not an unapproved behavior.
 
-| Behavior ID | Kind | Design Alignment | Trigger / Current Evidence | Target Path / Spine Coherence | Status | Required Action |
+| Behavior ID | Kind | Design Alignment With Approved Intent | Trigger / Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| B-001 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-002 | Operational | Pass | Pass | Pass | Confirmed | None. |
-| B-003 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-004 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-005 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-006 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-007 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
-| B-008 | Contract/User | Pass | Pass | Pass | Confirmed | None. |
-| B-009 | Contract/User | Pass | Pass | Pass | Confirmed | None; the application-agent `ERROR` variant intentionally remains message-only while native transport retains its own safe metadata. |
-| B-010 | User/Contract | Pass | Pass | Pass | Confirmed | None. |
+| BEH-001 | User | Pass | Pass | Pass | Confirmed | None. |
+| BEH-002 | System | Pass | Pass | Pass | Confirmed | None. |
+| BEH-003 | User | Pass | Pass | Pass | Confirmed | None. |
+| BEH-004 | User | Pass | Pass | Pass | Confirmed | None. |
+| BEH-005 | Operational | Pass | Pass | Pass | Confirmed | None. |
+| BEH-006 | User / Operational | Pass | Pass | Pass | Confirmed | None; preserve and document the approved existing v1 outcome. |
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose Clear | Linked To Core Artifacts | Internally Complete | Consistent | Status/Approval Clear | Required Action |
+| Artifact | Purpose And Scope Clear? | Linked To Core Artifacts? | Internally Complete? | Consistent? | Status / Approval Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `provider-error-and-pricing-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `application-agent-communication-contract.md` | Pass | Pass | Pass | Pass | Pass | None; its message-only `ERROR` shape matches DS-003, requirements, SDK README, and current source. |
+| `nested-team-restart-reproduction.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `root-member-history-control.png` | Pass | Pass | Pass | Pass | Pass | None. |
+| `affected-codex-nested-member-post-restart.png` | Pass | Pass | Pass | Pass | Pass | None. |
+| `controlled-autobyteus-nested-member-post-restart.png` | Pass | Pass | Pass | Pass | Pass | None. |
+| `ctx_f69ba7836a55__image.png` | Pass | Pass | Pass | Pass | Pass | None; retained as contextual user evidence. |
+| `ctx_57a57720cadc__image.png` | Pass | Pass | Pass | Pass | Pass | None; retained as contextual user evidence. |
+| `ctx_26ddbd968b85__image.png` | Pass | Pass | Pass | Pass | Pass | None; retained as contextual user evidence. |
+| `ctx_73e4b305a940__image.png` | Pass | Pass | Pass | Pass | Pass | None; controlled reproduction remains causal authority. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment present for current posture | Pass | Larger-requirement posture is explicit. | None. |
-| Root-cause classification explicit/evidence-backed | Pass | Boundary/ownership, missing invariant, coordination, shared-structure, and legacy pressure are tied to current paths. | None. |
-| Refactor posture explicit | Pass | Limited refactor of affected provider-policy and event boundaries is stated. | None. |
-| Refactor decision supported | Pass | Ownership, change sequence, removal plan, and boundary maps describe it. | None. |
+| Assessment present for current posture | Pass | Bug fix with invariant refactor and persisted-layout repair. | None. |
+| Root-cause classification explicit/evidence-backed | Pass | Context omission, leaf `[]`, duplicated ancestry policy, history, and reproduction align. | None. |
+| Refactor posture explicit | Pass | Required scope/context/index refactor; unrelated redesign deferred. | None. |
+| Decision supported by concrete sections | Pass | Spines, ownership, boundaries, files, removal, sequence, and tests are actionable. | None. |
 
 ## Spine Inventory Verdict
 
-| Spine | Readable | Narrative | Facade/Owner | Main Naming | Ownership | Off-Spine | Verdict |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 model/catalog/setup/request | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 DeepSeek pricing | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 provider error return/event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| Spine ID | Scope | Readable? | Narrative Clear? | Facade / Owner Clear? | Naming Clear? | Ownership Clear? | Off-Spine Concerns Correct? | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| DS-001 live scope/write | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-002 cold scope/read | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-003 memory/event write | Return-Event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-004 projection/UI return | Return-Event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-005 Team Communication | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-006 startup migration | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-007 manual retry | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-008 Memory Sync/imported semantic read | Primary End-to-End | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+DS-008 inventories a supported existing path and its test/documentation obligations without adding a migration or sync production node.
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Entry Clear | Internal Mechanisms Internal | Bypass Controlled | Verdict | Notes |
+| Boundary / Owner | Public Entry Clear? | Internals Stay Internal? | Bypass Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime-aware effective-selection gate | Pass | Pass | Pass | Pass | The gate normalizes `{runtimeKind, llmModelIdentifier}` and delegates only AutoByteus pairs. |
-| LLMFactory catalog lookup/create | Pass | Pass | Pass | Pass | Exact current membership is limited to `RuntimeKind.AUTOBYTEUS`. |
-| Claude/Codex backend factories | Pass | Pass | Pass | Pass | External model/session/thread ownership remains in existing factories. |
-| Application configuration readiness | Pass | Pass | Pass | Pass | Saved profile validation preserves the saved string and exposes reselection. |
-| Application run-binding launch | Pass | Pass | Pass | Pass | All effective pairs are checked before run/team side effects. |
-| TokenPriceConfigProvider | Pass | Pass | Pass | Pass | Current schedule remains the pricing owner. |
-| Error notifier/team/web/application projection | Pass | Pass | Pass | Pass | Safe native evidence and code/message separation are end to end; the application boundary intentionally narrows to the safe message. |
+| `TeamRunContext.physicalScope` | Pass | Pass | Pass | Pass | Required/frozen live owner. |
+| `MixedSubTeamRunFactory` | Pass | Pass | Pass | Pass | One child append; configured/task public semantics remain distinct. |
+| `TeamExecutionIndex.getTeamRunPhysicalScope` | Pass | Pass | Pass | Pass | Single cold ancestry owner. |
+| `AgentMemoryLayout` | Pass | Pass | Pass | Pass | Topology-to-path containment owner. |
+| Layout migration | Pass | Pass | Pass | Pass | Owns old-path classification/rename only. |
+| Migration runner / retry facade | Pass | Pass | Pass | Pass | Generic scheduling, ledger, prerequisites, and manual retry. |
+| Memory Sync service/scanner/planner | Pass | Pass | Pass | Pass | Remains an unchanged physical mirror; no migration coupling. |
+| Imported `TeamMemoryExplorerService` | Pass | Pass | Pass | Pass | Imported source root plus V1-derived canonical member targets; flat residue is not a second semantic target. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Owner / Boundary | Dependencies | Shortcuts | Direction | Verdict | Notes |
+| Owner / Boundary | Allowed Dependencies Clear? | Forbidden Shortcuts Explicit? | Direction Coherent? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime identity and application gate | Pass | Pass | Pass | Pass | Server runtime normalization selects the owning model validator. |
-| Catalog/factory/adapters | Pass | Pass | Pass | Pass | External runtime factories are not routed through AutoByteus catalog logic. |
-| Pricing policy/calculator | Pass | Pass | Pass | Pass | Calculator does not read catalog pricing directly. |
-| Error/event transport | Pass | Pass | Pass | Pass | Native/provider metadata stays in native/platform/team transport; the provider-neutral application contract receives only the safe message. |
+| Team execution scope/context/index | Pass | Pass | Pass | Pass | No filesystem or transport dependency. |
+| Mixed construction | Pass | Pass | Pass | Pass | Context consumption; no tree/path inference at leaves. |
+| Agent memory / run history | Pass | Pass | Pass | Pass | Scope -> layout and index -> layout directions are coherent. |
+| Migration / runner | Pass | Pass | Pass | Pass | Old-path knowledge is isolated; runner remains generic. |
+| Memory Sync / imported explorer | Pass | Pass | Pass | Pass | Sync and migration do not depend on each other; imported semantics depend on V1 locations, not scanner inventory. |
+| Frontend/GraphQL | Pass | Pass | Pass | Pass | Existing projections/retry transports remain thin. |
 
 ## Interface Boundary Verdict
 
-| Interface | Subject | Responsibility | Identity | Generic Risk | Verdict |
+| Interface / API / Method | Subject Clear? | Singular Responsibility? | Identity Shape Explicit? | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| Effective selection runtime gate | Pass | Pass | Pass — `{runtimeKind, llmModelIdentifier}` | Low | Pass |
-| `LLMFactory.requireCurrentModelIdentifier` | Pass | Pass | Pass — AutoByteus runtime plus model | Low | Pass |
-| Claude/Codex backend factory model bootstrap | Pass | Pass | Pass — external runtime plus model | Low | Pass |
-| Configuration-service saved-profile validation | Pass | Pass | Pass | Low | Pass |
-| Run-binding effective launch guard | Pass | Pass | Pass — every effective team pair | Low | Pass |
-| `TokenPriceConfigProvider.resolvePolicy` | Pass | Pass | Pass | Low | Pass |
-| `ProviderErrorEvidence` / event contract | Pass | Pass | Pass | Low | Pass |
-| `TeamAgentEventAdapter` | Pass | Pass | Pass | Low | Pass |
-| `ApplicationAgentStreamEvent.ERROR` | Pass | Pass | Pass | Low | Pass |
+| Root/child physical-scope builders | Pass | Pass | Pass | Low | Pass |
+| `TeamRunContext.physicalScope` | Pass | Pass | Pass | Low | Pass |
+| Index scope query | Pass | Pass | Pass | Low | Pass |
+| Configured-child/task-team methods | Pass | Pass | Pass | Low | Pass |
+| Agent memory location method | Pass | Pass | Pass | Low | Pass |
+| Migration `execute` / `runAppDataMigration` | Pass | Pass | Pass | Low | Pass |
+| Memory Sync manual/background entries | Pass | Pass | Pass | Low | Pass |
+| Imported team explorer | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need | Existing Area Checked | Reuse/Extend Sound | New Piece Justified | Verdict | Notes |
+| Need / Concern | Existing Area Checked? | Reuse / Extension Sound? | New Piece Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Current model catalog | Pass | Pass | N/A | Pass | Extends `LLMFactory`; no alias/validation subsystem. |
-| Runtime ownership/dispatch | Pass | Pass | N/A | Pass | Reuses `RuntimeKind` and `AgentRunManager` dispatch. |
-| DeepSeek schedule | Pass | Pass | Pass | Pass | Narrow schedule plus existing policy extension. |
-| Provider error evidence | Pass | Pass | Pass | Pass | One shared safe native evidence shape. |
-| Application-agent message projection | Pass | Pass | Pass | Pass | Existing public message-only `ERROR` shape is the intentional provider-neutral specialization. |
-| Application readiness/launch | Pass | Pass | N/A | Pass | Existing services gain runtime-aware delegation and ordering. |
+| Safe paths / V1 admission | Pass | Pass | N/A | Pass | Reuse layout and classifier. |
+| Live/tree ancestry | Pass | Pass | Pass | Pass | Extend context/index; add one domain scope. |
+| Scheduling/ledger/retry | Pass | Pass | N/A | Pass | Reuse runner/GraphQL/Settings. |
+| Directory relocation | Pass | Pass | Pass | Pass | One cohesive migration is proportionate. |
+| Physical mirror/no-delete retention | Pass | Pass | N/A | Pass | Reuse Memory Sync unchanged under approved behavior. |
+| Imported semantic selection | Pass | Pass | N/A | Pass | Reuse imported source resolution, V1 tree, and location owners. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem | Allocation | Reuse/Extend Decision | Spine Support | Verdict | Notes |
+| Subsystem | Ownership Clear? | Decision Sound? | Supports Right Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime identity/dispatch | Pass | Pass | Pass | Pass | `RuntimeKind` and `AgentRunManager` retain their authority. |
-| LLM catalog/factory/adapters | Pass | Pass | Pass | Pass | AutoByteus-only current membership is explicit. |
-| Application orchestration | Pass | Pass | Pass | Pass | Effective runtime/model pairs are normalized and checked. |
-| Token usage pricing | Pass | Pass | Pass | Pass | Schedule and arithmetic remain together. |
-| Secret management | Pass | Pass | Pass | Pass | Missing-key mapping remains at resolver/runtime boundary. |
-| Agent/team/web eventing | Pass | Pass | Pass | Pass | Canonical contract is coherent. |
+| Team execution / mixed backend | Pass | Pass | Pass | Pass | Scope semantics and construction. |
+| Agent memory / run history | Pass | Pass | Pass | Pass | Location and projection. |
+| App-data migrations | Pass | Pass | Pass | Pass | One transition owner plus generic runner. |
+| Memory Sync / imported corpus | Pass | Pass | Pass | Pass | Existing transport and semantic owners remain distinct. |
+| Team Communication / Web | Pass | Pass | Pass | Pass | Reused unchanged as controls/presentation. |
 
 ## Reusable Owned Structures Verdict
 
-| Structure | Extraction Evaluated | Shared Choice | Owner Clear | Verdict | Notes |
+| Repeated Structure / Logic | Extraction Evaluated? | Shared Choice Sound? | Ownership Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Effective `{runtimeKind, llmModelIdentifier}` selection | Pass | Pass | Pass | Pass | Application orchestration owns normalization/delegation; runtime factories retain model ownership. |
-| `ProviderErrorEvidence` | Pass | Pass | Pass | Pass | LLM error boundary owns it. |
-| `TokenPricingSchedule` | Pass | Pass | Pass | Pass | Shared serialized meaning, no historical registry. |
+| Root plus ordered non-root TeamRun chain | Pass | Pass | Pass | Pass | Correct execution-domain value. |
+| Reverse/root-trim ancestry | Pass | Pass | Pass | Pass | Consolidated in index. |
+| Migration disposition / bounded collector | Pass | Pass | Pass | Pass | Correctly private to migration. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
-| Structure | Singular Meaning | Redundancy | Overlap Controlled | Core/Variant Sound | Verdict | Notes |
+| Structure | Clear Meaning? | Redundancy Removed? | Overlap Controlled? | Composition Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Runtime/model selection pair | Pass | Pass | Pass | Pass | Pass | Runtime selects the model owner; the identifier retains its existing meaning. |
-| Provider evidence/event fields | Pass | Pass | Pass | Pass | Pass | Message, transport code, and provider metadata are separate. |
-| Schedule/resolved policy | Pass | Pass | Pass | Pass | Pass | Selected period/provenance are explicit. |
+| `TeamRunPhysicalScope` | Pass | Pass | Pass | Pass | Pass | Immutable root plus ordered root-exclusive chain. |
+| `TeamRunContext` / `AgentMemoryScope` alias | Pass | Pass | Pass | Pass | Pass | No parallel mutable identity. |
+| Migration disposition/counters | Pass | Pass | Pass | Pass | Pass | Closed disposition; exact counts, capped examples. |
 
 ## File Responsibility Mapping Verdict
 
-| File / Area | Singular | Matches Owner | Retightened | Verdict | Notes |
+| File Group | Responsibility Clear? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `runtime-kind-enum.ts` | Pass | Pass | Pass | Pass | Normalizes runtime identity before model validation. |
-| `autobyteus-ts/src/llm/llm-factory.ts` | Pass | Pass | Pass | Pass | Owns AutoByteus catalog membership only. |
-| Application configuration/run-binding services | Pass | Pass | Pass | Pass | Derive effective pairs and preserve side-effect ordering. |
-| `agent-run-manager.ts` and Claude/Codex factories | Pass | Pass | Pass | Pass | Preserve distinct runtime dispatch/model ownership. |
-| Pricing files/schedule module | Pass | Pass | Pass | Pass | Concrete and aligned. |
-| Error/event/application/web files | Pass | Pass | Pass | Pass | Full propagation map is actionable, including the intentional application message-only boundary and stale-fallback removal. |
+| Scope/context/index | Pass | Pass | Pass | Pass | One domain value, distinct live/cold owners. |
+| Mixed factories/handles | Pass | Pass | Pass | Pass | Construction/activation at existing boundaries. |
+| Memory location / history consumers | Pass | Pass | Pass | Pass | No duplicated ancestry or fallback. |
+| Migration / registry / prerequisites | Pass | Pass | Pass | Pass | Cohesive transform and explicit ordering. |
+| Existing Memory Sync/imported explorer | Pass | Pass | N/A | Pass | No production edits; explicit test oracle. |
+| Tests and durable docs | Pass | Pass | N/A | Pass | Coverage/docs map directly to approved paths. |
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Placement Clear | Folder Matches Owner | Mixed-Layer Risk | Verdict | Notes |
+| Path / Item | Placement Clear? | Matches Owner? | Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime management | Pass | Pass | Low | Pass | Existing runtime identity owner. |
-| LLM catalog/error folders | Pass | Pass | Low | Pass | Narrow modules fit existing ownership. |
-| Server token-usage/pricing | Pass | Pass | Low | Pass | Schedule resolution stays beside policy/arithmetic. |
-| Application orchestration services | Pass | Pass | Low | Pass | Runtime gate belongs with saved/direct launch ownership. |
-| Team contracts/application SDK/web stream/UI | Pass | Pass | Low | Pass | No provider logic moves into presentation; native safe metadata stops before the provider-neutral application SDK. |
+| `src/agent-team-execution/{domain,services,backends/mixed}` | Pass | Pass | Low | Pass | Existing domain/lifecycle boundaries. |
+| `src/agent-memory` / `src/run-history/services` | Pass | Pass | Low | Pass | Persistence and lookup owners. |
+| `src/app-data-migrations/migrations` | Pass | Pass | Low | Pass | One-file migration matches convention. |
+| `src/memory-sync` | Pass | Pass | Low | Pass | Existing off-spine mirror remains unchanged. |
 
 ## Removal / Decommission Completeness Verdict
 
-| Item | Obsolete Piece Named | Replacement Clear | Scope Explicit | Verdict |
-| --- | --- | --- | --- | --- |
-| Named legacy catalog rows/policies | Pass | Pass | Pass | Pass |
-| Generic provider wrappers/prefix/truncation | Pass | Pass | Pass | Pass |
-| Source-only event payload | Pass | Pass | Pass | Pass |
-| Stale application generic-error fallback | Pass | Pass | Pass | Pass |
-| Historical price lookup/model aliases | Pass | Pass | Pass | Pass |
-| Global AutoByteus guard over external runtimes | Pass | Pass | Pass | Pass |
+| Item | Obsolete Piece Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Hard-coded empty writer scope | Pass | Pass | Pass | Pass | Context scope replaces it. |
+| Duplicate ancestry recipes / caller-built child facts | Pass | Pass | Pass | Pass | Index and parent-context construction replace them. |
+| Flat fallback / dual reads | Pass | Pass | Pass | Pass | Explicitly rejected. |
+| Stale test expectation/fixture | Pass | Pass | Pass | Pass | Correct invariant and fixture mapped. |
+| SR-001 machinery and proposed sync redesign | Pass | Pass | Pass | Pass | Explicitly excluded. |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Area | Compatibility Retention | Clean-Cut Removal | Verdict | Notes |
+| Area | Wrapper / Dual Path Exists? | Clean Cut Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Removed AutoByteus model IDs/prices | No | Pass | Pass | Saved strings remain data, not aliases/migration. |
-| External runtime model ownership | No | Pass | Pass | Claude/Codex continue through existing factories; no parallel compatibility path. |
-| Provider error source alias | No | Pass | Pass | `code` is canonical; genuine malformed events remain validation failures. |
-| Application metadata extension / generic fallback | No | Pass | Pass | No provider metadata is added to the SDK; the stale generic message is removed in favor of safe original-message passthrough. |
-| DeepSeek historical prices | No | Pass | Pass | One current schedule only. |
+| Live writer/readers and UI | No | Pass | Pass | One current canonical path. |
+| Migration-owned flat interpretation | No runtime retention | Pass | Pass | Historical knowledge isolated in migration. |
+| Memory Sync retained files | No semantic compatibility path | Pass | Pass | Approved physical mirror residue is not read as a legacy fallback. |
 
-## Persisted-Data Transition Verdict
+## Persisted-Data Transition Verdict (When Applicable)
 
-| Stored Subject | Approved Decision | Reader Evidence | Choice Proportionate | Migration Safety | Verdict | Notes |
+| Stored Subject | Approved Decision | Evidence Sufficient? | Choice Proportionate? | Safety Complete? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Usage records / `pricing_snapshot_json` | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Additive evidence fields; old snapshots remain immutable/readable. |
-| Saved launch/profile model IDs and runtime values | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing values remain readable; current validation is runtime-scoped and does not rewrite them. |
+| Flat nested directory, target absent | Migration Required | Pass | Pass | Pass | Pass | V1 identity, whole-directory rename, validation, ledger/rerun. |
+| Source plus valid target | Preserve; bounded warning | Pass | Pass | Pass | Pass | Canonical semantic target validates; sync-visible retention is explicitly approved/disclosed. |
+| Missing/invalid target | Capability-scoped `FAILED` + manual retry | Pass | Pass | Pass | Pass | Warning exception cannot mask missing current state. |
+| Pre-upgrade flat hub import | Preserve existing v1 no-delete outcome | Pass | Pass | N/A | Pass | No remote cleanup contract; imported semantic target remains canonical. |
 
 ## Change / Refactor Safety Verdict
 
-| Area | Sequence | Temporary Seams | Cleanup | Verdict |
+| Area | Sequence Realistic? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Catalog/provider updates | Pass | Pass | Pass | Pass |
-| Runtime-aware model validation | Pass | Pass | Pass | Pass |
-| Pricing schedule projection | Pass | Pass | Pass | Pass |
-| Error/event contract | Pass | Pass | Pass | Pass |
-| Application-agent message-only contract | Pass | Pass | Pass | Pass |
-| Saved/direct launch ordering | Pass | Pass | Pass | Pass |
+| Live scope / cold index | Pass | Pass | Pass | Pass |
+| Migration / registration / retry | Pass | Pass | Pass | Pass |
+| Memory Sync preservation / docs / tests | Pass | Pass | Pass | Pass |
+| Projection/API/UI controls | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
-| Topic | Needed | Present/Clear | Bad Shape Explained | Verdict | Notes |
+| Topic | Example Needed? | Present/Clear? | Avoided Shape Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime/model selection | Yes | Pass | Pass | Pass | Correct pair-to-owner path and global-guard anti-example are explicit. |
-| Current model reselection | Yes | Pass | Pass | Pass | Old AutoByteus ID requires explicit reselection without alias. |
-| Provider error transport | Yes | Pass | Pass | Pass | Native code/message repair, safe message passthrough, and the application message-only boundary are explicit. |
-| DeepSeek schedule | Yes | Pass | Pass | Pass | UTC selection and no historical table are explicit. |
+| Root/deep/task scope | Yes | Pass | Pass | Pass | Builder and path examples are explicit. |
+| Rename/rerun/failure retry | Yes | Pass | Pass | Pass | Matches governing normal-attempt model. |
+| Conflict and pre-upgrade sync | Yes | Pass | Pass | Pass | Semantic target versus physical mirror is explicit. |
+| Bounded diagnostics | Yes | Pass | Pass | Pass | Exact totals plus capped examples. |
 
-## Material Premise Validation
+## Material Premise Validation (Only When Needed)
 
-### MP-001 — A saved profile can contain a removed model identifier and reach launch resolution
+### `MP-001` — Manual Memory Sync enumerates both local conflict paths
 
-- Related approved requirement or established contract: `REQ-012`, `AC-018`.
-- Relevant behavior ID(s): `B-001`–`B-005`, `B-010`.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger: User saves or launches an application execution-resource configuration through the supported configuration surface.
-- Support evidence: Application SDK profiles persist `llmModelIdentifier`; configuration and launch services consume it.
-- Forward path: Application configuration/launch -> profile normalization or run-binding launch -> runtime-aware model ownership -> provider/run path.
-- Lifecycle consequence: Removed AutoByteus IDs remain editable but must not execute or silently map to another model.
+- Related approved requirement or established contract: `BEH-006`, `REQ-008`, `AC-015`.
+- Relevant behavior IDs: `BEH-005`, `BEH-006`.
+- Initiating basis kind: `User`.
+- Independent trigger: Existing **Nodes -> Memory Sync -> Sync now** action with the admitted source-plus-valid-target state.
+- Support evidence: README/Memory Sync docs; GraphQL `startMemorySync`; recursive scanner; replace planner/service.
+- Forward path: `Sync now -> service -> recursive agent_teams scan -> both path descriptors -> replace batches -> hub imports -> imported explorer -> V1 canonical member target`.
+- Lifecycle consequence: Both physical paths may be mirrored, but the imported source service supplies the import root and `TeamMemoryExplorerService` builds member targets through the V1 tree/location service, so one canonical semantic run is presented.
 - Reachability: `Reachable`.
-- Review consequence: Runtime-scoped current-model validation and explicit reselection; no migration or alias.
+- Review consequence / proportionate response: Approved and fully represented in `SR-004`; preserve existing sync code, add proportionate evidence/docs, and add no migration/sync coupling.
 
-### MP-002 — A supported provider request can fail before the team/web return path
+### `MP-002` — Pre-upgrade flat import may remain after successful local relocation
 
-- Related approved requirement or established contract: `REQ-007`–`REQ-009`, `AC-010`–`AC-015`.
-- Relevant behavior ID(s): `B-007`–`B-009`.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger: User submits a provider-backed request through the supported local/Docker application path.
-- Support evidence: Existing LLM phase, notifier, AgentRun mapper, team adapter, websocket, and web parser form the production path; the source/code mismatch is observed there.
-- Forward path: User request -> provider/transport failure -> notifier -> AgentRun/team/websocket -> client error segment.
-- Lifecycle consequence: Provider message must remain available while a valid event is admitted.
+- Related approved requirement or established contract: `BEH-006`, `REQ-008`, `AC-016`.
+- Relevant behavior IDs: `BEH-005`, `BEH-006`.
+- Initiating basis kind: `User`.
+- Independent trigger: Supported Sync now before upgrade, normal upgraded startup/migration, then another sync.
+- Support evidence: Reproduced flat source; recursive replace-only scanner/planner; documented no delete propagation.
+- Forward path: `flat sync -> hub flat import -> local rename -> canonical sync -> hub retains flat plus canonical -> imported V1 canonical selection`.
+- Lifecycle consequence: Duplicate physical trusted-hub bytes may persist without a duplicate semantic current run.
 - Reachability: `Reachable`.
-- Review consequence: Preserve safe evidence and canonical event code; do not invent balance classification.
-
-### MP-003 — Missing provider credentials can reach LLM setup
-
-- Related approved requirement or established contract: `REQ-006`, `AC-008`–`AC-009`.
-- Relevant behavior ID(s): `B-006`.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger: User selects a provider-backed model and sends without a configured provider key.
-- Support evidence: Provider key resolution calls secret management during LLM/client setup; missing/blank records are supported configuration states.
-- Forward path: Request -> secret resolver -> missing/blank credential -> setup failure -> runtime error event.
-- Lifecycle consequence: No provider request occurs; user needs a provider-specific setup action.
-- Reachability: `Reachable`.
-- Review consequence: Map only missing/blank credentials to `missing_api_key`; preserve other vault failures.
-
-### MP-004 — Usage events carry time for current DeepSeek schedule selection
-
-- Related approved requirement or established contract: `REQ-003`–`REQ-004`, `AC-003`–`AC-004`.
-- Relevant behavior ID(s): `B-002`.
-- Initiating basis kind: System.
-- Independent product-supported initiating trigger: Normal provider usage observation emits a token-usage event with `observed_at`.
-- Support evidence: `TokenUsageUpdatedPayload.observed_at` is required and feeds the pricing chain.
-- Forward path: Usage event -> pricing provider -> UTC period -> existing tier arithmetic -> immutable snapshot.
-- Lifecycle consequence: Time-of-day selects the current period; calendar date cannot select retired policy.
-- Reachability: `Reachable`.
-- Review consequence: Extend the pricing owner without historical storage.
-
-### MP-005 — The screenshot provider rejection was specifically an insufficient-balance response
-
-- Related approved requirement or established contract: `AC-010`; no balance classification is authorized.
-- Relevant behavior ID(s): `B-007`–`B-009`.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger: User submits the Docker-node request described in MP-002.
-- Support evidence: Screenshot proves local event admission defect, not upstream provider cause; no provider response or safe fixture establishes balance causality.
-- Forward path: Request -> possible provider failure -> local event defect; upstream cause remains unidentified.
-- Lifecycle consequence: Balance and other provider failures have different text; inventing one violates `REQ-007`.
-- Reachability: `Unclear`.
-- Review consequence: Use safe fixtures/runtime evidence only; no balance machinery.
-
-### MP-006 — The Docker node on port 8001 runs the reviewed repository build
-
-- Related approved requirement or established contract: `REQ-010`, `AC-014`.
-- Relevant behavior ID(s): `B-008`–`B-009`.
-- Initiating basis kind: Operational.
-- Independent product-supported initiating trigger: Operator runs the supported Docker node and connects the web client to its exposed port.
-- Support evidence: No build/commit identity or live request was captured in this review.
-- Forward path: Docker node -> server/team stream -> websocket/client.
-- Lifecycle consequence: A stale image can reproduce or conceal the mismatch independently of reviewed source.
-- Reachability: `Unclear`.
-- Review consequence: Delivery records build identity; no compatibility machinery.
-
-### MP-007 — A supported application launch can target a non-AutoByteus runtime
-
-- Related approved requirement or established contract: Preserved behavior in `B-001`, `B-003`–`B-005`, and `B-010`.
-- Relevant behavior ID(s): `B-001`, `B-003`–`B-005`, `B-010`.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger: User selects a supported application launch/profile with `runtimeKind=claude_agent_sdk` or `runtimeKind=codex_app_server` and submits it.
-- Support evidence: Application launch/profile types expose `runtimeKind`; `ApplicationRunBindingLaunchService` forwards it; `AgentRunManager` dispatches to distinct Claude/Codex factories that do not use the AutoByteus `LLMFactory` catalog.
-- Forward path: Application launch -> run-binding service -> AgentRun/team service -> `AgentRunManager.resolveBackendFactory` -> external factory -> external runtime.
-- Lifecycle consequence: The corrected design bypasses the AutoByteus guard and preserves the external factory's model ownership.
-- Reachability: `Reachable`.
-- Review consequence: Confirms `ARCH-DI-005` is resolved; retain mixed-runtime and per-member override coverage.
-
-### MP-008 — A supported application-agent stream reaches the provider-neutral public ERROR boundary
-
-- Related approved requirement or established contract: `REQ-007`–`REQ-010`, `AC-011`, `AC-014`–`AC-015`, and the normative application-agent communication contract.
-- Relevant behavior ID(s): `B-009`.
-- Initiating basis kind: Contract / User.
-- Independent product-supported initiating trigger: An application client connects to the supported agent-streaming surface for a bound standalone agent, whole team, or selected team member and observes a provider failure event.
-- Support evidence: The supported application path uses the application stream runtime source, event mapper, projector, SDK event contract, and application communication contract.
-- Forward path: Bound application client -> application stream subscription -> event mapper/projector -> `{ type: "ERROR", message }` -> SDK consumer.
-- Lifecycle consequence: The safe original provider message must reach the application consumer without the stale `The agent response failed.` replacement; native transport code/status/request metadata must not be added to this provider-neutral public stream.
-- Reachability: `Reachable`.
-- Review consequence: `SR-013` resolves `CR-001` by aligning the design to the approved message-only boundary and current source. Native code/evidence remains a separate platform/team transport concern; source re-review must confirm stale-fallback removal and message preservation.
+- Review consequence / proportionate response: Explicitly approved and disclosed; no cleanup/protocol expansion belongs in this change.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None.
+None. `ARCH-RG-001` is resolved by `SR-004` and explicit user approval.
 
 ## Review Decision
 
-**Pass** — `SR-013` resolves downstream `CR-001` as a scope/design correction. The approved behavior basis is confirmed, `ARCH-DI-001`–`ARCH-DI-005` remain resolved, and requirements, DS-003, the provider/error supplement, the normative application contract, SDK README, and current application source all agree that the application-agent `ERROR` event remains `{ type: "ERROR", message }`. No application metadata machinery is required or introduced.
+**Pass** — the behavior basis is confirmed, all relevant spines and boundaries are coherent, and no required mechanism depends on an unsupported premise.
 
 ## Findings
 
@@ -318,7 +259,7 @@ None.
 
 ## Classification
 
-`Pass` — the corrected design is structurally coherent and actionable. Native/platform/team transport owns canonical `code` and optional safe evidence needed for the Docker/team path; the application projector intentionally narrows that data to the safe original message for the provider-neutral SDK, while removing the stale generic fallback.
+N/A — Pass.
 
 ## Recommended Recipient
 
@@ -326,15 +267,15 @@ None.
 
 ## Residual Risks
 
-- `CR-001` is design-resolved but requires source re-review through `/code_reviewer` to confirm safe original-message passthrough, stale-fallback removal, and no accidental SDK metadata expansion before API/E2E.
-- GLM-5.3 and MiniMax M3 deployment-specific endpoint/pricing facts remain implementation-time verification gates; unverified pricing must remain explicitly unpriced.
-- The exact upstream provider cause behind the screenshot remains unproven; use safe fixtures/runtime evidence and do not invent balance text.
-- The Docker node build/commit identity remains unproven; integrated validation must record it.
-- Preserve existing unsupported-runtime validation while applying the stated absent/blank-runtime defaulting behavior; the runtime ownership test map should cover this boundary.
-- The implementation should route the stable `CURRENT_MODEL_SELECTION_REQUIRED` message through the existing application API error boundary for save/direct-launch rejection; the approved contract requires the explicit message, not a new status policy.
+- Memory Sync v1 may retain duplicate physical bytes on a trusted hub; this is an explicitly approved/documented limitation, not a second semantic current run.
+- Required scope construction may expose hidden constructors; compilation/tests must find them rather than adding a default.
+- Configured and task-team handoff/application-binding semantics must remain distinct.
+- The stale writer fixture must be repaired without preserving the defective invariant.
+- Previously successful dependent migrations remain untouched; not-yet-run dependents use current recovery after a successful retry.
+- One-writer/stable process/power/device/same-filesystem conditions remain governing prerequisites.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass` — MP-001–MP-004, MP-007, and MP-008 are reachable supported paths; MP-005 and MP-006 remain `Unclear` residual evidence and do not drive machinery.
-- Notes: `CR-001` is resolved as a scope/design correction; `ARCH-DI-001`–`ARCH-DI-005` remain resolved. The corrected package is ready for source re-review, with API/E2E still blocked until code review passes.
+- Review Decision: **Pass**
+- Material-Premise Gate: **Pass** — `MP-001` and `MP-002` remain reachable and are now explicitly approved, represented, bounded, and testable.
+- Notes: `ARCH-RG-001` is resolved. The design is ready for implementation without Memory Sync production changes or additional migration machinery.
