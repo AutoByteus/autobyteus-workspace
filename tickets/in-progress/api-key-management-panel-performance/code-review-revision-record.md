@@ -10,6 +10,8 @@
 | CRR-004 | /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/code-review-report.md | Implementation Review round 4 / IR-006 focused correction | Fail / Local Fix | Pass | CODE-005, CODE-006 |
 | CRR-005 | /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-test-review-report.md | Proportional test-code review round 1 / API-REV-001 Pass | Implementation Pass / no test-review baseline | Fail / Local Fix | TEST-001 |
 | CRR-006 | /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-test-review-report.md | Proportional test-code review round 2 / API-REV-002 Local Fix | Fail / Local Fix | Pass | TEST-001 |
+| CRR-007 | /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/code-review-report.md | Implementation Review round 5 / IR-007 integrated DR-001 resolution | CRR-004 source Pass / CRR-006 test Pass, then DR-001 Blocked | Pass | DR-001 |
+| CRR-008 | /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-test-review-report.md | Proportional test-code review round 3 / API-REV-003 integrated Pass | CRR-007 source Pass / CRR-006 protected-checkpoint test Pass | Pass | COV-006 |
 
 ## Revision Entries
 
@@ -170,3 +172,55 @@ None.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: four unchanged broader-suite baseline failures remain recorded; optional external-provider success and Electron shell behavior remain unavailable/out of scope; stale Settings documentation is explicitly delivery-owned.
 
+### CRR-007 — IR-007 preserves both ticket and latest-base semantics in the integrated merge
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/implementation-handoff.md`; delivery blocker `DR-001`
+- Relevant solution revision IDs: `SR-005`, `SR-006`, `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-007`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002` (protected-checkpoint evidence only)
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: source review `CRR-004 Pass` and proportional test review `CRR-006 Pass` on protected checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89`; delivery then recorded `DR-001 Blocked / Local Fix` when the latest-base merge conflicted
+- Current authoritative result: `Pass`
+- What changed in the review result and why: both-parent review of merge commit `f6f4d532f78f3b418dca471881f65d3415693f99` confirms the resolution preserves source-indexed registry/dynamic lifecycle ownership while integrating current-model selection and canonical pricing schedule/types; preserves the credential-free/network-free Gemini 3.7 snapshot contract; and composes all current Token Usage keys through split English/zh-CN modules without restoring the aggregate production contract. Focused SDK, actual-schema server, web analytics/localization, compile, cleanup, rendered-result, and scoped patch checks pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001` | Blocked / Local Fix | Resolved | `DR-001`, `IR-007`, `CRR-007` | The pre-review target was clean; the merge commit has both required parents, no unmerged entries/conflict markers, and semantically composed resolutions in all four conflict paths. Reviewer-focused tests/build/type/localization/scoped-diff audits pass. |
+| `CODE-001`–`CODE-006` | Resolved | Remain Resolved | `IR-004`–`IR-007`, `CRR-004`, `CRR-007` | Integrated source retains full endpoint clearing, client convergence/publication fencing, freshness semantics, custom-delete fencing, tight presentation, and explicit cleanup without aliases. |
+| `TEST-001` | Resolved | Remains Resolved | `API-REV-002`, `CRR-006`, `IR-007`, `CRR-007` | Independent absence assertions and removed-contract durable coverage remain intact; IR-007 changes only the separate current Gemini metadata expectation among prior durable paths. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: the full source score remains `9.6/10 (96/100)`. The integrated implementation passes; pre-integration API/E2E evidence remains historical until proportional merged-state revalidation.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: merged-state API/E2E has not yet rerun; four unchanged broader-suite baseline failures remain; optional external-provider success and Electron shell behavior remain unavailable/out of scope; long-lived docs remain delivery-owned; whole ticket diff-check noise is confined to previously captured historical validation logs while scoped implementation/resolution hygiene passes.
+
+### CRR-008 — API-REV-003 keeps current built-in GLM separate from supported Qwen GLM 5.2
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E proportional test-code review, round 3
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-revision-record.md`; `COV-006`
+- Relevant solution revision IDs: `SR-005`, `SR-006`, `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-007`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: integrated source review `CRR-007 Pass`; prior proportional test review `CRR-006 Pass` applied to protected checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89`, not the merged state
+- Current authoritative result: `Pass`
+- What changed in the review result and why: integrated actual-schema execution exposed one stale incidental expectation for the separate built-in GLM owner. The one-line durable correction now expects current `glm-5.3`, while all supported Qwen `qwen:glm-5.2` metadata, restart, compensation, and exact-routing assertions remain intact. The diff is narrow and clear; current producer definitions support both provider-scoped expectations; the complete focused lifecycle and final split audit pass.
+
+#### Prior Finding Resolution
+
+| Finding ID / Scenario | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `COV-006` | API-REV-003 initial merged-state run: API/E2E-owned stale incidental assertion | Resolved | `IR-007`, `CRR-007`, `API-REV-003` | One-line GLM-owner correction; current supported definitions retain built-in `glm-5.3` and Qwen `qwen:glm-5.2`; `09c2` passes 1/1 and `09h2` confirms the provider split. |
+| `TEST-001` | Resolved at CRR-006 | Remains Resolved | `API-REV-002`, `CRR-006`, `API-REV-003` | Its durable path did not change; integrated actual-schema and removed-contract audits pass. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: no implementation source scorecard was reopened. The separate proportional test-review result is `Pass` for the exact integrated-state durable delta.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: four unrelated unchanged-file broader-suite failures remain recorded; optional live success against unavailable external providers remains capability-dependent; Electron shell behavior is outside the changed boundary; long-lived Settings/LLM/secret/catalog documentation remains delivery-owned.

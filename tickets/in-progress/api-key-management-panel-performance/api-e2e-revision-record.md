@@ -8,6 +8,7 @@ The canonical coverage investigation and execution coverage report remain the au
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/code_reviewer`; `code-review-report.md` CRR-004; API/E2E round 1 | SR-005–SR-007, ARCH-REV-008, IR-006, CRR-004 | N/A | Pass / 96.7% |
 | API-REV-002 | `/code_reviewer`; `api-e2e-test-review-report.md` / CRR-005; API/E2E round 2 | API-REV-001, CRR-005, TEST-001 | Pass / 96.7% | Pass / 96.7% |
+| API-REV-003 | `/code_reviewer`; `code-review-report.md` / CRR-007; integrated API/E2E round 3 | IR-007, CRR-007, DR-001, API-REV-002, CRR-006 | Protected-checkpoint Pass / 96.7% | Integrated Pass / 96.7% |
 
 ## Revision Entries
 
@@ -73,3 +74,37 @@ None.
 - New or remaining failure IDs: no API/E2E ticket failure; `TEST-001` resolved. `BASELINE-E2E-001`–`BASELINE-E2E-004` remain unrelated unchanged repository failures.
 - Recommended recipient: `/code_reviewer` for repeat proportional review of the single corrected durable path.
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001—optional external-provider success, out-of-scope Electron shell behavior, four unrelated broader-suite failures, and delivery-owned stale Settings documentation.
+
+### API-REV-003 — Independently validate the latest-base integrated candidate
+
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/code-review-report.md` (`CRR-007`); integrated API/E2E round 3.
+- Triggering finding or scenario IDs: delivery integration blocker `DR-001` resolved by `IR-007`; integrated rechecks of `API-001`–`API-004`, `WEB-001`, `WEB-002`, `BROWSER-001`, `BROWSER-002`, `COV-001`–`COV-006`.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-005`–`SR-007`, `ARCH-REV-008`, `IR-007`, `CRR-007`, `DR-001`, plus protected-checkpoint history `API-REV-002` / `CRR-006`.
+- Why this baseline or coverage/execution revision was recorded: merge commit `f6f4d532f78f3b418dca471881f65d3415693f99` combines checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89` with latest base `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`. Earlier API/E2E and proportional-review results could not be relabeled as proof of the merged runtime.
+- Coverage decisions or durable test paths changed:
+  - Reclassified the IR-007-resolved Gemini 3.7 actual-schema E2E as `Still Valid — Re-execute`; it passed 3/3 without API/E2E modification and proves the current snapshot remains credential-free/network-free with null live provenance.
+  - Integrated execution found one stale incidental assertion in `autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts`: the separate built-in GLM owner expected removed `glm-5.2`. API/E2E changed that one expectation to current `glm-5.3` while preserving every Qwen-derived `qwen:glm-5.2` metadata/restart/routing assertion.
+  - No production source, fixture, compatibility assertion, or other repository-resident durable path was added, updated, or removed in round 3.
+- Scenarios added, changed, removed, or rechecked: added `COV-006` for the integrated Qwen/current-GLM distinction; rechecked `API-001`–`API-004`, `WEB-001`, `WEB-002`, `BROWSER-001`, `BROWSER-002`, and `COV-001`–`COV-005`; preserved `BASELINE-E2E-001`–`BASELINE-E2E-004` as unrelated unchanged-file broader-suite failures.
+- Commands, environment, fixture, or broader-validation delta:
+  - SDK focused merged-definition/source tests: 3 files/15 tests passed.
+  - Server catalog/metadata/pricing/lifecycle units: 6 files/37 tests passed.
+  - Six integrated built-server E2E files: 17/18 initially passed; the sole failure was the stale GLM-owner test assertion. The corrected full Qwen compensation/restart/routing lifecycle then passed 1/1.
+  - SDK/server builds/bootstrap passed; current value-safe preflight passed 18/18 capability descriptions.
+  - Integrated current analytics/API Keys Nuxt selection passed 15 files/53 tests; all web/localization guards, exact 594-key-per-locale composition, and the production build passed.
+  - Current interrupt browser probe passed. The integrated production Settings journey passed at 200ms from full navigation start, with no console/page errors, all semantic lifecycle/order/failure/responsive assertions passing, three screenshots visually inspected, and all owned cleanup flags true.
+  - Corrected authoritative audit passed exact merge identity/parents, no unmerged paths/conflict markers, removed production contract/type absence, independent schema removals, Qwen/current-GLM split, locale composition, source-size guard, one-path durable delta and `git diff --check`; the finalization audit also confirmed canonical API-REV-003 markers and owned-resource cleanup.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-001` | Delivery `Blocked / Local Fix`; no integrated candidate | Resolved upstream by `IR-007`/`CRR-007` and independently executed at exact merge commit | `09a`–`09i` integrated evidence package |
+| `COV-006` initial merged-state E2E failure | API/E2E-owned stale incidental assertion | Separate GLM owner now expects current `glm-5.3`; Qwen-owned GLM 5.2 remains; full lifecycle rerun passes | `validation-evidence/09c-integrated-server-e2e.log`; `09c2-integrated-qwen-coverage-fix.log`; `09h2-integrated-final-audit.log` |
+
+- Canonical artifacts and sections updated: coverage investigation integrated-state classification/plan/results/confidence; execution report integrated meta/evidence/confidence/coverage/routing; this revision entry.
+- Prior result and confidence: protected-checkpoint `API-REV-002` Pass at 96.7% and `CRR-006` Pass; not an integrated-state result.
+- Current result and confidence: integrated `Pass`, **96.7%**; every applicable category is at least 96%, every critical changed-scope criterion is directly proven, and required merged-state browser validation completed.
+- New or remaining failure IDs: no ticket failure. `COV-006` is resolved. `BASELINE-E2E-001`–`BASELINE-E2E-004` remain unrelated broader-suite baseline failures.
+- Recommended recipient: `/code_reviewer` for proportional review of the one API/E2E-owned Qwen/current-GLM assertion correction, then `/delivery_engineer` if it passes.
+- Remaining risks, blocked evidence, or untested scope: optional live success against unavailable external providers; Electron shell launch/IPC/window behavior outside the changed boundary; four preserved unrelated broader-suite failures; delivery-owned long-lived docs still describe removed aggregate/global-reload behavior.

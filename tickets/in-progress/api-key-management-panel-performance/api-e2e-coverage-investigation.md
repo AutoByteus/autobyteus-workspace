@@ -9,18 +9,19 @@
 - Solution Revision Record: `solution-revision-record.md` (`SR-005`–`SR-007` current basis)
 - Design Review Report: `design-review-report.md` (`ARCH-REV-008 Pass`)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (`IR-006`)
+- Implementation Handoff: `implementation-handoff.md` (`IR-007` integrated merge resolution)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (`CRR-004 Pass`, 96/100)
-- Code Review Revision Record: `code-review-revision-record.md` (`CRR-005` latest test-review routing entry)
-- API/E2E Test Review Report: `api-e2e-test-review-report.md` (round 1 `Fail / Local Fix`, `TEST-001`)
-- Delivery Revision Record (delivery re-entry only): N/A
-- Relevant Delivery Revision IDs: N/A
+- Code Review Report: `code-review-report.md` (`CRR-007` integrated implementation Pass, 96/100)
+- Code Review Revision Record: `code-review-revision-record.md` (`CRR-007` latest)
+- API/E2E Test Review Report: `api-e2e-test-review-report.md` (`CRR-006` protected-checkpoint proportional review Pass)
+- Delivery Revision Record (delivery re-entry only): `delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
+- Delivery Rework Artifact: `delivery-integration-blocker.md`
 - API/E2E Revision Record (created after the first completed result): `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: `2`
-- Trigger: `/code_reviewer` returned bounded `TEST-001` in proportional test review `CRR-005`: the negated aggregate matcher did not independently prove all five removed query operations absent.
-- Prior Investigation Reviewed: Round 1 / `API-REV-001` Pass at 96.7%; its execution evidence remains valid outside the bounded assertion correction.
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: `3`
+- Trigger: `/code_reviewer` passed integrated merge commit `f6f4d532f78f3b418dca471881f65d3415693f99` in `CRR-007` after `IR-007` resolved delivery blocker `DR-001` against latest base `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.
+- Prior Investigation Reviewed: Rounds 1–2 / `API-REV-001` and `API-REV-002` apply only to protected checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89`; they are historical evidence, not an integrated-state Pass.
 - Latest Authoritative Investigation: This file.
 
 ## Current Requirement And Design Basis
@@ -30,6 +31,23 @@ The current contract separates credential state from model state. `providerCrede
 ### Round 2 Coverage-Review Local-Fix Decision
 
 `TEST-001` is a valid API/E2E-owned `Local Fix`, not an implementation or requirement finding. The prior `not.toEqual(arrayContaining([...]))` matcher proved only that the schema did not contain the complete five-name set; it could pass if any subset of removed aliases returned. The durable schema-boundary scenario remains required and is refined in place to assert each removed query name independently with `not.toContain`. Only the focused provider-secret lifecycle file plus the scoped removed-contract/source audit require rerun; all other repository and browser evidence remains direct and unaffected.
+
+### Round 3 Integrated-State Coverage Decision
+
+The merged candidate has two parents: protected checkpoint `16b5696716c4cab025ddb9b6bf420d8dea796f89` and latest tracked base `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`. `IR-007` changed one previously reviewed durable ticket E2E path while resolving the merge: `model-metadata-provenance-graphql.e2e.test.ts` now targets current `gemini-3.7-flash` but preserves the approved current snapshot query, zero credential lookup/HTTP, curated token limits, and null live provenance. That implementation-owned durable edit already passed integrated source review in `CRR-007`; API/E2E will not edit it unless execution proves the expectation invalid.
+
+| Integrated Delta / Existing Scenario | Validity Decision | Required Merged-State Evidence | Durable Coverage Action |
+| --- | --- | --- | --- |
+| Gemini 3.7 current static row plus ticket-local network-free snapshot semantics | `Still Valid — Re-execute` | Actual current GraphQL schema in isolated runtime across all three Gemini modes | None planned; run the IR-007-resolved durable E2E as written |
+| Source-indexed `LLMFactory` combined with latest-base current-model selection and canonical pricing schedule/types | `Still Valid — Re-execute` | SDK current definitions/dynamic source tests, server catalog/availability/lifecycle/discovery/pricing tests, current model-list/analytics GraphQL | None planned |
+| Five independently removed query names and current credential/catalog boundary | `Still Valid — Re-execute` | Focused provider-secret actual-schema E2E and scoped removed-contract scan | None planned |
+| Custom/Qwen/model-list process and persisted-data scenarios | `Needs Update` after first merged-state execution | The Qwen lifecycle remains valid, including Qwen-served `glm-5.2`, but its incidental separate built-in GLM assertion still expects removed `glm-5.2`; current base exposes `glm-5.3` | Update only the separate GLM provider assertion to current `glm-5.3`; retain all Qwen lifecycle/identifier/routing evidence |
+| Split Settings catalogs plus current Token Usage modules in English/zh-CN | `Still Valid — Re-execute` | Current analytics/ticket web tests, all localization guards, exact key composition audit, production build | None planned |
+| Production API Keys browser journey from `API-REV-001` | `Historical checkpoint evidence only — Re-execute` | Same production-build/built-server Chrome journey on merge commit, including full-entry latency, provider-local lifecycle, failure, and 768px layout | Temporary probe only; no repository-resident test change planned |
+| Current interrupt browser probe and value-safe live capability harness | `Still Valid — Re-execute` | Current Nuxt/WebSocket browser probe and integrated live preflight | None planned |
+| `BASELINE-E2E-001`–`BASELINE-E2E-004` | `Unrelated Baseline — Preserve` | Retain exact unchanged-file classification from prior broader run as directed by `CRR-007`; do not relabel the whole suite green | No ticket change or rerun planned |
+
+Initial merged-state execution found one stale incidental assertion in an otherwise valid durable scenario: `qwen-configuration-lifecycle-graphql.e2e.test.ts` correctly retains Qwen-derived `qwen:glm-5.2`, but also expects a separate built-in GLM `glm-5.2` row removed by the latest base in favor of `glm-5.3`. `IR-007`, `CRR-007`, current supported definitions, and the actual schema all agree on `glm-5.3`. This is an API/E2E-owned `Local Fix`, not an implementation defect. No coverage deletion, replacement, compatibility assertion, or new test file is required. Because API/E2E will update one repository-resident durable path, a successful round must return through `/code_reviewer` for proportional review before delivery.
 
 ## Changed Behavior Summary
 
@@ -133,6 +151,7 @@ The implementation-focused SDK/server/web unit and component tests changed upstr
 | Synchronous GraphQL live-metadata/provenance expectations | Reading a static snapshot performs a credential lookup and live metadata HTTP call; reading seeded custom rows performs a second enrichment request | The current snapshot is deliberately network-free, curated static metadata is immediately sufficient, and optional enrichment is supplementary/non-authoritative | `REQ-007`; metadata enrichment boundary in `design-spec.md`; `UXJ-002` | Static snapshot E2E asserts curated values with zero credential lookup/HTTP; custom create E2E asserts one authoritative probe and seeded metadata rows | N/A |
 | Post-create custom-provider discovery expectation | The first read/ensure after custom create performs a second `/models` request | Custom create seeds the authoritative probe rows as the initial process-local `READY` snapshot and warm ensure is a no-network cache hit | `REQ-009`, `REQ-014`; `AC-016` | Same-process ensure asserts one total call; first ensure after process restart asserts the second call | N/A |
 | Web probe's `availableLlmProvidersWithModels: []` fixture | Renderer receives the old aggregate operation | Web production code no longer sends that operation | Current web GraphQL operations; `AC-022` | Current credential/snapshot mock response when the probe reaches the Settings client | If the property is unreachable dead fixture data, remove it without replacement. |
+| Integrated Qwen lifecycle's separate built-in GLM `glm-5.2` assertion | The unrelated GLM owner still publishes `glm-5.2` while Qwen publishes its own inferred `qwen:glm-5.2` | Latest base replaced the built-in GLM row with current `glm-5.3`; Qwen's separate provider-scoped `glm-5.2` remains supported and must not be rewritten | `IR-007`, `CRR-007`, current `supported-model-definitions.ts`, `09c-integrated-server-e2e.log` | Assert `{ modelIdentifier: 'glm-5.3', value: 'glm-5.3' }` only for the GLM owner; retain every Qwen `glm-5.2` assertion/routing step | N/A |
 
 ## Durable Coverage To Add
 
@@ -152,6 +171,7 @@ The implementation-focused SDK/server/web unit and component tests changed upstr
 | `COV-003` | 3 credential/restart/custom migration E2E files | Use `providerCredentialSettings` and current mutation object results | `REQ-002`, `REQ-005`, `REQ-006`, `REQ-012`–`REQ-014` | Do not add compatibility aliases. |
 | `COV-004` | `interrupt-result-presentation-probe.mjs` | Replace/remove stale fixture field based on request interception path | `AC-022` | Keep only current web operations. |
 | `COV-005` | `test-support/live-e2e/live-e2e-harness.ts` | Use current credential query | `REQ-002`, `REQ-006` | Needed for truthful optional real-provider preflight. |
+| `COV-006` | `tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts` | Update only the separate built-in GLM catalog assertion from removed `glm-5.2` to current `glm-5.3`; preserve Qwen `qwen:glm-5.2` discovery/routing | `IR-007`, `CRR-007`, current base supported definitions | Discovered by actual integrated schema execution; requires focused rerun and proportional review. |
 
 ## Durable Coverage To Remove
 
@@ -176,7 +196,49 @@ The implementation-focused SDK/server/web unit and component tests changed upstr
 
 The broader `pnpm test:e2e` result is not relabeled as green. Its four failures are retained as explicit, non-ticket baseline evidence: a missing Codex bootstrap import target already absent at `HEAD`, a persistent file-watcher event timeout on rerun, an obsolete workspace-history field, and a workspace-removal response expectation mismatch. `git diff --name-only` proves all four files are unchanged by this ticket. Every executed changed deterministic API/E2E scenario passed after the coverage expectation was corrected to the approved current cache lifecycle.
 
-## Post-Repository Confidence Scorecard (Mandatory)
+## Round 3 Integrated-State Execution Plan And Results
+
+| Order | Command / Mode | Merged Boundary Proven | Planned Result / Current Result | Evidence Path |
+| --- | --- | --- | --- | --- |
+| 10 | SDK focused current-definition/dynamic-source/OpenAI-compatible Vitest selection | Current model rows, exact source ownership, merged endpoint metadata behavior | Pass — 3 files/15 tests | `validation-evidence/09a-integrated-sdk-focused.log` |
+| 11 | Server focused catalog/metadata/pricing/availability/lifecycle/discovery unit selection | Merged factory/catalog/pricing semantics and preserved ticket lifecycle/deadline | Pass — 6 files/37 tests | `validation-evidence/09b-integrated-server-focused-units.log` |
+| 12 | Built-server E2E selection: Gemini provenance, provider-secret schema, custom provider, Qwen, model list, Token Usage analytics | Actual integrated GraphQL schema, credential/network independence, removed fields, lifecycle, latest-base model/pricing consumer | Pass after one coverage-only correction — initial 5 files/17 tests passed and Qwen stale GLM-owner assertion failed; focused corrected rerun 1/1 passed | `validation-evidence/09c-integrated-server-e2e.log`; `09c2-integrated-qwen-coverage-fix.log` |
+| 13 | SDK/server builds; value-safe live preflight | Integrated compilation/bootstrap and current capability harness | Pass — builds/bootstrap clean; 18/18 capability descriptions | `validation-evidence/09d-integrated-builds-preflight.log` |
+| 14 | Current analytics plus preserved ticket Nuxt tests; web/localization guards; exact locale composition audit; production build | Both Settings localization sides, current Token Usage copy, API Keys presentation/store contract, production bundle | Pass — 15 files/53 tests; all guards and 15-route build pass | `validation-evidence/09e-integrated-web.log`; composition in `09h2-integrated-final-audit.log` |
+| 15 | Current interrupt-result browser probe | Integrated Nuxt/team/WebSocket exact AgentRun command boundary | Pass | `validation-evidence/09f-integrated-interrupt-browser.log`; `09f-integrated-interrupt-browser/evidence.json` |
+| 16 | Production-build Settings browser probe against built server and deterministic local discovery fixture | Integrated full-entry latency, credential/model independence, dynamic-only actions, host replacement/failure, navigation and 768px layout | Pass — full credential surface in 200ms; no console/page errors; all cleanup flags true | `validation-evidence/09g-integrated-settings-browser.log`; `09g-integrated-settings-browser/settings-browser-summary.json`; three screenshots |
+| 17 | Merge identity/conflict, removed-contract, locale composition, durable-path, source-size and scoped patch audit | Exact integrated candidate and clean current contract without aliases or unresolved merge state | Pass in authoritative corrected audit | `validation-evidence/09h2-integrated-final-audit.log` |
+
+The full server E2E suite was not rerun for this proportional merged-state pass. `CRR-007` explicitly preserves `BASELINE-E2E-001`–`BASELINE-E2E-004` as unrelated unchanged-file failures, and the focused actual-schema/lifecycle/current-base selections directly exercised every merge-sensitive ticket boundary. The initial `09h` audit attempt contained an API/E2E script regex over-escape and reported a false zero-key locale count; no product/test assertion ran through that faulty branch. The corrected fail-fast `09h2` audit is authoritative and proves 594 unique Settings keys per locale, including all 150 Token Usage keys.
+
+### Round 3 Pre-Execution Confidence And Broader-Validation Gate
+
+- Integrated-state confidence before independent execution: **not scored as a Pass**. `API-REV-002`/`CRR-006` are checkpoint-only, while `CRR-007` supplies reviewed implementation evidence rather than API/E2E sign-off.
+- Critical integrated uncertainty: the production renderer/browser and actual GraphQL schema must be executed from merge commit `f6f4d532f78f3b418dca471881f65d3415693f99`; prior runtime evidence cannot be relabeled integrated.
+- Broader validation decision: `Required` — re-execute the retained production-build Settings browser journey because the merged production bundle and Settings localization composition changed, even though no Electron shell code changed.
+- Expected confidence gain: direct merged-state browser and built-server execution should restore the user-surface, cross-boundary, and environment categories above the 95% clean target if all planned checks pass.
+- Initial durable coverage change decision: `None planned`; execution then discovered and resolved `COV-006`, the stale incidental separate-GLM assertion. No production change or additional coverage expansion was required.
+
+### Round 3 Integrated-State Confidence Scorecard
+
+| Confidence Category | Post-Repository Score | Final Score | Integrated Supporting Evidence | Residual Uncertainty |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 94% | 97% | Actual merged schema, lifecycle/current-model E2E, independent removed fields, integrated production browser | Optional live success against every vendor not run |
+| Changed-boundary execution directness | 96% | 98% | Exact merge commit, current SDK/server code, built server, production renderer and local provider protocol executed | None material in changed scope |
+| Cross-boundary integration realism and mock gap | 94% | 96% | Prisma/SQLite, current GraphQL, Token Usage analytics, Apollo/Pinia/navigation, loopback discovery and WebSocket crossed | External vendor infrastructure remains deterministic/emulated |
+| Environment, configuration, identity, and fixture fidelity | 95% | 97% | Exact ordered merge parents, current migrations/builds, isolated runtime/key material, exact endpoints, Chrome and cleanup | Electron process itself not run |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | 97% | Qwen compensation/restart/routing, source generations/deadline, exact removal, browser replacement/failure and stale fencing | No destructive real-vendor failure injection |
+| User-surface, browser, and desktop-shell confidence | 86% | 96% | Integrated production bundle entry at 200ms, semantic journey, no errors, visual inspection and 768px no overflow | Shell-only IPC/window behavior remains out of scope |
+| Durable regression coverage quality and relevance | 95% | 96% | Stale incidental GLM assertion was detected, classified, narrowly corrected and rerun; all merge-sensitive deterministic coverage passes | One corrected durable path requires proportional review |
+
+- Overall post-repository confidence: **93.7%** (simple average).
+- Overall final integrated confidence: **96.7%** (simple average).
+- Every critical acceptance criterion directly proven on the integrated state: `Yes`.
+- Any final applicable category below `90%`: `No`.
+- Default clean-confidence target of `95%` met: `Yes`.
+- Broader validation result: `Required` and completed; it raised user-surface confidence from 86% to 96% and closed the integrated renderer/runtime uncertainty.
+
+## Protected-Checkpoint Post-Repository Confidence Scorecard (Historical)
 
 | Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
 | --- | --- | --- | --- | --- |
@@ -186,11 +248,11 @@ The broader `pnpm test:e2e` result is not relabeled as green. Its four failures 
 | Environment, configuration, identity, and fixture fidelity | 94% | Owned databases/runtime roots, real builds, exact provider IDs, full endpoint paths and value-safe preflight | Production frontend journey not yet executed | Production-build renderer |
 | Failure, edge-case, lifecycle, and recovery evidence | 96% | Deferred discovery, stale publication, create/delete, restart, unavailable/partial/stale unit paths and host identity coverage | Browser failure/recovery state not yet observed | Browser failure journey |
 | User-surface, browser, and desktop-shell confidence | 86% | Component tests passed and Electron shell is not changed | Critical `AC-001`, navigation, localized unavailable/Retry and responsive behavior require browser evidence | Browser (required) |
-| Durable regression coverage quality and relevance | 96% | 26 durable API/E2E paths use current operations; `TEST-001` now independently excludes every removed query and the focused file/audit pass | Repeat proportional review is still required for the bounded correction | `/code_reviewer` repeat test-code review |
+| Durable regression coverage quality and relevance | 96% | 26 durable API/E2E paths use current operations; `TEST-001` independently excludes every removed query and the focused file/audit passed | No checkpoint gap remained after `CRR-006`; merged-state quality is scored separately below | Integrated revalidation |
 
-- Overall post-repository confidence: **93.4%**.
+- Protected-checkpoint overall post-repository confidence: **93.4%**.
 - Calculation method: simple average of seven applicable scores.
-- Every critical acceptance criterion directly proven: `No` at the repository-only gate; browser-required criteria remained.
+- Every critical acceptance criterion directly proven at that historical repository-only gate: `No`; browser-required criteria remained.
 - Any applicable category below `90%`: `Yes` — user-surface/browser confidence (86%).
 - Default clean-confidence target of `95%` met: `No` at the repository-only gate.
 - Material residual risks at this gate: real production-renderer entry latency; route/store/network ordering across API Keys and Server Settings; responsive localized failure presentation.
@@ -225,8 +287,9 @@ The broader `pnpm test:e2e` result is not relabeled as green. Its four failures 
 - Seed data / fixtures: delayed `path-a` and `path-b` Ollama-compatible tags/ps/show responses plus failing `path-c`; no secret values.
 - Test identities/authentication/session state: local unauthenticated Settings surface.
 - Requirement-linked journeys: `BROWSER-001`, `BROWSER-002`.
-- Evidence captured: `validation-evidence/06l-settings-browser-production-build-authoritative.log`, `validation-evidence/browser/settings-browser-summary.json`, backend/frontend logs, and three screenshots.
-- Cleanup: Chrome context/browser, built server, static server, HTTP fixture and isolated runtime/database all stopped/removed; summary reports every cleanup flag true.
+- Evidence captured for the latest integrated round: `validation-evidence/09g-integrated-settings-browser.log`, `validation-evidence/09g-integrated-settings-browser/settings-browser-summary.json`, backend/frontend logs, and three integrated screenshots. The checkpoint-only `06l` evidence remains historical.
+- Integrated result: full credential surface visible in **200ms** from navigation start; all semantic lifecycle/order/failure/responsive assertions passed; screenshots were directly inspected and showed no hierarchy, clipping, overflow, or action regression.
+- Cleanup: Chrome context/browser, built server, static server, HTTP fixture and isolated runtime/database all stopped/removed; summary reports every cleanup flag true and the post-run process audit found no owned process.
 
 ## Temporary Executable Validation Plan
 
@@ -246,16 +309,17 @@ The broader `pnpm test:e2e` result is not relabeled as green. Its four failures 
 
 | Issue | Classification | Evidence | Recommended Recipient |
 | --- | --- | --- | --- |
-| Stale `autobyteus-web/docs/settings.md` still describes `providerSettings` and global/selected reload behavior | Delivery documentation follow-up | `validation-evidence/07c-audit-final-clean.log` | `/delivery_engineer` after proportional test review |
+| Long-lived Settings/LLM/secret/catalog docs still describe removed aggregate/global-reload behavior | Delivery documentation follow-up | `validation-evidence/09h2-integrated-final-audit.log`; `docs-sync-report.md` | `/delivery_engineer` after proportional test review |
 | Four unchanged full-suite baseline failures | Non-ticket baseline / maintenance signal | `03-server-e2e.log`; `03c-unrelated-failure-audit.log` | Record only; no ticket reroute |
-| `TEST-001` incomplete aggregate-negation matcher from `CRR-005` | API/E2E-owned `Local Fix` — resolved in round 2 | `08-provider-secret-test-001-fix.log`; `08b-removed-contract-test-001-audit.log` | `/code_reviewer` for repeat proportional review |
+| `TEST-001` incomplete aggregate-negation matcher from `CRR-005` | API/E2E-owned `Local Fix` — resolved in round 2 and passed `CRR-006` | `08-provider-secret-test-001-fix.log`; `08b-removed-contract-test-001-audit.log` | Historical; no current action |
+| `COV-006` stale separate built-in GLM expectation | API/E2E-owned `Local Fix` — resolved in round 3 | `09c-integrated-server-e2e.log`; `09c2-integrated-qwen-coverage-fix.log`; `09h2-integrated-final-audit.log` | `/code_reviewer` for proportional review |
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes` — completed.
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — 26 paths updated; no entire supported scenario removed.
-- Post-repository confidence: **93.4%**.
-- Broader validation decision: `Required` — completed with authoritative browser pass.
+- Proceed To API/E2E Execution: `Yes` — round 3 integrated-state execution completed.
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes` — exactly one path updated for `COV-006`; no file added or removed. IR-007's separate Gemini correction remains implementation-owned and already passed CRR-007.
+- Post-repository confidence: **93.7%** on the integrated state.
+- Broader validation decision: `Required` — completed with integrated production-build browser Pass.
 - Reroute Required Before Validation Execution: `No`.
 - Recommended Recipient If Reroute Required: N/A.
-- Notes: Every removed aggregate operation now has an independent negative GraphQL schema assertion. No executable production/durable query, alias, global reload or compatibility path was retained. `TEST-001` is resolved locally and the focused 6-test E2E file plus removed-contract audit pass. Final confidence and result are authoritative in `api-e2e-execution-coverage-report.md`.
+- Notes: Every removed aggregate operation retains an independent negative GraphQL schema assertion and `TEST-001` remains resolved. The first merged-state actual-schema run identified only the stale GLM owner expectation described in `COV-006`; it was corrected and passed its focused restart/routing E2E. No executable production/durable query, alias, global reload or compatibility path exists. Final integrated result: **Pass at 96.7%**, pending proportional review of the one API/E2E-owned durable assertion update.

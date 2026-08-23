@@ -1,0 +1,22 @@
+HEAD: f6f4d532f78f3b418dca471881f65d3415693f99
+PARENTS: 16b5696716c4cab025ddb9b6bf420d8dea796f89 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+## Canonical API/E2E current-round markers
+tickets/in-progress/api-key-management-panel-performance/api-e2e-revision-record.md:11:| API-REV-003 | `/code_reviewer`; `code-review-report.md` / CRR-007; integrated API/E2E round 3 | IR-007, CRR-007, DR-001, API-REV-002, CRR-006 | Protected-checkpoint Pass / 96.7% | Integrated Pass / 96.7% |
+tickets/in-progress/api-key-management-panel-performance/api-e2e-revision-record.md:78:### API-REV-003 — Independently validate the latest-base integrated candidate
+tickets/in-progress/api-key-management-panel-performance/api-e2e-revision-record.md:96:  - Corrected authoritative audit passed exact merge identity/parents, no unmerged paths/conflict markers, removed production contract/type absence, independent schema removals, Qwen/current-GLM split, locale composition, source-size guard, one-path durable delta and `git diff --check`; the finalization audit also confirmed canonical API-REV-003 markers and owned-resource cleanup.
+tickets/in-progress/api-key-management-panel-performance/api-e2e-coverage-investigation.md:21:- Current API/E2E Revision ID: `API-REV-003`
+tickets/in-progress/api-key-management-panel-performance/api-e2e-coverage-investigation.md:22:- Current Investigation Round: `3`
+tickets/in-progress/api-key-management-panel-performance/api-e2e-coverage-investigation.md:235:- Overall final integrated confidence: **96.7%** (simple average).
+tickets/in-progress/api-key-management-panel-performance/api-e2e-execution-coverage-report.md:22:- Current API/E2E Revision ID: `API-REV-003`
+tickets/in-progress/api-key-management-panel-performance/api-e2e-execution-coverage-report.md:23:- Current Execution Round: `3`
+tickets/in-progress/api-key-management-panel-performance/api-e2e-execution-coverage-report.md:26:- Latest Authoritative Round: Round 3 / `API-REV-003` on the integrated candidate plus one API/E2E-owned durable assertion correction.
+tickets/in-progress/api-key-management-panel-performance/api-e2e-execution-coverage-report.md:199:| `validation-evidence/09i-integrated-artifact-finalization-audit.log` | Canonical-artifact, durable-delta, patch-hygiene and cleanup finalization audit | Retained | Pass; all three canonical artifacts identify API-REV-003, exactly one durable path differs from the merge target, `git diff --check` passes, and no owned validation process/page remains |
+tickets/in-progress/api-key-management-panel-performance/api-e2e-execution-coverage-report.md:260:- Final validation confidence: **96.7%**
+## Post-CRR-007 durable test delta
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+RESULT: PASS — exactly one durable path changed.
+## Patch hygiene
+RESULT: PASS — git diff --check.
+## Owned resource/process cleanup
+SETTINGS_CLEANUP: {"backendStopped":true,"runtimeRemoved":true,"frontendStopped":true,"fixtureStopped":true}
+RESULT: PASS — no owned validation process; generated interrupt page removed; integrated Settings cleanup flags true.

@@ -430,7 +430,7 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
         ]));
       expect(firstCatalog.find(({ ownerProvider: candidate }) => candidate.id === 'GLM')?.llmModels)
         .toEqual(expect.arrayContaining([
-          expect.objectContaining({ modelIdentifier: 'glm-5.2', value: 'glm-5.2' }),
+          expect.objectContaining({ modelIdentifier: 'glm-5.3', value: 'glm-5.3' }),
         ]));
 
       const restoredFailure = await obstructDurableEnvironmentCommit(
