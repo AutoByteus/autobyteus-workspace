@@ -1,15 +1,15 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Release / Publication / Deployment Scope (Historical Pre-Authorization State)
 
 This delivery stage covers latest-base integration refresh, documentation synchronization, and the verification handoff. No release, publication, or deployment was requested or authorized before explicit user verification.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/delivery-revision-record.md`
-- Current delivery revision ID: `DR-009`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging/delivery-revision-record.md`
+- Current delivery revision ID: `DR-013`
 - Notes: Handoff is current with the integrated, checked branch and calls out all non-gating residuals explicitly.
 
 ## Final Delivery Re-entry (DR-009)
@@ -17,7 +17,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - API/E2E closure: `API-REV-007` feature-specific Pass; `CRR-015` failure-origin continuity Pass with no source defect; `CRR-016` confirms the retained test-support state has no new finding. LM Studio compactor leaf evidence and other broader capability gaps remain explicit non-gating residuals.
 - Latest tracked base: `origin/personal@d7d4eace46dc6534d50e9150c3e84d4bd41fedfb`.
 - Integration merges: `ffdf344f2` as `e839e009a`, then `d7d4eace4` as `2cb19dc8e`; both clean, latest base is an ancestor, and no unmerged paths remain.
-- Final focused checks: server native/team/application integration `19/19`; provider/catalog unit suite `16/16`; provider/error smoke `6/6`; `git diff --check` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
+- Final focused checks: server native/team/application integration `19/19`; provider/catalog unit suite `16/16`; provider/error smoke `6/6`; `git diff --check` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log`.
 - Docs result: six long-lived docs remain accurate after final integration; no additional docs impact from the retained test-support-only residual.
 - Delivery result: `Ready for explicit user verification; finalization, archival, push, release, deployment, and cleanup held.`
 
@@ -27,19 +27,19 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - README instruction followed: `pnpm -C autobyteus-web build:electron:mac`.
 - Environment: macOS ARM64; desktop `1.4.54`; Electron `42.4.1`; default production flavor `enterprise`.
 - Result: `Pass` — macOS ARM64 DMG, ZIP, app bundle, and blockmaps were produced.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.54.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log`
 - No signing identity, release tag, publication, deployment, push, or finalization was invoked.
 
 ## Authorized Finalization And Release Plan (DR-011)
 
 - User authorization: explicit request to finalize the ticket and release a new version.
 - Version selection: current `1.4.54` -> patch release `1.4.55`, tag `v1.4.55`.
-- Release notes source: `tickets/in-progress/provider-catalog-pricing-error-messaging/release-notes.md`.
+- Release notes source: `tickets/done/provider-catalog-pricing-error-messaging/release-notes.md`.
 - Planned sequence: archive ticket before final commit; push ticket branch; refresh `origin/personal`; merge and push `personal`; run the repository release helper with the archived release notes.
-- Current result: `Authorized and prepared; execution pending.`
+- Current result: `Superseded by DR-012; finalization and release completed.`
 
 ## Initial Delivery Integration Refresh
 
@@ -76,24 +76,24 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 - Trigger: Post-closure API/E2E Round 7 durable test-support delta.
 - Safety checkpoint: `e6ba62846`.
 - Latest-base integration: `origin/personal@14c08eeb458ff440123ca53d11192c2cb1a0216c` merged cleanly as `a80d73dcd`.
-- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` (`API-REV-007`).
-- Last authoritative execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` (`API-REV-006`).
+- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-harness.ts`.
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/api-e2e-coverage-investigation.md` (`API-REV-007`).
+- Last authoritative execution report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/api-e2e-execution-coverage-report.md` (`API-REV-006`).
 - Required review route: `/api_e2e_engineer` for bounded execution; return through `/code_reviewer` if durable coverage changes again.
 - Current result: `Closed — API-REV-007 and downstream review artifacts are authoritative.`
 
 ## Prior API-REV-007 Execution Hold — Closed
 
 - Structural review: `CRR-010 Pass`; no test-code finding.
-- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
-- Execution investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-coverage-investigation.md` (`API-REV-007`).
-- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md` is authoritative at `API-REV-007`.
+- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-harness.ts`.
+- Execution investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/api-e2e-coverage-investigation.md` (`API-REV-007`).
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/api-e2e-execution-coverage-report.md` is authoritative at `API-REV-007`.
 - User verification: prior DR-003 verification state remains superseded; no terminal finalization, release, deployment, archival, or cleanup is authorized.
 
 ## Prior API-REV-007 Re-review Hold — Closed
 
 - New durable repair checkpoint: `3f9ac980d`.
-- Changed path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
+- Changed path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-harness.ts`.
 - Observed issue: remaining stale `listRawTraceCorpusOrdered()` call; repair uses `listTurnRawTraceCorpusOrdered()`.
 - Required route: `/api_e2e_engineer` for bounded rerun; return through `/code_reviewer` if durable coverage changes again.
 - Current result: `Closed — CRR-011 retained-state review and API-REV-007 execution are recorded.`
@@ -101,7 +101,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 ## Prior API-REV-007 Quality-Probe Re-review Hold — Closed
 
 - Proposed rework checkpoint: `8021ed50d`.
-- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/test-support/live-e2e/live-e2e-harness.ts`.
+- Changed durable path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-harness.ts`.
 - Proposed change: restore Group-A/Unicode/Group-B semantic order and reduce only the local Group-A fixture to 100 records; retain the CRR-011 stale-store API repair.
 - Reason: the prior Unicode-first probe passed leaf evidence but failed projected-continuation quality preservation for Group-A anchors.
 - Required route: `/code_reviewer` for proportional re-review, then `/api_e2e_engineer` for rerun if accepted.
@@ -117,7 +117,7 @@ This delivery stage covers latest-base integration refresh, documentation synchr
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/tickets/done/provider-catalog-pricing-error-messaging/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: six long-lived docs; see the docs sync report for the full table.
 - No-impact rationale: N/A; this change has durable catalog, pricing, and error-contract impact.
@@ -133,7 +133,7 @@ No version file, release commit, tag, or release note was created. Version/relea
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/investigation-notes.md`
 - Ticket branch: `codex/provider-catalog-pricing-error-messaging`
 - Ticket branch commit result: `Held pending user verification; local delivery checkpoints exist and have not been pushed`
 - Ticket branch push result: `Held`
@@ -197,7 +197,7 @@ None performed. No deployment, publication, Docker rollout, or live service rest
 - Provider/catalog unit check — `5 files, 16 tests passed`.
 - Final provider/error smoke — `2 files, 6 tests passed`.
 - `git diff --check` — passed in the final evidence log.
-- Feature-specific API/E2E result — Pass; full evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-catalog-pricing-error-messaging/api-e2e-execution-coverage-report.md`.
+- Feature-specific API/E2E result — Pass; full evidence is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/api-e2e-execution-coverage-report.md`.
 
 ## Rollback Criteria
 
@@ -205,4 +205,26 @@ No deployment or persisted-data transition occurred, so no rollback action is re
 
 ## Final Status
 
-`Ready for explicit user verification; held before archival, repository finalization, release, publication, deployment, or cleanup.`
+`Superseded by DR-013 — repository finalized, v1.4.55 released, and cleanup completed.`
+
+## Final Authoritative Result (DR-012)
+
+- User authorization: explicit request to finalize the ticket and release a new version.
+- Ticket archive: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider-catalog-pricing-error-messaging`.
+- Ticket branch: `codex/provider-catalog-pricing-error-messaging`, archived at `ad111178e` and pushed to `origin/codex/provider-catalog-pricing-error-messaging`.
+- Target finalization: merged into `personal` as `31816b591`; target push checkpoint `80ab35035` completed.
+- Release: `v1.4.55` released by the documented helper; release commit `a175b2b09` and tag push completed. `autobyteus-web` and `autobyteus-message-gateway` are version `1.4.55`.
+- Release notes: archived ticket notes supplied to the helper; `.github/release-notes/release-notes.md` synchronized.
+- Verification: post-merge server integration `19/19`, provider/catalog units `16/16`, and `git diff --check` passed.
+- Deployment: no separate production deployment, database migration, or live restart was invoked.
+- Current result: `Repository finalized and v1.4.55 released; local ticket/worktree cleanup was the remaining housekeeping step.`
+
+## Final Authoritative Result (DR-013)
+
+- Cleanup authorization: included in the user's explicit finalization and release request.
+- Dedicated ticket worktree: removed after clean-state confirmation at `ad111178e`.
+- Local ticket branch: `codex/provider-catalog-pricing-error-messaging` deleted.
+- Remote ticket branch: `origin/codex/provider-catalog-pricing-error-messaging` deleted.
+- Worktree metadata: pruned successfully.
+- Release preservation: `personal` and `v1.4.55` remain pushed; release commit is `a175b2b09`.
+- Final result: `Complete — ticket archived, repository finalized, v1.4.55 released, and dedicated cleanup completed.`
