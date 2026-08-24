@@ -9,6 +9,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-001 | Initial user request and bootstrap-scope framing | N/A | Draft | BEH-001–BEH-003; REQ-001–REQ-007 | Coherent baseline requirements recorded; selected frontend remains a blocking open decision. |
 | RER-002 | User clarification: latest source and prototype-only terminal scope | Draft | Draft / Prototype Needed | BEH-001; REQ-001; AC-001; SCN-001; DEC-001–DEC-002 | `autobyteus-web` selected, latest `origin/personal` kickoff snapshot required, and downstream architecture/production engineering excluded. |
 | RER-003 | PPA-001, completed parity evidence, and explicit user approval | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-001–BEH-003; REQ-001–REQ-007; AC-001–AC-006 | Approved UI/UX package and final references integrated; all acceptance criteria met; no architecture handoff authorized. |
+| RER-004 | User rejects standalone prototype repository; placement correction required | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; DEC-003 | UI/UX approval preserved; terminal completion reopened until owning-repository relocation, path rewrite, validation, and commit succeed. |
 
 ## Revision Entries
 
@@ -56,3 +57,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. This ticket is terminal at the approved product prototype; any later production implementation requires a separate user request.
 - Remaining gaps, assumptions, or blocked decisions: None for the approved prototype boundary. Two unchanged source unit-harness failures remain documented and are non-blocking because their observable obligations pass JRN-047 and JRN-049.
 - Next action or recipient: Complete the prototype-only ticket and return the cumulative approved package to the user/calling workflow. Do not route to architecture.
+
+### RER-004 — Correct prototype repository ownership and placement
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: Product Prototyper reported the user’s explicit rejection of `/home/autobyteus/workspace/autobyteus-web-prototype` as a standalone Git repository and the requirement that the project be tracked through `/home/autobyteus/workspace/autobyteus-workspace`.
+- Prior authoritative status (`N/A` for `RER-001`): Approved / Prototype-Only Complete
+- Current authoritative status: Draft / Prototype Needed
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; QR-004; DEC-003.
+- Why this baseline or revision was recorded: The prior external canonical-root selection did not authorize a standalone repository and conflicts with the user’s ownership requirement. Repository placement and provenance are material operational requirements even though observable UI/UX remains approved.
+- Canonical artifact sections changed: Document status; problem/success boundary; current/desired behavior; scope; requirements; acceptance criteria; scenarios; UI/UX artifact locators; quality; data continuity; supplements; decisions; traceability; readiness; completion classification.
+- Supplemental artifacts added, changed, or removed: Added the corrected pending root `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`; retained the intact external root only as the corrective source until successful relocation.
+- Prototype evidence or product decisions incorporated: User mandates existing-workspace repository ownership. Requirements Engineering selects repository-relative path `ui-prototypes/autobyteus-web-prototype` in the existing isolated ticket worktree on branch `codex/initial-prototype-baseline`. Standalone branch `main` and commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6` are rejected as canonical history.
+- User approval impact: PPA-001 and the approved observable UI/UX remain valid. No new visual/interaction approval is required if correction changes only path/provenance references and all parity/final-reference evidence remains intact. Any observable change requires renewed user review.
+- Downstream architecture impact: None. Architecture and production engineering remain outside this prototype-only ticket.
+- Remaining gaps, assumptions, or blocked decisions: Relocate/copy all project content excluding standalone `.git`; remove nested Git provenance; rewrite active absolute paths; preserve evidence/hashes; rerun prototype/package validations; commit through the owning workspace ticket branch; return corrected absolute paths and commit evidence.
+- Next action or recipient: Reclassify the focused update as `Prototype Needed` and route to Product Prototyper for correction. Do not route to architecture.
