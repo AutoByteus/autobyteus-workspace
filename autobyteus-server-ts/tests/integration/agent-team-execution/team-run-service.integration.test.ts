@@ -122,6 +122,10 @@ const createHarness = () => {
   const allocator = {
     allocateForAgentDefinition: vi.fn(async (definitionId: string) => `${definitionId}-run-${++allocation}`),
   };
+  const teamAllocator = {
+    allocateForTeamDefinitionName: vi.fn((definitionName: string) =>
+      definitionName === "Classroom Team" ? "classroom-root-run" : "student-study-group-run"),
+  };
   const service = new TeamRunService({
     agentTeamRunManager: manager as never,
     teamDefinitionService: definitionService as never,
@@ -129,8 +133,9 @@ const createHarness = () => {
     workspaceManager: workspaceManager as never,
     memoryDir: "/tmp/team-run-service-current-integration",
     agentRunIdentityAllocator: allocator,
+    teamRunIdentityAllocator: teamAllocator,
   });
-  return { service, manager, catalog, workspaceManager, allocator };
+  return { service, manager, catalog, workspaceManager, allocator, teamAllocator };
 };
 
 afterEach(() => vi.clearAllMocks());
@@ -140,7 +145,6 @@ describe("TeamRunService current recursive topology integration", () => {
     const { service, manager } = createHarness();
     await service.createTeamRunFromRootConfig({
       teamDefinitionId: "classroom-team",
-      teamRunId: "root-expanded-run",
       rootConfig: {
         workspaceRootPath: "/tmp/classroom-workspace",
         llmModelIdentifier: "shared-model",
@@ -179,7 +183,6 @@ describe("TeamRunService current recursive topology integration", () => {
     const { service, manager, catalog, workspaceManager } = createHarness();
     const root = await service.createTeamRun({
       teamDefinitionId: "classroom-team",
-      teamRunId: "classroom-root-run",
       applicationBinding: { applicationId: "classroom-app", bindingId: "binding-1" },
       teamConfigs: [
         teamLaunch("/", RuntimeKind.CODEX_APP_SERVER, "/tmp/classroom-workspace/"),
@@ -268,7 +271,6 @@ describe("TeamRunService current recursive topology integration", () => {
 
     await expect(service.createTeamRun({
       teamDefinitionId: "classroom-team",
-      teamRunId: "catalog-failure-run",
       teamConfigs: [
         teamLaunch("/", RuntimeKind.AUTOBYTEUS),
         teamLaunch("/StudentStudyGroup", RuntimeKind.AUTOBYTEUS),
@@ -280,7 +282,7 @@ describe("TeamRunService current recursive topology integration", () => {
         launch("/StudentStudyGroup/student_two", RuntimeKind.AUTOBYTEUS),
       ],
     })).rejects.toThrow("catalog unavailable");
-    expect(manager.terminateTeamRun).toHaveBeenCalledWith("catalog-failure-run");
+    expect(manager.terminateTeamRun).toHaveBeenCalledWith("classroom-root-run");
   });
 
   it("records terminal history only when the manager accepts root termination", async () => {

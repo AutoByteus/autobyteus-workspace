@@ -397,15 +397,13 @@ describe("Application context capability integration", () => {
     };
     let teamRunCount = 0;
     const teamRunService = {
-      allocateTeamRunId: vi.fn(async () => `team-run-${teamRunCount + 1}`),
-      createTeamRun: vi.fn(async ({
-        teamRunId,
+      createTeamRunFromRootConfig: vi.fn(async ({
         memberConfigs,
       }: {
-        teamRunId: string;
         memberConfigs: Array<{ memberAddress: string }>;
       }) => {
         teamRunCount += 1;
+        const teamRunId = `team-run-${teamRunCount}`;
         return {
         teamRunId,
         config: {

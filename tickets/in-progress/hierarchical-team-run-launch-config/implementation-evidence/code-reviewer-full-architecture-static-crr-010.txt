@@ -1,0 +1,157 @@
+HEAD e0af033e8a25e83f218db357514f79dc99ded706
+BASE 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+STATUS
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-architecture-static-crr-010.txt
+
+CHANGED IMPLEMENTATION SOURCE SIZE/DELTA
+M	autobyteus-web/components/workspace/config/RunConfigPanel.vue	effective=488	+107/-50
+M	autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts	effective=469	+1/-1
+M	autobyteus-web/stores/workspace.ts	effective=434	+9/-4
+M	autobyteus-web/components/workspace/config/MemberOverrideItem.vue	effective=403	+25/-5
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts	effective=402	+1/-1
+M	autobyteus-web/composables/mobile/useMobileRunSetupController.ts	effective=381	+16/-6
+M	autobyteus-web/stores/agentTeamRunStore.ts	effective=343	+16/-21
+M	autobyteus-web/test-support/currentTeamTestFixtures.ts	effective=329	+79/-36
+M	autobyteus-web/services/teamExecution/teamExecutionViewState.ts	effective=326	+3/-3
+M	autobyteus-web/components/workspace/config/WorkspaceSelector.vue	effective=307	+7/-3
+M	autobyteus-web/localization/messages/en/workspace.ts	effective=301	+34/-0
+M	autobyteus-web/localization/messages/zh-CN/workspace.ts	effective=300	+34/-0
+M	autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts	effective=298	+22/-19
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.ts	effective=295	+318/-0
+M	autobyteus-web/services/runHydration/teamRunContextHydrationService.ts	effective=290	+31/-10
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-task-package-converter.ts	effective=288	+4/-4
+M	autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts	effective=276	+19/-0
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-execution-v1-index.ts	effective=272	+302/-0
+M	autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts	effective=272	+10/-10
+M	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts	effective=268	+4/-4
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts	effective=265	+288/-0
+M	autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts	effective=264	+5/-5
+M	autobyteus-web/stores/teamRunConfigStore.ts	effective=260	+186/-269
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-migration-state-classifier.ts	effective=255	+4/-4
+M	autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts	effective=253	+23/-15
+M	autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts	effective=247	+79/-45
+M	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts	effective=245	+1/-2
+M	autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts	effective=240	+142/-58
+A	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue	effective=220	+229/-0
+M	autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts	effective=218	+6/-4
+A	autobyteus-web/utils/teamRunLaunchHierarchy.ts	effective=215	+231/-0
+M	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts	effective=206	+6/-6
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-mutator.ts	effective=203	+214/-0
+M	autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts	effective=203	+13/-13
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run-config.ts	effective=194	+31/-7
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.ts	effective=191	+2/-2
+M	autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts	effective=174	+2/-6
+M	autobyteus-web/stores/runHistoryTeamHelpers.ts	effective=168	+2/-2
+M	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts	effective=165	+26/-20
+M	autobyteus-server-ts/src/run-history/services/team-run-state-package-loader.ts	effective=165	+3/-3
+M	autobyteus-web/components/mobile/MobileRunSetup.vue	effective=163	+3/-3
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.ts	effective=157	+2/-2
+M	autobyteus-web/composables/useDefinitionLaunchDefaults.ts	effective=153	+106/-72
+M	autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts	effective=152	+28/-3
+M	autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts	effective=147	+126/-101
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts	effective=143	+2/-2
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts	effective=138	+69/-21
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-types.ts	effective=130	+154/-0
+M	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue	effective=130	+87/-188
+A	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue	effective=125	+129/-0
+M	autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts	effective=113	+8/-0
+M	autobyteus-server-ts/src/run-history/services/team-run-history-service.ts	effective=112	+3/-3
+M	autobyteus-web/utils/teamRunLaunchReadiness.ts	effective=110	+85/-127
+M	autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-context-resolver.ts	effective=109	+2/-2
+M	autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts	effective=107	+34/-29
+M	autobyteus-server-ts/src/workspaces/workspace-removal-guard.ts	effective=107	+4/-4
+M	autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts	effective=104	+4/-0
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts	effective=98	+20/-56
+M	autobyteus-web/utils/application/applicationLaunch.ts	effective=92	+3/-11
+A	autobyteus-web/components/workspace/config/StoredTeamRunConfigTree.vue	effective=81	+84/-0
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-state-package-v1-validator.ts	effective=78	+86/-0
+M	autobyteus-web/types/agent/TeamRunConfig.ts	effective=75	+64/-8
+M	autobyteus-server-ts/src/agent-team-execution/services/team-recipient-resolver.ts	effective=72	+2/-2
+M	autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts	effective=70	+18/-10
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-builder.ts	effective=57	+61/-0
+M	autobyteus-web/utils/teamRunConfigUtils.ts	effective=56	+46/-76
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-v1-row-projector.ts	effective=51	+57/-0
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-store.ts	effective=45	+49/-0
+M	autobyteus-server-ts/src/run-history/store/team-run-execution-tree-store.ts	effective=45	+3/-3
+M	autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts	effective=40	+1/-1
+M	autobyteus-server-ts/src/run-history/services/team-run-history-index-row-projector.ts	effective=40	+2/-13
+M	autobyteus-web/types/agent/TeamLaunchDraft.ts	effective=38	+29/-23
+A	autobyteus-web/components/workspace/config/StoredTeamRunConfigForm.vue	effective=34	+39/-0
+M	autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts	effective=33	+22/-51
+A	autobyteus-web/components/workspace/config/StoredLaunchConfigurationCard.vue	effective=31	+33/-0
+M	autobyteus-server-ts/src/agent-memory/services/team-memory-member-target-builder.ts	effective=30	+2/-2
+M	autobyteus-server-ts/src/agent-memory/domain/agent-memory-location.ts	effective=26	+2/-2
+M	autobyteus-server-ts/src/app-data-migrations/legacy/team-run-metadata-types.ts	effective=26	+1/-1
+D	autobyteus-web/components/workspace/config/MemberOverrideTree.vue
+D	autobyteus-web/utils/teamRunMemberConfigBuilder.ts
+
+CURRENT RUNTIME IMPORTS OF MIGRATION V1
+
+OLD WEB/CONTRACT SYMBOLS
+autobyteus-web/docs/agent_teams.md:30:- `utils/teamRunMemberConfigBuilder.ts`
+autobyteus-web/docs/agent_teams.md:143:`MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
+
+CONFLICT MARKERS
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:2:==========================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:28:===========================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:94:================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:111:===========================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:195:===============================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:223:==================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:227:==================================
+
+RUN CONFIG PANEL EFFECTIVE
+488
+CATALOG SYNC EFFECTIVE
+33
+
+IMPORT EDGE CHECK
+useDefinitionLaunchDefaults imports:
+import type { AgentDefinition } from '~/stores/agentDefinitionStore'
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+import type {
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
+import {
+teamRunConfigUtils imports:
+import {
+import type { AgentConfigOverride, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
+import { normalizeModelConfigRecord } from '~/types/launch/defaultLaunchConfig'
+RunConfigPanel core imports:
+import { computed, ref, watch } from 'vue'
+import { Icon } from '@iconify/vue'
+import { useLocalization } from '~/composables/useLocalization'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import { useAgentContextsStore } from '~/stores/agentContextsStore'
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useWorkspaceStore } from '~/stores/workspace'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
+import { useRightSideTabs } from '~/composables/useRightSideTabs'
+import AgentRunConfigForm from './AgentRunConfigForm.vue'
+import TeamRunConfigForm from './TeamRunConfigForm.vue'
+import StoredTeamRunConfigForm from './StoredTeamRunConfigForm.vue'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
+import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import { applyPendingTeamWorkspaceReadiness } from '~/utils/teamRunLaunchReadiness'
+
+FINAL REVIEWER ARTIFACT / SOURCE ISOLATION
+Product-source working-tree diff after reviewer probes:
+Temporary probe paths:
+Reviewer-owned status:
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-architecture-static-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-root-identity-order-probe-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-topology-workspace-probe-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-010.txt
+Diff check:

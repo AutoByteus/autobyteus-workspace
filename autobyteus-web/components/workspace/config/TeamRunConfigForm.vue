@@ -17,7 +17,7 @@
       :is-root="true"
       :disabled="isFormReadOnly"
       :read-only="readOnlyMode"
-      :workspace-loading-state="workspaceStateFor('/')"
+      :workspace-operation="workspaceStateFor('/')"
       :runtime-catalog-state="catalogStateFor(configurationView.root.effectiveConfig.runtimeKind)"
       @update-root="handleRootUpdate"
       @update:workspace-selection="forwardWorkspaceSelection"
@@ -70,7 +70,8 @@ import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride, TeamRunConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import { useTeamRunConfigStore, type RuntimeModelCatalogState, type WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
+import type { TeamWorkspaceOperationState } from '~/types/agent/TeamLaunchDraft'
+import { useTeamRunConfigStore, type RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
 import { buildTeamMemberTreeFromDefinition, flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers'
 import { resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
@@ -81,9 +82,6 @@ import { useLocalization } from '~/composables/useLocalization'
 const props = defineProps<{
   config: Readonly<TeamRunConfig>
   teamDefinition: AgentTeamDefinition
-  workspaceLoadingState?: WorkspaceLoadingState
-  workspaceLoadingStates?: Readonly<Record<AgentTeamAddress, WorkspaceLoadingState>>
-  workspaceSelections?: Readonly<Partial<Record<AgentTeamAddress, WorkspaceSelectionState>>>
   repairAddresses?: readonly AgentTeamAddress[]
   readOnly?: boolean
 }>()
@@ -102,20 +100,10 @@ const configurationView = computed(() => resolveTeamRunConfiguration(props.confi
 const memberCount = computed(() => flattenTeamMemberNodesForDisplay(memberTree.value).length)
 const coordinatorAddress = computed(() => memberTree.value.find((node) => node.displayName === props.teamDefinition.coordinatorMemberName)?.address || '/')
 const repairAddresses = computed(() => props.repairAddresses || [])
-const workspaceStateFor = (address: AgentTeamAddress): WorkspaceLoadingState => props.workspaceLoadingStates?.[address]
-  ?? (address === '/' ? props.workspaceLoadingState : null)
-  ?? { isLoading: false, error: null, loadedPath: null }
-const workspaceSelectionFor = (address: AgentTeamAddress): Readonly<WorkspaceSelectionState> => {
-  const explicit = props.workspaceSelections?.[address]
-  if (explicit) return explicit
-  const effective = configurationView.value.teamsByAddress[address]?.effectiveConfig
-  if (!effective) throw new Error(`Team launch view is missing '${address}'.`)
-  return {
-    mode: effective.workspaceId ? 'existing' : 'new',
-    existingWorkspaceId: effective.workspaceId,
-    newWorkspacePath: effective.workspaceRootPath || workspaceStateFor(address).loadedPath || '',
-  }
-}
+const workspaceStateFor = (address: AgentTeamAddress): TeamWorkspaceOperationState =>
+  launchConfigStore.teamWorkspaceAuthoringViewFor(address).operation
+const workspaceSelectionFor = (address: AgentTeamAddress): Readonly<WorkspaceSelectionState> =>
+  launchConfigStore.teamWorkspaceAuthoringViewFor(address).selection
 const catalogStateFor = (runtimeKind: string): RuntimeModelCatalogState => launchConfigStore.runtimeModelCatalogStates[runtimeKind]
   ?? { status: 'idle', error: null }
 const { reloadRuntimeKind } = useTeamRunRuntimeCatalogSync(toRef(props, 'config'))

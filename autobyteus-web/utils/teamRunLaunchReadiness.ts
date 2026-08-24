@@ -1,7 +1,7 @@
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { TeamWorkspaceAuthoringState } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
-import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import { resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
@@ -29,14 +29,14 @@ const catalogFor = (catalogs: RuntimeModelCatalogs, runtimeKind: string): string
 const ownsWorkspaceSelection = (scope: TeamRunConfigurationView['root']): boolean =>
   scope.address === '/' || Boolean(scope.override && Object.hasOwn(scope.override, 'workspace'))
 
-export const applyPendingTeamWorkspaceReadiness = (
+export const applyTeamWorkspaceAuthoringReadiness = (
   issues: readonly TeamRunLaunchBlockingIssue[],
-  selections: Readonly<Partial<Record<AgentTeamAddress, WorkspaceSelectionState>>>,
+  values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>,
 ): TeamRunLaunchBlockingIssue[] => {
-  const pendingNewEntries = (Object.entries(selections) as Array<[AgentTeamAddress, WorkspaceSelectionState | undefined]>)
-    .filter((entry): entry is [AgentTeamAddress, WorkspaceSelectionState] => entry[1]?.mode === 'new')
+  const pendingNewEntries = (Object.entries(values) as Array<[AgentTeamAddress, TeamWorkspaceAuthoringState | undefined]>)
+    .filter((entry): entry is [AgentTeamAddress, TeamWorkspaceAuthoringState] => entry[1]?.selectionMode === 'new')
   const emptyPathAddresses = new Set(pendingNewEntries
-    .filter(([, selection]) => !selection.newWorkspacePath.trim())
+    .filter(([, value]) => !value.newWorkspacePath.trim())
     .map(([address]) => address))
   const pendingIssues = [...emptyPathAddresses].sort().map((subjectAddress) => ({
     code: 'WORKSPACE_REQUIRED' as const,
@@ -47,7 +47,7 @@ export const applyPendingTeamWorkspaceReadiness = (
   const retainedIssues = issues.filter((issue) => {
     if (issue.code !== 'WORKSPACE_REQUIRED' || !issue.subjectAddress) return true
     if (emptyPathAddresses.has(issue.subjectAddress)) return false
-    return selections[issue.subjectAddress]?.mode !== 'new'
+    return values[issue.subjectAddress]?.selectionMode !== 'new'
   })
   return [...pendingIssues, ...retainedIssues]
 }

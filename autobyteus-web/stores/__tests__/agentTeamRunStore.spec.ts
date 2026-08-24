@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useWorkspaceStore } from '~/stores/workspace'
 import { TeamStreamingService } from '~/services/agentStreaming'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
@@ -124,6 +125,10 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
 vi.mock('~/stores/runHistoryLoadActions', () => ({
   ensureRunHistoryWorkspaceByRootPath: vi.fn(),
   resolveRunHistoryWorkspaceMetadataByRootPath: vi.fn(),
+}))
+
+vi.mock('~/composables/useRightSideTabs', () => ({
+  useRightSideTabs: () => ({ setActiveTab: vi.fn() }),
 }))
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
@@ -605,6 +610,120 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(teamContextsStoreMock.addTeamContext).toHaveBeenCalledTimes(1)
   })
 
+  it('registers two active New Team scopes and creates exactly one TeamRun from the same launch activation', async () => {
+    const { configStore } = configureSelectedNestedLaunchDraft()
+    const initialDraftId = configStore.selectedDraft!.draftId
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: initialDraftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/workspace/root-new' },
+    })
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: initialDraftId, teamAddress: '/BuildSquad',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/build-new' },
+    })
+    const workspaces = useWorkspaceStore()
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockImplementation(async ({ root_path }) => {
+      const workspaceId = root_path.endsWith('root-new') ? 'ws-root-new' : 'ws-build-new'
+      workspaces.workspaceMetadataById[workspaceId] = {
+        workspaceId, workspaceRootPath: root_path, displayName: workspaceId, kind: 'filesystem',
+      }
+      return workspaceId
+    })
+    mockMutate.mockResolvedValue({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: nestedHydratedTeam() })
+
+    await useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
+
+    expect(createWorkspace).toHaveBeenCalledTimes(2)
+    expect(createWorkspace).toHaveBeenNthCalledWith(1, { root_path: '/workspace/build-new' })
+    expect(createWorkspace).toHaveBeenNthCalledWith(2, { root_path: '/workspace/root-new' })
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { input: expect.objectContaining({
+        teamConfigs: expect.arrayContaining([
+          expect.objectContaining({ teamAddress: '/', workspaceRootPath: '/workspace/root-new' }),
+          expect.objectContaining({ teamAddress: '/BuildSquad', workspaceRootPath: '/workspace/build-new' }),
+        ]),
+      }) },
+    }))
+  })
+
+  it('deduplicates one canonical New path, scopes a registration failure to both Teams, and does not create a TeamRun', async () => {
+    const { configStore } = configureSelectedNestedLaunchDraft()
+    const draftId = configStore.selectedDraft!.draftId
+    for (const teamAddress of ['/', '/BuildSquad'] as const) {
+      configStore.applyTeamWorkspaceAuthoringCommand({
+        kind: 'set_selection', draftId, teamAddress,
+        selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/shared-new/' },
+      })
+    }
+    const workspaces = useWorkspaceStore()
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockRejectedValue(new Error('registration unavailable'))
+
+    await expect(useAgentTeamRunStore().launchDraft(configStore.selectedDraft!))
+      .rejects.toThrow('registration unavailable')
+
+    expect(createWorkspace).toHaveBeenCalledOnce()
+    expect(createWorkspace).toHaveBeenCalledWith({ root_path: '/workspace/shared-new' })
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.teamWorkspaceAuthoringViewFor('/').operation).toEqual({ status: 'error', error: 'registration unavailable' })
+    expect(configStore.teamWorkspaceAuthoringViewFor('/BuildSquad').operation).toEqual({ status: 'error', error: 'registration unavailable' })
+    expect(configStore.teamWorkspaceAuthoringViewFor('/').selection.mode).toBe('new')
+    expect(configStore.teamWorkspaceAuthoringViewFor('/BuildSquad').selection.mode).toBe('new')
+  })
+
+  it('performs zero registration when a pending Team address is already stale before launch', async () => {
+    const { configStore } = configureSelectedNestedLaunchDraft()
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/BuildSquad',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/stale-build' },
+    })
+    teamDefinitions.set('root-definition', {
+      id: 'root-definition', name: 'Nested Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' }],
+    })
+    const createWorkspace = vi.spyOn(useWorkspaceStore(), 'createWorkspace')
+
+    await expect(useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)).rejects.toThrow('Team topology changed')
+
+    expect(createWorkspace).not.toHaveBeenCalled()
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
+    expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
+  })
+
+  it('rejects a workspace result when topology changes after registration dispatch and never creates a TeamRun', async () => {
+    const { configStore } = configureSelectedNestedLaunchDraft()
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/BuildSquad',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/build-dispatched' },
+    })
+    const workspaces = useWorkspaceStore()
+    let resolveWorkspace!: (workspaceId: string) => void
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockReturnValue(new Promise((resolve) => {
+      resolveWorkspace = resolve
+    }))
+    const launch = useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
+    await vi.waitFor(() => expect(createWorkspace).toHaveBeenCalledOnce())
+    teamDefinitions.set('root-definition', {
+      id: 'root-definition', name: 'Nested Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' }],
+    })
+    workspaces.workspaceMetadataById['ws-dispatched'] = {
+      workspaceId: 'ws-dispatched', workspaceRootPath: '/workspace/build-dispatched',
+      displayName: 'dispatched', kind: 'filesystem',
+    }
+    resolveWorkspace('ws-dispatched')
+
+    await expect(launch).rejects.toThrow('Team topology changed during workspace preparation')
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.selectedDraft!.config.teamOverrides['/BuildSquad']).toBeUndefined()
+    expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
+    expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
+  })
+
   it('admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success', async () => {
     const { configStore, draft } = configureSelectedNestedLaunchDraft()
     const hydrated = nestedHydratedTeam()
@@ -621,7 +740,10 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(() => configStore.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'other-model' })).toThrow(/in flight/)
     expect(() => configStore.focusMember('/BuildSquad/implementer')).toThrow(/in flight/)
     expect(() => configStore.setPendingInput('/BuildSquad/review_lead', { text: 'late', attachments: [] })).toThrow(/in flight/)
-    expect(() => configStore.setWorkspaceLoading(true)).toThrow(/in flight/)
+    expect(() => configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: draft.draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/tmp/late' },
+    })).toThrow(/in flight/)
     expect(() => configStore.removeDraft(draft.draftId)).toThrow(/in flight/)
     expect(() => configStore.clearConfig()).toThrow(/in flight/)
     expect(() => useAgentSelectionStore().selectRun('other-run', 'team')).toThrow(/cannot change/)
@@ -646,7 +768,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     await expect(useAgentTeamRunStore().launchDraft(draft)).rejects.toThrow('allocation unavailable')
 
-    expect(configStore.selectedDraft).toBe(draft)
+    expect(configStore.selectedDraft).toEqual(draft)
     expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
     expect(selectionStore.subject).toEqual({ kind: 'team_draft', draftId: draft.draftId })
     expect(() => configStore.applyConfigEdit({ kind: 'set_root_auto_execute_tools', autoExecuteTools: false })).not.toThrow()

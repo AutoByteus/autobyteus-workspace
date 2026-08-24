@@ -2,7 +2,7 @@
 
 ## Status And Authority
 
-`Approved` intended-behavior supplement. Approved with `requirements.md` by the user on 2026-08-24. The user subsequently completed personal review of the design package and authorized architecture-review handoff.
+`Approved` intended-behavior supplement. Approved with `requirements.md` by the user on 2026-08-24. The user subsequently completed personal review of the design package and authorized architecture-review handoff. SR-008 clarifies the already-governing UC-007/R-017/AC-015 topology-repair behavior and the integrated controlled-workspace contract; it introduces no new product behavior.
 
 ## Configuration Subjects
 
@@ -92,9 +92,9 @@ Each nested-team group displays:
 
 ### Loading, Error, And Locked States
 
-- Runtime/model catalog and workspace loading feedback is associated with the canonical Team address whose effective configuration depends on it.
-- Loading preserves stored intent, disables only controls that cannot be used safely, and keeps launch blocked until the effective scope is valid.
-- Catalog or workspace failure is visible at the affected Team scope and offers the normal recovery/retry action; it never substitutes a different value silently.
+- Runtime/model catalog and workspace loading feedback is associated with the canonical Team address whose effective configuration depends on it and with the launch draft that owns that address-qualified intent.
+- Loading preserves the draft's stored intent and inactive New-path buffer, disables only controls that cannot be used safely, and keeps launch blocked until the effective scope is valid.
+- Catalog or workspace failure is visible at the affected Team scope and offers the normal recovery/retry action; it never substitutes a different value silently or leaks into another draft/context.
 - Read-only, locked, and in-flight drafts disable root, nested-Team, reset, and Agent override edits consistently while keeping effective summaries visible.
 - A root-only definition remains the intentional empty hierarchy state: no nested-scope disclosure or placeholder is added.
 
@@ -115,10 +115,12 @@ Each nested-team group displays:
 ## Topology Changes Before Launch
 
 - Adding a nested team creates an inherited Team scope by default.
-- Removing a nested team invalidates its team-scope and descendant Agent overrides.
-- Moving/renaming a team changes canonical addresses; old overrides do not silently attach to a different placement.
-- Stale Team/Agent override intent is pruned before launch and the UI displays which canonical addresses were repaired.
-- Launch never accepts an unknown or kind-mismatched scoped subject.
+- For an unchanged valid address in the same draft, root and nested-Team workspace selection mode, active or inactive New-path buffer, and address-scoped loading/error presentation remain stable across ordinary configuration edits. A real draft/context change does not reuse another draft's buffer or operation state.
+- Removing a nested team invalidates its Team-scope and descendant Agent overrides plus any active or inactive workspace-selection/loading/error state keyed to those removed subjects.
+- Moving/renaming a team changes canonical addresses, and changing a subject's kind invalidates the old subject identity. Old overrides or workspace buffers do not silently attach to a different placement.
+- One topology-aware draft repair prunes every stale Team/Agent override and stale Team workspace state, reports each affected canonical address once, and stops that launch attempt before any workspace registration or TeamRun create request.
+- The root `/` workspace buffer is never pruned by a nested-topology edit. Resetting a valid nested Team override intentionally clears that Team's workspace authoring/loading/error state together with its scoped configuration.
+- Launch never accepts an unknown or kind-mismatched scoped subject, and no broad configuration-object watcher is used to approximate these transitions.
 
 ## Nested Definition Defaults
 

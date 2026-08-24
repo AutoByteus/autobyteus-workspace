@@ -6,12 +6,56 @@ import type {
 } from './TeamRunConfig'
 import type { AgentTeamAddress } from './AgentTeamAddress'
 import type { ContextAttachment } from '~/types/conversation'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 
 export type TeamLaunchDraftId = string & { readonly __teamLaunchDraftId: unique symbol }
 
 export interface TeamLaunchPendingInput {
   readonly text: string
   readonly attachments: readonly ContextAttachment[]
+}
+
+export type TeamWorkspaceOperationStatus = 'idle' | 'loading' | 'error'
+
+export interface TeamWorkspaceOperationState {
+  readonly status: TeamWorkspaceOperationStatus
+  readonly error: string | null
+}
+
+export interface TeamWorkspaceAuthoringState {
+  readonly selectionMode: WorkspaceSelectionState['mode']
+  readonly newWorkspacePath: string
+  readonly operation: TeamWorkspaceOperationState
+}
+
+export interface TeamWorkspaceAuthoringView {
+  readonly selection: Readonly<WorkspaceSelectionState>
+  readonly operation: TeamWorkspaceOperationState
+}
+
+export type TeamWorkspaceAuthoringCommand = Readonly<{
+  kind: 'set_selection'
+  draftId: TeamLaunchDraftId
+  teamAddress: AgentTeamAddress
+  selection: Readonly<WorkspaceSelectionState>
+}>
+
+export interface TeamLaunchTopologySubject {
+  readonly address: AgentTeamAddress
+  readonly kind: 'team' | 'agent'
+  readonly definitionId: string
+}
+
+export interface TeamWorkspacePreparationRequest {
+  readonly rootPath: string
+  readonly teamAddresses: readonly AgentTeamAddress[]
+}
+
+export interface TeamWorkspacePreparationPlan {
+  readonly draftId: TeamLaunchDraftId
+  readonly topologyFingerprint: string
+  readonly topologySubjects: readonly TeamLaunchTopologySubject[]
+  readonly requests: readonly TeamWorkspacePreparationRequest[]
 }
 
 export type TeamLaunchConfigEdit =
@@ -35,6 +79,7 @@ export type TeamLaunchConfigEdit =
 export interface TeamLaunchDraft {
   readonly draftId: TeamLaunchDraftId
   readonly config: Readonly<TeamRunConfig>
+  readonly teamWorkspaceAuthoringByTeamAddress: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>
   readonly focusedMemberAddress: AgentTeamAddress
   readonly pendingInputsByMemberAddress: Readonly<Record<AgentTeamAddress, TeamLaunchPendingInput>>
 }

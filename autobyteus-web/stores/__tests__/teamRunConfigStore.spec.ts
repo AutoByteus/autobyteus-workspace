@@ -199,7 +199,7 @@ describe('teamRunConfigStore hierarchical launch intent', () => {
     })
   })
 
-  it('reconciles stale and kind-mismatched intent visibly and refuses mutation while admitted', () => {
+  it('reconciles stale and kind-mismatched intent visibly and refuses mutation while preparing', () => {
     const store = useTeamRunConfigStore()
     const stale = hierarchicalConfig()
     stale.teamOverrides['/removed'] = { llmModelIdentifier: 'old' }
@@ -217,16 +217,17 @@ describe('teamRunConfigStore hierarchical launch intent', () => {
     expect(store.config?.agentOverrides['/Research']).toBeUndefined()
 
     const admitted = store.selectedDraft!
-    store.admitDraftLaunch(admitted)
+    const preparation = store.reconcileAndPlanSelectedDraftLaunch(admitted, store.memberTree!)
+    expect(preparation.status).toBe('planned')
     expect(() => store.applyConfigEdit({
       kind: 'set_root_model',
       llmModelIdentifier: 'other',
     })).toThrow(/in flight/)
     expect(() => store.reconcileSelectedDraftTopology(store.memberTree!)).toThrow(/in flight/)
-    store.releaseDraftLaunch(admitted)
+    if (preparation.status === 'planned') store.cancelWorkspacePreparation(preparation.plan)
   })
 
-  it('validates every effective runtime/model and address-scoped workspace state', () => {
+  it('validates every effective runtime/model and draft-owned address-scoped workspace state', () => {
     const store = useTeamRunConfigStore()
     store.setConfig(hierarchicalConfig())
     store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.6-luna'])
@@ -237,15 +238,13 @@ describe('teamRunConfigStore hierarchical launch intent', () => {
       blockingIssues: [],
     }))
 
-    store.setWorkspaceLoading(true, '/Research')
-    expect(store.workspaceLoadingStateFor('/Research')).toEqual(expect.objectContaining({
-      isLoading: true,
-      error: null,
-    }))
-    store.setWorkspaceError('workspace unavailable', '/Research')
-    expect(store.workspaceLoadingStateFor('/Research')).toEqual(expect.objectContaining({
-      isLoading: false,
-      error: 'workspace unavailable',
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: store.selectedDraft!.draftId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/research-new' },
+    })
+    expect(store.teamWorkspaceAuthoringViewFor('/Research')).toEqual(expect.objectContaining({
+      selection: expect.objectContaining({ mode: 'new', newWorkspacePath: '/workspace/research-new' }),
+      operation: { status: 'idle', error: null },
     }))
 
     store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
@@ -279,14 +278,147 @@ describe('teamRunConfigStore hierarchical launch intent', () => {
       .map((issue) => issue.subjectAddress)).toEqual(['/Research'])
   })
 
-  it('clears only the selected draft and API/E2E-owned transient state', () => {
+  it('clears the selected draft together with its owned transient workspace state', () => {
     const store = useTeamRunConfigStore()
     store.setConfig(hierarchicalConfig())
-    store.setWorkspaceError('error', '/Research')
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: store.selectedDraft!.draftId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/research-new' },
+    })
     store.clearConfig()
 
     expect(store.config).toBeNull()
     expect(store.repairNotice).toBeNull()
-    expect(store.workspaceLoadingStates).toEqual({})
+  })
+
+  it('prunes removed/kind-changed Team config and active/inactive buffers while preserving root authoring', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    const draftId = store.selectedDraft!.draftId
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'ws-root', newWorkspacePath: '/workspace/root-new' },
+    })
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/research-new' },
+    })
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/Research',
+      selection: { mode: 'existing', existingWorkspaceId: null, newWorkspacePath: '/ignored-by-command' },
+    })
+    useAgentTeamDefinitionStore().agentTeamDefinitions = [
+      definition('root-def', 'teacher', [
+        { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+        { memberName: 'Research', ref: 'replacement-agent-def', refType: 'AGENT' },
+        { memberName: 'Sibling', ref: 'sibling-def', refType: 'AGENT_TEAM' },
+      ]),
+      ...definitions.filter((item) => item.id === 'sibling-def'),
+    ]
+
+    const result = store.reconcileSelectedDraftTopology(store.memberTree!)
+
+    expect(result.repaired).toBe(true)
+    expect(result.addresses).toEqual(['/Research', '/Research/Study', '/Research/Study/student'])
+    expect(store.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/Research']).toBeUndefined()
+    expect(store.teamWorkspaceAuthoringViewFor('/').selection).toMatchObject({
+      mode: 'new', newWorkspacePath: '/workspace/root-new',
+    })
+    expect(store.config?.teamOverrides['/Research']).toBeUndefined()
+  })
+
+  it.each([
+    {
+      change: 'rename',
+      nextDefinitions: () => [
+        definition('root-def', 'teacher', [
+          { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+          { memberName: 'Investigation', ref: 'research-def', refType: 'AGENT_TEAM' },
+          { memberName: 'Sibling', ref: 'sibling-def', refType: 'AGENT_TEAM' },
+        ]),
+        ...definitions.slice(1),
+      ],
+      removedAddresses: ['/Research', '/Research/Study', '/Research/Study/student'],
+      retainedAddress: null,
+    },
+    {
+      change: 'move',
+      nextDefinitions: () => [
+        definition('root-def', 'teacher', [
+          { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+          { memberName: 'Research', ref: 'research-def', refType: 'AGENT_TEAM' },
+          { memberName: 'Study', ref: 'study-def', refType: 'AGENT_TEAM' },
+          { memberName: 'Sibling', ref: 'sibling-def', refType: 'AGENT_TEAM' },
+        ]),
+        definition('research-def', 'lead', [
+          { memberName: 'lead', ref: 'lead-def', refType: 'AGENT' },
+        ]),
+        ...definitions.filter((item) => ['study-def', 'sibling-def'].includes(item.id)),
+      ],
+      removedAddresses: ['/Research/Study', '/Research/Study/student'],
+      retainedAddress: '/Research',
+    },
+  ])('prunes $change-address workspace state without retargeting and preserves valid buffers', ({
+    nextDefinitions,
+    removedAddresses,
+    retainedAddress,
+  }) => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    const draftId = store.selectedDraft!.draftId
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'ws-root', newWorkspacePath: '/workspace/root-pending' },
+    })
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/research-buffer' },
+    })
+    if (retainedAddress) {
+      store.applyTeamWorkspaceAuthoringCommand({
+        kind: 'set_selection', draftId, teamAddress: '/Research',
+        selection: { mode: 'existing', existingWorkspaceId: null, newWorkspacePath: '/ignored' },
+      })
+      store.applyTeamWorkspaceAuthoringCommand({
+        kind: 'set_selection', draftId, teamAddress: '/Research/Study',
+        selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/study-active' },
+      })
+    }
+    useAgentTeamDefinitionStore().agentTeamDefinitions = nextDefinitions()
+
+    const result = store.reconcileSelectedDraftTopology(store.memberTree!)
+
+    expect(result.repaired).toBe(true)
+    expect(result.addresses).toEqual(expect.arrayContaining(removedAddresses))
+    for (const address of removedAddresses) {
+      expect(store.selectedDraft!.teamWorkspaceAuthoringByTeamAddress[address]).toBeUndefined()
+    }
+    expect(store.teamWorkspaceAuthoringViewFor('/').selection.newWorkspacePath).toBe('/workspace/root-pending')
+    if (retainedAddress) {
+      expect(store.teamWorkspaceAuthoringViewFor(retainedAddress).selection).toMatchObject({
+        mode: 'existing', newWorkspacePath: '/workspace/research-buffer',
+      })
+    }
+  })
+
+  it('isolates workspace buffers by draft identity and clears a nested buffer on reset', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    const firstId = store.selectedDraft!.draftId
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: firstId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/first' },
+    })
+
+    store.setConfig(hierarchicalConfig())
+    const secondId = store.selectedDraft!.draftId
+    expect(secondId).not.toBe(firstId)
+    expect(store.teamWorkspaceAuthoringViewFor('/Research').selection.mode).toBe('existing')
+
+    store.selectDraft(firstId)
+    expect(store.teamWorkspaceAuthoringViewFor('/Research').selection.newWorkspacePath).toBe('/workspace/first')
+    store.applyConfigEdit({ kind: 'reset_team_override', teamAddress: '/Research' })
+    expect(store.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/Research']).toBeUndefined()
+    expect(store.config?.teamOverrides['/Research']).toBeUndefined()
   })
 })

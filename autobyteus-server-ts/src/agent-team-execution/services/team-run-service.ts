@@ -11,8 +11,8 @@ import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/wor
 import type { RootTeamRun } from "../domain/root-team-run.js";
 import type { AgentLaunchConfiguration } from "../domain/team-run-config.js";
 import { TeamRunEventSourceType } from "../domain/team-run-event.js";
-import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
+import { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
 import {
   TeamDefinitionTopologyPlanner,
   type TeamAgentLaunchInput,
@@ -51,7 +51,6 @@ export interface CreateTeamRunInput {
   teamDefinitionId: string;
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
-  teamRunId?: string | null;
   applicationBinding?: { applicationId: string; bindingId: string } | null;
 }
 
@@ -61,7 +60,8 @@ export class TeamRunService {
   private readonly manager: AgentTeamRunManager;
   private readonly catalog: TeamRunHistoryCatalogService;
   private readonly workspaces: WorkspaceManager;
-  private readonly identityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly agentIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly teamIdentityAllocator: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
 
@@ -73,6 +73,7 @@ export class TeamRunService {
     memoryDir?: string;
     memoryLocationService?: AgentMemoryLocationService;
     agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
     tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   } = {}) {
@@ -81,9 +82,10 @@ export class TeamRunService {
     this.catalog = options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
     void (options.memoryLocationService ?? (options.memoryDir ? new AgentMemoryLocationService({ memoryDir: options.memoryDir }) : getAgentMemoryLocationService()));
-    this.identityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+    this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
       memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     });
+    this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
   }
 
@@ -120,12 +122,8 @@ export class TeamRunService {
       ...member,
       workspaceRootPath: await activateWorkspace(member.workspaceRootPath),
     })));
-    const teamRunId = input.teamRunId
-      ? required(input.teamRunId, "teamRunId")
-      : await this.allocateTeamRunId(input.teamDefinitionId);
     const plan = await this.planner.buildPlan({
       teamDefinitionId: input.teamDefinitionId,
-      teamRunId,
       teamConfigs,
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
@@ -144,7 +142,6 @@ export class TeamRunService {
     teamDefinitionId: string;
     rootConfig: TeamRunPresetInput;
     memberConfigs?: TeamRunMemberConfigInput[] | null;
-    teamRunId?: string | null;
     applicationBinding?: { applicationId: string; bindingId: string } | null;
   }): Promise<RootTeamRun> {
     const rootConfig = normalizePreset(input.rootConfig);
@@ -160,7 +157,6 @@ export class TeamRunService {
     });
     return this.createTeamRun({
       teamDefinitionId: input.teamDefinitionId,
-      teamRunId: input.teamRunId,
       applicationBinding: input.applicationBinding,
       teamConfigs: [...expanded.teamConfigs],
       memberConfigs: [...expanded.memberConfigs],
@@ -197,11 +193,6 @@ export class TeamRunService {
     const normalized = required(teamRunId, "teamRunId");
     return this.getManagedTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
   }
-  async allocateTeamRunId(teamDefinitionId: string): Promise<string> {
-    const definition = await this.definitions.getDefinitionById(required(teamDefinitionId, "teamDefinitionId"));
-    if (!definition) throw new Error(`AgentTeamDefinition '${teamDefinitionId}' cannot be loaded for team run identity allocation.`);
-    return generateTeamRunIdForDefinitionName(definition.name);
-  }
   recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
     return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });
   }
@@ -229,7 +220,11 @@ export class TeamRunService {
     return this.manager.terminateTeamRun(teamRunId).then(() => undefined).catch(() => undefined);
   }
   private get planner(): TeamDefinitionTopologyPlanner {
-    return new TeamDefinitionTopologyPlanner(this.definitions, this.identityAllocator);
+    return new TeamDefinitionTopologyPlanner(
+      this.definitions,
+      this.teamIdentityAllocator,
+      this.agentIdentityAllocator,
+    );
   }
 }
 

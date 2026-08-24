@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-`Design-ready` — approved by the user on 2026-08-24. The approval includes the nested-Team inheritance model, scoped fields, root-inherited `skillAccessMode`, coordinator-derived V1 reconstruction, preserved root-only auxiliary launch surfaces, visible stale-address repair, and the concrete V2 execution-tree contract. The user completed personal review and explicitly authorized the architecture-review handoff.
+`Design-ready` — approved by the user on 2026-08-24. The approval includes the nested-Team inheritance model, scoped fields, root-inherited `skillAccessMode`, coordinator-derived V1 reconstruction, preserved root-only auxiliary launch surfaces, visible stale-address repair, and the concrete V2 execution-tree contract. `ARCH-REV-001` confirmed the reconstructed contract's semantic equivalence. `CRR-010` returned only design impacts traceable to the existing UC-007/R-017/R-022/AC-015/AC-017 basis; SR-008 does not change product scope or require renewed user approval.
 
 ## Goal / Problem Statement
 
@@ -43,7 +43,7 @@ The completed launch configuration must be preserved by the backend so that ever
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
 | `hierarchical-launch-configuration-behavior.md` | Intended-behavior supplement with hierarchy, UI states, and resolution examples | R-001–R-041 | AC-001–AC-034 | Approved with this requirements basis on 2026-08-24 | Clarifies the configuration hierarchy and user experience without replacing this document. |
-| `team-execution-tree-v2-contract.md` | Concrete TypeScript and materialized JSON contract for the V2 execution tree | R-021–R-031, R-035, R-037 | AC-016–AC-023, AC-030 | User-approved semantics; reconstructed after disk recovery and pending architecture equivalence review | Makes the approved persistence outcome implementation-specific without changing requirements. |
+| `team-execution-tree-v2-contract.md` | Concrete TypeScript and materialized JSON contract for the V2 execution tree | R-021–R-031, R-035, R-037 | AC-016–AC-023, AC-030 | User-approved semantics; reconstructed after disk recovery; semantic equivalence confirmed by `ARCH-REV-001` | Makes the approved persistence outcome implementation-specific without changing requirements. |
 | `recovery-audit.md` | Durable archive/base/hash audit and missing-path inventory | N/A | N/A | Evidence only / approval N/A | Records recovery provenance and the earliest trustworthy downstream stage; it does not define behavior. |
 
 ## Design Health Assessment (Mandatory)
@@ -265,7 +265,7 @@ Cross-cutting UI state and accessibility requirements R-038–R-041 apply to UC-
 ## Approval Status
 
 - Approved by the user on 2026-08-24 after clarification of nested-Team global configuration, parent inheritance, workspace behavior, root-inherited `skillAccessMode`, and V1 migration.
-- The approved behavior basis is unchanged by recovery. The unavailable V2 contract file was reconstructed from the approved core artifacts and recovered implementation and requires architecture equivalence review; see `recovery-audit.md` and SR-007.
+- The approved behavior basis is unchanged by recovery. The unavailable V2 contract file was reconstructed from the approved core artifacts and recovered implementation; `ARCH-REV-001` confirmed semantic equivalence. `CRR-010` identified design impacts within the already-approved basis, so SR-008 requires architecture re-review but no renewed product approval.
 - Migration shall reconstruct each historical TeamRun default from that Team's direct coordinator launch configuration; the user explicitly accepts the edge case where a historical coordinator-specific override becomes the reconstructed Team default.
 - The approved behavior supplement is `hierarchical-launch-configuration-behavior.md`.
 - The user-requested concrete V2 shape in `team-execution-tree-v2-contract.md` was approved after personal design review; it does not reopen or change the approved behavior basis.

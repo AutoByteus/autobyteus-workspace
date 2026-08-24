@@ -12,7 +12,7 @@
         :is-customized="teamView(node.address).isCustomized"
         :disabled="disabled"
         :read-only="readOnlyMode"
-        :workspace-loading-state="workspaceStateFor(node.address)"
+        :workspace-operation="workspaceStateFor(node.address)"
         :runtime-catalog-state="catalogStateFor(teamView(node.address).effectiveConfig.runtimeKind)"
         @update-override="emit('update-team', node.address, $event)"
         @reset="emit('reset-team', node.address)"
@@ -73,7 +73,8 @@ import type {
   TeamRunConfigurationView,
   TeamScopeConfigOverride,
 } from '~/types/agent/TeamRunConfig'
-import type { RuntimeModelCatalogState, WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
+import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
+import type { TeamWorkspaceOperationState } from '~/types/agent/TeamLaunchDraft'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import MemberOverrideItem from './MemberOverrideItem.vue'
@@ -87,7 +88,7 @@ const props = withDefaults(defineProps<{
   disabled: boolean
   readOnlyMode?: boolean
   nested?: boolean
-  workspaceStateFor: (address: AgentTeamAddress) => WorkspaceLoadingState
+  workspaceStateFor: (address: AgentTeamAddress) => TeamWorkspaceOperationState
   workspaceSelectionFor: (address: AgentTeamAddress) => Readonly<WorkspaceSelectionState>
   catalogStateFor: (runtimeKind: string) => RuntimeModelCatalogState
 }>(), { readOnlyMode: false, nested: false })

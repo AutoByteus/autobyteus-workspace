@@ -85,6 +85,9 @@ const createSubject = (
       return `${agentDefinitionId}-run-${allocationCounter}`;
     }),
   };
+  const teamRunIdentityAllocator = {
+    allocateForTeamDefinitionName: vi.fn(() => "team-mixed-1"),
+  };
   const service = new TeamRunService({
     agentTeamRunManager,
     teamDefinitionService,
@@ -92,11 +95,12 @@ const createSubject = (
     workspaceManager,
     memoryDir: "/tmp/team-run-service-current-test",
     agentRunIdentityAllocator,
+    teamRunIdentityAllocator,
     tokenUsageReadiness,
   });
   return {
     service,
-    mocks: { agentTeamRunManager, teamRunHistoryCatalogService, workspaceManager, agentRunIdentityAllocator },
+    mocks: { agentTeamRunManager, teamRunHistoryCatalogService, workspaceManager, agentRunIdentityAllocator, teamRunIdentityAllocator },
   };
 };
 
@@ -112,7 +116,7 @@ describe("TeamRunService current root lifecycle", () => {
 
     await expect(service.createTeamRun({
       teamDefinitionId: "team-def-1",
-      teamRunId: "team-new-1",
+      teamConfigs: [],
       memberConfigs: [launchConfig("/Coordinator")],
     })).rejects.toThrow("TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED");
 
@@ -213,7 +217,6 @@ describe("TeamRunService current root lifecycle", () => {
 
     await service.createTeamRun({
       teamDefinitionId: "team-def-1",
-      teamRunId: "team-mixed-1",
       teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER)],
       memberConfigs: [
         launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER),
@@ -262,7 +265,6 @@ describe("TeamRunService current root lifecycle", () => {
 
     await expect(service.createTeamRun({
       teamDefinitionId: "team-def-1",
-      teamRunId: "team-strict-runtime",
       teamConfigs: [teamConfig],
       memberConfigs: [memberConfig, launchConfig("/Reviewer")],
     } as any)).rejects.toThrow(expected);
@@ -276,7 +278,6 @@ describe("TeamRunService current root lifecycle", () => {
 
     await service.createTeamRun({
       teamDefinitionId: "team-def-1",
-      teamRunId: "team-workspace-1",
       teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER, "/tmp/MetadataTeam")],
       memberConfigs: [
         launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER, "/tmp/MetadataTeam/"),
@@ -289,7 +290,6 @@ describe("TeamRunService current root lifecycle", () => {
     mocks.agentTeamRunManager.createTeamRun.mockClear();
     await expect(service.createTeamRun({
       teamDefinitionId: "team-def-1",
-      teamRunId: "team-invalid-1",
       teamConfigs: [teamLaunchConfig()],
       memberConfigs: [
         launchConfig("/Coordinator"),
@@ -297,6 +297,44 @@ describe("TeamRunService current root lifecycle", () => {
         launchConfig("/RemovedLegacySelector"),
       ],
     })).rejects.toThrow("unknown Team member '/RemovedLegacySelector'");
+    expect(mocks.teamRunIdentityAllocator.allocateForTeamDefinitionName).toHaveBeenCalledTimes(1);
+    expect(mocks.agentRunIdentityAllocator.allocateForAgentDefinition).toHaveBeenCalledTimes(2);
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      name: "full hierarchy",
+      launch: (service: TeamRunService) => service.createTeamRun({
+        teamDefinitionId: "team-def-1",
+        teamConfigs: [teamLaunchConfig()],
+        memberConfigs: [launchConfig("/Coordinator")],
+      }),
+    },
+    {
+      name: "root-only application-style expansion",
+      launch: (service: TeamRunService) => service.createTeamRunFromRootConfig({
+        teamDefinitionId: "team-def-1",
+        rootConfig: {
+          workspaceRootPath: "/tmp/root-only-invalid",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          llmConfig: null,
+        },
+        memberConfigs: [launchConfig("/Coordinator")],
+        applicationBinding: { applicationId: "app-1", bindingId: "binding-1" },
+      }),
+    },
+  ])("rejects invalid $name coverage before allocation, manager creation, or persistence", async ({ launch }) => {
+    const { service, mocks } = createSubject();
+
+    await expect(launch(service)).rejects.toThrow("Launch settings for Team member '/Reviewer' were not provided");
+
+    expect(mocks.teamRunIdentityAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(mocks.agentRunIdentityAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).not.toHaveBeenCalled();
   });
 });

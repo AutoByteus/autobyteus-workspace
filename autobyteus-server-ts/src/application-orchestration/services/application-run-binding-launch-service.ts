@@ -115,10 +115,8 @@ export class ApplicationRunBindingLaunchService {
       const runtimeKind = normalizeEffectiveRuntimeKind(config.runtimeKind);
       await this.validateCurrentModelSelection(runtimeKind, config.llmModelIdentifier);
     }
-    const teamRunId = await this.teams.allocateTeamRunId(resource.definitionId);
     const teamRun = await this.teams.createTeamRunFromRootConfig({
       teamDefinitionId: resource.definitionId,
-      teamRunId,
       rootConfig,
       memberConfigs: normalizedConfigs,
       applicationBinding: { applicationId: seed.applicationId, bindingId: seed.bindingId },

@@ -70,13 +70,28 @@ const config = (changes: Partial<TeamRunConfig> = {}): TeamRunConfig => ({
   ...changes,
 })
 
-const mountForm = (props: Record<string, unknown> = {}) => shallowMount(TeamRunConfigForm, {
-  props: {
-    config: config(),
-    teamDefinition: rootDefinition,
-    ...props,
-  },
-})
+const mountForm = (props: Record<string, unknown> = {}) => {
+  const { workspaceSelections = {}, ...componentProps } = props as {
+    workspaceSelections?: Record<string, { mode: 'existing' | 'new'; existingWorkspaceId: string | null; newWorkspacePath: string }>
+  }
+  const configStore = useTeamRunConfigStore()
+  configStore.setConfig((componentProps.config as TeamRunConfig | undefined) ?? config())
+  for (const [teamAddress, selection] of Object.entries(workspaceSelections)) {
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection',
+      draftId: configStore.selectedDraft!.draftId,
+      teamAddress,
+      selection,
+    } as never)
+  }
+  return shallowMount(TeamRunConfigForm, {
+    props: {
+      config: configStore.config!,
+      teamDefinition: rootDefinition,
+      ...componentProps,
+    },
+  })
+}
 
 describe('TeamRunConfigForm hierarchical scopes', () => {
   beforeEach(() => {

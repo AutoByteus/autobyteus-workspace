@@ -572,44 +572,23 @@ describe("Brief Studio imported package integration", () => {
     };
 
     const fakeTeamRunService = {
-      allocateTeamRunId: vi.fn(async () => {
-        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
-        latestTeamRunId = `team-run-${runIndex}`;
-        return latestTeamRunId;
-      }),
-      buildMemberConfigsFromLaunchPreset: vi.fn(async ({ launchPreset }: { launchPreset: Record<string, unknown> }) => ([
-        {
-          memberAddress: "/researcher",
-          agentDefinitionId: "brief-studio-team/researcher",
-          llmModelIdentifier: launchPreset.llmModelIdentifier,
-          autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
-          skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceRootPath: launchPreset.workspaceRootPath,
-          llmConfig: launchPreset.llmConfig ?? null,
-          runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
-        },
-        {
-          memberAddress: "/writer",
-          agentDefinitionId: "brief-studio-team/writer",
-          llmModelIdentifier: launchPreset.llmModelIdentifier,
-          autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
-          skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceRootPath: launchPreset.workspaceRootPath,
-          llmConfig: launchPreset.llmConfig ?? null,
-          runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
-        },
-      ])),
-      createTeamRun: vi.fn(async ({
+      createTeamRunFromRootConfig: vi.fn(async ({
         memberConfigs,
-        teamRunId,
+        rootConfig,
         applicationBinding,
       }: {
-        memberConfigs: Array<Record<string, unknown>>;
-        teamRunId: string;
+        memberConfigs?: Array<Record<string, unknown>> | null;
+        rootConfig: Record<string, unknown>;
         applicationBinding: { applicationId: string; bindingId: string };
       }) => {
-        latestTeamRunId = teamRunId;
-        const runtimeMemberConfigs = memberConfigs.map((memberConfig) => {
+        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
+        latestTeamRunId = `team-run-${runIndex}`;
+        const expandedMemberConfigs = memberConfigs ?? ["researcher", "writer"].map((name) => ({
+          memberAddress: `/${name}`,
+          agentDefinitionId: `brief-studio-team/${name}`,
+          ...rootConfig,
+        }));
+        const runtimeMemberConfigs = expandedMemberConfigs.map((memberConfig) => {
           const memberAddress = String(memberConfig.memberAddress);
           const memberRouteKey = memberAddress.slice(1);
           const memberRunId = `${latestTeamRunId}::${memberRouteKey}`;

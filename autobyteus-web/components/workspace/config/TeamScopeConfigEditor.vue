@@ -92,8 +92,8 @@
       <div class="mt-6">
         <WorkspaceSelector
           :model-value="workspaceSelection"
-          :is-loading="workspaceLoadingState.isLoading"
-          :error="workspaceLoadingState.error"
+          :is-loading="workspaceOperation.status === 'loading'"
+          :error="workspaceOperation.error"
           :disabled="disabled"
           :auto-select-default="isRoot"
           control-variant="quiet"
@@ -135,7 +135,8 @@ import { useLocalization } from '~/composables/useLocalization'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ResolvedTeamRunLaunchConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import type { RuntimeModelCatalogState, WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
+import type { TeamWorkspaceOperationState } from '~/types/agent/TeamLaunchDraft'
+import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 
@@ -150,7 +151,7 @@ const props = withDefaults(defineProps<{
   isCustomized?: boolean
   disabled?: boolean
   readOnly?: boolean
-  workspaceLoadingState?: WorkspaceLoadingState
+  workspaceOperation?: TeamWorkspaceOperationState
   runtimeCatalogState?: RuntimeModelCatalogState
 }>(), {
   inheritedConfig: null,
@@ -159,7 +160,7 @@ const props = withDefaults(defineProps<{
   isCustomized: false,
   disabled: false,
   readOnly: false,
-  workspaceLoadingState: () => ({ isLoading: false, error: null, loadedPath: null }),
+  workspaceOperation: () => ({ status: 'idle', error: null }),
   runtimeCatalogState: () => ({ status: 'idle', error: null }),
 })
 const emit = defineEmits<{

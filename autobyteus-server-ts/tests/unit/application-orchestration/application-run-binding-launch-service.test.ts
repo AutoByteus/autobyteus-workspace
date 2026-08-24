@@ -7,6 +7,7 @@ import type {
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 
 const applicationId = "app-1";
 
@@ -61,7 +62,7 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
   },
 });
 
-const buildService = () => {
+const buildService = (teamRunServiceOverride?: TeamRunService) => {
   const executionResourceResolver = {
     resolveExecutionResource: vi.fn(async (
       _applicationId: string,
@@ -78,7 +79,6 @@ const buildService = () => {
     createAgentRun: vi.fn(async () => ({ runId: "agent-run-1" })),
   };
   const teamRunService = {
-    allocateTeamRunId: vi.fn(async () => "team-run-1"),
     createTeamRunFromRootConfig: vi.fn(async () => ({
       teamRunId: "team-run-1",
       getExecutionTreeSnapshot: () => ({ rootTeam: { members: [] } }),
@@ -101,7 +101,7 @@ const buildService = () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
+      teamRunService: (teamRunServiceOverride ?? teamRunService) as never,
       agentDefinitionService: agentDefinitionService as never,
       agentTeamDefinitionService: agentTeamDefinitionService as never,
     }),
@@ -183,7 +183,45 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
   });
 
-  it("validates every AutoByteus team member before allocating a team run", async () => {
+  it("does not allocate, create, or persist an invalid application Team topology", async () => {
+    const teamAllocator = { allocateForTeamDefinitionName: vi.fn(() => "unexpected-team-run") };
+    const agentAllocator = { allocateForAgentDefinition: vi.fn(async () => "unexpected-agent-run") };
+    const manager = { createTeamRun: vi.fn(), terminateTeamRun: vi.fn() };
+    const catalog = { recordTeamRunCreated: vi.fn() };
+    const realTeamRunService = new TeamRunService({
+      teamDefinitionService: {
+        getDefinitionById: vi.fn(async () => ({
+          name: "Application Team",
+          coordinatorMemberName: "writer",
+          nodes: [{ memberName: "writer", refType: "agent", refScope: "shared", ref: "writer-def" }],
+        })),
+      } as never,
+      agentTeamRunManager: manager as never,
+      teamRunHistoryCatalogService: catalog as never,
+      workspaceManager: {
+        ensureWorkspaceByRootPath: vi.fn(async (path: string) => ({ getBasePath: () => path })),
+      } as never,
+      teamRunIdentityAllocator: teamAllocator,
+      agentRunIdentityAllocator: agentAllocator,
+      tokenUsageReadiness: {
+        assertCurrentSchemaReady: vi.fn(),
+        assertExistingRunRestoreReady: vi.fn(),
+      },
+    });
+    const { service, bindingStore, lookupStore } = buildService(realTeamRunService);
+
+    await expect(service.startAgentTeamRunBinding(applicationId, buildTeamInput()))
+      .rejects.toThrow("Launch settings for Team member '/writer' were not provided");
+
+    expect(teamAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(agentAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(manager.createTeamRun).not.toHaveBeenCalled();
+    expect(catalog.recordTeamRunCreated).not.toHaveBeenCalled();
+    expect(bindingStore.persistBinding).not.toHaveBeenCalled();
+    expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
+  });
+
+  it("validates every AutoByteus team member before requesting team creation", async () => {
     const { service, teamRunService } = buildService();
 
     await expect(service.startAgentTeamRunBinding(applicationId, {
@@ -199,7 +237,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         }],
       },
     })).rejects.toMatchObject({ code: "CURRENT_MODEL_SELECTION_REQUIRED" });
-    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
   });
 

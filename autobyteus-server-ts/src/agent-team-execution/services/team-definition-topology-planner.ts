@@ -11,8 +11,8 @@ import {
   createAgentTeamAddress,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
+import type { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
 import {
   projectAgentLaunchSettings,
   TeamRunConfig,
@@ -42,6 +42,7 @@ export type TeamDefinitionTopologyPlan = Readonly<{
 
 type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
 type AgentIdAllocator = Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+type TeamIdAllocator = Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
 type AgentGraphMember = Extract<ResolvedTeamDefinitionMember, { kind: "agent" }>;
 type GraphIndex = Readonly<{
   teams: ReadonlyMap<AgentTeamAddress, ResolvedTeamDefinitionGraph>;
@@ -66,12 +67,12 @@ const launchValue = (value: AgentLaunchConfiguration): AgentLaunchConfiguration 
 export class TeamDefinitionTopologyPlanner {
   constructor(
     private readonly teamDefinitionService: TeamDefinitionLookup,
+    private readonly teamRunIdentityAllocator: TeamIdAllocator,
     private readonly agentRunIdentityAllocator: AgentIdAllocator,
   ) {}
 
   async buildPlan(input: {
     teamDefinitionId: string;
-    teamRunId: string;
     teamConfigs: readonly TeamScopeLaunchInput[];
     memberConfigs: readonly TeamAgentLaunchInput[];
     applicationBinding?: TeamRunApplicationBinding | null;
@@ -86,7 +87,7 @@ export class TeamDefinitionTopologyPlanner {
     const rootTeam = await this.compileTeamNode(
       graph,
       createAgentTeamAddress([]),
-      required(input.teamRunId, "teamRunId"),
+      this.teamRunIdentityAllocator.allocateForTeamDefinitionName(definition.name),
       teamConfigs,
       memberConfigs,
     );
@@ -236,7 +237,7 @@ export class TeamDefinitionTopologyPlanner {
       return this.compileTeamNode(
         member.team,
         address,
-        generateTeamRunIdForDefinitionName(member.team.definition.name),
+        this.teamRunIdentityAllocator.allocateForTeamDefinitionName(member.team.definition.name),
         teamConfigs,
         memberConfigs,
       );

@@ -13,6 +13,7 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hier
 | SR-005 | User design review / solution round 5 | USER-DR-003 | Unclear | Retain both the `FileV2` type suffix and persisted schema discriminator |
 | SR-006 | User approval / solution round 6 | USER-APPROVAL-001 | Approval | Concrete contract approved and user-review hold released for architecture review |
 | SR-007 | User-directed failed-disk recovery / solution round 7 | REC-001 | Unclear / Recovery | Verified recoverable state restored; missing V2 contract reconstructed; architecture review must be re-established |
+| SR-008 | Code reviewer CRR-010 / solution round 8 | CR-008, CR-009; MP-CR-006, MP-CR-007 | Design Impact | Integrated workspace lifecycle and configured-root identity boundaries redesigned; architecture re-review required |
 
 ## Revision Entries
 
@@ -163,3 +164,28 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hier
 - Downstream and architecture-review impact: architecture review must confirm the reconstructed contract's semantic equivalence and issue a new authoritative design-review report. If passed, implementation engineering must reconstruct the four missing frontend source/test files, validate all recovered code, and issue new implementation artifacts before code review.
 - Next recipient or routing: `/architecture_reviewer`.
 - Remaining gaps or risks: original byte identity for the V2 contract is unrecoverable; the prior design-review/code-review/API-E2E results cannot be inferred; the implementation snapshot is incomplete until the four missing source/test files are rebuilt and validated.
+
+### SR-008 — Unify Team Workspace Lifecycle And Post-Validation Identity Allocation
+
+- Date: 2026-08-24
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`; CRR-010 / solution round 8
+- Triggering finding IDs: `CR-008`, `CR-009`; material premises `MP-CR-006`, `MP-CR-007`
+- Prior authoritative result: CRR-010 `Fail — Design Impact`, 8.9/10. IR-006 source-resolved CR-007/API-E2E-F-002 and passed 7 focused files / 106 tests, but the full integrated review found two blocking ownership/order defects.
+- Current authoritative result: the approved product basis is unchanged; the corrected design establishes one per-draft topology-aware Team workspace lifecycle and one planner-owned post-validation configured identity phase. The package is ready for architecture re-review, not implementation or API/E2E.
+- Why this revision entry is recorded: the integrated controlled-workspace design and hierarchical draft design left parallel exact-address authorities, while the configured root identity API contradicted DS-003. Repeated local fixes would preserve both structural causes.
+- Resolution:
+  - attach Team workspace selection mode, active/inactive New-path buffer, and loading/error state to the owning immutable `TeamLaunchDraft` under `teamRunConfigStore`;
+  - keep canonical existing workspace identity only in `TeamRunConfig`, deriving it for presentation rather than duplicating it in transient state;
+  - make one store transition reconcile configuration overrides and every Team workspace entry by exact address/kind, preserving root and valid same-draft buffers while pruning/reporting removed, renamed, moved, or kind-changed subjects;
+  - make `RunConfigPanel` presentation-only and delegate the exact selected draft once to `agentTeamRunStore.launchDraft`;
+  - define DS-008: store lock/reconcile/plan -> token/current-topology authorization -> deduplicated `workspaceStore` registration -> token-checked store commit/failure -> final reconciliation/readiness -> exact admission/create;
+  - remove the panel Team workspace map/registration loop, selected-context-global Team loading map, broad-watcher option, and second post-preparation gate;
+  - inject `TeamRunIdentityAllocator` into `TeamDefinitionTopologyPlanner`, complete exact graph/coverage/kind/definition/skill validation first, then allocate configured root/nested Team and Agent identities;
+  - remove public/optional root TeamRun ID preallocation from service/planner/application contracts; application persistence uses the successfully created root's returned ID;
+  - require real-store topology/preparation coverage and zero-allocation/manager/persistence assertions for invalid full and root-only/application creates.
+- Approved behavior or requirement IDs affected: no scope change; clarifies and enforces BEH-004, BEH-005, BEH-008, BEH-009; UC-007; R-017, R-022; AC-015, AC-017 plus the integrated controlled-workspace preserved contract.
+- Canonical artifacts and sections updated: `requirements.md` current review provenance only; `investigation-notes.md` integrated source/probe evidence, current behavior paths, design-health findings, and architecture-review notes; `design-spec.md` current state, intended correction, DS-001/DS-003/DS-007/DS-008, ownership, interfaces, lifecycle transitions, file mapping, removals, sequence, tests, tradeoffs, risks, and implementation guidance.
+- Supplemental artifacts updated, added, or removed: `hierarchical-launch-configuration-behavior.md` now makes valid same-draft active/inactive buffer stability, context isolation, topology pruning, reset, and pre-registration repair explicit. `team-execution-tree-v2-contract.md` and `recovery-audit.md` are unchanged; `ARCH-REV-001` already confirmed semantic equivalence of the reconstructed V2 contract.
+- Downstream and architecture-review impact: architecture reviewer must review SR-008 before implementation. If passed, route the cumulative package to implementation engineering for IR-007 or the next revision; then complete source review. Do not resume API/E2E-014 or delivery until those gates pass.
+- Next recipient or routing: `/architecture_reviewer`.
+- Remaining gaps or risks: architecture review is pending; exact API-E2E-014 remains pending after corrected source review; a topology change after an external workspace registration has already begun may leave an unused registered workspace, but token/final reconciliation forbids stale config attachment or TeamRun launch and no unapproved rollback/delete policy is introduced.

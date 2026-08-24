@@ -13,6 +13,7 @@
 | CRR-007 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-004 integrated merge correction after DR-001 | CRR-005 source Pass; CRR-006 test-review Pass; DR-001 integration reroute | Fail — Local Fix to /implementation_engineer | CR-006 |
 | CRR-008 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-005 Local Fix | CRR-007 — Fail, Local Fix, 9.0/10 | Pass — proceed to /api_e2e_engineer | CR-006 resolved |
 | CRR-009 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | API/E2E Failure-Origin Review / API-REV-005 Fail | CRR-008 source Pass; API-REV-005 Fail / 89% | Fail — Local Fix to /implementation_engineer | CR-007; API-E2E-F-002 |
+| CRR-010 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Complete Implementation Review / IR-006 plus user-requested architecture-first audit | CRR-009 — Fail, Local Fix; prior source CRR-008 Pass | Fail — Design Impact to /solution_designer, 8.9/10 | CR-007 resolved in source; CR-008, CR-009 open |
 
 ## Revision Entries
 
@@ -254,3 +255,30 @@ None. This is the initial proportional API/E2E test review; CR-001–CR-004 rema
 - Material score or classification changes: no failure-origin scorecard was recomputed. CRR-008's 9.3 score is historical; current disposition is Fail / implementation-owned Local Fix. MP-CR-005 is Reachable.
 - Recommended recipient: /implementation_engineer
 - Remaining risks or uncertainty: implementation must instrument the full renderer/workspace-store handoff rather than assume a generic Pinia timing defect; the reviewer's isolated real-store computed probe refreshed synchronously. After correction, repeat source review and the exact one-activation API/E2E rerun are mandatory. The changed durable component test must then receive formal proportional review after successful execution. Recovery-branch isolation and previously bounded baseline/toolchain/provider/Electron residuals remain unchanged.
+
+### CRR-010 — Complete integrated architecture-first review after IR-006
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+- Review entry point and round: Implementation Review, round 6 / tenth completed review result
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md; IR-006 for CR-007/API-E2E-F-002; user direction to perform a complete architecture/design-principles review after repeated patches
+- Relevant solution revision IDs: SR-002–SR-007; current basis SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-001
+- Relevant implementation revision IDs: IR-001–IR-006
+- Relevant API/E2E revision IDs: API-REV-001–API-REV-005
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-009 — Fail, Local Fix to /implementation_engineer; prior complete source result CRR-008 Pass / 9.3
+- Current authoritative result: Fail — Design Impact to /solution_designer, 8.9/10
+- What changed in the review result and why: IR-006 correctly resolves the first-click source defect by watching runtime-set semantics and delegating the exact prepared draft directly to the launch owner; 7 focused files/106 tests passed. The mandated complete integrated review then traced every major spine and found two structural gaps that delta review would not have exposed. The delivery-integrated controlled Team workspace selection map is outside the draft/topology reconciliation owner, so an approved same-draft topology change can retain and attempt a stale nested-Team New path before visible repair. Separately, the server/application path allocates the root TeamRun ID before the planner's exact validation despite DS-003 making validation-before-allocation and planner allocation ownership explicit. Both require solution-level boundary correction rather than another isolated local patch.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001–CR-006 | Resolved | Remain resolved | CRR-002, CRR-005, CRR-008; IR-002, IR-003, IR-005 | Complete source trace and prior/current focused evidence found no regression in strict runtime input, stable-topology workspace readiness, dependency direction, terminology, migration binding, or active-New empty blocking. |
+| CR-007 / API-E2E-F-002 | Open — implementation-owned Local Fix | Source-resolved; exact API/E2E rerun pending | CRR-009, API-REV-005, IR-006 | Stable sorted runtime-kind signature prevents workspace-only catalog invalidation; the duplicate panel gate is removed; exact current draft delegates once to the launch owner. Reviewer focused suite: 7 files / 106 tests Pass. |
+| TR-001, TR-002 | Resolved | Remain resolved for server durable boundaries | CRR-006, API-REV-004, API-REV-005 | Hierarchy lifecycle and production-upgrade coverage remained green in API-REV-005; no contrary source evidence. The later component-test delta still awaits a successful proportional review. |
+
+- New or remaining finding IDs: CR-008, CR-009. API-E2E-F-002 requires rerun only after the redesigned implementation passes source review.
+- Material score or classification changes: prior complete source score 9.3 Pass -> current complete integrated score 8.9 Fail. MP-CR-006 and MP-CR-007 are Reachable under explicit governing contracts. Classification escalates from repeated Local Fix to Design Impact.
+- Recommended recipient: /solution_designer
+- Remaining risks or uncertainty: the exact packaged first-click rerun remains outstanding; broad server baseline/typecheck/provider/Electron residuals remain bounded; `RunConfigPanel.vue` is 488 effective lines and should not receive another coordination patch without ownership redesign; long-lived docs remain pending; the dated recovery branch remains unmerged and supplies no missing correction.
