@@ -3,11 +3,11 @@
 ## Document Status
 
 - Status: `Approved`
-- Current requirements revision ID: `RER-005`
+- Current requirements revision ID: `RER-006`
 - Request / ticket: Initial prototype baseline
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-24
-- Approval state and reference: Approved. The observable UI/UX baseline remains approved under PPA-001 and the user’s 2026-08-22 **“approved”** message. The user-mandated repository-placement correction from RER-004 is complete and verified under RER-005 without observable UI/UX change.
+- Approval state and reference: Approved. The observable UI/UX baseline remains approved under PPA-001 and the user’s 2026-08-22 **“approved”** message. Repository placement is verified under RER-005. Under RER-006, the task branch was rebased onto latest fetched `origin/personal` commit `3ab4946c7e816787f782755de41077b0bb09d2e2` without changing the approved prototype source pin or observable package.
 
 ## Problem And Desired Outcome
 
@@ -118,7 +118,7 @@
 
 - Applicable: `Yes`
 - Linked UI/UX or interaction supplement: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` — Approved under PPA-001.
-- Linked runnable prototype and applicable support artifacts: Canonical root `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the owning repository at commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed`; production-build review URL `http://127.0.0.1:3200`; runbook at the canonical root.
+- Linked runnable prototype and applicable support artifacts: Canonical root `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the rebased owning repository at rewritten prototype commit `a9e3634667ed6cc9cd3bf9528362a7b50d131427`; production-build review URL `http://127.0.0.1:3200`; runbook at the canonical root.
 - UI/UX user-confirmation reference: User message **“approved”** on 2026-08-22, immediately following the Product Prototyper request to review the complete corrected current-state baseline at the canonical review URL.
 - Approved visual-reference baseline: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/README.md` and `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/manifest.json` (`VIS-001`–`VIS-015`, 15/15 clean captures).
 - Requirements-defining visual or interaction details: The approved `ui-ux-spec.md`, its final visual references, and all matched inventory rows define the complete observable current-state baseline at source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
@@ -149,13 +149,14 @@
 | --- | --- | --- | --- |
 | Shared Product Prototype Principles | Existing-frontend bootstrap must meet complete observable parity, source technology, deterministic mocks, isolation, and evidence rules. | `/home/autobyteus/workspace/autobyteus-agents/agent-teams/requirements-engineering-team/shared/product-prototype-principles.md` | No unresolved prototype-contract risk. |
 | `autobyteus-web` | Its observable current behavior governs baseline parity. | Kickoff-fetched and pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`; accepted inventory and comparison evidence under PPA-001. | Later source revisions require explicit refresh/reconciliation and do not silently amend this baseline. |
+| Owning task-branch base | Task work must be based on the latest fetched original branch while remaining committed on the task branch. | `origin/personal` fetched on 2026-08-24 at `3ab4946c7e816787f782755de41077b0bb09d2e2`; merge-base equals that commit; task branch is four commits ahead and zero behind before RER-006 provenance commit. | Git ancestry synchronization does not silently refresh the approved prototype source pin. |
 
 ## Supplemental Artifacts
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-005 | Included in approved requirements basis |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-005 | Informational traceability artifact |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-006 | Included in approved requirements basis |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-006 | Informational traceability artifact |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved UI/UX supplement and requirements-defining/illustrative boundary | All | Approved / PPA-001 | User-approved |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/README.md` | Final visual inventory and mapping | REQ-002, REQ-005; AC-002, AC-005 | Final | User-approved baseline references |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final visual hashes, routes, contexts, and clean-capture results | REQ-002, REQ-005, REQ-006; AC-002, AC-004, AC-005 | Final / 15 of 15 preserved | User-approved baseline evidence |
@@ -174,6 +175,7 @@
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
 | ASM-001 | The latest `origin/personal` revision remains the governing source branch at bootstrap kickoff. | A branch authority is needed to interpret “latest.” | Prototype team fetched and pinned `8ef282ba77705180d985e7000d801f0e0068cdc1`. | Validated |
+| ASM-002 | The user’s request to base the current project on the latest original branch concerns Git ancestry synchronization; it does not silently replace the explicitly approved prototype source snapshot. | The latest branch now contains observable frontend changes, so treating a rebase as UI parity refresh would invalidate the approved evidence boundary. | Task branch rebased to `3ab4946c...`; ask separately whether a full prototype refresh/reconciliation is desired. | Git sync validated; UI refresh not assumed |
 
 ## Open Decisions And Questions
 
@@ -194,7 +196,7 @@
 | REQ-005 | BEH-002 | AC-002, AC-005, AC-006 | SCN-002, SCN-003 | Comparison report; PPA-001; 73/73 final-package validation |
 | REQ-006 | BEH-003 | AC-004 | SCN-002 | Canonical prototype commit; runbook; manifest; mock-boundaries record |
 | REQ-007 | BEH-002 | AC-006 | SCN-003 | PPA-001; approved UI/UX spec; explicit user confirmation |
-| REQ-008 | BEH-004 | AC-007, AC-009 | SCN-004 | Owning commit `6ed910fc...`; Git ownership/index proof; 31/31 placement validation |
+| REQ-008 | BEH-004 | AC-007, AC-009 | SCN-004 | Rewritten owning prototype commit `a9e363466...`; Git ownership/index proof; 31/31 placement validation |
 | REQ-009 | BEH-004 | AC-008, AC-009 | SCN-004 | Placement correction report; zero stale active roots; 808/808 evidence hashes and 15/15 final references preserved |
 
 ## Downstream Architecture Input
@@ -222,5 +224,7 @@
 
 - Outcome: `Approved Prototype-Only Complete`
 - Approved observable baseline: Unchanged under PPA-001 and explicit user approval.
-- Corrected terminal deliverable: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the owning repository on branch `codex/initial-prototype-baseline` at commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed`.
+- Corrected terminal deliverable: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the owning repository on branch `codex/initial-prototype-baseline` at rewritten prototype commit `a9e3634667ed6cc9cd3bf9528362a7b50d131427`.
+- Task-branch base: Latest fetched `origin/personal` commit `3ab4946c7e816787f782755de41077b0bb09d2e2`; the task branch is based directly on this commit.
+- Approved prototype source snapshot: Remains `8ef282ba77705180d985e7000d801f0e0068cdc1`. Refreshing observable parity to a newer source revision is a separate explicit prototype reconciliation, not an effect of Git rebase.
 - Architecture handoff applicability: `No`; DEC-002 explicitly excludes architecture and production engineering from this ticket.

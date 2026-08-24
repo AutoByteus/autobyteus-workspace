@@ -11,6 +11,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-003 | PPA-001, completed parity evidence, and explicit user approval | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-001–BEH-003; REQ-001–REQ-007; AC-001–AC-006 | Approved UI/UX package and final references integrated; all acceptance criteria met; no architecture handoff authorized. |
 | RER-004 | User rejects standalone prototype repository; placement correction required | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; DEC-003 | UI/UX approval preserved; terminal completion reopened until owning-repository relocation, path rewrite, validation, and commit succeed. |
 | RER-005 | Corrected owning-repository prototype package returned and verified | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; DEC-003 | Repository placement correction passes; approved observable baseline and evidence remain unchanged; terminal completion restored. |
+| RER-006 | User requests latest-original-branch task base | Approved / Prototype-Only Complete | Approved / Prototype-Only Complete | BEH-004; REQ-008; AC-007; ASM-002 | Task branch rebased onto latest `origin/personal`; commit identities rewritten; prototype approval/source pin preserved. |
 
 ## Revision Entries
 
@@ -88,3 +89,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. Architecture and production engineering remain out of scope.
 - Remaining gaps, assumptions, or blocked decisions: None for the prototype-only package.
 - Next action or recipient: Complete the prototype-only ticket and return the corrected cumulative package to the user/calling workflow. Do not route to architecture.
+
+### RER-006 — Rebase task branch onto latest original branch
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: User requested that the current project be based on the latest original branch and committed on the task branch.
+- Prior authoritative status (`N/A` for `RER-001`): Approved / Prototype-Only Complete
+- Current authoritative status: Approved / Prototype-Only Complete
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-004; REQ-008; AC-007; ASM-002. No observable product requirement or UI/UX ID changed.
+- Why this baseline or revision was recorded: Preserve accurate Git ancestry and rewritten commit provenance without conflating branch synchronization with an unapproved observable prototype refresh.
+- Canonical artifact sections changed: Current revision ID; approval/provenance reference; task-branch dependency; supplement revision status; assumption; traceability; completion classification; investigation source/runtime evidence and owning commit locator.
+- Supplemental artifacts added, changed, or removed: No artifact content was added or removed by rebase. Existing four task commits were replayed onto `origin/personal` `3ab4946c7e816787f782755de41077b0bb09d2e2`; the prototype commit was rewritten from `6ed910fc...` to `a9e3634667ed6cc9cd3bf9528362a7b50d131427`.
+- Prototype evidence or product decisions incorporated: Rebase completed without conflict; merge-base equals latest fetched original-branch commit; task branch was zero behind/four commits ahead before this RER-006 commit; 31/31 repository-placement and 73/73 final-package checks pass after rebase. Comparison shows 104 `autobyteus-web` files changed between approved source pin `8ef282b...` and latest original branch.
+- User approval impact: None for the approved prototype. The approved source snapshot remains `8ef282ba77705180d985e7000d801f0e0068cdc1`; Git ancestry synchronization does not assert UI parity to `3ab4946c...`. A full prototype refresh would require explicit reconciliation and review.
+- Downstream architecture impact: None. Architecture and production engineering remain out of scope.
+- Remaining gaps, assumptions, or blocked decisions: Git-base request is satisfied. Confirm separately only if the user intended a full observable prototype refresh to latest source rather than task-branch ancestry synchronization.
+- Next action or recipient: Commit this provenance update on `codex/initial-prototype-baseline` and return the synchronized task-branch status to the user. Do not route to architecture.

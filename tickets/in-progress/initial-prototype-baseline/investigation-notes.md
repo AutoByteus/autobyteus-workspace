@@ -7,10 +7,10 @@
 - Repository mode: `Git`
 - Task worktree / branch: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` / `codex/initial-prototype-baseline`
 - Base or reference revision: Prototype team fetched `origin/personal` at bootstrap kickoff on 2026-08-22 and pinned the then-latest exact commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- Bootstrap result: Observable prototype baseline accepted under PPA-001 and user-approved; repository placement corrected into the owning workspace repository at commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed` with no observable UI/UX change.
+- Bootstrap result: Observable prototype baseline accepted under PPA-001 and user-approved; repository placement remains valid after the task branch was rebased onto latest `origin/personal`. Rewritten owning prototype commit: `a9e3634667ed6cc9cd3bf9528362a7b50d131427`.
 - Bootstrap blocker: None.
-- Current requirements revision ID: `RER-005`
-- Investigation status: Complete; prototype-only package and repository provenance verified.
+- Current requirements revision ID: `RER-006`
+- Investigation status: Complete for Git base synchronization; approved prototype source pin remains unchanged pending any explicit refresh request.
 
 ## Initial Request And Clarifications
 
@@ -44,6 +44,8 @@
 | SRC-012 / 2026-08-24 | Command | Git top-level/branch/status/log inspection for `/home/autobyteus/workspace/autobyteus-workspace`, ticket worktree, external prototype root, and proposed destination | Verify repository relationships and choose an isolated corrected destination | External root has its own `.git`, branch `main`, commit `7ab23b60...`, and no remote. Ticket worktree uses common Git dir `/home/autobyteus/workspace/autobyteus-workspace/.git`, branch `codex/initial-prototype-baseline`, is clean at requirements commit `e5f9ea363...`, and proposed destination is absent. | Use repository-relative `ui-prototypes/autobyteus-web-prototype` in the ticket worktree. |
 | SRC-013 / 2026-08-24 | Prototype correction | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/repository-placement-correction.md` and linked repository-placement evidence | Verify AC-007–AC-009 | Project is ordinary owning-repository content at the required path; 1,934 tracked files, no nested `.git` or gitlinks, zero rejected active-root matches, 808/808 approved image hashes and 15/15 final references preserved, and all correction validations pass. | Integrate corrected commit/path and restore terminal status. |
 | SRC-014 / 2026-08-24 | Command / Runtime | Independent `corepack pnpm validate:repository-placement`; `corepack pnpm validate:final-package`; Git ownership/status checks; HTTP probe of port 3200 | Independently confirm returned correction and review availability | 31/31 placement checks and 73/73 final-package checks pass; owning branch is clean at `6ed910fc...`; old external root is absent; corrected production-build review URL returns HTTP 200. | Record RER-005 completion evidence. |
+| SRC-015 / 2026-08-24 | User / Command | User request to base the current project on latest original branch; `git fetch origin personal`; ancestry inspection; `git rebase origin/personal`; post-rebase validations | Synchronize the task branch without committing on the shared original branch | `origin/personal` advanced from `8ef282b...` to `3ab4946...`; task branch rebased successfully with no conflicts. Merge-base is now `3ab4946...`, branch was zero behind/four commits ahead before the RER-006 provenance commit, and 31/31 placement plus 73/73 package checks still pass. | Commit RER-006 provenance update on the task branch. |
+| SRC-016 / 2026-08-24 | Command | `git diff --name-only 8ef282b...3ab4946... -- autobyteus-web` | Determine whether Git rebase alone updates the approved observable prototype baseline | 104 `autobyteus-web` files changed between the approved source pin and latest original branch, including visible settings/provider/token-usage surfaces. | Do not silently claim UI parity to `3ab4946...`; an explicit refresh requires prototype reconciliation and review. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -72,7 +74,7 @@
 | `corepack pnpm validate:final-package` | Final approval package consistency | 73/73 checks pass, including approval, source pin, PPA-001, inventory totals, screenshot hashes, local Monaco assets, and no pending/draft placeholders in the UI/UX spec. | Prototype package is consistent with RER-002 requirements and safe to integrate. | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/evidence/validation/product-prototyper-final-package-consistency.txt` |
 | Git inspection | Prior rejected prototype provenance | Clean standalone `main` workspace at local commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6`; no remote configured. | Files remain the corrective source, but this repository/branch/commit is noncanonical and must not be carried as owning history. | `/home/autobyteus/workspace/autobyteus-web-prototype` |
 | Git top-level comparison | Repository placement correction | External prototype resolves to itself as a standalone top level; ticket worktree resolves to the existing `autobyteus-workspace` common Git directory on dedicated branch `codex/initial-prototype-baseline`; target path is absent. | Standalone commit is noncanonical. Corrected absolute target is `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`. | SRC-012 |
-| `corepack pnpm validate:repository-placement` | Corrected ownership, paths, and hash preservation | 31/31 checks pass: owning worktree/branch, ordinary index modes, no nested Git/gitlink, no stale rejected root, corrected manifest paths, preserved approval/source pin, 808/808 image hashes and 15/15 final-reference hashes. | AC-007–AC-009 are met. | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/evidence/repository-placement/repository-placement-validation.txt` |
+| `corepack pnpm validate:repository-placement` | Corrected ownership, paths, and hash preservation before and after branch rebase | 31/31 checks pass: owning worktree/branch, ordinary index modes, no nested Git/gitlink, no stale rejected root, corrected manifest paths, preserved approval/source pin, 808/808 image hashes and 15/15 final-reference hashes. | AC-007–AC-009 remain met after base synchronization. | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/evidence/repository-placement/repository-placement-validation.txt` |
 | `corepack pnpm validate:final-package` | Corrected-root final package consistency | 73/73 checks pass from the relocated package. | Existing AC-001–AC-006 evidence remains valid after relocation. | Corrected prototype root |
 | Git/status and HTTP probes | Owning commit and runnable review | Branch `codex/initial-prototype-baseline` is clean at `6ed910fc...`; old external root absent; corrected-root production build serves HTTP 200 at port 3200. | Terminal locator and repository provenance are verified. | SRC-014 |
 
@@ -113,7 +115,7 @@
 
 ## Prototype Findings
 
-- Prototype package path: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, owning commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed`.
+- Prototype package path: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, rewritten owning prototype commit `a9e3634667ed6cc9cd3bf9528362a7b50d131427` after rebase.
 - Approved UI/UX specification path: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md`.
 - Review URL: `http://127.0.0.1:3200`.
 - Explicit user-confirmation reference: User message **“approved”** on 2026-08-22 immediately after review request for the complete corrected baseline; recorded in `ui-ux-spec.md`, `product-prototyper-baseline-review.md`, and the final-reference manifest.
@@ -140,7 +142,7 @@
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/mock-boundaries.md` | Prototype Bootstrapper | Deterministic isolation contract | Production/external boundaries | REQ-004, REQ-006; AC-004 | Final | Approved boundary evidence |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-runbook.md` | Prototype Bootstrapper | Reproducible run/validation instructions | Canonical prototype | REQ-003, REQ-006 | Final | Operational supplement |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-scenarios.md` | Prototype Bootstrapper | Deterministic scenario catalog | Complete visible state/journey set | REQ-002, REQ-004 | Final | Approved baseline evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype` | Product Prototyper | Corrected canonical owning-repository root | Complete approved project | REQ-008, REQ-009; AC-007–AC-009 | Complete at owning commit `6ed910fc...` | User-mandated repository provenance satisfied; observable approval unchanged |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype` | Product Prototyper | Corrected canonical owning-repository root | Complete approved project | REQ-008, REQ-009; AC-007–AC-009 | Complete at rewritten prototype commit `a9e363466...` | User-mandated repository provenance satisfied; observable approval unchanged |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/repository-placement-correction.md` | Product Prototyper | Repository ownership, relocation, path rewrite, validation, and hash-preservation result | RER-004 correction | REQ-008, REQ-009; AC-007–AC-009 | Complete | Requirements-correction evidence |
 
 ## Assumptions, Unknowns, And Risks
@@ -163,6 +165,7 @@
 - The approved package meets all observable parity requirements with no known missing, discrepant, unknown, or unsubstantiated UI inventory ID.
 - Approval applies only to this pinned current-state prototype; later source refreshes or future-state changes require explicit reconciliation and approval.
 - Repository placement is requirements-defining for this ticket. The correction must preserve all approved observable evidence while replacing the rejected standalone provenance with ordinary files tracked by the existing workspace repository.
+- Git ancestry is now synchronized to latest fetched `origin/personal` at `3ab4946c...`. The approved prototype remains a reproducible snapshot of source pin `8ef282b...`; because 104 frontend files changed upstream, any request to make the observable baseline itself current requires explicit prototype refresh/reconciliation rather than silent file replacement.
 
 ## Notes For Downstream Architecture Design
 
