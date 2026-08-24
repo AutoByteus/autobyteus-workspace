@@ -28,14 +28,12 @@
 
     <div class="mt-8">
       <WorkspaceSelector
-        :workspace-id="config.workspaceId"
+        :model-value="workspaceSelection"
         :is-loading="workspaceLoadingState.isLoading"
         :error="workspaceLoadingState.error"
-        :initial-path="initialPath || workspaceLoadingState.loadedPath || ''"
         :disabled="isFormReadOnly"
         control-variant="quiet"
-        @select-existing="handleSelectExisting"
-        @workspace-input-change="handleWorkspaceInputChange"
+        @update:model-value="handleWorkspaceSelectionChange"
       />
     </div>
 
@@ -142,6 +140,7 @@ import { computed, ref, toRef } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideTree from './MemberOverrideTree.vue'
@@ -166,13 +165,12 @@ const props = defineProps<{
   config: Readonly<TeamRunConfig>
   teamDefinition: AgentTeamDefinition
   workspaceLoadingState: WorkspaceLoadingState
-  initialPath?: string
+  workspaceSelection: WorkspaceSelectionState
   readOnly?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'select-existing', workspaceId: string): void
-  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void
+  (e: 'update:workspaceSelection', selection: WorkspaceSelectionState): void
   (e: 'edit-config', edit: TeamLaunchConfigEdit): void
 }>()
 
@@ -232,13 +230,8 @@ const updateLlmConfig = (value: Record<string, unknown> | null) => {
   emit('edit-config', { kind: 'set_llm_config', llmConfig: value })
 }
 
-const handleSelectExisting = (workspaceId: string) => {
+const handleWorkspaceSelectionChange = (selection: WorkspaceSelectionState) => {
   if (isFormReadOnly.value) return
-  emit('select-existing', workspaceId)
-}
-
-const handleWorkspaceInputChange = (input: { mode: 'existing' | 'new'; pendingPath: string }) => {
-  if (isFormReadOnly.value) return
-  emit('workspace-input-change', input)
+  emit('update:workspaceSelection', selection)
 }
 </script>

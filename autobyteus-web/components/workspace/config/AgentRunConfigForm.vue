@@ -28,16 +28,14 @@
 
     <div class="mt-8">
       <WorkspaceSelector
-        :workspace-id="config.workspaceId"
+        :model-value="workspaceSelection"
         :is-loading="workspaceLoadingState.isLoading"
         :error="workspaceLoadingState.error"
-        :initial-path="initialPath || workspaceLoadingState.loadedPath || ''"
         :disabled="isFormReadOnly"
         :workspace-locked="workspaceLocked"
         workspace-locked-message="Workspace is fixed for existing runs."
         control-variant="quiet"
-        @select-existing="handleSelectExisting"
-        @workspace-input-change="handleWorkspaceInputChange"
+        @update:model-value="handleWorkspaceSelectionChange"
       />
     </div>
 
@@ -91,6 +89,7 @@
 import { computed } from 'vue'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 
@@ -104,15 +103,14 @@ const props = defineProps<{
   config: AgentRunConfig | any;
   agentDefinition: AgentDefinition;
   workspaceLoadingState: WorkspaceLoadingState;
-  initialPath?: string;
+  workspaceSelection: WorkspaceSelectionState;
   workspaceLocked?: boolean;
   runtimeLocked?: boolean;
   readOnly?: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'select-existing', workspaceId: string): void;
-  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void;
+  (e: 'update:workspaceSelection', selection: WorkspaceSelectionState): void;
 }>();
 
 const workspaceLocked = computed(() => props.workspaceLocked === true)
@@ -145,13 +143,8 @@ const updateLlmConfig = (value: Record<string, unknown> | null) => {
   props.config.llmConfig = value
 }
 
-const handleSelectExisting = (workspaceId: string) => {
+const handleWorkspaceSelectionChange = (selection: WorkspaceSelectionState) => {
   if (isFormReadOnly.value) return
-  emit('select-existing', workspaceId)
-}
-
-const handleWorkspaceInputChange = (input: { mode: 'existing' | 'new'; pendingPath: string }) => {
-  if (isFormReadOnly.value) return
-  emit('workspace-input-change', input)
+  emit('update:workspaceSelection', selection)
 }
 </script>

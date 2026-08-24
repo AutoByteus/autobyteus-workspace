@@ -9,8 +9,8 @@ vi.mock('../WorkspaceSelector.vue', () => ({
   default: {
     name: 'WorkspaceSelector',
     template: '<div class="workspace-selector-stub"></div>',
-    props: ['workspaceId', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
-    emits: ['select-existing', 'workspace-input-change'],
+    props: ['modelValue', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
+    emits: ['update:modelValue'],
   },
 }))
 
@@ -43,7 +43,6 @@ describe('AgentRunConfigForm', () => {
 
   const setProviders = (providersWithModels: any[]) => {
     llmStore.providersWithModels = providersWithModels
-    llmStore.providersWithModelsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
   }
 
   beforeEach(() => {
@@ -51,11 +50,14 @@ describe('AgentRunConfigForm', () => {
 
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: [],
+      providersWithModelsForSelection: vi.fn(() =>
+        llmStore.providersWithModels.filter((provider: any) => provider.models.length > 0),
+      ),
       get models() {
         return llmStore.providersWithModels.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))
       },
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       modelConfigSchemaByIdentifier: vi.fn((identifier: string) => {
         const model = llmStore.providersWithModels.flatMap((provider: any) => provider.models).find((entry: any) => entry.modelIdentifier === identifier)
         return model?.configSchema || null
@@ -130,6 +132,7 @@ describe('AgentRunConfigForm', () => {
         config: mockConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -138,6 +141,34 @@ describe('AgentRunConfigForm', () => {
     expect(wrapper.find('.workspace-selector-stub').exists()).toBe(true)
     expect(wrapper.find('select#agent-run-runtime-kind').exists()).toBe(true)
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('autobyteus')
+  })
+
+  it('relays the complete controlled workspace selection without retaining a local copy', async () => {
+    const workspaceSelection = {
+      mode: 'new' as const,
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '/workspace/pending',
+    }
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: mockConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection,
+      },
+    })
+    const selector = wrapper.findComponent({ name: 'WorkspaceSelector' })
+
+    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+
+    const nextSelection = {
+      mode: 'existing' as const,
+      existingWorkspaceId: 'workspace-two',
+      newWorkspacePath: '/workspace/pending',
+    }
+    selector.vm.$emit('update:modelValue', nextSelection)
+
+    expect(wrapper.emitted('update:workspaceSelection')).toEqual([[nextSelection]])
   })
 
   it('populates provider-grouped model options for non-AutoByteus runtimes', async () => {
@@ -152,6 +183,7 @@ describe('AgentRunConfigForm', () => {
         config: { ...mockConfig, runtimeKind: 'codex_app_server' },
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -178,6 +210,7 @@ describe('AgentRunConfigForm', () => {
         config: { ...mockConfig, runtimeKind: 'autobyteus' },
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -215,6 +248,7 @@ describe('AgentRunConfigForm', () => {
         config: { ...mockConfig, runtimeKind: 'autobyteus' },
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -268,6 +302,7 @@ describe('AgentRunConfigForm', () => {
         config: localConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -354,6 +389,7 @@ describe('AgentRunConfigForm', () => {
         config: localConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -426,6 +462,7 @@ describe('AgentRunConfigForm', () => {
         config: localConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -460,6 +497,7 @@ describe('AgentRunConfigForm', () => {
         config: localConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
       },
     })
 
@@ -510,6 +548,7 @@ describe('AgentRunConfigForm', () => {
         config: localConfig,
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
         readOnly: true,
       },
     })
@@ -560,6 +599,7 @@ describe('AgentRunConfigForm', () => {
         },
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
         readOnly: true,
       },
     })

@@ -191,13 +191,15 @@ describe('TeamRunConfigForm', () => {
 
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: [],
+      providersWithModelsForSelection: vi.fn((runtimeKind: string) =>
+        (runtimeProviders[runtimeKind] ?? []).filter((provider: any) => provider.models.length > 0),
+      ),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
         llmStore.providersWithModels = rows
-        llmStore.providersWithModelsForSelection = rows
         return rows
       }),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
     }
 
     runtimeStore = {
@@ -251,6 +253,7 @@ describe('TeamRunConfigForm', () => {
         config,
         teamDefinition: teamDefinition as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
         ...propOverrides,
       },
       global: {
@@ -342,6 +345,27 @@ describe('TeamRunConfigForm', () => {
     expect(items[0].props('memberName')).toBe('Member A')
     expect(items[0].props('globalRuntimeKind')).toBe('autobyteus')
     expect(items[0].props('globalLlmModel')).toBe('gpt-5.4')
+  })
+
+  it('relays the complete controlled workspace selection without retaining a local copy', () => {
+    const workspaceSelection = {
+      mode: 'new' as const,
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '/workspace/pending',
+    }
+    const { wrapper } = buildWrapper({}, mockTeamDef, { workspaceSelection })
+    const selector = wrapper.findComponent({ name: 'WorkspaceSelector' })
+
+    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+
+    const nextSelection = {
+      mode: 'existing' as const,
+      existingWorkspaceId: 'workspace-two',
+      newWorkspacePath: '/workspace/pending',
+    }
+    selector.vm.$emit('update:modelValue', nextSelection)
+
+    expect(wrapper.emitted('update:workspaceSelection')).toEqual([[nextSelection]])
   })
 
   it('loads models for the team runtime and syncs runtime catalogs for explicit member runtimes', async () => {
