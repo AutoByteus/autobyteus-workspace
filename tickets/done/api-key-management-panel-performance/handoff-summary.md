@@ -2,7 +2,7 @@
 
 ## Status
 
-`User verification accepted; finalization and release authorized` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection, not an AutoByteus discovery/base-URL defect. The separate cosmetic `null models` label is explicitly accepted for deferral with no product update requested. All reviewed gates remain valid.
+`Repository finalized; release v1.4.56 authorized and ready` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. The archived ticket is merged and pushed to `personal`; the documented release helper is the remaining publication step.
 
 ## Integrated State
 
@@ -15,8 +15,10 @@
 - Integrated validated checkpoint: `d7f6f4108b09f66f92875b2fa29ac17f3a8387ca`
 - DR-002 delivery/docs checkpoint: `aca022c465c3bd2e6b787fc64c4ad3debc76e2bc`
 - Current integration merge: `80308fb50884f67cdc29b30eabad1213a9a15f2e`
+- Archived ticket commit: `79ef159409109ebe62c8a72be6db85de79c494d9`
+- Final `personal` merge: `e3307ead93c5c237f201b4721e12efa585a30dc6`
 - Integration method: merge of latest `origin/personal` into the protected ticket branch.
-- Current base relationship: latest tracked base is an ancestor; current branch is five commits ahead and zero behind after a second fetch.
+- Current base relationship: the verified ticket state was current at final refresh, is archived, and is an ancestor of pushed `origin/personal@e3307ead93c5c237f201b4721e12efa585a30dc6`.
 
 ## Testable macOS Electron Package
 
@@ -112,4 +114,4 @@ Electron packaging and the bundled terminal-native runtime now pass on the curre
 
 ## Finalization Hold
 
-The verification hold is released by the explicit disposition recorded in `SR-008`. Delivery must now perform the mandatory final target refresh, archive the ticket, finalize into `personal`, run the documented release path, verify rollout, and then clean up the dedicated ticket worktree/branch when safe.
+The verification hold was released by `SR-008`. Target refresh, archive, ticket-branch push, and `personal` merge/push are complete. Delivery must now run the documented `v1.4.56` release path, verify rollout, and clean up dedicated worktrees/branches when safe.

@@ -3,7 +3,7 @@
 ## Scope And Integrated State
 
 - Ticket: `api-key-management-panel-performance`
-- Current delivery revision: `DR-004`
+- Current delivery revision: `DR-005`
 - Trigger: `SR-008` resolves the hands-on Alibaba Cloud observation as external credential/account authentication, with the separate cosmetic nullable-count label accepted for deferral and no product update requested.
 - Bootstrap base: `origin/personal@122adc91c184a75541489eea670ac29fcb43f4ab`.
 - Latest tracked base: `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`, fetched and rechecked on 2026-08-24.

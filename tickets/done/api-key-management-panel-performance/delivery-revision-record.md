@@ -4,12 +4,26 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-005 | `SR-008` records explicit acceptance, no product update, and finalization/release authorization | `DR-004` resolved — external authentication with accepted cosmetic deferral | Pass — refreshed target, archived ticket, committed/pushed ticket branch, merged/pushed `personal`; clean release worktree prepared with unused `v1.4.56` candidate | `handoff-summary.md`, `release-deployment-report.md`, `validation-evidence/delivery-pre-finalization-dr005.log`, `validation-evidence/delivery-repository-finalization-dr005.log` |
 | DR-004 | User hands-on Electron verification reports configured `alibaba_cloud` custom provider with `null models` and unavailable catalog | `DR-003` Pass — local macOS ARM64 package ready for user verification | Resolved — `SR-008` establishes Alibaba credential/account authorization rejection; cosmetic `null models` presentation defect is accepted for deferral, with no product update requested; user authorizes finalization/release | `user-verification-finding-dr004.md`, `investigation-notes.md`, `solution-revision-record.md`, `validation-evidence/solution-dr004-sanitized-live-probe.log`, user screenshot, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | User requested README-guided Electron build for hands-on testing after `DR-002` | `DR-002` Pass — integrated/docs-synchronized handoff awaiting verification | Pass — protected DR-002, merged five newer base commits without conflict, built and verified an unsigned macOS ARM64 package on the current integrated state, and reran focused ticket checks; user verification/finalization hold remains | `electron-build-mac-report.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `validation-evidence/delivery-electron-build-dr003.log`, `validation-evidence/delivery-electron-artifact-verification-dr003.log`, `validation-evidence/delivery-focused-post-integration-dr003.log`, `validation-evidence/delivery-handoff-readiness-dr003.log` |
 | DR-002 | `CRR-008` proportional review Pass over integrated `API-REV-003` / `IR-007` / `CRR-007` | `DR-001` Blocked — latest-base merge conflicts | Pass — conflicts resolved and reviewed, exact integrated package checkpointed, latest base remains current, five long-lived docs synchronized, and handoff prepared for explicit user verification; finalization/release held | `delivery-integration-blocker.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `validation-evidence/delivery-docs-sync-dr002.log` |
 | DR-001 | `CRR-006` proportional review Pass over `API-REV-002`, with no unresolved ticket finding | N/A | Blocked — the mandatory merge of latest `origin/personal` produced four conflicts; classified `Local Fix` and routed to `/implementation_engineer` before docs sync or user handoff | `delivery-integration-blocker.md`, `docs-sync-report.md`, `release-deployment-report.md`, `validation-evidence/delivery-integration-refresh-dr001.log` |
 
 ## Revision Entries
+
+### DR-005 — Repository finalized; authorized release ready
+
+- Trigger: `SR-008` records the explicit user acceptance needed to release the verification hold, including deferral of the bounded nullable-count presentation defect, no requested product change, and finalization/release authorization.
+- Final target refresh: delivery fetched/pruned `origin`, fetched tags, and confirmed `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869` remained the latest pre-finalization base and an ancestor of the verified ticket state. No re-integration or renewed verification was needed.
+- Pre-finalization checks: patch hygiene and repository artifact hygiene passed; web and messaging-gateway versions were both `1.4.55`; local and remote `v1.4.56` were absent.
+- Archive: ticket moved from `tickets/in-progress/api-key-management-panel-performance` to `tickets/done/api-key-management-panel-performance` before the terminal ticket commit.
+- Ticket branch finalization: commit `79ef159409109ebe62c8a72be6db85de79c494d9` (`chore(delivery): finalize API key catalog performance`) created and branch `codex/api-key-management-panel-performance` pushed to `origin`.
+- Target finalization: clean latest `personal` was merged with the ticket branch as `e3307ead93c5c237f201b4721e12efa585a30dc6` (`Merge API key management panel performance`) and pushed to `origin/personal`.
+- Release preparation: a clean dedicated `personal` worktree is checked out at the pushed target. Next unused patch version `1.4.56` is selected for the documented new personal release helper, using the archived curated release notes.
+- Current result: `Pass — repository finalized; release v1.4.56 ready to start.`
+- Cleanup state: postponed until the authorized release and rollout verification complete. Main-worktree untracked `.article-work/` content was not modified; release work uses a separate clean worktree.
+- Evidence: `validation-evidence/delivery-pre-finalization-dr005.log` and `validation-evidence/delivery-repository-finalization-dr005.log`.
 
 ### DR-004 — User verification finding routed for origin investigation
 
