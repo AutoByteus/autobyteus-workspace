@@ -311,3 +311,88 @@ None. This is the initial proportional API/E2E test review; CR-001–CR-004 rema
 - Material score or classification changes: prior 8.9 Design Impact -> current 9.1 Local Fix. The complete architecture review finds SR-008's ownership/interfaces sound; CR-008 and CR-009 are resolved. New `MP-CR-008` is Reachable and lowers only Runtime Correctness and API/E2E Readiness below 9.0.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: `teamRunConfigStore.ts` is exactly 500 effective lines after a `+320/-80` delta; exact API-E2E-014 is pending; application integration fixtures remain 2/5 due recorded current-base fixture drift; standalone typecheck/broad baseline/provider/Electron residuals and pending delivery docs remain bounded. No recovery branch was merged or cherry-picked.
+
+### CRR-012 — IR-008 resolves stale-empty topology repair and passes complete source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
+- Review entry point and round: Implementation Review, round 8 / twelfth completed review result
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md`; IR-008 for CR-010
+- Relevant solution revision IDs: `SR-002–SR-008`; current basis `SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`; current `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001–IR-008`; current `IR-008`
+- Relevant API/E2E revision IDs: `API-REV-001–API-REV-005`; fresh integrated execution is next
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: `CRR-011` — Fail, Local Fix to `/implementation_engineer`, 9.1/10
+- Current authoritative result: `Pass` — proceed to `/api_e2e_engineer`, 9.4/10
+- What changed in the review result and why: IR-008 makes active-New workspace readiness topology-aware inside the existing pure/store owner. Valid current Team New/empty remains blocked, while a removed or kind-changed stale Team entry no longer disables the only repair activation. One rendered activation delegates to the existing launch owner, atomically prunes stale config/workspace state, records sorted repair addresses, performs zero workspace registration and zero GraphQL create, and returns a typed repair-required outcome contained only for presentation. The complete SR-008 architecture remains singular; no watcher, panel Team map/filter, second gate, allocation bypass, or compatibility path returned.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001–CR-007` | Resolved/source-resolved | Remain resolved | `CRR-002`, `CRR-005`, `CRR-008`, `IR-002`, `IR-003`, `IR-005`, `IR-006`, `IR-008` | Complete source trace, reviewer focused suites, and static guards show no regression. Exact API/E2E-014 still requires fresh execution. |
+| `CR-008` | Resolved in CRR-011 | Remains resolved | `CRR-010`, `SR-008`, `ARCH-REV-002`, `IR-007`, `IR-008`; `MP-CR-006`, `MP-ARCH-001` | Draft/store remain the sole Team workspace authority; launch owner remains the sole preparation/admission sequence; panel contains no Team map/registration/reconcile gate. |
+| `CR-009` | Resolved in CRR-011 | Remains resolved | `CRR-010`, `SR-008`, `ARCH-REV-002`, `IR-007`, `IR-008`; `MP-CR-007` | Backend source is unchanged; reviewer planner/service/application suite passed 4 files / 41 tests and static guards found no root preallocation API. |
+| `CR-010` | Open — implementation-owned Local Fix | Resolved | `CRR-011`, `IR-008`, `MP-CR-008` | Reviewer frontend suite passed 6 files / 103 tests. Real-Pinia/component coverage proves valid empty blocking, enabled stale repair activation, one launch delegation, zero registration/create, pruned state, and visible repair addresses. The inspected Nuxt render shows the repaired root form and `/engineering_org` notice. |
+| `TR-001`, `TR-002` | Resolved | Remain resolved for unchanged durable server boundaries | `CRR-006`, `API-REV-004`, `API-REV-005`, `IR-008` | IR-008 did not edit the strengthened durable server tests; fresh integrated execution remains mandatory. |
+
+- New or remaining finding IDs: None. Historical `API-E2E-F-002` and the API-REV-005 component-test delta require fresh successful execution and later proportional review.
+- Material score or classification changes: 9.1 Fail / Local Fix -> 9.4 Pass. `MP-CR-008` remains Reachable and its consequence is corrected; no premise was added or reclassified. Every score category is at least 9.0.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: `teamRunConfigStore.ts` is 499 effective lines; exact packaged API-E2E-014 and fresh integrated coverage are pending; prior application fixture drift must be re-investigated by the coverage owner; typecheck/broad baseline/provider/Electron residuals and pending delivery docs remain bounded. No recovery branch was merged or cherry-picked.
+
+### CRR-013 — API-REV-006 passes execution but retains one stale application compatibility fixture
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md`
+- Review entry point and round: Proportional API/E2E Test-Code Review, round 3 / thirteenth completed review result
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`; API-REV-006 / API-E2E-014 / API-E2E-018; new finding `TR-003`
+- Relevant solution revision IDs: `SR-002–SR-008`; current basis `SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`; current `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001–IR-008`; current `IR-008`
+- Relevant API/E2E revision IDs: `API-REV-001–API-REV-006`; current `API-REV-006`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: `CRR-012` implementation-source Pass / 9.4; prior proportional result `CRR-006` Pass; API-REV-006 execution Pass / 98%
+- Current authoritative result: `Fail` — test-code Local Fix to `/api_e2e_engineer`
+- What changed in the review result and why: API-REV-006 directly proves the corrected one-click root/nested New-workspace launch and passes the repository, application, migration, packaged Electron, provider, task, and cleanup boundaries. Proportional inspection passes the preserved component delta and Brief Studio fixture correction. The capability integration's generated backend, model, root default, TeamRun snapshot, Agent target, and binding assertion are current, but its mocked `ApplicationBundle` still advertises backend and frontend compatibility version 5. The supported manifest contract accepts and emits only version 6, so the fake supplies a stale, internally contradictory service-output fixture that the passing worker/host execution cannot detect because manifest parsing is bypassed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001–CR-010` | Resolved in prior source reviews | Remain resolved | `CRR-002`, `CRR-005`, `CRR-008`, `CRR-011`, `CRR-012`, API-REV-006 | This proportional review does not reopen implementation source. API-REV-006 independently passed the exact one-click packaged path, stale topology repair, planner/lifecycle/migration suites, builds, real nested provider message/task flow, and cleanup. |
+| `TR-001`, `TR-002` | Resolved in CRR-006 | Remain resolved | `CRR-006`, API-REV-006 | The unchanged hierarchy lifecycle and production-upgrade files passed 7/7 and 4/4. |
+| `API-E2E-F-002` / API-E2E-014 | Awaiting exact current rerun | Resolved by execution; not a test-review finding | `CRR-009`, `CRR-012`, API-REV-006 | One accepted browser activation registered two distinct New workspaces and created exactly one TeamRun; real nested messaging and accepted task lifecycle passed. |
+| `TR-003` | N/A | Open — API/E2E-owned Local Fix | API-REV-006, CRR-013 | `application-context-capabilities.integration.test.ts:105–108` retains two v5 compatibility fields; `application-backend-manifest.ts:185–202,215–229` requires and emits v6. |
+
+- New or remaining finding IDs: `TR-003` only.
+- Material score or classification changes: no implementation scorecard was recomputed. API-REV-006's 98% execution result remains authoritative for runtime behavior, but the proportional durable-test result is Fail until the stale fixture metadata is corrected and successfully rerun.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: the correction is bounded to two synthetic compatibility fields and the affected application integration rerun; production source and the successful real browser/Electron evidence need not change. Delivery remains blocked pending a successful proportional result. The recovery branch remains unmerged and no merge/cherry-pick is requested.
+
+### CRR-014 — API-REV-007 resolves TR-003 and completes proportional test review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md`
+- Review entry point and round: Proportional API/E2E Test-Code Review, round 4 / fourteenth completed review result
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`; API-REV-007 / API-E2E-018 / `TR-003`
+- Relevant solution revision IDs: `SR-002–SR-008`; current basis `SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`; current `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001–IR-008`; current `IR-008`
+- Relevant API/E2E revision IDs: `API-REV-001–API-REV-007`; current `API-REV-007`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: `CRR-013` proportional test-review Fail solely for `TR-003`; `CRR-012` implementation-source Pass / 9.4; API-REV-006 execution Pass / 98%
+- Current authoritative result: `Pass` — proceed to `/delivery_engineer`
+- What changed in the review result and why: API-REV-007 changed only the capability integration's synthetic `ApplicationBundle.backend.sdkCompatibility` values. Both now derive from the exported current-v6 backend and frontend contract constants, eliminating the internally contradictory v5 service-output fixture identified by CRR-013. No production source, assertion, test name, or other fixture behavior changed. The full affected application cohort passed 2 files/5 tests; exact hash, diff check, source excerpt, and no-modified-production-source audit passed. Broader reruns were proportionately unnecessary because CRR-013 expressly retained API-REV-006's real packaged/browser/provider/lifecycle proof.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001–CR-010` | Resolved in prior source reviews | Remain resolved | `CRR-002`, `CRR-005`, `CRR-008`, `CRR-011`, `CRR-012`, API-REV-006, API-REV-007 | No production source changed in API-REV-007. The complete source result and retained runtime evidence remain authoritative. |
+| `TR-001`, `TR-002` | Resolved in CRR-006 | Remain resolved | `CRR-006`, API-REV-006, API-REV-007 | Unchanged hierarchy lifecycle and production-upgrade proof remains valid. |
+| `API-E2E-F-002` / API-E2E-014 | Resolved by API-REV-006 | Remains resolved | `CRR-009`, `CRR-012`, API-REV-006, CRR-013, API-REV-007 | The two-field fixture correction cannot affect the retained one-activation packaged browser result, exact V2 state, or real message/task lifecycle. |
+| `TR-003` | Open — API/E2E-owned Local Fix | Resolved | CRR-013, API-REV-007, CRR-014 | The synthetic bundle imports and uses both current v6 constants; SHA-256 `00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700`; affected cohort passed 5/5. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no implementation scorecard was recomputed. Proportional disposition changes from Fail to Pass. API-REV-007's 98% final confidence remains authoritative.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: only the already-bounded residuals recorded by API-REV-007 remain: injected stale-topology setup, non-exhaustive unrelated provider permutations, and unchanged native IPC/window behavior. Delivery must refresh against the latest tracked base and assess integrated state before final handoff. The recovery branch remains unmerged; no merge or cherry-pick is requested by this review.

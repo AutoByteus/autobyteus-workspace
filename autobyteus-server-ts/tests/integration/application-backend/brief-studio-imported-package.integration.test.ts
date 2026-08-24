@@ -331,7 +331,7 @@ const persistPublishedArtifactForRun = async (input: {
     agentDefinitionId: `test-${input.producer.agentRunId}`,
     workspaceRootPath: path.join(input.fixtureRoot, "workspace"),
     memoryDir,
-    llmModelIdentifier: "gpt-test",
+    llmModelIdentifier: "grok-4.6",
     llmConfig: null,
     autoExecuteTools: true,
     skillAccessMode: null,
@@ -915,7 +915,7 @@ describe("Brief Studio imported package integration", () => {
         variables: {
           input: {
             briefId: createdBrief.briefId,
-            llmModelIdentifier: "gpt-test",
+            llmModelIdentifier: "grok-4.6",
           },
         },
       }),
@@ -1450,7 +1450,7 @@ describe("Brief Studio imported package integration", () => {
 
     const launchedRun = await client.launchDraftRun({
       briefId: createdBrief.briefId,
-      llmModelIdentifier: "gpt-test",
+      llmModelIdentifier: "grok-4.6",
     });
     expect(launchedRun).toMatchObject({
       briefId: createdBrief.briefId,

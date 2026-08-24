@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68",
+  "messages": [
+    {
+      "messageId": "teammsg_7gXrOIAH2M5_HHV6vtMMfdVtv2lTE5cn",
+      "senderAgentRunId": "test_teacher_ffccb620bd11420c81808b370b1303ac",
+      "receiverAgentRunId": "student_one_885e94f54ecd4a61ac2fcab65883a009",
+      "content": "Please reply exactly API_REV_006_SUBTEAM_MESSAGE_OK to /Teacher using send_message_to.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T22:08:08.878Z"
+    },
+    {
+      "messageId": "teammsg_V1LeAbLUQOLpN7FqjdX-aHyLWn6aRviE",
+      "senderAgentRunId": "student_one_885e94f54ecd4a61ac2fcab65883a009",
+      "receiverAgentRunId": "test_teacher_ffccb620bd11420c81808b370b1303ac",
+      "content": "API_REV_006_SUBTEAM_MESSAGE_OK",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T22:08:10.401Z"
+    }
+  ]
+}

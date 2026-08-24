@@ -19,16 +19,16 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
-- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md` (`CRR-006` proportional `Pass`; `TR-001` and `TR-002` resolved)
+- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md` (`CRR-013` proportional `Fail`; bounded API/E2E-owned fixture finding `TR-003` open; prior `TR-001` and `TR-002` remain resolved)
 - Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-001`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-005`
-- Current Investigation Round: 5
-- Trigger: `code_reviewer` `CRR-008` integrated implementation-source `Pass` for `DR-001` / `IR-004` / `IR-005`, requiring fresh coverage decisions and proportional executable validation against integrated merge `bd4e2403fd6630622e7789967e2f2815cc6f37f5` and current artifact HEAD `5dc5105b14d5c215a70254ce317ad725d130f16e`.
+- Current API/E2E Revision ID: `API-REV-007`
+- Current Investigation Round: 7
+- Trigger: `code_reviewer` `CRR-013` proportional test-code `Fail` for bounded API/E2E-owned finding `TR-003`: `application-context-capabilities.integration.test.ts#createBundle()` advertises backend-definition and frontend-SDK compatibility v5 even though the supported discovery parser requires and emits v6. Correct only those two synthetic service-output fixture fields, rerun the affected application integration cohort, refresh evidence/hashes, and return for repeat proportional review.
 - Investigation Amendment: On 2026-08-24, after the first independent browser probe passed but before the round was finalized, the user explicitly requested import of the complete local package at `/Users/normy/autobyteus_org/autobyteus-private-agents`, execution of its nested `nested-classroom-test` Team, an actual packaged Electron E2E profile, browser interaction through the `open_tab` tool, and a real Codex `gpt-5.6-luna` nested delegation. This material validation extension is recorded here before that execution begins.
 - Prior Investigation Reviewed: API-REV-004 `Pass` / 99% and `CRR-006` proportional `Pass` remain authoritative for protected parent `393c27015a4380f77d33f7f55096077f0e1f6b29`; `DR-001`, `IR-004`, `IR-005`, and `CRR-008` establish a materially newer integrated state. The recovery audit's older stale-snapshot artifact remains intentionally non-authoritative.
-- Latest Authoritative Investigation: This file, round 5. API-REV-005 is complete at `Fail` / `89%` because the real integrated browser journey exposed `API-E2E-F-002`: successful New-workspace registration does not continue to TeamRun creation in the same accepted activation. No prior result is inferred for integrated HEAD.
+- Latest Authoritative Investigation: This file, round 7, is the current authority for the completed CRR-013 local fixture correction. API-REV-007 is `Pass` / `98%`; `TR-003` is resolved by execution and awaits repeat proportional review. CRR-013 continues to preserve API-REV-006's real packaged-browser/provider/lifecycle evidence. Delivery remains blocked until proportional review passes.
 
 ## Current Requirement And Design Basis
 
@@ -469,3 +469,201 @@ None at investigation time. A current required scenario failure will be recorded
 - Critical acceptance criteria directly proven: `No` — `FR-003` / `FR-005` / `AC-001` single-activation launch continuation fails.
 - Applicable category below 90%: requirement proof, user-surface confidence, durable regression quality.
 - Default clean target met: `No`.
+
+
+## API-REV-006 Fresh Integrated Coverage Investigation — SR-008 / IR-006–IR-008
+
+### Current-State Basis And Prior-Failure Recheck
+
+- Reviewed state: `426bdf81ae5efcaf7e97e041c36a94d7349e610b`; IR-008 implementation commit `d621b229caf9944dfcac02c23658a81e3a07f4db`; CRR-012 `Pass` / 9.4/10.
+- Prior result rechecked: API-REV-005 directly observed API-E2E-F-002 at `5dc5105...`: one accepted root-plus-nested New-workspace activation completed both registrations but produced no TeamRun; a second click was required. CRR-009 attributed it to duplicate post-preparation readiness gating. IR-006 removed that gate; SR-008 / ARCH-REV-002 then centralized Team workspace lifecycle state in the immutable draft/store and moved all registration sequencing into `agentTeamRunStore.launchDraft`. IR-007 implemented the ownership and validation-before-allocation boundary. IR-008 corrected the remaining stale removed/kind-changed Team New/empty self-blocker and preserves a visible typed repair stop.
+- Current critical contract: valid current root or nested Team active `New` with empty/whitespace input is blocked with `Enter a workspace path to run this team.`; valid non-empty root+nested New state must survive same-draft edits and be registered/canonicalized before exactly one TeamRun create in the same accepted activation; stale removed/kind-changed Team authoring state must not block its first repair activation, and that activation performs zero workspace registration and zero GraphQL create while leaving the sorted repair notice visible.
+- Backend critical contract: the common planner validates all full/root-only/application topology and configuration records before allocating any configured root/nested Team or Agent identity; successful application launch uses only the root identity returned by common creation.
+- Prior migration/lifecycle proof remains valid historical evidence, but current HEAD requires proportional reruns because server service/planner ownership changed after API-REV-005.
+
+### Changed Boundary Classification
+
+| Boundary | Current Change / Risk | Direct Repository Evidence Present | Remaining Gap Requiring Execution |
+| --- | --- | --- | --- |
+| Frontend draft/workspace authority | Per-draft exact-Team workspace authoring, plan/token authorization, atomic completion/failure/repair, typed repair outcome | `teamRunConfigStore.spec.ts`, `agentTeamRunStore.spec.ts`, `RunConfigPanel.spec.ts`, form/selector suites | Repository mocks do not prove one browser activation across real workspace mutations, Pinia projection, GraphQL, and disk |
+| Browser/web-equivalent Electron journey | API-E2E-014 previously failed only in real integration timing | API-REV-005 real failure plus IR-006/007/008 component/store coverage | Fresh current packaged Electron backend and actual `open_tab` one-click proof is mandatory |
+| Stale topology timing | Current-Team New/empty blocker must disappear only after removal/kind change; first activation must visibly repair without side effects | Real-Pinia/store/panel coverage and IR-008 rendered evidence | Fresh independent browser semantics plus direct store/transport side-effect evidence; post-dispatch race remains mainly durable store coverage |
+| Backend allocation ordering | Planner owns root/nested/Agent allocation after complete validation | Planner/service/application unit and integration suites | Rerun exact negative allocation cohort and one valid application path |
+| Application integration | IR-007 changed the TeamRun service fake, but 3/5 executions stopped before that fake | Checked-in fixtures currently encode application definition contract v5 and fake AutoByteus model `gpt-test` | Revalidate against current v6/current-model contract; then execute the real worker/host and imported-package paths |
+| API/persistence/restore | Complete Team/Agent snapshots and exact IDs persist/restore | Strengthened hierarchy GraphQL lifecycle E2E | Rebuild/rerun 7/7 at current HEAD |
+| Startup V1 -> V2 migration | Application binding/direct coordinators/tasks/handoffs/Agent snapshots | Strengthened production-upgrade E2E | Rebuild/rerun 4/4 at current HEAD |
+
+### Existing Durable Coverage Decisions
+
+| Path / Scenario | Decision | Current Evidence And Required Action |
+| --- | --- | --- |
+| `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` | `Still Valid` (API-REV-005 update awaiting proportional review) | The 35-case API-REV-005 delta remains requirement-aligned and was preserved through IR-006–IR-008. Rerun it inside the current six-file cohort; do not weaken root/nested active-empty, same-draft edit, failure, inactive-buffer, address isolation, or identity-reset assertions. |
+| `autobyteus-web/stores/__tests__/teamRunConfigStore.spec.ts` | `Still Valid` | Covers current/stale New-empty distinction, exact kind/address pruning, sorted repair, buffer isolation, preparation locking, and draft ownership. Rerun. |
+| `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts` | `Still Valid` | Covers deduplicated one-launch preparation, pre-dispatch authorization, post-dispatch stale-result containment, zero GraphQL create on repair/failure, and exact final draft admission. Rerun. |
+| `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`, `WorkspaceSelector.spec.ts`, `AgentRunConfigForm.spec.ts` | `Still Valid` | Controlled value relay, delayed discovery, active/inactive New buffer, and standalone/root/nested presentation remain current. Rerun as the six-file cohort. |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts`, `team-run-service.test.ts`, `tests/integration/agent-team-execution/team-run-service.integration.test.ts`, `tests/unit/application-orchestration/application-run-binding-launch-service.test.ts` | `Still Valid` | Current validation-before-allocation and successful returned-root behavior. Rerun the exact four-file/41-test reviewer cohort. |
+| `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` | `Needs Update` | Its generated application fixture declares definition contract `5` while the current host deliberately requires `6`; this stops before the ticket's changed TeamRun service fake. Update the synthetic fixture to v6. Its synthetic AutoByteus model `gpt-test` is also no longer in the current supported-model catalog; use the repository's current deterministic supported identifier rather than bypassing validation. Preserve the real worker/host, both explicit start kinds, capability, persistence, and recovery assertions. |
+| `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` | `Needs Update` | The checked-in package itself is already contract v6, but two launch inputs use obsolete synthetic AutoByteus model `gpt-test`; current production validation correctly rejects it before the revised service fake. Replace only the synthetic requested model with the repository's deterministic current supported identifier, preserving the imported package, hosted GraphQL/REST/WS, binding, early-final projection, and fake common-create assertions. |
+| `autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | `Still Valid` | CRR-006-strengthened complete Team/Agent disk/API/restart/restore and strict no-side-effect rejection boundary. Rerun 7/7 without weakening. |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | `Still Valid` | CRR-006-strengthened representative migration fixture with distinct direct coordinators, binding, task, handoff, communication, complete Agent snapshots, warnings/retry/idempotence. Rerun 4/4 without weakening. |
+| API-REV-005 private `nested-classroom-test` packaged Electron/Open Tab journey | `Still Valid` historical evidence only | Its provider/message/task/V2 proof predates IR-006–IR-008 and its one-click result failed. Rebuild current package and repeat API-E2E-014; preserve the requested Codex Luna root and AutoByteus DeepSeek nested scope. |
+
+### Durable Coverage Delta Authorized For API-REV-006
+
+Update fixture data only in these two existing integration tests; no production source and no assertion removal:
+
+1. `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
+   - Set the synthetic backend definition to current contract v6.
+   - Replace obsolete synthetic AutoByteus `gpt-test` selections with the deterministic current supported identifier already protected by the server's supported-model suite.
+2. `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
+   - Replace obsolete launch-input `gpt-test` with the same current supported identifier. Metadata-only fixture values may be aligned for semantic consistency; no production validation is bypassed.
+
+Rationale: the failed fixtures assert obsolete independent platform contracts and stop before the ticket's changed application/common-TeamRun boundary. Updating them restores the intended real integration proof. This is API/E2E-owned durable coverage and must return with the still-pending API-REV-005 `RunConfigPanel.spec.ts` path for proportional review.
+
+### Planned Execution — Narrowest To Broader
+
+1. Apply only the two authorized fixture updates. Run the two application-backend integration files together; require 5/5 through real worker/host and imported-package boundaries.
+2. Run the current six-file frontend workspace cohort; require all 103 current cases, including API-REV-005 panel coverage and IR-008 repair coverage.
+3. Run the four-file backend planner/service/application cohort; require all 41 current cases and zero allocation/persistence assertions on invalid inputs.
+4. Run production builds needed by built-server and packaged execution: server `pnpm run build:full`, current Nuxt `pnpm build`, and the documented macOS Electron package path.
+5. Rerun unchanged hierarchy GraphQL lifecycle 7/7 and production-upgrade 4/4 E2Es against the built current server.
+6. Launch an owned isolated packaged Electron profile plus owned Nuxt proxy. Import the private `/Users/normy/autobyteus_org/autobyteus-private-agents` package and secrets only into the owned profile using the documented project mechanisms. Create owned local workspace directories before provider startup.
+7. Through actual AutoByteus `open_tab`, execute API-E2E-014 on `nested-classroom-test`: root Codex `gpt-5.6-luna`, nested `/StudentStudyGroup` AutoByteus `deepseek-v4-flash`, active non-empty New paths at both exact Team addresses, and exactly one accepted Run activation. Prove two canonical registrations followed by one TeamRun/history record from that activation; prove no duplicate launch while in flight; correlate the exact V2 tree on disk.
+8. On that created run, send an ordinary message to the nested Team and complete a formal delegation/submission/acceptance lifecycle, retaining provider/token/message/task evidence.
+9. Independently exercise current-Team New/empty blocking and a stale removed/kind-changed Team repair activation. Require the exact blocker before topology change, then one visible sorted repair stop with zero workspace registration and zero create. Use browser semantics plus server/GraphQL/store instrumentation; do not claim a production topology-edit boundary if the temporary probe injects the already-supported live definition refresh.
+10. Run static/hash/cleanup audits, terminate only owned runs/processes/tabs, remove only owned roots, and update all canonical reports.
+
+### Pre-Execution Confidence And Broader Validation Gate
+
+| Category | Pre-Execution Confidence | Basis / Remaining Gap |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 88% | Durable requirements are mapped, but API-E2E-F-002 is not resolved until one-click current browser proof passes. |
+| Changed-boundary directness | 90% | Source-reviewed focused suites directly cover ownership, but current package/API/disk execution remains pending. |
+| Cross-boundary realism and mock gap | 82% | Prior browser exposed a mock gap; current one-click and application integration reruns are mandatory. |
+| Environment/configuration/fixture fidelity | 84% | Private package/secrets exist, but current isolated profile and repaired application fixtures have not run yet. |
+| Failure/edge/lifecycle/recovery | 90% | Strong current durable coverage exists; stale repair, post-dispatch containment, lifecycle, and migration need fresh execution. |
+| User surface/browser/desktop shell | 78% | Current actual `open_tab`/packaged journey has not run; prior current-base journey failed. |
+| Durable regression quality | 91% | Strong coverage exists, but API-REV-005 panel delta and new fixture corrections still require successful execution and proportional review. |
+
+- Pre-execution overall confidence: `86%` (rounded simple average).
+- Broader validation decision: `Required` — actual browser against an owned packaged backend is the only selected surface that can directly resolve the previously observed Vue/Pinia/workspace-registration/GraphQL timing gap.
+- Desktop decision: use the documented isolated Electron E2E profile to prove package/backend lifecycle, but perform web-equivalent UI interaction through actual AutoByteus `open_tab`; no shell-specific source behavior changed.
+- Critical success gates: API-E2E-014 completes in one activation with exactly one TeamRun; stale repair creates/registers nothing; allocation-invalid cohorts consume no IDs; application integration reaches 5/5; hierarchy 7/7 and migration 4/4 remain intact.
+- Failure gate: any approved behavior mismatch is recorded and returned to `/code_reviewer` for focused origin review. Test/fixture/harness defects remain API/E2E-owned and are corrected only after updating this investigation.
+- Delivery gate: closed until successful execution and proportional review of all API/E2E-owned durable changes.
+
+### API-REV-006 Investigation Decision
+
+- Proceed To API/E2E Execution: `Yes`.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — update two stale fixture-only integration paths; retain the pending API-REV-005 panel update.
+- Broader Validation Decision: `Required`.
+- Reroute Required Before Validation Execution: `No`.
+- Current authoritative result: `Pass` / `98%` after the completed execution recorded below. API-REV-005 `Fail` / 89% remains the prior historical result and was rechecked directly rather than overwritten or inferred resolved.
+
+### API-REV-006 Investigation Amendment — Application V6 Root Default Fixture
+
+- New evidence: the first updated two-file application integration run passed the three Brief Studio cohorts but the capability fixture failed after reaching the current v6 launch handler with `Cannot read properties of undefined (reading 'workspaceRootPath')`.
+- Validity decision update: `application-context-capabilities.integration.test.ts` remains `Needs Update`. Its two synthetic `mode: 'memberConfigs'` start requests also omit the required current-v6 `teamDefaultConfig` declared by `ApplicationTeamRunLaunch`. The obsolete v5 fixture previously masked this second drift.
+- Authorized correction: add the same complete current root default (`workspaceRootPath`, current supported model, auto-execute, skill mode) to both initial and recovery Team starts. Keep the exact member config and every worker/host, message, event, recovery, binding, persistence, and assertion path unchanged.
+- Classification: API/E2E-owned stale fixture, not a product failure. The current production contract intentionally requires the root default even when exact member configurations are supplied. No requirement/design reroute is needed.
+- Rerun gate: repeat the full two-file 5-test cohort after the fixture correction; retain the first execution log as evidence of the investigation-driven classification.
+
+### API-REV-006 Investigation Amendment — Application TeamRun Fake Return Contract
+
+- New evidence: after adding the required v6 root default, the capability path advanced into current `ApplicationRunBindingLaunchService` and failed because its integration fake returns obsolete `{ config.rootTeam }`; the current common-create return is a TeamRun exposing `getExecutionTreeSnapshot()`. The file also retains a stale call-count assertion against removed `createTeamRun` rather than `createTeamRunFromRootConfig`.
+- Validity decision update: this remains the same API/E2E-owned `Needs Update` fixture. Adapt the fake to return `getExecutionTreeSnapshot().rootTeam.members` in the current configured-node shape and update only the method-name call-count assertion. Preserve exact IDs, two launches, member binding, message targeting, recovery, and persistence assertions.
+- Classification: stale test double/expectation revealed progressively after the obsolete v5 gate was removed; not a product failure and no production change is authorized.
+
+### API-REV-006 Investigation Amendment — Current Application Agent Target Identity
+
+- New evidence: after the TeamRun fake reached the current snapshot return boundary, execution advanced to explicit send/subscribe and failed with `The application agent target is invalid.` The generated v5 fixture addresses an `AGENT_TEAM_MEMBER` by `memberAddress`; the current v6 `ApplicationAgentTargetAddress` requires the exact live `agentRunId` returned in `team.runtime.members`.
+- Authorized correction: construct the synthetic `teamAddress` with the returned member `agentRunId` and align the one expected streamed address. Retain `targetMemberAddress` in `initialInput`, which remains the current runtime-input selector contract. Do not weaken membership authorization, message, subscription ordering, event, or binding assertions.
+- Classification: stale v5 target fixture exposed only after earlier gates were corrected; API/E2E-owned local coverage fix, not a product defect.
+
+### API-REV-006 Investigation Amendment — Current Agent Creation Binding Field
+
+- New evidence: the v6 worker/host journey now completes; only one assertion fails because it expects removed `applicationExecutionContext` on `AgentRunService.createAgentRun`, while the observed current call carries `applicationBinding` with application ID, binding ID, display name, and runtime kind.
+- Authorized correction: align that one assertion to `applicationBinding` while retaining the exact application ID and agent/model assertions. This does not weaken application association proof; it asserts the current production boundary used by persistence and projection.
+- Classification: final stale v5 fixture assertion, API/E2E-owned local fix. Repeat the full 5-test cohort after correction.
+
+## API-REV-006 Completed Execution Outcome
+
+### Repository Evidence
+
+- Application integration: `Pass`, 2 files / 5 tests after the investigation-authorized v6/model/root-default/current-TeamRun/current-target/current-binding fixture corrections. Authoritative log: `api-e2e-evidence/api-rev-006-application-integration-authoritative.txt`.
+- Frontend workspace cohort: `Pass`, 6 files / 103 tests, including current/stale New-empty, atomic repair, post-dispatch containment, root/nested/standalone state, inactive buffers, failure retention, and the API-REV-005 panel delta. Evidence: `api-rev-006-web-workspace-focused.txt`.
+- Planner/service/application cohort: `Pass`, 4 files / 41 tests with invalid-topology zero-allocation/persistence proof. Evidence: `api-rev-006-server-planner-focused.txt`.
+- Server full build and Nuxt production build: `Pass`; Nuxt built 3,731 modules / 15 routes. Evidence: `api-rev-006-server-build-full.txt`, `api-rev-006-web-build.txt`.
+- Current hierarchy GraphQL lifecycle: `Pass`, 7/7. Current production upgrade: `Pass`, 4/4. Evidence: `api-rev-006-hierarchical-graphql-lifecycle.txt`, `api-rev-006-v2-production-upgrade.txt`.
+- Current macOS arm64 Electron package: `Pass`, including guard/audit/prepare/generate/transpile/package and DMG/ZIP/app outputs. Evidence: `api-rev-006-electron-mac-package.txt`.
+
+Post-repository confidence was `93%`: every durable/build/lifecycle boundary passed, but API-E2E-F-002 had previously existed only in real Vue/Pinia/browser timing, so actual packaged-browser validation remained mandatory.
+
+### Realistic Browser / Packaged-System Evidence
+
+- Actual AutoByteus `open_tab`: `Yes`, tab `2d23c2`, current Nuxt 58724 proxying owned packaged backend 58649.
+- Private package: `/Users/normy/autobyteus_org/autobyteus-private-agents` auto-loaded the exact `nested-classroom-test` hierarchy. Source secrets were imported only into the owned profile through documented `pnpm secrets:import`; no secret value was retained.
+- Current root/nested active New empty/whitespace disabled Run with exact `Enter a workspace path to run this team.`.
+- Root `/`: `codex_app_server` / `gpt-5.6-luna` / owned root workspace. Explicit `/StudentStudyGroup`: `autobyteus` / `deepseek-v4-flash` / distinct owned nested workspace. Both paths survived a later same-draft root auto-approve edit.
+- Exactly one accepted Run activation changed server state from zero to two filesystem workspaces and zero to one TeamRun. The action disappeared after acceptance; no second click was required or available. Persisted schema V2 contains exact configurations for `/`, `/Teacher`, `/StudentStudyGroup`, and both nested Agents.
+- Real ordinary message to `/StudentStudyGroup` produced exact `API_REV_006_SUBTEAM_MESSAGE_OK`. A real formal delegation produced exact `API_REV_006_SUBTEAM_TASK_OK`, then a distinct acceptance review; persisted status is `accepted`.
+- Independent stale repair probe: current nested Team New/whitespace was blocked. An investigation-authorized in-browser live-definition refresh removed the Team while retaining stale authoring state; one activation rendered exact `/StudentStudyGroup` repair, stayed on the form, and produced zero workspace action calls, zero Apollo mutations, and byte-identical server workspace/history inventories. This proves browser/store repair semantics, not a production topology-edit API.
+- Primary evidence: `api-rev-006-open-tab-integrated-browser-evidence.md`, `api-rev-006-browser-one-click-result.json`, `api-rev-006-team-execution-tree-v2.json`, communication/task JSON, `api-rev-006-stale-repair-probe-result.json`, and screenshots.
+
+### Final Coverage Decision And Confidence
+
+- API-E2E-014 / API-E2E-F-002: `Resolved` by direct current-state execution.
+- Current critical result: `Pass`; no current failure ID remains.
+- Final scorecard: requirement proof 99%, directness 99%, integration realism 99%, environment/identity fidelity 99%, failure/lifecycle 98%, browser/desktop 98%, durable quality 96%.
+- Overall final confidence: `98%` (rounded simple average); no category below 90%; all critical criteria directly proven.
+- Repository-resident durable coverage changed: `Yes` — `RunConfigPanel.spec.ts` plus the two application integration files. No production source or test removal.
+- Routing: successful cumulative package to `/code_reviewer` for proportional test-code review before delivery.
+- Residuals: the stale refresh was injected rather than exercised through a production topology-edit endpoint; unrelated provider permutations and unchanged native IPC/window behavior remain out of scope. Transient Nuxt dev `#app-manifest` warnings occurred while the page continued to execute; the independent production Nuxt build passed.
+- Cleanup: TeamRun terminated; tab closed; zero browser sessions; Nuxt/Electron stopped; ports 58649/58724 free; owned root removed; private package and source `.env` unmodified.
+
+## API-REV-007 Fresh Fixture-Correction Investigation — CRR-013 / TR-003
+
+### Trigger, Current State, And Failure Recheck
+
+- Trigger: `CRR-013` proportional test-code review found one bounded API/E2E-owned contradiction in `application-context-capabilities.integration.test.ts#createBundle()`. Although API-REV-006 updated the generated backend definition and launch/runtime fixtures to the supported v6 boundary, the synthetic `ApplicationBundle` returned by the fake `ApplicationBundleService` still advertises `backendDefinitionContractVersion: "5"` and `frontendSdkContractVersion: "5"`.
+- Reviewed repository state: HEAD `426bdf81ae5efcaf7e97e041c36a94d7349e610b`; no new production-source review is requested or authorized.
+- Governing contract: `src/application-bundles/utils/application-backend-manifest.ts` imports `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6` and `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6`, rejects any different value, and constructs discovered `ApplicationBundle.backend.sdkCompatibility` with those v6 constants.
+- Failure origin recheck: the integration test intentionally fakes `ApplicationBundleService`, so its successful worker/host execution bypasses manifest parsing. The v5 service-output metadata is therefore an internally impossible current fixture rather than evidence of a product defect.
+- Prior result validity: API-REV-006 remains `Pass` / `98%` for the boundaries it executed. CRR-013 explicitly preserves its packaged one-click result, stale repair, real nested provider messaging/task lifecycle, hierarchy/restart/restore, migration, builds, and cleanup evidence. This round does not inherit a proportional `Pass`: `TR-003` remains open until the corrected fixture executes successfully and repeat review passes.
+
+### Refreshed Durable Coverage Classification Before Edit
+
+| Durable Path / Evidence | Decision | Current Basis / Required Action |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` | `Needs Update` | Align exactly the two synthetic `sdkCompatibility` values with the exported current v6 constants. Preserve the worker/host, current model/root default, TeamRun snapshot, Agent target, binding, capability, persistence, recovery, and all assertions. |
+| `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` | `Still Valid` | CRR-013 proportionally passed this correction. Keep unchanged and rerun in the same affected two-file application integration cohort to detect interaction/regression. |
+| `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` | `Still Valid` | CRR-013 proportionally passed the preserved API-REV-005 delta. No rerun is needed for this backend fixture-only correction. |
+| API-REV-006 browser/package/provider evidence | `Still Valid` | CRR-013 explicitly preserved the actual `open_tab` one-click, stale repair, exact V2 disk, Codex Luna root, AutoByteus DeepSeek subteam, ordinary message, formal task submission/acceptance, and cleanup evidence. No browser/provider rerun is justified by two impossible mocked service-output metadata fields. |
+| API-REV-006 hierarchy lifecycle and production-upgrade evidence | `Still Valid` | The correction cannot affect production source, API, persistence, restart/restore, or migration. Repeating 7/7 and 4/4 would add no material evidence. |
+
+### Authorized Durable Delta And Planned Execution
+
+1. Update only `application-context-capabilities.integration.test.ts`: import the current backend-definition and frontend-SDK v6 constants from `@autobyteus/application-sdk-contracts` and use them in `createBundle().backend.sdkCompatibility`.
+2. Do not modify production source, add/remove a test, change a test name, or weaken an assertion.
+3. From `autobyteus-server-ts`, rerun the affected two-file application integration cohort and require 2 files / 5 tests to pass.
+4. Record the corrected durable SHA-256 values, confirm the Brief Studio and RunConfigPanel paths are unchanged from API-REV-006, run `git diff --check`, and verify no production-source delta was introduced by this round.
+5. Refresh the canonical execution report and revision record as API-REV-007, then return the cumulative package to `/code_reviewer` for repeat proportional test-code review. Delivery remains closed.
+
+### Pre-Execution Decision And Confidence
+
+- Proceed To API/E2E Execution: `Yes`.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — update one existing synthetic fixture; add/remove none.
+- Broader Validation Decision: `Not Required`. The changed boundary is two metadata fields in a fake service output. The direct affected integration cohort executes the complete fixture through the real worker/host boundary; browser, provider, lifecycle, and migration evidence cannot improve confidence in those mocked metadata values and remains valid under CRR-013.
+- Pre-execution confidence: API-REV-006's completed runtime confidence remains `98%`, but API-REV-007 has no completed result yet. Durable regression quality is temporarily capped by the known `TR-003` contradiction.
+- Success gate: both fields use current v6 constants, the two-file cohort passes 5/5, static/hash audit passes, and no production source or assertion is changed.
+- Routing gate: successful execution returns to `/code_reviewer` for proportional review. Delivery is not authorized.
+
+### API-REV-007 Completed Execution Outcome
+
+- Durable correction completed exactly as authorized: `application-context-capabilities.integration.test.ts#createBundle()` now imports and uses `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6` and `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6`. No production source, test assertion, test name, or other fixture behavior changed in this round.
+- Affected application integration cohort: `Pass`, 2 files / 5 tests. The corrected capability fixture executed all named capabilities and both explicit starts through the real worker/host boundary; the unchanged Brief Studio imported-package cohorts all passed. Evidence: `api-e2e-evidence/api-rev-007-application-integration-authoritative.txt`.
+- Static/hash audit: `Pass`. `git diff --check` passed; no production-source path is modified in the working tree; corrected capability SHA-256 is `00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700`; unchanged Brief Studio and RunConfigPanel hashes remain `9cb8d7fa...` and `4a52952c...`. Evidence: `api-e2e-evidence/api-rev-007-static-hash-audit.txt`.
+- `TR-003` execution status: `Resolved`; formal finding closure awaits repeat proportional review.
+- Broader validation: `Not Required` and not run. CRR-013 expressly retained API-REV-006's packaged `open_tab`, one-click, stale-repair, exact V2, real nested provider message/task, lifecycle, migration, build, and cleanup evidence. Two mocked metadata fields create no rational browser/provider/lifecycle rerun gain.
+- Final result: `Pass`; final confidence `98%`; no applicable category below 90%; no current failure ID.
+- Routing: return the cumulative package and corrected durable path to `/code_reviewer` for repeat proportional test-code review. Delivery remains blocked pending that review.

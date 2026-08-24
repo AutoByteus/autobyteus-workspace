@@ -1,0 +1,286 @@
+API-REV-007 static and hash audit
+HEAD 426bdf81ae5efcaf7e97e041c36a94d7349e610b
+
+## git diff --check
+PASS: git diff --check
+
+## Corrected sdkCompatibility fixture source
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type {
+  ApplicationBundle,
+} from "../../../src/application-bundles/domain/models.js";
+import {
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+  type ApplicationExecutionResourceRef,
+  type ApplicationExecutionResourceSummary,
+  type ApplicationAgentBinding,
+  type ApplicationAgentTeamBinding,
+} from "@autobyteus/application-sdk-contracts";
+import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
+import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
+import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
+import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
+import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
+import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
+import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
+    manifestPath: path.join(applicationRootPath, "backend", "bundle.json"),
+    manifestRelativePath: "backend/bundle.json",
+    entryModulePath: path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
+    entryModuleRelativePath: "backend/dist/entry.mjs",
+    moduleFormat: "esm",
+    distribution: "self-contained",
+    targetRuntime: { engine: "node", semver: ">=22 <23" },
+    sdkCompatibility: {
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+    },
+    supportedExposures: {
+      queries: false,
+      commands: true,
+      routes: false,
+      graphql: false,
+      notifications: false,
+
+## Durable test SHA-256
+00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700  autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+9cb8d7fa7cd0a9bde32741da1b8ab1c31e3aebea8fc895b30e712031ea9d9df2  autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+4a52952caa8cf0ac3b917dc219a7a4e578f0e7cae06fd9faffd80e2a9df02dd9  autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+
+## Current tracked working-tree modifications
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-agent-history-after-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-agent-history-before-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-application-integration-authoritative.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-application-integration-final-2.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-application-integration-final-3.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-application-integration-final.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-application-integration.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-browser-one-click-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-electron-live-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-electron-mac-package.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-hierarchical-graphql-lifecycle.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-nuxt-live-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-integrated-browser-evidence.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-root-nested-empty-blocker.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-stale-empty-repair.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-team-message-task-success.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-packaged-server-launch-provider-excerpt.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-secret-import-confirmed.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-secret-import-dry-run.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-server-build-full.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-server-planner-focused.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-stale-repair-probe-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-stale-repair-team-history-after.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-stale-repair-team-history-before.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-stale-repair-workspaces-after.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-stale-repair-workspaces-before.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-static-hash-cleanup-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-task-delegation-records-final.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-task-delegation-records-initial.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-team-communication-messages-final.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-team-communication-messages-initial.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-team-execution-tree-v2.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-team-history-after-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-team-history-before-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-v2-production-upgrade.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-web-build.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-web-workspace-focused.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-workspaces-after-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-workspaces-before-first-click.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-007-application-integration-authoritative.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-007-static-hash-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-static-crr-012.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-server-planner-focused-crr-012.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-012.txt
+
+## Modified production source paths in working tree
+PASS: no modified production source path in working tree
+
+## API-REV-007 capability-test delta excerpt
+diff --git a/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts b/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+index 217d73558..8597f9a21 100644
+--- a/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+@@ -6,11 +6,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+ import type {
+   ApplicationBundle,
+ } from "../../../src/application-bundles/domain/models.js";
+-import type {
+-  ApplicationExecutionResourceRef,
+-  ApplicationExecutionResourceSummary,
+-  ApplicationAgentBinding,
+-  ApplicationAgentTeamBinding,
++import {
++  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
++  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
++  type ApplicationExecutionResourceRef,
++  type ApplicationExecutionResourceSummary,
++  type ApplicationAgentBinding,
++  type ApplicationAgentTeamBinding,
+ } from "@autobyteus/application-sdk-contracts";
+ import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
+ import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
+@@ -103,8 +105,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
+     distribution: "self-contained",
+     targetRuntime: { engine: "node", semver: ">=22 <23" },
+     sdkCompatibility: {
+-      backendDefinitionContractVersion: "5",
+-      frontendSdkContractVersion: "5",
++      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
++      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+     },
+     supportedExposures: {
+       queries: false,
+@@ -131,7 +133,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
+     `import { DatabaseSync } from 'node:sqlite'
+ 
+ export default {
+-  definitionContractVersion: '5',
++  definitionContractVersion: '6',
+   commands: {
+     'capabilities.exercise': async (_input, context) => {
+       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
+@@ -143,7 +145,7 @@ export default {
+         launch: {
+           kind: 'AGENT',
+           workspaceRootPath: context.storage.runtimePath,
+-          llmModelIdentifier: 'gpt-test',
++          llmModelIdentifier: 'grok-4.6',
+           autoExecuteTools: true,
+         },
+         initialInput: {
+@@ -158,9 +160,15 @@ export default {
+         launch: {
+           kind: 'AGENT_TEAM',
+           mode: 'memberConfigs',
++          teamDefaultConfig: {
++            workspaceRootPath: context.storage.runtimePath,
++            llmModelIdentifier: 'grok-4.6',
++            autoExecuteTools: true,
++            skillAccessMode: 'PRELOADED_ONLY',
++          },
+           memberConfigs: [{
+             memberAddress: '/researcher',
+-            llmModelIdentifier: 'gpt-test',
++            llmModelIdentifier: 'grok-4.6',
+             autoExecuteTools: true,
+             skillAccessMode: 'PRELOADED_ONLY',
+             workspaceRootPath: context.storage.runtimePath,
+@@ -173,9 +181,11 @@ export default {
+         },
+       })
+ 
++      const researcherMember = team.runtime.members.find((member) => member.memberAddress === '/researcher')
++      if (!researcherMember) throw new Error('Expected the researcher Team member binding.')
+       const teamAddress = {
+         bindingId: team.bindingId,
+-        target: { kind: 'AGENT_TEAM_MEMBER', memberAddress: '/researcher' },
++        target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: researcherMember.agentRunId },
+       }
+       const sent = await context.agentExecution.sendInput({
+         address: teamAddress,
+@@ -247,9 +257,15 @@ export default {
+           launch: {
+             kind: 'AGENT_TEAM',
+             mode: 'memberConfigs',
++            teamDefaultConfig: {
++              workspaceRootPath: context.storage.runtimePath,
++              llmModelIdentifier: 'grok-4.6',
++              autoExecuteTools: true,
++              skillAccessMode: 'PRELOADED_ONLY',
++            },
+             memberConfigs: [{
+               memberAddress: '/researcher',
+-              llmModelIdentifier: 'gpt-test',
++              llmModelIdentifier: 'grok-4.6',
+               autoExecuteTools: true,
+               skillAccessMode: 'PRELOADED_ONLY',
+               workspaceRootPath: context.storage.runtimePath,
+@@ -405,22 +421,17 @@ describe("Application context capability integration", () => {
+         teamRunCount += 1;
+         const teamRunId = `team-run-${teamRunCount}`;
+         return {
+-        teamRunId,
+-        config: {
+-          rootTeam: {
+-            kind: "agent_team",
+-            address: "/",
+-            teamRunId,
+-            teamDefinitionId: "team-def-1",
+-            coordinatorAddress: "/researcher",
+-            children: memberConfigs.map((memberConfig) => ({
+-              kind: "agent",
+-              address: memberConfig.memberAddress,
+-              agentRunId: `${teamRunId}::researcher`,
+-            })),
+-          },
+-        },
+-      }; }),
++          teamRunId,
++          getExecutionTreeSnapshot: () => ({
++            rootTeam: {
++              members: memberConfigs.map((memberConfig) => ({
++                address: memberConfig.memberAddress,
++                agentRunId: `${teamRunId}::researcher`,
++              })),
++            },
++          }),
++        };
++      }),
+       resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
+       terminateTeamRun: vi.fn(async () => undefined),
+     };
+@@ -516,7 +527,7 @@ describe("Application context capability integration", () => {
+         subscribe: vi.fn(async (input: {
+           applicationId: string;
+           subscriptionId: string;
+-          address: { bindingId: string; target: { kind: string; memberAddress?: string } };
++          address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+           emitter: { emitEvent: (event: unknown) => Promise<void> };
+         }) => {
+           await input.emitter.emitEvent({
+@@ -558,7 +569,7 @@ describe("Application context capability integration", () => {
+       observedEvents: Array<{
+         sequence: number;
+         applicationId: string;
+-        address: { bindingId: string; target: { kind: string; memberAddress?: string } };
++        address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+         runtimeSubject: string;
+         producer: unknown;
+         event: { type: string };
+@@ -612,7 +623,7 @@ describe("Application context capability integration", () => {
+       applicationId: APPLICATION_ID,
+       address: {
+         bindingId: result.team.bindingId,
+-        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/researcher" },
++        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::researcher" },
+       },
+       runtimeSubject: "TEAM_RUN",
+       producer: {
+@@ -653,10 +664,10 @@ describe("Application context capability integration", () => {
+ 
+     expect(agentRunService.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({
+       agentDefinitionId: "agent-def-1",
+-      llmModelIdentifier: "gpt-test",
+-      applicationExecutionContext: expect.objectContaining({ applicationId: APPLICATION_ID }),
++      llmModelIdentifier: "grok-4.6",
++      applicationBinding: expect.objectContaining({ applicationId: APPLICATION_ID }),
+     }));
+-    expect(teamRunService.createTeamRun).toHaveBeenCalledTimes(2);
++    expect(teamRunService.createTeamRunFromRootConfig).toHaveBeenCalledTimes(2);
+     expect(agentPostUserMessage).toHaveBeenCalledWith(expect.objectContaining({
+       content: "agent initial input",
+       metadata: { phase: "initial-agent" },

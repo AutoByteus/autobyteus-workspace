@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68",
+  "records": [
+    {
+      "taskId": "task_995e332e2f8a4c7fade9fecaf86c2796",
+      "delegatorAgentRunId": "test_teacher_ffccb620bd11420c81808b370b1303ac",
+      "recipientAddress": "/StudentStudyGroup",
+      "taskExecution": {
+        "teamRunId": "team_local_team_nested_classroom_test_student_st_c36bf4c8aa644f9eb165bbbe8fe68220"
+      },
+      "description": "Formal bounded classroom task for /Teacher. Return exactly the final submission token API_REV_006_SUBTEAM_TASK_OK, with no substitutions. The required exact final submission is API_REV_006_SUBTEAM_TASK_OK.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_ccadf1a899364d5c939bb4e6dac7c48b",
+          "message": "API_REV_006_SUBTEAM_TASK_OK",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T22:08:19.321Z"
+        },
+        {
+          "reviewId": "review_b61267b72ff3453db514434af2c2ad42",
+          "reviewedSubmissionId": "submission_ccadf1a899364d5c939bb4e6dac7c48b",
+          "decision": "accept",
+          "comment": "Accepted because the submitted result matches API_REV_006_SUBTEAM_TASK_OK exactly.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T22:08:24.314Z"
+        }
+      ],
+      "createdAt": "2026-08-24T22:08:18.099Z"
+    }
+  ]
+}

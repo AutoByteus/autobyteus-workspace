@@ -9,6 +9,8 @@
 | API-REV-003 | `code_reviewer` CRR-003/TR-001/TR-002 Local Fix; API/E2E round 3 | SR-007, ARCH-REV-001, IR-002, CRR-002, CRR-003, API-REV-001, API-REV-002 | Pass / 99% | Fail / 89% |
 | API-REV-004 | `code_reviewer` CRR-005 after IR-003 resolved CR-005/API-E2E-F-001; API/E2E round 4 | SR-007, ARCH-REV-001, IR-003, CRR-004, CRR-005, API-REV-003 | Fail / 89% | Pass / 99% |
 | API-REV-005 | `code_reviewer` CRR-008 integrated source Pass plus user real-browser/provider extension; API/E2E round 5 | DR-001, IR-004, IR-005, CRR-008, API-REV-004 | Pass / 99% | Fail / 89% |
+| API-REV-006 | `code_reviewer` CRR-012 complete IR-008 source Pass; API/E2E round 6 | SR-008, ARCH-REV-002, IR-006–IR-008, CRR-009–CRR-012, API-REV-005 | Fail / 89% | Pass / 98% |
+| API-REV-007 | `code_reviewer` CRR-013/TR-003 API/E2E-owned Local Fix; API/E2E round 7 | SR-008, ARCH-REV-002, IR-008, CRR-012, CRR-013, API-REV-006 | Pass / 98% (proportional review Fail) | Pass / 98% |
 
 ## Revision Entries
 
@@ -188,3 +190,60 @@ None. API-REV-001 had no unresolved failure. API-REV-002 closes only its recorde
 - New or remaining failure IDs: `API-E2E-F-002`.
 - Recommended recipient: `/code_reviewer` for focused failure-origin review, with the changed durable test attached. Do not proceed to delivery.
 - Remaining risks: the durable component store mock does not expose the real computed-readiness continuation timing. Exhaustive unrelated providers, multi-node remote hosting, dynamic post-launch Team mutation, and unchanged native IPC remain bounded/out of scope.
+
+### API-REV-006 — Current one-click launch resolution, application fixture repair, and live nested-Team completion
+
+- Triggering role, report path, and round: `code_reviewer`; `code-review-report.md` / `code-review-revision-record.md` (`CRR-012`); round 6.
+- Triggering finding or scenario IDs: historical `API-E2E-F-002` / API-E2E-014; CRR-012 current stale-Team repair and application-fixture reinvestigation requirements; API-E2E-003, 004, 016–020.
+- Related upstream revisions: SR-008, ARCH-REV-002, IR-006–IR-008, CRR-009–CRR-012, API-REV-005; current reviewed HEAD `426bdf81ae5efcaf7e97e041c36a94d7349e610b`.
+- Why recorded: API-REV-005 directly failed the one-activation browser boundary. Later source/design corrections could not certify it. API-REV-006 freshly investigated current coverage, repaired only stale application test fixtures/doubles, reran the repository/lifecycle/migration boundaries, and repeated the exact packaged browser/provider journey.
+- Coverage decisions / durable paths changed:
+  - Preserved and reran `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` from API-REV-005; SHA-256 `4a52952c...`.
+  - Updated `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` from synthetic contract v5 to current v6/current supported model/root default/current TeamRun snapshot/Agent target/application binding; SHA-256 `58460952...`.
+  - Updated `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` to the current supported deterministic model; SHA-256 `9cb8d7fa...`.
+  - No production source or test file was added/removed.
+- Scenarios rechecked/added: API-E2E-003 passed 7/7; API-E2E-004 passed 4/4; API-E2E-014 passed one-click; API-E2E-016 passed real ordinary message and formal accepted task; API-E2E-017 passed 6 files/103 tests; API-E2E-018 application integration passed 2 files/5 tests; API-E2E-019 stale repair passed with zero side effects; API-E2E-020 allocation ordering passed 4 files/41 tests.
+- Commands/environment/broader delta: server/web builds passed; current Electron mac package built; owned backend 58649 and Nuxt 58724 launched; actual `open_tab` tab `2d23c2`; private `nested-classroom-test`; isolated secret import; root Codex `gpt-5.6-luna`; nested AutoByteus `deepseek-v4-flash`; exact V2/message/task/server correlation; complete owned cleanup.
+
+#### Prior Failure Resolution
+
+| Prior Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| API-E2E-F-002 / API-E2E-014 | Implementation-owned one-activation continuation defect | Resolved: one accepted activation produced two registrations and exactly one TeamRun; no second click existed or was required | `api-rev-006-browser-one-click-result.json`, workspace/history before-after, server excerpt |
+| API-E2E-F-001 | Previously resolved migration-binding defect | Remains resolved at current HEAD; strengthened production-upgrade passed 4/4 | `api-rev-006-v2-production-upgrade.txt` |
+| Application integration fixture drift | API/E2E-owned stale v5 fixture/test double | Corrected to current v6/model/TeamRun/target/binding contracts; full cohort passed 5/5 | `api-rev-006-application-integration-authoritative.txt` |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, and `api-e2e-evidence/api-rev-006-open-tab-integrated-browser-evidence.md` plus referenced logs/JSON/screenshots.
+- Prior result/confidence: `Fail` / `89%` (API-REV-005).
+- Current result/confidence: `Pass` / `98%`.
+- New or remaining failure IDs: none.
+- Recommended recipient: `/code_reviewer` for proportional successful test-code review of all three changed durable paths; do not proceed to delivery yet.
+- Remaining risks: stale topology refresh was injected in-browser rather than through a production topology-edit endpoint; unrelated provider permutations and unchanged native IPC/window behavior remain out of scope. Three durable paths await proportional review. No material current acceptance risk remains.
+
+### API-REV-007 — CRR-013 current-v6 service-output fixture correction
+
+- Triggering role, report path, and round: `code_reviewer`; `api-e2e-test-review-report.md` / `code-review-revision-record.md` (`CRR-013`); round 7.
+- Triggering finding or scenario IDs: `TR-003` / API-E2E-018.
+- Related revisions: SR-008, ARCH-REV-002, IR-008, CRR-012, CRR-013, API-REV-006; DR-001 remains historical delivery re-entry context only.
+- Why recorded: API-REV-006 passed execution, but CRR-013 found that `application-context-capabilities.integration.test.ts#createBundle()` still returned impossible v5 compatibility metadata from its fake `ApplicationBundleService`, bypassing the production parser's v6-only contract. This API/E2E-owned correction required a fresh investigation, durable edit, affected-cohort rerun, evidence/hash refresh, and repeat proportional review.
+- Coverage decision and durable change:
+  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` to import and use `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6` and `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6` for the synthetic `ApplicationBundle.backend.sdkCompatibility` fields.
+  - No production source, assertion, test name, or other fixture behavior changed; no test file was added or removed.
+  - Corrected SHA-256: `00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700`.
+- Scenarios rechecked: API-E2E-018 passed the full two-file application cohort, 5/5. The unchanged Brief Studio path retained SHA-256 `9cb8d7fa7cd0a9bde32741da1b8ab1c31e3aebea8fc895b30e712031ea9d9df2`. RunConfigPanel remained unchanged at `4a52952caa8cf0ac3b917dc219a7a4e578f0e7cae06fd9faffd80e2a9df02dd9` and was already proportionally passed by CRR-013.
+- Command/evidence delta:
+  - `pnpm exec vitest run tests/integration/application-backend/application-context-capabilities.integration.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts --no-watch` — Pass, 2 files / 5 tests; `api-e2e-evidence/api-rev-007-application-integration-authoritative.txt`.
+  - `git diff --check`, SHA-256, fixture-source, and modified-production-source audit — Pass; `api-e2e-evidence/api-rev-007-static-hash-audit.txt`.
+  - Broader validation — `Not Required`; CRR-013 explicitly preserved API-REV-006's actual packaged/browser/provider/lifecycle evidence, and those surfaces cannot improve proof of two mocked metadata fields.
+
+#### Prior Failure Resolution
+
+- `TR-003`: resolved by execution. Both fake service-output compatibility fields now derive from the production contract package's current v6 constants; the affected integration cohort passes 5/5. Formal finding closure awaits repeat proportional review.
+- API-REV-006's prior runtime result remains `Pass` / `98%`; CRR-013's proportional `Fail` was not an implementation or runtime regression.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, and the two API-REV-007 evidence files above.
+- Prior result and confidence: `Pass` / `98%` (API-REV-006 execution; CRR-013 proportional review `Fail`).
+- Current result and confidence: `Pass` / `98%`.
+- New or remaining execution failure IDs: none. `TR-003` awaits reviewer closure only.
+- Recommended recipient: `/code_reviewer` for repeat proportional test-code review of the corrected capability integration path. Do not proceed to delivery.
+- Remaining risks: stale topology refresh setup, unrelated provider permutations, and unchanged native IPC/window behavior remain the same bounded residuals recorded in API-REV-006. No new residual was introduced.

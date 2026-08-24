@@ -1,0 +1,30 @@
+{
+  "probeKind": "browser Pinia definition-refresh injection against current production UI/store; not a production topology-edit API claim",
+  "tabId": "2d23c2",
+  "teamDefinitionId": "nested-classroom-test",
+  "staleAddress": "/StudentStudyGroup",
+  "beforeTopologyChange": {
+    "currentTeamPresent": true,
+    "selectionMode": "new",
+    "newWorkspacePath": "   ",
+    "runDisabled": true,
+    "message": "Enter a workspace path to run this team."
+  },
+  "afterInMemoryDefinitionRefreshBeforeActivation": {
+    "currentTeamPresent": false,
+    "staleAuthoringStateStillPresent": true,
+    "runDisabled": false
+  },
+  "afterOneActivation": {
+    "repairAddresses": [
+      "/StudentStudyGroup"
+    ],
+    "workspaceCreateActionCalls": 0,
+    "apolloMutationCalls": 0,
+    "teamRunHistoryChanged": false,
+    "workspaceInventoryChanged": false,
+    "remainedOnConfigurationSurface": true,
+    "visibleMessage": "Team topology changed. Stale settings were removed. Review these addresses and retry: /StudentStudyGroup"
+  },
+  "definitionRestoredInBrowserAfterProbe": true
+}
