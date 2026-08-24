@@ -1,5 +1,30 @@
 # Docs Sync Report
 
+## DR-005 Current Authoritative Sync
+
+- Trigger: delivery re-entry after the DR-004 latest-Personal conflicts were resolved under `SR-004` / `ARCH-REV-004` / `IR-007`, source review `CRR-012` Pass, `API-REV-007` Pass / 98, and `CRR-013` Pass.
+- Integrated base: `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1` through merge `5cf9b8eb22a3b83c114dbb4199341a65aaee8cea`.
+- Delivery integrated-state checkpoint: `a2756b28d7e72ec49acca0753194eeb1775c11de`; post-build fetch confirmed the base remained unchanged and an ancestor.
+- Result: **Pass; no further delivery-owned long-lived documentation edit required.**
+
+Current long-lived documentation impact:
+
+| Documentation | Result | Basis |
+| --- | --- | --- |
+| `autobyteus-application-sdk-contracts/README.md` | Current in integrated source | Conflict resolution preserves the v6 exact-target contract and documents that application ERROR retains the original safe provider message while remaining closed and metadata-free. |
+| `autobyteus-server-ts/docs/modules/llm_management.md` | Current from latest Personal | Documents the current provider catalog/model ownership behavior. |
+| `autobyteus-server-ts/docs/modules/token_usage.md` | Current from latest Personal | Documents pricing/analytics behavior and the existing base-owned analytics migration. |
+| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` and `docs/modules/application_communication_model.md` | Current from latest Personal plus reviewed integration | Describe current native error/event behavior; the narrower application SDK boundary is covered by its canonical README. |
+| `autobyteus-web/docs/agent_integration_minimal_bridge.md` | Current from latest Personal | Matches the integrated streaming/error transport. |
+| DR-001 application-framework docs | Still current | v6 contract separation and logical selector → binding-owned exact `agentRunId` remain unchanged. |
+| Root/web Electron README and `electron_packaging.md` | No impact | The documented Personal macOS build and packaged isolation commands remained accurate and passed in DR-005. |
+
+Removed/replaced concepts remain explicit: the legacy execution-resource configuration service/launch-profile owner, broad engine host, generated application SDK `dist` as maintained source, and provider metadata on the closed application ERROR event remain absent. Current-model selection is owned by the application-platform policy and retained launch/readiness/run owners.
+
+Persisted-data result: the SR-004/IR-007 conflict-resolution delta is **Directly Usable — No Migration**. The integrated history retains the previously documented additive `20260822090000_add_token_usage_analytics` base migration; no newer migration was added by this refresh.
+
+Delivery-owned artifacts updated for DR-005: `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, and `delivery-revision-record.md`. The ticket remains in progress for explicit user verification.
+
 ## Scope
 
 - Ticket: universal-application-framework-latest-personal-integration
@@ -87,7 +112,7 @@ IR-006 also establishes durable identity guidance: a configured logical member a
 ## Delivery Continuation
 
 - Result: Pass
-- Next action: present the freshly rebuilt latest-base unsigned macOS ARM64 package for explicit user verification. API-REV-006 remains pre-refresh provider evidence and must not be described as direct proof of the new binary.
+- Next action: present the freshly rebuilt latest-base unsigned macOS ARM64 1.4.55 package for explicit user verification. `API-REV-007` is direct evidence for the conflict-resolved current source; DR-005 provides the current packaged Electron build/isolation/integrity evidence.
 - Hold: ticket remains in progress; no push, archive, Personal merge, release, deployment, or cleanup before explicit verification.
 
 ## Blocked Or Escalated Follow-Up

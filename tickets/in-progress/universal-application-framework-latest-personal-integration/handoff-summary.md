@@ -2,110 +2,108 @@
 
 ## Status
 
-DR-004 is blocked before integration and Electron rebuild because the newest `origin/personal` creates 11 non-mechanical conflicts with the current application-platform architecture. The DR-003 package remains historical and must not be treated as the requested newest-base candidate.
+**DR-005 newest-base Electron package is ready for explicit user verification.**
 
-Canonical blocker:
-
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log
-
-Routing: **Design Impact → `/solution_designer`**. No actual merge or Electron rebuild has been performed for Personal `1629441a30dfce91d75b9bf7dcdd508b0f371bc5`.
+The prior DR-004 design blocker was resolved through SR-004 / ARCH-REV-004 / IR-007, source review `CRR-012` Pass, `API-REV-007` Pass / 98, and proportional durable-test review `CRR-013` Pass.
 
 ## Current Integrated State
 
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration
-- Branch: codex/universal-application-framework-latest-personal-integration
-- Latest origin/personal: d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
-- Pre-integration delivery checkpoint: 0b607a5844f66e19ffb55162e91150a7383c030a
-- Merge: f8d0bf67a9cdb89da8e3cb24b8331744d9f61865
-- Integration method: merge, no conflicts
-- Post-merge divergence: 139 ahead / 0 behind
-- Post-build refetch: base remained d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
-- Finalization boundary: ticket branch only; Personal merge/push remains out of scope unless separately requested
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration`
+- Branch: `codex/universal-application-framework-latest-personal-integration`
+- Latest `origin/personal`: `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`
+- Conflict-resolution merge: `5cf9b8eb22a3b83c114dbb4199341a65aaee8cea`
+- Merge parents: ticket checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b` and latest Personal `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`
+- Delivery safety checkpoint: `a2756b28d7e72ec49acca0753194eeb1775c11de`
+- Post-build divergence: 144 ahead / 0 behind
+- Post-build re-fetch: base unchanged and remains an ancestor
+- Finalization boundary: ticket branch only; Personal merge/push is not authorized
 
-Origin/personal advanced 18 commits and 201 paths. The new base brings finalized token-usage analytics and absolute external terminal cwd support. The ticket branch now contains that base as an ancestor.
+## Integrated Behavior
 
-## Application Framework Result
+The current package preserves the Universal Application Framework architecture while incorporating latest Personal behavior:
 
-The reviewed Universal Application Framework behavior remains present:
+- distinct Studio and standalone composition roots;
+- one application launch-configuration authority and explicit current-model selection policy;
+- stale AutoByteus model rejection on readiness, Save, and direct run before side effects;
+- external Codex/Claude model ownership remains outside the AutoByteus membership guard;
+- exact v6 `agentRunId`, `teamRunId`, rooted member address, URL, and root-event semantics;
+- safe original provider error message across the application boundary without provider metadata leakage;
+- canonical maintained packages, dual-host execution, Agent Tools, named handoff, publication, projection, recovery, and package immutability;
+- retired execution-resource configuration owners and generated SDK `dist` source truth remain absent.
 
-- one canonical maintained package source and devkit workflow;
-- Studio and standalone use the same built package;
-- current Personal provider/run/team lifecycle and cleanup authorities;
-- explicit application platform/runtime projections and scoped Agent Tools;
-- sparse package defaults/overrides and recovery;
-- logical team-member selection translated to the binding-owned exact agentRunId;
-- real Brief/Socratic dual-host handoff, publication, projection, restart, parity, and cleanup evidence.
+## Authoritative Gates
 
-Authoritative feature gates remain SR-003, ARCH-REV-003, IR-006, CRR-009 Pass / 93, API-REV-004 Pass / 98, and CRR-010 Pass. API-REV-006 Pass / 99 and CRR-011 Not Applicable remain actual packaged-provider evidence for the pre-refresh 42496b808 binary.
+- Solution/design: `SR-004` / `ARCH-REV-004` Pass
+- Implementation: `IR-007`
+- Source review: `CRR-012` Pass / 94
+- API/E2E: `API-REV-007` Pass / 98; every applicable category at least 95%
+- Durable-test review: `CRR-013` Pass; no findings
+- Historical `APIE2E-REPO-005`: separate unattributed debt; not current Pass evidence
 
-## Latest-Base Delivery Checks
+## Delivery Checks
 
-- Merge-tree preview: no conflicts.
-- Merge: completed without textual conflicts.
-- Full Electron pipeline: Pass.
-- Shared/server build and Prisma generation: Pass.
-- Built-in-agent bootstrap smoke: Pass.
-- Web/localization guards and renderer/main/preload builds: Pass.
+- Latest remote-base refresh: Pass; no new base commit after the reviewed merge.
+- Full Personal macOS ARM64 Electron pipeline: Pass.
+- Shared/server build, Prisma generation, and bootstrap smoke: Pass.
+- Web/localization and renderer/main/preload builds: Pass.
 - Five packaged Electron isolation scenarios: Pass.
 - ARM64 app/native terminal and real node-pty spawn: Pass.
-- Current application-framework packaged owners: present.
-- Latest token analytics owners and additive migration: present.
-- Latest absolute terminal cwd owner: present.
+- Current application-platform and latest Personal provider/model owners: packaged.
+- Retired configuration/broad-host owners: absent.
 - DMG and ZIP integrity: Pass.
-- Rebuilt app/process and DMG mount cleanup: Pass.
+- Ordinary installed app identity/health preserved during isolation.
+- Owned process/port/root and DMG mount cleanup: Pass.
 
-Evidence:
+Evidence root:
 
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-base-refresh-and-integration.log
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-macos-arm64-build.log
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-macos-arm64-verification.log
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-isolation.log
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-delivery-audit.log
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/`
+
+Current files:
+
+- `dr-005-base-refresh-and-integration.log`
+- `dr-005-electron-macos-arm64-build.log`
+- `dr-005-electron-macos-arm64-verification.log`
+- `dr-005-electron-isolation.log`
+- `dr-005-electron-isolation/electron-launch-profile-evidence.json`
+- `dr-005-delivery-audit.log`
 
 ## Current Electron Package
 
 DMG:
 
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg
-- Size: 466805857 bytes
-- SHA-256: 09ecfbe4b8fb45afdb1cb231fdc81d11d2cb17d145f6aba9be6f657542da7414
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.55.dmg`
+- Size: 466868232 bytes
+- SHA-256: `3dff6c644b46ce7603f5e64ca32a9283dc1328f4912d93a16f9674e4ea411562`
 
 ZIP:
 
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip
-- Size: 461479841 bytes
-- SHA-256: 12f3a5e82d9071e47671c33f3360f1e3b969be42330added102c34f1ce88224c
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.55.zip`
+- Size: 461512085 bytes
+- SHA-256: `f2d9c3bfe6f8b53f59a7fbf7e82bc81394c07cbd8ab192202e97d6d4b771c0b0`
 
-The package still reports version 1.4.54, but these hashes supersede the DR-001/DR-002 package. It is unsigned and unnotarized.
+The package is unsigned and unnotarized. Electron output is ignored by Git and must be transferred separately or rebuilt on another machine.
 
 ## Documentation
 
-The base's canonical token-usage and terminal-tool docs arrived complete and conflict-free. DR-001's application SDK v6 and exact-target identity corrections remain intact. No additional long-lived content edit was needed; delivery records were updated for the new integrated state.
+Latest Personal's provider catalog, pricing, provider-error, streaming, and token-usage docs were integrated. The conflict resolution updated the application SDK README for the safe original ERROR message while preserving the v6 exact-target contract. Existing application framework and Electron documentation remains accurate; no further long-lived delivery edit was needed.
 
 Docs report:
 
-- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md`
 
 ## Persisted Data
 
-The application-framework delta still introduces no migration. The new Personal base separately adds additive migration 20260822090000_add_token_usage_analytics. It creates analytics coverage/daily-facet tables and indexes without rewriting or backfilling existing lifetime token records.
-
-A normal Electron launch can apply this base-owned schema migration to ~/.autobyteus/server-data. Back up that directory first if testing must be independently reversible.
-
-## Evidence Boundary
-
-API-REV-006's live Codex/DeepSeek Classroom journey predates the base merge. It remains valid for the prior binary but is not direct evidence for the new f8d0bf67 package. The new package has fresh full-build, package, and deterministic isolation proof and now awaits user testing.
+The conflict-resolution delta introduces no migration. The integrated Personal history retains the previously recorded additive token analytics migration `20260822090000_add_token_usage_analytics`; it adds tables/indexes without rewriting existing lifetime run records.
 
 ## User Verification Hold
 
-Please test the new-hash DMG and reply with explicit approval/completion or a concrete issue.
+Please test the new 1.4.55 DMG and reply with explicit approval/completion or a concrete issue.
 
 Until then:
 
-- ticket remains in tickets/in-progress;
-- no final push occurs;
+- the ticket remains in `tickets/in-progress`;
+- no final ticket-branch push occurs;
 - Personal remains untouched by this ticket;
 - no release, tag, deployment, archive, or branch/worktree cleanup occurs.
 
-After verification, delivery must fetch origin/personal again. If it advances and materially changes the package, renewed verification is required.
+After verification, delivery must fetch `origin/personal` again. If it advances and materially changes the package, renewed verification is required.
