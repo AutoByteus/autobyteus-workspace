@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { chromium } from 'playwright-core'
 import { createHash } from 'node:crypto'
-import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { applyExperienceScenario } from '../shared/apply-experience-scenario.js'
 
@@ -9,7 +9,7 @@ const root = resolve(new URL('../..', import.meta.url).pathname)
 const baseUrl = process.env.PROTOTYPE_BASE_URL || 'http://127.0.0.1:3200'
 const outDir = resolve(root, 'final-reference-screenshots')
 const sourceCommit = '8ef282ba77705180d985e7000d801f0e0068cdc1'
-const approvalReference = 'User message "approved" on 2026-08-22, immediately following the current-state baseline review request.'
+const approvalReference = 'User message "approved" on 2026-08-22 for the complete baseline, plus user message "done. i checked. thanks" on 2026-08-24 immediately following the explicit RER-009 corrected-journey approval request.'
 const fixedCaptureClock = '2026-08-22T16:50:00.000Z'
 const normalizedStyle = '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}'
 const sha256 = value => createHash('sha256').update(value).digest('hex')
@@ -30,6 +30,8 @@ const references = [
   { id: 'VIS-013', file: 'VIS-013-mobile-permission-denied-en.png', label: 'Paired mobile — permission denied and recovery guidance', path: '/mobile', scenario: 'permission_denied', context: 'paired', viewport: 'narrow', locale: 'en' },
   { id: 'VIS-014', file: 'VIS-014-applications-disabled-desktop-en.png', label: 'Applications disabled — route recovery to Agents', path: '/applications', scenario: 'apps_disabled', context: 'desktop', viewport: 'desktop', locale: 'en' },
   { id: 'VIS-015', file: 'VIS-015-agents-empty-desktop-en.png', label: 'Agents — empty catalog', path: '/agents?view=list', scenario: 'empty', context: 'desktop', viewport: 'desktop', locale: 'en' },
+  { id: 'VIS-016', file: 'VIS-016-team-launch-ready-desktop-en.png', label: 'Agent Team launch — chosen workspace and enabled Run Team action', path: '/agent-teams?view=team-list', scenario: 'team_launch', context: 'desktop', viewport: 'desktop', locale: 'en', action: 'team-launch-ready' },
+  { id: 'VIS-017', file: 'VIS-017-team-launched-writer-focused-desktop-en.png', label: 'Launched Agent Team — writer selected under the chosen workspace', path: '/agent-teams?view=team-list', scenario: 'team_launch', context: 'desktop', viewport: 'desktop', locale: 'en', action: 'team-launch-writer-focus' },
 ]
 
 const viewportFor = item => item.viewport === 'narrow' ? { width: 390, height: 844 } : { width: 1440, height: 900 }
@@ -100,7 +102,37 @@ async function applyAction(page, item) {
     await page.getByTestId('mobile-open-team-messages').click()
     await page.getByTestId('mobile-team-reference-row').first().click()
   }
+  if (item.action === 'team-launch-ready' || item.action === 'team-launch-writer-focus') {
+    await page.getByRole('button', { name: 'Run', exact: true }).click()
+    await page.waitForURL(/\/workspace$/)
+    await page.getByRole('button', { name: 'Run Team', exact: true }).waitFor()
+    await page.getByRole('button', { name: 'Select a workspace...', exact: true }).click()
+    await page.locator('li').filter({ hasText: '/synthetic/prototype-workspace' }).click()
+    await page.waitForFunction(() => {
+      const run = Array.from(document.querySelectorAll('button')).find(button => button.textContent?.trim() === 'Run Team')
+      return run && !run.disabled
+    })
+  }
+  if (item.action === 'team-launch-writer-focus') {
+    await page.getByRole('button', { name: 'Run Team', exact: true }).click()
+    await page.locator('[data-test="workspace-team-row-team-run-created-fixture"]').waitFor({ timeout: 20_000 })
+    const teamRow = page.locator('[data-test="workspace-team-row-team-run-created-fixture"]')
+    await teamRow.click()
+    await page.waitForFunction(() => document.querySelector('[data-test="workspace-team-row-team-run-created-fixture"]')?.getAttribute('aria-expanded') === 'false')
+    await teamRow.click()
+    await page.waitForFunction(() => document.querySelector('[data-test="workspace-team-row-team-run-created-fixture"]')?.getAttribute('aria-expanded') === 'true')
+    const writerRow = page.locator('[data-row-kind="stable_member"][data-test="workspace-team-member-team-run-created-fixture-/writer"]')
+    await writerRow.click()
+    await page.waitForFunction(() => document.querySelector('[data-test="workspace-team-member-team-run-created-fixture-/writer"]')?.getAttribute('aria-current') === 'true')
+  }
 }
+
+const previousManifest = await readFile(resolve(outDir, 'manifest.json'), 'utf8')
+  .then(value => JSON.parse(value))
+  .catch(() => null)
+const preservedHashes = new Map((previousManifest?.results ?? [])
+  .filter(row => /^VIS-0(0[1-9]|1[0-5])$/.test(row.id))
+  .map(row => [row.id, row.screenshotSha256]))
 
 await rm(outDir, { recursive: true, force: true })
 await mkdir(outDir, { recursive: true })
@@ -183,6 +215,9 @@ try {
     if (runtime.sourceCommit !== sourceCommit) throw new Error(`${item.id} source pin mismatch: ${runtime.sourceCommit}`)
     if (runtime.externalResources.length) throw new Error(`${item.id} loaded external resources: ${runtime.externalResources.join(', ')}`)
     if (browserErrors.length) throw new Error(`${item.id} browser errors: ${browserErrors.join(' | ')}`)
+    if (preservedHashes.has(item.id) && preservedHashes.get(item.id) !== sha256(screenshot)) {
+      throw new Error(`${item.id} changed from its previously approved screenshot hash`)
+    }
 
     results.push({
       id: item.id,

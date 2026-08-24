@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import runtimeFixture from '../fixtures/runtime-state.json'
+import {
+  baseState,
+  exposedFixtures,
+  fixtureContext,
+  operationFixture,
+  scenarioCatalog,
+} from '../source-observation/fixtures.mjs'
 
 const snapshots = runtimeFixture.snapshots as Record<string, {
   item: { scenario: string, path: string, mobile?: string }
@@ -38,5 +45,39 @@ describe('deterministic prototype fixture contract', () => {
     expect(loading.state.server.status).toBe('running')
     expect(loading.state.applicationsCapability).toEqual({ capability: null, status: 'loading', error: null })
     expect(loading.state.agentDefinition.agentDefinitions).toHaveLength(2)
+  })
+
+  it('defines an isolated source-observation fixture for the catalog Team launch journey', () => {
+    expect(scenarioCatalog.team_launch).toContain('deterministic newly launched Team execution')
+
+    const state = { ...baseState(), scenario: 'team_launch' }
+    const context = fixtureContext(state)
+    expect(context.workspaces).toEqual([
+      expect.objectContaining({
+        workspaceId: 'workspace-prototype',
+        workspaceRootPath: '/synthetic/prototype-workspace',
+        kind: 'filesystem',
+      }),
+    ])
+
+    expect(operationFixture('ListWorkspaceRunHistory', {}, state)).toEqual({ listWorkspaceRunHistory: [] })
+
+    const create = operationFixture('CreateAgentTeamRun', { input: {} }, state).createAgentTeamRun
+    expect(create).toEqual(expect.objectContaining({
+      __typename: 'CreateAgentTeamRunResult',
+      success: true,
+      teamRunId: 'team-run-created-fixture',
+    }))
+
+    const resume = operationFixture('GetTeamRunResumeConfig', { teamRunId: create.teamRunId }, state).getTeamRunResumeConfig
+    expect(resume).toEqual(expect.objectContaining({
+      teamRunId: 'team-run-created-fixture',
+      isActive: true,
+      executionTree: exposedFixtures.createdTeamExecutionTree,
+    }))
+    expect(resume.executionTree.root_team.members.map((member: { address: string, agent_run_id: string }) => [member.address, member.agent_run_id])).toEqual([
+      ['/researcher', 'team-member-researcher-created'],
+      ['/writer', 'team-member-writer-created'],
+    ])
   })
 })

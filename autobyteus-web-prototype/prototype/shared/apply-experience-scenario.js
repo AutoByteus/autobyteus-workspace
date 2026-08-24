@@ -100,11 +100,23 @@ export function applyExperienceScenario(input = {}) {
   }
 
   if (scenario.startsWith('workspace_team') || scenario.startsWith('mobile_team')) {
-    const rootTeamRunId = 'team-run-prototype'
-    const reviewerRunId = 'team-member-reviewer'
-    const writerRunId = 'team-member-writer'
+    const launchedFromCatalog = scenario === 'workspace_team_launch'
+    const rootTeamRunId = launchedFromCatalog ? 'team-run-created-fixture' : 'team-run-prototype'
+    const reviewerRunId = launchedFromCatalog ? 'team-member-researcher-created' : 'team-member-reviewer'
+    const writerRunId = launchedFromCatalog ? 'team-member-writer-created' : 'team-member-writer'
+    const reviewerName = launchedFromCatalog ? 'Research Assistant' : 'Review Coordinator'
+    const writerName = launchedFromCatalog ? 'Documentation Writer' : 'Evidence Writer'
+    const reviewerDefinitionId = launchedFromCatalog ? 'agent-researcher' : 'agent-reviewer'
+    const reviewerDisplayName = launchedFromCatalog ? 'researcher' : reviewerName
+    const writerDisplayName = launchedFromCatalog ? 'writer' : writerName
+    const reviewerAddress = launchedFromCatalog ? '/researcher' : '/product-review/coordinator'
+    const writerAddress = launchedFromCatalog ? '/writer' : '/product-review/evidence-writer'
+    const rootRowKey = launchedFromCatalog ? `team:${rootTeamRunId}` : 'team:root'
+    const rootAddress = launchedFromCatalog ? '/' : '/product-review'
     const memberConfig = (id, name) => ({ agentDefinitionId: id, agentDefinitionName: name, agentAvatarUrl: null, llmModelIdentifier: 'mock/gpt-prototype', runtimeKind: 'autobyteus', workspaceId, workspaceMetadata, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', isLocked: true, llmConfig: { temperature: 0.2 } })
     const teamStatus = scenario.includes('error') ? 'error' : scenario.includes('completed') || scenario.includes('history') || scenario.includes('interrupted') ? 'idle' : 'running'
+    const memberStatus = launchedFromCatalog ? 'offline' : teamStatus
+    const teamLastActivityAt = launchedFromCatalog ? new Date().toISOString() : now
     const teamStreaming = scenario.includes('streaming')
     const reviewerText = scenario.includes('error') ? 'The review run encountered a deterministic error.'
       : scenario.includes('interrupted') ? 'The review run was interrupted before the next task.'
@@ -113,39 +125,100 @@ export function applyExperienceScenario(input = {}) {
     const writerText = scenario.includes('error') ? 'The evidence writer reported a synthetic failure.'
       : scenario.includes('interrupted') ? 'The evidence writer stopped after the interruption.'
         : 'The matched source and prototype frames are ready for review.'
-    const memberConversation = (id, name, text) => ({ id, agentDefinitionId: id, agentName: name, createdAt: now, updatedAt: '2026-08-22T04:03:00.000Z', messages: [{ type: 'ai', text, segments: [{ type: 'text', content: text }], timestamp: new Date('2026-08-22T04:02:00.000Z'), isComplete: !teamStreaming, completionTokens: teamStreaming ? 24 : 48, completionCost: teamStreaming ? 0.00025 : 0.0005 }] })
-    const reviewer = agentContexts.upsertProjectionContext({ runId: reviewerRunId, config: memberConfig('agent-reviewer', 'Review Coordinator'), conversation: memberConversation(reviewerRunId, 'Review Coordinator', reviewerText), status: teamStatus })
-    const writer = agentContexts.upsertProjectionContext({ runId: writerRunId, config: memberConfig('agent-writer', 'Evidence Writer'), conversation: memberConversation(writerRunId, 'Evidence Writer', writerText), status: teamStatus })
+    const memberConversation = (id, name, text) => ({ id, agentDefinitionId: id, agentName: name, createdAt: now, updatedAt: '2026-08-22T04:03:00.000Z', messages: launchedFromCatalog ? [] : [{ type: 'ai', text, segments: [{ type: 'text', content: text }], timestamp: new Date('2026-08-22T04:02:00.000Z'), isComplete: !teamStreaming, completionTokens: teamStreaming ? 24 : 48, completionCost: teamStreaming ? 0.00025 : 0.0005 }] })
+    const reviewer = agentContexts.upsertProjectionContext({ runId: reviewerRunId, config: memberConfig(reviewerDefinitionId, reviewerName), conversation: memberConversation(reviewerRunId, reviewerName, reviewerText), status: memberStatus })
+    const writer = agentContexts.upsertProjectionContext({ runId: writerRunId, config: memberConfig('agent-writer', writerName), conversation: memberConversation(writerRunId, writerName, writerText), status: memberStatus })
     const entries = [
-      { agentRunId: reviewerRunId, memberAddress: '/product-review/coordinator', agentContext: reviewer },
-      { agentRunId: writerRunId, memberAddress: '/product-review/evidence-writer', agentContext: writer },
+      { agentRunId: reviewerRunId, memberAddress: reviewerAddress, agentContext: reviewer },
+      { agentRunId: writerRunId, memberAddress: writerAddress, agentContext: writer },
     ]
-    let focused = reviewerRunId
     const rows = [
-      { key: 'team:root', kind: 'configured_team', address: '/product-review', displayName: 'Product Review Team', accessibleName: 'Product Review Team', depth: 0, parentKey: null, agentRunId: null, teamRunId: rootTeamRunId, taskId: null, taskStatus: null, currentStatus: null, focusable: false, expandable: true, coordinator: false },
-      { key: `agent:${reviewerRunId}`, kind: 'configured_agent', address: '/product-review/coordinator', displayName: 'Review Coordinator', accessibleName: 'Review Coordinator', depth: 1, parentKey: 'team:root', agentRunId: reviewerRunId, teamRunId: null, taskId: null, taskStatus: null, currentStatus: teamStatus, focusable: true, expandable: false, coordinator: true },
-      { key: `agent:${writerRunId}`, kind: 'configured_agent', address: '/product-review/evidence-writer', displayName: 'Evidence Writer', accessibleName: 'Evidence Writer', depth: 1, parentKey: 'team:root', agentRunId: writerRunId, teamRunId: null, taskId: null, taskStatus: null, currentStatus: teamStatus, focusable: true, expandable: false, coordinator: false },
+      { key: rootRowKey, kind: 'configured_team', address: rootAddress, displayName: 'Product Review Team', accessibleName: 'Product Review Team', depth: 0, parentKey: null, agentRunId: null, teamRunId: rootTeamRunId, taskId: null, taskStatus: null, currentStatus: null, focusable: false, expandable: true, coordinator: false },
+      { key: `agent:${reviewerRunId}`, kind: 'configured_agent', address: reviewerAddress, displayName: reviewerDisplayName, accessibleName: reviewerDisplayName, depth: 1, parentKey: rootRowKey, agentRunId: reviewerRunId, teamRunId: null, taskId: null, taskStatus: null, currentStatus: memberStatus, focusable: true, expandable: false, coordinator: true },
+      { key: `agent:${writerRunId}`, kind: 'configured_agent', address: writerAddress, displayName: writerDisplayName, accessibleName: writerDisplayName, depth: 1, parentKey: rootRowKey, agentRunId: writerRunId, teamRunId: null, taskId: null, taskStatus: null, currentStatus: memberStatus, focusable: true, expandable: false, coordinator: false },
     ]
     const ref = { reference_id: 'team-ref-1', path: '/synthetic/prototype-workspace/docs/evidence.md', type: 'file', created_at: '2026-08-22T04:02:30.000Z', updated_at: '2026-08-22T04:02:30.000Z' }
-    const messages = [
+    const messages = launchedFromCatalog ? [] : [
       { message_id: 'team-message-1', sender_agent_run_id: reviewerRunId, receiver_agent_run_id: writerRunId, content: 'Please compare the source and prototype workspace states.', message_type: 'agent_message', created_at: '2026-08-22T04:01:00.000Z', reference_files: [] },
       { message_id: 'team-message-2', sender_agent_run_id: writerRunId, receiver_agent_run_id: reviewerRunId, content: 'Comparison complete. The controlled evidence is attached.', message_type: 'agent_message', created_at: '2026-08-22T04:03:00.000Z', reference_files: [ref] },
     ]
-    const taskRows = [{ task: { task_id: 'task-visual-parity', status: 'accepted', description: 'Validate exact visual parity for the workspace.', created_at: '2026-08-22T04:00:30.000Z', reference_files: [], updates: [{ kind: 'submission', submission_id: 'submission-1', created_at: '2026-08-22T04:02:30.000Z', message: 'All matched frames pass.', reference_files: [ref] }, { kind: 'review', review_id: 'review-1', reviewed_submission_id: 'submission-1', decision: 'accept', comment: 'Accepted for baseline evidence.', created_at: '2026-08-22T04:03:30.000Z', reference_files: [] }] }, label: 'Visual parity validation', targetKind: 'agent', targetAgentRunId: writerRunId, targetTeamRunId: null, targetAddress: '/product-review/evidence-writer', delegatorAgentRunId: reviewerRunId }]
-    const executionTree = { root_team: { team_run_id: rootTeamRunId, members: [], task_executions: [] } }
+    const taskRows = launchedFromCatalog ? [] : [{ task: { task_id: 'task-visual-parity', status: 'accepted', description: 'Validate exact visual parity for the workspace.', created_at: '2026-08-22T04:00:30.000Z', reference_files: [], updates: [{ kind: 'submission', submission_id: 'submission-1', created_at: '2026-08-22T04:02:30.000Z', message: 'All matched frames pass.', reference_files: [ref] }, { kind: 'review', review_id: 'review-1', reviewed_submission_id: 'submission-1', decision: 'accept', comment: 'Accepted for baseline evidence.', created_at: '2026-08-22T04:03:30.000Z', reference_files: [] }] }, label: 'Visual parity validation', targetKind: 'agent', targetAgentRunId: writerRunId, targetTeamRunId: null, targetAddress: '/product-review/evidence-writer', delegatorAgentRunId: reviewerRunId }]
+    const launchConfiguration = {
+      runtime_kind: 'AUTOBYTEUS', llm_model_identifier: 'mock/gpt-prototype', llm_config: { temperature: 0.2 },
+      auto_execute_tools: false, skill_access_mode: 'PRELOADED_ONLY', workspace_root_path: workspaceMetadata.workspaceRootPath,
+    }
+    const launchExecutionTree = {
+      schema_version: 1, created_at: now, archived_at: null, application_binding: null, handoffs: [],
+      root_team: {
+        team_definition_id: 'team-product', team_definition_name: 'Product Review Team', team_run_id: rootTeamRunId,
+        coordinator_address: reviewerAddress,
+        members: [
+          { kind: 'configured_agent', address: reviewerAddress, agent_definition_id: reviewerDefinitionId, role: null, description: null, agent_run_id: reviewerRunId, platform_agent_run_id: null, launch_configuration: launchConfiguration },
+          { kind: 'configured_agent', address: writerAddress, agent_definition_id: 'agent-writer', role: null, description: null, agent_run_id: writerRunId, platform_agent_run_id: null, launch_configuration: launchConfiguration },
+        ],
+        task_executions: [],
+      },
+    }
+    const executionTree = launchedFromCatalog
+      ? launchExecutionTree
+      : { root_team: { team_run_id: rootTeamRunId, members: [], task_executions: [] } }
     const view = {
-      getRootTeamRunId: () => rootTeamRunId, getTeamDefinitionName: () => 'Product Review Team', getFocusedAgentContext: () => entries.find(item => item.agentRunId === focused)?.agentContext || null,
-      getFocusedMemberAddress: () => entries.find(item => item.agentRunId === focused)?.memberAddress || '', getFocusedAgentRunId: () => focused,
-      getConfigurationView: () => ({ teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team', workspaceId, workspaceMetadata, isLocked: true }),
-      isRootTeamActive: () => teamStatus === 'running', listNavigationRows: () => rows, listAgentContextEntries: () => entries,
+      _focusedAgentRunId: reviewerRunId,
+      getRootTeamRunId: () => rootTeamRunId, getTeamDefinitionName: () => 'Product Review Team', getFocusedAgentContext() { return entries.find(item => item.agentRunId === this._focusedAgentRunId)?.agentContext || null },
+      getFocusedMemberAddress() { return entries.find(item => item.agentRunId === this._focusedAgentRunId)?.memberAddress || '' }, getFocusedAgentRunId() { return this._focusedAgentRunId },
+      getConfigurationView: () => launchedFromCatalog
+        ? { teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team', runtimeKind: 'autobyteus', workspaceId, workspaceMetadata, llmModelIdentifier: 'mock/gpt-prototype', llmConfig: { temperature: 0.2 }, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', memberOverrides: {}, isLocked: true }
+        : { teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team', workspaceId, workspaceMetadata, isLocked: true },
+      isRootTeamActive: () => launchedFromCatalog || teamStatus === 'running', listNavigationRows: () => rows, listAgentContextEntries: () => entries,
       listCommunicationMessages: () => messages, listTaskHistoryRows: () => taskRows, hasAgentRun: id => entries.some(item => item.agentRunId === id),
       getAgentContext: id => entries.find(item => item.agentRunId === id)?.agentContext || null,
       getMemberAddress: id => entries.find(item => item.agentRunId === id)?.memberAddress || null, getExecutionTree: () => executionTree,
-      focusAgent: id => { if (!entries.some(item => item.agentRunId === id)) return { disposition: 'rejected' }; focused = id; return { disposition: 'applied' } }, needsStreamRecovery: () => scenario.includes('recovery'),
+      focusAgent(id) { if (!entries.some(item => item.agentRunId === id)) return { disposition: 'rejected' }; this._focusedAgentRunId = id; return { disposition: 'applied' } }, needsStreamRecovery: () => scenario.includes('recovery'),
     }
     const teams = store('agentTeamContexts')
     if (teams) teams.teams = new Map([[rootTeamRunId, { view }]])
     selection.selectRunWithoutShellNavigation(rootTeamRunId, 'team')
+    if (launchedFromCatalog && runHistory) {
+      const memberRow = (agentRunId, memberAddress, displayName) => ({
+        teamRunId: rootTeamRunId, kind: 'agent', memberAddress, displayName, agentRunId, teamRunIdForNode: null,
+        workspaceRootPath: workspaceMetadata.workspaceRootPath, summary: 'New - Product Review Team', lastActivityAt: teamLastActivityAt,
+        currentStatus: memberStatus, isActive: memberStatus !== 'offline' && memberStatus !== 'error', deleteLifecycle: 'READY', children: [],
+      })
+      const stableExecutionRow = (row, depth = 0) => ({
+        kind: 'stable_member', rowKey: `agent:${row.agentRunId}`, teamRunId: rootTeamRunId, memberAddress: row.memberAddress,
+        agentRunId: row.agentRunId, teamRunIdForNode: null, memberKind: 'agent', displayName: row.displayName, depth, hasChildren: false, row,
+      })
+      const reviewerRow = memberRow(reviewerRunId, reviewerAddress, reviewerDisplayName)
+      const writerRow = memberRow(writerRunId, writerAddress, writerDisplayName)
+      const rootTeam = {
+        teamRunId: rootTeamRunId, kind: 'agent_team', memberAddress: '/', displayName: 'Product Review Team', agentRunId: null,
+        teamDefinitionId: 'team-product', teamRunIdForNode: rootTeamRunId, coordinatorAddress: reviewerAddress,
+        workspaceRootPath: null, summary: 'New - Product Review Team', lastActivityAt: teamLastActivityAt,
+        currentStatus: null, isActive: true, deleteLifecycle: 'READY', children: [reviewerRow, writerRow],
+      }
+      const teamNode = {
+        teamRunId: rootTeamRunId, teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team',
+        workspaceRootPath: workspaceMetadata.workspaceRootPath, summary: 'New - Product Review Team', lastActivityAt: teamLastActivityAt,
+        isActive: true, deleteLifecycle: 'READY', focusedAgentRunId: reviewerRunId, rootTeam,
+        members: [reviewerRow, writerRow], executionRows: [stableExecutionRow(reviewerRow), stableExecutionRow(writerRow)],
+      }
+      runHistory.workspaceGroups = []
+      runHistory.navigationProjection = {
+        workspaceNodes: [{ workspaceId, workspaceRootPath: workspaceMetadata.workspaceRootPath, workspaceName: workspaceMetadata.displayName, workspaceKind: 'filesystem', canRemoveFromWorkspaces: true, agents: [] }],
+        teamNodes: [teamNode], teamNodesByWorkspaceRoot: { [workspaceMetadata.workspaceRootPath]: [teamNode] }, runIndexById: {},
+        teamIndexById: { [rootTeamRunId]: { index: 0, workspaceRootPath: workspaceMetadata.workspaceRootPath, workspaceIndex: 0 } },
+        memberIndexByIdentity: {
+          [`${rootTeamRunId}\u0000agent:${reviewerRunId}`]: 0,
+          [`${rootTeamRunId}\u0000agent:${writerRunId}`]: 1,
+        },
+        runAncestryById: {}, teamAncestryById: { [rootTeamRunId]: { workspaceId, teamDefinitionGroupKey: 'team-product' } },
+        memberAncestorExecutionKeysByIdentity: {
+          [`${rootTeamRunId}\u0000agent:${reviewerRunId}`]: [],
+          [`${rootTeamRunId}\u0000agent:${writerRunId}`]: [],
+        },
+      }
+      runHistory.navigationTopologyRevision = (runHistory.navigationTopologyRevision || 0) + 1
+    }
     if (scenario.startsWith('mobile_')) store('mobileWork')?.selectContext({ kind: 'team-run', teamRunId: rootTeamRunId, teamDefinitionId: 'team-product', title: 'Product Review Team', summary: 'Controlled team review run', workspaceRootPath: workspaceMetadata.workspaceRootPath, focusedAgentRunId: reviewerRunId, isActive: teamStatus === 'running', lastActivityAt: '2026-08-22T04:03:30.000Z', statusLabel: teamStatus === 'running' ? 'Running' : teamStatus === 'error' ? 'Error' : 'Stopped' }, input.tab || 'chat')
     return { applied: true, kind: 'team', runId: rootTeamRunId }
   }

@@ -1,10 +1,12 @@
 
-> autobyteus-web-prototype@0.1.0 validate:final-package /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> autobyteus-web-prototype@0.1.0 validate:final-package /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > node prototype/scripts/validate-final-package.mjs
 
 PASS ui-ux-spec.md status is Approved
-PASS explicit user-confirmation reference is recorded
+PASS explicit RER-009 user-confirmation reference is recorded
 PASS UI/UX specification records the pinned source commit
+PASS UI/UX specification records the current ticket-worktree prototype root
+PASS UI/UX specification records the focused RER-009 Product Prototyper acceptance
 PASS Product Prototyper final decision is recorded
 PASS parity inventory reports accepted user-approved status
 PASS mock boundary records the local Monaco mirror
@@ -25,8 +27,13 @@ PASS evidence/correction-journeys/correction-journey-summary.json is 31/31
 PASS evidence/correction-journeys/correction-journey-summary.json has no prototype browser errors
 PASS presentation audit uses the pinned source commit
 PASS retained presentation audit is 369/369 exact
+PASS terminal package identifies the complete corrected journey
+PASS JRN-050-A through JRN-050-E are terminally enforced and passing
+PASS JRN-050 source and prototype evidence has zero browser errors
+PASS JRN-050-E terminal member-selection contract matches pinned source
 PASS final-reference manifest uses the pinned source commit
-PASS final-reference manifest reports 15/15 clean captures
+PASS final-reference manifest reports 17/17 clean captures
+PASS final-reference manifest records the RER-009 user confirmation
 PASS final visual IDs are complete and ordered
 PASS VIS-001 has no browser errors or external resources
 PASS VIS-001 screenshot hash matches the manifest
@@ -73,6 +80,12 @@ PASS VIS-014 is mapped in ui-ux-spec.md
 PASS VIS-015 has no browser errors or external resources
 PASS VIS-015 screenshot hash matches the manifest
 PASS VIS-015 is mapped in ui-ux-spec.md
+PASS VIS-016 has no browser errors or external resources
+PASS VIS-016 screenshot hash matches the manifest
+PASS VIS-016 is mapped in ui-ux-spec.md
+PASS VIS-017 has no browser errors or external resources
+PASS VIS-017 screenshot hash matches the manifest
+PASS VIS-017 is mapped in ui-ux-spec.md
 PASS UI/UX specification contains no draft status
 PASS UI/UX specification contains no pending approval placeholder
-73/73 final-package consistency checks passed.
+86/86 final-package consistency checks passed.

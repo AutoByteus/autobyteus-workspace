@@ -1,5 +1,5 @@
 
-> autobyteus-web-prototype@0.1.0 capture:final-references /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> autobyteus-web-prototype@0.1.0 capture:final-references /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > node prototype/scripts/capture-final-references.mjs
 
 CAPTURED VIS-001 VIS-001-agents-desktop-en.png
@@ -17,4 +17,6 @@ CAPTURED VIS-012 VIS-012-mobile-team-reference-en.png
 CAPTURED VIS-013 VIS-013-mobile-permission-denied-en.png
 CAPTURED VIS-014 VIS-014-applications-disabled-desktop-en.png
 CAPTURED VIS-015 VIS-015-agents-empty-desktop-en.png
-15/15 final references captured.
+CAPTURED VIS-016 VIS-016-team-launch-ready-desktop-en.png
+CAPTURED VIS-017 VIS-017-team-launched-writer-focused-desktop-en.png
+17/17 final references captured.

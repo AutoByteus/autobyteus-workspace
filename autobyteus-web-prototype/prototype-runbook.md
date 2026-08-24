@@ -3,15 +3,16 @@
 ## Identity
 
 - Package: `initial-prototype-baseline`
-- Revision: `RER-007` repository-root placement correction; approved
-  observable baseline established under `RER-002`
-- Mode: approved current-experience baseline in corrected owning repository
-- Source: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
-- Pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
+- Revision: `RER-011` canonical integration of the approved `RER-009` correction; baseline pin established under `RER-002`
+- Status: approved current-state baseline including the user-confirmed RER-009 correction (`PPA-002`)
+- Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
+- Selected source repository: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
 - Prototype: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Owning repository: `/home/autobyteus/workspace/autobyteus-workspace`
 - Owning branch: `personal`
-- Review URL: <http://127.0.0.1:3200>
+- Canonical review URL: <http://127.0.0.1:3210>
+
+The selected source worktree may be newer than the approved pin. Source-versus-prototype evidence must run from an exact export or detached worktree at `8ef282b...`; do not reset the selected source worktree and do not treat its current HEAD as correction authority.
 
 ## Clean Install And Run
 
@@ -20,24 +21,41 @@ Development:
 ```bash
 cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm install --ignore-workspace --frozen-lockfile
-corepack pnpm dev --port 3200
+corepack pnpm dev --port 3210
 ```
 
-Production-build review:
+Production-build review on any free loopback port:
 
 ```bash
 cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm build
-PORT=3200 HOST=127.0.0.1 node .output/server/index.mjs
+PORT=3220 HOST=127.0.0.1 node .output/server/index.mjs
 ```
 
-The independently runnable prototype needs no backend, source-observation mock, Electron runtime, credentials or network access after dependencies are installed.
-Monaco-backed file/reference viewers load from the checked-in
-`public/prototype-assets/monaco/vs` mirror; ordinary review does not reach a CDN.
+The independently runnable prototype needs no source observer, backend, Electron runtime, credentials, customer data, or network access after dependencies are installed. Monaco-backed viewers use the checked-in `public/prototype-assets/monaco/vs` mirror.
 
-## Select A Desktop Or Workspace Scenario
+## Exercise The Corrected Team Launch Journey
 
-Open the destination route, then use the browser console:
+Reset to the correction scenario from the browser console:
+
+```js
+localStorage.setItem('autobyteus.prototype.context', 'desktop')
+localStorage.setItem('autobyteus.prototype.scenario', 'team_launch')
+location.assign('/agent-teams?view=team-list')
+```
+
+Then:
+
+1. Activate **Run** on `Product Review Team`.
+2. Confirm navigation to `/workspace` and the Team launch draft.
+3. Choose `/synthetic/prototype-workspace`.
+4. Activate **Run Team**.
+5. Confirm `Prototype Workspace` contains the selected `Product Review Team` row with `researcher` and `writer` members.
+6. Activate the `/writer` member row and confirm it becomes selected while the center Team workspace header changes to `writer`.
+
+The resulting IDs and state are synthetic and resettable. No real Team process starts.
+
+## Select Other Scenarios
 
 ```js
 window.__AUTOBYTEUS_PROTOTYPE__.setScenario('workspace_team_active', 'desktop')
@@ -58,7 +76,7 @@ The complete catalog is [prototype-scenarios.md](prototype-scenarios.md).
 
 ## Select An Electron Host Context
 
-The host adapter is installed during page bootstrap, so set storage and reload/navigate:
+Electron-visible UI is a browser-side host simulation; no Electron package or process is present:
 
 ```js
 localStorage.setItem('autobyteus.prototype.context', 'electron_internal')
@@ -66,19 +84,11 @@ localStorage.setItem('autobyteus.prototype.scenario', 'populated')
 location.assign('/settings?section=extensions')
 ```
 
-External-node Electron window:
-
-```js
-localStorage.setItem('autobyteus.prototype.context', 'electron_external')
-localStorage.setItem('autobyteus.prototype.scenario', 'populated')
-location.assign('/settings?section=server-settings&mode=advanced')
-```
-
-Lifecycle/update examples replace the scenario with `electron_starting`, `electron_error`, `electron_restarting`, `electron_shutdown`, or `update_available`.
+Use `electron_external` for the external-node window. Lifecycle scenarios include `electron_starting`, `electron_error`, `electron_restarting`, `electron_shutdown`, and `update_available`.
 
 ## Select Paired Mobile
 
-Install the synthetic local session before entering `/mobile`:
+Install the inert fixture session before `/mobile`:
 
 ```js
 localStorage.setItem('autobyteus.remote_access.mobile_session.v1', JSON.stringify({
@@ -99,8 +109,6 @@ localStorage.setItem('autobyteus.prototype.scenario', 'mobile_team_active')
 location.assign('/mobile')
 ```
 
-The loopback URL and credential are inert fixture text. Integration actions are intercepted; no node needs to be running during independent prototype review.
-
 ## Reset
 
 ```js
@@ -117,56 +125,74 @@ corepack pnpm typecheck
 corepack pnpm lint
 corepack pnpm test
 corepack pnpm validate:boundaries
-corepack pnpm audit:presentation
-corepack pnpm audit:interactions
 corepack pnpm build
-corepack pnpm capture:final-references
-corepack pnpm validate:final-package
-corepack pnpm validate:repository-placement
+corepack pnpm validate:gap-009-package
+corepack pnpm validate:gap-010-package
 ```
 
-`capture:final-references` is a post-confirmation Product Prototyper evidence
-command. It requires the production-build prototype to be available at
-`http://127.0.0.1:3200` and rewrites `final-reference-screenshots/`.
+Do not run `capture:final-references` or modify `ui-ux-spec.md` during bootstrap correction. Those are Product Prototyper-owned post-acceptance artifacts.
 
-## Reproduce Source-Versus-Prototype Evidence
+## Reproduce PP-GAP-009 And PP-GAP-010 Source-Versus-Prototype Evidence
 
-Start the source-observation-only local fixture:
+Create an exact temporary source export without changing the selected worktree:
 
 ```bash
+SOURCE_REPO=/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web
+SOURCE_EXPORT=/tmp/autobyteus-pin-8ef282ba
+rm -rf "$SOURCE_EXPORT"
+mkdir -p "$SOURCE_EXPORT"
+git -C "$SOURCE_REPO" archive 8ef282ba77705180d985e7000d801f0e0068cdc1 | tar -x -C "$SOURCE_EXPORT"
+ln -s /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/node_modules "$SOURCE_EXPORT/node_modules"
+```
+
+Use three separate terminals:
+
+```bash
+# 1. Controlled source-observation node
 cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
-PROTOTYPE_MOCK_PORT=4310 corepack pnpm source-observation:start
+PROTOTYPE_MOCK_PORT=4311 corepack pnpm source-observation:start
 ```
 
-Start the pinned source:
-
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web
-BACKEND_NODE_BASE_URL=http://127.0.0.1:4310 \
+# 2. Exact pinned source export
+cd /tmp/autobyteus-pin-8ef282ba
+BACKEND_NODE_BASE_URL=http://127.0.0.1:4311 \
 ENABLE_APPLICATIONS=true \
-corepack pnpm exec nuxt dev --host 127.0.0.1 --port 3100
+corepack pnpm exec nuxt dev --host 127.0.0.1 --port 3110
 ```
 
-Start the prototype on `3200`, then run serially because each harness resets the shared observation fixture:
+```bash
+# 3. Prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+corepack pnpm dev --port 3210
+```
+
+Then run:
 
 ```bash
 cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
-corepack pnpm capture:parity
-corepack pnpm capture:correction
-corepack pnpm capture:matrix
-corepack pnpm capture:correction-matrix
-corepack pnpm validate:browser
-corepack pnpm validate:correction-journeys
+SOURCE_BASE_URL=http://127.0.0.1:3110 \
+PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
+MOCK_BASE_URL=http://127.0.0.1:4311 \
+corepack pnpm validate:gap-010
 ```
 
-Optional targeted correction row:
+Expected result: `JRN-050-A`–`JRN-050-E` all pass; `gap-010-summary.json` reports five passed checkpoints, no failures, zero source/prototype browser errors, and `journeyContractPassed: true`. The preserved `validate:gap-009` command remains available for the earlier four-checkpoint launch-only evidence.
+
+## Capture And Validate The Approved Final Package
+
+After explicit user confirmation and from the production-build review server:
 
 ```bash
-CORRECTION_IDS=HOST-001,WKS-005,MOB-009 corepack pnpm capture:correction
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+PROTOTYPE_BASE_URL=http://127.0.0.1:3210 corepack pnpm capture:final-references
+corepack pnpm validate:gap-009-package
+corepack pnpm validate:gap-010-package
+corepack pnpm validate:final-package
 ```
 
-The evidence ports are required only for source comparison. Ordinary review at `3200` remains independent.
+Expected result: `VIS-001`–`VIS-017` capture without browser errors or external resources; the first 15 approved hashes remain exact; `VIS-016` and `VIS-017` anchor launch-ready and launched-writer-focus states; correction package checks pass 20/20 and 25/25; terminal final-package checks pass 86/86.
 
 ## Process Isolation
 
-Use a separate terminal for each long-running process. Stop with `Ctrl-C`. The source observer accepts only loopback synthetic requests; the prototype itself blocks external integration requests and production WebSockets. Mutable data is browser-local and resettable.
+Use one terminal per long-running process and stop it with `Ctrl-C`. Evidence ports are correction-only. Ordinary prototype review needs only the prototype. Mutable state is browser-local and resettable; the source observer accepts only loopback synthetic requests; no process writes to production services.

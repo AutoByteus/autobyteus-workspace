@@ -17,27 +17,33 @@ current-state evidence.
 - Status: **Approved**
 - Package: `initial-prototype-baseline`
 - Related requirements revisions: `RER-002` established the approved UI/UX
-  basis; `RER-004` first corrected standalone ownership; `RER-007` places the
-  accepted project at the user-selected owning-repository root. Both placement
-  corrections are non-observable.
-- Product Prototyper acceptance reference: `PPA-001`
+  basis; `RER-004` and `RER-007` corrected repository placement without an
+  observable delta; `RER-009` restored the pinned-source Agent Team launch and
+  launched-member selection journey; and `RER-011` authorizes the final
+  non-observable integration of that accepted package on `personal`.
+- Product Prototyper acceptance references: `PPA-001` for the complete original
+  baseline and `PPA-002` for the focused `RER-009` correction.
 - Source application: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
 - Source authority: `origin/personal` pinned at bootstrap kickoff to
   `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Runnable prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Owning repository/branch:
   `/home/autobyteus/workspace/autobyteus-workspace` / `personal`
-- Review URL: <http://127.0.0.1:3200>
-- Explicit user-confirmation reference: user message **“approved”** on
+- Review URL: <http://127.0.0.1:3210>
+- Explicit user-confirmation references: user message **“approved”** on
   `2026-08-22`, immediately following the Product Prototyper request to review
-  the complete corrected current-state baseline at the review URL.
+  the complete corrected current-state baseline; and user message
+  **“done. i checked. thanks”** on `2026-08-24`, immediately following the
+  explicit request to approve the corrected `RER-009` launch/member-selection
+  journey at the review URL.
 - Approval boundary: the complete current-state parity baseline only; no
   future-state delta, redesign, production architecture, or production
   engineering was approved.
-- UI approval date: `2026-08-22`
+- UI approval dates: `2026-08-22` and `2026-08-24`
 - Repository-placement validation date: `2026-08-24`
-- Final visual capture result: `15/15` without browser errors or external
-  resources; all 15 image hashes match the approved pre-relocation references.
+- Final visual capture result: `17/17` without browser errors or external
+  resources; the preserved `VIS-001`–`VIS-015` hashes remain exact and
+  `VIS-016`–`VIS-017` anchor the user-confirmed `RER-009` states.
   The evidence clock is fixed to `2026-08-22T16:50:00.000Z` so illustrative
   relative timestamps reproduce deterministically. See
   `final-reference-screenshots/manifest.json`.
@@ -58,8 +64,8 @@ current-state evidence.
   prototype evidence, every recorded journey has matched post-action behavior,
   and no known perceptible or behaviorally meaningful discrepancy remains.
 - In-scope surfaces and journeys: `ROUTE-001`–`ROUTE-041`, `CFG-001`–`CFG-011`,
-  `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-021`,
-  `MOB-001`–`MOB-014`, 239 locale/responsive matrix rows, `JRN-001`–`JRN-049`,
+  `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-023`,
+  `MOB-001`–`MOB-014`, 239 locale/responsive matrix rows, `JRN-001`–`JRN-050`,
   and discovery groups `DISC-001`–`DISC-017`.
 - Non-goals: redesign; new behavior; Android or iOS as independent client
   baselines; production backend/runtime fidelity; target architecture;
@@ -74,9 +80,14 @@ current-state evidence.
 | `BEH-002`, `REQ-002`, `AC-002` | Preserve every supported/discoverable route, surface, state, interaction, role, configuration and validated viewport. | Complete stable inventory listed above and in `parity-inventory.md`. |
 | `REQ-003`, `AC-003` | Retain the Nuxt 3, Vue, TypeScript, pnpm, routing and design-language conventions of the source. | Runnable implementation plus 369/369 exact retained presentation files. |
 | `BEH-003`, `REQ-004`, `AC-004` | Keep states and transitions real while replacing production boundaries with deterministic synthetic behavior. | `prototype-scenarios.md`, `mock-boundaries.md`, all state rows and journeys. |
-| `REQ-005`, `AC-005` | Require controlled source-versus-prototype evidence and zero known observable discrepancies. | 108/108 rendered rows, 239/239 matrix rows and 49/49 journeys pass. |
+| `REQ-005`, `AC-005` | Require controlled source-versus-prototype evidence and zero known observable discrepancies. | 110/110 rendered rows, 239/239 matrix rows and 50/50 journeys pass. |
 | `REQ-006`, `AC-004` | Keep the prototype isolated, resettable and free of production credentials, data, writes and ordinary-review network dependencies. | Boundary validation, local Monaco assets, runtime capture manifest, reset action. |
-| `REQ-007`, `AC-006` | Do not add future-state UI before discrepancy-free Product Prototyper acceptance. | `PPA-001`; intentional current-state deltas: none. |
+| `REQ-007`, `AC-006` | Do not add future-state UI before discrepancy-free Product Prototyper acceptance. | `PPA-001`, `PPA-002`; intentional current-state deltas: none. |
+| `AC-010` | Agent Teams catalog **Run** must create the exact valid Team draft and navigate to `/workspace` without browser error. | `JRN-050-A`–`JRN-050-B`; `VIS-016`. |
+| `AC-011` | **Run Team** must create and select exactly one deterministic synthetic Team context under the chosen workspace, with the Team and configured members selectable. | `WKS-022`, `WKS-023`, `JRN-050-C`–`JRN-050-E`; `VIS-017`. |
+| `AC-012` | Terminal validation must enforce the full controlled source-versus-prototype lifecycle rather than a pre-seeded state. | `JRN-050-A`–`JRN-050-E`, `validate:gap-010`, `validate:final-package`. |
+| `AC-013` | The RER-009 correction and review remained isolated to the specified ticket worktree and branch until separately authorized integration. | Preserved task-branch history and pre-integration Git evidence. |
+| `AC-014`, `AC-015` | Direct `personal` integration must preserve concurrent remote history and every approved artifact without merge/force push or observable change. | RER-011 rebase-preservation record, focused/final/build/HTTP validation, unchanged VIS-001–VIS-017 hashes, and final ref-equality proof. |
 | `QR-001` | Preserve observable keyboard, focus, semantic and accessibility intent. | `JRN-002`, `JRN-004`, `JRN-009`, `JRN-013`, `JRN-022`, `JRN-030`, `JRN-045` and `DISC-011`. |
 | `QR-002` | Reproduce the same result for the same scenario/context/action sequence. | Deterministic scenario catalog, screenshot/body hashes and resettable local state. |
 | `QR-003` | Use no production credentials, production/customer data or service. | `mock-boundaries.md` and `validate:boundaries` pass. |
@@ -237,6 +248,7 @@ post-action route, body/semantic result and focus/action record is defined in
 | `JRN-031`–`JRN-041` | Desktop browser/Electron | Populated definition, tool, node, settings, package or media state | Complete edit/validation/save/import/provider/category actions and destructive confirmation paths. | `DISC-001`–`DISC-009`, `DISC-015` |
 | `JRN-042`–`JRN-045` | Workspace and paired mobile | Historical run, resizable panel, troubleshooting or switcher | Confirm delete, resize, refresh recovery, search and restore focus. | `DISC-010`–`DISC-014`, `QR-001` |
 | `JRN-046`–`JRN-049` | Active/error/history agent/team workspace | Running, error or reopened history state | Interrupt to stopped state, prepare error follow-up/recovery, and select reopened team history message. | `WKS-015`–`WKS-021`, `AC-005` |
+| `JRN-050` | Desktop Agent Teams catalog and workspace | Empty pre-launch Team history with the Product Review Team card | Run the Team, choose the synthetic workspace, launch exactly one Team, expand/collapse it, and select writer/researcher with synchronized left-tree and center-workspace focus. | `WKS-022`, `WKS-023`, `AC-010`–`AC-012`, `VIS-016`, `VIS-017` |
 
 ## Journey Details
 
@@ -280,6 +292,30 @@ post-action route, body/semantic result and focus/action record is defined in
 - Completion: active tool or selected historical/message state with the exact
   controls and next actions. `VIS-005`–`VIS-008` anchor these states.
 
+### Agent Team Launch Journey (`JRN-050`)
+
+- Entry: `/agent-teams?view=team-list` in deterministic `team_launch`, desktop,
+  English context with no pre-existing Team run under Prototype Workspace.
+- Actions: activate the Product Review Team card **Run**; on `/workspace`, keep
+  the source-default AutoByteus runtime and `mock/gpt-prototype` global model;
+  choose existing workspace `prototype-workspace` at
+  `/synthetic/prototype-workspace`; activate **Run Team**; expand/collapse the
+  created Team row; then select `writer` or coordinator `researcher`.
+- Feedback and guards: the initial draft selects Product Review Team and blocks
+  **Run Team** with “Workspace is required to run a team.” until a workspace is
+  chosen. Workspace selection removes the validation message and enables the
+  action. Launch removes the draft, selects exactly one Team context, and
+  immediately projects the Team plus both configured members under Prototype
+  Workspace. The active member row uses `aria-current="true"`, indigo selected
+  treatment, and the center Team header/avatar changes to the same member.
+- Completion: `team-run-created-fixture` is the single selected Team run;
+  `/writer` maps to `team-member-writer-created` and `/researcher` maps to
+  `team-member-researcher-created`. `VIS-016` and `VIS-017` are the normative
+  final anchors; `JRN-050-A`–`JRN-050-E` are the exact controlled evidence.
+- Simulation boundary: launch and focus are resettable local Pinia/fixture
+  actions. No agent executes, and no backend, model, filesystem, credential,
+  production data, production write, or external integration is invoked.
+
 ### Paired-Mobile Journeys (`JRN-027`–`JRN-030`, `JRN-044`–`JRN-045`)
 
 - Entry: `/mobile` with an inert local paired-session fixture and selected
@@ -297,13 +333,13 @@ post-action route, body/semantic result and focus/action record is defined in
 | Surface ID | Purpose | Entry conditions | Structure and hierarchy | Important states | Primary actions | Exit / next action | Visual IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `UIS-001` | Agents | `/agents` or query view | Global nav; search/actions; list/cards or create/detail/edit | loading, empty, populated, error, validation | search, reload, create, view, edit, delete, run | detail/setup/workspace | `VIS-001`, `VIS-002`, `VIS-010`, `VIS-015` |
-| `UIS-002` | Agent Teams | `/agent-teams` query view | Global nav; team list/create/detail/edit | empty, populated, checklist validation, confirmation | create, view, edit, delete, run | team setup/workspace | parity rows |
+| `UIS-002` | Agent Teams | `/agent-teams` query view | Global nav; team list/create/detail/edit | empty, populated, checklist validation, confirmation | create, view, edit, delete, run | team setup/workspace | `VIS-016` plus parity rows |
 | `UIS-003` | Applications | `/applications` or app detail | Optional nav item; catalog/detail/setup | enabled, disabled redirect, empty, setup error/retry | open, configure, retry | app surface or Agents recovery | `VIS-014` |
 | `UIS-004` | Skills, Tools and MCP | `/skills`, `/tools` | Collections/list plus detail/editor/actions | populated, validation, delete confirmation | inspect, switch, add/edit/delete/import | selected detail/list | parity rows |
 | `UIS-005` | Memory | `/memory` | Agent/team tabs, source lists and detail | empty/populated, agent/team source | select tab/source/detail | retained memory context | parity rows |
 | `UIS-006` | Nodes and phone access | `/nodes` tabs | Manage, memory sync, phone setup, Docker guide | browser/Electron context, paired/unpaired | add/rename/select node, setup phone, switch tab | active node/mobile setup | parity rows |
 | `UIS-007` | Agent workspace | `/workspace`, agent selected | Left nav/history; center conversation/composer; right tools | active, streaming, complete, error, interrupted, history | message, interrupt/follow up, choose tool/file, resize | updated run/history state | `VIS-005`, `VIS-006` |
-| `UIS-008` | Team workspace | `/workspace`, team selected | Team conversation/member focus; messages/delegations; tool drawer | active, streaming, complete, error, interrupted, history | focus member/message/task, reference, interrupt, follow up | updated team/history state | `VIS-007`, `VIS-008` |
+| `UIS-008` | Team workspace | `/workspace`, team selected | Team conversation/member focus; messages/delegations; tool drawer | launch-ready, newly launched, active, streaming, complete, error, interrupted, history | run team, expand/collapse team, focus member/message/task, reference, interrupt, follow up | updated team/history state | `VIS-007`, `VIS-008`, `VIS-016`, `VIS-017` |
 | `UIS-009` | Settings | `/settings?section=*` | Back control; section rail; selected settings panel | validation, save feedback, provider/binding, package/update/extension states | select, edit, save, import, enable/disable, update | retained section or workspace | `VIS-003`, `VIS-009` |
 | `UIS-010` | Embedded server gates | Electron/internal before app ready or failure | Centered startup/error/shutdown gate with details/recovery | starting, ready, error, details, restarting, shutdown | details, advanced recovery, restart, health, reset | ready app or continued gate | `VIS-004` |
 | `UIS-011` | Media | `/media` | Category navigation; collection/viewer; actions | populated, selected, delete confirmation/fullscreen | select category/media, open, delete/cancel | collection/viewer | parity rows |
@@ -326,6 +362,10 @@ post-action route, body/semantic result and focus/action record is defined in
 | `TR-010` | Paired-mobile home/work | Select/switch work or tab | Header/tab/context changes | Selected agent/team sub-surface | Inert local session and view state | Chat, files, activity, reference |
 | `TR-011` | Access error | Permission denied/offline condition | Explicit warning and guidance | Restricted/recovery state | No production request | Refresh, reconnect guidance, unpair |
 | `TR-012` | Any scenario | Call prototype reset | Local state/storage cleared | Deterministic populated desktop baseline | Prototype browser state only | Select another scenario/context |
+| `TR-013` | Agent Teams catalog / selected card | Activate **Run** | Route changes to `/workspace`; Product Review Team draft and configuration form appear | One valid Team draft; workspace still required | Browser-local draft only | Choose workspace, change allowed setup, or leave |
+| `TR-014` | Team draft / no workspace | Choose `prototype-workspace` | Workspace path appears; required-workspace message clears; **Run Team** enables | Launch-ready draft | Browser-local workspace selection | Run Team or revise setup |
+| `TR-015` | Launch-ready Team draft | Activate **Run Team** | Draft closes; exactly one active Team appears selected under Prototype Workspace | Newly launched Team focused on coordinator/researcher | Deterministic synthetic Team context only | Expand/collapse Team; select writer/researcher |
+| `TR-016` | Newly launched Team / expanded | Activate writer or researcher member row | Selected row receives `aria-current`; center header/avatar follows the member | Same Team with selected member focus | Local focus/projection only | Select another member or inspect tools |
 
 ## State Behavior
 
@@ -341,6 +381,8 @@ post-action route, body/semantic result and focus/action record is defined in
 | Agent/team streaming | workspace streaming scenario | Incremental response and running status, composer controls | Interrupt, inspect tools | Completed/interrupted/error | `VIS-006` |
 | Agent/team completed/history | completed/history scenario | Stable transcript, stopped/idle status, selectable history | Follow up, inspect, archive/delete | New active run or list | `VIS-008` |
 | Agent/team error/interrupted | error/interrupted scenario | Explicit failure/stopped state and valid recovery composer | Retry/follow up | Deterministic active/completed | parity evidence |
+| Team launch-ready | `team_launch` after workspace selection | Product Review Team definition, AutoByteus runtime, model, selected workspace path, enabled **Run Team** | Run Team, change allowed setup | Newly launched Team or revised draft | `VIS-016` |
+| Newly launched Team / writer focused | `workspace_team_launch` after `JRN-050-E` | Exactly one Team under Prototype Workspace; expanded researcher/writer rows; writer selected; center header `writer` | Collapse/expand Team; select researcher/writer; inspect workspace tabs | Same Team with synchronized selected member | `VIS-017` |
 | Tool unavailable/empty/error | matching workspace scenario/state | Exact unavailable/empty/error copy in selected pane | Change tab/retry where present | Select supported pane or recover | parity evidence |
 | Mobile paired active | inert paired session + mobile work scenario | Work header, current run and bottom tabs | Switch, chat, files, artifacts, activity | Home/work switch | `VIS-011`, `VIS-012` |
 | Mobile permission denied/offline | `permission_denied` | Offline badge, connection warning and recovery guidance | Refresh, switch work, troubleshoot, unpair | Reconnect scenario or unpair | `VIS-013` |
@@ -380,7 +422,7 @@ post-action route, body/semantic result and focus/action record is defined in
 - Preserve source contrast intent and readable hierarchy across white,
   blue-50, selected, status and error surfaces.
 - Exact observable focus behavior is substantiated by `JRN-002`, `JRN-004`,
-  `JRN-009`, `JRN-013`, `JRN-022`, `JRN-030` and `JRN-045`.
+  `JRN-009`, `JRN-013`, `JRN-022`, `JRN-030`, `JRN-045` and `JRN-050-E`.
 
 ## Content, Labels, Validation And Feedback
 
@@ -437,13 +479,15 @@ interaction affordances and responsive behavior are requirements-defining.
 | `VIS-013` | Mobile permission denied/offline | 390×844 | `final-reference-screenshots/VIS-013-mobile-permission-denied-en.png` | Product header, offline status, warning/recovery hierarchy, recent/choose-work cards and destructive unpair affordance | Loopback address, device/work values |
 | `VIS-014` | Applications disabled recovery | 1440×900 | `final-reference-screenshots/VIS-014-applications-disabled-desktop-en.png` | Applications nav omission and recovery to unchanged Agents catalog | Agent fixtures |
 | `VIS-015` | Agents empty | 1440×900 | `final-reference-screenshots/VIS-015-agents-empty-desktop-en.png` | Empty-state icon/copy, preserved create/reload actions and full-page spacing | Empty collection itself is scenario data |
+| `VIS-016` | Agent Team launch-ready draft | 1440×900 | `final-reference-screenshots/VIS-016-team-launch-ready-desktop-en.png` | Team definition/setup hierarchy, runtime/model presentation, chosen workspace path, enabled Run Team action and three-surface workspace shell | Team/workspace/model identifiers and synthetic path |
+| `VIS-017` | Newly launched Team with writer focused | 1440×900 | `final-reference-screenshots/VIS-017-team-launched-writer-focused-desktop-en.png` | Prototype Workspace hierarchy, exactly one expanded Team row, researcher/writer member rows, writer selection treatment, synchronized center Team header and workspace tool layout | Team/member IDs, relative timestamps and synthetic workspace path |
 
 ## Linked Prototype Evidence
 
 - Runnable prototype: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
-- Production-build review URL: <http://127.0.0.1:3200>
+- Production-build review URL: <http://127.0.0.1:3210>
 - Run instructions: `prototype-runbook.md`
-- Accepted baseline review: `product-prototyper-baseline-review.md` (`PPA-001`)
+- Accepted baseline review: `product-prototyper-baseline-review.md` (`PPA-001`, `PPA-002`)
 - Bootstrap report: `prototype-bootstrap-report.md`
 - Complete inventory: `parity-inventory.md`
 - Comparison results: `comparison-report.md`
@@ -453,10 +497,16 @@ interaction affordances and responsive behavior are requirements-defining.
 - Final visual metadata and hashes: `final-reference-screenshots/manifest.json`
 - Final validation: `evidence/validation/product-prototyper-final-validation.txt`
 - Final reference capture: `evidence/validation/final-reference-capture.txt`
+- RER-009 Product Prototyper browser review:
+  `evidence/product-prototyper-review/rer-009-direct-review.txt`
+- RER-009 exact correction: `pp-gap-010-correction.md` and
+  `evidence/gap-010/gap-010-summary.json`
+- RER-011 integration record: `personal-integration-record.md` and
+  `evidence/integration/rer-011-rebase-preservation.json`
 - Relevant stable IDs: `ROUTE-001`–`ROUTE-041`, `CFG-001`–`CFG-011`,
-  `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-021`,
-  `MOB-001`–`MOB-014`, `JRN-001`–`JRN-049`, `DISC-001`–`DISC-017`,
-  `TR-001`–`TR-012`, and `VIS-001`–`VIS-015`.
+  `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-023`,
+  `MOB-001`–`MOB-014`, `JRN-001`–`JRN-050`, `DISC-001`–`DISC-017`,
+  `TR-001`–`TR-016`, and `VIS-001`–`VIS-017`.
 
 ## Implementation Fidelity Boundary
 
@@ -523,4 +573,6 @@ interaction affordances and responsive behavior are requirements-defining.
 - Mocked boundaries and unresolved production behavior are explicit: **Yes**
 - Final references captured after explicit confirmation: **Yes**
 - Final reference browser errors/external resources: **0 / 0**
+- RER-009 controlled journey checkpoints: **5/5**, zero source/prototype
+  browser errors, exact semantics/state and byte-identical checkpoint images.
 - Known failed, missing, unknown or unsubstantiated UI inventory IDs: **none**

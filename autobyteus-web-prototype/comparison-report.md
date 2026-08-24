@@ -2,13 +2,12 @@
 
 ## Result
 
-**Pass.** The corrected `initial-prototype-baseline` at RER-002 has no failed comparison row, failed journey, prototype browser error, or known perceptible/behavioral discrepancy against pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
+**Pass — accepted and user-confirmed RER-009 current-state correction.** The retained baseline plus focused `PP-GAP-009` launch correction and `PP-GAP-010` member-focus correction have no failed comparison row, failed journey checkpoint, prototype browser error, or known perceptible/behavioral discrepancy against pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
 ## Controlled Conditions
 
-- Source: `http://127.0.0.1:3100`
-- Prototype: `http://127.0.0.1:3200`
-- Synthetic source-observation node: `http://127.0.0.1:4310`
+- Retained-suite defaults: source `http://127.0.0.1:3100`; prototype `http://127.0.0.1:3200`; mock `http://127.0.0.1:4310`
+- RER-009 correction run: exact-pin source export `http://127.0.0.1:3110`; prototype `http://127.0.0.1:3210`; mock `http://127.0.0.1:4311`
 - Browser: system Chromium `/usr/bin/chromium`
 - Viewports: desktop `1440×900`; narrow `390×844`
 - Theme/motion: light / reduced motion
@@ -28,7 +27,9 @@ Electron conditions use the same deterministic browser-injected host bridge in t
 | Corrected host/workspace/mobile | `HOST-001`–`MOB-014` | 48 | 33 | 15 | Exact | 0 / 0 | **48/48** |
 | All-route locale/responsive | `MAT-R001-DZH`–`MAT-R041-NZH` | 123 | 48 | 75 | Exact | 0 / 0 | **123/123** |
 | Correction locale/responsive | correction `DZH`/`NEN`/`NZH` IDs | 116 | 88 | 28 | Exact | 0 / 0 | **116/116** |
-| **Total** |  | **347** | **207** | **140** | **Exact** |  | **347/347** |
+| RER-009 focused launched-Team state | `WKS-022` / `JRN-050-D` | 1 | 1 | 0 | Exact | 0 / 0 | **1/1** |
+| RER-009 focused launched-member state | `WKS-023` / `JRN-050-E` | 1 | 1 | 0 | Exact | 0 / 0 | **1/1** |
+| **Total** |  | **349** | **209** | **140** | **Exact** |  | **349/349** |
 
 “Bounded rendering-noise only” means the screenshot is semantically identical and differs solely within the harness's tight changed-pixel/max-channel threshold after matched rendering. It is not a visual waiver. The retained source and prototype screenshots can be reviewed directly.
 
@@ -38,6 +39,8 @@ Machine evidence:
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction/correction-parity-results.json`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/matrix/route-matrix-results.json`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction-matrix/correction-parity-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
 
 ## Interaction Suites
 
@@ -45,12 +48,15 @@ Machine evidence:
 | --- | --- | --- | --- |
 | Preserved journeys | `JRN-001`–`JRN-018` | Same start state and actual clicks/typing/keyboard actions; compare post-action route, body, validation, focused element, dialogs/feedback, semantic action evidence and screenshot | **18/18** |
 | Correction journeys | `JRN-019`–`JRN-049` | Same method, including Electron actions, server recovery, agent/team run lifecycle, tools, CRUD, mobile and history | **31/31** |
-| **Total** |  |  | **49/49** |
+| RER-009 Team launch/member-focus journey | `JRN-050-A`–`JRN-050-E` | Real catalog **Run**, draft navigation, workspace selection, **Run Team**, context selection, chosen-workspace Team/member projection, then real `/writer` row activation and center-workspace focus; compare each checkpoint's route/body/focus, Pinia contract, browser errors and screenshot | **5/5 checkpoints; 1/1 journey** |
+| **Total** |  |  | **50/50 journeys** |
 
 Journey evidence:
 
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/interactions/browser-journey-results.json`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction-journeys/correction-journey-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
 
 ## Discovery And Presentation Completeness
 
@@ -70,11 +76,13 @@ The final 48-row correction suite and both full matrices have zero source and ze
 
 ## Manual Browser-Tool Review
 
-The production-build prototype was independently opened with the browser tool after the final build:
+Browser Tool evidence includes the retained production-build reviews plus a new direct RER-009 replay at the correction dev URLs:
 
 - Electron/internal Extensions: DOM, controls, bounds, installed/enabled status and native-only actions inspected; screenshot `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-electron-internal-extensions.png`.
 - Populated team workspace: scenario/context, conversation, status, Files tree/viewer, workspace tabs and zero visible alerts inspected; screenshot `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-workspace-team.png`.
+- RER-009 complete Team launch: exact source and prototype journeys were independently replayed through Browser Tool; final state/selection/draft/projection contracts match and screenshots are byte-identical at `evidence/gap-009/manual-{source,prototype}-complete-journey.png`.
+- PP-GAP-010 member focus: the complete source and prototype journeys were replayed through Browser Tool through `/writer` activation; focus, projection, `aria-current`, center header and screenshots match exactly at `evidence/gap-010/manual-{source,prototype}-writer-focus.png`.
 
 ## Conclusion
 
-All exact-fidelity comparison obligations pass. There is no accepted intentional delta and no remaining known current-state UI/UX discrepancy.
+All exact-fidelity obligations for the retained baseline and requested RER-009 corrections pass. There is no accepted intentional delta and no remaining discrepancy inside `PP-GAP-009` or `PP-GAP-010`. Product Prototyper direct re-inspection accepted the correction under `PPA-002`; the user confirmed the reviewed journey on 2026-08-24. The current-state package is terminally complete with no remaining discrepancy.

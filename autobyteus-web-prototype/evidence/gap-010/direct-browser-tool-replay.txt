@@ -1,0 +1,41 @@
+PP-GAP-010 direct Browser Tool replay
+Date: 2026-08-24 UTC
+Source authority: 8ef282ba77705180d985e7000d801f0e0068cdc1
+Source URL: http://127.0.0.1:3110
+Prototype URL: http://127.0.0.1:3210
+Mock fixture URL: http://127.0.0.1:4311 (scenario=team_launch)
+Context: desktop, English, light browser UI; loopback-only deterministic data
+
+Real UI journey replayed independently in source and prototype:
+1. /agent-teams?view=team-list
+2. Activate Product Review Team card Run
+3. On /workspace, open Select a workspace...
+4. Choose /synthetic/prototype-workspace
+5. Activate Run Team
+6. Wait for data-test=workspace-team-row-team-run-created-fixture
+7. Activate role=button stable member row data-test=workspace-team-member-team-run-created-fixture-/writer
+
+Source terminal Browser Tool state:
+- route=/workspace
+- focusedMemberAddress=/writer
+- focusedAgentRunId=team-member-writer-created
+- navigationProjection.teamNodes[0].focusedAgentRunId=team-member-writer-created
+- writer aria-current=true
+- center Team workspace header=writer
+
+Prototype terminal Browser Tool state:
+- route=/workspace
+- focusedMemberAddress=/writer
+- focusedAgentRunId=team-member-writer-created
+- navigationProjection.teamNodes[0].focusedAgentRunId=team-member-writer-created
+- writer aria-current=true
+- center Team workspace header=writer
+
+Screenshots:
+- evidence/gap-010/manual-source-writer-focus.png
+- evidence/gap-010/manual-prototype-writer-focus.png
+Both SHA-256: 7d3cde0c06f3004e0d8657afb17b081ad27d220bf9816a610a976999f0df0a9f
+Result: exact source/prototype state, behavior, visible header, selected row, and screenshot parity.
+
+Independent-run check:
+After source :3110 and mock :4311 were stopped, the Browser Tool reloaded the prototype alone at :3210 and repeated the complete journey. Terminal route=/workspace, writer aria-current=true, center header=writer, and no visible alerts. This confirms the correction needs no source observer or mock node at review time.

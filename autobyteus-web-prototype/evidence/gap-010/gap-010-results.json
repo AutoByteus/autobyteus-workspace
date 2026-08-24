@@ -1,0 +1,515 @@
+{
+  "generatedAt": "2026-08-24T09:16:34.082Z",
+  "sourceBaseUrl": "http://127.0.0.1:3110",
+  "prototypeBaseUrl": "http://127.0.0.1:3210",
+  "mockBaseUrl": "http://127.0.0.1:4311",
+  "sourcePin": "8ef282ba77705180d985e7000d801f0e0068cdc1",
+  "checkpoints": [
+    {
+      "checkpoint": {
+        "id": "JRN-050-A",
+        "name": "Agent Teams catalog Run entry"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/source/JRN-050-A.png",
+        "screenshotSha256": "e8df686b0a73832483826f0f00e071299b49d9ba911164ffde4ab19481d7365a",
+        "semantic": {
+          "route": "/agent-teams?view=team-list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nReload\nCreate Team\nPR\nProduct Review Team\n\nA deterministic synthetic team with researcher and writer members.\n\nProduct\nRun\nView Details\n→\nR\nresearcher\nW\nwriter\n\nCoordinator\n\nresearcher\n\nMembers\n\n2\n\nNested Teams\n\n0",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-A.png",
+        "screenshotSha256": "e8df686b0a73832483826f0f00e071299b49d9ba911164ffde4ab19481d7365a",
+        "semantic": {
+          "route": "/agent-teams?view=team-list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nReload\nCreate Team\nPR\nProduct Review Team\n\nA deterministic synthetic team with researcher and writer members.\n\nProduct\nRun\nView Details\n→\nR\nresearcher\nW\nwriter\n\nCoordinator\n\nresearcher\n\nMembers\n\n2\n\nNested Teams\n\n0",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "stateEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "geometryEqual": true,
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "checkpoint": {
+        "id": "JRN-050-B",
+        "name": "Workspace Team launch draft"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/source/JRN-050-B.png",
+        "screenshotSha256": "5152bc932a78a762bf01ae047c56a2508240f77992c5dedea9f404416c5c60cd",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nTeam Definition\nProduct Review Team\nRuntime\nAutoByteus\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nPrototype Models / mock/gpt-prototype\n\nThis model will be used by all members unless overridden.\n\nWorkspace Directory\nExisting\nNew\nSelect a workspace...\n\nSelect a previously loaded workspace.\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\nRun Team\n\nWorkspace is required to run a team.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n ",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 1,
+          "selectedDraftIdPresent": true,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-B.png",
+        "screenshotSha256": "5152bc932a78a762bf01ae047c56a2508240f77992c5dedea9f404416c5c60cd",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nTeam Definition\nProduct Review Team\nRuntime\nAutoByteus\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nPrototype Models / mock/gpt-prototype\n\nThis model will be used by all members unless overridden.\n\nWorkspace Directory\nExisting\nNew\nSelect a workspace...\n\nSelect a previously loaded workspace.\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\nRun Team\n\nWorkspace is required to run a team.\n\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n ",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 1,
+          "selectedDraftIdPresent": true,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "stateEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "geometryEqual": true,
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "checkpoint": {
+        "id": "JRN-050-C",
+        "name": "Chosen-workspace launch-ready draft"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/source/JRN-050-C.png",
+        "screenshotSha256": "cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nTeam Definition\nProduct Review Team\nRuntime\nAutoByteus\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nPrototype Models / mock/gpt-prototype\n\nThis model will be used by all members unless overridden.\n\nWorkspace Directory\nExisting\nNew\nprototype-workspace\n/synthetic/prototype-workspace\n\nWorkspace: prototype-workspace\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\nRun Team\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nrequirements.md\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 1,
+          "selectedDraftIdPresent": true,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-C.png",
+        "screenshotSha256": "cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nTeam Definition\nProduct Review Team\nRuntime\nAutoByteus\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nPrototype Models / mock/gpt-prototype\n\nThis model will be used by all members unless overridden.\n\nWorkspace Directory\nExisting\nNew\nprototype-workspace\n/synthetic/prototype-workspace\n\nWorkspace: prototype-workspace\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\nRun Team\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nrequirements.md\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+          "selectedTeamMemberTestId": null,
+          "teamWorkspaceHeader": null,
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": null,
+          "draftCount": 1,
+          "selectedDraftIdPresent": true,
+          "teamRunIds": [],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [],
+          "selectedTeam": null
+        }
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "stateEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "geometryEqual": true,
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "checkpoint": {
+        "id": "JRN-050-D",
+        "name": "Launched Team selected and projected in the chosen workspace tree"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/source/JRN-050-D.png",
+        "screenshotSha256": "99660b7e7df499ce7b95d4e51bd51c845cb4157c028420fc2b6b9ab3ef50e73b",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nTEAMS\nPR\nProduct Review Team\n(1)\nNew - Product Review Team\nnow\nR\nresearcher\nnow\nW\nwriter\nnow\nSettings\nR\nresearcher\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+          "selectedTeamMemberTestId": "workspace-team-member-team-run-created-fixture-/researcher",
+          "teamWorkspaceHeader": "researcher",
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": {
+            "kind": "team_run",
+            "rootTeamRunId": "team-run-created-fixture"
+          },
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [
+            "team-run-created-fixture"
+          ],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [
+            {
+              "teamRunId": "team-run-created-fixture",
+              "teamDefinitionId": "team-product",
+              "teamDefinitionName": "Product Review Team",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "isActive": true,
+              "members": [
+                {
+                  "memberAddress": "/researcher",
+                  "displayName": "researcher",
+                  "agentRunId": "team-member-researcher-created"
+                },
+                {
+                  "memberAddress": "/writer",
+                  "displayName": "writer",
+                  "agentRunId": "team-member-writer-created"
+                }
+              ]
+            }
+          ],
+          "selectedTeam": {
+            "rootTeamRunId": "team-run-created-fixture",
+            "focusedAgentRunId": "team-member-researcher-created",
+            "focusedMemberAddress": "/researcher"
+          }
+        }
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-D.png",
+        "screenshotSha256": "99660b7e7df499ce7b95d4e51bd51c845cb4157c028420fc2b6b9ab3ef50e73b",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nTEAMS\nPR\nProduct Review Team\n(1)\nNew - Product Review Team\nnow\nR\nresearcher\nnow\nW\nwriter\nnow\nSettings\nR\nresearcher\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+          "selectedTeamMemberTestId": "workspace-team-member-team-run-created-fixture-/researcher",
+          "teamWorkspaceHeader": "researcher",
+          "activeElement": {
+            "tag": "BODY",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": {
+            "kind": "team_run",
+            "rootTeamRunId": "team-run-created-fixture"
+          },
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [
+            "team-run-created-fixture"
+          ],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [
+            {
+              "teamRunId": "team-run-created-fixture",
+              "teamDefinitionId": "team-product",
+              "teamDefinitionName": "Product Review Team",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "isActive": true,
+              "members": [
+                {
+                  "memberAddress": "/researcher",
+                  "displayName": "researcher",
+                  "agentRunId": "team-member-researcher-created"
+                },
+                {
+                  "memberAddress": "/writer",
+                  "displayName": "writer",
+                  "agentRunId": "team-member-writer-created"
+                }
+              ]
+            }
+          ],
+          "selectedTeam": {
+            "rootTeamRunId": "team-run-created-fixture",
+            "focusedAgentRunId": "team-member-researcher-created",
+            "focusedMemberAddress": "/researcher"
+          }
+        }
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "stateEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "geometryEqual": true,
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "checkpoint": {
+        "id": "JRN-050-E",
+        "name": "Writer Team member focused from the launched left-tree row"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/source/JRN-050-E.png",
+        "screenshotSha256": "2c3abd02848b1c2305f6b20db3a7565136c01a47875815dea13831ae09adf031",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nTEAMS\nPR\nProduct Review Team\n(1)\nNew - Product Review Team\nnow\nR\nresearcher\nnow\nW\nwriter\nnow\nSettings\nW\nwriter\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+          "selectedTeamMemberTestId": "workspace-team-member-team-run-created-fixture-/writer",
+          "teamWorkspaceHeader": "writer",
+          "activeElement": {
+            "tag": "DIV",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": {
+            "kind": "team_run",
+            "rootTeamRunId": "team-run-created-fixture"
+          },
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [
+            "team-run-created-fixture"
+          ],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [
+            {
+              "teamRunId": "team-run-created-fixture",
+              "teamDefinitionId": "team-product",
+              "teamDefinitionName": "Product Review Team",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "isActive": true,
+              "members": [
+                {
+                  "memberAddress": "/researcher",
+                  "displayName": "researcher",
+                  "agentRunId": "team-member-researcher-created"
+                },
+                {
+                  "memberAddress": "/writer",
+                  "displayName": "writer",
+                  "agentRunId": "team-member-writer-created"
+                }
+              ]
+            }
+          ],
+          "selectedTeam": {
+            "rootTeamRunId": "team-run-created-fixture",
+            "focusedAgentRunId": "team-member-writer-created",
+            "focusedMemberAddress": "/writer"
+          }
+        }
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-E.png",
+        "screenshotSha256": "2c3abd02848b1c2305f6b20db3a7565136c01a47875815dea13831ae09adf031",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nTEAMS\nPR\nProduct Review Team\n(1)\nNew - Product Review Team\nnow\nR\nresearcher\nnow\nW\nwriter\nnow\nSettings\nW\nwriter\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+          "selectedTeamMemberTestId": "workspace-team-member-team-run-created-fixture-/writer",
+          "teamWorkspaceHeader": "writer",
+          "activeElement": {
+            "tag": "DIV",
+            "text": null
+          }
+        },
+        "state": {
+          "selection": {
+            "kind": "team_run",
+            "rootTeamRunId": "team-run-created-fixture"
+          },
+          "draftCount": 0,
+          "selectedDraftIdPresent": false,
+          "teamRunIds": [
+            "team-run-created-fixture"
+          ],
+          "workspaceNodes": [
+            {
+              "workspaceId": "workspace-prototype",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "workspaceName": "Prototype Workspace"
+            }
+          ],
+          "teamNodes": [
+            {
+              "teamRunId": "team-run-created-fixture",
+              "teamDefinitionId": "team-product",
+              "teamDefinitionName": "Product Review Team",
+              "workspaceRootPath": "/synthetic/prototype-workspace",
+              "isActive": true,
+              "members": [
+                {
+                  "memberAddress": "/researcher",
+                  "displayName": "researcher",
+                  "agentRunId": "team-member-researcher-created"
+                },
+                {
+                  "memberAddress": "/writer",
+                  "displayName": "writer",
+                  "agentRunId": "team-member-writer-created"
+                }
+              ]
+            }
+          ],
+          "selectedTeam": {
+            "rootTeamRunId": "team-run-created-fixture",
+            "focusedAgentRunId": "team-member-writer-created",
+            "focusedMemberAddress": "/writer"
+          }
+        }
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "stateEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "geometryEqual": true,
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    }
+  ]
+}

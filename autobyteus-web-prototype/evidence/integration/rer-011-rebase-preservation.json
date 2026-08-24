@@ -1,0 +1,330 @@
+{
+  "package": "initial-prototype-baseline",
+  "requirementsRevision": "RER-011",
+  "finalizedAfterLateFetchUtc": "2026-08-24T11:09:00Z",
+  "approvedSourcePin": "8ef282ba77705180d985e7000d801f0e0068cdc1",
+  "preRebaseTaskHead": "9878c0a4024b10044f63213648dd2f084787530b",
+  "initialFetchedOriginPersonal": "389748b0b9f0dea051aaed18641de131cf0adbbb",
+  "fetchedOriginPersonal": "8d6b06b8cf15d1f355be86b02ef233a111998f07",
+  "remoteAdvancedDuringIntegration": true,
+  "lateAdvance": {
+    "commits": 3,
+    "changedPaths": 6,
+    "intersectionWithIntegrationLocatorChanges": 0
+  },
+  "finalPreIntegrationCommitTaskHead": "bd82e30567e5bad625dce89078eba795beef4b9c",
+  "finalPreRebaseDivergence": {
+    "originOnlyCommits": 7,
+    "taskOnlyCommits": 6,
+    "remoteChangedPaths": 97,
+    "taskChangedPaths": 87,
+    "changedPathIntersection": 0
+  },
+  "originIsAncestorAfterRebase": true,
+  "taskCommitsBefore": [
+    {
+      "commit": "f3f7762032d95dd3c0ce70f3a7cd91927654e982",
+      "subject": "docs(requirements): reopen agent team run parity"
+    },
+    {
+      "commit": "40f5605f04cf3abcea12ee9a28bddf20de177b89",
+      "subject": "fix(prototype): complete agent team launch parity"
+    },
+    {
+      "commit": "da54757685e648ec068f44050fbad0217b334c5c",
+      "subject": "fix(prototype): preserve launched team member focus"
+    },
+    {
+      "commit": "3bce9d23b4ca44ff25ec42ec8a4c5700e291e74a",
+      "subject": "prototype: finalize RER-009 team launch parity"
+    },
+    {
+      "commit": "f72adfce6bbf34eba900e609725f335a6fab8201",
+      "subject": "docs(requirements): accept agent team run parity"
+    },
+    {
+      "commit": "9878c0a4024b10044f63213648dd2f084787530b",
+      "subject": "docs(requirements): authorize personal prototype integration"
+    }
+  ],
+  "taskCommitsAfter": [
+    {
+      "commit": "aeb9d2cfcc9edfcf4c7538911bab41ef00fb6fe4",
+      "subject": "docs(requirements): reopen agent team run parity"
+    },
+    {
+      "commit": "afc83eb1a43db36a7d3bf20ce6c6bef6dd55d9ab",
+      "subject": "fix(prototype): complete agent team launch parity"
+    },
+    {
+      "commit": "89b76166d4f9cfdc8accc78d1c9a16e9e3126106",
+      "subject": "fix(prototype): preserve launched team member focus"
+    },
+    {
+      "commit": "232fc4c0e85f5e3744eca5aaa5c0118b3f3a7d19",
+      "subject": "prototype: finalize RER-009 team launch parity"
+    },
+    {
+      "commit": "fac327fdcfd183850b81e999151729ee408f0da8",
+      "subject": "docs(requirements): accept agent team run parity"
+    },
+    {
+      "commit": "bd82e30567e5bad625dce89078eba795beef4b9c",
+      "subject": "docs(requirements): authorize personal prototype integration"
+    }
+  ],
+  "patchIdsBefore": [
+    {
+      "commit": "f3f7762032d95dd3c0ce70f3a7cd91927654e982",
+      "patchId": "3dc6b4f028610909f7cc5b53584dccfc07b26bd3"
+    },
+    {
+      "commit": "40f5605f04cf3abcea12ee9a28bddf20de177b89",
+      "patchId": "200c24cdf539577792f15e8b03175464e017bcde"
+    },
+    {
+      "commit": "da54757685e648ec068f44050fbad0217b334c5c",
+      "patchId": "7795ab40822e3c0d89fd7cc9f6587337aff53744"
+    },
+    {
+      "commit": "3bce9d23b4ca44ff25ec42ec8a4c5700e291e74a",
+      "patchId": "c0bef2756fcdb69fc6e0c2857533806e9237a690"
+    },
+    {
+      "commit": "f72adfce6bbf34eba900e609725f335a6fab8201",
+      "patchId": "f9e314f98739ad15e035ae9bd25057baf121f9b6"
+    },
+    {
+      "commit": "9878c0a4024b10044f63213648dd2f084787530b",
+      "patchId": "b221989ed38855f09d94619692efbfe741988f39"
+    }
+  ],
+  "patchIdsAfter": [
+    {
+      "commit": "aeb9d2cfcc9edfcf4c7538911bab41ef00fb6fe4",
+      "patchId": "3dc6b4f028610909f7cc5b53584dccfc07b26bd3"
+    },
+    {
+      "commit": "afc83eb1a43db36a7d3bf20ce6c6bef6dd55d9ab",
+      "patchId": "200c24cdf539577792f15e8b03175464e017bcde"
+    },
+    {
+      "commit": "89b76166d4f9cfdc8accc78d1c9a16e9e3126106",
+      "patchId": "7795ab40822e3c0d89fd7cc9f6587337aff53744"
+    },
+    {
+      "commit": "232fc4c0e85f5e3744eca5aaa5c0118b3f3a7d19",
+      "patchId": "c0bef2756fcdb69fc6e0c2857533806e9237a690"
+    },
+    {
+      "commit": "fac327fdcfd183850b81e999151729ee408f0da8",
+      "patchId": "f9e314f98739ad15e035ae9bd25057baf121f9b6"
+    },
+    {
+      "commit": "bd82e30567e5bad625dce89078eba795beef4b9c",
+      "patchId": "b221989ed38855f09d94619692efbfe741988f39"
+    }
+  ],
+  "allSixPatchIdsPreserved": true,
+  "prototypeTreeByteExactAcrossRebase": true,
+  "requirementsTreeByteExactAcrossRebase": true,
+  "finalVisuals": [
+    {
+      "id": "VIS-001",
+      "sha256": "e4f7eb3fa0819c59e96dfdc47d6fa077e481a45d947df356759a6f61c40469a0",
+      "actualSha256": "e4f7eb3fa0819c59e96dfdc47d6fa077e481a45d947df356759a6f61c40469a0",
+      "matches": true
+    },
+    {
+      "id": "VIS-002",
+      "sha256": "2bb8b49f5e8f79dccd3738000e078555a335c3898d9ff85d942abc42dc9299f9",
+      "actualSha256": "2bb8b49f5e8f79dccd3738000e078555a335c3898d9ff85d942abc42dc9299f9",
+      "matches": true
+    },
+    {
+      "id": "VIS-003",
+      "sha256": "98af22531faa9708213f4028be7fd68dc178b7b8c357f4a0e5bb33b0fe1406c5",
+      "actualSha256": "98af22531faa9708213f4028be7fd68dc178b7b8c357f4a0e5bb33b0fe1406c5",
+      "matches": true
+    },
+    {
+      "id": "VIS-004",
+      "sha256": "66e70a695eff793cf02967faf6f288f17c8a3b980f5553d9ae20a1eeefe5cd8c",
+      "actualSha256": "66e70a695eff793cf02967faf6f288f17c8a3b980f5553d9ae20a1eeefe5cd8c",
+      "matches": true
+    },
+    {
+      "id": "VIS-005",
+      "sha256": "cda00ce14ca7df45700bf8978cd4992055aca5efeca4343e2243c59d3e4bebcf",
+      "actualSha256": "cda00ce14ca7df45700bf8978cd4992055aca5efeca4343e2243c59d3e4bebcf",
+      "matches": true
+    },
+    {
+      "id": "VIS-006",
+      "sha256": "d458a19fc2190df966c5e02cc8c005bc8dfcd2987abaca19feeeb03c80a398ba",
+      "actualSha256": "d458a19fc2190df966c5e02cc8c005bc8dfcd2987abaca19feeeb03c80a398ba",
+      "matches": true
+    },
+    {
+      "id": "VIS-007",
+      "sha256": "7ccf291505868a8d4e8acd7bdd939f81d7c6e839671106bb99a5993c5d2a6fb1",
+      "actualSha256": "7ccf291505868a8d4e8acd7bdd939f81d7c6e839671106bb99a5993c5d2a6fb1",
+      "matches": true
+    },
+    {
+      "id": "VIS-008",
+      "sha256": "2d3555c0e5d59bb99d71e5cb5577a4f8c67cc0b845a8ebeeca4cbc663615c5a0",
+      "actualSha256": "2d3555c0e5d59bb99d71e5cb5577a4f8c67cc0b845a8ebeeca4cbc663615c5a0",
+      "matches": true
+    },
+    {
+      "id": "VIS-009",
+      "sha256": "71db1c2265fac0cd74c57ffdb7617f063e3785d05902d6b2baaca1f649a9bed9",
+      "actualSha256": "71db1c2265fac0cd74c57ffdb7617f063e3785d05902d6b2baaca1f649a9bed9",
+      "matches": true
+    },
+    {
+      "id": "VIS-010",
+      "sha256": "eab0d7a0603e3020d96149e5d4b74e665f19a3b6918d617c55175e205efa291a",
+      "actualSha256": "eab0d7a0603e3020d96149e5d4b74e665f19a3b6918d617c55175e205efa291a",
+      "matches": true
+    },
+    {
+      "id": "VIS-011",
+      "sha256": "7413de7c5da0fb6367d16f94b9403ecaa3be05dbb4a4d7521fb1440f35ec7ad4",
+      "actualSha256": "7413de7c5da0fb6367d16f94b9403ecaa3be05dbb4a4d7521fb1440f35ec7ad4",
+      "matches": true
+    },
+    {
+      "id": "VIS-012",
+      "sha256": "334368952f58165056ff1b65003bd98aa08b91b23617eda977404c2edea76bf6",
+      "actualSha256": "334368952f58165056ff1b65003bd98aa08b91b23617eda977404c2edea76bf6",
+      "matches": true
+    },
+    {
+      "id": "VIS-013",
+      "sha256": "7eb2b68d302a739849f306600ab759e2c4a7bdf29f384ea7dc8a4711c7b480b9",
+      "actualSha256": "7eb2b68d302a739849f306600ab759e2c4a7bdf29f384ea7dc8a4711c7b480b9",
+      "matches": true
+    },
+    {
+      "id": "VIS-014",
+      "sha256": "51ca0cd60fd7f5e2ae662b33e8ee34d0aa092122743cf075e444aba2abf1e768",
+      "actualSha256": "51ca0cd60fd7f5e2ae662b33e8ee34d0aa092122743cf075e444aba2abf1e768",
+      "matches": true
+    },
+    {
+      "id": "VIS-015",
+      "sha256": "6120abcc8273c82fb99bd93e32b423072b25612ed59dcc9110f6efa1f35d04f2",
+      "actualSha256": "6120abcc8273c82fb99bd93e32b423072b25612ed59dcc9110f6efa1f35d04f2",
+      "matches": true
+    },
+    {
+      "id": "VIS-016",
+      "sha256": "cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f",
+      "actualSha256": "cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f",
+      "matches": true
+    },
+    {
+      "id": "VIS-017",
+      "sha256": "b337371acbddb89fe3e14bbdc7122a9deed6e66a424e180ee09735dc7bf5c6eb",
+      "actualSha256": "b337371acbddb89fe3e14bbdc7122a9deed6e66a424e180ee09735dc7bf5c6eb",
+      "matches": true
+    }
+  ],
+  "allFinalVisualHashesMatch": true,
+  "unrelatedSiblingTrees": [
+    {
+      "name": "memory-inspector-ux-redesign",
+      "finalFetchedOriginTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "candidateTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "matches": true
+    },
+    {
+      "name": "memory-sync-transparency",
+      "finalFetchedOriginTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "candidateTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "matches": true
+    },
+    {
+      "name": "mobile-pwa-navigation",
+      "finalFetchedOriginTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "candidateTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "matches": true
+    },
+    {
+      "name": "taskagent-team-tab-active-tasks",
+      "finalFetchedOriginTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "candidateTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "matches": true
+    },
+    {
+      "name": "token-statistics-task-cost",
+      "finalFetchedOriginTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "candidateTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "matches": true
+    }
+  ],
+  "allUnrelatedSiblingTreesMatchFetchedOrigin": true,
+  "activeLocatorFiles": [
+    {
+      "path": "ui-ux-spec.md",
+      "canonicalRootReferences": 2,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "product-prototyper-baseline-review.md",
+      "canonicalRootReferences": 6,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "prototype-bootstrap-report.md",
+      "canonicalRootReferences": 11,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "comparison-report.md",
+      "canonicalRootReferences": 12,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "evidence-index.md",
+      "canonicalRootReferences": 24,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "prototype-runbook.md",
+      "canonicalRootReferences": 8,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "pp-gap-009-correction.md",
+      "canonicalRootReferences": 5,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "pp-gap-010-correction.md",
+      "canonicalRootReferences": 6,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "repository-placement-correction.md",
+      "canonicalRootReferences": 2,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "personal-integration-record.md",
+      "canonicalRootReferences": 1,
+      "taskRootReferences": 0
+    },
+    {
+      "path": "final-reference-screenshots/manifest.json",
+      "canonicalRootReferences": 17,
+      "taskRootReferences": 0
+    }
+  ],
+  "activeLocatorFilesContainNoTaskRoot": true,
+  "historicalEvidencePolicy": "Initial and final pre-promotion machine/build logs may retain the task-worktree runtime locator as explicitly historical evidence; they are not active package locators.",
+  "observableChange": "none",
+  "uiReviewImpact": "PPA-001/PPA-002 remain exact; no renewed UI review required."
+}

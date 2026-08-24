@@ -3,14 +3,18 @@
 ## Review Identity
 
 - Package: `initial-prototype-baseline`
-- Requirements revision: `RER-002`
-- Review date: `2026-08-22`
+- Requirements revisions: `RER-002` baseline acceptance, `RER-009` focused
+  Agent Team launch/member-selection parity acceptance, and `RER-011`
+  non-observable direct-`personal` integration
+- Review dates: `2026-08-22` and `2026-08-24`
 - Reviewed source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Canonical prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
-- Canonical review URL: `http://127.0.0.1:3200`
+- Canonical review URL: `http://127.0.0.1:3210`
 - Original outcome: **Baseline Needed — not accepted**
 - Corrected-baseline outcome: **Accepted (`PPA-001`)**
-- User review status: **Ready to start**; explicit user confirmation has not yet been received.
+- RER-009 correction outcome: **Accepted (`PPA-002`)**
+- User review status: **Confirmed** for the complete baseline and the focused
+  RER-009 corrected journey.
 
 ## Original Rejected Baseline — Evidence Reviewed
 
@@ -179,12 +183,18 @@ engineering, and it is not user approval.
 - User confirmation reference: user message **“approved”** on `2026-08-22`,
   immediately following the request to review the complete corrected baseline
   at <http://127.0.0.1:3200>.
+- Focused RER-009 confirmation reference: user message
+  **“done. i checked. thanks”** on `2026-08-24`, immediately following the
+  explicit request to approve the corrected Agent Teams Run → workspace draft
+  → Run Team → expanded Team/member-selection journey at
+  <http://127.0.0.1:3210>.
 - Approved boundary: the complete current-state baseline accepted under
-  `PPA-001`; no future-state delta or production-engineering scope.
+  `PPA-001` plus the exact current-source parity correction accepted under
+  `PPA-002`; no future-state delta or production-engineering scope.
 - Canonical UI/UX supplement: `ui-ux-spec.md`.
 - Post-confirmation final visual references:
-  `final-reference-screenshots/VIS-001`–`VIS-015`.
-- Capture result: **15/15** without browser errors or external resources; exact
+  `final-reference-screenshots/VIS-001`–`VIS-017`.
+- Capture result: **17/17** without browser errors or external resources; exact
   routes, scenarios, contexts, hashes and viewports are in
   `final-reference-screenshots/manifest.json`.
 - Post-confirmation invisible isolation correction: the retained Monaco loader
@@ -222,10 +232,92 @@ the shared prototype collection. The user explicitly authorized this
 placement-only correction directly on `personal`, including commit and push,
 without a new ticket, branch, worktree, repository, submodule or gitlink.
 
-The approved project is now at
-`/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`.
-All active locators use that root. The five unrelated projects remaining in
-`ui-prototypes/` retain their original Git-tree IDs. The complete approved file
-inventory, PPA-001, source pin, final visual hashes and observable browser
-output are preserved. RER-007 therefore does not reopen UI review or change the
+At the RER-007 placement stage, the approved project was placed at the owning
+repository root under repository-relative `autobyteus-web-prototype` on
+`personal`. That placement was temporarily superseded for RER-009 correction
+and review by the mandatory isolated ticket worktree documented below, then
+restored as the canonical checkout through the separately authorized RER-011
+integration. The five unrelated projects remaining in `ui-prototypes/` retained their
+original Git-tree IDs. RER-007 did not reopen UI review or change the
 2026-08-22 user approval.
+
+## RER-009 Agent Team Launch Parity Correction
+
+### Acceptance Reference
+
+- Acceptance ID: `PPA-002`
+- Acceptance date: `2026-08-24`
+- Requirements revision: `RER-009`
+- Corrected gaps: `PP-GAP-009` and `PP-GAP-010`
+- Corrected inventory: `WKS-022`, `WKS-023`, and `JRN-050-A`–`JRN-050-E`
+- Accepted root:
+  `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
+- Accepted branch/Bootstrapper correction commit:
+  `codex/initial-prototype-baseline` /
+  `da54757685e648ec068f44050fbad0217b334c5c`
+- Accepted review URL: <http://127.0.0.1:3210>
+- Source authority remains
+  `8ef282ba77705180d985e7000d801f0e0068cdc1`; no source refresh occurred.
+
+### Direct Product Prototyper Review
+
+The Product Prototyper restarted the journey from a clean `team_launch`
+browser context and directly exercised the real retained UI. The review
+confirmed:
+
+1. exactly one Product Review Team card **Run** action navigates from
+   `/agent-teams?view=team-list` to `/workspace` with one valid Map-backed Team
+   draft and no `inFlightDrafts.keys` error;
+2. `prototype-workspace` resolves to `/synthetic/prototype-workspace`, updates
+   the draft, clears the workspace-required feedback and enables **Run Team**;
+3. **Run Team** removes all drafts/in-flight entries, selects
+   `team-run-created-fixture`, and projects exactly one Product Review Team
+   with researcher and writer under Prototype Workspace;
+4. the Team row collapses and expands through its real disclosure control;
+5. selecting `/writer` sets `aria-current="true"`, focuses
+   `team-member-writer-created`, updates the navigation projection, and changes
+   the center Team header to `writer`; selecting coordinator `/researcher`
+   performs the corresponding inverse focus transition; and
+6. the full replay emitted no captured browser error and no visible alert.
+
+The accepted observation is recorded at
+`evidence/product-prototyper-review/rer-009-direct-review.txt`. The exact matched
+source/prototype contract remains `evidence/gap-010/gap-010-results.json`:
+5/5 checkpoints pass with exact semantics and Pinia state, zero browser errors,
+and byte-identical screenshots.
+
+Post-confirmation final validation passes: typecheck; lint; 2 files / 8 tests;
+13/13 boundary checks; 369/369 retained presentation files; production build;
+20/20 `PP-GAP-009` package checks; 25/25 `PP-GAP-010` package checks; and
+86/86 terminal final-package checks. `VIS-001`–`VIS-015` retain their exact
+approved hashes, while new `VIS-016` and `VIS-017` were captured after the
+RER-009 confirmation with zero browser errors or external resources.
+
+### User Confirmation And Final Decision
+
+The user reviewed the runnable corrected journey and responded
+**“done. i checked. thanks”** on `2026-08-24` immediately after the explicit
+approval request. This confirms only the restored current-source behavior; it
+does not approve any redesign, future-state feature, production runtime,
+production architecture, or production-engineering work.
+
+The focused RER-009 current-state correction is **accepted, user-confirmed, and
+finalized** under `PPA-002`. Known failed, missing, unknown or unsubstantiated
+UI inventory IDs: **none**.
+
+## RER-011 Direct Personal Integration
+
+The user separately authorized the already accepted cumulative package to be
+integrated **directly on the personal branch**. This is repository provenance
+work only: PPA-001/PPA-002, the source pin, all visible behavior, and
+VIS-001–VIS-017 remain unchanged and no renewed UI review is required.
+
+The complete six-commit task history was rebased onto the freshly fetched
+`origin/personal` head while preserving every patch identity and the exact
+pre-rebase prototype and requirements trees. The canonical active project root
+is now `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
+on `personal`. Pre-promotion and post-promotion validation, artifact hashes,
+unrelated-tree equivalence, and final Git ref equality are recorded by
+`personal-integration-record.md`, `evidence/integration/`, and the terminal
+handoff proof. This integration does not change the user-confirmed product
+decision.

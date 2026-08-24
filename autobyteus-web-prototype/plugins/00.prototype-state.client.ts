@@ -48,6 +48,7 @@ const localActions: Record<string, Set<string>> = {
   agentContexts: new Set(['createRunFromTemplate', 'removeRun', 'lockConfig', 'promoteTemporaryId', 'upsertProjectionContext', 'patchConfigOnly']),
   fileExplorer: new Set(['_getOrCreateWorkspaceState', 'toggleFolder']),
   runFileChanges: new Set(['replaceRunProjection', 'mergeRunProjection', 'upsertFromLivePayload', 'clearRun']),
+  runHistory: new Set(['applyRunNavigationTeamFocus', 'focusTeamMemberAndEnsureHydrated', 'selectTreeRun']),
   workspace: new Set(['registerSkillWorkspace', 'acquireFileExplorerLiveSession', 'releaseFileExplorerLiveSession', 'clearFileExplorerLiveSessionForWorkspace', 'connectFileExplorerLiveStream', 'disconnectFileExplorerLiveStream', 'disconnectAllFileExplorerLiveStreams', 'refreshFileExplorerSnapshot', 'fetchFolderChildren']),
 }
 
@@ -55,7 +56,18 @@ type RuntimeSnapshot = { item: { path: string, scenario: string, mobile?: string
 type PrototypePinia = Pinia & { _s: Map<string, any> }
 const snapshots = runtimeFixture.snapshots as Record<string, RuntimeSnapshot>
 
-const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
+const clone = <T>(value: T): T => {
+  if (value instanceof Map) {
+    return new Map(Array.from(value.entries(), ([key, entry]) => [clone(key), clone(entry)])) as T
+  }
+  if (value instanceof Set) return new Set(Array.from(value, clone)) as T
+  if (value instanceof Date) return new Date(value.getTime()) as T
+  if (Array.isArray(value)) return value.map(clone) as T
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, clone(entry)])) as T
+  }
+  return value
+}
 const referenceStoreState = (storeId: string): Record<string, any> | undefined =>
   Object.values(snapshots).find(snapshot => snapshot.state?.[storeId])?.state?.[storeId]
 const canonicalPath = (value: string): string => {
@@ -100,7 +112,7 @@ const findSnapshot = (): [string, RuntimeSnapshot] => {
   return ['populated|desktop|/', snapshots['populated|desktop|/']]
 }
 
-const actionResult = (store: any, action: string, args: any[] = []): any => {
+const actionResult = (store: any, action: string, args: any[] = [], pinia?: PrototypePinia): any => {
   if (action.startsWith('is')) return false
   if (action.startsWith('get')) return undefined
   if (action.startsWith('fetchAllAgentDefinitions')) return store.allAgentDefinitions || store.agentDefinitions || []
@@ -145,6 +157,25 @@ const actionResult = (store: any, action: string, args: any[] = []): any => {
   }
   if (store.$id === 'tokenUsageMeter' && /^fetch(?:AgentRun|TeamRun|TeamMember)Summary$/.test(action)) {
     throw new Error('Synthetic token-summary hydration is unavailable for this controlled run.')
+  }
+  if (store.$id === 'agentTeamRun' && action === 'launchDraft') {
+    const draft = args[0]
+    const applied = applyExperienceScenario({ scenario: 'workspace_team_launch', context: context() })
+    if (!applied.applied || applied.kind !== 'team') {
+      throw new Error(`Synthetic Team launch projection failed: ${applied.reason || 'unknown reason'}`)
+    }
+    const drafts = pinia?._s.get('teamRunConfig')
+    const teams = pinia?._s.get('agentTeamContexts')
+    const launchedContext = teams?.getTeamContextById?.(applied.runId)
+    if (!draft?.draftId || !drafts || !launchedContext) {
+      throw new Error('Synthetic Team launch could not resolve its exact draft and context.')
+    }
+    drafts.removeDraft(draft.draftId)
+    return {
+      rootTeamRunId: applied.runId,
+      agentRunId: launchedContext.view.getFocusedAgentRunId(),
+      context: launchedContext,
+    }
   }
   if (action === 'fetchAllSkills') return store.skills || []
   if (action === 'fetchSkill') {
@@ -285,6 +316,24 @@ export default defineNuxtPlugin({
       if (store.$id === 'fileExplorer' && !(store.fileExplorerStateByWorkspace instanceof Map)) {
         store.fileExplorerStateByWorkspace = new Map()
       }
+      if (store.$id === 'teamRunConfig') {
+        if (!(store.drafts instanceof Map)) store.drafts = new Map()
+        if (!(store.inFlightDrafts instanceof Map)) store.inFlightDrafts = new Map()
+      }
+      if (store.$id === 'agentTeamContexts' && !(store.teams instanceof Map)) {
+        store.teams = new Map()
+      }
+      if (scenario() === 'team_launch' && store.$id === 'runHistory') {
+        store.workspaceGroups = []
+        store.navigationProjection = {
+          workspaceNodes: [{
+            workspaceId: 'workspace-prototype', workspaceRootPath: '/synthetic/prototype-workspace',
+            workspaceName: 'Prototype Workspace', workspaceKind: 'filesystem', canRemoveFromWorkspaces: true, agents: [],
+          }],
+          teamNodes: [], teamNodesByWorkspaceRoot: {}, runIndexById: {}, teamIndexById: {}, memberIndexByIdentity: {},
+          runAncestryById: {}, teamAncestryById: {}, memberAncestorExecutionKeysByIdentity: {},
+        }
+      }
       const overlay = stateOverlays.get(store.$id)
       if (overlay) store.$patch(clone(overlay))
     }
@@ -310,7 +359,7 @@ export default defineNuxtPlugin({
           if (context() === 'paired' && store.$id === 'runHistory' && actionName === 'fetchTree') {
             throw new Error('Synthetic mobile recent-history refresh failed')
           }
-          const result = actionResult(store, actionName, args)
+          const result = actionResult(store, actionName, args, pinia)
           if ((store.$id === 'agentDefinition' || store.$id === 'agentTeamDefinition' || store.$id === 'toolManagement') && result) {
             stateOverlays.set(store.$id, clone(store.$state))
           }
