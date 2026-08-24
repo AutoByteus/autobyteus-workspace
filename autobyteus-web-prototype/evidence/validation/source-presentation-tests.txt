@@ -1,0 +1,1650 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (17 tests) 126ms
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (15 tests) 152ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (11 tests) 187ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts (15 tests) 228ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests) 105ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests) 175ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 231ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps active Team history and Delete hidden when exact Stop fails
+Failed to terminate team 'team-active'.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (25 tests) 202ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (56 tests) 989ms
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (19 tests) 122ms
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests) 158ms
+stdout | pages/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 167ms
+stdout | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 140ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (10 tests) 125ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (7 tests) 103ms
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (19 tests) 142ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (10 tests) 273ms
+ ✓ pages/__tests__/settings.spec.ts (23 tests) 185ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (3 tests) 68ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests) 93ms
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+[Vue warn]: Unhandled error during execution of render function 
+  at <WorkspaceHistoryWorkspaceSection key="ws-1" workspace-node= {
+  workspaceId: 'ws-1',
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus-workspace-superrepo',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agents: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Software Engineering Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'Build the demo fruit shop website',
+    lastActivityAt: '2026-01-01T00:05:00.000Z',
+    isActive: false,
+    deleteLifecycle: 'READY',
+    focusedAgentRunId: 'member-run-sd',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Software Engineering Team',
+      agentRunId: null,
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/solution_designer',
+      workspaceRootPath: null,
+      summary: 'Build the demo fruit shop website',
+      lastActivityAt: '2026-01-01T00:05:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    members: [ [Object], [Object], [Object] ],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <WorkspaceHistoryWorkspaceSection key="ws-1" workspace-node= {
+  workspaceId: 'ws-1',
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus-workspace-superrepo',
+  workspaceKind: 'filesystem',
+  canRemoveFromWorkspaces: true,
+  agents: []
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Software Engineering Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'Build the demo fruit shop website',
+    lastActivityAt: '2026-01-01T00:05:00.000Z',
+    isActive: false,
+    deleteLifecycle: 'READY',
+    focusedAgentRunId: 'member-run-sd',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Software Engineering Team',
+      agentRunId: null,
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/solution_designer',
+      workspaceRootPath: null,
+      summary: 'Build the demo fruit shop website',
+      lastActivityAt: '2026-01-01T00:05:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    members: [ [Object], [Object], [Object] ],
+    executionRows: [ [Object], [Object], [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel> 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test | 1 failed) 84ms
+   × Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 84ms
+     → Cannot read properties of undefined (reading 'value')
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts (5 tests) 57ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (15 tests) 134ms
+ ✓ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests) 47ms
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (12 tests) 50ms
+ ✓ components/mobile/__tests__/MobileFiles.spec.ts (9 tests) 138ms
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts > CompactionConfigCard > shows authoritative clean values after every changed setting succeeds
+Failed to reload server settings: Error: Server did not return an effective compaction strategy id
+    at Proxy.reloadServerSettings (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/stores/serverSettings.ts:260:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (9 tests) 127ms
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/tools/__tests__/BrowserPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (17 tests) 83ms
+stdout | components/workspace/tools/__tests__/BrowserPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/tools/__tests__/BrowserPanel.spec.ts (9 tests) 91ms
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/__tests__/ApplicationShell.spec.ts (3 tests) 599ms
+   ✓ ApplicationShell > shows the setup-first route, hides technical details by default, and does not auto-launch on initial load  577ms
+stderr | pages/__tests__/memory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 69ms
+stdout | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > provider-centric Settings Apollo contract > keeps one exact provider status across subordinate LLM/audio/image rows
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > provider-centric Settings Apollo contract > keeps one exact provider status across subordinate LLM/audio/image rows
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (3 tests) 37ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts (8 tests) 307ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts (13 tests) 107ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (5 tests) 126ms
+stdout | pages/__tests__/memory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ pages/__tests__/memory.spec.ts (7 tests) 61ms
+stderr | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/VoiceInputExtensionCard.spec.ts (8 tests) 42ms
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (8 tests) 81ms
+stdout | components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts (5 tests) 79ms
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps the iframe canvas hidden behind an opaque host reveal gate until bootstrap delivery succeeds
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+[ApplicationSurface] accepted ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > ignores stale ready signals that do not match the active launch descriptor
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] launch failed applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Bootstrap bridge failed
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+ ✓ components/applications/__tests__/ApplicationSurface.spec.ts (4 tests) 28ms
+ ✓ components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts (7 tests) 145ms
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 75ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts (7 tests) 82ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (7 tests) 52ms
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/AgentPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (12 tests) 90ms
+stderr | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/AgentPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | layouts/__tests__/default-drawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/AgentPackagesManager.spec.ts (8 tests) 79ms
+stdout | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts (1 test) 59ms
+stdout | components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/skill-improvement/__tests__/SkillImprovementComposerCta.spec.ts (6 tests) 50ms
+stdout | components/agents/__tests__/AgentList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agents/__tests__/AgentList.spec.ts (8 tests) 85ms
+stdout | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts (5 tests) 62ms
+ ✓ components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts (5 tests) 83ms
+ ✓ components/agents/__tests__/AgentDetail.spec.ts (5 tests) 40ms
+stdout | layouts/__tests__/default-drawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/MemorySyncCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ layouts/__tests__/default-drawer.spec.ts (4 tests) 109ms
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/MemorySyncCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (4 tests) 60ms
+stderr | components/workspace/tools/__tests__/TerminalPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MessagingSetupManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (6 tests) 58ms
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/tools/__tests__/TerminalPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/tools/__tests__/TerminalPanel.spec.ts (5 tests) 38ms
+stdout | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/MediaDefaultModelsCard.spec.ts (4 tests) 87ms
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 63ms
+stdout | components/settings/__tests__/PhoneAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MessagingSetupManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneAccessCard.spec.ts (3 tests) 45ms
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test) 26ms
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/MessagingSetupManager.spec.ts (4 tests) 120ms
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (4 tests) 36ms
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 78ms
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/fileExplorer/__tests__/FileItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts (8 tests) 59ms
+stderr | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 51ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 99ms
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (5 tests) 109ms
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts (4 tests) 61ms
+stdout | components/fileExplorer/__tests__/FileItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] iframe loaded applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 src=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=file%3A%2F%2F
+
+stderr | components/tools/__tests__/McpServerFormModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] received ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits a bridge error when the bootstrap payload cannot be cloned into postMessage
+[ApplicationIframeHost] bridge error applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.
+
+ ✓ components/applications/__tests__/ApplicationIframeHost.spec.ts (2 tests) 16ms
+ ✓ components/fileExplorer/__tests__/FileItem.spec.ts (7 tests) 68ms
+stdout | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ApplicationPackagesManager.spec.ts (5 tests) 53ms
+stdout | components/tools/__tests__/McpServerFormModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/McpServerFormModal.spec.ts (7 tests) 78ms
+stderr | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/AIMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/ActivityFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (5 tests) 35ms
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts (1 test) 31ms
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+Error interrupting generation: Error: TEAM_STREAM_NOT_READY: The Team stream is not ready for commands.
+    at TeamStreamingService.requireCurrentAgentRun (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:202:30)
+    at TeamStreamingService.interruptGeneration (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:140:29)
+    at Proxy.interruptFocusedMemberGeneration (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/stores/agentTeamRunStore.ts:294:59)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at Proxy.interruptGeneration (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/stores/activeContextStore.ts:221:32)
+    at Proxy.wrappedAction (file:///home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at handleStop (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue:317:24)
+    at handlePrimaryAction (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue:329:5)
+    at callWithErrorHandling (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19)
+    at Object.callWithAsyncErrorHandling (/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17)
+
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts (1 test | 1 failed) 49ms
+   × focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member 48ms
+     → expected "spy" to be called 1 times, but got 0 times
+stdout | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/AIMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts (3 tests) 85ms
+stdout | components/progress/__tests__/ActivityFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/progress/__tests__/ActivityFeed.spec.ts (3 tests) 29ms
+ ✓ components/conversation/__tests__/AIMessage.spec.ts (6 tests) 34ms
+stdout | components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/messaging/__tests__/ManagedGatewayRuntimeCard.spec.ts (4 tests) 23ms
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/layout/__tests__/LeftSidebarStrip.spec.ts (8 tests) 55ms
+stdout | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/ServerSettingsEndpointCards.spec.ts (5 tests) 110ms
+stderr | components/settings/messaging/__tests__/SetupVerificationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/messaging/__tests__/GatewayConnectionCard.spec.ts (4 tests) 21ms
+stderr | components/conversation/__tests__/ToolCallIndicator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/messaging/__tests__/SetupVerificationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/messaging/__tests__/SetupVerificationCard.spec.ts (4 tests) 24ms
+ ✓ components/agents/__tests__/AgentDefinitionForm.spec.ts (4 tests) 54ms
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ layouts/__tests__/default.spec.ts (8 tests) 16ms
+stdout | components/conversation/__tests__/ToolCallIndicator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts (10 tests) 40ms
+stdout | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 81ms
+ ✓ components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts (3 tests) 40ms
+stderr | components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (3 tests) 20ms
+stdout | components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts (4 tests) 32ms
+stderr | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CodexFullAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DisplaySettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts (2 tests) 33ms
+stderr | components/agentTeams/__tests__/AgentTeamList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerMigrationsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/CodexFullAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests) 71ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 22ms
+stdout | components/settings/__tests__/DisplaySettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/DisplaySettingsManager.spec.ts (3 tests) 24ms
+stdout | components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts (6 tests) 25ms
+stdout | components/agentTeams/__tests__/AgentTeamList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/app/__tests__/AppUpdateNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/conversation/__tests__/UserMessage.spec.ts (2 tests) 17ms
+ ✓ components/agentTeams/__tests__/AgentTeamList.spec.ts (4 tests) 45ms
+stdout | components/settings/__tests__/ServerMigrationsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (3 tests) 46ms
+stdout | components/app/__tests__/AppUpdateNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/app/__tests__/AppUpdateNotice.spec.ts (7 tests) 27ms
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts (2 tests) 3ms
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 42ms
+stderr | components/settings/__tests__/AboutSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningAgentsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/running/__tests__/RunningAgentsPanel.spec.ts (4 tests) 50ms
+stdout | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts (3 tests) 31ms
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts (3 tests) 30ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests) 51ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts (8 tests) 72ms
+stdout | components/settings/__tests__/AboutSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (6 tests) 26ms
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 22ms
+stderr | components/skills/SkillDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/skills/SkillDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/tools/__tests__/McpGatewayPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/skills/SkillDetail.spec.ts (4 tests) 48ms
+stderr | components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts (3 tests) 27ms
+stdout | components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts (3 tests) 36ms
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/tools/__tests__/McpGatewayPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/McpGatewayPanel.spec.ts (2 tests) 19ms
+stdout | components/fileExplorer/__tests__/MonacoEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/MonacoEditor.spec.ts (3 tests) 56ms
+stdout | components/agentTeams/__tests__/AgentTeamCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/ToolsManagementWorkspace.reloadSchema.spec.ts (1 test) 30ms
+ ✓ components/agentTeams/__tests__/AgentTeamCard.spec.ts (1 test) 11ms
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 50ms
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 30ms
+stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/AgentCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/running/__tests__/RunningTeamGroup.spec.ts (4 tests) 31ms
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/mobile-root-shell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel_v2.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/skills/SkillsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/skills/SkillsList.spec.ts (3 tests) 59ms
+stdout | components/agents/__tests__/AgentCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agents/__tests__/AgentCard.spec.ts (3 tests) 20ms
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts (8 tests) 51ms
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (1 test) 19ms
+stdout | pages/__tests__/mobile-root-shell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel_v2.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel_v2.spec.ts (3 tests) 40ms
+ ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 25ms
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (3 tests) 33ms
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts (3 tests) 25ms
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningAgentGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/messaging/__tests__/PersonalSessionSetupCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts (5 tests) 3ms
+stderr | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/SystemInstructionActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tabs/__tests__/TabList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/common/__tests__/ExpandableInstructionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningAgentGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/tools/__tests__/toolParameterDisplayRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/running/__tests__/RunningAgentGroup.spec.ts (4 tests) 22ms
+stdout | components/settings/messaging/__tests__/PersonalSessionSetupCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/agent/__tests__/ArtifactList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/messaging/__tests__/PersonalSessionSetupCard.spec.ts (3 tests) 16ms
+stdout | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/SystemInstructionActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/progress/__tests__/SystemInstructionActivityItem.spec.ts (1 test) 31ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts (8 tests) 70ms
+stdout | components/tabs/__tests__/TabList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tabs/__tests__/TabList.spec.ts (5 tests) 32ms
+stdout | components/common/__tests__/ExpandableInstructionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/common/__tests__/ExpandableInstructionCard.spec.ts (3 tests) 22ms
+stdout | components/tools/__tests__/toolParameterDisplayRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/toolParameterDisplayRows.spec.ts (2 tests) 3ms
+stdout | components/workspace/agent/__tests__/ArtifactList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/ArtifactList.spec.ts (4 tests) 37ms
+stderr | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/AgentTeamMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/AgentTeamMemoryDetail.spec.ts (1 test) 36ms
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/server/__tests__/ServerMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 21ms
+stderr | components/memory/__tests__/AgentMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/skills/SkillSourcesModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/conversation/segments/__tests__/ThinkSegment.spec.ts (2 tests) 42ms
+stdout | components/mobile/__tests__/MobileFileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts (3 tests) 20ms
+stdout | components/settings/__tests__/LanguageSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/server/__tests__/ServerMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/server/__tests__/ServerMonitor.spec.ts > ServerMonitor > renders unavailable message in remote windows
+ServerMonitor: Component mounted with status: running
+
+stdout | components/server/__tests__/ServerMonitor.spec.ts > ServerMonitor > renders monitor content in embedded windows and refreshes status
+ServerMonitor: Component mounted with status: running
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts (2 tests) 16ms
+stdout | components/server/__tests__/ServerMonitor.spec.ts > ServerMonitor > hides restart action when restart capability is unavailable
+ServerMonitor: Component mounted with status: running
+
+ ✓ components/server/__tests__/ServerMonitor.spec.ts (3 tests) 21ms
+ ✓ components/mobile/__tests__/MobileFileViewer.spec.ts (7 tests) 52ms
+stdout | components/memory/__tests__/AgentMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/AgentMemoryDetail.spec.ts (1 test) 32ms
+stdout | components/skills/SkillSourcesModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/skills/SkillSourcesModal.spec.ts (1 test) 33ms
+stderr | components/conversation/segments/__tests__/TextSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/MemoryHome.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/TextSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/TextSegment.spec.ts (3 tests) 34ms
+stderr | components/layout/__tests__/RightSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/MemoryHome.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/MemoryHome.spec.ts (2 tests) 37ms
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningRunRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/ToolDetailsModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/skills.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts (3 tests) 39ms
+stdout | components/layout/__tests__/RightSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/layout/__tests__/RightSidebarStrip.spec.ts (2 tests) 18ms
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningRunRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tools/__tests__/ToolDetailsModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/ToolDetailsModal.spec.ts (1 test) 13ms
+ ✓ components/workspace/running/__tests__/RunningRunRow.spec.ts (5 tests) 18ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 25ms
+stdout | pages/__tests__/skills.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (3 tests) 15ms
+ ✓ pages/__tests__/skills.spec.ts (1 test) 25ms
+stderr | components/applications/__tests__/ApplicationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/__tests__/ApplicationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/__tests__/ApplicationCard.spec.ts (1 test) 8ms
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts (2 tests) 12ms
+stderr | components/memory/__tests__/MemoryInspector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agents/__tests__/GroupableTagInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/server/__tests__/ServerLoading.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | pages/__tests__/mobile-root.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/running/__tests__/RunningAgentsPanel.hostBoundary.spec.ts (2 tests) 22ms
+stdout | components/memory/__tests__/MemoryInspector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/MemoryInspector.spec.ts (4 tests) 21ms
+stdout | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.integration.spec.ts (1 test) 18ms
+stdout | components/agents/__tests__/GroupableTagInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/server/__tests__/ServerLoading.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agents/__tests__/GroupableTagInput.spec.ts (3 tests) 18ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts (2 tests) 16ms
+stdout | components/server/__tests__/ServerLoading.spec.ts > ServerLoading > renders startup overlay for embedded windows
+ServerLoading: Component mounted with status: starting
+
+stdout | components/server/__tests__/ServerLoading.spec.ts > ServerLoading > does not render startup overlay for remote windows
+ServerLoading: Component mounted with status: starting
+
+ ✓ components/server/__tests__/ServerLoading.spec.ts (2 tests) 13ms
+stdout | pages/__tests__/mobile-root.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ pages/__tests__/mobile-root.spec.ts (2 tests) 13ms
+stderr | components/progress/__tests__/CompactionActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/progress/__tests__/CompactionActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/progress/__tests__/CompactionActivityItem.spec.ts (2 tests) 16ms
+stderr | components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts (1 test) 25ms
+stderr | components/memory/__tests__/RawTracesTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/app/__tests__/AppLocalizationGate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/CompactionStatusRow.spec.ts (2 tests) 15ms
+stderr | components/settings/messaging/__tests__/SetupChecklistCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpManagementTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/server/__tests__/ServerShutdown.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/RawTracesTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/RawTracesTab.spec.ts (2 tests) 28ms
+stdout | components/app/__tests__/AppLocalizationGate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/messaging/__tests__/SetupChecklistCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/common/__tests__/TeamActivityDot.spec.ts (1 test) 10ms
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts (2 tests) 16ms
+ ✓ components/settings/messaging/__tests__/SetupChecklistCard.spec.ts (2 tests) 14ms
+stdout | components/tools/__tests__/McpManagementTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tools/__tests__/McpManagementTabs.spec.ts (1 test) 9ms
+stdout | components/server/__tests__/ServerShutdown.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/server/__tests__/ServerShutdown.spec.ts (1 test) 8ms
+stderr | components/progress/__tests__/ToolActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/messaging/__tests__/ScannableQrCodePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tabs/__tests__/Tab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/progress/__tests__/ToolActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/progress/__tests__/ToolActivityItem.spec.ts (1 test) 11ms
+stdout | components/settings/messaging/__tests__/ScannableQrCodePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/messaging/__tests__/ScannableQrCodePanel.spec.ts (2 tests) 20ms
+stderr | layouts/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/tabs/__tests__/Tab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tabs/__tests__/Tab.spec.ts (1 test) 8ms
+stderr | pages/__tests__/nodes.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/WorkingContextTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/EpisodicTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/SemanticTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | layouts/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ layouts/__tests__/settings.spec.ts (1 test) 2ms
+stdout | components/memory/__tests__/WorkingContextTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/nodes.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/WorkingContextTab.spec.ts (1 test) 7ms
+stdout | components/memory/__tests__/EpisodicTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/EpisodicTab.spec.ts (1 test) 6ms
+stdout | components/memory/__tests__/SemanticTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/SemanticTab.spec.ts (1 test) 6ms
+ ✓ pages/__tests__/nodes.spec.ts (1 test) 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts:190:24
+    188|     await wrapper.get('button[title="Stop generation"]').trigger('clic…
+    189| 
+    190|     expect(mockWsSend).toHaveBeenCalledTimes(1);
+       |                        ^
+    191|     expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
+    192|       type: 'INTERRUPT_GENERATION',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+TypeError: Cannot read properties of undefined (reading 'value')
+ ❯ Object.isTeamTerminating components/workspace/history/WorkspaceAgentRunsTreePanel.vue:320:72
+    318|     selectionStore.selectedType === 'team' && selectionStore.selectedR…
+    319|   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value…
+    320|   isTeamTerminating: (teamRunId: string) => Boolean(stopPendingTeamIds…
+       |                                                                        ^
+    321|   isRunDeleting: (runId: string) => Boolean(deletingRunIds.value[runId…
+    322|   isTeamDeleting: (teamRunId: string) => Boolean(deletingTeamIds.value…
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:262:119
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:367:19
+ ❯ renderList ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:3153:16
+ ❯ Proxy._sfc_render components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:369:15
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 177 passed (179)
+      Tests  2 failed | 968 passed (970)
+   Start at  11:28:48
+   Duration  155.08s (transform 17.69s, setup 924.76s, collect 38.49s, tests 11.64s, environment 248.70s, prepare 102.05s)
+

@@ -1,0 +1,172 @@
+<template>
+  <div class="group h-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-start">
+      <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100">
+        <img
+          v-if="showAvatarImage"
+          :src="avatarUrl"
+          :alt="`${agentDef.name} avatar`"
+          class="h-full w-full object-cover"
+          @error="avatarLoadError = true"
+        />
+        <span v-else class="text-2xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
+      </div>
+
+      <div class="min-w-0">
+        <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
+        <p class="mt-1 text-sm text-slate-600">{{ descriptionText }}</p>
+        <div v-if="ownershipBadge || ownershipLabel" class="mt-1 flex flex-wrap items-center gap-2 text-sm">
+          <span
+            v-if="ownershipBadge"
+            class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+            :class="isApplicationOwned ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
+          >
+            {{ ownershipBadge }}
+          </span>
+          <p v-if="ownershipLabel" class="text-slate-500">
+            {{ ownershipLabel }}
+          </p>
+        </div>
+
+        <div class="mt-3 space-y-2">
+          <div class="flex items-start gap-2">
+            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.toolsSummary', { count: totalTools }) }}</span>
+            <div class="flex min-w-0 flex-wrap gap-1.5">
+              <span
+                v-for="(tool, index) in visibleTools"
+                :key="`${tool}-${index}`"
+                class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
+              >
+                {{ tool }}
+              </span>
+              <span v-if="remainingToolsCount > 0" class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                +{{ remainingToolsCount }}
+              </span>
+              <span v-if="totalTools === 0" class="text-xs italic text-slate-500">{{ $t('agents.components.agents.AgentCard.none') }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2">
+            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.skillsSummary', { count: totalSkills }) }}</span>
+            <div class="flex min-w-0 flex-wrap gap-1.5">
+              <span
+                v-for="(skill, index) in visibleSkills"
+                :key="`${skill}-${index}`"
+                class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
+              >
+                {{ skill }}
+              </span>
+              <span v-if="remainingSkillsCount > 0" class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                +{{ remainingSkillsCount }}
+              </span>
+              <span v-if="totalSkills === 0" class="text-xs italic text-slate-500">{{ $t('agents.components.agents.AgentCard.none') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex w-full flex-row gap-3 sm:w-auto sm:flex-col sm:items-end">
+        <button
+          @click.stop="$emit('run-agent', agentDef)"
+          class="inline-flex min-w-[84px] justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          {{ $t('agents.components.agents.AgentCard.run') }}
+        </button>
+        <button
+          @click.stop="$emit('view-details', agentDef.id)"
+          class="inline-flex items-center text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >{{ $t('agents.components.agents.AgentCard.view_details') }}<span class="ml-1" aria-hidden="true">{{ $t('agents.components.agents.AgentCard.and_rarr') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, toRefs, watch } from 'vue';
+import type { AgentDefinition } from '~/stores/agentDefinitionStore';
+import {
+  formatApplicationOwnershipLabel,
+  normalizeDefinitionOwnershipScope,
+} from '~/utils/definitionOwnership';
+
+const props = defineProps<{
+  agentDef: AgentDefinition;
+}>();
+
+defineEmits(['view-details', 'run-agent']);
+
+const { agentDef } = toRefs(props);
+const { $t } = useNuxtApp();
+const avatarLoadError = ref(false);
+
+const MAX_TAG_PREVIEW = 3;
+
+const toolNames = computed(() => agentDef.value.toolNames ?? []);
+const skillNames = computed(() => agentDef.value.skillNames ?? []);
+
+const totalTools = computed(() => toolNames.value.length);
+const totalSkills = computed(() => skillNames.value.length);
+
+const visibleTools = computed(() => toolNames.value.slice(0, MAX_TAG_PREVIEW));
+const visibleSkills = computed(() => skillNames.value.slice(0, MAX_TAG_PREVIEW));
+
+const remainingToolsCount = computed(() => Math.max(0, totalTools.value - MAX_TAG_PREVIEW));
+const remainingSkillsCount = computed(() => Math.max(0, totalSkills.value - MAX_TAG_PREVIEW));
+
+watch(() => agentDef.value.avatarUrl, () => {
+  avatarLoadError.value = false;
+});
+
+const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
+const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
+const descriptionText = computed(() => agentDef.value.description?.trim() || $t('agents.components.agents.AgentCard.noDescription'));
+const ownershipScope = computed(() => normalizeDefinitionOwnershipScope(agentDef.value));
+const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
+const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
+const teamLabel = computed(() =>
+  isTeamLocal.value
+    ? agentDef.value.ownerTeamName?.trim() || agentDef.value.ownerTeamId?.trim() || ''
+    : '',
+);
+const applicationLabel = computed(() =>
+  agentDef.value.ownerApplicationId || agentDef.value.ownerApplicationName
+    ? formatApplicationOwnershipLabel(agentDef.value)
+    : '',
+);
+const ownershipBadge = computed(() => {
+  if (isTeamLocal.value) {
+    return 'Team-local';
+  }
+  if (isApplicationOwned.value) {
+    return 'Application-owned';
+  }
+  return '';
+});
+const ownershipLabel = computed(() => {
+  if (teamLabel.value && applicationLabel.value) {
+    return `Team: ${teamLabel.value} · Application: ${applicationLabel.value}`;
+  }
+  if (teamLabel.value) {
+    return `Team: ${teamLabel.value}`;
+  }
+  if (applicationLabel.value) {
+    return `Application: ${applicationLabel.value}`;
+  }
+  return '';
+});
+
+const avatarInitials = computed(() => {
+  const raw = agentDef.value.name?.trim() ?? '';
+  if (!raw) {
+    return 'AI';
+  }
+  const parts = raw.split(/\s+/).filter(Boolean).slice(0, 2);
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  const initials = parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
+  return initials || 'AI';
+});
+
+</script>

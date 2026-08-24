@@ -1,0 +1,165 @@
+# RER-009 Terminal Prototype Package Validation
+Date: 2026-08-24
+
+## lint
+
+> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> eslint prototype/scripts prototype/shared prototype/source-observation plugins/00.prototype-state.client.ts plugins/10.prototype-host-bootstrap.client.ts prototype/tests
+
+
+## PP-GAP-009 package
+
+> autobyteus-web-prototype@0.1.0 validate:gap-009-package /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-gap-009-package.mjs
+
+PASS Current correction root is canonical in bootstrap-owned docs
+PASS Source pin is stable across identity and evidence docs
+PASS Current correction status is RER-009 accepted and user-confirmed
+PASS Stable correction IDs are inventoried
+PASS Inventory totals include all focused correction states
+PASS Renewed Product Prototyper acceptance is explicit
+PASS Final Product artifacts include the corrected journey
+PASS Gap summary is terminally passing
+PASS Gap summary has zero browser errors
+PASS All four checkpoint comparisons are exact
+PASS Final contract selects and projects the exact Team run
+PASS Direct Browser Tool final screenshots are byte-identical
+PASS All focused validation logs exist
+PASS Final build log is successful
+PASS Focused browser log contains all four passes
+PASS Correction is on the required branch
+PASS Approved source pin exists in the repository
+PASS Working tree is clean or changes are isolated to prototype root — 29 prototype path(s)
+PASS Product-owned spec and final references are finalized for RER-009
+PASS Absolute artifact and root paths resolve — 41 checked
+
+20/20 PP-GAP-009 package-consistency checks pass.
+
+## PP-GAP-010 package
+
+> autobyteus-web-prototype@0.1.0 validate:gap-010-package /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-gap-010-package.mjs
+
+PASS Current correction root is canonical in bootstrap-owned docs
+PASS Source pin is stable across identity and evidence docs
+PASS Current correction status is RER-009 PP-GAP-010 accepted and user-confirmed
+PASS Stable correction IDs are inventoried
+PASS Inventory totals include member-focus correction
+PASS Comparison totals include the new exact rendered state
+PASS Renewed Product Prototyper acceptance is explicit
+PASS Final Product artifacts include the corrected journey
+PASS Prior PP-GAP-009 terminal evidence remains preserved
+PASS Gap summary is terminally passing
+PASS Gap summary has zero browser errors
+PASS All five checkpoint comparisons are byte-exact
+PASS Terminal member-focus contract matches pinned source exactly
+PASS Automated terminal screenshots are byte-identical
+PASS Direct Browser Tool terminal screenshots are byte-identical
+PASS Direct Browser Tool state record names the full focus contract
+PASS All focused validation logs exist
+PASS Final build log is successful
+PASS Focused browser log contains all five passes
+PASS Correction is on the required branch
+PASS Approved source pin exists in the repository
+PASS Working tree is clean or changes are isolated to prototype root — 29 prototype path(s)
+PASS Selected source frontend has no correction diff
+PASS Product-owned spec and final references are finalized for RER-009
+PASS Absolute artifact and root paths resolve — 42 checked
+
+25/25 PP-GAP-010 package-consistency checks pass.
+
+## final package
+
+> autobyteus-web-prototype@0.1.0 validate:final-package /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-final-package.mjs
+
+PASS ui-ux-spec.md status is Approved
+PASS explicit RER-009 user-confirmation reference is recorded
+PASS UI/UX specification records the pinned source commit
+PASS UI/UX specification records the current ticket-worktree prototype root
+PASS UI/UX specification records the focused RER-009 Product Prototyper acceptance
+PASS Product Prototyper final decision is recorded
+PASS parity inventory reports accepted user-approved status
+PASS mock boundary records the local Monaco mirror
+PASS runtime directs Monaco to the local mirror
+PASS local Monaco mirror is populated
+PASS Monaco third-party notice is present
+PASS evidence/comparison/browser-parity-summary.json is 60/60
+PASS evidence/comparison/browser-parity-summary.json has no prototype browser errors
+PASS evidence/correction/correction-parity-summary.json is 48/48
+PASS evidence/correction/correction-parity-summary.json has no prototype browser errors
+PASS evidence/matrix/route-matrix-summary.json is 123/123
+PASS evidence/matrix/route-matrix-summary.json has no prototype browser errors
+PASS evidence/correction-matrix/correction-parity-summary.json is 116/116
+PASS evidence/correction-matrix/correction-parity-summary.json has no prototype browser errors
+PASS evidence/interactions/browser-journey-summary.json is 18/18
+PASS evidence/interactions/browser-journey-summary.json has no prototype browser errors
+PASS evidence/correction-journeys/correction-journey-summary.json is 31/31
+PASS evidence/correction-journeys/correction-journey-summary.json has no prototype browser errors
+PASS presentation audit uses the pinned source commit
+PASS retained presentation audit is 369/369 exact
+PASS terminal package identifies the complete corrected journey
+PASS JRN-050-A through JRN-050-E are terminally enforced and passing
+PASS JRN-050 source and prototype evidence has zero browser errors
+PASS JRN-050-E terminal member-selection contract matches pinned source
+PASS final-reference manifest uses the pinned source commit
+PASS final-reference manifest reports 17/17 clean captures
+PASS final-reference manifest records the RER-009 user confirmation
+PASS final visual IDs are complete and ordered
+PASS VIS-001 has no browser errors or external resources
+PASS VIS-001 screenshot hash matches the manifest
+PASS VIS-001 is mapped in ui-ux-spec.md
+PASS VIS-002 has no browser errors or external resources
+PASS VIS-002 screenshot hash matches the manifest
+PASS VIS-002 is mapped in ui-ux-spec.md
+PASS VIS-003 has no browser errors or external resources
+PASS VIS-003 screenshot hash matches the manifest
+PASS VIS-003 is mapped in ui-ux-spec.md
+PASS VIS-004 has no browser errors or external resources
+PASS VIS-004 screenshot hash matches the manifest
+PASS VIS-004 is mapped in ui-ux-spec.md
+PASS VIS-005 has no browser errors or external resources
+PASS VIS-005 screenshot hash matches the manifest
+PASS VIS-005 is mapped in ui-ux-spec.md
+PASS VIS-006 has no browser errors or external resources
+PASS VIS-006 screenshot hash matches the manifest
+PASS VIS-006 is mapped in ui-ux-spec.md
+PASS VIS-007 has no browser errors or external resources
+PASS VIS-007 screenshot hash matches the manifest
+PASS VIS-007 is mapped in ui-ux-spec.md
+PASS VIS-008 has no browser errors or external resources
+PASS VIS-008 screenshot hash matches the manifest
+PASS VIS-008 is mapped in ui-ux-spec.md
+PASS VIS-009 has no browser errors or external resources
+PASS VIS-009 screenshot hash matches the manifest
+PASS VIS-009 is mapped in ui-ux-spec.md
+PASS VIS-010 has no browser errors or external resources
+PASS VIS-010 screenshot hash matches the manifest
+PASS VIS-010 is mapped in ui-ux-spec.md
+PASS VIS-011 has no browser errors or external resources
+PASS VIS-011 screenshot hash matches the manifest
+PASS VIS-011 is mapped in ui-ux-spec.md
+PASS VIS-012 has no browser errors or external resources
+PASS VIS-012 screenshot hash matches the manifest
+PASS VIS-012 is mapped in ui-ux-spec.md
+PASS VIS-013 has no browser errors or external resources
+PASS VIS-013 screenshot hash matches the manifest
+PASS VIS-013 is mapped in ui-ux-spec.md
+PASS VIS-014 has no browser errors or external resources
+PASS VIS-014 screenshot hash matches the manifest
+PASS VIS-014 is mapped in ui-ux-spec.md
+PASS VIS-015 has no browser errors or external resources
+PASS VIS-015 screenshot hash matches the manifest
+PASS VIS-015 is mapped in ui-ux-spec.md
+PASS VIS-016 has no browser errors or external resources
+PASS VIS-016 screenshot hash matches the manifest
+PASS VIS-016 is mapped in ui-ux-spec.md
+PASS VIS-017 has no browser errors or external resources
+PASS VIS-017 screenshot hash matches the manifest
+PASS VIS-017 is mapped in ui-ux-spec.md
+PASS UI/UX specification contains no draft status
+PASS UI/UX specification contains no pending approval placeholder
+86/86 final-package consistency checks passed.
+
+## production HTTP
+HTTP 200

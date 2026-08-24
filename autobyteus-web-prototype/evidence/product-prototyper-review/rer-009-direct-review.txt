@@ -1,0 +1,39 @@
+Product Prototyper Direct Browser Review — RER-009
+Package: initial-prototype-baseline
+Review date: 2026-08-24
+Acceptance: PPA-002
+Prototype root: /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+Branch: codex/initial-prototype-baseline
+Bootstrapper correction commit inspected: da54757685e648ec068f44050fbad0217b334c5c
+Reviewed URL: http://127.0.0.1:3210/agent-teams?view=team-list
+Pinned source authority reported by runtime: 8ef282ba77705180d985e7000d801f0e0068cdc1
+Scenario/context/locale: team_launch / desktop / en
+
+Observed real-UI lifecycle
+1. Cleared browser-local prototype state, selected team_launch/desktop/en, and loaded the Agent Teams catalog.
+2. Confirmed exactly one Product Review Team card Run button and activated it.
+3. Confirmed navigation to /workspace with one selected Map-backed Team draft, Map-backed inFlightDrafts, Product Review Team definition, AutoByteus runtime, mock/gpt-prototype global model, and disabled Run Team action with the exact workspace-required feedback.
+4. Opened the existing-workspace selector, selected prototype-workspace at /synthetic/prototype-workspace, and confirmed the draft workspace metadata and enabled Run Team action.
+5. Activated Run Team and confirmed no visible alert or captured browser error.
+6. Confirmed teamRunConfig drafts=0, inFlightDrafts=0 and selectedDraftId=null.
+7. Confirmed agentSelection subject kind=team_run with rootTeamRunId=team-run-created-fixture.
+8. Confirmed agentTeamContexts contains exactly one Team context.
+9. Confirmed runHistory navigationProjection has exactly one Team node under /synthetic/prototype-workspace with researcher and writer stable-member rows.
+10. Confirmed initial researcher focus maps to team-member-researcher-created.
+11. Activated the created Team disclosure: aria-expanded changed true -> false; both member rows disappeared. Activated it again: aria-expanded changed false -> true; both member rows returned.
+12. Activated the writer row and confirmed focusedMemberAddress=/writer, focusedAgentRunId=team-member-writer-created, projected focusedAgentRunId=team-member-writer-created, writer aria-current=true, indigo selected treatment, and center Team header writer.
+13. Activated the coordinator/researcher row and confirmed the corresponding /researcher, team-member-researcher-created, aria-current and center-header state.
+14. Reactivated writer for the terminal review state. No captured browser error and no visible role=alert element occurred across the replay.
+
+Product Prototyper result
+- PP-GAP-009: accepted as resolved.
+- PP-GAP-010: accepted as resolved.
+- JRN-050-A through JRN-050-E: directly substantiated in the corrected prototype.
+- Remaining discrepancy or unsubstantiated inventory ID: none.
+- Acceptance authorizes current-state user review only; it is not a future-state or production-runtime approval.
+
+User confirmation
+After the Product Prototyper asked the user to approve the exact Run -> workspace draft -> Run Team -> Team/member-selection journey at the review URL, the user replied: "done. i checked. thanks" on 2026-08-24. This is the explicit RER-009 corrected-journey confirmation reference.
+
+Post-confirmation production-build replay
+After final documentation/reference capture and a fresh production build, the Product Prototyper restarted the node-server output on http://127.0.0.1:3210 and repeated the terminal lifecycle from a cleared browser context. Result: /workspace; exact source pin; drafts=0; inFlightDrafts=0; one selected team_run/team-run-created-fixture; one Team node at /synthetic/prototype-workspace; members [/researcher,/writer]; focusedMemberAddress=/writer; focusedAgentRunId and projected focus=team-member-writer-created; writer aria-current=true; center header writer; zero visible alerts; zero captured browser errors.

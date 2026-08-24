@@ -1,0 +1,616 @@
+
+> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean
+> nuxt typecheck
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/stores/serverStore.ts" is used
+
+components/agentTeams/AgentTeamEdit.vue(82,5): error TS2783: 'id' is specified more than once, so this usage will be overwritten.
+components/agentTeams/SearchableGroupedSelect.vue(23,8): error TS2345: Argument of type '{ class: string; style: { position: string; top: string; bottom: string; left: string; width: string; zIndex: number; }; ref: string; }' is not assignable to parameter of type 'HTMLAttributes & ReservedProps & Record<string, unknown>'.
+  Type '{ class: string; style: { position: string; top: string; bottom: string; left: string; width: string; zIndex: number; }; ref: string; }' is not assignable to type 'HTMLAttributes'.
+    Types of property 'style' are incompatible.
+      Type '{ position: string; top: string; bottom: string; left: string; width: string; zIndex: number; }' is not assignable to type 'StyleValue'.
+        Type '{ position: string; top: string; bottom: string; left: string; width: string; zIndex: number; }' is not assignable to type 'CSSProperties'.
+          Types of property 'position' are incompatible.
+            Type 'string' is not assignable to type 'Position | undefined'.
+components/agents/MarketplaceFilter.vue(24,51): error TS2322: Type 'unknown' is not assignable to type 'PropertyKey | undefined'.
+components/agents/MarketplaceFilter.vue(60,32): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/MarketplaceFilter.vue(87,59): error TS7006: Parameter 'agent' implicitly has an 'any' type.
+components/agents/RemoteAgentCard.vue(82,33): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/RunningAgentCard.vue(59,15): error TS2305: Module '"~/generated/graphql"' has no exported member 'GetAgentRunsQuery'.
+components/fileExplorer/MonacoEditor.vue(21,11): error TS2367: This comparison appears to be unintentional because the types 'WordWrapSetting' and '"wordwrapcolumn"' have no overlap.
+components/server/ServerLogViewer.vue(6,10): error TS2345: Argument of type '{ disabled: boolean; class: string; onClick: (showLoading?: boolean) => Promise<void>; }' is not assignable to parameter of type 'ButtonHTMLAttributes & ReservedProps & Record<string, unknown>'.
+  Type '{ disabled: boolean; class: string; onClick: (showLoading?: boolean) => Promise<void>; }' is not assignable to type 'ButtonHTMLAttributes'.
+    Types of property 'onClick' are incompatible.
+      Type '(showLoading?: boolean) => Promise<void>' is not assignable to type '(payload: PointerEvent) => void'.
+        Types of parameters 'showLoading' and 'payload' are incompatible.
+          Type 'PointerEvent' is not assignable to type 'boolean | undefined'.
+components/server/ServerLogViewer.vue(130,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+components/settings/VoiceInputExtensionCard.vue(272,44): error TS2307: Cannot find module '~/electron/extensions/types' or its corresponding type declarations.
+components/tools/McpServerFormModal.vue(378,48): error TS7006: Parameter 'arg' implicitly has an 'any' type.
+components/workspace/config/WorkspaceConfigForm.vue(22,44): error TS2307: Cannot find module '~/types/TeamLaunchProfile' or its corresponding type declarations.
+components/workspace/tools/VncViewer.vue(18,12): error TS2322: Type '{}' is not assignable to type 'string'.
+composables/useVncSession.ts(24,43): error TS2345: Argument of type 'string | { value: string; }' is not assignable to parameter of type 'ComputedRef<string> | MaybeRef<string>'.
+  Type '{ value: string; }' is not assignable to type 'ComputedRef<string> | MaybeRef<string>'.
+    Type '{ value: string; }' is missing the following properties from type 'WritableComputedRef<string, string>': [WritableComputedRefSymbol], effect, [ComputedRefSymbol], [RefSymbol]
+composables/useVncSession.ts(25,48): error TS2345: Argument of type 'string | { value: string; }' is not assignable to parameter of type 'ComputedRef<string> | MaybeRef<string>'.
+  Type '{ value: string; }' is not assignable to type 'ComputedRef<string> | MaybeRef<string>'.
+    Type '{ value: string; }' is missing the following properties from type 'WritableComputedRef<string, string>': [WritableComputedRefSymbol], effect, [ComputedRefSymbol], [RefSymbol]
+pages/agent-teams.vue(96,23): error TS2551: Property 'clearReturnToTeam' does not exist on type 'AgentTeamNavigationPayload'. Did you mean 'returnToTeam'?
+  Property 'clearReturnToTeam' does not exist on type '{ target: "agents"; view: "detail"; id: string; returnToTeam: string; }'.
+plugins/00.prototype-state.client.ts(118,5): error TS18046: 'pinia' is of type 'unknown'.
+plugins/00.prototype-state.client.ts(135,27): error TS18046: 'pinia' is of type 'unknown'.
+plugins/00.prototype-state.client.ts(140,5): error TS18046: 'nuxtApp.$router' is of type 'unknown'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(25,41): error TS2558: Expected 0 type arguments, but got 1.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(30,18): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(30,59): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(31,26): error TS2339: Property 'getRunEventMonitorActiveTracePage' does not exist on type '{}'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(33,39): error TS2558: Expected 0 type arguments, but got 1.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(42,16): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(42,57): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/eventMonitor/eventMonitorActiveTracePageService.ts(43,24): error TS2339: Property 'getTeamMemberEventMonitorActiveTracePage' does not exist on type '{}'.
+services/fileExplorerStreaming/FileExplorerStreamingService.ts(172,81): error TS2339: Property 'type' does not exist on type 'never'.
+services/qr/qrCodeDataUrlService.ts(1,20): error TS7016: Could not find a declaration file for module 'qrcode'. '/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype.stage-lean/node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/qrcode` if it exists or add a new declaration (.d.ts) file containing `declare module 'qrcode';`
+services/runHydration/runContextHydrationService.ts(64,18): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/runContextHydrationService.ts(69,18): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/runContextHydrationService.ts(74,18): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/runContextHydrationService.ts(81,47): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/runContextHydrationService.ts(86,39): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/runContextHydrationService.ts(91,48): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/runContextHydrationService.ts(96,47): error TS2339: Property 'getRunProjection' does not exist on type '{}'.
+services/runHydration/runContextHydrationService.ts(97,45): error TS2339: Property 'getAgentRunResumeConfig' does not exist on type '{}'.
+services/runHydration/runContextHydrationService.ts(171,44): error TS2339: Property 'getRunFileChanges' does not exist on type '{}'.
+services/runHydration/teamRunContextHydrationService.ts(79,50): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/teamRunContextHydrationService.ts(84,41): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/teamRunContextHydrationService.ts(86,37): error TS2339: Property 'getTeamMemberRunProjection' does not exist on type '{}'.
+services/runHydration/teamRunContextHydrationService.ts(107,50): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/teamRunContextHydrationService.ts(112,41): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/teamRunContextHydrationService.ts(114,37): error TS2339: Property 'getTeamRunExecutionCheckpoint' does not exist on type '{}'.
+services/runHydration/teamRunContextHydrationService.ts(190,39): error TS2558: Expected 0 type arguments, but got 1.
+services/runHydration/teamRunContextHydrationService.ts(195,41): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+services/runHydration/teamRunContextHydrationService.ts(197,30): error TS2339: Property 'getTeamRunResumeConfig' does not exist on type '{}'.
+services/runHydration/teamRunContextHydrationService.ts(207,41): error TS2322: Type '{ query: () => Promise<{ data: {}; }>; mutate: () => Promise<{ data: {}; }>; subscribe: () => { subscribe: () => { unsubscribe: () => undefined; }; }; clearStore: () => Promise<undefined>; resetStore: () => Promise<...>; }' is not assignable to type 'TaskDelegationHydrationClient'.
+  The types returned by 'query(...)' are incompatible between these types.
+    Type 'Promise<{ data: {}; }>' is not assignable to type 'Promise<{ data?: TData | undefined; errors?: { message: string; }[] | undefined; }>'.
+      Type '{ data: {}; }' is not assignable to type '{ data?: TData | undefined; errors?: { message: string; }[] | undefined; }'.
+        Types of property 'data' are incompatible.
+          Type '{}' is not assignable to type 'TData'.
+            'TData' could be instantiated with an arbitrary type which could be unrelated to '{}'.
+services/runHydration/teamRunContextHydrationService.ts(208,37): error TS2322: Type '{ query: () => Promise<{ data: {}; }>; mutate: () => Promise<{ data: {}; }>; subscribe: () => { subscribe: () => { unsubscribe: () => undefined; }; }; clearStore: () => Promise<undefined>; resetStore: () => Promise<...>; }' is not assignable to type 'TeamCommunicationHydrationClient'.
+  The types returned by 'query(...)' are incompatible between these types.
+    Type 'Promise<{ data: {}; }>' is not assignable to type 'Promise<{ data?: TData | undefined; errors?: { message: string; }[] | undefined; }>'.
+      Type '{ data: {}; }' is not assignable to type '{ data?: TData | undefined; errors?: { message: string; }[] | undefined; }'.
+        Types of property 'data' are incompatible.
+          Type '{}' is not assignable to type 'TData'.
+            'TData' could be instantiated with an arbitrary type which could be unrelated to '{}'.
+stores/agentDefinitionOptionsStore.ts(25,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionOptionsStore.ts(25,51): error TS2558: Expected 0 type arguments, but got 1.
+stores/agentDefinitionOptionsStore.ts(30,36): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/agentDefinitionOptionsStore.ts(34,32): error TS2339: Property 'availableToolNames' does not exist on type '{}'.
+stores/agentDefinitionOptionsStore.ts(35,50): error TS2339: Property 'availableOptionalToolInvocationPreprocessorNames' does not exist on type '{}'.
+stores/agentDefinitionOptionsStore.ts(36,42): error TS2339: Property 'availableOptionalLifecycleProcessorNames' does not exist on type '{}'.
+stores/agentDefinitionOptionsStore.ts(37,38): error TS2339: Property 'availableOptionalInputProcessorNames' does not exist on type '{}'.
+stores/agentDefinitionOptionsStore.ts(38,44): error TS2339: Property 'availableOptionalLlmResponseProcessorNames' does not exist on type '{}'.
+stores/agentDefinitionOptionsStore.ts(39,52): error TS2339: Property 'availableOptionalToolExecutionResultProcessorNames' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(108,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(108,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(116,37): error TS2339: Property 'agentDefinitions' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(130,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(130,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(139,37): error TS2339: Property 'agentDefinitions' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(154,50): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(158,26): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(158,51): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(159,40): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(162,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(162,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(171,37): error TS2339: Property 'agentDefinitions' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(186,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(186,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(221,20): error TS2339: Property 'createAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(234,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(234,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(243,18): error TS2339: Property 'updateAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(252,19): error TS2339: Property 'updateAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(257,19): error TS2339: Property 'updateAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(269,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentDefinitionStore.ts(269,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentDefinitionStore.ts(278,18): error TS2339: Property 'deleteAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(282,33): error TS2339: Property 'deleteAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(283,16): error TS2339: Property 'deleteAgentDefinition' does not exist on type '{}'.
+stores/agentDefinitionStore.ts(288,19): error TS2339: Property 'deleteAgentDefinition' does not exist on type '{}'.
+stores/agentPackagesStore.ts(118,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(118,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(127,17): error TS2339: Property 'agentPackages' does not exist on type '{}'.
+stores/agentPackagesStore.ts(128,36): error TS2339: Property 'agentPackages' does not exist on type '{}'.
+stores/agentPackagesStore.ts(144,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(144,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(153,17): error TS2339: Property 'importAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(154,36): error TS2339: Property 'importAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(172,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(172,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(181,17): error TS2339: Property 'removeAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(182,36): error TS2339: Property 'removeAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(200,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(200,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(209,17): error TS2339: Property 'reloadAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(210,36): error TS2339: Property 'reloadAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(228,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(228,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(237,17): error TS2339: Property 'checkAgentPackageUpdates' does not exist on type '{}'.
+stores/agentPackagesStore.ts(238,36): error TS2339: Property 'checkAgentPackageUpdates' does not exist on type '{}'.
+stores/agentPackagesStore.ts(254,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentPackagesStore.ts(254,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentPackagesStore.ts(263,17): error TS2339: Property 'updateAgentPackage' does not exist on type '{}'.
+stores/agentPackagesStore.ts(264,36): error TS2339: Property 'updateAgentPackage' does not exist on type '{}'.
+stores/agentRunStore.ts(162,25): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentRunStore.ts(162,56): error TS2558: Expected 0 type arguments, but got 1.
+stores/agentRunStore.ts(183,32): error TS2339: Property 'prepareAgentRun' does not exist on type '{}'.
+stores/agentRunStore.ts(237,36): error TS2554: Expected 0 arguments, but got 1.
+stores/agentRunStore.ts(393,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentRunStore.ts(393,54): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(100,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(100,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(108,42): error TS2339: Property 'agentTeamDefinitions' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(122,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(122,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(131,42): error TS2339: Property 'agentTeamDefinitions' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(146,50): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(150,26): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(150,51): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(151,40): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(154,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(154,51): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(163,42): error TS2339: Property 'agentTeamDefinitions' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(183,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(183,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(193,18): error TS2339: Property 'createAgentTeamDefinition' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(197,26): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(200,52): error TS2339: Property 'createAgentTeamDefinition' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(218,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(218,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(228,18): error TS2339: Property 'updateAgentTeamDefinition' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(232,26): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(235,52): error TS2339: Property 'updateAgentTeamDefinition' does not exist on type '{}'.
+stores/agentTeamDefinitionStore.ts(246,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamDefinitionStore.ts(246,52): error TS2554: Expected 0 arguments, but got 1.
+stores/agentTeamDefinitionStore.ts(266,37): error TS2339: Property 'deleteAgentTeamDefinition' does not exist on type '{}'.
+stores/agentTeamRunStore.ts(202,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamRunStore.ts(202,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/agentTeamRunStore.ts(204,20): error TS2339: Property 'terminateAgentTeamRun' does not exist on type '{}'.
+stores/agentTeamRunStore.ts(204,74): error TS2339: Property 'terminateAgentTeamRun' does not exist on type '{}'.
+stores/agentTeamRunStore.ts(247,25): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamRunStore.ts(247,67): error TS2558: Expected 0 type arguments, but got 1.
+stores/agentTeamRunStore.ts(249,22): error TS2339: Property 'restoreAgentTeamRun' does not exist on type '{}'.
+stores/agentTeamRunStore.ts(249,74): error TS2339: Property 'restoreAgentTeamRun' does not exist on type '{}'.
+stores/agentTeamRunStore.ts(328,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/agentTeamRunStore.ts(328,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/agentTeamRunStore.ts(333,30): error TS2339: Property 'createAgentTeamRun' does not exist on type '{}'.
+stores/appDataMigrationsStore.ts(73,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/appDataMigrationsStore.ts(73,64): error TS2558: Expected 0 type arguments, but got 1.
+stores/appDataMigrationsStore.ts(78,39): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/appDataMigrationsStore.ts(80,34): error TS2339: Property 'getAppDataMigrations' does not exist on type '{}'.
+stores/appDataMigrationsStore.ts(100,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/appDataMigrationsStore.ts(100,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/appDataMigrationsStore.ts(105,39): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/appDataMigrationsStore.ts(107,30): error TS2339: Property 'runAppDataMigration' does not exist on type '{}'.
+stores/applicationPackagesStore.ts(77,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationPackagesStore.ts(77,51): error TS2554: Expected 0 arguments, but got 1.
+stores/applicationPackagesStore.ts(86,42): error TS2339: Property 'applicationPackages' does not exist on type '{}'.
+stores/applicationPackagesStore.ts(108,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationPackagesStore.ts(108,51): error TS2554: Expected 0 arguments, but got 1.
+stores/applicationPackagesStore.ts(118,30): error TS2339: Property 'applicationPackageDetails' does not exist on type '{}'.
+stores/applicationPackagesStore.ts(138,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationPackagesStore.ts(138,52): error TS2554: Expected 0 arguments, but got 1.
+stores/applicationPackagesStore.ts(147,42): error TS2339: Property 'importApplicationPackage' does not exist on type '{}'.
+stores/applicationPackagesStore.ts(164,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationPackagesStore.ts(164,52): error TS2554: Expected 0 arguments, but got 1.
+stores/applicationPackagesStore.ts(173,42): error TS2339: Property 'removeApplicationPackage' does not exist on type '{}'.
+stores/applicationStore.ts(165,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationStore.ts(165,51): error TS2558: Expected 0 type arguments, but got 1.
+stores/applicationStore.ts(178,42): error TS2339: Property 'listApplications' does not exist on type '{}'.
+stores/applicationStore.ts(240,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationStore.ts(240,51): error TS2558: Expected 0 type arguments, but got 1.
+stores/applicationStore.ts(254,32): error TS2339: Property 'application' does not exist on type '{}'.
+stores/applicationStore.ts(254,66): error TS2339: Property 'application' does not exist on type '{}'.
+stores/applicationsCapabilityStore.ts(98,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationsCapabilityStore.ts(98,51): error TS2558: Expected 0 type arguments, but got 1.
+stores/applicationsCapabilityStore.ts(111,35): error TS2339: Property 'applicationsCapability' does not exist on type '{}'.
+stores/applicationsCapabilityStore.ts(163,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/applicationsCapabilityStore.ts(163,52): error TS2558: Expected 0 type arguments, but got 1.
+stores/applicationsCapabilityStore.ts(176,36): error TS2339: Property 'setApplicationsEnabled' does not exist on type '{}'.
+stores/audioStore.ts(69,35): error TS2322: Type '{ [x: number]: number; readonly BYTES_PER_ELEMENT: number; readonly buffer: { readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; ... 6 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }; ... 36 more ...; readonly [Symbol.toStringTag]: "Uint8Ar...' is not assignable to type 'BlobPart'.
+  Type '{ [x: number]: number; readonly BYTES_PER_ELEMENT: number; readonly buffer: { readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; ... 6 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }; ... 36 more ...; readonly [Symbol.toStringTag]: "Uint8Ar...' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type '{ readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; readonly maxByteLength: number; readonly resizable: boolean; ... 4 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }' is not assignable to type 'ArrayBuffer'.
+        Type '{ readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => SharedArrayBuffer; readonly growable: boolean; readonly maxByteLength: number; grow: (newByteLength?: number | undefined) => void; readonly [Symbol.toStringTag]: "SharedArrayBuffer"; }' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+stores/audioStore.ts(139,86): error TS2345: Argument of type 'ArrayBufferLike' is not assignable to parameter of type 'ArrayBuffer'.
+  Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+stores/extensionsStore.ts(8,8): error TS2307: Cannot find module '~/electron/extensions/types' or its corresponding type declarations.
+stores/extensionsStore.ts(48,37): error TS7006: Parameter 'extension' implicitly has an 'any' type.
+stores/extensionsStore.ts(90,48): error TS7006: Parameter 'extension' implicitly has an 'any' type.
+stores/fileExplorer.ts(22,7): error TS2322: Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; } | null' is not assignable to type 'WorkspaceFileExplorerState | null'.
+  Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; }' is not assignable to type 'WorkspaceFileExplorerState'.
+    Types of property 'tree' are incompatible.
+      Type '{ name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }' is missing the following properties from type 'TreeNode': findInsertIndex, compareNodes
+stores/fileExplorer.ts(100,7): error TS2322: Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; }' is not assignable to type 'WorkspaceFileExplorerState'.
+  Types of property 'tree' are incompatible.
+    Type '{ name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }' is missing the following properties from type 'TreeNode': findInsertIndex, compareNodes
+stores/fileExplorerContentActions.ts(252,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerContentActions.ts(252,51): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerContentActions.ts(258,29): error TS2339: Property 'fileContent' does not exist on type '{}'.
+stores/fileExplorerContentActions.ts(295,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerContentActions.ts(295,52): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerContentActions.ts(303,18): error TS2339: Property 'writeFileContent' does not exist on type '{}'.
+stores/fileExplorerContentActions.ts(310,66): error TS2339: Property 'writeFileContent' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(33,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerMutationActions.ts(33,52): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerMutationActions.ts(39,17): error TS2339: Property 'deleteFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(41,58): error TS2339: Property 'deleteFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(61,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerMutationActions.ts(61,52): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerMutationActions.ts(67,17): error TS2339: Property 'renameFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(71,58): error TS2339: Property 'renameFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(91,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerMutationActions.ts(91,52): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerMutationActions.ts(97,17): error TS2339: Property 'moveFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(99,58): error TS2339: Property 'moveFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(119,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerMutationActions.ts(119,52): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerMutationActions.ts(125,17): error TS2339: Property 'createFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerMutationActions.ts(126,58): error TS2339: Property 'createFileOrFolder' does not exist on type '{}'.
+stores/fileExplorerSearchActions.ts(43,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerSearchActions.ts(43,51): error TS2558: Expected 0 type arguments, but got 2.
+stores/fileExplorerSearchActions.ts(49,55): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/fileExplorerSearchActions.ts(52,38): error TS2339: Property 'searchFiles' does not exist on type '{}'.
+stores/fileExplorerSearchActions.ts(52,62): error TS7006: Parameter 'filePath' implicitly has an 'any' type.
+stores/fileExplorerTreeActions.ts(87,37): error TS7006: Parameter 'change' implicitly has an 'any' type.
+stores/fileExplorerTreeActions.ts(117,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/fileExplorerTreeActions.ts(117,51): error TS2554: Expected 0 arguments, but got 1.
+stores/fileExplorerTreeActions.ts(127,24): error TS2339: Property 'folderChildren' does not exist on type '{}'.
+stores/fileExplorerTreeActions.ts(127,61): error TS2339: Property 'folderChildren' does not exist on type '{}'.
+stores/fileExplorerTreeActions.ts(133,38): error TS2339: Property 'folderChildren' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(144,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/gatewaySessionSetupStore.ts(144,53): error TS2554: Expected 0 arguments, but got 1.
+stores/gatewaySessionSetupStore.ts(152,53): error TS2339: Property 'managedMessagingGatewayStatus' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(196,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/gatewaySessionSetupStore.ts(196,54): error TS2554: Expected 0 arguments, but got 1.
+stores/gatewaySessionSetupStore.ts(207,17): error TS2339: Property 'saveManagedMessagingGatewayProviderConfig' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(239,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/gatewaySessionSetupStore.ts(239,53): error TS2554: Expected 0 arguments, but got 1.
+stores/gatewaySessionSetupStore.ts(246,43): error TS2339: Property 'managedMessagingGatewayWeComAccounts' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(247,18): error TS2339: Property 'managedMessagingGatewayWeComAccounts' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(266,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/gatewaySessionSetupStore.ts(266,53): error TS2554: Expected 0 arguments, but got 1.
+stores/gatewaySessionSetupStore.ts(279,32): error TS2339: Property 'managedMessagingGatewayPeerCandidates' does not exist on type '{}'.
+stores/gatewaySessionSetupStore.ts(387,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/gatewaySessionSetupStore.ts(387,54): error TS2554: Expected 0 arguments, but got 1.
+stores/gatewaySessionSetupStore.ts(393,47): error TS7053: Element implicitly has an 'any' type because expression of type '"enableManagedMessagingGateway" | "disableManagedMessagingGateway" | "updateManagedMessagingGateway"' can't be used to index type '{}'.
+  Property 'enableManagedMessagingGateway' does not exist on type '{}'.
+stores/llmProviderConfig.ts(190,56): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(195,42): error TS2339: Property 'availableLlmProvidersWithModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(196,47): error TS2339: Property 'availableAudioProvidersWithModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(197,47): error TS2339: Property 'availableImageProvidersWithModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(198,47): error TS2339: Property 'availableVideoProvidersWithModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(221,56): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(226,45): error TS2339: Property 'providerSettings' does not exist on type '{}'.
+stores/llmProviderConfig.ts(244,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(244,65): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(249,20): error TS2339: Property 'reloadLlmModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(269,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(269,65): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(274,20): error TS2339: Property 'reloadLlmProviderModels' does not exist on type '{}'.
+stores/llmProviderConfig.ts(290,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(290,63): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(301,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(301,63): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(306,18): error TS2339: Property 'probeCustomProvider' does not exist on type '{}'.
+stores/llmProviderConfig.ts(307,19): error TS2339: Property 'probeCustomProvider' does not exist on type '{}'.
+stores/llmProviderConfig.ts(311,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(311,63): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(316,32): error TS2339: Property 'createCustomProvider' does not exist on type '{}'.
+stores/llmProviderConfig.ts(329,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(329,63): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(345,54): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(350,18): error TS2339: Property 'getGeminiSetupConfig' does not exist on type '{}'.
+stores/llmProviderConfig.ts(351,31): error TS2339: Property 'getGeminiSetupConfig' does not exist on type '{}'.
+stores/llmProviderConfig.ts(356,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(356,62): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(362,18): error TS2339: Property 'qwenSetupStatus' does not exist on type '{}'.
+stores/llmProviderConfig.ts(363,29): error TS2339: Property 'qwenSetupStatus' does not exist on type '{}'.
+stores/llmProviderConfig.ts(379,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(379,65): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(385,30): error TS2339: Property 'saveQwenConfiguration' does not exist on type '{}'.
+stores/llmProviderConfig.ts(411,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/llmProviderConfig.ts(411,63): error TS2554: Expected 0 arguments, but got 1.
+stores/llmProviderConfig.ts(413,21): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+stores/mediaLibraryStore.ts(57,22): error TS18046: 'response.data' is of type 'unknown'.
+stores/mediaLibraryStore.ts(58,27): error TS18046: 'response.data' is of type 'unknown'.
+stores/memoryExplorerStore.ts(131,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memoryExplorerStore.ts(131,64): error TS2558: Expected 0 type arguments, but got 1.
+stores/memoryExplorerStore.ts(136,31): error TS2339: Property 'listMemoryExplorerSources' does not exist on type '{}'.
+stores/memoryExplorerStore.ts(136,72): error TS2339: Property 'listMemoryExplorerSources' does not exist on type '{}'.
+stores/memoryExplorerStore.ts(311,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memoryExplorerStore.ts(311,64): error TS2558: Expected 0 type arguments, but got 2.
+stores/memoryExplorerStore.ts(324,25): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+stores/memoryInspectorStore.ts(101,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memoryInspectorStore.ts(101,64): error TS2558: Expected 0 type arguments, but got 2.
+stores/memorySyncStore.ts(135,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(135,64): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(140,32): error TS2339: Property 'getMemorySyncStatus' does not exist on type '{}'.
+stores/memorySyncStore.ts(155,56): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(160,33): error TS2339: Property 'listMemoryHubUrlCandidates' does not exist on type '{}'.
+stores/memorySyncStore.ts(177,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(177,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(182,35): error TS2339: Property 'createMemoryHubSourceCredential' does not exist on type '{}'.
+stores/memorySyncStore.ts(192,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(192,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(197,35): error TS2339: Property 'regenerateMemoryHubSourceCredential' does not exist on type '{}'.
+stores/memorySyncStore.ts(207,40): error TS2554: Expected 0 arguments, but got 1.
+stores/memorySyncStore.ts(223,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(223,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(228,30): error TS2339: Property 'testMemoryHubConnection' does not exist on type '{}'.
+stores/memorySyncStore.ts(264,17): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(264,59): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(279,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/memorySyncStore.ts(279,65): error TS2558: Expected 0 type arguments, but got 1.
+stores/memorySyncStore.ts(281,34): error TS2339: Property 'updateMemoryHubConfig' does not exist on type '{}'.
+stores/memorySyncStore.ts(281,65): error TS2339: Property 'updateMemorySyncSourceConfig' does not exist on type '{}'.
+stores/messagingChannelBindingSetupStore.ts(257,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/messagingChannelBindingSetupStore.ts(257,53): error TS2554: Expected 0 arguments, but got 1.
+stores/messagingChannelBindingSetupStore.ts(266,36): error TS2339: Property 'externalChannelCapabilities' does not exist on type '{}'.
+stores/messagingChannelBindingSetupStore.ts(305,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/messagingChannelBindingSetupStore.ts(305,53): error TS2554: Expected 0 arguments, but got 1.
+stores/messagingChannelBindingSetupStore.ts(314,33): error TS2339: Property 'externalChannelBindings' does not exist on type '{}'.
+stores/messagingChannelBindingSetupStore.ts(346,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/messagingChannelBindingSetupStore.ts(346,53): error TS2554: Expected 0 arguments, but got 1.
+stores/messagingChannelBindingSetupStore.ts(355,46): error TS2339: Property 'externalChannelTeamDefinitionOptions' does not exist on type '{}'.
+stores/messagingChannelBindingSetupStore.ts(468,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/messagingChannelBindingSetupStore.ts(468,54): error TS2554: Expected 0 arguments, but got 1.
+stores/messagingChannelBindingSetupStore.ts(516,31): error TS2339: Property 'upsertExternalChannelBinding' does not exist on type '{}'.
+stores/messagingChannelBindingSetupStore.ts(580,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/messagingChannelBindingSetupStore.ts(580,54): error TS2554: Expected 0 arguments, but got 1.
+stores/messagingChannelBindingSetupStore.ts(591,20): error TS2339: Property 'deleteExternalChannelBinding' does not exist on type '{}'.
+stores/messagingProviderFlowStore.ts(29,19): error TS2339: Property 'stepStatesForProvider' does not exist on type '_StoreWithGetters_Readonly<{ currentProvider(): MessagingProvider; stepStates(): SetupStepState[]; }> & _StoreWithGetters_Writable<...> & PiniaCustomProperties<...>'.
+stores/messagingVerificationStore.ts(422,15): error TS2322: Type '"LAUNCH_PRESET_NOT_READY"' is not assignable to type '"GATEWAY_UNREACHABLE" | "GATEWAY_RUNTIME_CRITICAL" | "PROVIDER_NOT_READY" | "PERSONAL_MODE_DISABLED" | "SESSION_NOT_READY" | "SERVER_BINDING_API_UNAVAILABLE" | "BINDING_NOT_READY" | "TARGET_RUNTIME_NOT_ACTIVE" | "TARGET_OPTIONS_UNAVAILABLE" | "VERIFICATION_ERROR"'.
+stores/runHistoryLoadActions.ts(82,55): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryLoadActions.ts(88,32): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryLoadActions.ts(88,65): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryLoadActions.ts(89,46): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryLoadActions.ts(92,58): error TS2339: Property 'listWorkspaceRunHistory' does not exist on type '{}'.
+stores/runHistoryMutationActions.ts(103,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryMutationActions.ts(103,50): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryMutationActions.ts(112,26): error TS2339: Property 'deleteStoredRun' does not exist on type '{}'.
+stores/runHistoryMutationActions.ts(137,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryMutationActions.ts(137,50): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryMutationActions.ts(146,26): error TS2339: Property 'archiveStoredRun' does not exist on type '{}'.
+stores/runHistoryMutationActions.ts(171,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryMutationActions.ts(171,50): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryMutationActions.ts(180,26): error TS2339: Property 'deleteStoredTeamRun' does not exist on type '{}'.
+stores/runHistoryMutationActions.ts(205,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryMutationActions.ts(205,50): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryMutationActions.ts(214,26): error TS2339: Property 'archiveStoredTeamRun' does not exist on type '{}'.
+stores/runHistoryWorkspaceHistoryActions.ts(38,39): error TS2558: Expected 0 type arguments, but got 1.
+stores/runHistoryWorkspaceHistoryActions.ts(43,16): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryWorkspaceHistoryActions.ts(43,33): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryWorkspaceHistoryActions.ts(44,30): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/runHistoryWorkspaceHistoryActions.ts(46,41): error TS2339: Property 'workspaceRunHistory' does not exist on type '{}'.
+stores/runtimeAvailabilityStore.ts(43,45): error TS2554: Expected 0 arguments, but got 1.
+stores/runtimeAvailabilityStore.ts(48,42): error TS2339: Property 'runtimeAvailabilities' does not exist on type '{}'.
+stores/runtimeAvailabilityStore.ts(48,72): error TS2339: Property 'runtimeAvailabilities' does not exist on type '{}'.
+stores/serverSettings.ts(200,56): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(207,43): error TS2339: Property 'getEffectiveWorkingContextCompactionStrategyId' does not exist on type '{}'.
+stores/serverSettings.ts(211,50): error TS2339: Property 'getEffectiveStreamingContentFlushIntervalMs' does not exist on type '{}'.
+stores/serverSettings.ts(215,31): error TS2339: Property 'getServerSettings' does not exist on type '{}'.
+stores/serverSettings.ts(250,56): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(258,43): error TS2339: Property 'getEffectiveWorkingContextCompactionStrategyId' does not exist on type '{}'.
+stores/serverSettings.ts(262,50): error TS2339: Property 'getEffectiveStreamingContentFlushIntervalMs' does not exist on type '{}'.
+stores/serverSettings.ts(266,31): error TS2339: Property 'getServerSettings' does not exist on type '{}'.
+stores/serverSettings.ts(303,45): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(312,35): error TS2339: Property 'getSearchConfig' does not exist on type '{}'.
+stores/serverSettings.ts(329,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/serverSettings.ts(329,54): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(344,39): error TS2339: Property 'setSearchConfig' does not exist on type '{}'.
+stores/serverSettings.ts(368,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/serverSettings.ts(368,54): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(377,39): error TS2339: Property 'updateServerSetting' does not exist on type '{}'.
+stores/serverSettings.ts(405,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/serverSettings.ts(405,54): error TS2554: Expected 0 arguments, but got 1.
+stores/serverSettings.ts(414,39): error TS2339: Property 'deleteServerSetting' does not exist on type '{}'.
+stores/skillImprovementCapabilityStore.ts(93,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementCapabilityStore.ts(93,51): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementCapabilityStore.ts(106,35): error TS2339: Property 'skillImprovementCapability' does not exist on type '{}'.
+stores/skillImprovementCapabilityStore.ts(158,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementCapabilityStore.ts(158,52): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementCapabilityStore.ts(171,36): error TS2339: Property 'setSkillImprovementEnabled' does not exist on type '{}'.
+stores/skillImprovementStore.ts(92,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementStore.ts(92,62): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementStore.ts(100,32): error TS2339: Property 'getAgentRunSkillImprovementEligibility' does not exist on type '{}'.
+stores/skillImprovementStore.ts(119,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementStore.ts(119,62): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementStore.ts(127,32): error TS2339: Property 'getTeamMemberSkillImprovementEligibility' does not exist on type '{}'.
+stores/skillImprovementStore.ts(142,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementStore.ts(142,61): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementStore.ts(149,26): error TS2339: Property 'startAgentRunSkillImprovement' does not exist on type '{}'.
+stores/skillImprovementStore.ts(158,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementStore.ts(158,61): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementStore.ts(165,26): error TS2339: Property 'startTeamMemberSkillImprovement' does not exist on type '{}'.
+stores/skillImprovementStore.ts(174,19): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillImprovementStore.ts(174,60): error TS2558: Expected 0 type arguments, but got 1.
+stores/skillImprovementStore.ts(182,25): error TS2339: Property 'getSkillImprovementRunRecord' does not exist on type '{}'.
+stores/skillSourcesStore.ts(30,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillSourcesStore.ts(30,51): error TS2554: Expected 0 arguments, but got 1.
+stores/skillSourcesStore.ts(36,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillSourcesStore.ts(39,17): error TS2339: Property 'skillSources' does not exist on type '{}'.
+stores/skillSourcesStore.ts(40,35): error TS2339: Property 'skillSources' does not exist on type '{}'.
+stores/skillSourcesStore.ts(56,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillSourcesStore.ts(56,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillSourcesStore.ts(62,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillSourcesStore.ts(65,17): error TS2339: Property 'addSkillSource' does not exist on type '{}'.
+stores/skillSourcesStore.ts(66,35): error TS2339: Property 'addSkillSource' does not exist on type '{}'.
+stores/skillSourcesStore.ts(82,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillSourcesStore.ts(82,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillSourcesStore.ts(88,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillSourcesStore.ts(91,17): error TS2339: Property 'removeSkillSource' does not exist on type '{}'.
+stores/skillSourcesStore.ts(92,35): error TS2339: Property 'removeSkillSource' does not exist on type '{}'.
+stores/skillStore.ts(37,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(37,51): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(43,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(46,17): error TS2339: Property 'skills' does not exist on type '{}'.
+stores/skillStore.ts(47,29): error TS2339: Property 'skills' does not exist on type '{}'.
+stores/skillStore.ts(67,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(67,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(72,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(75,34): error TS2339: Property 'reloadSkillCatalog' does not exist on type '{}'.
+stores/skillStore.ts(103,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(103,51): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(110,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(113,17): error TS2339: Property 'skill' does not exist on type '{}'.
+stores/skillStore.ts(114,35): error TS2339: Property 'skill' does not exist on type '{}'.
+stores/skillStore.ts(115,21): error TS2339: Property 'skill' does not exist on type '{}'.
+stores/skillStore.ts(133,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(133,51): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(140,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(143,17): error TS2339: Property 'skillFileTree' does not exist on type '{}'.
+stores/skillStore.ts(144,39): error TS2339: Property 'skillFileTree' does not exist on type '{}'.
+stores/skillStore.ts(159,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(159,51): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(166,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(169,20): error TS2339: Property 'skillFileContent' does not exist on type '{}'.
+stores/skillStore.ts(182,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(182,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(188,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(191,17): error TS2339: Property 'createSkill' does not exist on type '{}'.
+stores/skillStore.ts(192,47): error TS2339: Property 'createSkill' does not exist on type '{}'.
+stores/skillStore.ts(193,21): error TS2339: Property 'createSkill' does not exist on type '{}'.
+stores/skillStore.ts(210,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(210,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(216,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(219,17): error TS2339: Property 'updateSkill' does not exist on type '{}'.
+stores/skillStore.ts(220,35): error TS2339: Property 'updateSkill' does not exist on type '{}'.
+stores/skillStore.ts(247,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(247,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(253,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(256,17): error TS2339: Property 'deleteSkill' does not exist on type '{}'.
+stores/skillStore.ts(257,18): error TS2339: Property 'deleteSkill' does not exist on type '{}'.
+stores/skillStore.ts(263,21): error TS2339: Property 'deleteSkill' does not exist on type '{}'.
+stores/skillStore.ts(283,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(283,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(289,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(292,20): error TS2339: Property 'uploadSkillFile' does not exist on type '{}'.
+stores/skillStore.ts(304,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(304,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(310,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(313,20): error TS2339: Property 'deleteSkillFile' does not exist on type '{}'.
+stores/skillStore.ts(327,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(327,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(333,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(336,17): error TS2339: Property 'disableSkill' does not exist on type '{}'.
+stores/skillStore.ts(337,35): error TS2339: Property 'disableSkill' does not exist on type '{}'.
+stores/skillStore.ts(364,21): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/skillStore.ts(364,52): error TS2554: Expected 0 arguments, but got 1.
+stores/skillStore.ts(370,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(373,17): error TS2339: Property 'enableSkill' does not exist on type '{}'.
+stores/skillStore.ts(374,35): error TS2339: Property 'enableSkill' does not exist on type '{}'.
+stores/tokenUsageMeterStore.ts(346,41): error TS2554: Expected 0 arguments, but got 1.
+stores/tokenUsageMeterStore.ts(351,27): error TS2339: Property 'getAgentRunTokenUsageSummary' does not exist on type '{}'.
+stores/tokenUsageMeterStore.ts(365,43): error TS2554: Expected 0 arguments, but got 1.
+stores/tokenUsageMeterStore.ts(370,30): error TS2339: Property 'getTeamRunTokenUsageSummary' does not exist on type '{}'.
+stores/tokenUsageMeterStore.ts(409,41): error TS2554: Expected 0 arguments, but got 1.
+stores/tokenUsageMeterStore.ts(414,27): error TS2339: Property 'getTeamMemberTokenUsageSummary' does not exist on type '{}'.
+stores/tokenUsageStatistics.ts(188,24): error TS2558: Expected 0 type arguments, but got 2.
+stores/tokenUsageStatistics.ts(193,24): error TS2558: Expected 0 type arguments, but got 2.
+stores/tokenUsageStatistics.ts(200,40): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/tokenUsageStatistics.ts(200,71): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/tokenUsageStatistics.ts(205,43): error TS2339: Property 'tokenUsageTaskStatisticsInPeriod' does not exist on type '{}'.
+stores/tokenUsageStatistics.ts(206,45): error TS2339: Property 'usageStatisticsInPeriod' does not exist on type '{}'.
+stores/toolManagementStore.ts(123,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(123,53): error TS2558: Expected 0 type arguments, but got 2.
+stores/toolManagementStore.ts(130,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(133,31): error TS2339: Property 'toolsGroupedByCategory' does not exist on type '{}'.
+stores/toolManagementStore.ts(150,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(150,53): error TS2558: Expected 0 type arguments, but got 1.
+stores/toolManagementStore.ts(156,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(159,32): error TS2339: Property 'mcpServers' does not exist on type '{}'.
+stores/toolManagementStore.ts(175,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(175,53): error TS2558: Expected 0 type arguments, but got 2.
+stores/toolManagementStore.ts(182,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(185,30): error TS2339: Property 'tools' does not exist on type '{}'.
+stores/toolManagementStore.ts(204,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(204,53): error TS2558: Expected 0 type arguments, but got 2.
+stores/toolManagementStore.ts(214,39): error TS2339: Property 'tools' does not exist on type '{}'.
+stores/toolManagementStore.ts(230,27): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(230,57): error TS2558: Expected 0 type arguments, but got 2.
+stores/toolManagementStore.ts(237,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(242,31): error TS2339: Property 'previewMcpServerTools' does not exist on type '{}'.
+stores/toolManagementStore.ts(265,27): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(265,58): error TS2554: Expected 0 arguments, but got 1.
+stores/toolManagementStore.ts(271,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(274,23): error TS2339: Property 'configureMcpServer' does not exist on type '{}'.
+stores/toolManagementStore.ts(277,29): error TS2339: Property 'configureMcpServer' does not exist on type '{}'.
+stores/toolManagementStore.ts(293,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(293,54): error TS2554: Expected 0 arguments, but got 1.
+stores/toolManagementStore.ts(299,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(302,19): error TS2339: Property 'deleteMcpServer' does not exist on type '{}'.
+stores/toolManagementStore.ts(303,20): error TS2339: Property 'deleteMcpServer' does not exist on type '{}'.
+stores/toolManagementStore.ts(306,23): error TS2339: Property 'deleteMcpServer' does not exist on type '{}'.
+stores/toolManagementStore.ts(322,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(322,54): error TS2554: Expected 0 arguments, but got 1.
+stores/toolManagementStore.ts(327,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(329,19): error TS2339: Property 'discoverAndRegisterMcpServerTools' does not exist on type '{}'.
+stores/toolManagementStore.ts(330,20): error TS2339: Property 'discoverAndRegisterMcpServerTools' does not exist on type '{}'.
+stores/toolManagementStore.ts(335,23): error TS2339: Property 'discoverAndRegisterMcpServerTools' does not exist on type '{}'.
+stores/toolManagementStore.ts(351,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(351,54): error TS2554: Expected 0 arguments, but got 1.
+stores/toolManagementStore.ts(356,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(358,19): error TS2339: Property 'importMcpServerConfigs' does not exist on type '{}'.
+stores/toolManagementStore.ts(360,20): error TS2339: Property 'importMcpServerConfigs' does not exist on type '{}'.
+stores/toolManagementStore.ts(363,23): error TS2339: Property 'importMcpServerConfigs' does not exist on type '{}'.
+stores/toolManagementStore.ts(379,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/toolManagementStore.ts(379,54): error TS2558: Expected 0 type arguments, but got 2.
+stores/toolManagementStore.ts(385,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(388,30): error TS2339: Property 'reloadToolSchema' does not exist on type '{}'.
+stores/transcriptionStore.ts(100,54): error TS2339: Property 'currentRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+stores/transcriptionStore.ts(101,27): error TS2339: Property 'updateUserRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+stores/transcriptionStore.ts(119,58): error TS2339: Property 'type' does not exist on type 'never'.
+stores/transcriptionStore.ts(259,21): error TS2339: Property 'updateUserRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+stores/workingContextCompactionStrategyCatalog.ts(111,25): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/workingContextCompactionStrategyCatalog.ts(111,55): error TS2554: Expected 0 arguments, but got 1.
+stores/workingContextCompactionStrategyCatalog.ts(122,36): error TS2339: Property 'getWorkingContextCompactionStrategies' does not exist on type '{}'.
+stores/workspace.ts(180,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/workspace.ts(180,54): error TS2558: Expected 0 type arguments, but got 2.
+stores/workspace.ts(193,20): error TS2339: Property 'createWorkspace' does not exist on type '{}'.
+stores/workspace.ts(197,35): error TS2339: Property 'createWorkspace' does not exist on type '{}'.
+stores/workspace.ts(262,23): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/workspace.ts(262,53): error TS2558: Expected 0 type arguments, but got 1.
+stores/workspace.ts(278,19): error TS2339: Property 'workspaces' does not exist on type '{}'.
+stores/workspace.ts(279,16): error TS2339: Property 'workspaces' does not exist on type '{}'.
+stores/workspaceMetadataActions.ts(114,17): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/workspaceMetadataActions.ts(114,47): error TS2558: Expected 0 type arguments, but got 1.
+stores/workspaceMetadataActions.ts(122,26): error TS2339: Property 'workspaceMetadata' does not exist on type '{}'.
+stores/workspaceMetadataActions.ts(123,36): error TS2339: Property 'workspaceMetadata' does not exist on type '{}'.
+stores/workspaceRemovalActions.ts(28,17): error TS2339: Property 'errors' does not exist on type '{ data: {}; }'.
+stores/workspaceRemovalActions.ts(28,48): error TS2558: Expected 0 type arguments, but got 2.
+stores/workspaceRemovalActions.ts(35,24): error TS2339: Property 'removeWorkspace' does not exist on type '{}'.
+vendor/autobyteus-team-stream-contracts/src/schema-helpers.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts(128,36): error TS7006: Parameter 'value' implicitly has an 'any' type.
+vendor/autobyteus-team-stream-contracts/src/team-collaboration-message-dtos.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-control-message-dtos.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-reference-file-dto.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-stream-client-message.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-stream-server-message.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/team-task-message-dtos.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+vendor/autobyteus-team-stream-contracts/src/token-usage-run-summary-dto.ts(1,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+ ELIFECYCLE  Command failed with exit code 2.

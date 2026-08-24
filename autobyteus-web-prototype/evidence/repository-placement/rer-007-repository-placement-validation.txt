@@ -1,0 +1,45 @@
+
+> autobyteus-web-prototype@0.1.0 validate:repository-placement /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/validate-repository-placement.mjs
+
+PASS prototype resolves to the user-selected repository-root destination
+PASS Git top-level is the existing owning repository
+PASS owning branch is personal
+PASS personal is synchronized with origin/personal before the focused commit
+PASS prototype root contains no nested .git entry
+PASS prior nested project path is absent
+PASS prototype is staged/tracked as ordinary owning-repository content
+PASS Git index contains no prototype gitlink/submodule entry
+PASS prototype index modes are ordinary files or symlinks
+PASS canonical package and requirements artifacts contain no stale active nested project roots
+PASS RER-007 pre-move inventory records all 1,934 approved files
+PASS all 1,934 approved pre-move files remain present
+PASS all 808 approved evidence/reference images preserve their pre-move hashes
+PASS final-reference manifest retains VIS-001 through VIS-015
+PASS final-reference manifest uses the repository-root image paths
+PASS final references retain zero browser errors and external resources
+PASS VIS-001 image hash matches its manifest
+PASS VIS-002 image hash matches its manifest
+PASS VIS-003 image hash matches its manifest
+PASS VIS-004 image hash matches its manifest
+PASS VIS-005 image hash matches its manifest
+PASS VIS-006 image hash matches its manifest
+PASS VIS-007 image hash matches its manifest
+PASS VIS-008 image hash matches its manifest
+PASS VIS-009 image hash matches its manifest
+PASS VIS-010 image hash matches its manifest
+PASS VIS-011 image hash matches its manifest
+PASS VIS-012 image hash matches its manifest
+PASS VIS-013 image hash matches its manifest
+PASS VIS-014 image hash matches its manifest
+PASS VIS-015 image hash matches its manifest
+PASS memory-inspector-ux-redesign staged Git tree is unchanged
+PASS memory-sync-transparency staged Git tree is unchanged
+PASS mobile-pwa-navigation staged Git tree is unchanged
+PASS taskagent-team-tab-active-tasks staged Git tree is unchanged
+PASS token-statistics-task-cost staged Git tree is unchanged
+PASS UI/UX specification records the canonical repository-root path
+PASS UI/UX specification records the approved RER-007 placement workflow
+PASS PPA-001 and explicit user approval remain recorded
+PASS approved source pin remains recorded
+40/40 repository-placement checks passed.

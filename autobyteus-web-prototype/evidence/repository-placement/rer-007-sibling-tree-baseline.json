@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "purpose": "RER-007 unchanged-tree baseline for unrelated ui-prototypes siblings.",
+  "owningBaselineCommit": "c5b87df4d6db15969ba70adee9dfd8394b1e7385",
+  "siblings": {
+    "memory-inspector-ux-redesign": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+    "memory-sync-transparency": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+    "mobile-pwa-navigation": "d3fc1d62e56db44b793e63665121106021543901",
+    "taskagent-team-tab-active-tasks": "320c0eef410da34bf2402025583955c0f80a9786",
+    "token-statistics-task-cost": "f39c4858737394968b8f889375d3f56f9c131207"
+  }
+}

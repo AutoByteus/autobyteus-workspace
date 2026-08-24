@@ -1,0 +1,5 @@
+
+> autobyteus-web-prototype@0.1.0 evidence:docs /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/generate-evidence-docs.mjs
+
+Generated parity-inventory.md, comparison-report.md, and evidence-index.md at /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype

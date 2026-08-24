@@ -1,0 +1,42 @@
+2026-08-22T09:28:45Z
+source=/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web
+HEAD=8ef282ba77705180d985e7000d801f0e0068cdc1
+origin/personal=8ef282ba77705180d985e7000d801f0e0068cdc1
+status:
+?? ../tickets/in-progress/initial-prototype-baseline/
+page files:
+agent-teams.vue
+agents.vue
+applications/[id].vue
+applications/index.vue
+index.vue
+media.vue
+memory.vue
+mobile.vue
+nodes.vue
+settings.vue
+skills.vue
+tools.vue
+workspace.vue
+status (selected source worktree):
+?? ../tickets/in-progress/initial-prototype-baseline/
+page files:
+agent-teams.vue
+agents.vue
+applications/[id].vue
+applications/index.vue
+index.vue
+media.vue
+memory.vue
+mobile.vue
+nodes.vue
+settings.vue
+skills.vue
+tools.vue
+workspace.vue
+Final source identity audit — 2026-08-22
+HEAD: 8ef282ba77705180d985e7000d801f0e0068cdc1
+origin/personal: 8ef282ba77705180d985e7000d801f0e0068cdc1
+Source worktree status:
+?? ../tickets/in-progress/initial-prototype-baseline/
+Pinned source application changes (autobyteus-web path only):
