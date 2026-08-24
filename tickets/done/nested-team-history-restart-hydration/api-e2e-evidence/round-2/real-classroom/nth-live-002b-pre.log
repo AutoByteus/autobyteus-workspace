@@ -1,0 +1,59 @@
+launch B
+{
+  "scenario": "NTH-LIVE-002B",
+  "phase": "pre-restart",
+  "rootTeamRunId": "nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8",
+  "teacherId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+  "studentId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+  "request": "NTH_LIVE_002B_DIRECT_PRE_20260823",
+  "ack": "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823",
+  "refPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/direct-member-reference.txt",
+  "autoExecuteTools": true,
+  "exactTeacherToolArgs": {
+    "recipient_address": "/StudentStudyGroup/student_one",
+    "content": "Ordinary direct-member test message with marker NTH_LIVE_002B_DIRECT_PRE_20260823.\n\nPlease reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002B_DIRECT_ACK_PRE_20260823. The reference file is attached for your context.",
+    "reference_files": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/direct-member-reference.txt"
+    ]
+  },
+  "messages": [
+    {
+      "messageId": "teammsg_3oRocV--XnNY--gwYrqThtvpSZX8uVlc",
+      "senderAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "receiverAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "content": "Ordinary direct-member test message with marker NTH_LIVE_002B_DIRECT_PRE_20260823.\n\nPlease reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002B_DIRECT_ACK_PRE_20260823. The reference file is attached for your context.",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/direct-member-reference.txt"
+      ],
+      "createdAt": "2026-08-23T11:36:00.306Z"
+    },
+    {
+      "messageId": "teammsg_emTp4U4KjqT2AWxI4cxgcfXpBnq7jrOi",
+      "senderAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "receiverAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "content": "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-23T11:36:02.898Z"
+    }
+  ],
+  "ui": {
+    "teacher": true,
+    "student": true,
+    "communication": true
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre-before-stop.png",
+  "terminateMutation": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

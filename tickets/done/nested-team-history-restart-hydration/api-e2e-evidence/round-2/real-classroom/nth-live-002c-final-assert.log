@@ -1,0 +1,130 @@
+{
+  "scenario": "NTH-LIVE-002C",
+  "phase": "post-cold-restart",
+  "rootTeamRunId": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+  "pre": "NTH_LIVE_002C_TASK_PRE_20260823",
+  "preToken": "NTH_LIVE_002C_RESULT_PRE_20260823",
+  "request": "NTH_LIVE_002C_TASK_POST_20260823",
+  "token": "NTH_LIVE_002C_RESULT_POST_20260823",
+  "coldHistoricalTask": {
+    "historicalTaskRowCount": 2,
+    "taskRowAttributes": {
+      "class": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600",
+      "data-test": "workspace-team-transient-execution-row",
+      "data-row-kind": "transient_execution",
+      "data-transient-kind": "task_team",
+      "data-team-run-id": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+      "data-member-address": "/StudentStudyGroup",
+      "title": "Temporary task execution",
+      "aria-label": "Task: This is a nested-team delegation test (marker NTH_LIV…. /StudentStudyGroup",
+      "role": "button",
+      "tabindex": "0",
+      "style": "margin-left: 12px;"
+    },
+    "taskMemberRowVisible": true,
+    "taskMemberAttributes": {
+      "class": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600",
+      "data-test": "workspace-team-transient-execution-row",
+      "data-row-kind": "transient_execution",
+      "data-transient-kind": "task_team_child",
+      "data-team-run-id": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+      "data-member-address": "/StudentStudyGroup/student_one",
+      "title": "Temporary task execution",
+      "aria-label": "student_one. /StudentStudyGroup/student_one",
+      "role": "button",
+      "tabindex": "0",
+      "style": "margin-left: 24px;"
+    },
+    "conversation": true,
+    "eventMonitor": true,
+    "activity": true,
+    "teamPanel": true,
+    "lastActivityRendered": true,
+    "rootRowText": "NTH_LIVE_002C_TASK_PRE_20260823. Test nested delegation. Use delegate_task exactly once with reci...\n7m",
+    "eventCountText": "2 Events"
+  },
+  "continuation": {
+    "records": [
+      {
+        "taskId": "task_e9be1a9290fe40a5b51d395a1af00e31",
+        "delegatorAgentRunId": "test_teacher_af4c9a17d3a146788d17618fe72687bf",
+        "recipientAddress": "/StudentStudyGroup",
+        "taskExecution": {
+          "teamRunId": "team_local_team_nested_classroom_test_student_st_3df63a0af69049ca9447ccad153e1ad9"
+        },
+        "description": "This is a nested-team delegation test (marker NTH_LIVE_002C_TASK_PRE_20260823). As the task-team coordinator, complete this single bounded task: use submit_task_result to submit exactly the token NTH_LIVE_002C_RESULT_PRE_20260823 as your task result. Do not add commentary, extra tokens, or explanations in the submission; the submitted result must be exactly NTH_LIVE_002C_RESULT_PRE_20260823.",
+        "referenceFiles": [],
+        "status": "accepted",
+        "updates": [
+          {
+            "submissionId": "submission_dd926fa89f934037aad5e0f1d08e170d",
+            "message": "NTH_LIVE_002C_RESULT_PRE_20260823",
+            "referenceFiles": [],
+            "createdAt": "2026-08-23T11:40:02.243Z"
+          },
+          {
+            "reviewId": "review_de1a8ef73aac4aca9381dc4dd5179cee",
+            "reviewedSubmissionId": "submission_dd926fa89f934037aad5e0f1d08e170d",
+            "decision": "accept",
+            "comment": "Accepting the nested delegation test result for marker NTH_LIVE_002C_TASK_PRE_20260823.",
+            "referenceFiles": [],
+            "createdAt": "2026-08-23T11:40:06.084Z"
+          }
+        ],
+        "createdAt": "2026-08-23T11:40:00.852Z"
+      },
+      {
+        "taskId": "task_0b816fd80193474494bf1adf9bc76ca4",
+        "delegatorAgentRunId": "test_teacher_af4c9a17d3a146788d17618fe72687bf",
+        "recipientAddress": "/StudentStudyGroup",
+        "taskExecution": {
+          "teamRunId": "team_local_team_nested_classroom_test_student_st_eba4511499fb4a57a271e4a38cb287c6"
+        },
+        "description": "This is a post-restart continuation of the nested-team delegation test (marker NTH_LIVE_002C_TASK_POST_20260823). As the task-team coordinator, complete this single bounded task: use submit_task_result to submit exactly the token NTH_LIVE_002C_RESULT_POST_20260823 as your task result. Do not add commentary, extra tokens, or explanations in the submission; the submitted result must be exactly NTH_LIVE_002C_RESULT_POST_20260823.",
+        "referenceFiles": [],
+        "status": "accepted",
+        "updates": [
+          {
+            "submissionId": "submission_41f29ff907014633a262f326ce72e9e5",
+            "message": "NTH_LIVE_002C_RESULT_POST_20260823",
+            "referenceFiles": [],
+            "createdAt": "2026-08-23T11:43:07.390Z"
+          },
+          {
+            "reviewId": "review_6c944fb9a8b1443ab4f8812ddf2f0afb",
+            "reviewedSubmissionId": "submission_41f29ff907014633a262f326ce72e9e5",
+            "decision": "accept",
+            "comment": "Accepting the post-restart nested delegation test result for marker NTH_LIVE_002C_TASK_POST_20260823.",
+            "referenceFiles": [],
+            "createdAt": "2026-08-23T11:43:07.732Z"
+          }
+        ],
+        "createdAt": "2026-08-23T11:43:05.990Z"
+      }
+    ],
+    "teacherLifecycle": true,
+    "exactDelegateArgs": {
+      "description": "This is a post-restart continuation of the nested-team delegation test (marker NTH_LIVE_002C_TASK_POST_20260823). As the task-team coordinator, complete this single bounded task: use submit_task_result to submit exactly the token NTH_LIVE_002C_RESULT_POST_20260823 as your task result. Do not add commentary, extra tokens, or explanations in the submission; the submitted result must be exactly NTH_LIVE_002C_RESULT_POST_20260823.",
+      "recipient_address": "/StudentStudyGroup"
+    },
+    "exactReviewArgs": {
+      "comment": "Accepting the post-restart nested delegation test result for marker NTH_LIVE_002C_TASK_POST_20260823.",
+      "decision": "accept",
+      "task_id": "task_0b816fd80193474494bf1adf9bc76ca4"
+    },
+    "sameRouteTool": true,
+    "accepted": true,
+    "liveSettledTaskSubtreesExcluded": true,
+    "postTerminateHistoricalTaskRowCount": 2
+  },
+  "screenshots": {
+    "coldTaskMember": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-cold-task-member.png",
+    "postContinuation": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-post-continuation.png",
+    "bothSettledTaskRows": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-both-settled-task-rows.png",
+    "finalHistoricalProof": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-final-historical-proof.png",
+    "liveProjection": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-after-restore.png"
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)"
+  ]
+}

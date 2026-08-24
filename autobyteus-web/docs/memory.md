@@ -114,6 +114,13 @@ Storage is server-owned and identity-opaque:
   `memory/imports/<sourceNodeId>/agent_teams/...`, plus hub-managed
   `source-node.json` and `sync-manifest.json`.
 
+Required server startup migration `20260823_repair_team_agent_memory_layout`
+relocates affected flat nested-member directories into this canonical hierarchy
+using the validated current V1 execution tree. Normal local and imported
+readers remain canonical-only; there is no flat-path compatibility lookup. A
+failed required move is reported by Server Migrations and is manually retryable
+without making unrelated application startup unavailable.
+
 Native AutoByteus runs are written by the native memory manager, including the
 WorkingContext snapshot used for native continuation. Codex and Claude runs use
 raw-trace-only server recording: active raw traces and optional complete rotated
@@ -185,7 +192,12 @@ unsaved hub URL/source id edits and pasted draft tokens are preserved.
 
 Current v1 sync mirrors local `agents` and `agent_teams` files with full-file
 replacement batches. It excludes temporary/partial/lock files and does not sync
-deletes, deltas, analytics indexes, or runnable restore state.
+deletes, deltas, analytics indexes, or runnable restore state. Consequently, a
+hub may retain a pre-upgrade flat nested-member path beside the later canonical
+path, or receive both paths from a preserved local conflict. This is a physical
+storage limitation only: imported Team-member selection still derives one exact
+canonical target from the V1 Team execution tree. The UI does not merge, choose,
+delete, or present the flat residue as a second current member.
 
 ## Archive / Boundary Notes
 

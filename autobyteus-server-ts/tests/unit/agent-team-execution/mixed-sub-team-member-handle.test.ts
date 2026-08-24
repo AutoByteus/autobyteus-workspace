@@ -4,6 +4,7 @@ import { MixedSubTeamMemberHandle } from "../../../src/agent-team-execution/back
 import { MixedSubTeamMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const reviewTeam = testAgentTeamNode({
@@ -46,7 +47,7 @@ const build = (terminationAccepted = true) => {
   };
   const subTeamRunFactory = { materializeConfiguredChild: vi.fn(async () => childRun) };
   const parentContext = new TeamRunContext({
-    rootTeamRunId: "parent-1",
+    physicalScope: createRootTeamRunPhysicalScope("parent-1"),
     teamRunId: "parent-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,
@@ -67,20 +68,18 @@ const build = (terminationAccepted = true) => {
     config: reviewTeam,
     subTeamRunFactory: subTeamRunFactory as never,
   });
-  return { handle, context, childRun, childRuntime, childCancel, childCommit, childFinish, subTeamRunFactory };
+  return { handle, parentContext, context, childRun, childRuntime, childCancel, childCommit, childFinish, subTeamRunFactory };
 };
 
 describe("MixedSubTeamMemberHandle", () => {
   it("materializes the exact configured child once and preserves its runtime context", async () => {
-    const { handle, context, childRun, childRuntime, subTeamRunFactory } = build();
+    const { handle, parentContext, context, childRun, childRuntime, subTeamRunFactory } = build();
 
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
     await expect(handle.getOrCreateTeamRun()).resolves.toBe(childRun);
     expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledOnce();
     expect(subTeamRunFactory.materializeConfiguredChild).toHaveBeenCalledWith({
-      handoffs: config.handoffs,
-      applicationBinding: null,
-      rootTeamRunId: "parent-1",
+      parentContext,
       teamNode: reviewTeam,
       configuredMemberActivationMode: "restore",
     });

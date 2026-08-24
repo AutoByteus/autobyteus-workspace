@@ -82,9 +82,7 @@ export class MixedSubTeamMemberHandle {
     let childRun: TeamRun;
     try {
       childRun = await this.options.subTeamRunFactory.materializeConfiguredChild({
-        handoffs: this.options.parentContext.handoffs,
-        applicationBinding: this.options.parentContext.applicationBinding,
-        rootTeamRunId: this.options.parentContext.rootTeamRunId,
+        parentContext: this.options.parentContext,
         teamNode: this.options.config,
         configuredMemberActivationMode: this.options.parentContext.runtimeContext.configuredMemberActivationMode,
       });

@@ -1,0 +1,24 @@
+{
+  "rootTeamRunId": "nested_classroom_test_team_ef79cfb19d364f558b6f5e5ae2e08194",
+  "taskAgentRunId": "student_one_e7a87cdb646e4678ac5ffacf5a82dcbe",
+  "directRootControl": {
+    "nonEmpty": true,
+    "containsPrompt": true,
+    "containsDelegateTool": true
+  },
+  "teamCommunicationControl": {
+    "taskRecordVisible": true,
+    "taskDescriptionVisible": true,
+    "interruptedStatusVisible": true
+  },
+  "coldTaskNavigation": {
+    "historicalTaskRowCount": 0,
+    "exactTaskSelectionError": "AgentRun 'student_one_e7a87cdb646e4678ac5ffacf5a82dcbe' is not live.",
+    "taskRowAbsent": true,
+    "exactTaskRejectedAsNotLive": true
+  },
+  "screenshots": {
+    "teamShot": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-cold-ui-team-control-and-missing-task-row.png"
+  },
+  "consoleErrors": []
+}

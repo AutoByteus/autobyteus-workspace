@@ -16,6 +16,7 @@ import {
   collectExecutionAgents,
   collectLiveExecutionAgents,
   projectNavigationRows,
+  type TeamExecutionNavigationPurpose,
 } from './teamExecutionTreeSelectors';
 import type {
   TeamAgentContextEntry,
@@ -154,12 +155,21 @@ export const createTeamExecutionViewState = (
   commitContextAssociations(planContextAssociations(tree.value));
   if (!contexts.has(focusedAgentRunId.value)) throw new Error('Initial focused AgentRun is missing.');
 
+  const navigationPurpose = (): TeamExecutionNavigationPurpose => rootActive.value
+    ? 'LIVE_EXECUTION'
+    : 'HISTORICAL_INSPECTION';
+  const navigationRows = (): readonly TeamExecutionNavigationRow[] => projectNavigationRows({
+    tree: tree.value,
+    tasks: tasks.value,
+    contexts,
+    purpose: navigationPurpose(),
+  });
   const repairFocus = (): void => {
-    const liveRows = projectNavigationRows({ tree: tree.value, tasks: tasks.value, contexts });
-    if (liveRows.some((row) => row.agentRunId === focusedAgentRunId.value)) return;
+    const rows = navigationRows();
+    if (rows.some((row) => row.agentRunId === focusedAgentRunId.value)) return;
     const coordinatorAddress = tree.value.root_team.coordinator_address;
-    const fallback = liveRows.find((row) => row.agentRunId && row.address === coordinatorAddress)
-      ?? liveRows.find((row) => row.agentRunId);
+    const fallback = rows.find((row) => row.agentRunId && row.address === coordinatorAddress)
+      ?? rows.find((row) => row.agentRunId);
     if (fallback?.agentRunId) focusedAgentRunId.value = fallback.agentRunId;
   };
 
@@ -299,6 +309,7 @@ export const createTeamExecutionViewState = (
     setRootTeamActive: (active) => {
       if (rootActive.value === active) return { disposition: 'unchanged' };
       rootActive.value = active;
+      if (active) repairFocus();
       return { disposition: 'applied' };
     },
     getFocusedAgentRunId: () => focusedAgentRunId.value,
@@ -310,7 +321,7 @@ export const createTeamExecutionViewState = (
     focusAgent: (agentRunId) => {
       const id = agentRunId.trim();
       if (!contexts.has(id)) return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND', message: `AgentRun '${id}' is not part of this Team execution.` };
-      if (!projectNavigationRows({ tree: tree.value, tasks: tasks.value, contexts }).some((row) => row.agentRunId === id)) {
+      if (!navigationRows().some((row) => row.agentRunId === id)) {
         return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_VISIBLE', message: `AgentRun '${id}' is not live.` };
       }
       if (focusedAgentRunId.value === id) return { disposition: 'unchanged' };
@@ -320,7 +331,7 @@ export const createTeamExecutionViewState = (
     listAgentContextEntries: () => Object.freeze([...contexts].map(([agentRunId, agentContext]) => Object.freeze({
       agentRunId, memberAddress: addresses.get(agentRunId)!, agentContext,
     }))),
-    listNavigationRows: () => projectNavigationRows({ tree: tree.value, tasks: tasks.value, contexts }),
+    listNavigationRows: navigationRows,
     listTaskHistoryRows: () => buildTaskHistoryRows(tasks.value),
     listCommunicationMessages: () => Object.freeze([...messages.value]),
     applySnapshot,

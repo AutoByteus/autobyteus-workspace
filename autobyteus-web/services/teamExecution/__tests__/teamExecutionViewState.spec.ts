@@ -106,8 +106,13 @@ const task = (input: {
   created_at: createdAt,
 });
 
-const createStateFixture = () => {
-  const initialTree = tree();
+const createStateFixture = (input: {
+  rootActive?: boolean;
+  executionTree?: TeamRunExecutionTreeDto;
+  tasks?: readonly TaskDelegationRecordDto[];
+  initialFocusedAgentRunId?: string;
+} = {}) => {
+  const initialTree = input.executionTree ?? tree();
   const initial = [
     ['teacher-run', '/Teacher'],
     ['coordinator-run', '/StudentStudyGroup/Coordinator'],
@@ -119,8 +124,9 @@ const createStateFixture = () => {
   ]));
   const dynamicallyCreatedContexts = new Map<string, AgentContext>();
   const state = createTeamExecutionViewState({
-    rootTeamRunId: 'root-team-1', rootActive: true, executionTree: initialTree,
-    tasks: [], messages: [], configuration: config(), initialFocusedAgentRunId: 'teacher-run',
+    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree,
+    tasks: input.tasks ?? [], messages: [], configuration: config(),
+    initialFocusedAgentRunId: input.initialFocusedAgentRunId ?? 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({
       agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)!,
     })),
@@ -134,6 +140,55 @@ const createStateFixture = () => {
 };
 
 const createState = () => createStateFixture().state;
+
+const settledHistoricalExecutions = () => {
+  const settledAt = '2026-08-14T12:05:00.000Z';
+  const directTask = task({
+    taskId: 'settled-direct-task', delegatorAgentRunId: 'teacher-run',
+    recipientAddress: '/StudentStudyGroup/Student', execution: { agent_run_id: 'settled-direct-run' },
+    status: 'interrupted',
+  });
+  const teamTask = task({
+    taskId: 'settled-team-task', delegatorAgentRunId: 'teacher-run',
+    recipientAddress: '/StudentStudyGroup', execution: { team_run_id: 'settled-team-run' },
+    status: 'interrupted',
+  });
+  const nestedTask = task({
+    taskId: 'settled-nested-task', delegatorAgentRunId: 'settled-team-coordinator-run',
+    recipientAddress: '/StudentStudyGroup/Student', execution: { agent_run_id: 'settled-nested-run' },
+    status: 'interrupted',
+  });
+  const executionTree = tree();
+  executionTree.root_team.task_executions = [
+    {
+      kind: 'task_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'settled-direct-run',
+      platform_agent_run_id: null, started_at: createdAt, settled_at: settledAt,
+    },
+    {
+      kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'settled-team-run',
+      started_at: createdAt, settled_at: settledAt,
+      members: [
+        {
+          kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator',
+          agent_run_id: 'settled-team-coordinator-run', platform_agent_run_id: null,
+        },
+        {
+          kind: 'task_team', address: '/StudentStudyGroup/StudyPod', team_run_id: 'settled-pod-run',
+          members: [{
+            kind: 'task_team_agent', address: '/StudentStudyGroup/Student',
+            agent_run_id: 'settled-pod-student-run', platform_agent_run_id: null,
+          }],
+          task_executions: [{
+            kind: 'task_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'settled-nested-run',
+            platform_agent_run_id: null, started_at: createdAt, settled_at: settledAt,
+          }],
+        },
+      ],
+      task_executions: [],
+    },
+  ];
+  return { executionTree, tasks: [directTask, teamTask, nestedTask] };
+};
 
 const taskEvent = (payload: Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }>['payload']):
 Extract<TeamStreamServerMessage, { type: 'TASK_DELEGATION_EVENT' }> => ({
@@ -299,6 +354,43 @@ describe('TeamExecutionViewState', () => {
     expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(false);
     expect(state.getFocusedAgentRunId()).toBe('teacher-run');
     expect(state.listTaskHistoryRows()[0]?.task.status).toBe('accepted');
+  });
+
+  it('projects settled task subtrees only for historical inspection and repairs focus when live eligibility returns', () => {
+    const historical = settledHistoricalExecutions();
+    const state = createStateFixture({
+      rootActive: false,
+      executionTree: historical.executionTree,
+      tasks: historical.tasks,
+    }).state;
+
+    expect(state.listNavigationRows().map((row) => row.key)).toEqual(expect.arrayContaining([
+      'agent:settled-direct-run',
+      'team:settled-team-run',
+      'agent:settled-team-coordinator-run',
+      'team:settled-pod-run',
+      'agent:settled-pod-student-run',
+      'agent:settled-nested-run',
+    ]));
+    expect(state.focusAgent('settled-direct-run')).toMatchObject({ disposition: 'applied' });
+    expect(state.focusAgent('settled-nested-run')).toMatchObject({ disposition: 'applied' });
+    expect(state.getFocusedAgentRunId()).toBe('settled-nested-run');
+
+    expect(state.setRootTeamActive(true)).toEqual({ disposition: 'applied' });
+    expect(state.listNavigationRows().some((row) => row.key === 'team:settled-team-run')).toBe(false);
+    expect(state.listNavigationRows().some((row) => row.key === 'agent:settled-direct-run')).toBe(false);
+    expect(state.getFocusedAgentRunId()).toBe('teacher-run');
+    expect(state.focusAgent('settled-nested-run')).toMatchObject({
+      disposition: 'rejected',
+      code: 'TEAM_AGENT_RUN_NOT_VISIBLE',
+    });
+
+    expect(state.setRootTeamActive(false)).toEqual({ disposition: 'applied' });
+    expect(state.focusAgent('settled-nested-run')).toMatchObject({ disposition: 'applied' });
+    expect(state.focusAgent('missing-historical-run')).toMatchObject({
+      disposition: 'rejected',
+      code: 'TEAM_AGENT_RUN_NOT_FOUND',
+    });
   });
 
   it('rejects sequence gaps and invalid snapshots without partially replacing authoritative state', () => {

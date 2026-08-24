@@ -1,0 +1,999 @@
+{
+  "packages": {
+    "httpStatus": 200,
+    "body": {
+      "data": {
+        "agentPackages": [
+          {
+            "packageId": "built-in:default",
+            "displayName": "Built-in Storage",
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe",
+            "sourceKind": "BUILT_IN",
+            "sharedAgentCount": 2,
+            "teamLocalAgentCount": 0,
+            "agentTeamCount": 0
+          },
+          {
+            "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+            "displayName": "autobyteus-agents",
+            "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+            "sourceKind": "LOCAL_PATH",
+            "sharedAgentCount": 7,
+            "teamLocalAgentCount": 50,
+            "agentTeamCount": 12
+          },
+          {
+            "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-private-agents",
+            "displayName": "autobyteus-private-agents",
+            "path": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+            "sourceKind": "LOCAL_PATH",
+            "sharedAgentCount": 40,
+            "teamLocalAgentCount": 25,
+            "agentTeamCount": 9
+          }
+        ]
+      }
+    }
+  },
+  "teams": {
+    "httpStatus": 200,
+    "body": {
+      "data": {
+        "agentTeamDefinitions": [
+          {
+            "id": "article-writing-team",
+            "name": "Article Writing Team",
+            "coordinatorMemberName": "article_writer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "article_writer",
+                "ref": "article-writer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "article_reviewer",
+                "ref": "article-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "classroom-simulation-team",
+            "name": "Classroom Simulation Team",
+            "coordinatorMemberName": "professor",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "professor",
+                "ref": "professor",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "student",
+                "ref": "student",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "kids-coloring-story-team",
+            "name": "Kids Coloring Story Team",
+            "coordinatorMemberName": "story_activity_designer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "story_activity_designer",
+                "ref": "story-activity-designer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "coloring_page_illustrator",
+                "ref": "coloring-page-illustrator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "child_experience_reviewer",
+                "ref": "child-experience-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "printable_pack_producer",
+                "ref": "printable-pack-producer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "kids-picture-story-team",
+            "name": "Kids Picture Story Team",
+            "coordinatorMemberName": "story_picture_book_author",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "story_picture_book_author",
+                "ref": "story-picture-book-author",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "picture_book_illustrator",
+                "ref": "picture-book-illustrator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "picture_book_reviewer",
+                "ref": "picture-book-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "book_production_editor",
+                "ref": "book-production-editor",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "manga-video-studio-team",
+            "name": "Manga Video Studio Team",
+            "coordinatorMemberName": "manga_showrunner",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "manga_showrunner",
+                "ref": "manga-showrunner",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "storyboard_director",
+                "ref": "storyboard-director",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "manga_illustrator",
+                "ref": "manga-illustrator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "voice_video_producer",
+                "ref": "voice-video-producer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "narrated-presentation-video-team",
+            "name": "Narrated Presentation Video Team",
+            "coordinatorMemberName": "presentation_director",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "presentation_director",
+                "ref": "presentation-director",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "narration_script_reviewer",
+                "ref": "narration-script-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "slide_video_producer",
+                "ref": "slide-video-producer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "northstar-operating-company",
+            "name": "Northstar Operating Company",
+            "coordinatorMemberName": "ceo",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "ceo",
+                "ref": "ceo",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "chief_of_staff",
+                "ref": "chief-of-staff",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cto",
+                "ref": "cto",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cpo",
+                "ref": "cpo",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cmo",
+                "ref": "cmo",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cro",
+                "ref": "cro",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "coo",
+                "ref": "coo",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cfo",
+                "ref": "cfo",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "chief_people_officer",
+                "ref": "chief-people-officer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "engineering_org",
+                "ref": "engineering-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "product_org",
+                "ref": "product-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "marketing_org",
+                "ref": "marketing-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "revenue_org",
+                "ref": "revenue-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "operations_org",
+                "ref": "operations-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "finance_people_org",
+                "ref": "finance-people-org",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "requirements-engineering-team",
+            "name": "Requirements Engineering Team",
+            "coordinatorMemberName": "requirements_engineer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "requirements_engineer",
+                "ref": "requirements-engineer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "product_prototyper",
+                "ref": "product-prototyper",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "prototype_bootstrapper",
+                "ref": "prototype-bootstrapper",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "research-to-deck-team",
+            "name": "Research To Deck Team",
+            "coordinatorMemberName": "deep_researcher",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "deep_researcher",
+                "ref": "deep-researcher",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "infographic_powerpoint_designer",
+                "ref": "infographic-powerpoint-designer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "deck_reviewer",
+                "ref": "deck-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "software-engineering-team",
+            "name": "Software Engineering Team",
+            "coordinatorMemberName": "solution_designer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "solution_designer",
+                "ref": "solution-designer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "architecture_reviewer",
+                "ref": "architecture-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "implementation_engineer",
+                "ref": "implementation-engineer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "code_reviewer",
+                "ref": "code-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "api_e2e_engineer",
+                "ref": "api-e2e-engineer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "delivery_engineer",
+                "ref": "delivery-engineer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "software-product-promo-video-team",
+            "name": "Software Product Promo Video Team",
+            "coordinatorMemberName": "promo_director",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "promo_director",
+                "ref": "promo-director",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "visual_director",
+                "ref": "visual-director",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "visual_reviewer",
+                "ref": "visual-reviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "promo_video_producer",
+                "ref": "promo-video-producer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "storm-team",
+            "name": "STORM Team",
+            "coordinatorMemberName": "topic_research_coordinator",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "topic_research_coordinator",
+                "ref": "topic-research-coordinator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "perspective_miner",
+                "ref": "perspective-miner",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "expert_interviewer",
+                "ref": "expert-interviewer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "outline_architect",
+                "ref": "outline-architect",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "cited_article_writer",
+                "ref": "cited-article-writer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "article_polisher_verifier",
+                "ref": "article-polisher-verifier",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "bible-study-group",
+            "name": "Bible Study Group",
+            "coordinatorMemberName": "study_leader",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "study_leader",
+                "ref": "study-leader",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "careful_reader",
+                "ref": "careful-reader",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "context_guide",
+                "ref": "context-guide",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "clara-ocean-friends",
+            "name": "Clara Ocean Friends",
+            "coordinatorMemberName": "ClaraStoryOrchestrator",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "ClaraStoryOrchestrator",
+                "ref": "clara-story-orchestrator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "ClaraStorybookBuilder",
+                "ref": "clara-storybook-builder",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "job-search-application-team",
+            "name": "Job Search Application Team",
+            "coordinatorMemberName": "career_profile_strategist",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "career_profile_strategist",
+                "ref": "career-profile-strategist",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "job_opportunity_scout",
+                "ref": "job-opportunity-scout",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "application_specialist",
+                "ref": "application-specialist",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "marketing-team",
+            "name": "Marketing Team",
+            "coordinatorMemberName": "marketing_coordinator",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "marketing_coordinator",
+                "ref": "marketing-coordinator",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "linkedin_marketer",
+                "ref": "linkedin-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "x_marketer",
+                "ref": "x-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "xiaohongshu_marketer",
+                "ref": "xiaohongshu-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "weixin_gongzhonghao_marketer",
+                "ref": "weixin-gongzhonghao-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "weixin_channel_marketer",
+                "ref": "weixin-channel-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "movie-maker",
+            "name": "Movie Maker",
+            "coordinatorMemberName": "storyboard_designer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "storyboard_designer",
+                "ref": "cinematic-storyboard-architect",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "image_generator",
+                "ref": "cinematic-frame-artist",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "audio_generator",
+                "ref": "cinematic-sound-designer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "video_assembler",
+                "ref": "cinematic-video-editor",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "nested-classroom-test",
+            "name": "Nested Classroom Test Team",
+            "coordinatorMemberName": "Teacher",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "Teacher",
+                "ref": "teacher",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "StudentStudyGroup",
+                "ref": "student-study-group",
+                "refType": "AGENT_TEAM",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "presentation-chemie",
+            "name": "Presentation_Chemie",
+            "coordinatorMemberName": "SlideNarrator Agent",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "SlideDesigner Agent",
+                "ref": "chapter-slide-planner",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "SlideNarrator Agent",
+                "ref": "slidenarrator",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "SlideImageGenerator Agent",
+                "ref": "slideimagegenerator",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ]
+          },
+          {
+            "id": "socratic-math-team",
+            "name": "Socratic Math Team",
+            "coordinatorMemberName": "SocraticMathTeacher",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "SocraticMathTeacher",
+                "ref": "socraticmathteacher",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "GeniusMathResolver",
+                "ref": "geniusmathresolver",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "AnimationDeveloper",
+                "ref": "animationdeveloper",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "video-tutorial-creation-team",
+            "name": "Tutorial Video Creation Team",
+            "coordinatorMemberName": "TutorialVideoProducer",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "TutorialVideoProducer",
+                "ref": "tutorial-video-producer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "TutorialVoiceoverWriter",
+                "ref": "tutorial-voiceover-writer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "TutorialVideoAssembler",
+                "ref": "tutorial-video-assembler",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b73706163652d73757065727265706f2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d",
+            "name": "Socratic Math Team",
+            "coordinatorMemberName": "tutor",
+            "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package",
+            "nodes": [
+              {
+                "memberName": "tutor",
+                "ref": "socratic-math-tutor",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:engineering-org",
+            "name": "Northstar Engineering Org Team",
+            "coordinatorMemberName": "vp_engineering",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_engineering",
+                "ref": "vp-engineering",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "platform_engineering_manager",
+                "ref": "platform-engineering-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "product_engineering_manager",
+                "ref": "product-engineering-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "infrastructure_security_lead",
+                "ref": "infrastructure-security-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "qa_release_manager",
+                "ref": "qa-release-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:finance-people-org",
+            "name": "Northstar Finance & People Org Team",
+            "coordinatorMemberName": "vp_finance",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_finance",
+                "ref": "vp-finance",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "controller",
+                "ref": "controller",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "people_ops_lead",
+                "ref": "people-ops-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "talent_acquisition_lead",
+                "ref": "talent-acquisition-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "legal_compliance_lead",
+                "ref": "legal-compliance-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:marketing-org",
+            "name": "Northstar Marketing Org Team",
+            "coordinatorMemberName": "vp_marketing",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_marketing",
+                "ref": "vp-marketing",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "product_marketing_lead",
+                "ref": "product-marketing-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "brand_content_lead",
+                "ref": "brand-content-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "demand_generation_lead",
+                "ref": "demand-generation-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "marketing_operations_analytics_lead",
+                "ref": "marketing-operations-analytics-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "linkedin_marketer",
+                "ref": "linkedin-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "x_marketer",
+                "ref": "x-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "facebook_marketer",
+                "ref": "facebook-marketer",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:operations-org",
+            "name": "Northstar Operations Org Team",
+            "coordinatorMemberName": "vp_operations",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_operations",
+                "ref": "vp-operations",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "business_operations_lead",
+                "ref": "business-operations-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "customer_operations_lead",
+                "ref": "customer-operations-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "vendor_operations_lead",
+                "ref": "vendor-operations-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "data_analytics_lead",
+                "ref": "data-analytics-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:product-org",
+            "name": "Northstar Product Org Team",
+            "coordinatorMemberName": "vp_product",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_product",
+                "ref": "vp-product",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "growth_product_manager",
+                "ref": "growth-product-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "platform_product_manager",
+                "ref": "platform-product-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "product_design_lead",
+                "ref": "product-design-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "ux_research_lead",
+                "ref": "ux-research-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:northstar-operating-company:revenue-org",
+            "name": "Northstar Revenue Org Team",
+            "coordinatorMemberName": "vp_sales",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "vp_sales",
+                "ref": "vp-sales",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "account_executive_manager",
+                "ref": "account-executive-manager",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "customer_success_lead",
+                "ref": "customer-success-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "partnerships_lead",
+                "ref": "partnerships-lead",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          },
+          {
+            "id": "team-local-team:nested-classroom-test:student-study-group",
+            "name": "Student Study Group",
+            "coordinatorMemberName": "student_one",
+            "ownerPackageId": null,
+            "nodes": [
+              {
+                "memberName": "student_one",
+                "ref": "student-one",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              },
+              {
+                "memberName": "student_two",
+                "ref": "student-two",
+                "refType": "AGENT",
+                "refScope": "TEAM_LOCAL"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

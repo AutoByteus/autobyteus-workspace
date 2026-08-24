@@ -16,6 +16,7 @@ import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/mi
 import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
 import { TeamRunExecutionTreeV1AppDataMigration } from "./migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js";
 import { TokenUsageRunRecordsV1AppDataMigration } from "./migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
+import { TeamAgentMemoryLayoutAppDataMigration } from "./migrations/team-agent-memory-layout-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -31,6 +32,9 @@ export class AppDataMigrationRegistry {
       new TeamRunExecutionTreeV1AppDataMigration(
         appConfigProvider.config.getMemoryDir(),
         appConfigProvider.config.getAppDataDir(),
+      ),
+      new TeamAgentMemoryLayoutAppDataMigration(
+        appConfigProvider.config.getMemoryDir(),
       ),
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
         appConfigProvider.config.getMemoryDir(),

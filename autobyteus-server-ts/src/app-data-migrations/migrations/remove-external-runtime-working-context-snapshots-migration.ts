@@ -14,6 +14,7 @@ import type {
   AppDataMigrationItemDetail,
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
+import { TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID } from "./team-agent-memory-layout-app-data-migration.js";
 
 const MIGRATION_ID = "20260731_remove_external_runtime_working_context_snapshots";
 
@@ -83,6 +84,7 @@ export class RemoveExternalRuntimeWorkingContextSnapshotsMigration
   readonly description =
     "Removes duplicate Codex and Claude WorkingContext snapshots from exact metadata-classified local run locations.";
   readonly requiredOnStartup = true;
+  readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
 
   private readonly layout: AgentMemoryLayout;
   private readonly classifier: RuntimeMemoryLocationClassifier;

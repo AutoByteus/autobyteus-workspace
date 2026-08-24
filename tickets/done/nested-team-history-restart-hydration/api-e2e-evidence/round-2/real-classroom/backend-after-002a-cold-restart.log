@@ -1,0 +1,818 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/.env
+[dotenv@17.3.1] injecting env (0) from autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:40224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-23T11:31:42.601Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1787484702680,"pid":40224,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62318"}
+[2026-08-23T11:31:42.680Z] [INFO] [server.runtime] Server listening on 127.0.0.1:62318
+[2026-08-23T11:31:42.681Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:62318
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-23T11:31:42.703Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-23T11:31:42.726Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Pre-loaded 29 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+{"level":30,"time":1787484706936,"pid":40224,"hostname":"MacBookPro","reqId":"req-1","err":{"type":"GraphQLError","message":"Unknown query","stack":"FastifyError: Unknown query\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:227:14)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:317:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Unknown query"}
+{"level":40,"time":1787484706937,"pid":40224,"hostname":"MacBookPro","reqId":"req-1","method":"GET","url":"/graphql","statusCode":400,"elapsedMs":2.4388327598571777,"msg":"http request completed"}
+AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 80 models from LLMFactory.
+LLM models cache populated with 80 items.
+Pre-loaded 80 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Created terminal session 43ebc80f-85ab-433d-ba12-c46395d6ff56 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/isolated-home
+Terminal WebSocket connected: 43ebc80f-85ab-433d-ba12-c46395d6ff56
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/isolated-home
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7/student_study_group_60c928f3d112497e95da48983e874bf7/student_two_96de2e9631ff42a2ae9ccb05f13a35ab/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7/student_study_group_60c928f3d112497e95da48983e874bf7/student_two_96de2e9631ff42a2ae9ccb05f13a35ab/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7
+Created agent session 1776f26b-5d97-476c-82f5-923285746f57 for run nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7
+Agent Team WebSocket connected: session=1776f26b-5d97-476c-82f5-923285746f57, run=nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_teacher_991d7534dc2442e9988a35d4880a0f96' with config: 'Test Teacher'.
+AgentWorker initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'.
+Registered AgentContext for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Context registered.
+Agent facade initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' restored and stored successfully.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' requesting runtime to start.
+AgentRuntime for 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Starting worker.
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Starting...
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96' asyncRun(): Starting.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Runtime init completed (event store initialized).
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Runtime init completed (status deriver initialized).
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' to become idle (timeout: 30s)...
+AgentEventStream (ID: c3dd266f-cf28-4e8b-8a89-8420ef32bf47) initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Subscribed to notifier.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Bootstrapper starting direct lifecycle execution.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Executing McpServerPrewarmingStep.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Executing SystemPromptProcessingStep.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': No configured skills. Skipping skill catalog.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Final processed system prompt configured and captured. Trace ID: rt_1787483926175_7fe052dd-7436-4368-906e-35a898c00927. Final length: 10149.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96' initialized successfully. Entering main event scheduler loop.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' has become idle.
+AgentEventStream (ID: c3dd266f-cf28-4e8b-8a89-8420ef32bf47) for 'test_teacher_991d7534dc2442e9988a35d4880a0f96': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: c708ad8e-0246-47e3-98ea-37c2e3aa863b) initialized for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Subscribed to notifier.
+Published autobyteus agent run 'test_teacher_991d7534dc2442e9988a35d4880a0f96'.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_991d7534dc2442e9988a35d4880a0f96': UserInputContextBuildingProcessor completed. Final content length: 423
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+{"level":40,"time":1787484790750,"pid":40224,"hostname":"MacBookPro","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.482666015625,"msg":"http request completed"}
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_teacher_991d7534dc2442e9988a35d4880a0f96',
+  prompt_tokens: 6301,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Stored pending tool invocation 'call_00_JF4QHVCDQy25Mog6mQLE6469' (send_message_to).
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Retrieved pending tool invocation 'call_00_JF4QHVCDQy25Mog6mQLE6469' (send_message_to).
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_903758e38a1b44aa9362e50d51dddf99' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'.
+Registered AgentContext for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Context registered.
+Agent facade initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99' restored and stored successfully.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99' requesting runtime to start.
+AgentRuntime for 'student_one_903758e38a1b44aa9362e50d51dddf99': Starting worker.
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99': Starting...
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99' asyncRun(): Starting.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Runtime init completed (event store initialized).
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Runtime init completed (status deriver initialized).
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_903758e38a1b44aa9362e50d51dddf99' to become idle (timeout: 30s)...
+AgentEventStream (ID: ffc0c715-276f-4f1f-9b8c-1307146164b2) initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Subscribed to notifier.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Executing McpServerPrewarmingStep.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Executing SystemPromptProcessingStep.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': No configured skills. Skipping skill catalog.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Final processed system prompt configured and captured. Trace ID: rt_1787484471847_943f7d04-b1bc-421b-ae36-367e91a35f7a. Final length: 7809.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99' has become idle.
+AgentEventStream (ID: ffc0c715-276f-4f1f-9b8c-1307146164b2) for 'student_one_903758e38a1b44aa9362e50d51dddf99': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 7f5905ff-aa9a-49bd-adbf-1bbc1af21c5e) initialized for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'. Subscribed to notifier.
+Published autobyteus agent run 'student_one_903758e38a1b44aa9362e50d51dddf99'.
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_903758e38a1b44aa9362e50d51dddf99': UserInputContextBuildingProcessor completed. Final content length: 305
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_991d7534dc2442e9988a35d4880a0f96': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_one_903758e38a1b44aa9362e50d51dddf99',
+  prompt_tokens: 5181,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Stored pending tool invocation 'call_00_AutIZlfeJwirQzSFJmL90405' (send_message_to).
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_teacher_991d7534dc2442e9988a35d4880a0f96',
+  prompt_tokens: 6504,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_991d7534dc2442e9988a35d4880a0f96': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99': Retrieved pending tool invocation 'call_00_AutIZlfeJwirQzSFJmL90405' (send_message_to).
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_991d7534dc2442e9988a35d4880a0f96': UserInputContextBuildingProcessor completed. Final content length: 155
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_903758e38a1b44aa9362e50d51dddf99': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' requesting runtime interrupt.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 7f5905ff-aa9a-49bd-adbf-1bbc1af21c5e) for 'student_one_903758e38a1b44aa9362e50d51dddf99': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_903758e38a1b44aa9362e50d51dddf99'. Attempting graceful shutdown.
+Agent 'student_one_903758e38a1b44aa9362e50d51dddf99' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99': Stop requested.
+AgentExternalEventNotifier (NotifierID: 9f96e7e2-3565-4d69-bf48-16acec6a7b0d, AgentID: student_one_903758e38a1b44aa9362e50d51dddf99) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99' asyncRun() loop has finished.
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_903758e38a1b44aa9362e50d51dddf99': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_903758e38a1b44aa9362e50d51dddf99'.
+AgentRuntime for 'student_one_903758e38a1b44aa9362e50d51dddf99': Context unregistered.
+AgentRuntime for 'student_one_903758e38a1b44aa9362e50d51dddf99' stop() method completed.
+AgentEventStream (ID: c708ad8e-0246-47e3-98ea-37c2e3aa863b) for 'test_teacher_991d7534dc2442e9988a35d4880a0f96': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96'. Attempting graceful shutdown.
+Agent 'test_teacher_991d7534dc2442e9988a35d4880a0f96' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Stop requested.
+AgentExternalEventNotifier (NotifierID: c0c3b032-03ff-4fca-bcc1-6c69e89d26bc, AgentID: test_teacher_991d7534dc2442e9988a35d4880a0f96) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96' asyncRun() loop has finished.
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Running shutdown sequence on worker loop.
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_teacher_991d7534dc2442e9988a35d4880a0f96'.
+AgentRuntime for 'test_teacher_991d7534dc2442e9988a35d4880a0f96': Context unregistered.
+AgentRuntime for 'test_teacher_991d7534dc2442e9988a35d4880a0f96' stop() method completed.
+Closed agent session 1776f26b-5d97-476c-82f5-923285746f57
+Closed PTY session 43ebc80f-85ab-433d-ba12-c46395d6ff56
+Terminal WebSocket disconnected: 43ebc80f-85ab-433d-ba12-c46395d6ff56
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 4d4002f0-62d7-4044-8057-0f6e1155f627 for workspace temp_ws_default
+Created file explorer session 4d4002f0-62d7-4044-8057-0f6e1155f627 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 4d4002f0-62d7-4044-8057-0f6e1155f627 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+{"level":40,"time":1787484838400,"pid":40224,"hostname":"MacBookPro","reqId":"req-1q","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.155749797821045,"msg":"http request completed"}
+AUTOBYTEUS_IMAGE_DISCOVERY_REMOTE_FAILED
+Successfully fetched 13 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=6
+Image models by runtime: api=7, autobyteus=6
+Image models cache populated with 13 items.
+Pre-loaded 13 image models into cache.
+AUTOBYTEUS_AUDIO_DISCOVERY_REMOTE_FAILED
+Successfully fetched 8 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=4
+Audio models by runtime: api=4, autobyteus=4
+Audio models cache populated with 8 items.
+Pre-loaded 8 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_249473656fd14be59b960afba90493d5/test_teacher_106859ef54d44be1af28c4165e15a249/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_249473656fd14be59b960afba90493d5/student_study_group_3a41b50ad3114e6ea9bdb3c0d6a2299d/student_one_c3d97ef0e98e4654ab2ee2376052832b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_249473656fd14be59b960afba90493d5/student_study_group_3a41b50ad3114e6ea9bdb3c0d6a2299d/student_two_56ee0bd682af4849814bf51a46174ace/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace
+FileExplorerSession closed: 4d4002f0-62d7-4044-8057-0f6e1155f627
+Closed file explorer session 4d4002f0-62d7-4044-8057-0f6e1155f627. Active sessions: 0
+File explorer WebSocket disconnected: 4d4002f0-62d7-4044-8057-0f6e1155f627
+Agent team websocket attached for team run nested_classroom_test_team_249473656fd14be59b960afba90493d5
+Created agent session 09b8ff5e-9a6f-453f-bede-d65ed4ea7efe for run nested_classroom_test_team_249473656fd14be59b960afba90493d5
+Agent Team WebSocket connected: session=09b8ff5e-9a6f-453f-bede-d65ed4ea7efe, run=nested_classroom_test_team_249473656fd14be59b960afba90493d5
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_teacher_106859ef54d44be1af28c4165e15a249' with config: 'Test Teacher'.
+AgentWorker initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'.
+Registered AgentContext for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Context registered.
+Agent facade initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249' created and stored successfully.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249' requesting runtime to start.
+AgentRuntime for 'test_teacher_106859ef54d44be1af28c4165e15a249': Starting worker.
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249': Starting...
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249' asyncRun(): Starting.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Runtime init completed (event store initialized).
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Runtime init completed (status deriver initialized).
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'test_teacher_106859ef54d44be1af28c4165e15a249' to become idle (timeout: 30s)...
+AgentEventStream (ID: 10cec1e0-4d44-4fdb-b392-7601ea648255) initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Subscribed to notifier.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Bootstrapper starting direct lifecycle execution.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Executing McpServerPrewarmingStep.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Executing SystemPromptProcessingStep.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': No configured skills. Skipping skill catalog.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Final processed system prompt configured and captured. Trace ID: rt_1787484912277_3d990e90-5de7-428c-872b-8efc3afe638a. Final length: 10149.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249' initialized successfully. Entering main event scheduler loop.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249' has become idle.
+AgentEventStream (ID: 10cec1e0-4d44-4fdb-b392-7601ea648255) for 'test_teacher_106859ef54d44be1af28c4165e15a249': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 78857845-edb0-4239-8988-2912208a5a89) initialized for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'. Subscribed to notifier.
+Published autobyteus agent run 'test_teacher_106859ef54d44be1af28c4165e15a249'.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_106859ef54d44be1af28c4165e15a249': UserInputContextBuildingProcessor completed. Final content length: 644
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_teacher_106859ef54d44be1af28c4165e15a249',
+  prompt_tokens: 5284,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_c3d97ef0e98e4654ab2ee2376052832b' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'.
+Registered AgentContext for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Context registered.
+Agent facade initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' created and stored successfully.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' requesting runtime to start.
+AgentRuntime for 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Starting worker.
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Starting...
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b' asyncRun(): Starting.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Runtime init completed (event store initialized).
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Runtime init completed (status deriver initialized).
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' to become idle (timeout: 30s)...
+AgentEventStream (ID: 477eb6bc-e629-4e02-9d7d-6d0149fc60c9) initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Subscribed to notifier.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Executing McpServerPrewarmingStep.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Executing SystemPromptProcessingStep.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': No configured skills. Skipping skill catalog.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Final processed system prompt configured and captured. Trace ID: rt_1787484915786_44178e4d-477d-4fc3-8038-5ac0998a3ac8. Final length: 7809.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' has become idle.
+AgentEventStream (ID: 477eb6bc-e629-4e02-9d7d-6d0149fc60c9) for 'student_one_c3d97ef0e98e4654ab2ee2376052832b': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 4a36e46c-e828-4cbb-8d56-15b24d54cfd0) initialized for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Subscribed to notifier.
+Published autobyteus agent run 'student_one_c3d97ef0e98e4654ab2ee2376052832b'.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_106859ef54d44be1af28c4165e15a249': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_c3d97ef0e98e4654ab2ee2376052832b': UserInputContextBuildingProcessor completed. Final content length: 798
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249' requesting runtime interrupt.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 4a36e46c-e828-4cbb-8d56-15b24d54cfd0) for 'student_one_c3d97ef0e98e4654ab2ee2376052832b': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b'. Attempting graceful shutdown.
+Agent 'student_one_c3d97ef0e98e4654ab2ee2376052832b' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Stop requested.
+AgentExternalEventNotifier (NotifierID: 43892d53-6aaf-49c4-9807-84c158acba64, AgentID: student_one_c3d97ef0e98e4654ab2ee2376052832b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b' asyncRun() loop has finished.
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_c3d97ef0e98e4654ab2ee2376052832b'.
+AgentRuntime for 'student_one_c3d97ef0e98e4654ab2ee2376052832b': Context unregistered.
+AgentRuntime for 'student_one_c3d97ef0e98e4654ab2ee2376052832b' stop() method completed.
+AgentEventStream (ID: 78857845-edb0-4239-8988-2912208a5a89) for 'test_teacher_106859ef54d44be1af28c4165e15a249': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'test_teacher_106859ef54d44be1af28c4165e15a249'. Attempting graceful shutdown.
+Agent 'test_teacher_106859ef54d44be1af28c4165e15a249' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249': Stop requested.
+AgentExternalEventNotifier (NotifierID: 5ef7effb-5b7e-4fba-b2da-eaaaa10c7a8a, AgentID: test_teacher_106859ef54d44be1af28c4165e15a249) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249' asyncRun() loop has finished.
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249': Running shutdown sequence on worker loop.
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_teacher_106859ef54d44be1af28c4165e15a249': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_teacher_106859ef54d44be1af28c4165e15a249'.
+AgentRuntime for 'test_teacher_106859ef54d44be1af28c4165e15a249': Context unregistered.
+AgentRuntime for 'test_teacher_106859ef54d44be1af28c4165e15a249' stop() method completed.
+Closed agent session 09b8ff5e-9a6f-453f-bede-d65ed4ea7efe
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 9d177248-efe4-4a5b-9886-f40bead32d88 for workspace temp_ws_default
+Created file explorer session 9d177248-efe4-4a5b-9886-f40bead32d88 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 9d177248-efe4-4a5b-9886-f40bead32d88 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8/test_teacher_3b963c9dc5984060814f4ade26635c4a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8/student_study_group_10e2f41106f14a91a276cb639b5afb20/student_one_8116c6fc7a834e6fa9763103ba3b1f64/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/memory/agent_teams/nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8/student_study_group_10e2f41106f14a91a276cb639b5afb20/student_two_b7e0e82b3adf47a0a0269c89942e75c9/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace
+FileExplorerSession closed: 9d177248-efe4-4a5b-9886-f40bead32d88
+Closed file explorer session 9d177248-efe4-4a5b-9886-f40bead32d88. Active sessions: 0
+File explorer WebSocket disconnected: 9d177248-efe4-4a5b-9886-f40bead32d88
+Agent team websocket attached for team run nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8
+Created agent session af918af3-c0fb-46c8-a91b-dda8d43cf58f for run nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8
+Agent Team WebSocket connected: session=af918af3-c0fb-46c8-a91b-dda8d43cf58f, run=nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_teacher_3b963c9dc5984060814f4ade26635c4a' with config: 'Test Teacher'.
+AgentWorker initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'.
+Registered AgentContext for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Context registered.
+Agent facade initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' created and stored successfully.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' requesting runtime to start.
+AgentRuntime for 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Starting worker.
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Starting...
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a' asyncRun(): Starting.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Runtime init completed (event store initialized).
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Runtime init completed (status deriver initialized).
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' to become idle (timeout: 30s)...
+AgentEventStream (ID: 5919848a-de03-4f1f-87df-05fe689e2236) initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Subscribed to notifier.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Bootstrapper starting direct lifecycle execution.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Executing McpServerPrewarmingStep.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Executing SystemPromptProcessingStep.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': No configured skills. Skipping skill catalog.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Final processed system prompt configured and captured. Trace ID: rt_1787484957378_5be1a8a5-c4d5-4ac0-93fb-0fb3bf323ffd. Final length: 10149.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a' initialized successfully. Entering main event scheduler loop.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' has become idle.
+AgentEventStream (ID: 5919848a-de03-4f1f-87df-05fe689e2236) for 'test_teacher_3b963c9dc5984060814f4ade26635c4a': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 28181be3-4fb3-4863-9484-bf3ec22981fa) initialized for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Subscribed to notifier.
+Published autobyteus agent run 'test_teacher_3b963c9dc5984060814f4ade26635c4a'.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_3b963c9dc5984060814f4ade26635c4a': UserInputContextBuildingProcessor completed. Final content length: 644
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+{"level":40,"time":1787484958693,"pid":40224,"hostname":"MacBookPro","reqId":"req-34","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.7880420684814453,"msg":"http request completed"}
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_teacher_3b963c9dc5984060814f4ade26635c4a',
+  prompt_tokens: 5284,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/media
+AgentRuntimeState initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'.
+Registered AgentContext for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Context registered.
+Agent facade initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' created and stored successfully.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' requesting runtime to start.
+AgentRuntime for 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Starting worker.
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Starting...
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' asyncRun(): Starting.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Runtime init completed (event store initialized).
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Runtime init completed (status deriver initialized).
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' to become idle (timeout: 30s)...
+AgentEventStream (ID: 29653330-ac9f-43c3-9553-8bf5865c8e35) initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Subscribed to notifier.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Executing McpServerPrewarmingStep.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Executing SystemPromptProcessingStep.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': No configured skills. Skipping skill catalog.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Final processed system prompt configured and captured. Trace ID: rt_1787484960317_f23bbfaf-9234-4980-8541-c754904049c0. Final length: 7809.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' has become idle.
+AgentEventStream (ID: 29653330-ac9f-43c3-9553-8bf5865c8e35) for 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: f6483507-ce75-412c-8132-494cfe42ca70) initialized for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Subscribed to notifier.
+Published autobyteus agent run 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_3b963c9dc5984060814f4ade26635c4a': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': UserInputContextBuildingProcessor completed. Final content length: 611
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_teacher_3b963c9dc5984060814f4ade26635c4a',
+  prompt_tokens: 5669,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_3b963c9dc5984060814f4ade26635c4a': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_one_8116c6fc7a834e6fa9763103ba3b1f64',
+  prompt_tokens: 4641,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_3b963c9dc5984060814f4ade26635c4a': UserInputContextBuildingProcessor completed. Final content length: 156
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': UserInputContextBuildingProcessor completed. Final content length: 76
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' requesting runtime interrupt.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: f6483507-ce75-412c-8132-494cfe42ca70) for 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'. Attempting graceful shutdown.
+Agent 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Stop requested.
+AgentExternalEventNotifier (NotifierID: d08de168-4f08-4c1b-ac9b-e106f1a76dae, AgentID: student_one_8116c6fc7a834e6fa9763103ba3b1f64) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' asyncRun() loop has finished.
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_8116c6fc7a834e6fa9763103ba3b1f64'.
+AgentRuntime for 'student_one_8116c6fc7a834e6fa9763103ba3b1f64': Context unregistered.
+AgentRuntime for 'student_one_8116c6fc7a834e6fa9763103ba3b1f64' stop() method completed.
+AgentEventStream (ID: 28181be3-4fb3-4863-9484-bf3ec22981fa) for 'test_teacher_3b963c9dc5984060814f4ade26635c4a': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a'. Attempting graceful shutdown.
+Agent 'test_teacher_3b963c9dc5984060814f4ade26635c4a' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Stop requested.
+AgentExternalEventNotifier (NotifierID: 40b4995f-dc03-45f1-896f-291dc1d67c0f, AgentID: test_teacher_3b963c9dc5984060814f4ade26635c4a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a' asyncRun() loop has finished.
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Running shutdown sequence on worker loop.
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_teacher_3b963c9dc5984060814f4ade26635c4a'.
+AgentRuntime for 'test_teacher_3b963c9dc5984060814f4ade26635c4a': Context unregistered.
+AgentRuntime for 'test_teacher_3b963c9dc5984060814f4ade26635c4a' stop() method completed.
+Closed agent session af918af3-c0fb-46c8-a91b-dda8d43cf58f
+[2026-08-23T11:36:09.416Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-23T11:36:09.617Z] [INFO] [server.runtime] Server closed cleanly.

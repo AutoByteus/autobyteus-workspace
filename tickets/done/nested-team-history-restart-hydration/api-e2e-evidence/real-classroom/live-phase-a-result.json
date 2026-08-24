@@ -1,0 +1,11 @@
+{
+  "rootTeamRunId": "nested_classroom_test_team_081587e1388b4407a50c84adcc955d91",
+  "promptMarker": "Create a real pending nested-history restart probe.",
+  "beforeRestartConversationContainsTask": false,
+  "beforeRestartContainsTool": true,
+  "beforeRestartContainsToken": true,
+  "toolApprovalIntentionallyLeftPending": true,
+  "terminated": true,
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-task-member-before-restart.png",
+  "consoleErrors": []
+}

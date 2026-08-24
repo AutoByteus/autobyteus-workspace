@@ -1,11 +1,9 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { TeamRunPhysicalScope } from "../../agent-team-execution/domain/team-run-physical-scope.js";
 
 /** Physical TeamRun directory lineage. It is deliberately not a logical topology path. */
-export type AgentMemoryScope = {
-  rootTeamRunId: string;
-  ancestorTeamRunIds: string[];
-};
+export type AgentMemoryScope = TeamRunPhysicalScope;
 
 export type StandaloneAgentMemoryLocation = {
   kind: "standalone";

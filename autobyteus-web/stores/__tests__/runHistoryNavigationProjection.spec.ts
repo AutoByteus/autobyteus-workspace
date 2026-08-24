@@ -91,6 +91,48 @@ const buildProjection = (
   ],
 }, previous);
 
+const buildHistoricalProjection = () => {
+  const teamRunId = 'historical-team';
+  const worker = testAgentNode('/worker', {
+    displayName: 'Worker',
+    agentRunId: stableAgentRunId(teamRunId),
+  });
+  const taskRecord = testTaskRecord({
+    taskId: 'settled-task',
+    delegatorAgentRunId: worker.agentRunId,
+    recipientAddress: worker.address,
+    target: { agentRunId: taskAgentRunId(teamRunId) },
+    status: 'interrupted',
+  });
+  const context = buildTestTeamContext({
+    teamRunId,
+    teamDefinitionId: `${teamRunId}-definition`,
+    teamDefinitionName: 'Historical Team',
+    coordinatorAddress: worker.address,
+    focusedAgentRunId: taskAgentRunId(teamRunId),
+    rootChildren: [worker],
+    workspaceRootPath: '/historical-workspace',
+    isActive: false,
+    tasks: [taskRecord],
+    taskExecutions: [{
+      kind: 'task_agent', address: worker.address, agent_run_id: taskAgentRunId(teamRunId),
+      platform_agent_run_id: null, started_at: timestamp, settled_at: '2026-07-01T10:05:00.000Z',
+    }],
+  });
+  return buildRunHistoryNavigationProjection({
+    workspaceGroups: [],
+    agentAvatarByDefinitionId: {},
+    allWorkspaces: [{
+      workspaceId: 'historical-workspace',
+      workspaceRootPath: '/historical-workspace',
+      name: 'Historical Workspace',
+    }],
+    workspacesById: {},
+    agentContexts: new Map(),
+    teamContexts: [context],
+  });
+};
+
 describe('runHistoryNavigationProjection current exact execution identity', () => {
   it('publishes stable and transient rows, exact focus/indexes, and reconciles equal branches', () => {
     const first = buildProjection();
@@ -118,6 +160,23 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     expect(second.workspaceNodes).toBe(first.workspaceNodes);
     expect(second.teamNodes).toBe(first.teamNodes);
     expect(second.teamNodesByWorkspaceRoot).toBe(first.teamNodesByWorkspaceRoot);
+  });
+
+  it('indexes settled historical task rows with their exact execution ancestry and focus', () => {
+    const projection = buildHistoricalProjection();
+    const team = projection.teamNodes.find((candidate) => candidate.teamRunId === 'historical-team')!;
+    const identity = runHistoryMemberIndexKey('historical-team', taskAgentRunId('historical-team'));
+
+    expect(team).toMatchObject({ isActive: false, focusedAgentRunId: taskAgentRunId('historical-team') });
+    expect(team.executionRows.find((row) => row.agentRunId === taskAgentRunId('historical-team')))
+      .toMatchObject({
+        kind: 'transient_execution',
+        transientKind: 'task_agent',
+        rowKey: taskRowKey('historical-team'),
+      });
+    expect(projection.memberIndexByIdentity[identity]).toBe(1);
+    expect(projection.memberAncestorExecutionKeysByIdentity[identity])
+      .toEqual([`agent:${stableAgentRunId('historical-team')}`]);
   });
 
   it('reuses an unrelated workspace Team bucket when one Team topology changes', () => {

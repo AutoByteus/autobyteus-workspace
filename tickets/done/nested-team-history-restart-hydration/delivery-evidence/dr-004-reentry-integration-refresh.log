@@ -1,0 +1,22 @@
+# DR-004 Delivery Re-entry Integration Refresh
+date=2026-08-24
+authority=API-REV-004 Pass 98.7%; CRR-006 Not Applicable / ready for delivery
+
+## Ticket refresh
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_before=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+origin_personal_after=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+ticket_head=78bfd0a3453fd66f2677dd99a1edb7a44e040607
+merge_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+ahead_behind=0	2
+base_commits_not_in_ticket:
+
+## Private refresh
+From github.com-ryan:AutoByteus/autobyteus-private-agents
+ * branch            main       -> FETCH_HEAD
+origin_main_before=db8d100bedff216fd60dbf7eda870bcff0dd5a91
+origin_main_after=db8d100bedff216fd60dbf7eda870bcff0dd5a91
+private_head=db8d100bedff216fd60dbf7eda870bcff0dd5a91
+ahead_behind=0	0
+remote_commits_not_local:

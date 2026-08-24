@@ -1,0 +1,18 @@
+captured_at_utc=2026-08-23T19:16:13Z
+user_restart_observed=true
+api_e2e_did_not_stop_or_start_user_app=true
+30790     1 Sun Aug 23 21:08:14 2026     07:59 /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+31397 30790 Sun Aug 23 21:08:16 2026     07:57 /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+health:
+{"status":"ok","message":"Server is running"}
+status=200
+production_db_open:
+AutoByteu 31397 normy   22u      REG               1,13 875474944           347602404 /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 31397 normy   23u      REG               1,13 875474944           347602404 /Users/normy/.autobyteus/server-data/db/production.db
+trace_hashes_after_user_restart:
+141157cbbb3bf0035c2dee523a7a87904925536925c70676dc5574e9330123f7  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_1914195019d548bcb18b3c769d726377/raw_traces_active.jsonl
+653c569ca03f0ba4cbd774acd935b17d17340ba4062fe518e1184db097934c81  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_96b429c2b22243c788f13e642ad1553d/raw_traces_active.jsonl
+c256c68385bb7566219733e307183349e154a042a6b519ad8ee8f107b8e16621  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_7c05431d59074513a054b548ee529e55/raw_traces_active.jsonl
+a5ec938f46323d125c647b02b2522a728cf22ad9257d947129dae07a57cc4f80  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46/raw_traces_active.jsonl
+591acfb9646b7f6acdafad7e2b4baff08db261dfe312f378d011772051d3e7e8  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_210398f0b40a4223b71aaa910abdd89f/raw_traces_active.jsonl
+511e1b3344847005f5556b596071b80ab015d2f8a8501c439daba2e0fc0b3eba  /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_5228784099e54bccb2ab4c63b1b24928/raw_traces_active.jsonl

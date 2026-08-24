@@ -1,0 +1,25 @@
+{
+  "errors": null,
+  "summary": {
+    "taskConversation": 4,
+    "taskActivities": 2,
+    "taskLastActivity": "2026-08-23T08:58:33.239Z",
+    "taskEventCount": 4,
+    "directRootConversation": 6,
+    "directRootActivities": 2,
+    "communicationCount": 0,
+    "taskRecords": [
+      {
+        "taskId": "task_99ccd260b5b145c985c05330a9f3a593",
+        "status": "interrupted",
+        "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_1eb9bd0abbba4bb587c2af48aafe4bfc",
+        "targetAgentRunId": null,
+        "updateKinds": [
+          "interruption"
+        ]
+      }
+    ],
+    "resumeActive": false,
+    "taskSettledAt": "2026-08-23T09:05:09.879Z"
+  }
+}

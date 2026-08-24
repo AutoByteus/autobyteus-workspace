@@ -2,6 +2,10 @@ import type { CollaborationHandoff } from "../../agent-collaboration/domain/coll
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "./team-run-config.js";
 import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
+import {
+  normalizeTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "./team-run-physical-scope.js";
 
 export interface TeamAgentMemberRuntimeContext {
   readonly kind: "agent";
@@ -23,7 +27,7 @@ export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext | TeamSubTe
 export type RuntimeTeamRunContext = MixedTeamRunContext | null;
 
 export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
-  readonly rootTeamRunId: string;
+  readonly physicalScope: TeamRunPhysicalScope;
   readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly teamNode: TeamRunAgentTeamNode;
@@ -32,7 +36,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   readonly runtimeContext: TRuntimeContext;
 
   constructor(input: {
-    rootTeamRunId: string;
+    physicalScope: TeamRunPhysicalScope;
     teamRunId: string;
     teamBackendKind: TeamBackendKind;
     teamNode: TeamRunAgentTeamNode;
@@ -40,8 +44,15 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     applicationBinding?: TeamRunApplicationBinding | null;
     runtimeContext: TRuntimeContext;
   }) {
-    this.rootTeamRunId = required(input.rootTeamRunId, "rootTeamRunId");
+    this.physicalScope = normalizeTeamRunPhysicalScope(input.physicalScope);
     this.teamRunId = required(input.teamRunId, "teamRunId");
+    const containingTeamRunId = this.physicalScope.ancestorTeamRunIds.at(-1)
+      ?? this.physicalScope.rootTeamRunId;
+    if (containingTeamRunId !== this.teamRunId) {
+      throw new Error(
+        `Physical scope contains TeamRun '${containingTeamRunId}', not '${this.teamRunId}'.`,
+      );
+    }
     if (input.teamNode.teamRunId !== this.teamRunId) {
       throw new Error(`Team node '${input.teamNode.address}' does not own TeamRun '${this.teamRunId}'.`);
     }
@@ -54,6 +65,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     this.runtimeContext = input.runtimeContext;
   }
 
+  get rootTeamRunId() { return this.physicalScope.rootTeamRunId; }
   get teamAddress() { return this.teamNode.address; }
 }
 

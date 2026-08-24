@@ -17,6 +17,7 @@ import type {
 
 export const agentRowKey = (agentRunId: string): string => `agent:${agentRunId}`;
 export const teamRowKey = (teamRunId: string): string => `team:${teamRunId}`;
+export type TeamExecutionNavigationPurpose = 'LIVE_EXECUTION' | 'HISTORICAL_INSPECTION';
 
 const taskLabel = (description: string): string => {
   const normalized = description.trim().replace(/\s+/g, ' ');
@@ -134,6 +135,7 @@ export const projectNavigationRows = (input: {
   tree: TeamRunExecutionTreeDto;
   tasks: readonly TaskDelegationRecordDto[];
   contexts: ReadonlyMap<string, AgentContext>;
+  purpose: TeamExecutionNavigationPurpose;
 }): readonly TeamExecutionNavigationRow[] => {
   const rows: TeamExecutionNavigationRow[] = [];
   const tasksByAgent = new Map<string, TaskDelegationRecordDto>();
@@ -164,7 +166,7 @@ export const projectNavigationRows = (input: {
     }));
   };
   const addTask = (task: TaskExecutionDto, depth: number, parentKey: string): void => {
-    if (task.settled_at) return;
+    if (input.purpose === 'LIVE_EXECUTION' && task.settled_at) return;
     if (task.kind === 'task_agent') {
       const record = tasksByAgent.get(task.agent_run_id);
       if (record) addAgent({ kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id, depth, parentKey, task: record });
