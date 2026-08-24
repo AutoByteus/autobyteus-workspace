@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization and a new stable release are now explicitly authorized after the successful DR-001 integrated handoff. The documented normal release helper will publish `v1.4.57` and trigger desktop, Android, iOS, messaging-gateway, and server-Docker workflows.
+Repository finalization and stable release `v1.4.57` completed after the successful DR-001 integrated handoff and the user's explicit DR-002 acceptance. The documented normal release helper triggered desktop, Android, iOS, messaging-gateway, and server-Docker workflows.
 
 ## Handoff Summary
 
@@ -26,13 +26,13 @@ Repository finalization and a new stable release are now explicitly authorized a
 - No-rerun rationale (only if no new base commits were integrated): The refreshed base exactly equals the reviewed bootstrap base. `API-REV-001` already validated source commit `2950019a34eada253a888b9568c1b34284f0c74d` at 96.7%, and `CRR-003` confirmed no durable test delta; there is no new integrated behavior to rerun.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): None for the delivery handoff; repository finalization is intentionally held pending explicit user verification.
+- Blocker (if applicable): None. The initial DR-001 hold was cleared by the user's explicit DR-002 verification.
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification / acceptance reference: User message: “the task is done. lets finalze and release a new version”.
-- Renewed verification required after later re-integration: `No` at DR-001; reassess after the mandatory pre-finalization target refresh.
+- Renewed verification required after later re-integration: `No`; the mandatory pre-finalization target refresh found no target advancement or re-integration.
 - Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: N/A
 
@@ -80,7 +80,7 @@ Completed. Package versions were synchronized from `1.4.56` to `1.4.57`; release
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility` (removed)
 - Worktree cleanup result: `Completed`
 - Worktree prune result: `Completed`
 - Local ticket branch cleanup result: `Completed`
@@ -91,12 +91,12 @@ Completed. Package versions were synchronized from `1.4.56` to `1.4.57`; release
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; the handoff is ready. Only later repository finalization is intentionally gated.
+- Why final handoff could not complete: N/A; finalization and release completed.
 
 ## Release Notes Summary
 
 - Release notes artifact created before release execution: `Yes`; release scope was requested with the acceptance signal.
-- Archived release notes artifact used for release/publication: N/A
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-new-workspace-team-run-visibility/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
@@ -118,7 +118,7 @@ Completed: pushed `v1.4.57`; monitored all five tag-triggered workflows to succe
 
 ## Rollback Criteria
 
-Before finalization there is no deployed or published state to roll back. If user verification finds visible New/path divergence, Temp fallback, duplicate workspace/Team creation, wrong tree placement, missing reload persistence, or a delayed-discovery overwrite, stop delivery and route the evidence for source/design classification. After a future merge, revert the ticket change on `personal` rather than rewriting history; any release rollback method must be chosen only if a release is separately authorized.
+Do not rewrite or move stable tag `v1.4.57`. If the released behavior regresses—visible New/path divergence, Temp fallback, duplicate workspace/Team creation, wrong tree placement, missing reload persistence, or delayed-discovery overwrite—revert the ticket change on `personal` and publish a later corrective patch through the documented release flow. If immediate server containment is required, explicitly retarget the Docker `latest` tag to a known-good stable image while preserving immutable `1.4.57`, then document the corrective rollout.
 
 ## Final Status
 

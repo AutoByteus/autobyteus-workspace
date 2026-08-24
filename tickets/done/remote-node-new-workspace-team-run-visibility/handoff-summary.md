@@ -3,11 +3,11 @@
 ## Ticket And Candidate State
 
 - Ticket: `remote-node-new-workspace-team-run-visibility`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
-- Ticket branch: `codex/remote-node-new-workspace-team-run-visibility`
+- Canonical finalized repository: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Ticket branch: `codex/remote-node-new-workspace-team-run-visibility` (integrated, then deleted locally and remotely)
 - Reviewed implementation source: `2950019a34eada253a888b9568c1b34284f0c74d`
 - Recorded/finalization base: `personal`; refreshed tracked reference `origin/personal` at `52b4be02ea793f2071fe5a63a94664ab25196433`
-- Integration method/result: `Already current — Pass`; the base did not advance after bootstrap, and the ticket branch is 2 ahead / 0 behind.
+- Initial delivery integration method/result: `Already current — Pass`; the base did not advance after bootstrap. Final target integration later fast-forwarded `personal` to archived ticket commit `0ac0f29411dc7094373afecfcf67313b90038c69`.
 - Current delivery revision: `DR-004`
 - Current disposition: Repository finalization, stable `v1.4.57` publication, rollout verification, and ticket cleanup are complete.
 
