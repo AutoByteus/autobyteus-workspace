@@ -1,0 +1,56 @@
+$ corepack pnpm typecheck
+
+> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> vue-tsc --noEmit -p tsconfig.prototype.json
+
+$ corepack pnpm lint
+
+> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> eslint prototype/scripts prototype/shared prototype/source-observation plugins/00.prototype-state.client.ts plugins/10.prototype-host-bootstrap.client.ts prototype/tests
+
+$ corepack pnpm test
+
+> autobyteus-web-prototype@0.1.0 test /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> vitest run
+
+
+ RUN  v3.2.7 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+
+ ✓ prototype/tests/host-scenario.test.ts (3 tests) 5ms
+ ✓ prototype/tests/fixture-contract.test.ts (4 tests) 5ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  13:04:06
+   Duration  608ms (transform 115ms, setup 0ms, collect 151ms, tests 10ms, environment 0ms, prepare 329ms)
+
+$ corepack pnpm validate:boundaries
+
+> autobyteus-web-prototype@0.1.0 validate:boundaries /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/validate-boundaries.mjs
+
+PASS No Electron/native runtime dependency
+PASS No copied production electron root
+PASS No copied production src-electron root
+PASS No copied production server root
+PASS No copied production backend root
+PASS No copied production docker root
+PASS No copied production packaging root
+PASS Browser external request boundary is explicit
+PASS WebSocket boundary is local and scripted
+PASS Scenario state is resettable
+PASS Source evidence contains no page-capture errors
+PASS Source evidence uses controlled loopback mock
+PASS Prototype has independently runnable Nuxt entry points
+$ corepack pnpm audit:presentation
+
+> autobyteus-web-prototype@0.1.0 audit:presentation /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/audit-presentation-parity.mjs
+
+369/369 retained presentation files are exact byte matches.
+$ corepack pnpm audit:interactions
+
+> autobyteus-web-prototype@0.1.0 audit:interactions /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/audit-interaction-discovery.mjs
+
+179 source test files and 925 cases classified into 17 stable groups.

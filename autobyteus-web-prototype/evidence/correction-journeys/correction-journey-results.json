@@ -1,0 +1,1821 @@
+{
+  "generatedAt": "2026-08-22T12:44:57.135Z",
+  "sourceBaseUrl": "http://127.0.0.1:3100",
+  "prototypeBaseUrl": "http://127.0.0.1:3200",
+  "mockBaseUrl": "http://127.0.0.1:4310",
+  "results": [
+    {
+      "journey": {
+        "id": "JRN-019",
+        "name": "Electron update download feedback",
+        "path": "/settings?section=updates",
+        "context": "electron_internal",
+        "scenario": "update_available"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-019.png",
+        "screenshotSha256": "6d265cd63729ed5eef8a5c682ecf770cd2f24e15c93b50c8d3971f96c63d6700",
+        "semantic": {
+          "route": "/settings?section=updates",
+          "bodyText": "APP UPDATE\n\nReady to install\n\nUpdate downloaded. Restart to apply the new version.\n\nCurrent 0.1.0-prototype → New 0.2.0-prototype\n\nRelease notes\nInstall & Restart\nUpdate downloaded. Restart to install.\nUpdate downloaded. Restart to install.\nBack to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAutoByteus Updates\n\nVersion details and desktop app update controls.\n\nCurrent Version\n0.1.0-prototype\nUpdate Status\nReady to install\nLast Checked\n8/22/2026, 4:05:00 AM\n\nUpdate downloaded. Restart to install it.\n\nCheck for Updates\nInstall & Restart",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "status": "Ready to install"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-019.png",
+        "screenshotSha256": "6d265cd63729ed5eef8a5c682ecf770cd2f24e15c93b50c8d3971f96c63d6700",
+        "semantic": {
+          "route": "/settings?section=updates",
+          "bodyText": "APP UPDATE\n\nReady to install\n\nUpdate downloaded. Restart to apply the new version.\n\nCurrent 0.1.0-prototype → New 0.2.0-prototype\n\nRelease notes\nInstall & Restart\nUpdate downloaded. Restart to install.\nUpdate downloaded. Restart to install.\nBack to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAutoByteus Updates\n\nVersion details and desktop app update controls.\n\nCurrent Version\n0.1.0-prototype\nUpdate Status\nReady to install\nLast Checked\n8/22/2026, 4:05:00 AM\n\nUpdate downloaded. Restart to install it.\n\nCheck for Updates\nInstall & Restart",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "status": "Ready to install"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-020",
+        "name": "Electron extension disable and enable transition",
+        "path": "/settings?section=extensions",
+        "context": "electron_internal",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-020.png",
+        "screenshotSha256": "d723f42df1b263128a21afcfc83d6b4df0491d56f4af7044b4c9aef64097802c",
+        "semantic": {
+          "route": "/settings?section=extensions",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\n\nEXTENSIONS\n\nOptional capabilities\n\nInstall voice input without increasing the base app size. Runtime assets are downloaded on demand and managed locally.\n\nVoice Input\n\nRecord speech and transcribe it locally before sending.\n\nInstalled\nEnabled\n\nVoice Input is installed and enabled.\n\nLanguage\nAuto\nEnglish\nChinese\nAudio source\nRefresh\nSystem default\n\nMicrophone access has not been granted yet. Start a test to request access or refresh after allowing it.\n\nTest Voice Input\n\nRecord a short sample here to verify microphone capture and local transcription before using the composer.\n\nStart Test\nInput level\n0%\n\nManaged locally in your AutoByteus extensions folder.\n\nRuntime: 1.0.0-prototype · Model: tiny-prototype · Backend: faster-whisper\nDisable\nOpen Folder\nRemove\nReinstall",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "finalAction": "Disable"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-020.png",
+        "screenshotSha256": "d723f42df1b263128a21afcfc83d6b4df0491d56f4af7044b4c9aef64097802c",
+        "semantic": {
+          "route": "/settings?section=extensions",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\n\nEXTENSIONS\n\nOptional capabilities\n\nInstall voice input without increasing the base app size. Runtime assets are downloaded on demand and managed locally.\n\nVoice Input\n\nRecord speech and transcribe it locally before sending.\n\nInstalled\nEnabled\n\nVoice Input is installed and enabled.\n\nLanguage\nAuto\nEnglish\nChinese\nAudio source\nRefresh\nSystem default\n\nMicrophone access has not been granted yet. Start a test to request access or refresh after allowing it.\n\nTest Voice Input\n\nRecord a short sample here to verify microphone capture and local transcription before using the composer.\n\nStart Test\nInput level\n0%\n\nManaged locally in your AutoByteus extensions folder.\n\nRuntime: 1.0.0-prototype · Model: tiny-prototype · Backend: faster-whisper\nDisable\nOpen Folder\nRemove\nReinstall",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "finalAction": "Disable"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-021",
+        "name": "Embedded-server restart recovery",
+        "path": "/agents?view=list",
+        "context": "electron_internal",
+        "scenario": "electron_error"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-021.png",
+        "screenshotSha256": "e4f7eb3fa0819c59e96dfdc47d6fa077e481a45d947df356759a6f61c40469a0",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "recovered": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-021.png",
+        "screenshotSha256": "e4f7eb3fa0819c59e96dfdc47d6fa077e481a45d947df356759a6f61c40469a0",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "recovered": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-022",
+        "name": "Narrow workspace tool drawer Escape and focus recovery",
+        "path": "/workspace",
+        "scenario": "workspace_team_active",
+        "viewport": "narrow"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-022.png",
+        "screenshotSha256": "5de37ec0d63db4179e5b80bbbf36605cf6d47c650f6b0af844192d139aeb470a",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "C\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Files",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "focusReturned": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-022.png",
+        "screenshotSha256": "5de37ec0d63db4179e5b80bbbf36605cf6d47c650f6b0af844192d139aeb470a",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "C\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Files",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "focusReturned": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-023",
+        "name": "Team message selection transition",
+        "path": "/workspace",
+        "scenario": "workspace_team_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-023.png",
+        "screenshotSha256": "7f8edf2e6b3530e172bbfc8f8f4982b98a460073fba000013d13c0d2d6de9652",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nMessage\nevidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Message · to evidence-writerAug 22, 04:01 AMPlease compare the source and prototype workspace states.",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "selectedMessageVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-023.png",
+        "screenshotSha256": "7f8edf2e6b3530e172bbfc8f8f4982b98a460073fba000013d13c0d2d6de9652",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nMessage\nevidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Message · to evidence-writerAug 22, 04:01 AMPlease compare the source and prototype workspace states.",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "selectedMessageVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-024",
+        "name": "Team messages and reference viewer",
+        "path": "/workspace",
+        "scenario": "workspace_team_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-024.png",
+        "screenshotSha256": "e319b82e0c5db40e88679932af9325b4a5aa2e4b2291f00aa1c326876eb0b96f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nSynthetic file\n\nFixture content only.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "evidence.md",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "referenceViewerVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-024.png",
+        "screenshotSha256": "e319b82e0c5db40e88679932af9325b4a5aa2e4b2291f00aa1c326876eb0b96f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nSynthetic file\n\nFixture content only.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "evidence.md",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "referenceViewerVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-025",
+        "name": "Delegated-task detail and accepted lifecycle",
+        "path": "/workspace",
+        "scenario": "workspace_team_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-025.png",
+        "screenshotSha256": "fc2b65f6bef5d1217d5d1d76db1dea28e06421a193e2f46af808982008b32a6c",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nTasks\n1 task\nValidate exact visual parity for the workspace.\nAccepted\nUpdated 04:03 AM\ncoordinator → evidence-writer\nResult submitted · Result 1\n\nevidence-writer → coordinator\n\n04:02 AM\n\nAll matched frames pass.\n\nevidence.md\nResult 1 accepted\n\ncoordinator → evidence-writer\n\n04:03 AM\n\nAccepted for baseline evidence.\n\nTask assigned\nAccepted\n\ncoordinator → evidence-writer\n\nAug 22, 04:00 AM\n\nValidate exact visual parity for the workspace.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Validate exact visual parity for the workspace. AcceptedUpdated 04:03 AMcoordinator → evidence-writer",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "acceptedVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-025.png",
+        "screenshotSha256": "fc2b65f6bef5d1217d5d1d76db1dea28e06421a193e2f46af808982008b32a6c",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nTasks\n1 task\nValidate exact visual parity for the workspace.\nAccepted\nUpdated 04:03 AM\ncoordinator → evidence-writer\nResult submitted · Result 1\n\nevidence-writer → coordinator\n\n04:02 AM\n\nAll matched frames pass.\n\nevidence.md\nResult 1 accepted\n\ncoordinator → evidence-writer\n\n04:03 AM\n\nAccepted for baseline evidence.\n\nTask assigned\nAccepted\n\ncoordinator → evidence-writer\n\nAug 22, 04:00 AM\n\nValidate exact visual parity for the workspace.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Validate exact visual parity for the workspace. AcceptedUpdated 04:03 AMcoordinator → evidence-writer",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "acceptedVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-026",
+        "name": "File context menu and create dialog",
+        "path": "/workspace",
+        "scenario": "workspace_agent_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-026.png",
+        "screenshotSha256": "64ae690f9c8dc7f9e7f70af95bd1d1266cd66dd866755810c6dfa98b9d1ccc22",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nRunning\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.\n\nAdd New File\n\nEnter a name for the new file:\n\nCancel\nCreate",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Add New FileEnter a name for the new file: Cancel  Create",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialog": "Add New File\n\nEnter a name for the new file:\n\nCancel\nCreate"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-026.png",
+        "screenshotSha256": "64ae690f9c8dc7f9e7f70af95bd1d1266cd66dd866755810c6dfa98b9d1ccc22",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nRunning\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.\n\nAdd New File\n\nEnter a name for the new file:\n\nCancel\nCreate",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Add New FileEnter a name for the new file: Cancel  Create",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialog": "Add New File\n\nEnter a name for the new file:\n\nCancel\nCreate"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-027",
+        "name": "Paired-mobile run setup mode transition",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "mobile_agent_active",
+        "viewport": "narrow",
+        "mobileTab": "runs"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-027.png",
+        "screenshotSha256": "a0347cc8fc07b8381baf918032d6f160206786de2613cd35e81f9a2e6ba9db9a",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nResearch Assistant\n\nRunning\n\nSwitch\nNew run\nClose setup\nHide\nAgent\nTeam\n\nTeam\n\nChoose a team intentionally\n\nChoose\n\nWorkspace\n\nprototype-workspace\n\nChange\nLoad workspace by server path\n\nEnter an absolute path on the paired AutoByteus node, not this phone.\n\nLoad\n\nChoose a team before creating the run.\n\nCreate run\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Team",
+            "testId": "mobile-run-setup-team-mode"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "setupMode": "team",
+            "readiness": "Choose a team before creating the run."
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-027.png",
+        "screenshotSha256": "a44c4200b58d9bcb9900b7899d934fa5b466696c89c51a1b770aef152ad28011",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nResearch Assistant\n\nRunning\n\nSwitch\nNew run\nClose setup\nHide\nAgent\nTeam\n\nTeam\n\nChoose a team intentionally\n\nChoose\n\nWorkspace\n\nprototype-workspace\n\nChange\nLoad workspace by server path\n\nEnter an absolute path on the paired AutoByteus node, not this phone.\n\nLoad\n\nChoose a team before creating the run.\n\nCreate run\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Team",
+            "testId": "mobile-run-setup-team-mode"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "setupMode": "team",
+            "readiness": "Choose a team before creating the run."
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 4,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0.000012152144853566655,
+          "maximumChannelDelta": 1,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-028",
+        "name": "Paired-mobile file viewer attachment feedback",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "mobile_agent_active",
+        "viewport": "narrow",
+        "mobileTab": "files"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-028.png",
+        "screenshotSha256": "2dc883fd874586a239560afb25c03f24c8cf1c46473ce20fcd45eba13b6a804d",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nResearch Assistant\n\nRunning\n\nSwitch\nprototype-workspace\n\n/synthetic/prototype-workspace\n\nFilters\n\n1 file attached to Chat context.\n\nPrototype Workspace\n\n📁\ndocs\ndocs\n📄\nrequirements.md\nrequirements.md\nBack\n\nrequirements.md\n\nrequirements.md\n\nAttach\n\nPreview not available for this file type.\n\nrequirements.md added to current run Chat context.\n\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Attach",
+            "testId": "mobile-file-attach"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "requirements.md added to current run Chat context."
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-028.png",
+        "screenshotSha256": "2dc883fd874586a239560afb25c03f24c8cf1c46473ce20fcd45eba13b6a804d",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nResearch Assistant\n\nRunning\n\nSwitch\nprototype-workspace\n\n/synthetic/prototype-workspace\n\nFilters\n\n1 file attached to Chat context.\n\nPrototype Workspace\n\n📁\ndocs\ndocs\n📄\nrequirements.md\nrequirements.md\nBack\n\nrequirements.md\n\nrequirements.md\n\nAttach\n\nPreview not available for this file type.\n\nrequirements.md added to current run Chat context.\n\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Attach",
+            "testId": "mobile-file-attach"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "requirements.md added to current run Chat context."
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-029",
+        "name": "Paired-mobile team focus, messages and reference",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "mobile_team_active",
+        "viewport": "narrow",
+        "mobileTab": "activity"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-029.png",
+        "screenshotSha256": "334368952f58165056ff1b65003bd98aa08b91b23617eda977404c2edea76bf6",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nProduct Review Team\n\nRunning\n\nSwitch\n\nproduct-review › coordinator\n\n⌄\n\nTEAM MEMBERS\n\nproduct-review › coordinator\nReview Coordinator\nproduct-review › evidence-writer\nEvidence Writer\nMessages · 2\nActivity · 0\nTeam messages\n\n2 messages; open details for full text.\n\nHide\n\nAgent Message\n\nAug 22, 04:03 AM\n\nFrom evidence-writer\n\nComparison complete. The controlled evidence is attached.\n\n1 REFERENCE FILE\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nOpen\n\nAgent Message\n\nAug 22, 04:01 AM\n\nTo evidence-writer\n\nPlease compare the source and prototype workspace states.\n\nBack\n\nevidence.md\n\n/synthetic/prototype-workspace/docs/evidence.md\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nSynthetic file\n\nFixture content only.\n\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "evidence.md/synthetic/prototype-workspace/docs/evidence.mdOpen",
+            "testId": "mobile-team-reference-row"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "referenceViewer": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-029.png",
+        "screenshotSha256": "334368952f58165056ff1b65003bd98aa08b91b23617eda977404c2edea76bf6",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nProduct Review Team\n\nRunning\n\nSwitch\n\nproduct-review › coordinator\n\n⌄\n\nTEAM MEMBERS\n\nproduct-review › coordinator\nReview Coordinator\nproduct-review › evidence-writer\nEvidence Writer\nMessages · 2\nActivity · 0\nTeam messages\n\n2 messages; open details for full text.\n\nHide\n\nAgent Message\n\nAug 22, 04:03 AM\n\nFrom evidence-writer\n\nComparison complete. The controlled evidence is attached.\n\n1 REFERENCE FILE\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nOpen\n\nAgent Message\n\nAug 22, 04:01 AM\n\nTo evidence-writer\n\nPlease compare the source and prototype workspace states.\n\nBack\n\nevidence.md\n\n/synthetic/prototype-workspace/docs/evidence.md\n\nevidence.md\n/synthetic/prototype-workspace/docs/evidence.md\nSynthetic file\n\nFixture content only.\n\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity",
+          "active": {
+            "tag": "BUTTON",
+            "text": "evidence.md/synthetic/prototype-workspace/docs/evidence.mdOpen",
+            "testId": "mobile-team-reference-row"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "referenceViewer": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-030",
+        "name": "Paired-mobile unpair confirmation cancel",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "populated",
+        "viewport": "narrow"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-030.png",
+        "screenshotSha256": "5474715d255a1352141bf5e165fea829ed35ef647148b0d02b4dc4727ac7b6ee",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nPrototype Node\n\nhttp://127.0.0.1:4310\n\nConnected\nRecent work\nSwitch work\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogClosed": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-030.png",
+        "screenshotSha256": "5474715d255a1352141bf5e165fea829ed35ef647148b0d02b4dc4727ac7b6ee",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nPrototype Node\n\nhttp://127.0.0.1:4310\n\nConnected\nRecent work\nSwitch work\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogClosed": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-031",
+        "name": "Agent edit success feedback and detail navigation",
+        "path": "/agents?view=edit&id=agent-researcher",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-031.png",
+        "screenshotSha256": "5e4a5b1b0b1739d1a12bfcdf641126362bad970a9d06603b3b094a392f6db4a4",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant Updated\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "route": "/agents?view=detail&id=agent-researcher"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-031.png",
+        "screenshotSha256": "5e4a5b1b0b1739d1a12bfcdf641126362bad970a9d06603b3b094a392f6db4a4",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant Updated\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "route": "/agents?view=detail&id=agent-researcher"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-032",
+        "name": "Agent delete confirmation and cancel",
+        "path": "/agents?view=detail&id=agent-researcher",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-032.png",
+        "screenshotSha256": "b283e0153f3d673e128f990c72e4527355d6d0f4b69a82aeff32857c917f0084",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogText": "Delete Agent Definition\n\nAre you sure you want to delete the agent definition\n\"Research Assistant\"?\n\nThis action cannot be undone.\n\nCancel\nDelete Definition",
+            "focusRouteRetained": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-032.png",
+        "screenshotSha256": "29ca855e1817c6f4c253d7789eef0b9373ea412e7f478204c9098aad857e880a",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogText": "Delete Agent Definition\n\nAre you sure you want to delete the agent definition\n\"Research Assistant\"?\n\nThis action cannot be undone.\n\nCancel\nDelete Definition",
+            "focusRouteRetained": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 3,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.0000023148148148148148,
+          "maximumChannelDelta": 1,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-033",
+        "name": "Team create checklist validation",
+        "path": "/agent-teams?view=team-create",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-033.png",
+        "screenshotSha256": "42a1c7394136678baeef7d93da5e278d5d53de9eca2a1a0ade21c727dc885497",
+        "semantic": {
+          "route": "/agent-teams?view=team-create",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nCreate Agent Team\n\nDrag from library to canvas, then assign a coordinator.\n\nUse Template\nBasics\nPV\nUpload Avatar\n\nPNG/JPG, square recommended\n\nTeam Name\n\nMember names auto-fill from dragged item names.\n\nTeam Description\nCategory\nInstructions\nAgent & Team Library\n\nMY AGENTS\n\n⋮⋮\nResearch Assistant\nAGENT\n⋮⋮\nDocumentation Writer\nAGENT\n\nMY TEAMS\n\n⋮⋮\nProduct Review Team\nTEAM\n\nDrag items from this library into Team Canvas\n\nTeam Canvas\nPV\nPrototype Validation Team\n\nDragged from Library → Canvas\n\nDrop agents and teams here to build your team\nMember Details\n\nSelect a member in Team Canvas to edit details.\n\nLLM config\n\nOptional runtime, model, and LLM settings.\n\nRuntime\nChoose when launching\nAutoByteus\nModel\nSelect a model\n✓ Team Name set\n○ At least 1 member required\n○ Coordinator required\nCancel\nCreate Team",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "requiredRemaining": true,
+            "coordinatorRemaining": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-033.png",
+        "screenshotSha256": "42a1c7394136678baeef7d93da5e278d5d53de9eca2a1a0ade21c727dc885497",
+        "semantic": {
+          "route": "/agent-teams?view=team-create",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nCreate Agent Team\n\nDrag from library to canvas, then assign a coordinator.\n\nUse Template\nBasics\nPV\nUpload Avatar\n\nPNG/JPG, square recommended\n\nTeam Name\n\nMember names auto-fill from dragged item names.\n\nTeam Description\nCategory\nInstructions\nAgent & Team Library\n\nMY AGENTS\n\n⋮⋮\nResearch Assistant\nAGENT\n⋮⋮\nDocumentation Writer\nAGENT\n\nMY TEAMS\n\n⋮⋮\nProduct Review Team\nTEAM\n\nDrag items from this library into Team Canvas\n\nTeam Canvas\nPV\nPrototype Validation Team\n\nDragged from Library → Canvas\n\nDrop agents and teams here to build your team\nMember Details\n\nSelect a member in Team Canvas to edit details.\n\nLLM config\n\nOptional runtime, model, and LLM settings.\n\nRuntime\nChoose when launching\nAutoByteus\nModel\nSelect a model\n✓ Team Name set\n○ At least 1 member required\n○ Coordinator required\nCancel\nCreate Team",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "requiredRemaining": true,
+            "coordinatorRemaining": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-034",
+        "name": "Team delete confirmation and cancel",
+        "path": "/agent-teams?view=team-detail&id=team-product",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-034.png",
+        "screenshotSha256": "bed72132b63e3c1d87bb99b1cd9c181bec5e4523a5fd35a50fdfb3a35167db3f",
+        "semantic": {
+          "route": "/agent-teams?view=team-detail&id=team-product",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agent Teams\nPR\nProduct Review Team\nProduct\n\nA deterministic synthetic team with researcher and writer members.\n\nMembers (2)\nCoordinator: researcher\nNested Teams: 0\nRun\nEdit\nDelete\nDescription\n\nA deterministic synthetic team with researcher and writer members.\n\nCOORDINATOR\n\nresearcher\n\nCOMPOSITION SUMMARY\n\n2 Agents, 0 Nested Teams\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nCoordinate a safe product-review task using synthetic data.\nMembers (2)\nRE\n\nresearcher\n\nCOORDINATOR\n\nBlueprint: Research Assistant\n\nView ↗\nWR\n\nwriter\n\nBlueprint: Documentation Writer\n\nView ↗",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogText": "Delete Agent Team Definition\n\nAre you sure you want to delete the agent team definition\n\"Product Review Team\"?\n\nThis action cannot be undone.\n\nCancel\nDelete Definition"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-034.png",
+        "screenshotSha256": "b71728c69bc6824ab6c32bdf4a41f3a79ae3e7d2763c896a9c30d5e45761aa15",
+        "semantic": {
+          "route": "/agent-teams?view=team-detail&id=team-product",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agent Teams\nPR\nProduct Review Team\nProduct\n\nA deterministic synthetic team with researcher and writer members.\n\nMembers (2)\nCoordinator: researcher\nNested Teams: 0\nRun\nEdit\nDelete\nDescription\n\nA deterministic synthetic team with researcher and writer members.\n\nCOORDINATOR\n\nresearcher\n\nCOMPOSITION SUMMARY\n\n2 Agents, 0 Nested Teams\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nCoordinate a safe product-review task using synthetic data.\nMembers (2)\nRE\n\nresearcher\n\nCOORDINATOR\n\nBlueprint: Research Assistant\n\nView ↗\nWR\n\nwriter\n\nBlueprint: Documentation Writer\n\nView ↗",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "dialogText": "Delete Agent Team Definition\n\nAre you sure you want to delete the agent team definition\n\"Product Review Team\"?\n\nThis action cannot be undone.\n\nCancel\nDelete Definition"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 5,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.000003858024691358025,
+          "maximumChannelDelta": 1,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-035",
+        "name": "MCP add-server required validation",
+        "path": "/tools",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-035.png",
+        "screenshotSha256": "19d3eac74c0501ae7e374e7a3f5c9b07a7feea6bf77973288965150d0c76125d",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Cannot save: Server ID is missing.\nAgents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nAdd MCP Server\n\nConfigure a connection to a remote tool server.\n\nCancel\nForm View\nJSON View\nServer ID\nTransport Type\nSTDIO\nSTREAMABLE_HTTP\nTool Name Prefix (Optional)\nEnable this server on save\nSTDIO Config\nCommand\nArguments\nAdd Argument\nCurrent Working Directory (Optional)\nEnvironment Variables\nAdd Variable\nDiscover & register tools on save\nPreview Tools\nSave Configuration\nCannot save: Server ID is missing.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Save Configuration",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "serverId": "",
+            "command": "",
+            "validationVisible": false
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-035.png",
+        "screenshotSha256": "19d3eac74c0501ae7e374e7a3f5c9b07a7feea6bf77973288965150d0c76125d",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Cannot save: Server ID is missing.\nAgents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nAdd MCP Server\n\nConfigure a connection to a remote tool server.\n\nCancel\nForm View\nJSON View\nServer ID\nTransport Type\nSTDIO\nSTREAMABLE_HTTP\nTool Name Prefix (Optional)\nEnable this server on save\nSTDIO Config\nCommand\nArguments\nAdd Argument\nCurrent Working Directory (Optional)\nEnvironment Variables\nAdd Variable\nDiscover & register tools on save\nPreview Tools\nSave Configuration\nCannot save: Server ID is missing.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Save Configuration",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "serverId": "",
+            "command": "",
+            "validationVisible": false
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-036",
+        "name": "MCP delete confirmation",
+        "path": "/tools",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-036.png",
+        "screenshotSha256": "745d91a8f1dbd89f14b6f199f66e583caa508cd56b502ba3d882582947d530c8",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nMCP Servers\nMCP Gateway\nSearch\nMCP Servers\nBulk Import\nAdd Server\nprototype-files\n\nSTDIO\n\nEnabled\nPrefix:\nprototype\nCommand:\nmock-adapter\nCWD:\n/synthetic\nSync Tools\nEdit\nDelete\nDelete MCP Server\n\nAre you sure you want to delete the server 'prototype-files'?\nThis action cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Delete",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "confirmationVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-036.png",
+        "screenshotSha256": "745d91a8f1dbd89f14b6f199f66e583caa508cd56b502ba3d882582947d530c8",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nMCP Servers\nMCP Gateway\nSearch\nMCP Servers\nBulk Import\nAdd Server\nprototype-files\n\nSTDIO\n\nEnabled\nPrefix:\nprototype\nCommand:\nmock-adapter\nCWD:\n/synthetic\nSync Tools\nEdit\nDelete\nDelete MCP Server\n\nAre you sure you want to delete the server 'prototype-files'?\nThis action cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Delete",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "confirmationVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-037",
+        "name": "Electron node rename feedback",
+        "path": "/nodes?tab=manage",
+        "context": "electron_internal",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-037.png",
+        "screenshotSha256": "30784fa9a3937b87509acb24a2541419fec6026e3305031f6f3d06138e09508b",
+        "semantic": {
+          "route": "/nodes?tab=manage",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nManage Nodes\nMemory Sync\nPhone Setup\nDocker Guide\nCurrent Window Node\n\nEmbedded Node EMBEDDED\n\nhttp://127.0.0.1:4310\n\nAdd Remote Node\n\nRegister a reachable AutoByteus node for window access and capability display. Configure browser automation directly on Docker/remote nodes through MCP servers such as BrowserServer.\n\nAdd Node\nConfigured Nodes\nEMBEDDED\nready\n\nhttp://127.0.0.1:4310\n\nOpen\nREMOTE\nready\n\nhttp://127.0.0.1:4310\n\nOpen\nRename\nRemove",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "renamedValue": "Renamed Prototype Node"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-037.png",
+        "screenshotSha256": "30784fa9a3937b87509acb24a2541419fec6026e3305031f6f3d06138e09508b",
+        "semantic": {
+          "route": "/nodes?tab=manage",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nManage Nodes\nMemory Sync\nPhone Setup\nDocker Guide\nCurrent Window Node\n\nEmbedded Node EMBEDDED\n\nhttp://127.0.0.1:4310\n\nAdd Remote Node\n\nRegister a reachable AutoByteus node for window access and capability display. Configure browser automation directly on Docker/remote nodes through MCP servers such as BrowserServer.\n\nAdd Node\nConfigured Nodes\nEMBEDDED\nready\n\nhttp://127.0.0.1:4310\n\nOpen\nREMOTE\nready\n\nhttp://127.0.0.1:4310\n\nOpen\nRename\nRemove",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "renamedValue": "Renamed Prototype Node"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-038",
+        "name": "Provider API-key save feedback",
+        "path": "/settings?section=api-keys",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-038.png",
+        "screenshotSha256": "67ad17970d49176aae974770f7383ffb190f3e1d98f331f491e9e21a2b7a95a7",
+        "semantic": {
+          "route": "/settings?section=api-keys",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAPI Key Management\n\nManage provider keys and reload available models\n\nReload Models\nPROVIDERS\nPrototype Models\n1\nNew Provider\n0\nPrototype Models\nConfigured\nReload Models\nSave Key\nLLM MODELS\nmock/gpt-prototype\nAPI key for Prototype Models saved successfully",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "API key for Prototype Models saved successfully"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-038.png",
+        "screenshotSha256": "ce8e44060a8257a131e4202905ac2fa36b0306cb5f8ce5ec3b125684533dbc8a",
+        "semantic": {
+          "route": "/settings?section=api-keys",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAPI Key Management\n\nManage provider keys and reload available models\n\nReload Models\nPROVIDERS\nPrototype Models\n1\nNew Provider\n0\nPrototype Models\nConfigured\nReload Models\nSave Key\nLLM MODELS\nmock/gpt-prototype\nAPI key for Prototype Models saved successfully",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "API key for Prototype Models saved successfully"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 116,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.00008950617283950617,
+          "maximumChannelDelta": 2,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-039",
+        "name": "Messaging provider and binding-mode transition",
+        "path": "/settings?section=messaging",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-039.png",
+        "screenshotSha256": "04403d92418c1aa025d02f5d9a134688f3066e04758c2b7145efdd03d1d78691",
+        "semantic": {
+          "route": "/settings?section=messaging",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nManaged Messaging Gateway\n\nShared messaging runtime for all providers on the selected node.\n\nRUNNING\nRestart Gateway\nRefresh Status\nUpdate Runtime\nDisable\n\nRuntime State\n\nRunning\n\nActive Version\n\nprototype-1.0.0\n\nRelease Tag\n\nfixture\n\nRuntime Endpoint\n\n127.0.0.1:4311\n\nINSTALLED VERSIONS\n\nprototype-1.0.0\n\nSUPPORTED PROVIDERS\n\nDISCORD, TELEGRAM\n\nExcluded providers: WHATSAPP, WECOM, WECHAT\n\nRELIABILITY STATE\n\nHEALTHY\n\nQueue heartbeat: inbox 2026-08-22T04:00:00.000Z, outbox 2026-08-22T04:00:00.000Z.\n\nDELIVERY QUEUES\n\nInbound dead-letter 0, unbound 1, outbound dead-letter 0\n\nWorkers: inbound running, outbound running.\n\nManaged messaging gateway is running with synthetic fixtures.\n\nProvider issues\n\nDISCORD: Provider is not configured.\n\nDiscord Bot\n\nTelegram Bot\n\nDiscord Bot Configuration\n\nConfigure the selected provider on top of the managed gateway runtime.\n\nGateway lifecycle is managed in the card above. Use this section to configure discord bot.\n\nProvider is not configured.\n\nDiscord Bot\n\nPeer discovery is available after the runtime is enabled. Saving valid config makes Discord active automatically.\n\nProvider is not configured.\n\nExcluded providers: WHATSAPP, WECOM, WECHAT\n\nSave Configuration\n1\n\nChannel Binding\n\nNo binding found for selected provider scope.\n\n2\n\nVerify\n\nChannel Binding Setup\n\nBind the selected provider scope either to an agent definition with a saved launch preset or to an agent team definition with a saved launch preset.\n\nProvider\n\nDISCORD\n\nTransport\n\nBUSINESS_API\n\nPeer Selection\n\nUse Peer Dropdown\n\nFor Discord, useuser:<snowflake>for DMs orchannel:<snowflake>for guild channels.threadId is optional and only valid with channel: peers.\n\nTarget Type\nAgent Definition\nAgent Team\n\nLaunch Preset\n\nSaved with the binding and reused when the bound agent or team is started automatically.\n\nAgent Definition\nSelect agent\nDocumentation Writer\nResearch Assistant\nRuntime\nAutoByteus\nLLM Model\nSelect a model...\n\nWorkspace\n\nSelect Existing\nEnter Path\nAuto approve tools\nAuto approve tools\nSave Binding\nReload\n\nNo bindings found for the selected provider scope.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Enter Path",
+            "testId": "binding-workspace-path-mode"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "selectedProvider": "DISCORD",
+            "manualPeerVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-039.png",
+        "screenshotSha256": "04403d92418c1aa025d02f5d9a134688f3066e04758c2b7145efdd03d1d78691",
+        "semantic": {
+          "route": "/settings?section=messaging",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nManaged Messaging Gateway\n\nShared messaging runtime for all providers on the selected node.\n\nRUNNING\nRestart Gateway\nRefresh Status\nUpdate Runtime\nDisable\n\nRuntime State\n\nRunning\n\nActive Version\n\nprototype-1.0.0\n\nRelease Tag\n\nfixture\n\nRuntime Endpoint\n\n127.0.0.1:4311\n\nINSTALLED VERSIONS\n\nprototype-1.0.0\n\nSUPPORTED PROVIDERS\n\nDISCORD, TELEGRAM\n\nExcluded providers: WHATSAPP, WECOM, WECHAT\n\nRELIABILITY STATE\n\nHEALTHY\n\nQueue heartbeat: inbox 2026-08-22T04:00:00.000Z, outbox 2026-08-22T04:00:00.000Z.\n\nDELIVERY QUEUES\n\nInbound dead-letter 0, unbound 1, outbound dead-letter 0\n\nWorkers: inbound running, outbound running.\n\nManaged messaging gateway is running with synthetic fixtures.\n\nProvider issues\n\nDISCORD: Provider is not configured.\n\nDiscord Bot\n\nTelegram Bot\n\nDiscord Bot Configuration\n\nConfigure the selected provider on top of the managed gateway runtime.\n\nGateway lifecycle is managed in the card above. Use this section to configure discord bot.\n\nProvider is not configured.\n\nDiscord Bot\n\nPeer discovery is available after the runtime is enabled. Saving valid config makes Discord active automatically.\n\nProvider is not configured.\n\nExcluded providers: WHATSAPP, WECOM, WECHAT\n\nSave Configuration\n1\n\nChannel Binding\n\nNo binding found for selected provider scope.\n\n2\n\nVerify\n\nChannel Binding Setup\n\nBind the selected provider scope either to an agent definition with a saved launch preset or to an agent team definition with a saved launch preset.\n\nProvider\n\nDISCORD\n\nTransport\n\nBUSINESS_API\n\nPeer Selection\n\nUse Peer Dropdown\n\nFor Discord, useuser:<snowflake>for DMs orchannel:<snowflake>for guild channels.threadId is optional and only valid with channel: peers.\n\nTarget Type\nAgent Definition\nAgent Team\n\nLaunch Preset\n\nSaved with the binding and reused when the bound agent or team is started automatically.\n\nAgent Definition\nSelect agent\nDocumentation Writer\nResearch Assistant\nRuntime\nAutoByteus\nLLM Model\nSelect a model...\n\nWorkspace\n\nSelect Existing\nEnter Path\nAuto approve tools\nAuto approve tools\nSave Binding\nReload\n\nNo bindings found for the selected provider scope.",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Enter Path",
+            "testId": "binding-workspace-path-mode"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "selectedProvider": "DISCORD",
+            "manualPeerVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-040",
+        "name": "Application-package import feedback",
+        "path": "/settings?section=application-packages",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-040.png",
+        "screenshotSha256": "9563d0067596075998c768d3a5bbdaf52eb3b524f41f54ceae28205735c28703",
+        "semantic": {
+          "route": "/settings?section=application-packages",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nApplication Packages\n\nLink a local application package root or paste a public GitHub repository URL. Platform applications are managed by AutoByteus.\n\nApplication package imported.\nPrototype Applications\nPlatform-owned\nPlatform Applications · Applications: 1\nDeterministic synthetic bundle\nShow details\nPackage path or GitHub URL\nImport Package",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "Application package imported."
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-040.png",
+        "screenshotSha256": "e39349e312cee9e6d117a1762b37221b2151c4b5155ee509273c35c7dfb82032",
+        "semantic": {
+          "route": "/settings?section=application-packages",
+          "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nApplication Packages\n\nLink a local application package root or paste a public GitHub repository URL. Platform applications are managed by AutoByteus.\n\nApplication package imported.\nPrototype Applications\nPlatform-owned\nPlatform Applications · Applications: 1\nDeterministic synthetic bundle\nShow details\nPackage path or GitHub URL\nImport Package",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "notice": "Application package imported."
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 24,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.000018518518518518518,
+          "maximumChannelDelta": 1,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-041",
+        "name": "Media category and delete confirmation",
+        "path": "/media",
+        "scenario": "populated"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-041.png",
+        "screenshotSha256": "530ba1aebc55e245779062a8ac3913cb6e1fa97d52d00281365b2eb70d875521",
+        "semantic": {
+          "route": "/media",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nMedia Library\nAll\nImages\nVideo\nAudio\nDocuments\nOthers\n\nprototype-images.svg\n\nConfirm Deletion\n\nAre you sure you want to permanently delete 'prototype-images.svg'?\nThis action cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Confirm DeletionAre you sure you want to permanently delete 'prototype-images.svg'?This action cannot be undone.CancelDelete",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialogText": "Confirm Deletion\n\nAre you sure you want to permanently delete 'prototype-images.svg'?\nThis action cannot be undone.\n\nCancel\nDelete"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-041.png",
+        "screenshotSha256": "530ba1aebc55e245779062a8ac3913cb6e1fa97d52d00281365b2eb70d875521",
+        "semantic": {
+          "route": "/media",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nMedia Library\nAll\nImages\nVideo\nAudio\nDocuments\nOthers\n\nprototype-images.svg\n\nConfirm Deletion\n\nAre you sure you want to permanently delete 'prototype-images.svg'?\nThis action cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Confirm DeletionAre you sure you want to permanently delete 'prototype-images.svg'?This action cannot be undone.CancelDelete",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialogText": "Confirm Deletion\n\nAre you sure you want to permanently delete 'prototype-images.svg'?\nThis action cannot be undone.\n\nCancel\nDelete"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-042",
+        "name": "Workspace history permanent-delete confirmation",
+        "path": "/workspace",
+        "scenario": "workspace_agent_history"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-042.png",
+        "screenshotSha256": "de2f4c27182d33261966b63c9b1e00192f1f741b99d7d74e9c08a9ea74581c8f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nIdle\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.\n\nDelete this history permanently. This cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Delete this history permanently. This cannot be undone.CancelDelete",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialogText": "Delete this history permanently. This cannot be undone.\n\nCancel\nDelete"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-042.png",
+        "screenshotSha256": "de2f4c27182d33261966b63c9b1e00192f1f741b99d7d74e9c08a9ea74581c8f",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nIdle\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.\n\nDelete this history permanently. This cannot be undone.\n\nCancel\nDelete",
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [
+            {
+              "text": "Delete this history permanently. This cannot be undone.CancelDelete",
+              "modal": "true"
+            }
+          ],
+          "actionEvidence": {
+            "dialogText": "Delete this history permanently. This cannot be undone.\n\nCancel\nDelete"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-043",
+        "name": "Desktop right-panel resize interaction",
+        "path": "/workspace",
+        "scenario": "workspace_team_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-043.png",
+        "screenshotSha256": "e333d4e2b88e7520686da25c0012dd18280ca2f8d08a91533025762ebd685a85",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "beforeWidth": 450,
+            "afterWidth": 522
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-043.png",
+        "screenshotSha256": "e333d4e2b88e7520686da25c0012dd18280ca2f8d08a91533025762ebd685a85",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nRunning\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "beforeWidth": 450,
+            "afterWidth": 522
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-044",
+        "name": "Paired-mobile troubleshooting refresh",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "populated",
+        "viewport": "narrow"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-044.png",
+        "screenshotSha256": "6831da56871f28ec64ae98e04a21761855e29fca5e7a9c2e9d7e2279355929b7",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nCONNECTION\n\nTroubleshoot connection\n\nCurrent node\n\nhttp://127.0.0.1:4310\n\nCheck status\nServer reachable. Phone Access enabled.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "troubleshootingVisible": true,
+            "statusChecked": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-044.png",
+        "screenshotSha256": "7579e269c2e4573b7a9593cf05358ef55ecbeee874f0f1dc8f5f24237d6a4e03",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nCONNECTION\n\nTroubleshoot connection\n\nCurrent node\n\nhttp://127.0.0.1:4310\n\nCheck status\nServer reachable. Phone Access enabled.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "troubleshootingVisible": true,
+            "statusChecked": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 17,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0.00005164661562765828,
+          "maximumChannelDelta": 1,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-045",
+        "name": "Paired-mobile context switcher search and focus",
+        "path": "/mobile",
+        "context": "paired",
+        "scenario": "mobile_team_active",
+        "viewport": "narrow",
+        "mobileTab": "chat"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-045.png",
+        "screenshotSha256": "1c372409bd9b8b6662c6f65a1f3a885ae215ad5f50db02516d4177b13415b7b3",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nProduct Review Team\n\nRunning\n\nSwitch\n\nproduct-review › coordinator\n\n⌄\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity\n\nSWITCH WORK\n\nChoose work\nClose\nRecent !\nAgents\nTeams\nWorkspaces\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": "mobile-context-search"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "focusedSearch": true,
+            "query": "Research"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-045.png",
+        "screenshotSha256": "1c372409bd9b8b6662c6f65a1f3a885ae215ad5f50db02516d4177b13415b7b3",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "Home\n\nProduct Review Team\n\nRunning\n\nSwitch\n\nproduct-review › coordinator\n\n⌄\nC\ncoordinator\n\nI delegated the visual comparison and am reviewing the result.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity\n\nSWITCH WORK\n\nChoose work\nClose\nRecent !\nAgents\nTeams\nWorkspaces\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace",
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "testId": "mobile-context-search"
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "focusedSearch": true,
+            "query": "Research"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-046",
+        "name": "Agent-run interrupt to stopped composer transition",
+        "path": "/workspace",
+        "scenario": "workspace_agent_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-046.png",
+        "screenshotSha256": "aea19cb6d7d235e4a8da12c0e7fb1f78f244dcc12ea811dcb70bd16d6e76b04e",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nIdle\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n3 Tasks\nActivity\n2 Events\nSystem instructions\nAutoByteus-supplied · Native configured system prompt\nCaptured Aug 22, 2026, 4:00:05 AM · 42 characters\nAVAILABLE\nwrite_file\n#tool-i\nSUCCESS\nArguments\nLogs (1)\nResult",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "sendReady": true,
+            "interruptedTextVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-046.png",
+        "screenshotSha256": "aea19cb6d7d235e4a8da12c0e7fb1f78f244dcc12ea811dcb70bd16d6e76b04e",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nIdle\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n3 Tasks\nActivity\n2 Events\nSystem instructions\nAutoByteus-supplied · Native configured system prompt\nCaptured Aug 22, 2026, 4:00:05 AM · 42 characters\nAVAILABLE\nwrite_file\n#tool-i\nSUCCESS\nArguments\nLogs (1)\nResult",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "sendReady": true,
+            "interruptedTextVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-047",
+        "name": "Team-run interrupt to stopped member transition",
+        "path": "/workspace",
+        "scenario": "workspace_team_active"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-047.png",
+        "screenshotSha256": "5935f3c984851bd4e6d261d6330f1f6fe8a95ab0c77f36bba6746c84c44bbcdc",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nIdle\nC\ncoordinator\n\nThe review run was interrupted before the next task.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "sendReady": true,
+            "interruptedTextVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-047.png",
+        "screenshotSha256": "9dcfd9c4b2f48ee9d599c8b6e29156b0fed841bc82f1491460d494bfa1c9a4b1",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nIdle\nC\ncoordinator\n\nThe review run was interrupted before the next task.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\ndocs\nevidence.md\nrequirements.md\nrequirements.md\n\nPreview not available for this file type.",
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "sendReady": true,
+            "interruptedTextVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 16,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.000012345679012345678,
+          "maximumChannelDelta": 2,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-048",
+        "name": "Agent error follow-up preparation and deterministic recovery",
+        "path": "/workspace",
+        "scenario": "workspace_agent_error"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-048.png",
+        "screenshotSha256": "a30b856e5ff41f4ae3b37067e2a11eb469187ace93955c6666594242f8fc63fc",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nRunning\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n3 Tasks\nActivity\n2 Events\nSystem instructions\nAutoByteus-supplied · Native configured system prompt\nCaptured Aug 22, 2026, 4:00:05 AM · 42 characters\nAVAILABLE\nwrite_file\n#tool-i\nSUCCESS\nArguments\nLogs (1)\nResult",
+          "active": {
+            "tag": "TEXTAREA",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "runningAgain": true,
+            "preparedFollowUp": "Retry the controlled review."
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-048.png",
+        "screenshotSha256": "a30b856e5ff41f4ae3b37067e2a11eb469187ace93955c6666594242f8fc63fc",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nRA\nResearch Assistant\n(1)\nControlled prototype evidence review\n8h\nSettings\nRA\nResearch Assistant - TIVE\nRunning\nYou\nSummarize the controlled prototype evidence.\n\nContext files\n\nrequirements.md\n120 tokens / $0.0012\nRA\nResearch Assistant\n\nThe current prototype evidence is deterministic and isolated.\n\n84 tokens / $0.0008\nTotal: 204 tokens / $0.0020\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n3 Tasks\nActivity\n2 Events\nSystem instructions\nAutoByteus-supplied · Native configured system prompt\nCaptured Aug 22, 2026, 4:00:05 AM · 42 characters\nAVAILABLE\nwrite_file\n#tool-i\nSUCCESS\nArguments\nLogs (1)\nResult",
+          "active": {
+            "tag": "TEXTAREA",
+            "text": "",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "runningAgain": true,
+            "preparedFollowUp": "Retry the controlled review."
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-049",
+        "name": "Reopened team-history message selection",
+        "path": "/workspace",
+        "scenario": "workspace_team_history"
+      },
+      "source": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/correction-journeys/JRN-049.png",
+        "screenshotSha256": "82afdf8c5cf92b1b433c58640cc39f1e1dcb2438ee06d5629f376a57e01d28a5",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nIdle\nC\ncoordinator\n\nThe controlled comparison was completed.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nMessage\nevidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Message · to evidence-writerAug 22, 04:01 AMPlease compare the source and prototype workspace states.",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "stoppedStatusVisible": true,
+            "selectedMessageVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/correction-journeys/JRN-049.png",
+        "screenshotSha256": "6101218c5469b6788cdd3212051e779bcc17968568f7a7861147ba1651633760",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nPrototype Workspace\nSettings\nC\ncoordinator\nIdle\nC\ncoordinator\n\nThe controlled comparison was completed.\n\n48 tokens / $0.0005\nTotal: 48 tokens / $0.0005\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage · from evidence-writer\nAug 22, 04:03 AM\n\nComparison complete. The controlled evidence is attached.\n\nevidence.md\nMessage · to evidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nMessage\nevidence-writer\nAug 22, 04:01 AM\n\nPlease compare the source and prototype workspace states.\n\nTasks\n1 task",
+          "active": {
+            "tag": "BUTTON",
+            "text": "Message · to evidence-writerAug 22, 04:01 AMPlease compare the source and prototype workspace states.",
+            "testId": null
+          },
+          "dialogs": [],
+          "actionEvidence": {
+            "stoppedStatusVisible": true,
+            "selectedMessageVisible": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 16,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.000012345679012345678,
+          "maximumChannelDelta": 2,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "pass": true
+      }
+    }
+  ]
+}

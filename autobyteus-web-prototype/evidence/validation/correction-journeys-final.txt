@@ -1,0 +1,35 @@
+
+> autobyteus-web-prototype@0.1.0 validate:correction-journeys /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/validate-correction-journeys.mjs
+
+PASS JRN-019 Electron update download feedback
+PASS JRN-020 Electron extension disable and enable transition
+PASS JRN-021 Embedded-server restart recovery
+PASS JRN-022 Narrow workspace tool drawer Escape and focus recovery
+PASS JRN-023 Team message selection transition
+PASS JRN-024 Team messages and reference viewer
+PASS JRN-025 Delegated-task detail and accepted lifecycle
+PASS JRN-026 File context menu and create dialog
+PASS JRN-027 Paired-mobile run setup mode transition
+PASS JRN-028 Paired-mobile file viewer attachment feedback
+PASS JRN-029 Paired-mobile team focus, messages and reference
+PASS JRN-030 Paired-mobile unpair confirmation cancel
+PASS JRN-031 Agent edit success feedback and detail navigation
+PASS JRN-032 Agent delete confirmation and cancel
+PASS JRN-033 Team create checklist validation
+PASS JRN-034 Team delete confirmation and cancel
+PASS JRN-035 MCP add-server required validation
+PASS JRN-036 MCP delete confirmation
+PASS JRN-037 Electron node rename feedback
+PASS JRN-038 Provider API-key save feedback
+PASS JRN-039 Messaging provider and binding-mode transition
+PASS JRN-040 Application-package import feedback
+PASS JRN-041 Media category and delete confirmation
+PASS JRN-042 Workspace history permanent-delete confirmation
+PASS JRN-043 Desktop right-panel resize interaction
+PASS JRN-044 Paired-mobile troubleshooting refresh
+PASS JRN-045 Paired-mobile context switcher search and focus
+PASS JRN-046 Agent-run interrupt to stopped composer transition
+PASS JRN-047 Team-run interrupt to stopped member transition
+PASS JRN-048 Agent error follow-up preparation and deterministic recovery
+PASS JRN-049 Reopened team-history message selection

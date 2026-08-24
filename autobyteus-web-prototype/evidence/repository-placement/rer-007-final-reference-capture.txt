@@ -1,0 +1,20 @@
+
+> autobyteus-web-prototype@0.1.0 capture:final-references /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/capture-final-references.mjs
+
+CAPTURED VIS-001 VIS-001-agents-desktop-en.png
+CAPTURED VIS-002 VIS-002-agents-error-desktop-en.png
+CAPTURED VIS-003 VIS-003-electron-extensions-desktop-en.png
+CAPTURED VIS-004 VIS-004-electron-server-error-recovery-desktop-en.png
+CAPTURED VIS-005 VIS-005-agent-workspace-files-desktop-en.png
+CAPTURED VIS-006 VIS-006-agent-workspace-streaming-desktop-en.png
+CAPTURED VIS-007 VIS-007-team-workspace-messages-desktop-en.png
+CAPTURED VIS-008 VIS-008-team-workspace-history-desktop-en.png
+CAPTURED VIS-009 VIS-009-messaging-settings-desktop-en.png
+CAPTURED VIS-010 VIS-010-agents-narrow-zh.png
+CAPTURED VIS-011 VIS-011-mobile-agent-chat-en.png
+CAPTURED VIS-012 VIS-012-mobile-team-reference-en.png
+CAPTURED VIS-013 VIS-013-mobile-permission-denied-en.png
+CAPTURED VIS-014 VIS-014-applications-disabled-desktop-en.png
+CAPTURED VIS-015 VIS-015-agents-empty-desktop-en.png
+15/15 final references captured.

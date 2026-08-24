@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "package": "initial-prototype-baseline",
+  "requirementsRevision": "RER-007",
+  "purpose": "Non-observable move of the approved project to the owning repository root.",
+  "canonicalRoot": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
+  "repositoryRelativeRoot": "autobyteus-web-prototype",
+  "owningRepository": "/home/autobyteus/workspace/autobyteus-workspace",
+  "branch": "personal",
+  "preCommitHead": "c5b87df4d6db15969ba70adee9dfd8394b1e7385",
+  "preCommitRemote": "c5b87df4d6db15969ba70adee9dfd8394b1e7385",
+  "preCommitSynchronized": true,
+  "sourcePin": "8ef282ba77705180d985e7000d801f0e0068cdc1",
+  "approval": {
+    "id": "PPA-001",
+    "userConfirmation": "approved",
+    "date": "2026-08-22"
+  },
+  "placement": {
+    "gitTopLevel": "/home/autobyteus/workspace/autobyteus-workspace",
+    "priorNestedProjectPathAbsent": true,
+    "nestedGitAbsent": true,
+    "stagedTrackedEntries": 1940,
+    "stagedIndexModes": {
+      "100644": 1935,
+      "100755": 5
+    },
+    "gitlinks": 0
+  },
+  "preservation": {
+    "approvedPreMoveFiles": 1934,
+    "approvedPreMoveBytes": 62693029,
+    "approvedFilesPresent": 1934,
+    "missingApprovedFiles": [],
+    "pathOrProvenanceTextFilesChanged": 55,
+    "changedApprovedFiles": [
+      "README.md",
+      "comparison-report.md",
+      "evidence-index.md",
+      "evidence/comparison/browser-parity-results.json",
+      "evidence/correction-journeys/correction-journey-results.json",
+      "evidence/correction-matrix/correction-parity-results.json",
+      "evidence/correction/correction-parity-results.json",
+      "evidence/interaction-discovery/interaction-discovery.json",
+      "evidence/interaction-discovery/interaction-discovery.md",
+      "evidence/interactions/browser-journey-results.json",
+      "evidence/matrix/route-matrix-results.json",
+      "evidence/presentation-code/presentation-code-parity-summary.json",
+      "evidence/presentation-code/presentation-code-parity.json",
+      "evidence/repository-placement/correction-validation.txt",
+      "evidence/repository-placement/final-reference-recapture.txt",
+      "evidence/repository-placement/git-ownership-proof.txt",
+      "evidence/repository-placement/path-rewrite-summary.json",
+      "evidence/repository-placement/repository-placement-validation.txt",
+      "evidence/repository-placement/stale-path-search.txt",
+      "evidence/runtime/boundary-final.log",
+      "evidence/runtime/boundary-validation.json",
+      "evidence/runtime/build-final.log",
+      "evidence/runtime/evidence-docs-final.log",
+      "evidence/runtime/fixtures-build.log",
+      "evidence/runtime/lint-final.log",
+      "evidence/runtime/source-observation-smoke.log",
+      "evidence/runtime/typecheck-final.log",
+      "evidence/runtime/typecheck-whole-source-exploratory.log",
+      "evidence/runtime/unit-final.log",
+      "evidence/validation/boundary-validation.txt",
+      "evidence/validation/browser-journeys-final.txt",
+      "evidence/validation/browser-parity-final.txt",
+      "evidence/validation/build.txt",
+      "evidence/validation/correction-journeys-final.txt",
+      "evidence/validation/correction-matrix-final.txt",
+      "evidence/validation/correction-parity-final.txt",
+      "evidence/validation/final-reference-capture.txt",
+      "evidence/validation/final-static-and-unit-validation.txt",
+      "evidence/validation/product-prototyper-final-package-consistency.txt",
+      "evidence/validation/product-prototyper-final-validation.txt",
+      "evidence/validation/prototype-build.txt",
+      "evidence/validation/prototype-lint.txt",
+      "evidence/validation/prototype-tests.txt",
+      "evidence/validation/prototype-typecheck.txt",
+      "evidence/validation/route-matrix-final.txt",
+      "final-reference-screenshots/manifest.json",
+      "parity-inventory.md",
+      "product-prototyper-baseline-review.md",
+      "prototype-bootstrap-report.md",
+      "prototype-runbook.md",
+      "prototype/scripts/audit-interaction-discovery.mjs",
+      "prototype/scripts/audit-presentation-parity.mjs",
+      "prototype/scripts/validate-repository-placement.mjs",
+      "repository-placement-correction.md",
+      "ui-ux-spec.md"
+    ],
+    "approvedEvidenceAndReferenceImagesPreserved": 808,
+    "approvedEvidenceAndReferenceImageTotal": 808,
+    "normativeFinalReferencesPreserved": 15,
+    "normativeFinalReferenceTotal": 15
+  },
+  "observableValidation": {
+    "presentationExact": 369,
+    "presentationTotal": 369,
+    "interactionDiscoveryFiles": 179,
+    "interactionDiscoveryCases": 925,
+    "interactionDiscoveryGroups": 17,
+    "finalReferenceResult": "15/15 captured without browser errors or external resources",
+    "finalReferenceBrowserErrors": 0,
+    "finalReferenceExternalResources": 0,
+    "observableUiUxChanged": false,
+    "repositoryPlacementChecks": "40/40"
+  },
+  "stalePathSearch": {
+    "scope": "canonical project plus the three RER-007 requirements artifacts",
+    "oldNestedRootMatches": 0,
+    "oldTaskWorktreeRootMatches": 0
+  },
+  "unrelatedSiblingTrees": {
+    "memory-inspector-ux-redesign": {
+      "baselineTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "stagedTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "unchanged": true
+    },
+    "memory-sync-transparency": {
+      "baselineTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "stagedTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "unchanged": true
+    },
+    "mobile-pwa-navigation": {
+      "baselineTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "stagedTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "unchanged": true
+    },
+    "taskagent-team-tab-active-tasks": {
+      "baselineTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "stagedTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "unchanged": true
+    },
+    "token-statistics-task-cost": {
+      "baselineTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "stagedTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "unchanged": true
+    }
+  },
+  "requirementsArtifactSha256": {
+    "tickets/in-progress/initial-prototype-baseline/requirements-doc.md": "8a6e6cdd4d5e474343cc227bf6416f4222cb073afa602990877dc267915a8893",
+    "tickets/in-progress/initial-prototype-baseline/investigation-notes.md": "1b70432fc7029a027a6ba28c1f73f90311a0d5ba3f954bbd4b292fd4de1b9a24",
+    "tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md": "bebb0c0b2f4f4f2994e861fe8389198510098a78abe7750eb6036403cf34d45c"
+  },
+  "validationLogs": [
+    "evidence/repository-placement/rer-007-validation.txt",
+    "evidence/repository-placement/rer-007-final-reference-capture.txt",
+    "evidence/repository-placement/rer-007-repository-placement-validation.txt"
+  ]
+}

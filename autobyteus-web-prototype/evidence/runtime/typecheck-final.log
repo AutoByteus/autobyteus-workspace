@@ -1,0 +1,4 @@
+
+> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> vue-tsc --noEmit -p tsconfig.prototype.json
+
