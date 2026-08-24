@@ -1,0 +1,18 @@
+import { chromium } from '/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/node_modules/playwright-core/index.mjs';
+const browser = await chromium.launch({headless:true, executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const page = await browser.newPage({viewport:{width:1280,height:900}});
+const errs=[]; page.on('console',m=>{if(m.type()==='error') errs.push(['console',m.text()])}); page.on('pageerror',e=>errs.push(['page',e.message]));
+await page.goto('http://127.0.0.1:3107/agent-teams',{waitUntil:'networkidle',timeout:60000});
+const card=page.locator('div.group').filter({hasText:'Software Engineering Team'});
+console.log('cards',await card.count());
+await card.getByRole('button',{name:'Run',exact:true}).click();
+await page.waitForURL('**/workspace',{timeout:30000});
+await page.waitForTimeout(5000);
+console.log('URL',page.url());
+console.log('BODY',(await page.locator('body').innerText()).slice(0,18000));
+console.log('BUTTONS',await page.locator('button').evaluateAll(es=>es.map(e=>({text:e.innerText,title:e.getAttribute('title'),aria:e.getAttribute('aria-label'),test:e.getAttribute('data-test'),expanded:e.getAttribute('aria-expanded'),disabled:e.hasAttribute('disabled')}))));
+console.log('SELECTS',await page.locator('select').evaluateAll(es=>es.map(e=>({id:e.id,value:e.value,aria:e.getAttribute('aria-label'),labels:e.labels?[...e.labels].map(l=>l.innerText):[],options:[...e.options].map(o=>({t:o.text,v:o.value}))}))));
+console.log('INPUTS',await page.locator('input').evaluateAll(es=>es.map(e=>({id:e.id,type:e.type,value:e.value,placeholder:e.placeholder,aria:e.getAttribute('aria-label'),disabled:e.disabled}))));
+console.log('ERRORS',JSON.stringify(errs));
+await page.screenshot({path:'tickets/in-progress/remote-node-new-workspace-team-run-visibility/probes/api-e2e/inspect-workspace.png',fullPage:true});
+await browser.close();

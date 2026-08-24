@@ -31,7 +31,7 @@ No backend, persisted-data, Team-run creation, run-history, tree-projection, Ele
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md` | Defines visible/launch state invariants, intentional transitions, pending/error behavior, and preserved interaction semantics | FR-001–FR-007; AC-001–AC-009 | Governs the controlled selector contract and observable launch behavior | `Approved` by user with requirements on 2026-08-24 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md` | Defines visible/launch state invariants, intentional transitions, pending/error behavior, and preserved interaction semantics | FR-001–FR-007; AC-001–AC-009 | Governs the controlled selector contract and observable launch behavior | `Approved` by user with requirements on 2026-08-24 |
 
 ## Task Design Health Assessment (Mandatory)
 

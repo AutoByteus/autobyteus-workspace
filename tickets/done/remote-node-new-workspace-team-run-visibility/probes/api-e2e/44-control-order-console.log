@@ -1,0 +1,3 @@
+2026-08-24T09:09:31.264Z control-order-configured {"path":"/home/autobyteus/workspace/autobyteus-workspace","runtime":"codex_app_server","model":"gpt-5.6-sol"}
+2026-08-24T09:09:44.155Z control-order-live-pass {"workspaceId":"agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2","teamRunId":"software_engineering_team_f298fa4255b24490ba70af8a6051c5a6","createWorkspaceCount":1,"createTeamCount":1,"reloadRowVisible":true,"errors":0}
+2026-08-24T09:10:06.906Z control-order-cleanup-complete {"action":"verify","targetWorkspacePresent":false,"targetTeamPresent":false}

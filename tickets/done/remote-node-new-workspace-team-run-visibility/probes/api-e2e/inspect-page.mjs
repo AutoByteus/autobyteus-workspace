@@ -1,0 +1,15 @@
+import { chromium } from '/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/node_modules/playwright-core/index.mjs';
+const browser = await chromium.launch({headless:true, executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const page = await browser.newPage({viewport:{width:1280,height:900}});
+const consoleErrors=[]; const pageErrors=[];
+page.on('console',m=>{if(m.type()==='error') consoleErrors.push(m.text())}); page.on('pageerror',e=>pageErrors.push(e.message));
+await page.goto('http://127.0.0.1:3107/agent-teams',{waitUntil:'networkidle',timeout:60000});
+await page.waitForTimeout(3000);
+console.log('URL',page.url());
+console.log('TITLE',await page.title());
+console.log('BODY', (await page.locator('body').innerText()).slice(0,12000));
+console.log('BUTTONS',await page.locator('button').evaluateAll(es=>es.map(e=>({text:e.innerText, title:e.getAttribute('title'), aria:e.getAttribute('aria-label'), test:e.getAttribute('data-test')}))));
+console.log('LINKS',await page.locator('a').evaluateAll(es=>es.map(e=>({text:e.innerText,href:e.getAttribute('href')}))));
+console.log('ERRORS',JSON.stringify({consoleErrors,pageErrors}));
+await page.screenshot({path:'tickets/in-progress/remote-node-new-workspace-team-run-visibility/probes/api-e2e/inspect-agent-teams.png',fullPage:true});
+await browser.close();

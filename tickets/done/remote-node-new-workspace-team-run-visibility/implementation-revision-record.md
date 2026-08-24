@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Controlled workspace selection implementation baseline
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/design-review-report.md`; initial implementation round after architecture review pass.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/design-review-report.md`; initial implementation round after architecture review pass.
 - Triggering finding IDs: N/A.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -40,7 +40,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-002 — Preserve explicit New during late workspace discovery
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/code-review-report.md`; implementation rework after source-review round 1 (`CRR-001`).
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/code-review-report.md`; implementation rework after source-review round 1 (`CRR-001`).
 - Triggering finding IDs: `CR-F-001` (`CR-MP-001`).
 - Classification: `Local Fix`.
 - Prior authoritative result: `IR-001` implemented the controlled state owner, but late completion of initial workspace discovery could still automatically propose Existing after an explicit empty-path New activation.

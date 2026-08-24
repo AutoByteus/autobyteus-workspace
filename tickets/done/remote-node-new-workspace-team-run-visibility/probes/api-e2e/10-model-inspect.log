@@ -1,0 +1,91 @@
+buttons [
+  'Agents',
+  'Agent Teams',
+  'Skills',
+  'Memory',
+  'Nodes',
+  'Temp Workspace',
+  'Settings',
+  'Select a model',
+  'Existing',
+  'New',
+  '📁 Temp Workspace (Default)Default temporary workspace',
+  'Auto approve tools',
+  'Team Members Override (6)',
+  'Global default',
+  'Global default',
+  'Global default',
+  'Global default',
+  'Global default',
+  'Global default',
+  'Run Team',
+  'Files',
+  'Terminal',
+  'Activity',
+  'Token',
+  'Artifacts',
+  'VNC Viewer'
+]
+modelButtons 1
+body-tail Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+Software Engineering Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (6)
+Run Team
+
+A default team model is required before running this team.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+.codex
+autobyteus-agents
+autobyteus-mcps
+autobyteus-workspace
+No file selected
+
+Select a file from the explorer to view or edit its content.
+
+OPENAI
+GPT-5.3-Codex-Spark (default reasoning: high)
+GPT-5.4 (default reasoning: medium)
+GPT-5.4-Mini (default reasoning: medium)
+GPT-5.5 (default reasoning: medium)
+GPT-5.6-Luna (default reasoning: medium)
+GPT-5.6-Sol (default reasoning: low)
+GPT-5.6-Terra (default reasoning: medium)

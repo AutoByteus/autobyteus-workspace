@@ -1,0 +1,8 @@
+Owned frontend http://127.0.0.1:3107 stopped: curl exit 7 / HTTP 000.
+Remote Docker node http://localhost:8006/rest/health retained: {"status":"ok","message":"Server is running"}.
+Target workspace registration after cleanup: absent; only temp_ws_default at /home/autobyteus/workspace remains.
+Created TeamRun software_engineering_team_4cb4299212f940a08402bc0fd795c17d: terminated and permanently deleted.
+Pre-existing TeamRun software_engineering_team_f7589167f330406383ba79a7a2404d58: still present, active, and rooted at /home/autobyteus/workspace in post-cleanup history.
+No Playwright/Chrome probe process remains.
+Control-order TeamRun software_engineering_team_f298fa4255b24490ba70af8a6051c5a6: terminated and permanently deleted; its workspace registration was removed; post-cleanup verification found neither record.
+Second owned frontend process on 3107 stopped: curl exit 7 / HTTP 000. Remote Docker node remains healthy.

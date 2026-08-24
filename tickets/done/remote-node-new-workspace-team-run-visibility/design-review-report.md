@@ -2,13 +2,13 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md`
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/solution-revision-record.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/design-spec.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/architecture-review-revision-record.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/architecture-review-revision-record.md`
 - Current Architecture Review Revision ID: `ARCH-REV-001`
 - Current Review Round: `1`
 - Trigger: Initial solution package from `/solution_designer` after approved deterministic reproduction and root-cause analysis.

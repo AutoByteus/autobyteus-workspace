@@ -30,7 +30,7 @@ User-provided screenshots:
 
 - Project Type (`Git`/`Non-Git`): `Git` monorepo/workspace repository.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility`
 - Current Branch: `codex/remote-node-new-workspace-team-run-visibility`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility`
 - Bootstrap Base Branch: `origin/personal`
@@ -45,7 +45,7 @@ User-provided screenshots:
 
 | Canonical Path | Purpose | Scope | Status | Relationship To Core Artifacts | Related IDs | Approval Applicability |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md` | Defines authoritative visible/launch workspace state, preserved edits, intentional reset transitions, and preserved interaction/accessibility semantics. | Team run form and resulting tree placement. | `Approved` | Refines UI-verifiable requirements and constrains design. | FR-001–FR-007; AC-001–AC-009 | Approved with requirements on 2026-08-24. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md` | Defines authoritative visible/launch workspace state, preserved edits, intentional reset transitions, and preserved interaction/accessibility semantics. | Team run form and resulting tree placement. | `Approved` | Refines UI-verifiable requirements and constrains design. | FR-001–FR-007; AC-001–AC-009 | Approved with requirements on 2026-08-24. |
 
 Disposable screenshots and `/tmp` log captures from investigation are not supplemental artifacts; their material findings are retained below.
 

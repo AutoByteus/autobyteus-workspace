@@ -12,7 +12,7 @@ The latest `design-review-report.md` remains authoritative. This record retains 
 
 ### ARCH-REV-001 — Initial controlled workspace-state design passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/in-progress/remote-node-new-workspace-team-run-visibility/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/design-review-report.md`
 - Review round and trigger: Round 1; initial package from `/solution_designer` after approved deterministic reproduction and root-cause explanation.
 - Triggering role, report path, and finding IDs: `/solution_designer`; no prior review report; finding IDs `N/A`.
 - Relevant solution revision IDs: `SR-001`

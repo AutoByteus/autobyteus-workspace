@@ -1,0 +1,8 @@
+2026-08-24T09:05:27.850Z baseline {"workspaces":1,"teamRuns":6}
+2026-08-24T09:05:33.212Z entered exact Software Engineering Team draft
+2026-08-24T09:05:34.160Z configured-after-path {"mode":"true","path":"/home/autobyteus/workspace/autobyteus-workspace","runtime":"codex_app_server","reasoning":"medium","tier":"fast","memberOverride":"1 overridden"}
+2026-08-24T09:05:34.773Z launch-graphql-pass {"workspaceId":"agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2","teamRunId":"software_engineering_team_4cb4299212f940a08402bc0fd795c17d","createWorkspaceCount":1,"createTeamCount":1,"memberCount":6}
+2026-08-24T09:05:39.830Z history-and-visible-tree-pass {"root":"/home/autobyteus/workspace/autobyteus-workspace","members":6}
+2026-08-24T09:05:48.131Z reload-persistence-pass {"teamRunId":"software_engineering_team_4cb4299212f940a08402bc0fd795c17d","root":"/home/autobyteus/workspace/autobyteus-workspace"}
+2026-08-24T09:05:52.671Z control-empty-existing-pass {"createWorkspaceCount":0,"createTeamCount":0}
+2026-08-24T09:05:52.678Z browser-pass {"consoleErrors":0}

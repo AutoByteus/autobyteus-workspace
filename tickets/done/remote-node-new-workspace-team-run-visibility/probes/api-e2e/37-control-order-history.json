@@ -1,0 +1,292 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "listWorkspaceRunHistory": [
+        {
+          "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace",
+          "workspaceName": "autobyteus-workspace",
+          "teamDefinitions": [
+            {
+              "teamDefinitionId": "software-engineering-team",
+              "teamDefinitionName": "Software Engineering Team",
+              "runs": [
+                {
+                  "teamRunId": "software_engineering_team_f298fa4255b24490ba70af8a6051c5a6",
+                  "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace",
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "workspaceRootPath": "/home/autobyteus/workspace",
+          "workspaceName": "workspace",
+          "teamDefinitions": [
+            {
+              "teamDefinitionId": "software-engineering-team",
+              "teamDefinitionName": "Software Engineering Team",
+              "runs": [
+                {
+                  "teamRunId": "software_engineering_team_f7589167f330406383ba79a7a2404d58",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_929ca7af82334853955a0a5bd6c43e48",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_b02897d2e2d941d492afbd6304691d61",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_ce581ae9b8da4ef894ee21d5feda99e9",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_8bb84235662642c39fa0c5d7514b437a",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": false,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_bd75981515814e9cb826045cf56eaa88",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "isActive": false,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

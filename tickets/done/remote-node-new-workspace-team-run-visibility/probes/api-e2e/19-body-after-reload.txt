@@ -1,0 +1,23 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+autobyteus-workspace
+Temp Workspace
+Settings
+No agent or team run selected
+
+Choose an agent or team, or open run history to continue.
+
+Choose an agent or team
+Open runs/history
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+~ $
