@@ -18,6 +18,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-010 | PPA-002 focused correction, exact terminal evidence, and explicit user confirmation | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-005; REQ-010–REQ-013; AC-010–AC-013; SCN-005; RISK-006 | `JRN-050-A`–`JRN-050-E`, VIS-016/VIS-017, focused/final validation, clean worktree provenance and direct user review close the parity gap; no architecture handoff applies. |
 | RER-011 | User authorizes direct integration on `personal`; remote has advanced | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007 | Preserve concurrent remote history by rebasing and revalidating the cumulative approved task package, then fast-forward and push `personal` directly with final ref equality. |
 | RER-012 | Safe personal integration returned and independently verified | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007 | Late-fetch history preservation, exact evidence, validations, ordinary push and final ref equality pass; canonical package now lives at the repository root on synchronized `personal`. |
+| RER-013 | User requests independent prototype repository and monorepo removal | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-007; REQ-016–REQ-018; AC-016–AC-018; SCN-007; RISK-008 | Target ownership moves to a sibling independent `personal` repository; verify/push the complete target before removing and reconciling the monorepo copy. |
 
 ## Revision Entries
 
@@ -200,3 +201,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. This completed prototype-only package does not authorize architecture or production engineering.
 - Remaining gaps, assumptions, or blocked decisions: None within the approved package. RER-012 itself is a requirements-only closure commit that must be pushed on `personal`, then the task branch must be fast-forwarded so local `personal`, task and `origin/personal` are again equal and clean.
 - Next action or recipient: Commit and push the RER-012 requirements reconciliation directly on `personal`, fast-forward the task branch, verify final equality/clean status, then apply terminal handoff rules. Do not route to architecture.
+
+### RER-013 — Migrate canonical ownership to an independent repository
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: User explicitly requested independent repository `https://github.com/AutoByteus/autobyteus-web-prototype.git`, sibling checkout `/home/autobyteus/workspace/autobyteus-web-prototype`, independent `personal` branch/push, removal of the monorepo project, and separate ongoing management. Product Prototyper returned this as a requirement impact before changing repository history.
+- Prior authoritative status (`N/A` for `RER-001`): Approved / Prototype-Only Complete
+- Current authoritative status: Draft / Prototype Needed
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-007; REQ-016–REQ-018; AC-016–AC-018; SCN-007; RISK-008.
+- Why this baseline or revision was recorded: This reverses the RER-007/RER-011 owning-repository target and requires loss-safe sequencing, new Git/provenance constraints, active path reconciliation and dual-repository terminal proof while preserving the approved experience.
+- Canonical artifact sections changed: Document status/approval; BEH-007; scope; REQ-016–REQ-018; AC-016–AC-018; SCN-007; external dependency; supplement target; traceability; readiness/completion; investigation meta/clarification/source/behavior/prototype decision/artifact/risk/implications.
+- Supplemental artifacts added, changed, or removed: Target canonical root `/home/autobyteus/workspace/autobyteus-web-prototype` and remote are recorded; no files have moved yet. Current protected source remains `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`.
+- Prototype evidence or product decisions incorporated: Workspace is clean/equal at `8a4c3868...`; source prototype tree is `ca1d3f9e...`; target sibling path is absent; requested GitHub remote is reachable and advertises no branch refs. Recommended clean snapshot/provenance interpretation is accepted because it meets the user's independent-management request without importing unrelated history.
+- User approval impact: Repository ownership, sibling path, independent `personal` and monorepo removal are explicitly approved. PPA-001/PPA-002 and observable approval remain valid only if migration changes no observable behavior/evidence identity; any discrepancy requires renewed review.
+- Downstream architecture impact: None. This is product-prototype repository migration, not architecture or production engineering.
+- Remaining gaps, assumptions, or blocked decisions: Materialize/commit/push/validate the independent repository; only then remove/reconcile/commit/push the monorepo copy; prove no duplicate/link/stale active locator and both repositories clean/equal.
+- Next action or recipient: Route `Prototype Needed` under dynamic handoff rules to Product Prototyper with the cumulative RER-013 package. Do not route to architecture.
