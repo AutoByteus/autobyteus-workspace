@@ -1,0 +1,64 @@
+Remote-node new-workspace Team-run visibility — v1.4.57 release verification
+Recorded: 2026-08-24 (Europe/Berlin)
+
+Repository finalization
+  ticket commit: 0ac0f29411dc7094373afecfcf67313b90038c69
+  ticket branch remote verification: matching origin/codex/remote-node-new-workspace-team-run-visibility
+  personal integration method: fast-forward
+  personal integration revision: 0ac0f29411dc7094373afecfcf67313b90038c69
+  personal integration push: PASS
+
+Release helper
+  command: pnpm release 1.4.57 -- --release-notes tickets/done/remote-node-new-workspace-team-run-visibility/release-notes.md
+  result: PASS
+  release commit: 389748b0b9f0dea051aaed18641de131cf0adbbb
+  annotated tag: v1.4.57
+  local/remote personal and peeled tag revision: 389748b0b9f0dea051aaed18641de131cf0adbbb
+  autobyteus-web package version: 1.4.57
+  autobyteus-message-gateway package version: 1.4.57
+  managed messaging manifest release: v1.4.57 / artifact 1.4.57
+  curated/tagged ticket release-note SHA-256 (both):
+    4b5ec662be97e42790625b11825bcdbe1d0ce270b0b0679d1cb34ea38bc64caa
+
+GitHub release
+  URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.57
+  state: published; not draft; not prerelease
+  target: 389748b0b9f0dea051aaed18641de131cf0adbbb
+  assets: 21
+  asset families: macOS ARM64/x64 DMG+ZIP+blockmaps; Windows x64 EXE;
+    Linux x64/ARM64 AppImage+updater metadata; signed Android APK+SHA;
+    managed messaging archive+metadata+SHA+manifest.
+
+Tag-triggered workflow results
+  Android APK Release: completed / success
+    https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32711918931
+  Desktop Release: completed / success
+    https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32711918947
+  iOS App Store Connect Release: completed / success
+    https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32711918995
+  Release Messaging Gateway: completed / success
+    https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32711918918
+  Server Docker Release: completed / success
+    https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32711918878
+  Job audit: every job completed successfully. The iOS archive/upload reached
+    App Store Connect; later public App Store review/release remains external.
+
+Docker Hub readback
+  autobyteus/autobyteus-server:1.4.57 digest:
+    sha256:805b604ddd56064e6a056ab7a10204406056d49eca4037fa1317a091a5088ca7
+  autobyteus/autobyteus-server:latest digest:
+    sha256:805b604ddd56064e6a056ab7a10204406056d49eca4037fa1317a091a5088ca7
+  platforms: linux/amd64, linux/arm64
+  zh variant: not part of the standard tag-triggered release; no manual zh
+    dispatch was requested.
+
+Non-blocking workflow observation
+  Server Docker publication succeeded. Its post-job Buildx cleanup logged a
+  runner-local builder-removal timeout warning, but the job and workflow
+  concluded success and both public tags resolve to the published multi-arch
+  digest above.
+
+Overall result
+  PASS — repository finalization, stable release publication, all five release
+  workflows, GitHub assets, App Store Connect upload, and default server Docker
+  readback completed successfully.

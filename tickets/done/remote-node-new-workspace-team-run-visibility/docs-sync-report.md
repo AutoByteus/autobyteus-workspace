@@ -6,7 +6,7 @@
 - Trigger: `CRR-003 Not Applicable` after `API-REV-001 Pass` at 96.7% final validation confidence; no open finding and no API/E2E-stage durable test-code change.
 - Bootstrap base reference: `origin/personal` at `52b4be02ea793f2071fe5a63a94664ab25196433`.
 - Integrated base reference used for docs sync: refreshed `origin/personal` at the same `52b4be02ea793f2071fe5a63a94664ab25196433`; ticket source HEAD `2950019a34eada253a888b9568c1b34284f0c74d` is 2 ahead / 0 behind.
-- Post-integration verification reference: no new base commit was integrated, so `API-REV-001` and `CRR-003` remain authoritative; integration evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/delivery-integrated-state-refresh.log`.
+- Post-integration verification reference: no new base commit was integrated, so `API-REV-001` and `CRR-003` remain authoritative; integration evidence is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-new-workspace-team-run-visibility/delivery-integrated-state-refresh.log`.
 
 ## Why Docs Were Updated
 
@@ -17,9 +17,9 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/docs/agent_execution_architecture.md` | Canonical frontend execution/state architecture; explicitly identified by source review. | `Updated` | Replaced the partial pending-path account with the complete controlled ownership, stable-context, delayed-discovery, canonicalization, and no-fallback contract. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/docs/settings.md` | Maintains a mirrored editable-workspace architecture section; explicitly identified by source review. | `Updated` | Kept the mirrored section text identical to the canonical architecture section. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/README.md` | Checked for user-facing run-form instructions or a conflicting workspace-loading contract. | `No change` | Build/development guidance does not define the internal editable-workspace state contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Canonical frontend execution/state architecture; explicitly identified by source review. | `Updated` | Replaced the partial pending-path account with the complete controlled ownership, stable-context, delayed-discovery, canonicalization, and no-fallback contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md` | Maintains a mirrored editable-workspace architecture section; explicitly identified by source review. | `Updated` | Kept the mirrored section text identical to the canonical architecture section. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Checked for user-facing run-form instructions or a conflicting workspace-loading contract. | `No change` | Build/development guidance does not define the internal editable-workspace state contract. |
 
 ## Docs Updated
 
