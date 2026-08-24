@@ -38,6 +38,9 @@ IR-003 resolves CRR-004 finding CR-005 / API-E2E-F-001. Predecessor application-
 
 IR-004 resolves DR-001's latest-base integration blocker. The reviewed checkpoint was merged with `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4` while retaining both sides' current behavior: the hierarchical form remains address-qualified for root and nested Team scopes, and every Agent/Team workspace selector now uses the incoming complete controlled `WorkspaceSelectionState`. `RunConfigPanel` owns standalone Agent selection plus an exact-address Team selection map, so an explicit `New` path survives immutable same-draft Team edits, late workspace discovery cannot overwrite explicit mode, and launch preparation resolves only active `New` selections. Inactive path buffers in `Existing` mode cannot suppress workspace blockers. The current-base independent-prototype removal remains intact.
 
+- Integrated merge commit: `bd4e2403fd6630622e7789967e2f2815cc6f37f5`
+- Merge parents: reviewed checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29`; latest tracked base `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`
+
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
 - Current implementation revision ID: `IR-004`

@@ -79,7 +79,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Triggering finding IDs: `DR-001` six-file merge conflict set caused by current-base commits `bfbeb0810` and `2950019a3`
 - Classification: `Local Fix`
 - Prior authoritative result: protected checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29` had passed `CRR-005`, `API-REV-004` (99%; hierarchy 7/7 and production upgrade 4/4), and `CRR-006`; delivery's required merge to `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4` stopped with six frontend conflicts
-- Current authoritative result: active merge conflicts are resolved without choosing either behavior wholesale; the integrated source/test state passes implementation-scoped checks and is ready for repeat source review
+- Current authoritative result: merge commit `bd4e2403fd6630622e7789967e2f2815cc6f37f5` resolves the conflicts without choosing either behavior wholesale; its parents are protected reviewed checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29` and latest tracked base `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`. The integrated source/test state passes implementation-scoped checks and is ready for repeat source review.
 - Related solution revision IDs: `SR-002–SR-007` (current `SR-007`)
 - Related architecture-review revision IDs: `ARCH-REV-001`
 - Related code-review revision IDs: `CRR-005` source Pass and `CRR-006` proportional test-review Pass are the pre-integration basis; new review pending
