@@ -88,6 +88,7 @@ The integrated source retains Personal's immutable nested `TeamRunPhysicalScope`
 
 ## Known Risks
 
+- After the reviewed merge and IR-008 artifact commit completed, the locally tracked `origin/personal` advanced by two commits to `52b4be02e`; those post-target commits relocate/document the isolated prototype. They were not part of the exact reviewed `c5b87df4d...` input and were not integrated or reinterpreted here. Final tracked-base refresh remains delivery-owned.
 - Full real Studio/standalone, provider failure/recovery, package parity, nested restart/history, Electron, and browser matrices remain downstream-owned.
 - The worktree does not have an independently prepared imported Brief package root, so the broad Brief package integration was not used as implementation proof; application-context capability checks passed previously, while full package preparation/execution remains API/E2E work.
 - Repository-wide web typecheck remains noisy with existing current-tree errors and the local `nuxi typecheck` toolchain is incompatible; focused runtime-scoped model/component tests and server build-config TypeScript are the authoritative implementation checks reported here.
