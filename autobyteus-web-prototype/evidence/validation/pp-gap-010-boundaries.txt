@@ -1,0 +1,17 @@
+
+> autobyteus-web-prototype@0.1.0 validate:boundaries /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-boundaries.mjs
+
+PASS No Electron/native runtime dependency
+PASS No copied production electron root
+PASS No copied production src-electron root
+PASS No copied production server root
+PASS No copied production backend root
+PASS No copied production docker root
+PASS No copied production packaging root
+PASS Browser external request boundary is explicit
+PASS WebSocket boundary is local and scripted
+PASS Scenario state is resettable
+PASS Source evidence contains no page-capture errors
+PASS Source evidence uses controlled loopback mock
+PASS Prototype has independently runnable Nuxt entry points

@@ -2,11 +2,11 @@
 
 - Package: `initial-prototype-baseline` / current requirements revision
   `RER-009` (baseline pin and original inventory established under `RER-002`)
-- Status: **Completed RER-009 correction candidate; pending Product Prototyper re-inspection**
+- Status: **Completed RER-009 `PP-GAP-010` correction candidate; pending Product Prototyper re-inspection**
 - Source commit: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Distinct rendered rows: **109** (60 preserved + 48 prior correction + `WKS-022` focused correction)
+- Distinct rendered rows: **110** (60 preserved + 48 prior correction + `WKS-022` launch + `WKS-023` member-focus correction)
 - Locale/responsive matrix rows: **239** (123 route permutations + 116 correction permutations)
-- Interaction journeys: **50** (`JRN-050` has four terminally enforced checkpoints)
+- Interaction journeys: **50** (`JRN-050` has five terminally enforced checkpoints)
 - Presentation implementation audit: **369/369 exact byte matches**
 - Interaction discovery audit: **179 source test files / 925 cases / 17 stable groups**
 - Matched browser/viewports: system Chromium; desktop `1440×900`; narrow `390×844`; light theme; reduced motion; local assets
@@ -117,6 +117,7 @@ Every rendered row below maps to runnable source and prototype screenshots plus 
 | `WKS-020` | Interrupted team-run state | `/workspace / workspace_team_interrupted / desktop / desktop` | [PNG](evidence/source/correction/WKS-020.png) / `1bfb07967f7c` | [PNG](evidence/prototype/correction/WKS-020.png) / `1bfb07967f7c` | **Pass** |
 | `WKS-021` | Reopened team-run history | `/workspace / workspace_team_history / desktop / desktop` | [PNG](evidence/source/correction/WKS-021.png) / `5cc997a7bff0` | [PNG](evidence/prototype/correction/WKS-021.png) / `5cc997a7bff0` | **Pass** |
 | `WKS-022` | Newly launched Team selected and immediately projected under the chosen workspace with researcher/writer member rows | `/workspace / team_launch → workspace_team_launch / desktop / desktop` | [PNG](evidence/gap-009/source/JRN-050-D.png) / `99660b7e7df4`, [JSON](evidence/gap-009/gap-009-results.json) | [PNG](evidence/gap-009/prototype/JRN-050-D.png) / `99660b7e7df4` | **Pass — byte-exact** |
+| `WKS-023` | Launched Team `/writer` member selected in the left tree and focused in the center Team workspace | `/workspace / workspace_team_launch / desktop / desktop` | [PNG](evidence/gap-010/source/JRN-050-E.png) / `2c3abd02848b`, [JSON](evidence/gap-010/gap-010-results.json) | [PNG](evidence/gap-010/prototype/JRN-050-E.png) / `2c3abd02848b` | **Pass — byte-exact** |
 | `MOB-001` | Paired-mobile agent Chat | `/mobile / mobile_agent_active / paired / narrow` | [PNG](evidence/source/correction/MOB-001.png) / `97442283e761` | [PNG](evidence/prototype/correction/MOB-001.png) / `97442283e761` | **Pass** |
 | `MOB-002` | Paired-mobile Runs | `/mobile / mobile_agent_active / paired / narrow` | [PNG](evidence/source/correction/MOB-002.png) / `0c1aebdb4ad1` | [PNG](evidence/prototype/correction/MOB-002.png) / `0c1aebdb4ad1` | **Pass** |
 | `MOB-003` | Paired-mobile Run Setup | `/mobile / mobile_agent_active / paired / narrow` | [PNG](evidence/source/correction/MOB-003.png) / `4064b844cbf0` | [PNG](evidence/prototype/correction/MOB-003.png) / `4064b844cbf0` | **Pass** |
@@ -142,7 +143,7 @@ The matrix uses stable row IDs and row-level source/prototype evidence. `DZH` me
 | `HOST-001-DZH`–`WKS-021-NZH` | All 34 non-mobile correction rows | Each row in `DZH`, `NEN`, and `NZH` (102 rows) | [JSON](evidence/correction-matrix/correction-parity-results.json), [summary](evidence/correction-matrix/correction-parity-summary.json), `evidence/{source,prototype}/correction-matrix/*.png` | **102/102 pass** |
 | `MOB-001-NZH`–`MOB-014-NZH` | All paired-mobile correction rows | Narrow Simplified Chinese (14 rows); narrow English is the base row | Same row-level JSON and screenshot roots | **14/14 pass** |
 
-No locale or viewport is claimed equivalent merely by assertion: every listed permutation is a separate controlled render comparison. `WKS-022` is intentionally limited to the RER-009 desktop-English correction contract and does not add an unsupported locale/responsive equivalence claim; all prior matrix rows remain passing.
+No locale or viewport is claimed equivalent merely by assertion: every listed permutation is a separate controlled render comparison. `WKS-022` and `WKS-023` are intentionally limited to the RER-009 desktop-English correction contract and do not add an unsupported locale/responsive equivalence claim; all prior matrix rows remain passing.
 
 ## Interaction And Journey Rows
 
@@ -197,7 +198,7 @@ No locale or viewport is claimed equivalent merely by assertion: every listed pe
 | `JRN-047` | Team-run interrupt to stopped member transition; exact post-action route, visible state, dialogs/feedback, focus and action evidence. | `/workspace` / `workspace_team_active` | [PNG](evidence/source/correction-journeys/JRN-047.png), [JSON](evidence/correction-journeys/correction-journey-results.json) | [PNG](evidence/prototype/correction-journeys/JRN-047.png) | **Pass** |
 | `JRN-048` | Agent error follow-up preparation and deterministic recovery; exact post-action route, visible state, dialogs/feedback, focus and action evidence. | `/workspace` / `workspace_agent_error` | [PNG](evidence/source/correction-journeys/JRN-048.png), [JSON](evidence/correction-journeys/correction-journey-results.json) | [PNG](evidence/prototype/correction-journeys/JRN-048.png) | **Pass** |
 | `JRN-049` | Reopened team-history message selection; exact post-action route, visible state, dialogs/feedback, focus and action evidence. | `/workspace` / `workspace_team_history` | [PNG](evidence/source/correction-journeys/JRN-049.png), [JSON](evidence/correction-journeys/correction-journey-results.json) | [PNG](evidence/prototype/correction-journeys/JRN-049.png) | **Pass** |
-| `JRN-050` | Complete Team launch lifecycle: catalog card **Run** → valid `/workspace` Team draft → chosen synthetic workspace → **Run Team** → draft removed and exact created Team selected/projected under that workspace with both configured members. Terminal checkpoints `JRN-050-A`–`JRN-050-D` compare route, body/focus, Pinia contract, browser errors, and screenshot. | `/agent-teams?view=team-list` / `team_launch` / desktop | [PNGs](evidence/gap-009/source), [JSON](evidence/gap-009/gap-009-results.json) | [PNGs](evidence/gap-009/prototype) | **4/4 checkpoints pass; byte-exact** |
+| `JRN-050` | Complete Team launch and member-focus lifecycle: catalog card **Run** → valid `/workspace` Team draft → chosen synthetic workspace → **Run Team** → exact created Team selected/projected with both configured members → activate `/writer` → writer becomes the selected left-tree row and focused center workspace. Terminal checkpoints `JRN-050-A`–`JRN-050-E` compare route, body/focus, Pinia contract, browser errors, and screenshot. | `/agent-teams?view=team-list` / `team_launch` / desktop | [PNGs](evidence/gap-010/source), [JSON](evidence/gap-010/gap-010-results.json) | [PNGs](evidence/gap-010/prototype) | **5/5 checkpoints pass; byte-exact** |
 
 ## Discovery Coverage
 
@@ -205,4 +206,4 @@ The [interaction discovery audit](evidence/interaction-discovery/interaction-dis
 
 ## Completion Rule
 
-All 109 distinct rendered rows, all 239 retained matrix rows, and all 50 journeys pass. `JRN-050-A`–`D` add four exact controlled checkpoints with zero source/prototype browser errors. The RER-009 correction is a Product Prototyper inspection candidate, not a renewed acceptance claim. Historical `ui-ux-spec.md` and `final-reference-screenshots/VIS-001`–`VIS-015` remain preserved Product Prototyper artifacts; they were not regenerated or used to substitute for this correction evidence.
+All 110 distinct rendered rows, all 239 retained matrix rows, and all 50 journeys pass. `JRN-050-A`–`E` provide five exact controlled checkpoints with zero source/prototype browser errors; `JRN-050-E` is the new `PP-GAP-010` member-focus proof. The RER-009 correction is a Product Prototyper inspection candidate, not a renewed acceptance claim. Historical `ui-ux-spec.md` and `final-reference-screenshots/VIS-001`–`VIS-015` remain preserved Product Prototyper artifacts; they were not regenerated or used to substitute for this correction evidence.

@@ -3,7 +3,7 @@
 Independently runnable, browser-only UI/UX baseline for pinned AutoByteus Web
 commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
-Status: **RER-009 `PP-GAP-009` correction candidate; pending Product Prototyper re-inspection.** Prior reviewed evidence is preserved, but terminal completeness is reopened until this focused journey is accepted. This package contains no future-state redesign.
+Status: **RER-009 `PP-GAP-010` correction candidate; pending Product Prototyper re-inspection.** Prior reviewed evidence is preserved, but terminal completeness is reopened until this focused journey is accepted. This package contains no future-state redesign.
 
 Current correction placement: ordinary tracked content at repository-root `autobyteus-web-prototype` inside worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on branch `codex/initial-prototype-baseline`. Historical owning-repository placement remains documented in [repository-placement-correction.md](repository-placement-correction.md); this correction does not edit or push `personal`.
 
@@ -27,6 +27,7 @@ for production-preview and scenario commands.
 
 - [prototype-bootstrap-report.md](prototype-bootstrap-report.md)
 - [pp-gap-009-correction.md](pp-gap-009-correction.md)
+- [pp-gap-010-correction.md](pp-gap-010-correction.md)
 - [parity-inventory.md](parity-inventory.md)
 - [comparison-report.md](comparison-report.md)
 - [prototype-scenarios.md](prototype-scenarios.md)
@@ -50,10 +51,11 @@ corepack pnpm test
 corepack pnpm validate:boundaries
 corepack pnpm build
 corepack pnpm validate:gap-009-package
+corepack pnpm validate:gap-010-package
 SOURCE_BASE_URL=http://127.0.0.1:3110 \
 PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
 MOCK_BASE_URL=http://127.0.0.1:4311 \
-corepack pnpm validate:gap-009
+corepack pnpm validate:gap-010
 ```
 
-`validate:gap-009` terminally enforces `JRN-050-A`–`D`. Historical final references and `ui-ux-spec.md` are Product Prototyper-owned and must not be recaptured or changed during this correction.
+`validate:gap-010` preserves `JRN-050-A`–`D` and terminally enforces the new `JRN-050-E` writer-focus checkpoint; all five checkpoints must pass. Historical final references and `ui-ux-spec.md` are Product Prototyper-owned and must not be recaptured or changed during this correction.

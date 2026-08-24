@@ -2,7 +2,7 @@
 
 Package `initial-prototype-baseline`, current requirements revision `RER-009`
 (baseline pin established under `RER-002`; prior reviewed evidence preserved), pinned source
-`8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: completed `PP-GAP-009` correction candidate pending Product Prototyper re-inspection.
+`8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: completed `PP-GAP-010` correction candidate pending Product Prototyper re-inspection; prior `PP-GAP-009` evidence is preserved.
 
 ## Canonical Reports
 
@@ -10,6 +10,7 @@ Package `initial-prototype-baseline`, current requirements revision `RER-009`
 | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-bootstrap-report.md` | Completion status, correction trace, implementation and quality gate |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-009-correction.md` | Focused RER-009 root cause, implementation, stable IDs, exact evidence, validation and scope record |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-010-correction.md` | Focused member-selection/focus root cause, lightweight correction, `WKS-023`/`JRN-050-E`, exact evidence and scope record |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/parity-inventory.md` | Stable row/journey inventory and exact evidence mapping |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/comparison-report.md` | Controlled comparison conditions, totals and conclusion |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario/context catalog |
@@ -39,6 +40,7 @@ The JSON preserves exact requested/actual route, scenario, context, viewport, lo
 | `JRN-001`–`JRN-018` | `evidence/source/journeys` | `evidence/prototype/journeys` | `evidence/interactions/browser-journey-results.json` | `evidence/interactions/browser-journey-summary.json` |
 | `JRN-019`–`JRN-049` | `evidence/source/correction-journeys` | `evidence/prototype/correction-journeys` | `evidence/correction-journeys/correction-journey-results.json` | `evidence/correction-journeys/correction-journey-summary.json` |
 | `JRN-050-A`–`JRN-050-D` | `evidence/gap-009/source` | `evidence/gap-009/prototype` | `evidence/gap-009/gap-009-results.json` | `evidence/gap-009/gap-009-summary.json` |
+| `JRN-050-A`–`JRN-050-E` | `evidence/gap-010/source` | `evidence/gap-010/prototype` | `evidence/gap-010/gap-010-results.json` | `evidence/gap-010/gap-010-summary.json` |
 
 Each record contains the post-interaction route, body, dialogs, focused element, action-specific evidence, screenshot hashes and browser diagnostics.
 
@@ -78,6 +80,14 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 | `evidence/validation/pp-gap-009-correction-regression.txt` | Existing `JRN-023` and `JRN-049` Team workspace journeys pass |
 | `evidence/validation/pp-gap-009-gap-009.txt` | `JRN-050-A`–`D` 4/4 pass with terminal journey contract |
 | `evidence/validation/pp-gap-009-package.txt` | 20/20 current-root, source-pin, status, inventory, evidence, isolation, Product-owned-file and Git-scope checks pass |
+| `evidence/validation/pp-gap-010-gap-010.txt` | `JRN-050-A`–`E` 5/5 pass with exact member-focus terminal contract |
+| `evidence/validation/pp-gap-010-typecheck.txt` | PP-GAP-010 typecheck passes |
+| `evidence/validation/pp-gap-010-lint.txt` | PP-GAP-010 lint passes |
+| `evidence/validation/pp-gap-010-test.txt` | Prototype unit suite passes |
+| `evidence/validation/pp-gap-010-boundaries.txt` | Isolation checks pass |
+| `evidence/validation/pp-gap-010-build.txt` | Production build passes |
+| `evidence/validation/pp-gap-010-correction-regression.txt` | Adjacent Team workspace and mobile-member-focus journeys pass |
+| `evidence/validation/pp-gap-010-package.txt` | 25/25 PP-GAP-010 package-consistency checks pass |
 | `evidence/repository-placement/pre-relocation-file-inventory.json` | SHA-256 inventory of all 1,924 approved files before relocation/path rewriting |
 | `evidence/repository-placement/path-rewrite-summary.json` | Active-root rewrite counts and zero-stale-path result |
 | `evidence/repository-placement/hash-preservation-summary.json` | 808/808 approved evidence/reference image hashes and 15/15 final-reference hashes preserved |
@@ -101,6 +111,9 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 - `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png`
 - `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png`
 - `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt`
+- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png`
+- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png`
+- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt`
 
 ## Historical Review Evidence
 
@@ -109,4 +122,4 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 
 These two files substantiate the original rejected baseline and are not current evidence. The corrected `HOST-*` rows and manual Electron screenshot demonstrate that the fallback no longer occurs.
 
-Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review, but RER-009 reopened terminal completeness for `PP-GAP-009`. The focused correction evidence above—not the historical final references—substantiates the new journey. No final reference or `ui-ux-spec.md` artifact was regenerated; renewed Product Prototyper inspection and user review remain pending.
+Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review, but RER-009 corrections reopened terminal completeness for `PP-GAP-009` and then `PP-GAP-010`. The focused correction evidence above—not the historical final references—substantiates the launch and member-focus journey. No final reference or `ui-ux-spec.md` artifact was regenerated; renewed Product Prototyper inspection and user review remain pending.

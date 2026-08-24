@@ -132,7 +132,6 @@ export function applyExperienceScenario(input = {}) {
       { agentRunId: reviewerRunId, memberAddress: reviewerAddress, agentContext: reviewer },
       { agentRunId: writerRunId, memberAddress: writerAddress, agentContext: writer },
     ]
-    let focused = reviewerRunId
     const rows = [
       { key: rootRowKey, kind: 'configured_team', address: rootAddress, displayName: 'Product Review Team', accessibleName: 'Product Review Team', depth: 0, parentKey: null, agentRunId: null, teamRunId: rootTeamRunId, taskId: null, taskStatus: null, currentStatus: null, focusable: false, expandable: true, coordinator: false },
       { key: `agent:${reviewerRunId}`, kind: 'configured_agent', address: reviewerAddress, displayName: reviewerDisplayName, accessibleName: reviewerDisplayName, depth: 1, parentKey: rootRowKey, agentRunId: reviewerRunId, teamRunId: null, taskId: null, taskStatus: null, currentStatus: memberStatus, focusable: true, expandable: false, coordinator: true },
@@ -164,8 +163,9 @@ export function applyExperienceScenario(input = {}) {
       ? launchExecutionTree
       : { root_team: { team_run_id: rootTeamRunId, members: [], task_executions: [] } }
     const view = {
-      getRootTeamRunId: () => rootTeamRunId, getTeamDefinitionName: () => 'Product Review Team', getFocusedAgentContext: () => entries.find(item => item.agentRunId === focused)?.agentContext || null,
-      getFocusedMemberAddress: () => entries.find(item => item.agentRunId === focused)?.memberAddress || '', getFocusedAgentRunId: () => focused,
+      _focusedAgentRunId: reviewerRunId,
+      getRootTeamRunId: () => rootTeamRunId, getTeamDefinitionName: () => 'Product Review Team', getFocusedAgentContext() { return entries.find(item => item.agentRunId === this._focusedAgentRunId)?.agentContext || null },
+      getFocusedMemberAddress() { return entries.find(item => item.agentRunId === this._focusedAgentRunId)?.memberAddress || '' }, getFocusedAgentRunId() { return this._focusedAgentRunId },
       getConfigurationView: () => launchedFromCatalog
         ? { teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team', runtimeKind: 'autobyteus', workspaceId, workspaceMetadata, llmModelIdentifier: 'mock/gpt-prototype', llmConfig: { temperature: 0.2 }, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', memberOverrides: {}, isLocked: true }
         : { teamDefinitionId: 'team-product', teamDefinitionName: 'Product Review Team', workspaceId, workspaceMetadata, isLocked: true },
@@ -173,7 +173,7 @@ export function applyExperienceScenario(input = {}) {
       listCommunicationMessages: () => messages, listTaskHistoryRows: () => taskRows, hasAgentRun: id => entries.some(item => item.agentRunId === id),
       getAgentContext: id => entries.find(item => item.agentRunId === id)?.agentContext || null,
       getMemberAddress: id => entries.find(item => item.agentRunId === id)?.memberAddress || null, getExecutionTree: () => executionTree,
-      focusAgent: id => { if (!entries.some(item => item.agentRunId === id)) return { disposition: 'rejected' }; focused = id; return { disposition: 'applied' } }, needsStreamRecovery: () => scenario.includes('recovery'),
+      focusAgent(id) { if (!entries.some(item => item.agentRunId === id)) return { disposition: 'rejected' }; this._focusedAgentRunId = id; return { disposition: 'applied' } }, needsStreamRecovery: () => scenario.includes('recovery'),
     }
     const teams = store('agentTeamContexts')
     if (teams) teams.teams = new Map([[rootTeamRunId, { view }]])

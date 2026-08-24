@@ -48,6 +48,7 @@ const localActions: Record<string, Set<string>> = {
   agentContexts: new Set(['createRunFromTemplate', 'removeRun', 'lockConfig', 'promoteTemporaryId', 'upsertProjectionContext', 'patchConfigOnly']),
   fileExplorer: new Set(['_getOrCreateWorkspaceState', 'toggleFolder']),
   runFileChanges: new Set(['replaceRunProjection', 'mergeRunProjection', 'upsertFromLivePayload', 'clearRun']),
+  runHistory: new Set(['applyRunNavigationTeamFocus', 'focusTeamMemberAndEnsureHydrated', 'selectTreeRun']),
   workspace: new Set(['registerSkillWorkspace', 'acquireFileExplorerLiveSession', 'releaseFileExplorerLiveSession', 'clearFileExplorerLiveSessionForWorkspace', 'connectFileExplorerLiveStream', 'disconnectFileExplorerLiveStream', 'disconnectAllFileExplorerLiveStreams', 'refreshFileExplorerSnapshot', 'fetchFolderChildren']),
 }
 

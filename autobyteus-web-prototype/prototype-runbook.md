@@ -4,7 +4,7 @@
 
 - Package: `initial-prototype-baseline`
 - Revision: `RER-009` focused current-experience correction; baseline pin established under `RER-002`
-- Status: completed `PP-GAP-009` correction candidate pending Product Prototyper re-inspection
+- Status: completed `PP-GAP-010` correction candidate pending Product Prototyper re-inspection; prior `PP-GAP-009` evidence preserved
 - Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Selected source repository: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
 - Prototype: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
@@ -51,6 +51,7 @@ Then:
 3. Choose `/synthetic/prototype-workspace`.
 4. Activate **Run Team**.
 5. Confirm `Prototype Workspace` contains the selected `Product Review Team` row with `researcher` and `writer` members.
+6. Activate the `/writer` member row and confirm it becomes selected while the center Team workspace header changes to `writer`.
 
 The resulting IDs and state are synthetic and resettable. No real Team process starts.
 
@@ -126,11 +127,12 @@ corepack pnpm test
 corepack pnpm validate:boundaries
 corepack pnpm build
 corepack pnpm validate:gap-009-package
+corepack pnpm validate:gap-010-package
 ```
 
 Do not run `capture:final-references` or modify `ui-ux-spec.md` during bootstrap correction. Those are Product Prototyper-owned post-acceptance artifacts.
 
-## Reproduce PP-GAP-009 Source-Versus-Prototype Evidence
+## Reproduce PP-GAP-009 And PP-GAP-010 Source-Versus-Prototype Evidence
 
 Create an exact temporary source export without changing the selected worktree:
 
@@ -172,10 +174,10 @@ cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autoby
 SOURCE_BASE_URL=http://127.0.0.1:3110 \
 PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
 MOCK_BASE_URL=http://127.0.0.1:4311 \
-corepack pnpm validate:gap-009
+corepack pnpm validate:gap-010
 ```
 
-Expected result: `JRN-050-A`–`JRN-050-D` all pass; `gap-009-summary.json` reports four passed checkpoints, no failures, zero source/prototype browser errors, and `journeyContractPassed: true`.
+Expected result: `JRN-050-A`–`JRN-050-E` all pass; `gap-010-summary.json` reports five passed checkpoints, no failures, zero source/prototype browser errors, and `journeyContractPassed: true`. The preserved `validate:gap-009` command remains available for the earlier four-checkpoint launch-only evidence.
 
 ## Process Isolation
 
