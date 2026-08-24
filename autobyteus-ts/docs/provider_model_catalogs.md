@@ -20,6 +20,29 @@ or changing provider-specific request-shaping behavior.
 | Gemini video runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiVideoClient` | Gemini Omni video IDs map through the video modality before Interactions API request dispatch. |
 | OpenAI image request shape | `src/multimedia/image/api/openai-image-client.ts` | `OpenAIImageClient` | Keep GPT Image vs. non-GPT image edit payload differences provider-owned. |
 
+## Registry And Dynamic-Source Ownership
+
+`LLMFactory`, `AudioClientFactory`, `ImageClientFactory`, and
+`VideoClientFactory` are the authoritative in-process row registries. Their
+ordinary initialization registers only static/curated definitions and performs
+no provider discovery. Dynamic LLM/audio/image rows enter through an exact
+source ID and are atomically replaced or removed with that source; a source may
+not overwrite another source's model identifier. Video remains static.
+
+The server's `ModelCatalogService` and `DynamicModelSourceLifecycle`, not an SDK
+aggregate catalog cache, own discovery fingerprints, one in-flight operation,
+generation fencing, partial/stale status, and provider-targeted ensure/reload.
+The public server snapshot read is local and does not start discovery. There is
+no global capability reload: static providers have no Reload action, while
+AutoByteus, Ollama, LM Studio, and each custom OpenAI-compatible provider are
+independent discovered sources.
+
+Host-scoped model identifiers preserve normalized full endpoint identity,
+including path and query. After restart, construction may ensure only the exact
+missing source and then recheck the registry. An absent or ambiguous configured
+endpoint remains unavailable; it must not fall back by authority or trigger
+all-provider discovery.
+
 ## Custom OpenAI-Compatible Model Metadata
 
 Saved custom OpenAI-compatible providers use the `/models` discovery response
@@ -51,7 +74,7 @@ or credentials.
 | LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
-| LLM | `grok-4.5` | `grok-4.5` | xAI / Grok | 2026-07-09 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and source-dated cache-aware pricing. |
+| LLM | `grok-4.6` | `grok-4.6` | xAI / Grok | 2026-08-22 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and cache-aware pricing with a long-context tier above 200k input tokens. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
@@ -60,15 +83,13 @@ or credentials.
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `qwen3.8-max` | `qwen3.8-max` | Qwen / Alibaba | 2026-08-06 | Native Qwen offering with source-dated 1M context metadata; input/output limits remain unknown. |
-| LLM | `DeepSeek V4 Pro (Qwen)` | `deepseek-v4-pro` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:deepseek-v4-pro`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
-| LLM | `DeepSeek V4 Flash 0731 (Qwen)` | `deepseek-v4-flash-0731` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:deepseek-v4-flash-0731`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
-| LLM | `GLM-5.2 (Qwen)` | `glm-5.2` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:glm-5.2`, exact unprefixed provider value, and conservative 198k context metadata; no alias or producer field. |
-| LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
-| LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-06-16 | General-purpose Kimi model; keeps K2.6-specific tool-workflow normalization. |
-| LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Standard K2.7 Code serving route; always-on thinking and fixed sampling constraints are shared through the Kimi K2.7 policy and enforced in `KimiLLM`. |
-| LLM | `kimi-k2.7-code-highspeed` | `kimi-k2.7-code-highspeed` | Moonshot / Kimi | 2026-06-26 | High-speed K2.7 Code serving route; distinct official provider ID that shares the Kimi K2.7 fixed sampling/tool policy. |
-| LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
-| LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-06-24 | Replaces removed MiniMax M2.7 support; uses tiered pricing metadata and the MiniMax OpenAI-compatible adapter. |
+| LLM | `DeepSeek V4 Pro (Qwen)` | `deepseek-v4-pro` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:deepseek-v4-pro`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
+| LLM | `DeepSeek V4 Flash 0731 (Qwen)` | `deepseek-v4-flash-0731` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:deepseek-v4-flash-0731`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
+| LLM | `GLM-5.2 (Qwen)` | `glm-5.2` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:glm-5.2`, exact unprefixed provider value, and conservative 198k context metadata; it is distinct from the current built-in GLM row. |
+| LLM | `gemini-3.7-flash` | `gemini-3.7-flash` | Gemini | 2026-08-22 | Uses the Gemini adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and curated 1,048,576-token context/input plus 65,536-token output limits. |
+| LLM | `kimi-k3` | `kimi-k3` | Moonshot / Kimi | 2026-08-22 | Current Kimi row; thinking is always enabled, reasoning effort accepts low/high/max (default max), and curated context is 1M tokens. |
+| LLM | `glm-5.3` | `glm-5.3` | Zhipu GLM | 2026-08-22 | Current built-in GLM row; uses the GLM thinking schema, 1M-token context/input metadata, and adapter-owned request mapping. Pricing remains untrusted rather than guessed. |
+| LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-08-22 | Current MiniMax row; uses 1M-token context/input metadata, tiered pricing, and the MiniMax OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
 | Image | `gemini-3.1-flash-lite-image` | `gemini-3.1-flash-lite-image` | Gemini | 2026-07-03 | Fast Gemini image generation model; registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
 | Image | `gemini-3.1-flash-image` | `gemini-3.1-flash-image` | Gemini | 2026-07-03 | Current Gemini 3.1 Flash Image / Nano Banana 2 model ID; replaces the shut-down preview catalog ID without an alias. |
@@ -77,9 +98,9 @@ or credentials.
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
-## xAI Grok 4.5
+## xAI Grok 4.6
 
-`grok-4.5` is the only built-in Grok model. It keeps the existing xAI
+`grok-4.6` is the only built-in Grok model. It keeps the existing xAI
 OpenAI-compatible Chat Completions endpoint at `https://api.x.ai/v1`, including
 streaming and function-tool calls. The model always reasons and accepts only
 `reasoning_effort: low | medium | high`, defaulting to `high`; `none` is not a
@@ -90,16 +111,14 @@ and `stop` request fields, including their snake_case and camelCase/raw stop
 spellings, before the shared compatible request builder runs. Provider-safe
 extra parameters, tools, `tool_choice`, and stream controls remain supported.
 
-The catalog records `$2.00` input, `$6.00` output, and `$0.50` cached-input-read
-pricing per million tokens effective 2026-07-08. Curated metadata records a
-500,000-token context limit verified 2026-07-09; no maximum output limit is
-asserted without official evidence.
+The catalog records `$2.00` input, `$6.00` output, and `$0.50`
+cached-input-read pricing per million tokens through 200k input tokens. Above
+200k the full request uses `$4.00` input, `$12.00` output, and `$1.00` cached
+input. Curated metadata records a 500,000-token context limit verified
+2026-08-22; no maximum output limit is asserted without official evidence.
 
-`grok-4.3` and `grok-build-0.1` were intentionally removed from active support
-without aliases, redirect fallbacks, or compatibility wrappers. The retired
-`grok-code-fast-1` identifier has no active catalog/runtime/docs support or
-alias; only a labeled absence assertion and historical ticket/audit evidence
-may mention it.
+Earlier Grok rows, including `grok-4.5`, are not aliases or fallbacks for
+`grok-4.6`.
 
 ## Frontend Schema-Default Display And Disclosure Contract
 
@@ -192,9 +211,9 @@ request error.
 
 ### Current Anthropic Claude models
 
-The built-in Anthropic catalog is static. Provider-scoped reload does not
-discover new Anthropic API model IDs; it returns the existing static Anthropic
-count until `src/llm/supported-model-definitions.ts` is updated.
+The built-in Anthropic catalog is static. The server exposes no Reload action
+for it; new Anthropic API model IDs appear only after
+`src/llm/supported-model-definitions.ts` is updated.
 
 The active current-model rows are `claude-opus-5`, `claude-fable-5`,
 `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and retained
@@ -314,9 +333,9 @@ capability matrix before forcing `tool_choice: "required"`; if the provider
 rejects forced tool choice, treat it as a model capability constraint rather
 than a shared request-builder contract.
 
-### Zhipu GLM 5.2
+### Zhipu GLM 5.3
 
-`glm-5.2` is the active built-in GLM model. Its catalog schema exposes flat,
+`glm-5.3` is the active built-in GLM model. Its catalog schema exposes flat,
 renderable keys while `GlmLLM` owns provider-native conversion:
 
 - `thinking_type: "enabled" | "disabled"` maps to top-level
@@ -326,52 +345,24 @@ renderable keys while `GlmLLM` owns provider-native conversion:
 - `GlmLLM` removes the flat `thinking_type` key before calling the shared
   OpenAI-compatible request builder.
 
-`glm-5.1` is no longer an active built-in model and must not be retained as an
-alias or fallback row.
+Its curated context/input limit is 1,000,000 tokens and output limit is 128,000
+tokens. Deployment pricing is deliberately untrusted and therefore remains
+missing in cost projections rather than being guessed.
 
-### Kimi K2.6
+`glm-5.2` is no longer the built-in GLM row and must not be retained as an alias
+or fallback for `glm-5.3`. Qwen's distinct static `qwen:glm-5.2` identifier is
+still supported and sends the exact `glm-5.2` value only through the Qwen
+provider.
 
-`kimi-k2.6` is retained as the general-purpose Kimi model and follows safe
-request normalization for Moonshot tool workflows:
+### Kimi K3
 
-- when a request uses tools and the caller has not explicitly supplied a
-  thinking override, the Kimi adapter sends `thinking: { type: "disabled" }` to
-  avoid strict ordering errors in tool-call continuations;
-- config-level/default temperatures are normalized to provider-safe values
-  before the shared OpenAI-compatible request builder runs: tool workflows use
-  `temperature: 0.6`, non-tool requests use `temperature: 1`, and explicit
-  per-request `temperature` kwargs are preserved.
+`kimi-k3` is the active built-in Kimi model. Thinking is always enabled. Its
+schema accepts `reasoning_effort: low | high | max` (default `max`) and only
+`thinking_type: enabled`. The catalog carries a 1,000,000-token context limit
+and standard input/output/cache-read pricing effective 2026-08-22.
 
-### Kimi K2.7 Code and HighSpeed
-
-`kimi-k2.7-code` and `kimi-k2.7-code-highspeed` are both active built-in Kimi
-K2.7 Code rows. They use distinct official provider identifiers/routes; the
-HighSpeed row is the faster serving variant of the same K2.7 Code model family,
-not an alias, fallback, or accidental duplicate. Keep both rows visible and do
-not collapse either ID into the other.
-
-The shared Kimi K2.7 family policy lives in
-`src/llm/api/kimi-k2-7-code-policy.ts`. It owns the two model IDs, fixed
-sampling constants, allowed tool-choice values, the family predicate used by
-`KimiLLM`, and the default-config helper used by the catalog rows. Both catalog
-rows seed the same provider-fixed defaults while preserving their separate
-pricing metadata.
-
-K2.7 Code variants use the same Kimi OpenAI-compatible endpoint but have
-different request constraints from K2.6:
-
-- the adapter never auto-injects `thinking: { type: "disabled" }` for K2.7
-  Code because thinking is always on;
-- the model default config starts from the provider-fixed
-  `temperature: 1.0`, `top_p: 0.95`, `n: 1`, `presence_penalty: 0`, and
-  `frequency_penalty: 0` values;
-- explicit non-default fixed sampling controls are normalized to documented
-  fixed values (`top_p: 0.95`, `n: 1`, `presence_penalty: 0`,
-  `frequency_penalty: 0`); and
-- unsupported forced tool choices for tool requests are normalized to `auto`.
-
-`kimi-k2-thinking` is no longer an active built-in model and must not be
-retained as an alias for K2.7 Code.
+Earlier Kimi K2.6/K2.7 rows are removed from current definitions, not aliases
+or fallbacks for K3.
 
 ### MiniMax M3
 
@@ -395,13 +386,18 @@ capabilities in each definition's `staticMetadata` (helpers live in
 mapping in `src/utils/gemini-model-mapping.ts` so both API-key and Vertex modes
 are covered by tests even when the provider value is currently identical.
 
-`gemini-3.5-flash` is the supported Gemini 3.5 Flash LLM ID verified on
-2026-05-20. It uses the exact same user-facing ID and provider API value for
+`gemini-3.7-flash` is the supported Gemini 3.7 Flash LLM ID verified on
+2026-08-22. It uses the exact same user-facing ID and provider API value for
 API-key and Vertex runtimes, reuses the shared Gemini thinking schema
 (`thinking_level` and `include_thoughts`), and reports curated limits of
 1,048,576 input/context tokens and 65,536 output tokens. Its default pricing
-configuration is the verified 2026-05-20 paid-tier rate of `1.5` input and
-`9.0` output per 1M tokens.
+configuration is `0.75` input, `3.75` output, and `0.075` cached-input read per
+1M tokens effective 2026-08-22.
+
+The server's catalog snapshot projects this curated row without a Gemini
+metadata credential lookup or HTTP request. Live AI Studio metadata enrichment
+is a separate explicit metadata capability and must not block static catalog
+availability; Vertex modes remain curated-only.
 
 Do not add aliases or compatibility wrappers for older preview IDs when adding
 Gemini LLM models. Use the official model ID unless Google documents a distinct

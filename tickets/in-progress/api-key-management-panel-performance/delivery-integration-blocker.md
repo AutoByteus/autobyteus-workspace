@@ -1,9 +1,16 @@
 # Delivery Integration Blocker
 
-## Status
+## DR-002 Resolution
+
+- Status: `Resolved`
+- Resolution owner/result: `IR-007` completed merge commit `f6f4d532f78f3b418dca471881f65d3415693f99`; `CRR-007` passed integrated source; `API-REV-003` passed at 96.7%; `CRR-008` passed the exact one-path durable correction.
+- Current delivery state: `DR-002 — Pass`; documentation and handoff are synchronized against the integrated reviewed state.
+- Historical value: the remainder of this artifact preserves the exact DR-001 conflict/reroute record and must not be treated as a current blocker.
+
+## Historical DR-001 Status
 
 - Delivery revision: `DR-001`
-- Result: `Blocked`
+- Result: `Blocked` (resolved by DR-002)
 - Classification: `Local Fix`
 - Recommended recipient: `/implementation_engineer`
 - Ticket branch: `codex/api-key-management-panel-performance`

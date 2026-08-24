@@ -4,9 +4,25 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-002 | `CRR-008` proportional review Pass over integrated `API-REV-003` / `IR-007` / `CRR-007` | `DR-001` Blocked — latest-base merge conflicts | Pass — conflicts resolved and reviewed, exact integrated package checkpointed, latest base remains current, five long-lived docs synchronized, and handoff prepared for explicit user verification; finalization/release held | `delivery-integration-blocker.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `validation-evidence/delivery-docs-sync-dr002.log` |
 | DR-001 | `CRR-006` proportional review Pass over `API-REV-002`, with no unresolved ticket finding | N/A | Blocked — the mandatory merge of latest `origin/personal` produced four conflicts; classified `Local Fix` and routed to `/implementation_engineer` before docs sync or user handoff | `delivery-integration-blocker.md`, `docs-sync-report.md`, `release-deployment-report.md`, `validation-evidence/delivery-integration-refresh-dr001.log` |
 
 ## Revision Entries
+
+### DR-002 — Integrated, documented handoff ready for user verification
+
+- Triggering validated lineage: `IR-007` resolved all four DR-001 conflicts in merge commit `f6f4d532f78f3b418dca471881f65d3415693f99`; integrated source review `CRR-007` passed; `API-REV-003` passed at 96.7%; and `CRR-008` passed the exact one-path Qwen durable correction with no finding.
+- Latest-base refresh: delivery fetched `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1` on 2026-08-23. It is the merge base and an ancestor of the current ticket state; the branch was ahead and zero behind. No new base commit required another merge.
+- Reviewed-state protection: delivery checkpointed the exact integrated API-REV-003 / CRR-008 package and retained evidence at `d7f6f4108b09f66f92875b2fa29ac17f3a8387ca`. This is a local safety checkpoint, not repository finalization.
+- Post-integration evidence: SDK/server focused suites, six actual-schema E2E files plus the corrected Qwen lifecycle rerun, builds/preflight, 15 integrated web tests/guards/build, interrupt browser probe, production Settings browser probe, and final audits passed as recorded by `API-REV-003`. CRR-008 independently accepted the exact Qwen assertion delta. Delivery did not rerun behavior after making documentation-only edits.
+- Documentation result: `Pass — Updated`. Five canonical docs now describe separate credential/snapshot reads, static network-free registries, source-local ensure/reload/invalidation, exact construction-time availability, command independence, removed aggregate/global GraphQL operations, media registry ownership, and the integrated Gemini 3.7 / built-in GLM 5.3 versus Qwen-owned GLM 5.2 split.
+- Removed truth reconciled: aggregate `providerSettings`, four `available*ProvidersWithModels` queries, global capability reloads, provider-specific LLM-only reload, deleted cached/model-service facades, and static-provider Reload are documented as absent with no compatibility alias.
+- Current result: `Pass — integrated/docs-synchronized handoff ready for explicit user verification.`
+- User verification/finalization state: explicit verification has not been received. The ticket remains in `tickets/in-progress`; no terminal commit/push, target merge, archive, version change, tag, publication, deployment, or cleanup occurred.
+- Release posture: user-facing release notes are prepared but not published. No release is in current scope unless explicitly authorized after verification.
+- Residual signals: broader server E2E failures `BASELINE-E2E-001` through `BASELINE-E2E-004` remain unchanged-file baseline failures and the whole suite is not green; optional real-provider success remains capability-dependent; Electron shell launch/IPC/window behavior is outside the changed boundary, while the production web-equivalent renderer passed.
+- Next action: user verifies/accepts the integrated handoff or reports a finding. Delivery must refresh `origin/personal` again before any repository finalization.
+- Evidence: `validation-evidence/delivery-docs-sync-dr002.log` plus the `09*` integrated evidence set referenced by `api-e2e-execution-coverage-report.md`.
 
 ### DR-001 — Latest-base integration conflict blocks delivery
 

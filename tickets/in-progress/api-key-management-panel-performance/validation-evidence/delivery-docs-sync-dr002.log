@@ -1,0 +1,53 @@
+# Delivery docs sync and handoff audit — DR-002
+
+captured_at=2026-08-23T17:23:21Z
+validated_checkpoint=d7f6f4108b09f66f92875b2fa29ac17f3a8387ca
+latest_origin_personal=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+merge_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+divergence=3/0
+
+## Patch hygiene
+git_diff_check=PASS
+
+## Long-lived docs changed after integrated validated checkpoint
+autobyteus-server-ts/docs/modules/llm_management.md
+autobyteus-server-ts/docs/modules/multimedia_management.md
+autobyteus-server-ts/docs/modules/secret_management.md
+autobyteus-ts/docs/provider_model_catalogs.md
+autobyteus-web/docs/settings.md
+exact_long_lived_docs=PASS_5
+
+## No post-review production or durable-test edit
+post_review_non_doc_delta=NONE
+
+## Current GraphQL operation owners
+156:  async providerCredentialSettings(
+164:  async providerModelCatalogSnapshots(
+182:  async ensureProviderModelCatalog(
+192:  async reloadProviderModelCatalog(
+202:  async saveProviderApiKey(
+210:  async saveQwenConfiguration(
+221:  async probeCustomProvider(
+228:  async createCustomProvider(
+235:  async deleteCustomProvider(
+current_operation_cross_check=PASS
+
+## Obsolete operation doc audit
+./autobyteus-server-ts/docs/modules/llm_management.md:134:The old aggregate `providerSettings`, four `available*ProvidersWithModels`
+obsolete_current_claims=NONE; explicit_removal_statement=1
+
+## Deleted owner doc audit
+deleted_owner_references=NONE
+
+## Delivery artifact presence
+docs-sync-report.md=present
+handoff-summary.md=present
+release-notes.md=present
+release-deployment-report.md=present
+delivery-revision-record.md=present
+delivery-integration-blocker.md=present
+
+## Conflict marker audit
+conflict_markers=NONE
+
+final_result=PASS

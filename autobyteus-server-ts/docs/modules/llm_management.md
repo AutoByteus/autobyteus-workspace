@@ -10,10 +10,11 @@ native Qwen Base URL/API-key setup command and its value-free status projection.
 ## TS Source
 
 - `src/api/graphql/types/llm-provider.ts`
+- `src/api/graphql/types/llm-provider-model-catalog.ts`
 - `src/llm-management/services/model-catalog-service.ts`
-- `src/llm-management/services/autobyteus-model-catalog.ts`
-- `src/llm-management/providers/autobyteus-llm-model-provider.ts`
-- `src/llm-management/providers/cached-autobyteus-llm-model-provider.ts`
+- `src/llm-management/services/dynamic-model-source-lifecycle.ts`
+- `src/llm-management/services/model-availability-service.ts`
+- `src/llm-management/services/autobyteus-remote-model-discovery-service.ts`
 - `src/llm-management/llm-providers/`
 
 ## Main Owners
@@ -34,28 +35,45 @@ native Qwen Base URL/API-key setup command and its value-free status projection.
   - metadata-only custom provider persistence
 - **`CustomLlmProviderRuntimeSyncService`**
   (`src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts`)
-  - load/sync saved custom providers into runtime state
-  - expose per-provider reload status
+  - prepare one saved custom provider's source-owned rows
+  - convert successful probe/discovery payloads without owning lifecycle state
 - **`ModelCatalogService`**
   (`src/llm-management/services/model-catalog-service.ts`)
-  - runtime-kind-aware catalog read/reload entry point
-- **`AutobyteusModelCatalog`**
-  (`src/llm-management/services/autobyteus-model-catalog.ts`)
-  - main AUTOBYTEUS runtime LLM catalog facade
+  - runtime-kind-aware local snapshot and provider ensure/reload facade
+  - setting/credential invalidation and exact source-owned registry commits
+- **`DynamicModelSourceLifecycle`**
+  (`src/llm-management/services/dynamic-model-source-lifecycle.ts`)
+  - one fingerprint, generation, single-flight operation, and status per source
+  - stale-result fencing and last-known-good failure semantics
+- **`ModelAvailabilityService`**
+  (`src/llm-management/services/model-availability-service.ts`)
+  - construction-time exact dynamic-source resolution and ensure-after-restart
+  - full configured-endpoint validation for host-scoped identifiers
+- **SDK LLM/audio/image/video factories**
+  - authoritative in-process model registries
+  - atomic `replaceSourceModels`/`removeSourceModels` ownership for dynamic rows
 
 ## Public GraphQL Contract
 
 The GraphQL boundary stays provider-centered through
 `src/api/graphql/types/llm-provider.ts`.
 
-### API-Key Settings Query
+### API-Key Settings Queries
 
-`providerSettings(runtimeKind?)` is the sole read authority for Settings -> API
-Key Management. It returns each provider exactly once as:
+Credential state and model state have separate public reads:
 
 ```text
-ProviderSettingsGroup {
-  provider: LlmProviderObject
+providerCredentialSettings(runtimeKind?) -> ProviderCredentialSetting[]
+ProviderCredentialSetting {
+  provider: CatalogProvider
+  apiKeyConfigured: Boolean
+}
+
+providerModelCatalogSnapshots(runtimeKind?) -> ProviderModelCatalogSnapshot[]
+ProviderModelCatalogSnapshot {
+  runtimeKind: String
+  ownerProvider: CatalogProvider
+  sources: ModelSourceStatus[]
   llmModels: ModelDetail[]
   audioModels: ModelDetail[]
   imageModels: ModelDetail[]
@@ -63,57 +81,61 @@ ProviderSettingsGroup {
 }
 ```
 
-`LlmProviderObject` retains the existing provider identity/catalog fields:
+`CatalogProvider` exposes `id`, `name`, `providerType`, `isCustom`, nullable
+`baseUrl`, and `catalogMode = STATIC | DISCOVERED`. The credential query
+computes one value-free `apiKeyConfigured` fact per provider and performs no
+model discovery. Secret values are never returned.
 
-- `id`, `name`, `providerType`, `isCustom`, and nullable `baseUrl`;
-- provider-owned `apiKeyConfigured` Boolean;
-- `status` and nullable `statusMessage` for catalog/runtime state.
+The snapshot query initializes static SDK registries without network access and
+projects their current rows. It does not ensure or reload a dynamic source;
+cold discovered sources appear as `IDLE` with empty rows. Dynamic source status
+is capability-specific and exposes `modelKind`, `state`, model/success/failure
+counts, and a nullable safe message. Model rows remain owned by the SDK
+registries; `ModelCatalogService` maintains no duplicate aggregate row cache.
 
-`apiKeyConfigured` is computed once by the exact provider owner. It is never
-copied from one capability occurrence or another provider. The four model lists
-reuse the existing non-null `ModelDetail` contract and use `[]` when the
-provider has no models in that capability. The web consumes this grouped
-collection directly and maintains no four-array merge or second credential map.
-
-After a save command returns Boolean completion, the client refetches
-`providerSettings` for authoritative state. Secret values are never returned.
+For Claude Agent SDK and Codex app-server runtime kinds, the same snapshot
+shape groups their runtime-owned LLM rows as static providers. Custom providers
+and provider ensure/reload are available only for the AutoByteus runtime.
 
 ### Other Queries
 
-The established catalog queries remain supported for model selectors, media
-defaults, history, workspace, and other non-Settings consumers:
+Specialized setup reads remain separate:
 
-- `availableLlmProvidersWithModels(runtimeKind?)`
-- `availableAudioProvidersWithModels(runtimeKind?)`
-- `availableImageProvidersWithModels(runtimeKind?)`
-- `availableVideoProvidersWithModels(runtimeKind?)`
 - `getGeminiSetupConfig()`
 - `qwenSetupStatus()`
 
-They are not API-key Settings credential authorities.
-
 `qwenSetupStatus()` is the Qwen-specific setup authority. It returns only
-`effectiveBaseUrl`, server-owned `endpointSource = DEFAULT | CONFIGURED`, and
-`apiKeyConfigured`. Endpoint source is based on whether `QWEN_BASE_URL` was
-explicitly saved, not on comparing its value with the built-in default URL.
+`effectiveBaseUrl` and server-owned `endpointSource = DEFAULT | CONFIGURED`.
+Credential status comes from `providerCredentialSettings`. Endpoint source is
+based on whether `QWEN_BASE_URL` was explicitly saved, not on comparing its
+value with the built-in default URL.
 
 ### Mutations
 
-- `saveProviderApiKey(providerId, apiKey)` -> Boolean
-- `saveQwenConfiguration({ baseUrl, apiKey })` -> `QwenSetupStatus`
+- `ensureProviderModelCatalog(providerId, runtimeKind?)` -> one current
+  `ProviderModelCatalogSnapshot`
+- `reloadProviderModelCatalog(providerId, runtimeKind?)` -> one forced current
+  `ProviderModelCatalogSnapshot`
+- `saveProviderApiKey(providerId, apiKey)` -> `ProviderCredentialSetting`
+- `saveQwenConfiguration({ baseUrl, apiKey })` ->
+  `{ setup, credentialSetting }`
 - `probeCustomProvider(input)` -> discovered `{ id, name }` models only
-- `createCustomProvider(input)` -> assigned provider ID only
-- `deleteCustomProvider(providerId)` -> Boolean
+- `createCustomProvider(input)` -> `ProviderCredentialSetting`
+- `deleteCustomProvider(providerId)` -> `{ providerId, deleted }`
 - `saveGeminiAiStudio(apiKey, activateAfterSave)`
 - `saveGeminiVertexExpress(apiKey, activateAfterSave)`
 - `saveGeminiVertexProject(project, location, activateAfterSave)`
 - `useGeminiMode(mode)`
-- `reloadLlmProviderModels(providerId, runtimeKind?)`
-- `reloadLlmModels(runtimeKind?)`
 
-Gemini mutations return the same exact `GeminiSetupStateObject`; ordinary
-failures use the typed GraphQL error path rather than a parallel outcome,
-instruction-code, or generic status-message protocol.
+Gemini mutations return the exact setup plus updated credential setting.
+Ordinary failures use the typed GraphQL error path rather than a parallel
+outcome, instruction-code, or generic status-message protocol.
+
+The old aggregate `providerSettings`, four `available*ProvidersWithModels`
+queries, global capability reloads, and provider-specific LLM-only reload are
+removed from the current schema. There are no compatibility aliases or fan-out
+wrappers. Static providers do not support forced reload; the public product
+control is present only for a `DISCOVERED` provider.
 
 Qwen must use `saveQwenConfiguration`; the generic API-key mutation rejects the
 `QWEN` provider. The Qwen command normalizes and probes the submitted
@@ -126,7 +148,9 @@ the key and returns the sanitized
 compensation also fails, it returns `QWEN_CONFIGURATION_REPAIR_REQUIRED` and
 does not claim rollback. GraphQL exposes only the approved code/message; raw
 secrets, provider payloads, filesystem details, and internal exceptions remain
-private.
+private. Success returns the committed setup and credential setting directly;
+it does not await or require a model-catalog refresh because Qwen rows are
+static.
 
 ### Model Detail
 
@@ -157,7 +181,7 @@ The Claude Agent SDK catalog reads the live `supportedModels()` response and
 normalizes each non-empty description independently from the alias display name
 and identifier. The nullable value is carried through the shared `ModelInfo`
 contract and exposed as `ModelDetail.description` by
-`availableLlmProvidersWithModels(runtimeKind: "claude_agent_sdk")`.
+`providerModelCatalogSnapshots(runtimeKind: "claude_agent_sdk")`.
 
 Descriptions can change with the installed Claude runtime, authenticated
 account, or vendor catalog. Do not replace this path with curated model/version
@@ -256,8 +280,9 @@ mode fallback.
 - The provider record contains its name, server-owned `OPENAI_COMPATIBLE`
   type/runtime, and Base URL. Its API key is stored separately by Secret
   Management.
-- Custom providers are returned in the same `providerSettings` collection as
-  built-ins.
+- Custom providers are returned with built-ins by both
+  `providerCredentialSettings` and `providerModelCatalogSnapshots` for the
+  AutoByteus runtime. Their catalog mode is `DISCOVERED`.
 - Saved custom providers can be removed through
   `deleteCustomProvider(providerId)`; built-ins remain non-deletable.
 - The public API does **not** expose a separate top-level
@@ -364,12 +389,14 @@ re-enabling legacy identity.
    providers.
 3. Probe uses the OpenAI-compatible `/models` discovery owner and returns only
    discovered `{ id, name }` rows.
-4. Create persists V3 metadata and the credential, returning only the assigned
-   readable provider ID. A failed credential write rolls back the metadata
-   record; rejected create leaves neither provider nor readable-ID secret.
-5. The client refetches canonical `providerSettings`; no echoed input,
-   provider-type constant, runtime constant, or parallel outcome DTO is
-   returned.
+4. Create validates and probes the submitted input, persists V3 metadata and
+   the credential, and seeds the exact provider source from that successful
+   discovery result. It does not perform a second post-create discovery request.
+   A failed credential or seed commit rolls back metadata/credential state;
+   rejected create leaves neither provider nor readable-ID secret.
+5. Create returns the assigned provider descriptor plus value-free configured
+   state. The client applies that credential setting and refreshes only the
+   local snapshot projection; no aggregate provider/catalog refetch is needed.
 
 ### Delete
 
@@ -378,10 +405,10 @@ re-enabling legacy identity.
 2. `SecretManagementService.removeForConsumer(...)` removes the credential.
 3. `CustomLlmProviderStore.deleteProvider(...)` removes metadata from
    `custom-llm-providers.json`.
-4. The server uses the targeted custom-provider reload/synchronization boundary
-   so the deleted provider disappears from runtime/catalog state without
-   invoking unrelated AutoByteus remote discovery. The client then refetches
-   `providerSettings`.
+4. The server removes the exact custom source lifecycle and registry rows, so
+   the provider disappears without invoking unrelated AutoByteus discovery.
+   The client fences any older provider request and removes the exact credential
+   and snapshot entries locally.
 
 Delete is idempotent at the owning service boundary. Failures use GraphQL
 errors rather than a second status protocol. Vault removal, provider-record
@@ -390,47 +417,52 @@ the targeted path does not globally swallow intrinsic failures.
 
 ## Runtime Sync and Status
 
-Saved custom providers are synced into runtime state by
-`CustomLlmProviderRuntimeSyncService`, which delegates to
-`LLMFactory.syncOpenAICompatibleEndpointModels(...)`.
+`DynamicModelSourceLifecycle` owns state per provider and model kind. A source
+has one exact fingerprint, one in-flight operation, generation fencing, and one
+of `IDLE`, `LOADING`, `READY`, `PARTIAL`, `REFRESHING`, `STALE_ERROR`, or
+`ERROR`. A non-forcing ensure joins an in-flight request and reuses a completed
+attempt for the current fingerprint. Forced Reload starts a new generation.
+Only the current generation may atomically replace that source's rows.
 
-Per-provider status is projected as:
+Successful preparation commits the complete source slice. Partial AutoByteus
+host results commit deterministically ordered successful rows with `PARTIAL`.
+A failed first attempt is `ERROR`; a failed refresh with rows from a successful
+prior fingerprint is `STALE_ERROR` and retains only those last-known-good rows.
+No source failure wipes another provider or model kind.
 
-- `READY`
-- `STALE_ERROR`
-- `ERROR`
-- `NOT_APPLICABLE` (built-ins only)
+## Ensure, Reload, And Invalidation Behavior
 
-Behavior:
+- `providerModelCatalogSnapshots(runtimeKind?)` is a local read. It never starts
+  discovery.
+- `ensureProviderModelCatalog(providerId, runtimeKind?)` starts or joins only
+  the target discovered provider when its fingerprint has not been attempted.
+  A static provider simply returns its current snapshot without network work.
+- `reloadProviderModelCatalog(providerId, runtimeKind?)` forces only the target
+  `DISCOVERED` provider. Calling it for a static provider is rejected.
+- `AUTOBYTEUS` owns three source keys (LLM/audio/image). Its provider operation
+  prepares them concurrently; remote hosts are attempted concurrently with a
+  30-second per-host deadline and deterministic aggregation.
+- `OLLAMA` and `LMSTUDIO` each own one LLM source. Every custom provider owns
+  one exact OpenAI-compatible LLM source.
+- A committed `AUTOBYTEUS_LLM_SERVER_HOSTS`, `OLLAMA_HOSTS`, or
+  `LMSTUDIO_HOSTS` change invalidates and clears only the mapped source rows,
+  then starts a detached non-forcing ensure. A full normalized endpoint,
+  including scheme/path/query, is the fingerprint authority.
+- A committed AutoByteus credential change invalidates only the AutoByteus
+  sources, retains current rows while their exact replacement refreshes, and
+  starts the source operations without delaying credential-command success.
+- Custom create seeds its warm source from the successful create probe; after
+  restart, the first ensure performs discovery. Delete removes the exact source
+  immediately.
 
-- successful probe/load => `READY`
-- previously healthy provider fails later => `STALE_ERROR` and keeps
-  last-known-good models
-- provider that has never loaded successfully => `ERROR`
-- built-ins => `NOT_APPLICABLE`
-- provider removed from the saved provider set => it disappears on the next
-  authoritative sync and remains absent after cold start
+There is no global catalog Reload or cross-provider FIFO. Custom providers are
+available only for `runtimeKind = AUTOBYTEUS`; other runtime kinds expose their
+own static LLM snapshots and reject dynamic-provider operations.
 
-This preserves healthy providers during warm-cache failures and avoids wiping
-the whole custom-provider slice when one endpoint is broken.
-
-## Reload Behavior
-
-- `reloadLlmModels(runtimeKind?)`
-  - full catalog refresh for the active runtime kind
-- `reloadLlmProviderModels(providerId, runtimeKind?)`
-  - custom providers: resync saved providers and return the target provider's
-    current model count
-  - reloadable built-ins (`LMSTUDIO`, `OLLAMA`, `AUTOBYTEUS`): refresh through
-    `LLMFactory.reloadModels(...)`
-  - other built-ins: return current model count without a special reload path
-- `deleteCustomProvider(providerId)`
-  - removes the saved custom-provider record first
-  - then reloads only the targeted custom-provider boundary so deleted-provider
-    models are removed from authoritative runtime/catalog state
-  - does not depend on or suppress failures from unrelated AutoByteus remote
-    discovery
-
-Custom providers are available only for `runtimeKind = AUTOBYTEUS`. Other
-runtime kinds keep their own model catalogs and do not project custom provider
-records.
+Before construction, `ModelAvailabilityService` first accepts an already
+registered model. If a persisted dynamic identifier is missing after restart,
+it parses the exact source, verifies a unique full configured endpoint, ensures
+only that provider, and rechecks the registry. Zero or ambiguous endpoint
+matches remain unavailable rather than falling back by authority or triggering
+an all-provider refresh. Video models are static and have no dynamic ensure or
+reload path.
