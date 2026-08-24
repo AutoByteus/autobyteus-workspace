@@ -22,6 +22,7 @@ Electron contexts install `window.electronAPI` as a deterministic browser-side h
 | `empty` | Agents, Applications, Memory, Skills | Exact empty/redirect patterns |
 | `apps_disabled` | `/applications` | Applications navigation removed and route recovery |
 | `loading` | `/agents?view=list` | Delayed shell/bootstrap loading surface |
+| `team_launch` | `/agent-teams?view=team-list` → `/workspace` | Source-observation fixture for empty pre-launch history, valid Team draft/create/resume, and chosen-workspace projection |
 | `error` | `/agents?view=list` | Recoverable catalog error presentation |
 | `permission_denied` | `/mobile`, `paired` | Denied/offline mobile recovery guidance |
 
@@ -56,6 +57,7 @@ Electron contexts install `window.electronAPI` as a deterministic browser-side h
 | `workspace_team_error` | `/workspace`, desktop | Team/member error state |
 | `workspace_team_interrupted` | `/workspace`, desktop | Interrupted/stopped focused member |
 | `workspace_team_history` | `/workspace`, desktop | Reopened team history and message selection |
+| `workspace_team_launch` | `/workspace`, desktop | Newly launched synthetic Team selected and immediately projected under `Prototype Workspace` with researcher/writer members |
 | `mobile_agent_active` | `/mobile`, paired | Agent Runs/Setup/Chat/Files/Viewer/Artifacts/Activity |
 | `mobile_team_active` | `/mobile`, paired | Team Chat/focus/messages/reference/Files/Artifacts/Activity |
 
@@ -63,12 +65,13 @@ Workspace and mobile scenarios populate real Pinia presentation objects and the 
 
 ## Locale And Viewport Matrix
 
-- Base English desktop: all 108 distinct rendered rows.
+- Base English desktop: all 109 distinct rendered rows, including focused `WKS-022`.
 - `DZH`: Simplified Chinese at `1440×900`.
 - `NEN`: English at `390×844`.
 - `NZH`: Simplified Chinese at `390×844`.
 - All 41 route rows have all three extra variants (123 comparisons).
-- All 34 non-mobile correction rows have all three extra variants; the 14 mobile correction rows have `NZH` because their base is already narrow English (116 comparisons).
+- All 34 pre-RER-009 non-mobile correction rows have all three extra variants; the 14 mobile correction rows have `NZH` because their base is already narrow English (116 retained comparisons).
+- `WKS-022` is the explicitly scoped RER-009 desktop-English final state enforced inside `JRN-050`; no new locale/responsive equivalence is claimed for it, and no prior matrix row was invalidated.
 
 ## Representative Fixture Values
 

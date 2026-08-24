@@ -8,6 +8,7 @@ export const scenarioCatalog = Object.freeze({
   error: 'GraphQL operations return a deterministic recoverable error.',
   permission_denied: 'Protected API calls are rejected with a deterministic permission response.',
   loading: 'Successful responses are delayed by 1.5 seconds so loading surfaces remain observable.',
+  team_launch: 'Populated catalogs with an empty history and a deterministic newly launched Team execution.',
   apps_disabled: 'Connected populated data with Applications capability disabled.',
   bootstrap_error: 'Node health returns 503 and the Electron bridge can report startup failure.',
 })
@@ -157,6 +158,34 @@ const teamRun = {
   ],
 }
 
+const createdTeamRunId = 'team-run-created-fixture'
+const createdTeamExecutionTree = {
+  schema_version: 1,
+  created_at: fixedNow,
+  archived_at: null,
+  application_binding: null,
+  handoffs: [],
+  root_team: {
+    team_definition_id: team.id,
+    team_definition_name: team.name,
+    team_run_id: createdTeamRunId,
+    coordinator_address: '/researcher',
+    members: [
+      {
+        kind: 'configured_agent', address: '/researcher', agent_definition_id: agent.id,
+        role: null, description: null, agent_run_id: 'team-member-researcher-created', platform_agent_run_id: null,
+        launch_configuration: { runtime_kind: 'AUTOBYTEUS', llm_model_identifier: 'mock/gpt-prototype', llm_config: { temperature: 0.2 }, auto_execute_tools: false, skill_access_mode: 'PRELOADED_ONLY', workspace_root_path: workspace.workspaceRootPath },
+      },
+      {
+        kind: 'configured_agent', address: '/writer', agent_definition_id: secondAgent.id,
+        role: null, description: null, agent_run_id: 'team-member-writer-created', platform_agent_run_id: null,
+        launch_configuration: { runtime_kind: 'AUTOBYTEUS', llm_model_identifier: 'mock/gpt-prototype', llm_config: { temperature: 0.2 }, auto_execute_tools: false, skill_access_mode: 'PRELOADED_ONLY', workspace_root_path: workspace.workspaceRootPath },
+      },
+    ],
+    task_executions: [],
+  },
+}
+
 const provider = {
   id: 'mock-provider',
   name: 'Prototype Models',
@@ -278,7 +307,7 @@ export function fixtureContext(state) {
   const agents = empty ? [] : [agent, secondAgent]
   const teams = empty ? [] : [team]
   const applications = empty ? [] : [application]
-  const workspaces = empty ? [] : [workspace]
+  const workspaces = empty ? [] : [state.scenario === 'team_launch' ? { ...workspace, kind: 'filesystem' } : workspace]
   const skills = empty ? [] : [skill]
   const tools = empty ? [] : [tool]
   return { empty, appsEnabled, agents, teams, applications, workspaces, skills, tools }
@@ -286,6 +315,7 @@ export function fixtureContext(state) {
 
 export function operationFixture(operationName, variables = {}, state) {
   const c = fixtureContext(state)
+  const teamLaunchScenario = state.scenario === 'team_launch'
   const success = { success: true, message: 'Synthetic operation completed.' }
   const agentInput = variables.input || agent
   const teamInput = variables.input || team
@@ -374,13 +404,13 @@ export function operationFixture(operationName, variables = {}, state) {
     UseGeminiMode: { useGeminiMode: { activeMode: variables.mode, aiStudioConfigured: true, vertexExpressConfigured: true, vertexProject: { project: 'prototype-project', location: 'us-central1' } } },
     GetRuntimeAvailabilities: { runtimeAvailabilities: [{ __typename: 'RuntimeAvailabilityObject', runtimeKind: 'autobyteus', enabled: true, reason: null }] },
     GetWorkingContextCompactionStrategies: { getWorkingContextCompactionStrategies: [{ id: 'default', name: 'Default' }] },
-    ListWorkspaceRunHistory: { listWorkspaceRunHistory: c.empty ? [] : [{ workspaceRootPath: workspace.workspaceRootPath, workspaceName: workspace.displayName, agentDefinitions: [{ agentDefinitionId: agent.id, agentName: agent.name, runs: [run] }], teamDefinitions: [{ teamDefinitionId: team.id, teamDefinitionName: team.name, runs: [teamRun] }] }] },
-    GetWorkspaceRunHistory: { workspaceRunHistory: c.empty ? null : { workspaceRootPath: workspace.workspaceRootPath, workspaceName: workspace.displayName, agentDefinitions: [{ agentDefinitionId: agent.id, agentName: agent.name, runs: [run] }], teamDefinitions: [{ teamDefinitionId: team.id, teamDefinitionName: team.name, runs: [teamRun] }] } },
+    ListWorkspaceRunHistory: { listWorkspaceRunHistory: c.empty || teamLaunchScenario ? [] : [{ workspaceRootPath: workspace.workspaceRootPath, workspaceName: workspace.displayName, agentDefinitions: [{ agentDefinitionId: agent.id, agentName: agent.name, runs: [run] }], teamDefinitions: [{ teamDefinitionId: team.id, teamDefinitionName: team.name, runs: [teamRun] }] }] },
+    GetWorkspaceRunHistory: { workspaceRunHistory: c.empty ? null : { workspaceRootPath: workspace.workspaceRootPath, workspaceName: workspace.displayName, agentDefinitions: teamLaunchScenario ? [] : [{ agentDefinitionId: agent.id, agentName: agent.name, runs: [run] }], teamDefinitions: teamLaunchScenario ? [] : [{ teamDefinitionId: team.id, teamDefinitionName: team.name, runs: [teamRun] }] } },
     GetRunProjection: { getRunProjection: { runId: run.runId, summary: run.summary, lastActivityAt: fixedNow, conversation: [{ role: 'user', content: 'Review the current UI.' }, { role: 'assistant', content: 'The fixture-backed UI is ready.' }], activities: [], hasEarlierActiveTraceEvents: false } },
     GetRunFileChanges: { getRunFileChanges: [{ id: 'file-change-1', runId: run.runId, path: 'README.md', type: 'modified', status: 'ready', sourceTool: 'write_file', sourceInvocationId: 'tool-1', content: '# Fixture', createdAt: fixedNow, updatedAt: fixedNow }] },
     GetRunEventMonitorActiveTracePage: { getRunEventMonitorActiveTracePage: { beforeCursor: null, hasEarlier: false, loadedEarlierCount: 0, activeGeneration: 0, cursorStatus: 'IDLE', events: [] } },
     GetTeamMemberEventMonitorActiveTracePage: { getTeamMemberEventMonitorActiveTracePage: { beforeCursor: null, hasEarlier: false, loadedEarlierCount: 0, activeGeneration: 0, cursorStatus: 'IDLE', events: [] } },
-    GetTeamRunResumeConfig: { getTeamRunResumeConfig: { teamRunId: teamRun.teamRunId, isActive: false, executionTree: null } },
+    GetTeamRunResumeConfig: { getTeamRunResumeConfig: variables.teamRunId === createdTeamRunId ? { teamRunId: createdTeamRunId, isActive: true, executionTree: createdTeamExecutionTree } : { teamRunId: teamRun.teamRunId, isActive: false, executionTree: null } },
     GetTeamRunExecutionCheckpoint: { getTeamRunExecutionCheckpoint: { rootTeamRunId: teamRun.teamRunId, changeSequence: 1, hasOpenExecutionWork: false } },
     GetTeamMemberRunProjection: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId || 'team-member-researcher-001', summary: run.summary, lastActivityAt: fixedNow, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } },
     GetTeamCommunicationMessages: { getTeamCommunicationMessages: [] }, GetTaskDelegationRecords: { getTaskDelegationRecords: [] },
@@ -389,7 +419,7 @@ export function operationFixture(operationName, variables = {}, state) {
     CreateAgentRun: { createAgentRun: { agentRunId: 'run-created-fixture', runId: 'run-created-fixture', status: 'IDLE' } },
     PrepareAgentRun: { prepareAgentRun: { agentRunId: 'run-prepared-fixture', runId: 'run-prepared-fixture', status: 'PREPARED' } },
     CancelPreparedAgentRun: { cancelPreparedAgentRun: success }, TerminateAgentRun: { terminateAgentRun: success }, RestoreAgentRun: { restoreAgentRun: { ...run, status: 'IDLE' } }, ApproveToolInvocation: { approveToolInvocation: success },
-    CreateAgentTeamRun: { createAgentTeamRun: { teamRunId: 'team-run-created-fixture', status: 'IDLE' } }, TerminateAgentTeamRun: { terminateAgentTeamRun: success }, RestoreAgentTeamRun: { restoreAgentTeamRun: { ...teamRun, status: 'IDLE' } },
+    CreateAgentTeamRun: { createAgentTeamRun: { __typename: 'CreateAgentTeamRunResult', ...success, teamRunId: createdTeamRunId, status: 'IDLE' } }, TerminateAgentTeamRun: { terminateAgentTeamRun: success }, RestoreAgentTeamRun: { restoreAgentTeamRun: { ...teamRun, status: 'IDLE' } },
     CreateAgentDefinition: { createAgentDefinition: { ...agent, ...agentInput, id: agentInput.id || 'agent-created-fixture' } }, UpdateAgentDefinition: { updateAgentDefinition: { ...agent, ...agentInput } }, DeleteAgentDefinition: { deleteAgentDefinition: success }, RefreshAgentDefinitionCatalog: { refreshAgentDefinitionCatalog: c.agents },
     CreateAgentTeamDefinition: { createAgentTeamDefinition: { ...team, ...teamInput, id: teamInput.id || 'team-created-fixture' } }, UpdateAgentTeamDefinition: { updateAgentTeamDefinition: { ...team, ...teamInput } }, DeleteAgentTeamDefinition: { deleteAgentTeamDefinition: success }, RefreshAgentTeamDefinitionCatalog: { refreshAgentTeamDefinitionCatalog: c.teams },
     GetServerSettings: {
@@ -443,4 +473,4 @@ export function syntheticApplicationHtml() {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#f8fafc;color:#0f172a;font:14px system-ui,sans-serif}.shell{min-height:100vh;padding:32px}.badge{color:#2563eb;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.card{margin-top:20px;max-width:760px;padding:24px;border:1px solid #cbd5e1;border-radius:16px;background:white;box-shadow:0 12px 30px #0f172a12}textarea{box-sizing:border-box;width:100%;min-height:180px;margin-top:16px;padding:12px;border:1px solid #94a3b8;border-radius:10px}button{margin-top:12px;border:0;border-radius:9px;background:#2563eb;color:white;padding:10px 16px;font-weight:650}</style></head><body><main class="shell"><div class="badge">Synthetic application fixture</div><section class="card"><h1>Brief Studio</h1><p>Draft a concise product brief using deterministic prototype resources.</p><textarea aria-label="Brief draft">Current-state baseline review</textarea><br><button type="button" onclick="this.textContent='Saved locally'">Save draft</button></section></main></body></html>`
 }
 
-export const exposedFixtures = Object.freeze({ agent, secondAgent, team, workspace, application, run, teamRun, provider, model, tool, skill, fixedNow })
+export const exposedFixtures = Object.freeze({ agent, secondAgent, team, workspace, application, run, teamRun, createdTeamExecutionTree, provider, model, tool, skill, fixedNow })

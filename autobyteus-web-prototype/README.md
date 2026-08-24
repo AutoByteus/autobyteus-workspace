@@ -3,13 +3,9 @@
 Independently runnable, browser-only UI/UX baseline for pinned AutoByteus Web
 commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
-Status: **accepted (`PPA-001`) and user-approved on 2026-08-22** for the exact
-current-state baseline. This package contains no future-state redesign.
+Status: **RER-009 `PP-GAP-009` correction candidate; pending Product Prototyper re-inspection.** Prior reviewed evidence is preserved, but terminal completeness is reopened until this focused journey is accepted. This package contains no future-state redesign.
 
-Canonical repository placement: ordinary tracked content at
-repository-root `autobyteus-web-prototype` on the existing owning repository's
-`personal` branch. See
-[repository-placement-correction.md](repository-placement-correction.md).
+Current correction placement: ordinary tracked content at repository-root `autobyteus-web-prototype` inside worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on branch `codex/initial-prototype-baseline`. Historical owning-repository placement remains documented in [repository-placement-correction.md](repository-placement-correction.md); this correction does not edit or push `personal`.
 
 This project deliberately optimizes for **exact current experience** and
 **simplified implementation**. It reuses source presentation code and assets,
@@ -21,15 +17,16 @@ deterministic synthetic fixture.
 
 ```bash
 corepack pnpm install --ignore-workspace --frozen-lockfile
-corepack pnpm dev --port 3200
+corepack pnpm dev --port 3210
 ```
 
-Open <http://127.0.0.1:3200>. See [prototype-runbook.md](prototype-runbook.md)
+Open <http://127.0.0.1:3210>. See [prototype-runbook.md](prototype-runbook.md)
 for production-preview and scenario commands.
 
 ## Evidence
 
 - [prototype-bootstrap-report.md](prototype-bootstrap-report.md)
+- [pp-gap-009-correction.md](pp-gap-009-correction.md)
 - [parity-inventory.md](parity-inventory.md)
 - [comparison-report.md](comparison-report.md)
 - [prototype-scenarios.md](prototype-scenarios.md)
@@ -44,12 +41,19 @@ distinct images in `final-reference-screenshots/` were captured after explicit
 user confirmation and are the normative current-state visual anchors defined
 by `ui-ux-spec.md`.
 
-## Final Package Validation
+## Current Correction Validation
 
 ```bash
-corepack pnpm validate:final-package
-corepack pnpm validate:repository-placement
+corepack pnpm typecheck
+corepack pnpm lint
+corepack pnpm test
+corepack pnpm validate:boundaries
+corepack pnpm build
+corepack pnpm validate:gap-009-package
+SOURCE_BASE_URL=http://127.0.0.1:3110 \
+PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
+MOCK_BASE_URL=http://127.0.0.1:4311 \
+corepack pnpm validate:gap-009
 ```
 
-This verifies the approved specification, evidence totals, local Monaco asset
-boundary, final image hashes, and the complete `VIS-001`–`VIS-015` mapping.
+`validate:gap-009` terminally enforces `JRN-050-A`–`D`. Historical final references and `ui-ux-spec.md` are Product Prototyper-owned and must not be recaptured or changed during this correction.

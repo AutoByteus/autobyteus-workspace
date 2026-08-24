@@ -12,7 +12,7 @@ The prototype preserves the exact observable current UI while replacing all prod
 | Electron bridge | Extensions, Updates, native folder actions, embedded server status/logs/recovery and Browser tool | `install-host-scenario.js` installs deterministic `window.electronAPI` | Electron package/runtime/preload/native bridge |
 | Embedded server lifecycle | Starting, ready, failure, log/details, restart, shutdown and recovery UI | Scripted status state and timers | Server child process, filesystem logs, destructive reset |
 | Persistence | Locale/layout/scenario continuity and local UI mutations | Isolated `localStorage` and in-memory Pinia overlays | Database, durable customer writes |
-| Agent/team execution | Conversation, streaming, activity/todos, messages, delegation, status, interrupt/error/recovery/history | Real presentation state with synthetic messages and scripted transitions | Model/provider calls, run scheduler, production stream |
+| Agent/team execution | Catalog Run, workspace draft, launch readiness, chosen-workspace Team/member projection, conversation, streaming, activity/todos, messages, delegation, status, interrupt/error/recovery/history | Real presentation state with synthetic messages and scripted transitions; focused `launchDraft` creates one local deterministic context | Model/provider calls, run scheduler, production stream |
 | WebSocket streaming | Open/ready presentation and visible transitions | Local `EventTarget`-based `PrototypeWebSocket` | Agent/team/file/terminal/transcription servers |
 | Files/workspace/viewers | Tree, viewer, context actions, create dialogs, attachment feedback | Synthetic `TreeNode` objects and text/media fixtures | Filesystem access, file watcher, production path |
 | Terminal | Terminal tab/shell presentation and scripted output | Local view state | PTY/shell/command execution |
@@ -30,7 +30,7 @@ The prototype preserves the exact observable current UI while replacing all prod
 - `plugins/00.prototype-state.client.ts` selects snapshots, applies resettable overlays, retains only enumerated UI-local actions and replaces integration actions.
 - `plugins/10.prototype-host-bootstrap.client.ts` installs host state before the UI initializes.
 - `prototype/shared/install-host-scenario.js` is the Electron/window/server/update/extension/browser-shell adapter.
-- `prototype/shared/apply-experience-scenario.js` builds deterministic agent/team/mobile UI objects and lifecycle state.
+- `prototype/shared/apply-experience-scenario.js` builds deterministic agent/team/mobile UI objects, including the `workspace_team_launch` context/selection/tree projection, and lifecycle state.
 - `plugins/00.prototype-state.client.ts` directs the retained Monaco loader to
   the checked-in local mirror so ordinary review does not depend on jsDelivr.
 - `utils/apolloClient.ts` is a no-network compatibility object.
@@ -40,7 +40,7 @@ The prototype preserves the exact observable current UI while replacing all prod
 
 ## Controlled Source Observation
 
-The pinned source is run against `prototype/source-observation/mock-node.mjs` only for parity evidence. That local server provides synthetic GraphQL/REST shapes, static media/application content and a controlled file-stream WebSocket. The evidence harness blocks non-loopback traffic and injects the same host scenario for Electron-visible source comparison. This observation adapter is not needed by the independently runnable prototype.
+An exact export of the pinned source is run against `prototype/source-observation/mock-node.mjs` only for parity evidence. That local server provides synthetic GraphQL/REST shapes, static media/application content, a controlled file-stream WebSocket, and the source-only `team_launch` create/resume execution tree. The evidence harness blocks non-loopback traffic and injects the same host scenario for Electron-visible source comparison. This observation adapter is not needed by the independently runnable prototype.
 
 ## Presentation Reuse Rationale
 
