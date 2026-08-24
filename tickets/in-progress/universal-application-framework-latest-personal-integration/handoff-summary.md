@@ -2,9 +2,16 @@
 
 ## Status
 
-**DR-005 newest-base Electron package is ready for explicit user verification.**
+**DR-006 is blocked before integration and Electron rebuild.** Newest `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869` produces three non-mechanical conflicts in the mixed agent member/memory activation boundary. The DR-005 package is historical and is not a newest-base candidate.
 
-The prior DR-004 design blocker was resolved through SR-004 / ARCH-REV-004 / IR-007, source review `CRR-012` Pass, `API-REV-007` Pass / 98, and proportional durable-test review `CRR-013` Pass.
+Classification and route: **Design Impact → `/solution_designer`**.
+
+Canonical blocker:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log`
+
+No actual merge was started and no new Electron package was built. The protected branch remains at checkpoint `a23849f165879050e2c9b676a2e9652d8a593c93` with zero unmerged paths.
 
 ## Current Integrated State
 

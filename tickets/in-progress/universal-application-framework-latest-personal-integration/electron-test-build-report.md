@@ -1,8 +1,10 @@
 # Electron Test Build Report
 
+> **DR-006 blocked before rebuild (2026-08-24).** Newest `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869` produces three design-impact conflicts involving graph-local application dependencies, scoped Agent Tools cleanup, nested `TeamRunPhysicalScope`, prepared agent activation, and team-agent memory migration behavior. The 1.4.55 package below is the superseded DR-005 candidate based on `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`; it is not proof of the newest-base request. No DR-006 Electron build was started. See `latest-base-refresh-round-2-conflict-report.md`.
+
 ## Current Result
 
-**DR-005 Pass.** The conflict-resolved Universal Application Framework branch is based on the newest tracked `origin/personal`, and a fresh Personal macOS ARM64 Electron 1.4.55 package has been built and verified for user testing.
+**DR-005 historical Pass; DR-006 newest-base rebuild blocked.**
 
 This package supersedes every DR-001–DR-003 Electron artifact. DR-004 produced no package.
 

@@ -9,6 +9,7 @@
 | DR-003 | User reports origin/personal advanced and requests latest-base integration plus Electron rebuild | DR-002 ready for verification on 8ef282ba7 | Latest-base integrated v1.4.54 Electron package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-003-* |
 | DR-004 | User reports origin/personal advanced again and requests another latest-base integration plus Electron rebuild | DR-003 ready for verification on d7d4eace4 | Blocked — Design Impact; newest Personal produces 11 non-mechanical conflicts | latest-base-refresh-conflict-report.md, evidence/delivery/dr-004-base-refresh-and-integration.log |
 | DR-005 | CRR-013 Pass returns the design-resolved newest-Personal package to delivery | DR-004 Blocked — Design Impact | Newest-base Electron 1.4.55 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-005-* |
+| DR-006 | User reports origin/personal advanced again and requests newest-base integration plus Electron rebuild | DR-005 ready for verification on 7edfb1625 | Blocked — Design Impact; nested physical-scope refresh produces 3 non-mechanical conflicts | latest-base-refresh-round-2-conflict-report.md, evidence/delivery/dr-006-base-refresh-and-integration.log |
 
 ## Revision Entries
 
@@ -96,3 +97,19 @@
 - User/finalization state: no explicit verification of the DR-005 package has been received. Ticket remains in progress. No final ticket-branch push, Personal merge/push, tag, hosted release, deployment, archive, or cleanup occurred.
 - Next action: user tests the exact 1.4.55 DMG/hash and replies with explicit approval/completion or a concrete issue.
 - Remaining risks/hold: unsigned/unnotarized local package; live providers/catalogs remain mutable; Electron output is ignored by Git. Refresh `origin/personal` again after verification and require renewed verification if source/package materially changes. Finalization remains ticket-branch-only unless Personal integration is separately authorized.
+
+### DR-006 — Nested physical-scope Personal advance requires design-led integration
+
+- Round/trigger: Round 6; user reports `origin/personal` advanced again and requests newest-base integration plus Electron rebuild.
+- Prior result: DR-005 Electron 1.4.55 package ready for verification on Personal `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.
+- Current result: Blocked — Design Impact; Electron rebuild not started.
+- Safety checkpoint: committed the cumulative DR-005 delivery package locally as `a23849f165879050e2c9b676a2e9652d8a593c93` before refresh.
+- Latest-base refresh: fetched `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`, five commits beyond the prior integrated base. Pre-integration divergence is 145 ahead / 5 behind.
+- New base scope: nested team history restart hydration, persistent `TeamRunPhysicalScope`, nested member/task-agent memory placement, a registered team-agent memory-layout app-data migration, and settled nested-task web navigation.
+- Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with three content conflicts in the mixed agent member production owner and its two memory/task-agent tests. No actual merge was started; the worktree has zero unmerged paths.
+- Design impact: the production resolution must preserve both the ticket's injected graph-local Agent Tools/memory dependencies and exact scoped-session cleanup and Personal's complete nested physical memory scope. The tests also combine atomic prepared activation/platform binding with nested physical-scope behavior.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log`.
+- Routing: Solution Designer must define the combined runtime/migration behavior and route any design/source/test change through normal downstream gates.
+- User/finalization state: the DR-005 binary is superseded for the newest-base request. Ticket remains in progress. No merge, Electron rebuild, final push, Personal merge/push, release, deployment, archive, or cleanup occurred in DR-006.
+- Resume condition: design-approved integration, downstream gate completion, fresh delivery ref check, and Electron rebuild.

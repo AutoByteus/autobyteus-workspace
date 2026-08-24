@@ -1,0 +1,23 @@
+## Studio internal Agent Tools fake session
+HTTP/1.1 401 Unauthorized
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Mon, 24 Aug 2026 08:47:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}
+## Studio external gateway initialize
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 193
+Date: Mon, 24 Aug 2026 08:47:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}
+--- standalone route separation 2026-08-24T08:58:19.645478+00:00 ---
+standalone_internal_agent_tools_fake_session_status=401 body={"error":"unauthorized","message":"Unauthorized"}
+standalone_external_gateway_status=404 body={"message":"Route POST:/mcp/gateway not found","error":"Not Found","statusCode":404}

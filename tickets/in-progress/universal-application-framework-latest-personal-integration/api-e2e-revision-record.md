@@ -190,3 +190,29 @@ None. `API-REV-006` had no unresolved current failure. Its packaged external-pro
 - New or remaining current failure IDs: **None**.
 - Recommended recipient: `/code_reviewer` for proportional test-code review of both updated durable test files before delivery resumes.
 - Remaining risk: historical `APIE2E-REPO-005` remains separate/Unclear; mutable live-provider availability remains external; current Electron packaging/shell coordination remains downstream delivery-owned.
+
+### API-REV-008 — Nested-scope/provider merge passes current dual-host execution
+
+- Triggering role/report/round: `/code_reviewer`; `code-review-report.md` / `CRR-014`; round 8.
+- Triggering surface: `IR-008` semantic merge for immutable nested TeamRun physical scope, old flat Team Agent memory migration, provider-granular model availability/credential authority and settled Studio model selection.
+- Related revisions: `SR-005`–`SR-007`, `ARCH-REV-005`–`ARCH-REV-007`, `IR-008`, `CRR-014`, delivery re-entry `DR-006`.
+- Executed identity: reviewer HEAD `5492815bd66d5714abc7c2c19fd478f043b3c3e6`; semantic merge `9a9150bea90a94ff43e67c417e5a424fd9dc76ce`; exact parents `a23849f165879050e2c9b676a2e9652d8a593c93` and `c5b87df4d6db15969ba70adee9dfd8394b1e7385`.
+- Why recorded: prior API-REV-007 is parent-checkpoint characterization only. API-REV-008 establishes current exact-input repository, old-data migration, provider and real dual-host proof for IR-008.
+- Durable coverage decision: all affected current tests remain valid; **no repository-resident durable test was added, updated or removed** in this round.
+- Repository result: topology/retired-owner/prototype audit Pass; coupled server `14 files / 89 tests` Pass; server build Pass; nested actual-process/SQLite history restart `2/2` Pass; memory-sync `1/1` Pass; AutoByteus provider `5/19`; Studio web `5/53`; frontend SDK `12/12`; devkit `20/20`; maintained app type/build/validate Pass.
+- Real execution: Socratic and Brief both passed standalone and Studio in installed Chrome through authenticated Codex Luna. Socratic solved `9x - 8 = 28` and `6x + 5 = 29` as `x = 4`; Brief completed real Researcher publication, `/writer` handoff, Writer publication, two projections and `in_review`. Explicit one-iframe remount, standalone and Studio same-data recovery, route separation and physical nested traces passed.
+- Provider execution: real Studio GraphQL reload exposed independent safe AutoByteus `LLM`/`AUDIO`/`IMAGE` `ERROR` states and LM Studio `READY` with 15 models; durable two-leaf/provider/credential coverage passed.
+- Commands/parity/cleanup: two repeated edits produced three standalone ready cycles and two Studio reloads per app; exact `73/73` pre/post hashes matched; owned ports/roots/output were cleaned; ordinary app `29695` remained listening; zero compared secret values appeared in retained evidence.
+- Historical characterization: the production-upgrade selection still has the exact inherited three post-migration general-run failures recorded as `APIE2E-REPO-005`; it remains separate **Unclear**, neither current Pass evidence nor an IR-008 finding.
+
+#### Prior Failure Resolution
+
+None. API-REV-007 had no unresolved current implementation failure. Its Pass remains valid only for its recorded tree.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record and `evidence/api-e2e/api-rev-008-*`.
+- Prior result/confidence: **Pass / 98%** (`API-REV-007`).
+- Current result/confidence: **Pass / 98%**.
+- Broader validation: **Required; executed; Pass**.
+- New or remaining current failure IDs: **None**.
+- Recommended recipient: `/code_reviewer` for proportional test-code review, expected **Not Applicable** because API-REV-008 changed no durable test.
+- Remaining risk: historical `APIE2E-REPO-005` remains separate/Unclear; provider availability is externally mutable; current Electron packaging and the later final-base refresh remain downstream delivery-owned.

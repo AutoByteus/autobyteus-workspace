@@ -1,5 +1,7 @@
 # Latest-Personal Refresh Design Analysis — SR-004
 
+> Historical authority: SR-004 was implemented and verified at checkpoint `a23849f...`. The current five-commit refresh is governed by `latest-base-refresh-round-2-design-analysis.md`; this document remains authoritative only for the already-integrated provider/model/error decisions.
+
 ## Decision
 
 The newest `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1` must be merged into the protected, previously verified ticket checkpoint `663f44d31deb05bf47f0eda780de4d754187a51b`. This is a **bounded semantic refresh**, not a replay or replacement of the Universal Application Framework architecture. Delivery measured the production conflict delta at its parent `1629441a3...`; the one newer commit changes only two unrelated completed-ticket delivery documents, and a fresh non-mutating preview confirms the conflict set is unchanged.

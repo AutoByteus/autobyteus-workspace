@@ -1,5 +1,15 @@
 # Docs Sync Report
 
+## DR-006 Current Status
+
+- Result: **Blocked before integrated-state docs sync — Design Impact.**
+- Newest fetched base: `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`, five commits beyond DR-005.
+- New durable base behavior: nested team restart hydration, `TeamRunPhysicalScope`, nested team-agent memory placement, settled nested-task navigation, and a registered team-agent memory-layout app-data migration.
+- Merge-tree result: three non-mechanical conflicts; no actual merge was started.
+- Docs disposition: do not claim the new server/web/migration docs as integrated until Solution Designer resolves how the new physical scope combines with the application-framework branch's graph-local Agent Tools/memory dependencies and prepared activation behavior.
+- Canonical analysis: `latest-base-refresh-round-2-conflict-report.md`.
+- Electron disposition: no DR-006 build; DR-005 artifacts are superseded for the newest-base request.
+
 ## DR-005 Current Authoritative Sync
 
 - Trigger: delivery re-entry after the DR-004 latest-Personal conflicts were resolved under `SR-004` / `ARCH-REV-004` / `IR-007`, source review `CRR-012` Pass, `API-REV-007` Pass / 98, and `CRR-013` Pass.

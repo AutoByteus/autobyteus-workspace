@@ -608,3 +608,106 @@ This section supersedes the round-four planning status above.
 - Final coverage decision: `APIE2E-CURRENT-MODEL-001`, `APIE2E-PROVIDER-ERROR-001`, `APIE2E-DUAL-HOST-007`, `APIE2E-PUBLICATION-007`, `APIE2E-RECOVERY-007`, `APIE2E-REMOUNT-007`, and `APIE2E-PARITY-007` are **Pass** on the refreshed current tree. No current API/E2E failure ID remains.
 - Final validation confidence: **98%**. Every critical acceptance criterion has direct current-tree evidence, every applicable category is at least 95%, and broader validation was **Required; executed; Pass**. The historical broad-suite debt remains separately characterized, and refreshed Electron packaging/shell coordination remains downstream delivery-owned rather than an API/E2E blocker.
 - Required route: `/code_reviewer` for proportional review of the two repository-resident durable test updates before delivery resumes.
+
+## API-REV-008 IR-008 Nested-Scope And Provider-Granularity Investigation
+
+- Trigger: `/code_reviewer` `CRR-014` Pass / 95 for `IR-008`; reviewed artifact/current HEAD `5492815bd66d5714abc7c2c19fd478f043b3c3e6`, semantic merge `9a9150bea90a94ff43e67c417e5a424fd9dc76ce`, protected checkpoint parent `a23849f165879050e2c9b676a2e9652d8a593c93`, reviewed Personal parent `c5b87df4d6db15969ba70adee9dfd8394b1e7385`.
+- Governing solution/review revisions: `SR-005`–`SR-007`, `ARCH-REV-005`–`ARCH-REV-007`, `IR-008`, `CRR-014`, and delivery re-entry `DR-006`.
+- Current-round rule: `API-REV-007` is the prior current-base characterization at the protected parent and is not proof of the new nested physical-scope/provider-granularity merge. `API-REV-006` remains recorded packaged-provider characterization only. Electron rebuild/smoke remains delivery-owned after this API/E2E result.
+- Final-base limitation: `origin/personal` moved after the exact reviewed merge to `52b4be02e`. API-REV-008 validates only the reviewed exact-input candidate; delivery must perform its governed final refresh and reroute any new semantic conflict rather than treating this result as final-base integration.
+
+### Current Changed Runtime Surfaces And Boundaries
+
+1. **Persisted-data transition and process lifecycle:** old flat nested Team Agent memory is `Migration Required`; the shared `AppDataMigrationRunner` must execute `20260823_repair_team_agent_memory_layout` once after TeamRun V1 and before dependent working-context snapshots in both hosts. Current/direct-root/unmaterialized layouts no-op; conflict/failure preserves both sides and follows the approved warning/retry policy. Runtime must never dual-read.
+2. **Nested TeamRun execution identity:** immutable root/child `TeamRunPhysicalScope`, configured children, delegated task teams and task agents must extend the containing TeamRun chain exactly once. Application construction must retain the exact graph-local memory, session, activation, platform-binding and cleanup family.
+3. **Provider/model availability:** static AutoByteus membership remains network-free. Canonical dynamic identifiers resolve to one owning provider, run provider-granularity ensure, pass exact identifier/endpoint post-check, and receive a fresh exact `ModelInfo` per leaf. No runtime-only model-list cache may let leaf B reuse leaf A's pre-mutation catalog.
+4. **Credential authority:** application readiness must use network-free `getProviderCredentialSetting`, distinguish API/custom/AutoByteus/local/Codex/Claude authority, and reuse readiness only for collision-safe equivalent authority keys. Missing model/source/credential outcomes must stop before upsert or allocation.
+5. **Studio model selection:** sparse stored -> inherited -> optional-default runtime precedence, immediate current rows, background missing-provider settlement, post-settlement same-runtime row/status re-read, and retained `ERROR`/`STALE_ERROR` state. Normal provider failure is snapshot state rather than aggregate rejection.
+6. **Dual-host application system:** the unchanged Brief/Socratic package, real business behavior, Agent Tools, named handoff/publication/projection, route separation, worker refresh/remount, restart/recovery, dev loops, package bytes and cleanup must remain coherent with the new underlying owners.
+7. **Source/build topology:** exact merge ancestry, five conflict/ten overlap dispositions, removed aggregate/cached provider/media owners, unchanged root workspace membership, and byte-identical isolated prototype outside production imports.
+
+### Authoritative Project Execution Instructions
+
+- Root `package.json` and server/web package scripts remain authoritative for build, typecheck, Vitest and E2E selections. Build the SDK/core prerequisites before server tests because generated package outputs are intentionally absent from the reviewed tree.
+- `applications/brief-studio/README.md` and `applications/socratic-math-teacher/README.md` continue to define the maintained `pnpm dev`, `dev:studio`, `build`, `validate`, `start`, package-owned launch, publication and first-turn workflows.
+- Real web-equivalent validation will use installed Chrome, authenticated `/Applications/Codex.app/Contents/Resources/codex`, unique loopback ports and caller-owned marked `/private/tmp/api-rev008-*` roots. It will not reuse or stop the ordinary AutoByteus process/data.
+- Old-data migration proof will use repository-owned actual-process/SQLite fixtures first, then one isolated real host root seeded only through the supported released-shape fixture or exact copied bytes. Direct mutation is acceptable only for pre-start historical fixture construction, never as proof of current publication/handoff behavior.
+- Dynamic provider proof will use deterministic durable providers/mocks for source mutation, failure ordering and authority identity because external local provider availability is mutable. Real application business execution remains Codex-backed and unmocked.
+
+### Durable Coverage Inventory And Validity Decisions
+
+| Durable path / group | Decision | Current rationale / action |
+| --- | --- | --- |
+| `tests/unit/agent-team-execution/team-run-physical-scope.test.ts` | **Still Valid** | directly covers immutable root/child/deep scope, invalid duplicates and index-derived configured/task chains |
+| `tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts` | **Still Valid** | covers root/configured nested memory coordinates together with application activation/platform binding/session revoke |
+| `tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts` | **Still Valid** | covers task-agent containing scope, commit-before-release and injected cleanup |
+| `tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts` | **Still Valid** | covers configured and delegated task-Team scope extension exactly once |
+| `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts` | **Still Valid** | directly covers move, skip, conflict, invalid source/target, warning bound, idempotence and registry ordering |
+| `tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` | **Still Valid; critical current execution** | actual server/SQLite/process proof for configured/task old-flat migration, public history, restart idempotence and ANYTIME retry |
+| `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | **Still Valid** | actual released-shape upgrade, migration ledger/relaunch and current work proof; execute proportionately with the nested-specific E2E |
+| `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` and nested history/navigation web coverage | **Still Valid** | proves imported conflict visibility and current settled historical navigation; execute affected selection rather than infer from unit tests |
+| current application launch policy/configuration/direct-run suites | **Still Valid** | retain stale/static/external behavior while extending canonical dynamic availability and failure ordering |
+| `tests/unit/application-platform/application-launch-host-capability-validator.test.ts` | **Still Valid; critical current execution** | includes two-leaf/two-provider ensure -> fresh model -> credential order and authority-key reuse |
+| `tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts` | **Still Valid** | exact runtime-to-authority mapping, network-free missing-key, native runtime checks and collision-safe keys |
+| `tests/unit/llm-management/services/model-availability-service.test.ts` and `dynamic-model-source-lifecycle.test.ts` | **Still Valid** | exact provider/endpoint matching, source coalescing, generations, cold failure and stale-row retention |
+| `autobyteus-ts` dynamic identifier/endpoint/provider tests | **Still Valid** | current core provider-granularity ownership and endpoint identity |
+| `autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts` | **Still Valid; critical current execution** | immediate rows, inherited/null precedence, settled refresh and defensive aggregate rejection |
+| `autobyteus-web/tests/stores/llmProviderConfigStore.test.ts` plus settings/config component selections | **Still Valid** | source-level `ERROR`/`STALE_ERROR`, stale rows, generation isolation, credential-only reads and UI consumption |
+| prior real dual-host scenarios | **Replace as current execution evidence, not durable code** | scenario definitions stay valid; results must be repeated on IR-008 because new process/memory/provider owners sit below both hosts |
+| prior `APIE2E-REPO-005` broad debt | **Unclear / separate characterization** | do not attribute to IR-008 or count as Pass without new supported current-origin evidence |
+| isolated prototype tests | **Out Of Scope for application behavior; verify isolation/byte identity** | prototype is upstream byte-preserved non-workspace content, not a new application or root-test obligation |
+
+### Coverage Gaps And Decisions
+
+- `APIE2E-MIGRATION-008`: adequate durable actual-process coverage exists for old flat configured/task memory, restart and retry. **No new durable test planned**; execute both nested-history restart scenarios and the proportional production-upgrade/memory-sync selections. Add coverage only if a current approved outcome remains unprotected.
+- `APIE2E-NESTED-008`: direct physical-scope/application injection coverage exists across configured child, task team and task agent. **No new durable test planned**; execute the complete coupled selection and correlate one real application team run with its canonical memory path/cleanup.
+- `APIE2E-PROVIDER-DYNAMIC-008`: the exact two-leaf mutation/order and authority-equivalence contract has a direct durable case. **No new durable test planned**; execute it with provider availability, endpoint and failure-state owners. Use a temporary probe only if call-order evidence is ambiguous.
+- `APIE2E-STUDIO-SELECTION-008`: current store/composable/component suites directly protect immediate/settled inherited selection. **No new durable test planned**; run them and exercise the real Studio setup UI with package-owned defaults.
+- `APIE2E-DUAL-HOST-008`, `APIE2E-PUBLICATION-008`, `APIE2E-RECOVERY-008`, `APIE2E-PARITY-008`: source tests cannot prove the real combined process/UI/worker/filesystem boundary. **Use temporary real browser/process execution** and retain sanitized evidence.
+- Repository-resident durable change before execution: **None planned**. Any failure will first be classified against SR-007 current behavior before changing tests or production.
+
+### Planned Execution Order
+
+1. Record exact HEAD/parents/ancestry, index/marker state, five/ten dispositions, retired-owner absence, prototype byte identity/workspace/import isolation and initial dirty-state ownership.
+2. Build required SDK/core/server prerequisites; run the authoritative CRR-014 focused 14-file/89-test physical-scope/migration/provider/application/architecture selection.
+3. Run nested-history restart E2E first, then production-upgrade/memory-sync/history-navigation selections; require old-data whole-directory relocation, canonical reads, warning/retry policy, immutable relaunch and current work.
+4. Run core dynamic-provider/endpoint selection, server credential/Qwen/Gemini/custom provider/media/GraphQL cases, and web store/composable/config selections; require two-leaf freshness, source-state failure and exact no-upsert/no-allocation ordering.
+5. Run server/frontend SDK/devkit/app build/type/validate and proportionate affected/broad regression gates. Keep historical `APIE2E-REPO-005` separate unless current evidence changes its origin.
+6. Capture pre-live 73-path package/authoring hashes; run both maintained standalone `dev` loops and built `start` smokes; execute real Socratic first turn and Brief Researcher -> `/writer` publication/projection.
+7. Run isolated Studio plus both `dev:studio` loops; import exact packages, exercise setup/defaults, real Socratic and Brief, explicit remount, active worker refresh, route separation and same-data restart/recovery.
+8. Correlate real team physical memory scope/session cleanup, migration status and projection files without direct publication workarounds; capture post-live 73-path hashes.
+9. Stop only owned processes, remove only marked roots/generated outputs, verify ports/processes and ordinary app health, scan retained text evidence for secret values, reassess confidence and update the canonical reports/revision record.
+
+### Pre-Execution Confidence And Broader-Validation Gate
+
+| Category | Confidence | Current gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 72% | current exact-input migration/provider/dual-host matrix not yet executed |
+| Changed-boundary execution directness | 90% | source review is strong; API-owned rerun and actual old-data process evidence pending |
+| Cross-boundary integration realism | 72% | prior real runs are parent-checkpoint characterization only |
+| Environment/configuration/identity fidelity | 82% | exact current packages, isolated data and dynamic-source fixtures pending |
+| Failure/lifecycle/recovery evidence | 72% | migration warning/retry, active worker refresh and current restart pending |
+| User/browser/desktop-equivalent confidence | 72% | current renderer/iframe journeys pending; Electron downstream |
+| Durable regression quality/relevance | 96% | direct cases exist; current execution and validity reconciliation pending |
+
+- Overall pre-execution confidence: **79%** (simple average, rounded).
+- Every critical criterion directly proven on current reviewer HEAD: **No**.
+- Broader validation: **Required**. Repository-only proof cannot close old-data process migration, real dynamic/business integration, browser remount, worker restart, package integrity or cleanup risk.
+
+### API-REV-008 Post-Execution Coverage Resolution (Authoritative)
+
+- Exact reviewed tree: reviewer HEAD `5492815bd66d5714abc7c2c19fd478f043b3c3e6`; semantic merge `9a9150bea90a94ff43e67c417e5a424fd9dc76ce`; exact parents `a23849f165879050e2c9b676a2e9652d8a593c93` and `c5b87df4d6db15969ba70adee9dfd8394b1e7385`.
+- Topology and removal audit: **Pass**. Both parents are ancestors, there are no unmerged entries or exact governed Git conflict markers, all retired aggregate/cached provider/media owners remain absent, affected legacy-reference count is zero, and the isolated 1,934-file prototype is byte-identical, outside workspace membership and absent from production imports.
+- Coupled repository boundary: **Pass**. The authoritative physical-scope, migration, provider, credential, Studio-selection and architecture selection passed `14 files / 89 tests`; server build-config TypeScript and the production build passed. Current AutoByteus provider/discovery coverage passed `5 files / 19 tests`; current Studio selection/store/components passed `5 files / 53 tests`; frontend SDK passed `12/12`; devkit passed `20/20`; both maintained applications passed backend typecheck, build and validation.
+- Old-data migration/restart: **Pass for the IR-008 changed boundary**. The exact actual-process/SQLite nested Team history suite passed `2/2` after the canonical build prerequisite, proving configured/task nested whole-directory relocation, public history, restart idempotence and retry. Memory-sync multiprocess passed `1/1`.
+- `APIE2E-REPO-005` validity remains **Unclear / separate characterization**. The broader production-upgrade selection again passed its migration case but failed the same three post-migration general current-run tails with the exact inherited `AgentDefinition ... cannot be loaded for agent run identity allocation` signature already recorded in API-REV-003 and API-REV-007. This unchanged historical fixture/owner issue is neither IR-008 failure evidence nor Pass evidence.
+- Dynamic provider behavior: **Pass**. Durable provider-granular/fresh-leaf/credential authority coverage passed. A real Studio GraphQL reload independently published three AutoByteus leaf failures (`LLM`, `AUDIO`, `IMAGE`) as separate safe `ERROR` source states with no aggregate rejection, while the LM Studio dynamic LLM source reached `READY` with 15 models. No credential or endpoint value is retained.
+- Maintained standalone execution: **Pass**. Socratic ran through installed Chrome and authenticated Codex Luna, solved `9x - 8 = 28` as `x = 4`, published the tutor artifact and recovered the two-message transcript after same-data restart. Brief completed real Researcher publication, recipient-name `/writer` handoff, Writer publication, two application projections and `in_review`; its state also recovered after same-data restart. Physical traces are rooted under each exact TeamRun and member path.
+- Maintained Studio execution: **Pass**. Both exact packages were registered through `dev:studio`. Brief completed real Researcher -> `/writer` -> Writer publication/projection and explicit one-iframe remount. Socratic solved `6x + 5 = 29` as `x = 4`, published and explicitly remounted. After graceful Studio stop and the same isolated data-root restart, both launch setups could be reconfirmed without mutation, each mounted one iframe, and the exact Brief artifacts/status and Socratic transcript/status were retained.
+- Route, command and parity behavior: **Pass**. Standalone returned `401` for a fake internal Agent Tools session and `404` for `/mcp/gateway`; Studio returned the same internal `401` and a valid external-gateway initialize `200`. Two repeated source touches produced three standalone ready cycles per app and two Studio reload cycles per app. Pre/post SHA-256 comparison remained exactly `73/73` byte-identical.
+- Cleanup and evidence safety: **Pass**. All owned ports `8038`, `3038`, `43281`–`43284` are free; marked roots, per-app development data and generated outputs were removed; the ordinary application on `29695` remained listening; zero of 12 secret-like source values appeared in 36 retained text evidence files.
+- Harness-only corrections: an initial nested-history invocation used the wrong Vitest config before the canonical prerequisite build; the rerun passed `2/2`. The first Studio restart JSON reducer incorrectly compared numeric `iframeCount` to boolean `true`; every recorded browser assertion had passed and the same evidence file records the transparent result correction. Two initial malformed provider GraphQL probes returned schema validation `400`; the corrected current-schema mutation produced the retained provider evidence. None is a product failure.
+- Durable coverage result: **No repository-resident test was added, updated or removed in API-REV-008**. All affected current coverage remains valid; proportional test-code review is expected to be `Not Applicable` for this round.
+- Final confidence: **98%**, with every category at least 96% and every critical current acceptance surface directly proven.
+- Broader validation: **Required; executed; Pass**.
+- Current failure IDs: **None**. Historical `APIE2E-REPO-005` remains separate/Unclear. Current Electron build/package validation and the later final-base refresh remain downstream delivery-owned.

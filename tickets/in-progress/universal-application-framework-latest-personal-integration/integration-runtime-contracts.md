@@ -2,10 +2,10 @@
 
 ## Status And Authority
 
-- Status: Design-ready supplement preserved through `SR-004`. Sections 1–4 remain the passed runtime contract; section 5 defines the bounded newest-Personal model/error delta.
-- Purpose: Preserve the resolved lifecycle/activation/persistence/tool contracts and define the exact newest-Personal current-model and provider-error integration without reopening those owners.
-- Related behavior and requirements: BEH-003–BEH-007; REQ-004–REQ-008; AC-005–AC-015.
-- Scope: Internal integration behavior only. This supplement does not add a host, route, migration, compatibility path, or product workflow.
+- Status: Design-ready supplement preserved through `SR-007`. Sections 1–4 remain the passed runtime contract; section 5 is the implemented model/error baseline; section 6 preserves the pending nested physical-scope/migration integration; section 7 defines the corrected Personal v1.4.56 provider/model/credential integration after `ARCH-REV-006`.
+- Purpose: Preserve the resolved lifecycle/activation/persistence/tool contracts and define the exact newest-Personal physical-scope plus provider-capability transitions without reopening those owners.
+- Related behavior and requirements: BEH-003–BEH-009; REQ-004–REQ-010; AC-005–AC-025.
+- Scope: Internal integration behavior only. SR-007 adds no host, route, compatibility path, provider persistence, or product workflow; it consumes current Personal provider owners and retains the existing app-data migration runner.
 - Governing rule: latest Personal owns evolved process/data/provider/run/team semantics; the finalized feature owns the dual-host boundary, shared application lifecycle, scoped publication/session behavior, and launch baseline/override/readiness model.
 
 ## 1. Exact Process And Application Lifecycle Allocation
@@ -579,3 +579,210 @@ In addition to section 4:
 4. native/application error tests prove original safe message, diagnostic filtering, required message, exact v6 identity, and metadata/secret exclusion;
 5. source audits prove the retired helper/service/test and generated SDK declarations remain absent;
 6. newest Personal provider/catalog/pricing/redaction suites, retained application architecture tests, both real hosts, package parity, recovery/cleanup, and a new Electron build/smoke all pass on the same refreshed commit.
+
+## 6. SR-005 Nested Team Physical Scope And Migration Contract
+
+### 6.1 Exact application construction and execution contract
+
+The application `createTeamManager(context)` closure remains the only recursive mixed-team construction path. Every root, configured subteam, task team, configured Agent, and task Agent receives the same graph-local `AgentRunManager`, `AgentToolMcpSessionManager`, `AgentMemoryLocationService`, activity inspector, member-team context builder, and workspace manager selected by `createApplicationRunServices`.
+
+`TeamRunPhysicalScope` is constructed only by current team factories:
+
+- root: `createRootTeamRunPhysicalScope(rootTeamRunId)`;
+- child configured/task team: `createChildTeamRunPhysicalScope(parentContext.physicalScope, childTeamRunId)`;
+- leaf configured/task Agent: consumes its containing `teamContext.physicalScope` without adding the AgentRun ID to `ancestorTeamRunIds`.
+
+`MixedAgentMemberHandle` derives memory only through the injected service:
+
+```ts
+memoryLocationService.getTeamAgentRunLocation({
+  ...teamContext.physicalScope,
+  agentRunId,
+})
+```
+
+It retains current prepared activation, durable publication, platform binding, abort/quarantine, and exact cleanup through the injected session manager's `revokeAgentToolMcpSessionsForRun(agentRunId)`. Application paths may not use process-default getters for these collaborators.
+
+### 6.2 Startup allocation
+
+The new memory-layout transition is part of existing phase 7, `AppDataMigrationRunner.runPending()`, for both Studio and standalone. It does not add a new lifecycle phase or change phase 16 application tool readiness.
+
+Within the migration registry the required order is:
+
+1. `TeamRunExecutionTreeV1AppDataMigration`;
+2. `TeamAgentMemoryLayoutAppDataMigration` (`20260823_repair_team_agent_memory_layout`);
+3. `RemoveExternalRuntimeWorkingContextSnapshotsMigration` and later native snapshot migration dependencies;
+4. remaining registered migrations;
+5. later process and `ApplicationPlatformLifecycle` readiness phases.
+
+A failed required migration follows the existing runner/startup status policy. `ANYTIME` owns supported retry. No application worker or business action retries or compensates.
+
+### 6.3 Persisted-data transition contract
+
+- Current launch override rows: `Directly Usable — No Migration`.
+- Current TeamRun V1 packages: directly usable as the scope index.
+- Affected old flat nested Team Agent memory: `Migration Required`.
+- Current/fresh/direct-root/standalone Agent memory: not affected.
+
+The migration uses one whole-directory rename only when the old flat source is a directory and the canonical target is missing, then validates source missing/target directory. It never merges, overwrites, deletes a conflicting target, copies files, rewrites TeamRun metadata, or teaches normal runtime to read both layouts. Missing/current/conflict/unsupported/operation cases produce the exact explicit skip, warning, or failure classifications in `latest-base-refresh-round-2-design-analysis.md`.
+
+### 6.4 Exact proof delta
+
+- root, one-level, and multi-level physical-scope normalization/containing-TeamRun tests;
+- configured nested member and nested task Agent tests proving full ordered scope through the injected memory service;
+- exact `prepareNewAgentRun`, seal/durable commit/release, platform binding, abort, termination, and scoped MCP revocation assertions remain;
+- source occurrence assertions prove application construction passes all graph-local services recursively and conflict resolution adds no default getter;
+- migration registry/prerequisite and all source/target decision cases;
+- direct upgrade, skip-version, fresh/current no-op, nested restart, memory sync, and historical settled-task navigation proof;
+- retained real Studio/standalone, package parity, cleanup/recovery, and Electron proof on the same integrated commit.
+
+## 7. SR-006/SR-007 Provider, Model Availability, And Credential Contract
+
+### 7.1 Process/application owner split
+
+Process-owned Personal services remain singular:
+
+- `ModelCatalogService`: static/runtime snapshots and provider/kind-keyed dynamic lifecycle/status;
+- `ModelAvailabilityService`: canonical selected-identifier parsing, provider-ID resolution, provider-granularity ensure, and exact identifier/endpoint registration post-check;
+- `LlmProviderService`: provider descriptors, network-free credential settings, and explicit provider configuration commands;
+- LLM/media factories: registered model rows;
+- provider GraphQL + Pinia store: Studio catalog/credential transport and state.
+
+Application-owned services consume these capabilities:
+
+- `ApplicationCurrentModelSelectionPolicy`: runtime normalization, static/dynamic classification, selected-provider availability invocation, and safe typed unavailability;
+- `ApplicationLaunchHostCapabilityValidator`: maps policy/model/credential results to application readiness issues, reads a fresh exact `ModelInfo` after every leaf policy step, and reuses credentials only by resolved authority;
+- `ApplicationProviderCredentialReadinessAdapter`: maps a resolved model serving runtime/workspace to an explicit credential authority/equivalence key and performs the exact credential/native-auth read;
+- `ApplicationLaunchConfigurationService` and `ApplicationRunBindingLaunchService`: retain read/Save/direct-run orchestration and side-effect ordering;
+- `useRuntimeScopedModelSelection`: preserves application stored/inherited/default runtime semantics over Personal's Pinia store.
+
+No application owner may instantiate a model catalog, dynamic source lifecycle, provider store, credential vault, or broad discovery loop.
+
+### 7.2 Exact application current-model policy contract
+
+Required constructor dependencies:
+
+```ts
+type ApplicationCurrentModelSelectionDependencies = Readonly<{
+  ensureAutoByteusModelAvailable: (identifier: string) => Promise<void>;
+  requireCurrentAutoByteusModelIdentifier: (identifier: string) => Promise<void>;
+}>;
+```
+
+Both are mandatory in application assembly. The first delegates to `getModelAvailabilityService().ensureModelAvailable(identifier, "LLM", "autobyteus")`; the second delegates to `LLMFactory.requireCurrentModelIdentifier(identifier)`. No default getter exists inside the policy.
+
+Transition rules:
+
+| Normalized runtime / identifier | Required action | Failure meaning |
+| --- | --- | --- |
+| Codex or Claude | return normalized external runtime; no AutoByteus discovery call | native runtime catalog/auth owners remain authoritative; host validator still performs its fresh exact runtime model lookup |
+| AutoByteus + noncanonical static identifier | exact `LLMFactory` current membership | `CurrentModelSelectionRequiredError` for blank/removed static selection |
+| AutoByteus + canonical custom/host-scoped dynamic identifier | delegate identifier to Personal availability; it resolves one provider, runs that provider's configured discovery breadth, then verifies exact registration/endpoint | safe `ApplicationModelAvailabilityError` if provider/model/endpoint is unavailable; application owns no endpoint lifecycle |
+| unsupported runtime | reject unsupported runtime before provider work | existing runtime-unavailable behavior |
+
+Dynamic classification uses only Personal `parseOpenAICompatibleEndpointModelIdentifier` and `parseHostScopedLlmModelIdentifier`; application code does not reproduce provider/host parsing.
+
+`ApplicationModelAvailabilityError` is defined in the current policy module, carries the exact selected identifier and one stable safe message, and is not persisted or exported through the application SDK. The guard and host validator map it to blocking issue code `MODEL_UNAVAILABLE`. The existing static error maps to `CURRENT_MODEL_SELECTION_REQUIRED`.
+
+Personal discovery breadth is authoritative and must not be narrowed by application code:
+
+- a custom provider ID owns one configured endpoint record;
+- Ollama and LM Studio provider ensures enumerate their configured hosts;
+- AutoByteus provider ensure starts its LLM/audio/image source operations, whose discovery enumerates configured AutoByteus hosts;
+- the availability service performs the exact selected identifier/endpoint registration check after that provider work.
+
+The application never creates a parsed-endpoint lifecycle, never loops over every provider, and never makes dynamic providers process-start prerequisites.
+
+#### 7.2.1 Fresh exact per-leaf model handoff
+
+`ApplicationLaunchHostCapabilityValidator.validate` processes the effective leaves in their existing deterministic order. For every runtime-enabled leaf:
+
+1. invoke `currentModelSelectionPolicy.requireCurrentSelection` for static guard or selected-provider ensure;
+2. immediately call `modelCatalogService.listLlmModels(runtimeKind)` after that leaf's policy promise resolves;
+3. exact-match `leaf.llmModelIdentifier` and retain that `ModelInfo` as the sole resolved model for this leaf;
+4. map no match to `MODEL_UNAVAILABLE` (or preserve `CURRENT_MODEL_SELECTION_REQUIRED` when the static policy raised it);
+5. pass that exact `ModelInfo` to credential-authority resolution/readiness before processing the next leaf.
+
+The target removes `modelsByRuntime`. No runtime-only model list or `ModelInfo` is reused across leaves because a later provider ensure may mutate the runtime registry. A team with leaves A and B backed by distinct dynamic providers therefore observes: ensure A -> fresh read A -> credential A -> ensure B -> fresh read B -> credential B. This is the exact fresh handoff; no new catalog service or two-phase coordinator is introduced.
+
+Read/evaluate preserves saved/package value and provenance. Save rejects either blocking selection outcome before `ApplicationLaunchOverrideStore.upsert`. Direct agent/team launch rejects before any run allocation or team creation.
+
+### 7.3 Exact credential-readiness contract
+
+The adapter depends on:
+
+```ts
+Pick<LlmProviderService, "getProviderCredentialSetting">
+```
+
+It never calls model catalog/availability methods. It exposes one explicit authority boundary:
+
+```ts
+type ApplicationCredentialAuthority =
+  | Readonly<{ kind: "PROVIDER"; providerId: string; cacheKey: string }>
+  | Readonly<{ kind: "CODEX_WORKSPACE"; workspaceRootPath: string; cacheKey: string }>
+  | Readonly<{ kind: "CLAUDE_PROCESS"; cacheKey: string }>
+  | Readonly<{ kind: "NO_CREDENTIAL"; servingRuntime: string; cacheKey: string }>
+  | Readonly<{ kind: "UNSUPPORTED"; cacheKey: null; reason: string }>;
+
+type ApplicationProviderCredentialReadinessPort = Readonly<{
+  resolveAuthority(input: {
+    runtimeKind: RuntimeKind;
+    model: ModelInfo;
+    workspaceRootPath: string;
+  }): ApplicationCredentialAuthority;
+  getReadiness(authority: ApplicationCredentialAuthority): Promise<ApplicationProviderCredentialReadiness>;
+}>;
+```
+
+The validator caches `getReadiness` only when `cacheKey` is non-null and identical. Mapping is:
+
+| `ModelInfo.runtime` | Credential owner / action |
+| --- | --- |
+| `LLMRuntime.API` | `PROVIDER(model.provider_id)`, key `JSON.stringify(["PROVIDER", providerId])`; `getProviderCredentialSetting(model.provider_id, autobyteus)` |
+| `LLMRuntime.OPENAI_COMPATIBLE` | `PROVIDER(model.provider_id)`, same typed-tuple key; exact custom-provider credential read |
+| `LLMRuntime.AUTOBYTEUS` | `PROVIDER(LLMProvider.AUTOBYTEUS)`, key `JSON.stringify(["PROVIDER", "AUTOBYTEUS"])` |
+| `LLMRuntime.OLLAMA` | `NO_CREDENTIAL(OLLAMA)`, key `JSON.stringify(["NO_CREDENTIAL", "OLLAMA"])`; configured after exact host/model availability; no API-key read |
+| `LLMRuntime.LMSTUDIO` | `NO_CREDENTIAL(LMSTUDIO)`, corresponding typed-tuple key; configured after exact host/model availability; no API-key read |
+| unknown | `UNSUPPORTED`, null key; fail closed for every leaf with a safe reason |
+| Codex app server | `CODEX_WORKSPACE(normalized workspaceRootPath)`, key `JSON.stringify(["CODEX_WORKSPACE", normalizedRoot])`; retain account/read acquisition/release check |
+| Claude Agent SDK | `CLAUDE_PROCESS`, key `JSON.stringify(["CLAUDE_PROCESS"])`; retain executable auth status check |
+
+The adapter owns both mapping and equivalence; the validator does not reconstruct keys from `runtimeKind`, `provider_id`, or workspace. Keys use typed JSON tuples so delimiter-bearing provider IDs/paths cannot collide. Provider credentials intentionally ignore workspace; Codex intentionally includes workspace; Claude is process-wide; local no-credential readiness is equivalent only within the same serving runtime; unsupported results are not cached.
+
+### 7.4 Studio runtime-scoped selection contract
+
+Effective runtime precedence is exact:
+
+1. nonblank stored runtime;
+2. nonblank inherited runtime;
+3. default AutoByteus runtime only when `useDefaultRuntimeFallback !== false`;
+4. otherwise `null` and no provider/catalog request.
+
+For a non-null runtime:
+
+1. await `llmStore.fetchProvidersWithModels(runtime)`;
+2. immediately snapshot `llmStore.providersWithModelsForSelection(runtime)` into the composable runtime bucket;
+3. start `llmStore.ensureMissingDynamicProviders(runtime)` without holding the initial loading state;
+4. let the store invoke exact provider mutations; each failure records safe source `ERROR` or `STALE_ERROR`, and its `Promise.allSettled` aggregation normally fulfills;
+5. after aggregate settlement, replace only that runtime bucket from `providersWithModelsForSelection(runtime)` and read `providerSnapshots(runtime).sources` as the normal success/partial/failure authority;
+6. preserve stale rows for `STALE_ERROR`; an `ERROR` source with no rows remains unavailable without erasing unrelated providers;
+7. retain a `.catch` only for an unexpected aggregate failure such as an initial whole-catalog transport/programming error; log safely and re-read/preserve current store state, but do not use that branch to prove normal provider failure;
+8. never make an unrelated provider gate application selection.
+
+### 7.5 Persistence and exact proof
+
+- Provider credentials/custom records/host settings/saved identifiers: `Directly Usable — No Migration`.
+- Dynamic catalog/source status: in-memory, reconstructed by Personal owners.
+- Application launch rows: unchanged direct-use sparse rooted contract.
+- Nested Team Agent memory: section 6 migration remains the only new persisted-data transition.
+
+Required proof:
+
+1. policy/Personal availability tests for current/removed static, each canonical dynamic class, identifier-to-provider invocation, provider-granularity discovery, exact endpoint post-check, dynamic unavailable, and Codex/Claude bypass;
+2. host-validator durable proof with two AutoByteus leaves backed by distinct dynamic providers: ordered ensure/fresh-read for A then B, exact `ModelInfo` per leaf, no `modelsByRuntime`, and correct credential authorities; failure variants retain exact no-upsert/no-allocation ordering in configuration/direct-run tests;
+3. credential adapter tests for provider, Codex-workspace, Claude-process, Ollama/LM Studio no-credential and unsupported/null-key authorities, cache equivalence, and no model-discovery call;
+4. Pinia/composable tests for stored/inherited/default/null precedence, immediate rows, `ensureMissingDynamicProviders` fulfillment when one provider mutation rejects, `ERROR`/`STALE_ERROR` snapshot retention, post-settlement re-read, and defensive unexpected aggregate rejection;
+5. Personal provider/catalog/availability/credential/GraphQL/Pinia/media suites;
+6. five-conflict/ten-overlap ledger and deleted-owner source audit;
+7. all section 6 physical-scope/migration proof plus existing architecture, real dual-host, package, cleanup/recovery, and Electron proof.

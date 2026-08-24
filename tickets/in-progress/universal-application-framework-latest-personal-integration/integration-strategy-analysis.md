@@ -1,13 +1,15 @@
 # Integration Strategy Analysis — Universal Application Framework on Latest Personal
 
+> Current status: the original integration and SR-004 refresh are implemented and verified. The unimplemented SR-005 physical-scope decisions remain required, but Personal moved again to v1.4.56. The current merge is governed by the SR-007-corrected addendum and `latest-base-refresh-round-3-design-analysis.md`; earlier sections remain historical authority for the one-merge strategy and established platform boundaries.
+
 ## Status And Authority
 
-- Status: Design-ready through SR-004; the original merge strategy remains authoritative and the newest-base refresh addendum below governs the 32-commit delta (31 production/provider commits plus one unrelated delivery-document commit).
+- Status: Design-ready through SR-007; the original merge strategy remains authoritative and the newest addendum governs `origin/personal@c5b87df4d...` (22 commits after the integrated base, five conflicts, ten changed-both paths).
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
-- Scope: REQ-001–REQ-008 and AC-001–AC-015.
+- Scope: REQ-001–REQ-010 and AC-001–AC-025.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
-- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-design-analysis.md](latest-base-refresh-design-analysis.md) governs the SR-004 current-model/error/conflict delta.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-round-3-design-analysis.md](latest-base-refresh-round-3-design-analysis.md) governs the current provider/model/credential/UI plus physical-scope/conflict delta.
 
 ## Executive Decision
 
@@ -303,3 +305,41 @@ The original one-merge decision is complete and verified. The mandatory refresh 
 | Full design | `latest-base-refresh-design-analysis.md`. |
 
 The refresh does not change the selected integration strategy, introduce a new host, or authorize a greenfield refactor. A whole-file `ours`/`theirs` choice is specifically forbidden for the 11 conflicts and the marker-free run-binding overlap.
+
+## SR-005 Nested Physical-Scope Refresh Addendum
+
+The SR-004 merge is complete and verified. The current refresh merges `origin/personal@a00f0d07d...` once into protected checkpoint `a23849f...`; it does not replay the original integration or reopen the current-model/error design.
+
+| Refresh decision | Result |
+| --- | --- |
+| Method | One additional history-preserving semantic merge after exact-ref confirmation. |
+| Surface | Five commits, three content conflicts, six changed-both paths. |
+| Personal authority | `TeamRunPhysicalScope`, root/child propagation, nested configured/task memory placement, history restart, memory sync, settled-task navigation, and registered memory migration. |
+| Verified ticket authority | application graph-local run/session/memory/context construction, prepared activation/platform binding, exact scoped cleanup, dual hosts, package behavior. |
+| Required adaptation | Existing leaf handle uses `{...teamContext.physicalScope, agentRunId}` through the injected memory service and retains injected session cleanup. |
+| Persisted outcome | Launch rows remain direct; affected old flat nested Team Agent memory is `Migration Required` through the existing runner. |
+| Runtime compatibility | None: one current physical layout, no dual read/write or directory alias. |
+| Full design | `latest-base-refresh-round-2-design-analysis.md`. |
+
+The three conflict resolutions and three marker-free overlap decisions are exact. Whole-file side selection, a second migration owner, a new scope service, global application fallbacks, and a test-only maintained application package are rejected.
+
+## SR-006/SR-007 Personal v1.4.56 Provider/Catalog Refresh Addendum
+
+Implementation correctly stopped because the mandatory re-fetch first found the production-semantic state `3ab4946c7...`, eleven commits beyond the reviewed SR-005 target. The final SR-007 refresh now targets `origin/personal@c5b87df4d...`, 22 commits beyond integrated base `7edfb1625...` and 17 beyond the reviewed target. The one-merge strategy remains optimal; the semantic map changes only for the previously identified production intersection.
+
+The six commits after `3ab4946c7...` add an isolated, non-workspace UI prototype (1,934 files) plus eight prototype/API-key ticket and delivery-record paths. They do not change root workspace membership or shared production/runtime source and leave the five-conflict/ten-overlap map unchanged. Preserve the prototype subtree exactly; do not make it an application-framework dependency or verification owner.
+
+| Refresh decision | Result |
+| --- | --- |
+| Method | One additional history-preserving semantic merge of exact `c5b87df4d...` after immediate ref confirmation. |
+| Surface | 2,194 paths after the prior target; five conflicts and ten changed-both paths against protected checkpoint `a23849f...`. The final 1,942-path movement is isolated prototype/ticket content. |
+| Personal authority | Network-free provider descriptors/static catalogs, split credential/model snapshots, provider/kind-keyed lifecycle, identifier-to-provider resolution, provider-granularity discovery, exact endpoint post-check, snapshot-settled GraphQL/Pinia contracts, media factory ownership, and deleted aggregate/cached owners. |
+| Verified ticket authority | Explicit hosts, one application configuration/store/policy seam, sparse inherited overrides, graph-local execution/session/memory, internal Agent Tools, publication/projection, and package workflow. |
+| Required application adaptation | Classify static/dynamic AutoByteus identifiers; delegate dynamic identifiers to the selected-provider Personal ensure; remove runtime-only model caching; perform a fresh exact `ModelInfo` lookup per leaf; distinguish removed-static/dynamic-unavailable; map/cache credentials only by adapter-resolved authority. |
+| Required Studio adaptation | Preserve stored -> inherited -> optional-default runtime; publish current runtime snapshot immediately; await `Promise.allSettled` missing-provider attempts; re-read the same bucket and `ERROR`/`STALE_ERROR` source status; keep aggregate catch defensive. |
+| Physical-scope treatment | Preserve every SR-005 decision and combine it with the larger current merge. |
+| Isolated prototype treatment | Accept `ui-prototypes/autobyteus-web-prototype/**` byte-for-byte; root `pnpm-workspace.yaml` remains unchanged; no production import, semantic edit, or application-framework test obligation. |
+| Persisted outcome | Provider/launch rows directly usable; dynamic source state in-memory; only SR-005 affected nested memory requires its already-approved migration. |
+| Full design | `latest-base-refresh-round-3-design-analysis.md`. |
+
+The new raw diff is large but the cross-boundary target is bounded. Do not replace it with a provider/application framework, endpoint-local discovery owner, compatibility facade for removed APIs, application-local catalog, eager all-provider startup discovery, generic resolver/coordinator, or a whole-file conflict choice.

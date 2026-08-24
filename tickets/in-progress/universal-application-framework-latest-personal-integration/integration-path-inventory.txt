@@ -949,3 +949,200 @@ autobyteus-application-sdk-contracts/README.md: retain current SDK content and a
 LATEST PERSONAL CLEAN AUTHORITY
 -------------------------------
 Accept the remaining non-overlapping provider catalog/model/pricing/missing-key/error extraction/redaction/native transport/client changes from d7d4eace..1629441a3, subject to their retained suites and the strict application projection proof. Also accept the two unrelated completed-ticket delivery-document edits in 1629441a3..7edfb1625. No broad whole-tree replacement is authorized.
+
+=== SR-005 NEWEST-PERSONAL NESTED PHYSICAL-SCOPE REFRESH DELTA ===
+Protected checkpoint: a23849f165879050e2c9b676a2e9652d8a593c93
+Prior integrated Personal base: 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+Newest Personal ref: a00f0d07d00450785c424b6ab79d2ca8fe828869
+Measured delta: 5 commits; 3 content conflicts; 6 changed-both paths
+Normative semantic map: latest-base-refresh-round-2-design-analysis.md
+
+CONFLICT / SEMANTICALLY RESOLVE
+-------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+
+MARKER-FREE CHANGED-BOTH / RETAIN AUDITED COMBINATION
+-----------------------------------------------------
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+
+ADD / ACCEPT NEW PERSONAL OWNERS
+--------------------------------
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-physical-scope.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-physical-scope.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+ACCEPT CLEAN NEW PERSONAL SOURCE GROUPS
+---------------------------------------
+autobyteus-server-ts/src/agent-memory/domain/agent-memory-location.ts
+autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts
+autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts
+autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+
+RETAIN/AUDIT NEW PERSONAL COVERAGE AND DOCS
+-------------------------------------------
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/*
+autobyteus-server-ts/tests/unit/agent-team-execution/*
+autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+autobyteus-web/services/teamExecution/__tests__/*
+autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts
+autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+autobyteus-server-ts/README.md
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+autobyteus-server-ts/docs/features/memory_sync.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+autobyteus-web/docs/agent_execution_architecture.md
+autobyteus-web/docs/memory.md
+
+EXPLICIT DO NOT ADD
+-------------------
+second app-data migration runner/coordinator
+runtime old/new Team Agent memory path fallback or directory alias
+application path global run/session/memory service fallback
+maintained test-only nested application package
+compatibility wrapper for root-only nested memory coordinates
+
+=======================================================================
+SR-006 CURRENT PERSONAL v1.4.56 REFRESH TARGET DISPOSITIONS
+=======================================================================
+
+Exact Personal delta inventory (2,194 paths; authoritative raw status list):
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-path-inventory.txt
+
+CONTENT CONFLICTS / SEMANTIC COMBINATION REQUIRED
+-------------------------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+
+MARKER-FREE CHANGED-BOTH / EXPLICIT AUDIT
+------------------------------------------
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+
+APPLICATION SEMANTIC ADAPTATIONS
+--------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-guard.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+
+ADD / MODIFY FOCUSED APPLICATION PROOF
+--------------------------------------
+autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-host-capability-validator.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+
+ACCEPT CURRENT PERSONAL PROVIDER OWNERS (REPRESENTATIVE; FULL LIST IN RAW INVENTORY)
+---------------------------------------------------------------------------------
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/available-llm-construction.ts
+autobyteus-server-ts/src/llm-management/services/dynamic-model-source-lifecycle.ts
+autobyteus-server-ts/src/llm-management/services/model-availability-service.ts
+autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts
+autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts
+autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts
+autobyteus-web/stores/llmProviderCatalogPublication.ts
+autobyteus-web/stores/llmProviderConfig.ts
+autobyteus-web/stores/llmProviderConfigSupport.ts
+autobyteus-ts/src/llm/discovery-endpoint-identity.ts
+autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts
+autobyteus-ts/src/multimedia/model-identifier.ts
+
+KEEP DELETED / DO NOT RESTORE
+-----------------------------
+autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+aggregate provider GraphQL/store aliases or compatibility wrappers
+application-local provider/model catalog or dynamic source lifecycle
+eager all-provider discovery in Studio or standalone process readiness
+
+=======================================================================
+SR-007 ARCH-REV-006 PROVIDER CONTRACT CORRECTIONS
+=======================================================================
+
+MODIFY EXISTING APPLICATION SEAMS (NO NEW PRODUCTION OWNER)
+-----------------------------------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+  selected canonical dynamic identifier delegates to Personal provider-granularity availability; no endpoint-local lifecycle claim
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+  remove modelsByRuntime; fresh listLlmModels + exact ModelInfo after every leaf policy/ensure; cache credentials only by adapter authority key
+autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+  add explicit credential-authority union/resolution and stable equivalence keys; retain network-free/native checks
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+  wire the same explicit policy/catalog/credential authority inputs; no default getter or new service
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+  re-read rows/source status after Promise.allSettled; normal provider failure comes from ERROR/STALE_ERROR snapshots; aggregate catch is defensive
+
+MODIFY / RETAIN DURABLE PROOF
+-----------------------------
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts
+  identifier-to-provider invocation plus exact endpoint post-check; no endpoint-local discovery expectation
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+  selected-provider invocation and typed unavailable/static behavior
+autobyteus-server-ts/tests/unit/application-platform/application-launch-host-capability-validator.test.ts
+  two leaves/two dynamic providers; ensure A/fresh read A then ensure B/fresh read B; exact ModelInfo and credential authority keys; no runtime cache
+autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+  provider/Codex-workspace/Claude-process/no-credential/unsupported authority mapping, key equivalence and no discovery
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+  two-leaf leaf-B unavailable remains pre-upsert
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+  two-leaf leaf-B unavailable remains pre-allocation
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts
+  missing-provider per-call rejection settles aggregate and retains ERROR/STALE_ERROR snapshot rows/status
+autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+  inherited/null, immediate rows, settled re-read/status retention, defensive aggregate rejection
+
+EXPLICIT DO NOT ADD / RETAIN
+----------------------------
+endpoint-local application discovery or lifecycle
+runtime-only model list/ModelInfo cache across application leaves
+application model resolver/catalog/coordinator service
+credential cache key derived independently in the validator from runtimeKind/provider_id/workspace concatenation
+normal provider-failure diagnostics owned by composable catch
+all-provider startup/readiness discovery
+
+CURRENT POST-3AB ISOLATED PERSONAL CONTENT
+-----------------------------------------
+ui-prototypes/autobyteus-web-prototype/**
+  accept all 1,934 files byte-for-byte from Personal; keep outside root pnpm-workspace.yaml; no application-platform/production import or semantic merge edit
+tickets/in-progress/initial-prototype-baseline/{requirements-doc.md,investigation-notes.md,requirements-revision-record.md}
+  accept as independent prototype-task records; no application-framework adaptation
+tickets/done/api-key-management-panel-performance/{delivery-revision-record.md,docs-sync-report.md,handoff-summary.md,release-deployment-report.md,validation-evidence/delivery-server-docker-zh-dr008.log}
+  accept as latest-Personal delivery evidence; no production/runtime effect
