@@ -10,6 +10,7 @@
 | CRR-004 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | API/E2E Failure-Origin Review / API-REV-003 Fail | CRR-003 test-review Fail; CRR-002 source Pass | Fail — Local Fix to /implementation_engineer | CR-005; API-E2E-F-001 |
 | CRR-005 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-003 Local Fix handoff | CRR-004 — Fail, Local Fix; historical source result CRR-002 Pass | Pass — proceed to /api_e2e_engineer | CR-005 resolved; API-E2E-F-001 ready for rerun |
 | CRR-006 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md | Proportional API/E2E Test-Code Review / API-REV-004 Pass | CRR-003 test-review Fail; CRR-005 source Pass; API-REV-003 Fail | Pass — proceed to /delivery_engineer | TR-001, TR-002 resolved |
+| CRR-007 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-004 integrated merge correction after DR-001 | CRR-005 source Pass; CRR-006 test-review Pass; DR-001 integration reroute | Fail — Local Fix to /implementation_engineer | CR-006 |
 
 ## Revision Entries
 
@@ -169,3 +170,30 @@ None. This is the initial proportional API/E2E test review; CR-001–CR-004 rema
 - Material score or classification changes: No implementation scorecard was reopened. The separate proportional result changes from CRR-003 Fail to CRR-006 Pass after successful execution of both corrected durable boundaries. API-REV-004 reports Pass / 99%.
 - Recommended recipient: /delivery_engineer
 - Remaining risks or uncertainty: exhaustive unrelated provider permutations, dynamic post-launch Team mutation, unchanged native IPC, the historical generic Electron build-host mismatch, and the broad baseline/typecheck limitations remain bounded as recorded. Delivery still owns tracked-base refresh, integrated-state checks, documentation/no-impact assessment, and explicit-user-verification gating before any archival or repository finalization.
+
+### CRR-007 — IR-004 integrated source review finds an active-empty Team workspace regression
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+- Review entry point and round: Implementation Review, round 4 / seventh completed review result
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md; IR-004 after DR-001; new finding CR-006
+- Relevant solution revision IDs: SR-002–SR-007; current basis SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-001
+- Relevant implementation revision IDs: IR-001–IR-004
+- Relevant API/E2E revision IDs: API-REV-001–API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-005 implementation source Pass; CRR-006 proportional test review Pass; DR-001 integration reroute before finalization
+- Current authoritative result: Fail — Local Fix to /implementation_engineer, 9.0/10
+- What changed in the review result and why: IR-004 correctly finalized the merge against latest `origin/personal` and preserves the main controlled exact-address Team workspace flow, but its readiness reconciliation dropped an accepted latest-base state. On the supported Workspace TeamRun surface, selecting active `New` with an empty path while the immutable draft still retains Temp/Existing leaves store readiness clear; the integrated overlay synthesizes no issue, so `Run Team` is enabled until the click-time guard rejects it. The current-base contract and API/E2E require the button to remain disabled with the existing path message.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001–CR-005 | Resolved in prior source reviews | Remain resolved | CRR-002, CRR-005, IR-002, IR-003, IR-004 | The integrated conflict cut presents no contrary strict-runtime, hierarchy-readiness ownership, dependency, terminology, or migration-binding behavior. |
+| TR-001, TR-002 | Resolved in CRR-006 | Remain resolved for the unchanged durable API/E2E test source | CRR-006, API-REV-004, IR-004 | IR-004 does not edit the two strengthened server durable test files. Their prior proof is historical for the protected first parent; integrated HEAD still requires fresh execution after source passes. |
+| CR-006 | N/A | Open — Local Fix | IR-004, DR-001, MP-CR-004 | Integrated `RunConfigPanel.vue:390-402` only filters store readiness issues, while lines 317-322 reject active New/empty only after activation. Parent `6493c6d...` lines 320-334 synthesized the approved blocker. Reviewer focused suite passed 6 files/91 tests and build passed, confirming the current suite lacks this branch. |
+
+- New or remaining finding IDs: CR-006.
+- Material score or classification changes: current integrated source disposition is Fail / Local Fix despite a 9.0 average because Runtime Correctness (8.2) and API/E2E Readiness (8.5) are below threshold and CR-006 is open. MP-CR-004 is Reachable from the normal TeamRun workspace selector action; no requirement or design ambiguity exists.
+- Recommended recipient: /implementation_engineer
+- Remaining risks or uncertainty: standalone typecheck remains toolchain-blocked; `RunConfigPanel.vue` is 498 effective lines; fresh integrated API/E2E and any resulting proportional test review remain mandatory after repeat source Pass. The dated recovery branch remains unmerged and is not relevant to CR-006.

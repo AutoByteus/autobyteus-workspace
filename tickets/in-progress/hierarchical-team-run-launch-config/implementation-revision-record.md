@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-002 | `code_reviewer`; `code-review-report.md`; CRR-001 / review round 1 | `CR-001–CR-004` | `Local Fix` | `SR-002–SR-007`, `ARCH-REV-001`, `CRR-001`; `API-REV/DR: N/A` | Four source-review findings resolved and implementation prepared for repeat code review |
 | IR-003 | `code_reviewer`; `code-review-report.md`; CRR-004 failure-origin round | `CR-005`, `API-E2E-F-001` | `Local Fix` | `SR-002–SR-007`, `ARCH-REV-001`, `CRR-004`, `API-REV-003`; `DR: N/A` | Predecessor nested application-binding preservation corrected and prepared for repeat source review |
 | IR-004 | `delivery_engineer`; `delivery-integration-blocker.md`; DR-001 integrated-state refresh | `DR-001` six-file merge conflict set | `Local Fix` | `SR-007`, `ARCH-REV-001`, `CRR-005–CRR-006`, `API-REV-004`, `DR-001` | Latest tracked base integrated with hierarchical and controlled workspace semantics preserved; prepared for repeat source review |
+| IR-005 | `code_reviewer`; `code-review-report.md`; CRR-007 integrated source review | `CR-006` | `Local Fix` | `SR-007`, `ARCH-REV-001`, `CRR-007`, `API-REV-004`, `DR-001` | Active New/empty Team workspace is a scoped readiness blocker at root and nested addresses; prepared for repeat source review |
 
 ## Revision Entries
 
@@ -92,3 +93,23 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: focused workspace-config suites passed 6 files/91 tests; production Nuxt build passed (3,730 client modules, 15 prerendered routes); web/localization guards passed; merge/static/diff audit passed; real Nuxt render at desktop/narrow viewports preserved explicit root New/path across an immutable auto-approve edit, kept nested `/engineering_org` inherited, and recorded zero page errors. Standalone Nuxt typecheck remained environment-blocked before source diagnostics by the known `vue-tsc`/TypeScript export mismatch.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: IR-004's integrated frontend source/test delta requires repeat source review, then fresh API/E2E coverage investigation/execution and proportional test review as applicable before delivery re-entry. No push, archival, release, deployment, tag, or cleanup is claimed.
+
+### IR-005 — Restore active New/empty Team workspace readiness
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`; `CRR-007`, integrated implementation review round 4 / seventh completed review result
+- Triggering finding IDs: `CR-006`
+- Classification: `Local Fix`
+- Prior authoritative result: `CRR-007` — `Fail — Local Fix` to `/implementation_engineer`, 9.0/10; the integrated active New/empty state left Run Team enabled while the immutable draft retained Existing/Temp
+- Current authoritative result: every exact-address active New selection with an empty trimmed path supplies the approved scoped blocker before activation; root/nested focused and rendered checks pass; ready for repeat source review
+- Related solution revision IDs: `SR-002–SR-007` (current `SR-007`)
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-007` (with historical `CRR-001–CRR-006` retained)
+- Related API/E2E revision IDs: `API-REV-004` is the latest pre-integration historical result; fresh integrated coverage remains pending
+- Related delivery revision IDs: `DR-001`
+- Why this implementation revision is recorded: the IR-004 merge preserved click-time rejection but lost the latest-base pre-click disabled/message behavior when controlled active New/empty overlaid a still-valid Existing/Temp immutable config.
+- Approved behavior or requirement IDs affected: hierarchical `BEH-001`, `BEH-009`; current-base `FR-007`, `AC-007`; material premise `MP-CR-004`
+- Implementation delta: added `applyPendingTeamWorkspaceReadiness` to the existing Team launch-readiness owner. It synthesizes one exact-address `WORKSPACE_REQUIRED` issue per active New/empty selection, prepends the approved message, replaces a same-address store workspace issue, admits active New/non-empty by suppressing only its same-address workspace issue, and leaves inactive New buffers in Existing mode inert. `RunConfigPanel` now consumes that policy instead of owning the filter inline. Added a parameterized valid Existing/Temp -> active New/whitespace regression for `/` and `/Research`, while retaining the existing inactive-buffer regression.
+- Changed files or areas: `autobyteus-web/utils/teamRunLaunchReadiness.ts`; `autobyteus-web/components/workspace/config/RunConfigPanel.vue`; `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`; IR-005 handoff/evidence artifacts
+- Local validation and result: focused workspace-config suites passed 6 files/93 tests; production Nuxt build passed with 3,730 modules and 15 routes; web/localization guards and static/diff/source-size audit passed; actual Nuxt browser render from root Existing/Temp -> New/empty showed the exact message and disabled Run at 1440x1100 and 900x1000 with zero page errors. `RunConfigPanel.vue` decreased to 497 effective non-empty lines. API/E2E was intentionally not run by implementation engineering.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: repeat integrated source review must pass before `/api_e2e_engineer` performs fresh integrated investigation/execution; the historical standalone typecheck and broader baseline/provider/Electron limitations remain in `implementation-handoff.md`. No push, archival, release, deployment, tag, or cleanup is claimed.

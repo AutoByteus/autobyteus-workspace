@@ -747,6 +747,42 @@ describe('RunConfigPanel', () => {
     expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Root workspace is required.')
   })
 
+  it.each([
+    { name: 'root Team', address: '/' },
+    { name: 'nested Team', address: '/Research' },
+  ])('disables Run Team for an active empty New workspace on the $name', async ({ address }) => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = editableTeamConfig({
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: {
+        workspaceId: 'temp_ws_default',
+        workspaceRootPath: '/tmp/default',
+        displayName: 'Temp workspace',
+        kind: 'filesystem',
+      },
+    }) as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+
+    wrapper.findComponent(TeamRunConfigForm).vm.$emit('update:workspaceSelection', address, {
+      mode: 'new',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '   ',
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('temp_ws_default')
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toBe(
+      'Enter a workspace path to run this team.',
+    )
+  })
+
   it('disables agent run when workspace is missing', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
     const agentStore = useAgentRunConfigStore() as any

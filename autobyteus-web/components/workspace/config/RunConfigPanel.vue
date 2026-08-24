@@ -101,6 +101,7 @@ import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/Team
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import { applyPendingTeamWorkspaceReadiness } from '~/utils/teamRunLaunchReadiness'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -389,12 +390,10 @@ const ensurePendingWorkspaceLoadedForRun = async (): Promise<boolean> => {
 
 const effectiveTeamBlockingIssues = computed(() => {
   if (!effectiveTeamConfig.value) return []
-  const issues = teamLaunchReadiness.value.blockingIssues
-  return issues.filter((issue) => {
-    if (issue.code !== 'WORKSPACE_REQUIRED' || !issue.subjectAddress) return true
-    const selection = teamWorkspaceSelections.value[issue.subjectAddress]
-    return selection?.mode !== 'new' || !selection.newWorkspacePath.trim()
-  })
+  return applyPendingTeamWorkspaceReadiness(
+    teamLaunchReadiness.value.blockingIssues,
+    teamWorkspaceSelections.value,
+  )
 })
 
 const canLaunchTeamBeforeRun = computed(() =>

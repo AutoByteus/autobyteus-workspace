@@ -6,7 +6,7 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `hierarchical-launch-configuration-behavior.md`; `team-execution-tree-v2-contract.md`; `recovery-audit.md`; `remote-recovery-branch-comparison.md`
+- Supplemental Task Artifacts Reviewed As Context: `hierarchical-launch-configuration-behavior.md`; `team-execution-tree-v2-contract.md`; `recovery-audit.md`; `remote-recovery-branch-comparison.md`; and the current-base `remote-node-new-workspace-team-run-visibility` requirements, design, UI/UX specification, code-review report, and API/E2E report governing the workspace-selection behavior that IR-004 had to preserve
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-002–SR-007` (current basis `SR-007`)
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md`
@@ -14,90 +14,98 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`
+- Relevant Implementation Revision IDs: `IR-001–IR-004` (current trigger `IR-004`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: implementation review round 3 / fifth completed review result
-- Trigger: `IR-003` Local Fix for `CRR-004`, `CR-005`, and `API-E2E-F-001`
-- Prior Review Round Reviewed: `CRR-004` failure-origin Fail; historical source result `CRR-002` Pass
-- Latest Authoritative Round: `CRR-005`
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: implementation review round 4 / seventh completed review result
+- Trigger: `IR-004` integrated merge correction after `DR-001`
+- Prior Review Round Reviewed: `CRR-005` source Pass and `CRR-006` proportional test-review Pass; `DR-001` then rerouted six frontend conflicts
+- Latest Authoritative Round: `CRR-007`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-001`, `API-REV-002`, `API-REV-003`
-- Delivery Revision Record Reviewed: N/A
-- Relevant Delivery Revision IDs: N/A
-- Failing Scenario IDs: prior trigger `API-E2E-F-001` / `API-E2E-004` / `TR-002`
-- Exact Prior Failing Command / Execution Mode: `pnpm exec vitest run tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts --no-watch`; built-server startup migration E2E; prior result 2/4
-- Failure Evidence Paths: `api-e2e-evidence/api-rev-003-migration-binding-failure.md`; `api-e2e-evidence/api-rev-003-v2-production-upgrade-full.txt`
+- Relevant API/E2E Revision IDs: `API-REV-001–API-REV-004`
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
+- Delivery Trigger Evidence: `delivery-integrated-state-refresh.log`; `delivery-integration-blocker.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-003's correction to predecessor application-binding extraction, its migration-owned V1/V2 call path, and focused source coverage for consistent, absent, and contradictory nested bindings.
-- Files / areas reviewed: `predecessor-team-run-planner.ts`; `predecessor-team-metadata-converter.ts`; the V1/V2 migration schemas and transformer; `predecessor-team-run-planner.test.ts`; the retained API-REV-003 lifecycle and production-upgrade regression boundaries; IR-003 handoff/revision/evidence.
-- Explicit exclusions: no API/E2E rerun, browser/Electron rerun, or successful proportional durable-test result. Those remain owned by `/api_e2e_engineer` after this source Pass. Unchanged implementation areas preserve CRR-002's verified evidence and were checked only for contrary current evidence.
+- Changed implementation and behavior reviewed: the finalized integration merge `bd4e2403fd6630622e7789967e2f2815cc6f37f5` and artifact follow-up `77b7649d55313012e3df7eed8c8fd6e37b794b93`, with particular attention to the six DR-001 conflict paths and their controlled `WorkspaceSelectionState` reconciliation.
+- Merge basis verified: parent 1 is the protected CRR-005/API-REV-004/CRR-006 candidate `393c27015a4380f77d33f7f55096077f0e1f6b29`; parent 2 is latest fetched `origin/personal` `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`.
+- Files / areas reviewed: `RunConfigPanel.vue`; `AgentRunConfigForm.vue`; `TeamRunConfigForm.vue`; `TeamMemberConfigTree.vue`; `TeamScopeConfigEditor.vue`; `WorkspaceSelector.vue`; `WorkspaceSelectionState.ts`; their four changed focused test files; merge topology; prototype removal; current-base workspace-selection requirements and regression evidence; IR-004 rendered and command evidence.
+- Explicit exclusions: no fresh API/E2E or packaged desktop execution in this source-review round. The prior API-REV-004 execution remains historical evidence for the protected first parent, not proof of the integrated state.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: R-037 and AC-030 require the startup transition to preserve every known predecessor fact, explicitly including `applicationBinding`; contradictory bindings must reject rather than silently corrupt the package.
-- Design-spec behavior map verified against the implementation: BEH-007/DS-005 remains the governing migration-only predecessor/V1 to current-V2 path. IR-003 corrects its migration owner without creating a normal-runtime compatibility path.
+- Approved requirements basis understood: hierarchical requirements R-006–R-009, R-019, R-026, R-038, R-039 and AC-004–AC-008, AC-026, AC-031, AC-032 require exact-address Team workspace editing, parent inheritance, scoped readiness, and no silent substitution. The current-base workspace task independently requires one controlled visible/launch state; FR-007 and AC-007 require an empty active `New` path to remain blocked, and its approved UI/UX specification requires `Run Team` to remain disabled with the existing `Enter a workspace path to run this team.` feedback.
+- Relevant existing behavior confirmed: latest-base `RunConfigPanel.vue` synthesized a local `WORKSPACE_REQUIRED` issue whenever Team mode was actively `New` with an empty path, even if the retained canonical Team config still held Temp/Existing. Its API/E2E result directly proved the disabled button and zero mutations from the Workspace TeamRun surface.
+- Design-spec behavior map verified against the implementation: the controlled state, stable same-draft identity, exact-address Team map, create-before-launch, failure retention, reset, and inactive-buffer behavior are largely preserved. The active-empty Team readiness branch is not preserved.
 - Design review report and round confirmed: `ARCH-REV-001` Pass on the `SR-007` basis.
-- Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: None.
+- Behavior-basis status: `Confirmed`, with one implementation regression recorded as CR-006.
+- Changed or newly discovered supported behavior: none. CR-006 concerns approved current-base behavior that the delivery integration contract explicitly required IR-004 to retain.
+- Remaining material ambiguity: none.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| Behavior | Status | Current Implementation Path And Lifecycle Evidence | Governing Evidence |
 | --- | --- | --- | --- |
-| BEH-007 | Confirmed | Supported server startup classifies a regular predecessor package, validates/converts its Team/Agent hierarchy, recursively collects Agent `applicationExecutionContext` pairs, constructs migration-owned V1 with one binding or null, then the registered V2 transformer copies that value before current-catalog exposure. Distinct pairs reject before V1 construction. | None. |
-| BEH-001–BEH-006, BEH-008, BEH-009 | Confirmed (unchanged) | IR-003 changes only the predecessor migration binding extractor and focused unit coverage. Current hashes confirm both API-REV-003 durable regression files were retained unchanged, and no evidence contradicts CRR-002's source findings resolution. | None. |
+| Hierarchical exact-address workspace intent | Confirmed | `TeamRunConfigForm` and the recursive Team components relay `(address, WorkspaceSelectionState)`; `RunConfigPanel` owns an address map, applies Existing to the exact root/nested Team, resolves active New entries before launch, and clears a reset scope. | Hierarchical R-006–R-009, R-026; behavior contract Workspace Launch UI. |
+| Same-draft controlled selection | Confirmed | Stable Team `draftId` identity prevents immutable config edits from clearing the address map; Agent buffer identity remains stable; successful registration canonicalizes only the resolved scope while retaining its inactive path buffer. | Current-base FR-001–FR-005; DS-001–DS-004. |
+| Registration failure and inactive buffers | Confirmed | Active New failure leaves the same address-qualified selection visible and prevents launch; Existing mode with an inactive New buffer does not suppress a readiness issue or create a workspace. | Current-base FR-007/AC-007 and DS-005; IR-004 focused tests. |
+| Empty active Team New input | Contradicted by CR-006 | An explicit Team `New` selection with an empty path can leave the canonical Temp/Existing workspace in the immutable config. Store readiness therefore remains clear; the integrated overlay does not synthesize an empty-path issue, so `Run Team` is enabled. Only the click-time preparation guard rejects it. | Current-base FR-007, AC-007, UI/UX `Empty` and disabled-action contract; protected parent lines 320–334. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-003 remains a bounded correction inside the approved migration owner and does not alter the reviewed behavior-change/refactor posture. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Binding preservation now matches the V2 contract and BEH-007's explicit preservation statement. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Startup -> predecessor classification -> validated conversion -> V1 planning -> V2 transform -> current catalog remains linear and explicit. | None. |
-| Ownership boundary preservation and clarity | Pass | Historical-shape knowledge and binding derivation remain inside the migration subsystem; normal runtime consumes only current V2. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | The pure binding collector serves predecessor planning and does not take over migration sequencing. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The correction reuses `convertLegacyTeamRunMetadata`, the existing validated hierarchy, shared `text` validation, and current binding types. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `TeamRunApplicationBinding` and predecessor metadata node types are reused; no parallel binding DTO was introduced. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The converted metadata types retain the historical Agent context only until migration materialization strips it from current Agent nodes. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | One predecessor planner collector owns package-wide consistency policy. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | The collector validates IDs, deduplicates pairs, detects contradictions, and returns the migration value. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Conversion validates historical shape; planning derives binding and V1 input; the V2 transformer preserves the V1 value. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Dependencies flow from the planner to migration-owned converter/types and domain value types; no reverse dependency or cycle was introduced. | None. |
-| Authoritative Boundary Rule check | Pass | Startup migration callers continue to use the migration boundary and do not bypass it to mix raw files with current runtime internals. | None. |
-| File placement check | Pass | The correction and focused coverage reside under predecessor/V1 app-data migration ownership. | None. |
-| Flat-vs-over-split layout judgment | Pass | A small cohesive collector in the existing 138-line planner is clearer than a new one-function file. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | `applicationBindingFromMetadata(rootTeam)` accepts the validated migration subject and returns exactly `TeamRunApplicationBinding | null`. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Names distinguish validated predecessor metadata from current materialized Team nodes and locate invalid fields by Agent address. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Pair validation and traversal occur once; V2 continues to copy rather than rederive. | None. |
-| Patch-on-patch complexity control | Pass | IR-003 removes the raw-object recursive scan instead of layering an array special case over it. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The old raw traversal and unused `object` import are removed. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Focused tests prove nested identical binding, no binding, and contradictory bindings; retained E2E assertions cover AC-030 end to end. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Typed Agent/Team builders keep the three focused cases concise and independently readable. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | New tests exercise current migration policy; retained API-REV-003 files are the required regression boundaries. | None. |
-| API/E2E readiness for the next workflow stage | Pass | Reviewer 4-file/13-test migration run and `build:full` pass; both strengthened E2E hashes remain unchanged. | Rerun full 4/4 production-upgrade coverage under API/E2E ownership. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-004 correctly treated the conflict as behavior reconciliation rather than choosing either side wholesale. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | Hierarchical exact-address behavior is retained, but current-base empty-New disabled/readiness behavior is not. | Resolve CR-006. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Selector -> controlled panel state -> exact Team edit/preparation -> workspace store -> canonical draft -> launch remains explicit. | None. |
+| Ownership boundary preservation and clarity | Pass | `RunConfigPanel` owns transient workspace intent/preparation; forms relay; stores own canonical registered workspace configuration. | None. |
+| Off-spine concern clarity | Pass | Discovery/default proposal remains selector-local and does not take over launch policy. | None. |
+| Existing capability/subsystem reuse check | Pass | Integrated source reuses canonical address resolution, immutable Team edits, workspace registration, and existing loading/error stores. | None. |
+| Reusable owned structures check | Pass | One shared `WorkspaceSelectionState` replaces split ad hoc shapes for both Agent and Team scopes. | None. |
+| Shared-structure/data-model tightness check | Pass | The state contains only mode and the two intentionally retained buffers; exact Team identity remains the map key rather than entering the value shape. | None. |
+| Repeated coordination ownership check | Pass | Address-qualified preparation and canonicalization occur once in `RunConfigPanel`. | None. |
+| Empty indirection check | Pass | Recursive components add scope identity and inheritance presentation rather than pass-through-only layers. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Forms remain presentation/relay owners and stores remain canonical draft owners. | None. |
+| Ownership-driven dependency check | Pass | No new reverse dependency or cycle appears in the IR-004 conflict cut. | None. |
+| Authoritative Boundary Rule check | Pass | Workspace registration still crosses through `workspaceStore`; launch is delegated only after preparation. | None. |
+| File placement check | Pass | Shared state is under `types/workspace`; workspace configuration components/tests remain together. | None. |
+| Flat-vs-over-split layout judgment | Pass | Recursive Team responsibilities remain split by scope/editor/tree/form; the panel is large but still one launch-orchestration owner. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Complete selection replacements and address-qualified Team events are explicit and typed. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Active/inactive buffers, context identity, loading states, and Team addresses are distinguishable. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Agent and Team preparation differ where address fan-out requires it; shared selection shape is not copied. | None. |
+| Patch-on-patch complexity control | Pass | The merge removed the split workspace event/state model rather than retaining parallel compatibility flows. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No conflict markers or unmerged entries remain; the current-base `autobyteus-web-prototype` removal remains intact; the dated recovery branch is not an ancestor. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The focused suite covers preservation, real hierarchy readiness, failure, and inactive buffers, but the protected current-base assertion for active empty New readiness/message was weakened to a generic missing-config issue and no longer covers Existing/Temp -> New/empty. | Restore the CR-006 regression boundary. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `editableTeamConfig` and real readiness evaluation keep the integrated hierarchy cases understandable. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests target current controlled/hierarchical behavior; the gap is missing/changed coverage rather than stale compatibility coverage. | None. |
+| API/E2E readiness for the next workflow stage | Fail | Focused reviewer suite and build pass, but CR-006 must be corrected and source-reviewed before integrated API/E2E starts. | Route Local Fix to implementation engineering. |
 
 ## Source File Size And Structure Audit
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts` | 138 | Pass | Pass; task diff is 90 changed lines, below threshold | Pass; one cohesive predecessor planning responsibility | Pass | Clean | None. |
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit | `>220` Delta | SoC / Placement | Result |
+| --- | ---: | --- | --- | --- | --- |
+| `RunConfigPanel.vue` | 498 | Pass | Pass; 165 changed lines versus protected parent | Cohesive but near the limit; launch orchestration owner | Pass with pressure noted |
+| `WorkspaceSelector.vue` | 307 | Pass | Pass; 183 changed lines | Controlled workspace presentation/discovery owner | Pass |
+| `TeamScopeConfigEditor.vue` | 220 | Pass | Pass; 16 changed lines | One Team-scope editor | Pass |
+| `AgentRunConfigForm.vue` | 133 | Pass | Pass; 21 changed lines | Agent form/relay | Pass |
+| `TeamRunConfigForm.vue` | 130 | Pass | Pass; 28 changed lines | Root/tree composition | Pass |
+| `TeamMemberConfigTree.vue` | 125 | Pass | Pass; 17 changed lines | Recursive exact-address tree | Pass |
+| `WorkspaceSelectionState.ts` | 6 | Pass | Pass; 7 added lines | Shared workspace state contract | Pass |
 
-Tests are excluded from implementation-source size thresholds.
+Tests are excluded from implementation-source thresholds.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Historical schema knowledge remains confined to the approved startup migration. |
-| No legacy old-behavior retention in changed scope | Pass | Normal readers remain current V2-only. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The faulty raw-object collector was replaced, not retained beside the validated-tree path. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | The required migration preserves a known fact and changes no unrelated package content. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Startup promotion remains the sole transition boundary. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Invalid/contradictory source data rejects before V1 construction; V2 preserves the validated value. |
+| No backward-compatibility mechanisms in changed scope | Pass | IR-004 reconciles two current behaviors; it adds no legacy adapter. |
+| No legacy old-behavior retention in changed scope | Pass | Split visible/launch workspace state is removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No conflict markers/unmerged paths remain; current-base prototype deletion is retained. |
+| Approved persisted-data transition decision remains intact | Pass | The frontend merge does not alter the reviewed V1-to-V2 migration source or API-REV-004 test boundary. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No such mechanism was introduced. |
+| Dated recovery branch isolation | Pass | `origin/codex/hierarchical-team-run-launch-config-recovery-20260824` is not an ancestor of HEAD; no merge/cherry-pick is part of IR-004. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -105,60 +113,82 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: the overall ticket changes hierarchical launch configuration and durable V2 migration behavior; IR-003 itself introduces no new user-facing contract beyond restoring the already-approved binding-preservation requirement.
-- Files or areas likely affected: durable project documentation assessment remains owned by delivery after API/E2E and proportional test review pass; the ticket's requirements/design/handoff/revision artifacts are already current through IR-003.
+- Docs impact: `Yes` for the overall hierarchical feature; `No new durable-doc behavior` from CR-006.
+- Delivery's earlier docs/no-impact work is not authoritative for the now-failing integrated state. Delivery must re-evaluate only after source and fresh integrated API/E2E review pass.
 
 ## Material Premise Validation
 
-- Upstream design-review material-premise decisions: none were required by `ARCH-REV-001`.
-- New or reclassified premises this round: None.
-- `MP-CR-003` remains `Reachable` on the complete operational/contract path recorded in CRR-004: current server startup over a supported released application-bound predecessor package reaches this migration and AC-030 governs the preservation consequence. IR-003 changes the implementation outcome, not that reachability classification.
+### MP-CR-004 — Empty active Team New input after an Existing/Temp selection
+
+- Status: `Reachable`.
+- Independent initiating trigger: on the exposed Workspace TeamRun configuration surface, a user opens an editable Team draft that has the normal Temp/Existing workspace, selects the `New` workspace tab, and leaves the path empty. This is an approved user action covered by current-base FR-007/AC-007 and its UI/UX specification; the prior API/E2E journey exercised the same surface.
+- Forward production trace: `WorkspaceSelector.handleModeChange('new')` emits the controlled selection while retaining the inactive Existing ID -> `RunConfigPanel.handleTeamWorkspaceSelectionChange('/')` records active New/empty without replacing the canonical registered workspace -> Team store readiness still sees the valid retained Temp/Existing workspace -> integrated `effectiveTeamBlockingIssues` has no store `WORKSPACE_REQUIRED` issue and synthesizes none -> `canLaunchTeamBeforeRun` is true -> the native `Run Team` button is enabled. A click is rejected later by `ensurePendingWorkspaceLoadedForRun`, so no hidden launch occurs, but the approved disabled/readiness state and existing message are absent.
+- Consequence: the integrated product visibly presents an invalid active New selection as launch-ready, regressing accepted validation/accessibility feedback even though the click-time guard prevents a TeamRun.
+- Evidence: current-base requirements FR-007/AC-007; current-base `ui-ux-spec.md` Empty/disabled rules; protected parent `RunConfigPanel.vue` lines 320–334; integrated file lines 317–322 and 390–402; `implementation-evidence/code-reviewer-static-audit-crr-007.txt`.
+
+Previously recorded MP-CR-001–MP-CR-003 remain Reachable and their resolved source consequences are not contradicted by IR-004.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93`
-- Score calculation note: simple mean of the ten current category scores is 9.33; the Pass decision also requires every mandatory category to be at least 9.0 and no unresolved finding.
+- Overall score (`/10`): `9.0`
+- Overall score (`/100`): `90`
+- Score calculation note: simple mean of the ten categories is 9.02. The result is still Fail because Runtime Correctness and API/E2E Readiness are below 9.0 and CR-006 remains open.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | The startup transition is linear, migration-owned, and traceable through V1/V2 into catalog exposure. | The overall ticket necessarily spans many packages and historical transition stages. | Keep API evidence tied to the same explicit spine. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Validated conversion, package planning, V1 construction, and V2 transformation retain distinct owners. | The planner still coordinates several predecessor package subjects by design. | No source change required; keep future historical logic inside this boundary. |
-| 3 | API / Interface / Query / Command Clarity | 9.2 | The binding collector now takes the validated hierarchy and returns the exact domain value or null. | The helper is exported primarily for focused unit verification rather than as a broader subsystem API. | Avoid expanding this narrow seam unless a real migration caller requires it. |
-| 4 | Separation of Concerns and File Placement | 9.4 | The fix lands in the migration planner and leaves V2 as a pure transform. | The file owns both initial-tree planning and package-subject coordination, though it remains small and cohesive. | Reassess only if future migration concerns materially enlarge it. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | Existing binding and validated metadata types are reused without parallel models. | Historical context remains a generic record until its two required IDs are derived. | Keep that looseness isolated to the historical boundary. |
-| 6 | Naming Quality and Local Readability | 9.3 | Traversal, pair collection, and error locations are concise and address-aware. | The function name retains `Metadata` while specifically accepting the root Team node. | No blocking change; preserve explicit parameter typing. |
-| 7 | API/E2E Readiness | 9.2 | Focused reviewer tests and production build pass, and strengthened regression files are unchanged. | The authoritative built-server production-upgrade cohort has not yet been rerun after IR-003. | API/E2E must rerun all 4/4 scenarios before any delivery route. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Consistent, absent, and contradictory bindings now match R-037/AC-030 and prior collector policy. | Final executable proof of the prior failing startup cohort remains downstream. | Confirm final V2 binding in the strengthened E2E. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Historical logic stays inside explicit startup migration; normal runtime remains V2-only. | A migration boundary is necessarily retained for durable released data. | Remove it only under a separately approved lifecycle decision, not in this ticket. |
-| 10 | Cleanup Completeness | 9.2 | The defective raw traversal and unused import are gone; diff/size/static checks pass. | Delivery base refresh and final integrated-state cleanup remain pending workflow stages. | Complete delivery's integrated-state check only after API/test review passes. |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.3 | Exact-address controlled selection through canonicalization and launch is readily traceable. | Agent and fan-out Team preparation coexist in a near-limit panel. | Keep readiness/preparation rules visibly paired. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | Panel, selector, forms, stores, and recursive Team components retain distinct owners. | The panel owns several related readiness overlays. | Keep all active-selection readiness policy centralized there. |
+| 3 | API / Interface / Query / Command Clarity | 9.2 | Complete typed state and address-qualified events remove ambiguity. | Partial exact-address maps require careful fallback semantics. | Preserve focused address/state contract tests. |
+| 4 | Separation of Concerns and File Placement | 9.1 | Placement and component split remain sound. | `RunConfigPanel.vue` is 498 effective lines. | Avoid adding unrelated work to the panel; extract only a cohesive owner if future pressure crosses the limit. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | One selection type serves standalone and hierarchical paths without conflating address identity. | Inactive buffers make mode-sensitive validation essential. | Keep active mode as the only readiness authority. |
+| 6 | Naming Quality and Local Readability | 9.1 | Names are generally precise and address-aware. | Dense one-line statements in Team preparation reduce scanability slightly. | Expand future touched branches when it improves error-path readability. |
+| 7 | API/E2E Readiness | 8.5 | Focused 6-file/91-test suite and production build pass. | An approved current-base validation state regressed and lacks a focused test. | Fix CR-006, repeat source review, then perform fresh integrated coverage investigation/execution. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.2 | Launch, inheritance, failure, and inactive buffers are otherwise coherent. | Active Team New/empty is visibly launch-ready instead of disabled with the approved message. | Restore mode-sensitive empty-path readiness at exact Team scopes. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.4 | No legacy adapter, prototype restoration, or recovery-branch integration exists. | Historical migration remains by approved design only. | No action. |
+| 10 | Cleanup Completeness | 8.8 | Merge state, conflicts, prototype removal, and build output are clean. | The merge dropped/weakened a protected current-base regression assertion. | Restore the regression and keep the integrated artifact chain current. |
 
 ## Findings
 
-No new or unresolved implementation-source findings. `CR-005` is resolved; its verification is recorded in the CRR-005 revision entry.
+### CR-006 — Active Team `New` with an empty path no longer disables `Run Team`
+
+- Severity / classification: `Local Fix` owned by `/implementation_engineer`.
+- Affected approved behavior: current-base FR-007, AC-007, UI/UX Empty/disabled behavior; hierarchical R-038/R-039 scoped validation behavior.
+- Reachability: `MP-CR-004 — Reachable` through the normal Workspace TeamRun form action described above.
+- Source evidence: integrated `RunConfigPanel.vue:390-402` only filters existing readiness issues. When a Team draft retains a valid Temp/Existing canonical workspace and the exact-address controlled selection becomes `{ mode: 'new', newWorkspacePath: '' }`, no store workspace issue exists to filter or suppress, so the button remains enabled. `RunConfigPanel.vue:317-322` rejects the empty path only after activation.
+- Relevant existing behavior evidence: parent `6493c6d...` synthesized `WORKSPACE_REQUIRED` with `Enter a workspace path to run this team.` before launch; its accepted API/E2E report recorded disabled Run and zero mutations. That current behavior was part of DR-001's preserve-both integration contract.
+- Test evidence: the integrated suite's generic `disables team run when workspace is missing` case now supplies a store blocker and expects the generic store message, so it does not cover a valid retained Existing workspace followed by active New/empty. Reviewer execution still passes 6 files / 91 tests, demonstrating the gap rather than disproving the reachable branch.
+- Required correction: make address-qualified Team readiness treat every active `New` selection with an empty trimmed path as a local scoped blocker, while retaining the current rule that an inactive New buffer in `Existing` mode cannot suppress or create a blocker. Restore a focused regression starting from a valid Existing/Temp Team workspace, selecting root `New` with an empty path, and asserting disabled Run plus the approved message; include an explicit nested Team case if the shared address-qualified policy cannot be proven by the same helper boundary.
+- Verification required: focused workspace configuration suite, production web build, repeat source review, then fresh integrated API/E2E coverage investigation/execution. Do not route directly to delivery.
 
 ## Classification
 
-Not applicable — the implementation review passes.
+`Local Fix` — bounded integrated frontend readiness/test regression.
 
 ## Recommended Recipient
 
-`/api_e2e_engineer`
+`/implementation_engineer`
 
 ## Residual Risks
 
-- API-REV-003 remains the latest execution result and was 2/4 before IR-003; API/E2E must rerun the full strengthened 4/4 production-upgrade cohort before the migration can be considered executable-coverage complete.
-- `TR-001` has passing execution but formal proportional closure, and `TR-002` successful execution/review, remain pending the next successful API/E2E handoff.
-- The recorded broad server-unit baseline remains non-green without known current-only failing files; standalone typecheck limitations remain documented. Reviewer-focused migration tests and `build:full` pass.
-- Provider-gated permutations, the unrelated Electron auto-build workaround, and delivery's future base refresh remain as previously bounded; they do not contradict this source result.
+- The standalone Nuxt typecheck remains toolchain-blocked by the recorded `vue-tsc`/TypeScript export mismatch; production build and focused reviewer tests pass.
+- `RunConfigPanel.vue` is at 498 effective non-empty lines, below the hard limit but with little structural headroom.
+- API-REV-004 and CRR-006 remain valid for the protected first parent and unchanged durable tests, but they do not authorize the integrated HEAD. Fresh integrated API/E2E remains required after CR-006 is corrected and source review passes.
+- Provider-gated permutations and the previously bounded Electron build workaround remain unchanged; neither causes CR-006.
+- The dated configured-recovery branch remains intentionally unmerged and materially outside this fix path.
+
+## Reviewer Validation Evidence
+
+- Focused integrated web suite: `implementation-evidence/code-reviewer-web-workspace-focused-crr-007.txt` — 6 files / 91 tests Pass.
+- Integrated production build: `implementation-evidence/code-reviewer-web-build-crr-007.txt` — 3,730 modules, 15 prerendered routes, Pass.
+- Static merge/source audit: `implementation-evidence/code-reviewer-static-audit-crr-007.txt` — correct merge parents, no unmerged entries/conflict markers, `git diff --check` clean, prototype absent, recovery branch not an ancestor, source-size audit, and CR-006 parent/current source comparison.
+- Rendered evidence inspected: `hierarchical-team-config-integrated-desktop.png`; `hierarchical-team-config-integrated-narrow.png`. The supplied scenario confirms root New/path preservation after an immutable edit and no page errors, but it uses a non-empty path and therefore does not cover CR-006.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` — MP-CR-003 remains Reachable and the approved consequence is now implemented
-- Score Summary: `9.3/10` (`93/100`); every category is at least 9.0
-- Failure Origin: CR-005 was an implementation defect and earlier source-review gap; IR-003 resolves it without changing the valid API/E2E regression boundary
-- Recommended Recipient: `/api_e2e_engineer`
-- Notes: Rerun the full strengthened 4/4 production-upgrade coverage. After a successful API/E2E result, return the two durable test paths for the formal proportional test-code review. Do not proceed to delivery before that review passes.
+- Material-Premise Gate: `Pass` — MP-CR-004 is Reachable and grounded in the approved Workspace TeamRun surface
+- Score Summary: `9.0/10` (`90/100`); Runtime Correctness and API/E2E Readiness are below the clean-pass threshold
+- Open Finding: `CR-006`
+- Recommended Recipient: `/implementation_engineer`
+- Notes: Correct the integrated active-New empty-path readiness regression and repeat source review. Do not advance to API/E2E or delivery on CRR-007.
