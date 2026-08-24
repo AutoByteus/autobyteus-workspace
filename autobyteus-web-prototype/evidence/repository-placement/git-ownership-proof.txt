@@ -1,0 +1,12 @@
+RER-004 Git ownership and index proof (pre-commit)
+Generated: 2026-08-24T06:27:55Z
+Git top-level: /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline
+Branch: codex/initial-prototype-baseline
+Repository-relative root: autobyteus-web-prototype
+Nested .git entries: 0
+Staged/tracked prototype entries: 1934
+Gitlink/submodule entries (mode 160000): 0
+Index modes:
+   1932 100644
+      2 100755
+Result: PASS

@@ -1,0 +1,1213 @@
+{
+  "generatedAt": "2026-08-22T12:22:33.718Z",
+  "sourceBaseUrl": "http://127.0.0.1:3100",
+  "prototypeBaseUrl": "http://127.0.0.1:3200",
+  "mockBaseUrl": "http://127.0.0.1:4310",
+  "results": [
+    {
+      "journey": {
+        "id": "JRN-001",
+        "name": "Primary navigation",
+        "path": "/agents?view=list"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-001.png",
+        "screenshotSha256": "84c22a8c44e7cdfb126763a201dc28cb0a2b26938cf55a6229009dada8f08c29",
+        "semantic": {
+          "route": "/agent-teams?view=team-list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Team\nPR\nProduct Review Team\n\nA deterministic synthetic team with researcher and writer members.\n\nProduct\nRun\nView Details\n→\nR\nresearcher\nW\nwriter\n\nCoordinator\n\nresearcher\n\nMembers\n\n2\n\nNested Teams\n\n0",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agent Teams",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-001.png",
+        "screenshotSha256": "84c22a8c44e7cdfb126763a201dc28cb0a2b26938cf55a6229009dada8f08c29",
+        "semantic": {
+          "route": "/agent-teams?view=team-list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Team\nPR\nProduct Review Team\n\nA deterministic synthetic team with researcher and writer members.\n\nProduct\nRun\nView Details\n→\nR\nresearcher\nW\nwriter\n\nCoordinator\n\nresearcher\n\nMembers\n\n2\n\nNested Teams\n\n0",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agent Teams",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-002",
+        "name": "Agent search and keyboard focus",
+        "path": "/agents?view=list"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-002.png",
+        "screenshotSha256": "e50918ea4f67da90cdfa38f3a10a3d8066f3b22265e0d28cf25ff8c70d6270f7",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Agent\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "placeholder": "Search agents by name or description...",
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-002.png",
+        "screenshotSha256": "e50918ea4f67da90cdfa38f3a10a3d8066f3b22265e0d28cf25ff8c70d6270f7",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Agent\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "placeholder": "Search agents by name or description...",
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-003",
+        "name": "Agent detail navigation",
+        "path": "/agents?view=list"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-003.png",
+        "screenshotSha256": "29ca855e1817c6f4c253d7789eef0b9373ea412e7f478204c9098aad857e880a",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-003.png",
+        "screenshotSha256": "29ca855e1817c6f4c253d7789eef0b9373ea412e7f478204c9098aad857e880a",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-researcher",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nRA\nResearch Assistant\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n2\n\nSKILLS\n\n1\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic local agent used only by the parity prototype.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nUse the supplied synthetic workspace and return concise evidence.\nSkills\nprototype-research\nTools\nweb_search\nread_file",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-004",
+        "name": "Agent create required-field validation",
+        "path": "/agents?view=create"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-004.png",
+        "screenshotSha256": "18e0cf1ea545de3032262e6027c6b9871da07a3f19fec37c4b92ba2fc5da9f3e",
+        "semantic": {
+          "route": "/agents?view=create",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nCreate Agent Definition\n\nDefine a new agent by providing its core attributes and components.\n\nName\nRole\nCategory\nDescription\nInstructions\nAvatar\n\nUpload an image to represent this agent in list and detail views.\n\nAI\nUpload Avatar\n\nSupported: JPG, PNG, GIF, WEBP\n\nSkills Configuration\nSkills\n\nSelect skills to equip the agent with specific capabilities.\n\nprototype-research\nAdd\nTool Configuration\nTools\n\nSelect available tools for the agent to use.\n\nFile\nAdd All\nMCP: prototype-files\nAdd All\nLLM config\n\nOptional runtime, model, and LLM settings.\n\nRuntime\nChoose when launching\nAutoByteus\nModel\nSelect a model\nOptional Processors (Advanced)\nCancel\nCreate Agent",
+          "invalid": [
+            {
+              "tag": "FORM",
+              "placeholder": null,
+              "message": null
+            },
+            {
+              "tag": "FIELDSET",
+              "placeholder": null,
+              "message": ""
+            },
+            {
+              "tag": "INPUT",
+              "placeholder": "e.g., Software Developer Agent",
+              "message": "Please fill out this field."
+            },
+            {
+              "tag": "TEXTAREA",
+              "placeholder": "A detailed description of the agent's purpose and capabilities.",
+              "message": "Please fill out this field."
+            },
+            {
+              "tag": "TEXTAREA",
+              "placeholder": "Enter the agent's system instructions...",
+              "message": "Please fill out this field."
+            }
+          ],
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "placeholder": "e.g., Software Developer Agent",
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-004.png",
+        "screenshotSha256": "9f1912319b5a36596de9918a090222b9f5a17fc11b5bd7d33684b16d4eb4447b",
+        "semantic": {
+          "route": "/agents?view=create",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nCreate Agent Definition\n\nDefine a new agent by providing its core attributes and components.\n\nName\nRole\nCategory\nDescription\nInstructions\nAvatar\n\nUpload an image to represent this agent in list and detail views.\n\nAI\nUpload Avatar\n\nSupported: JPG, PNG, GIF, WEBP\n\nSkills Configuration\nSkills\n\nSelect skills to equip the agent with specific capabilities.\n\nprototype-research\nAdd\nTool Configuration\nTools\n\nSelect available tools for the agent to use.\n\nFile\nAdd All\nMCP: prototype-files\nAdd All\nLLM config\n\nOptional runtime, model, and LLM settings.\n\nRuntime\nChoose when launching\nAutoByteus\nModel\nSelect a model\nOptional Processors (Advanced)\nCancel\nCreate Agent",
+          "invalid": [
+            {
+              "tag": "FORM",
+              "placeholder": null,
+              "message": null
+            },
+            {
+              "tag": "FIELDSET",
+              "placeholder": null,
+              "message": ""
+            },
+            {
+              "tag": "INPUT",
+              "placeholder": "e.g., Software Developer Agent",
+              "message": "Please fill out this field."
+            },
+            {
+              "tag": "TEXTAREA",
+              "placeholder": "A detailed description of the agent's purpose and capabilities.",
+              "message": "Please fill out this field."
+            },
+            {
+              "tag": "TEXTAREA",
+              "placeholder": "Enter the agent's system instructions...",
+              "message": "Please fill out this field."
+            }
+          ],
+          "active": {
+            "tag": "INPUT",
+            "text": "",
+            "placeholder": "e.g., Software Developer Agent",
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": false,
+        "perceptual": {
+          "changedPixels": 74,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0.00005709876543209877,
+          "maximumChannelDelta": 2,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": true,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-005",
+        "name": "Team detail navigation",
+        "path": "/agent-teams?view=team-list"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-005.png",
+        "screenshotSha256": "b71728c69bc6824ab6c32bdf4a41f3a79ae3e7d2763c896a9c30d5e45761aa15",
+        "semantic": {
+          "route": "/agent-teams?view=team-detail&id=team-product",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agent Teams\nPR\nProduct Review Team\nProduct\n\nA deterministic synthetic team with researcher and writer members.\n\nMembers (2)\nCoordinator: researcher\nNested Teams: 0\nRun\nEdit\nDelete\nDescription\n\nA deterministic synthetic team with researcher and writer members.\n\nCOORDINATOR\n\nresearcher\n\nCOMPOSITION SUMMARY\n\n2 Agents, 0 Nested Teams\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nCoordinate a safe product-review task using synthetic data.\nMembers (2)\nRE\n\nresearcher\n\nCOORDINATOR\n\nBlueprint: Research Assistant\n\nView ↗\nWR\n\nwriter\n\nBlueprint: Documentation Writer\n\nView ↗",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-005.png",
+        "screenshotSha256": "b71728c69bc6824ab6c32bdf4a41f3a79ae3e7d2763c896a9c30d5e45761aa15",
+        "semantic": {
+          "route": "/agent-teams?view=team-detail&id=team-product",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agent Teams\nPR\nProduct Review Team\nProduct\n\nA deterministic synthetic team with researcher and writer members.\n\nMembers (2)\nCoordinator: researcher\nNested Teams: 0\nRun\nEdit\nDelete\nDescription\n\nA deterministic synthetic team with researcher and writer members.\n\nCOORDINATOR\n\nresearcher\n\nCOMPOSITION SUMMARY\n\n2 Agents, 0 Nested Teams\n\nPREFERRED RUNTIME\n\nautobyteus\n\nPREFERRED MODEL\n\nmock/gpt-prototype\n\nInstructions\nCoordinate a safe product-review task using synthetic data.\nMembers (2)\nRE\n\nresearcher\n\nCOORDINATOR\n\nBlueprint: Research Assistant\n\nView ↗\nWR\n\nwriter\n\nBlueprint: Documentation Writer\n\nView ↗",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-006",
+        "name": "Application catalog to application setup",
+        "path": "/applications"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-006.png",
+        "screenshotSha256": "78cd53a0d805606b4a9d110151424aab1201109d09ebacd82144de6d1e3b8a60",
+        "semantic": {
+          "route": "/applications/sample-app",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\n← Back to applications\nLaunch setup\nBrief Studio\n\nA synthetic embedded application for current-shell parity validation.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\n\nUnable to load application setup\n\nviews.map is not a function\n\nConfirm launch setup before opening the app\n\nviews.map is not a function\n\nEnter application",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-006.png",
+        "screenshotSha256": "78cd53a0d805606b4a9d110151424aab1201109d09ebacd82144de6d1e3b8a60",
+        "semantic": {
+          "route": "/applications/sample-app",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\n← Back to applications\nLaunch setup\nBrief Studio\n\nA synthetic embedded application for current-shell parity validation.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\n\nUnable to load application setup\n\nviews.map is not a function\n\nConfirm launch setup before opening the app\n\nviews.map is not a function\n\nEnter application",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-007",
+        "name": "Skill detail navigation",
+        "path": "/skills"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-007.png",
+        "screenshotSha256": "1879db53a6a2d8dbf81569a521aa26e49357ed251860acaa536aa946b1321939",
+        "semantic": {
+          "route": "/skills",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nprototype-research\nDemonstrates a deterministic synthetic skill.\nMore\ndocs\nrequirements.md\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-007.png",
+        "screenshotSha256": "1879db53a6a2d8dbf81569a521aa26e49357ed251860acaa536aa946b1321939",
+        "semantic": {
+          "route": "/skills",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nprototype-research\nDemonstrates a deterministic synthetic skill.\nMore\ndocs\nrequirements.md\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-008",
+        "name": "Memory source tab navigation",
+        "path": "/memory?view=home&tab=agents"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-008.png",
+        "screenshotSha256": "07bbcdd46ce0535c85bb18487eb5745eb2b28d0e4081a25ed441d0b18cea077b",
+        "semantic": {
+          "route": "/memory?view=home&tab=teams",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nMEMORY SOURCE\nThis node\nLocal runnable memory\nAgents\nAgent Teams\nSearch\nProduct Review Team\n\nteam-product\n\n1 runs\n\n2 members · Updated 8/22/2026, 4:00:00 AM\n\nWorking\nEpisodic\nSemantic\nRaw Traces\nArchive\nPrev\nPage 1 / 1\nNext",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agent Teams",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-008.png",
+        "screenshotSha256": "07bbcdd46ce0535c85bb18487eb5745eb2b28d0e4081a25ed441d0b18cea077b",
+        "semantic": {
+          "route": "/memory?view=home&tab=teams",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nMEMORY SOURCE\nThis node\nLocal runnable memory\nAgents\nAgent Teams\nSearch\nProduct Review Team\n\nteam-product\n\n1 runs\n\n2 members · Updated 8/22/2026, 4:00:00 AM\n\nWorking\nEpisodic\nSemantic\nRaw Traces\nArchive\nPrev\nPage 1 / 1\nNext",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agent Teams",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-009",
+        "name": "Node add validation",
+        "path": "/nodes?tab=manage"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-009.png",
+        "screenshotSha256": "6c9191d4e6e7a281cfff0a62edfc60ae19a0c4501afa036213e32b5fa61ed688",
+        "semantic": {
+          "route": "/nodes?tab=manage",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nManage Nodes\nMemory Sync\nPhone Setup\nDocker Guide\nCurrent Window Node\n\nEmbedded Node EMBEDDED\n\nhttp://127.0.0.1:4310\n\nAdd Remote Node\n\nRegister a reachable AutoByteus node for window access and capability display. Configure browser automation directly on Docker/remote nodes through MCP servers such as BrowserServer.\n\nAdd Node\n\nNode base URL is required\n\nConfigured Nodes\nEMBEDDED\nready\n\nhttp://127.0.0.1:4310\n\nOpen",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Add Node",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-009.png",
+        "screenshotSha256": "6c9191d4e6e7a281cfff0a62edfc60ae19a0c4501afa036213e32b5fa61ed688",
+        "semantic": {
+          "route": "/nodes?tab=manage",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nManage Nodes\nMemory Sync\nPhone Setup\nDocker Guide\nCurrent Window Node\n\nEmbedded Node EMBEDDED\n\nhttp://127.0.0.1:4310\n\nAdd Remote Node\n\nRegister a reachable AutoByteus node for window access and capability display. Configure browser automation directly on Docker/remote nodes through MCP servers such as BrowserServer.\n\nAdd Node\n\nNode base URL is required\n\nConfigured Nodes\nEMBEDDED\nready\n\nhttp://127.0.0.1:4310\n\nOpen",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Add Node",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-010",
+        "name": "Tool collection switch",
+        "path": "/tools"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-010.png",
+        "screenshotSha256": "55a37a87a889c362ac977f9903b9e6eb2cf6881df7a92dc0b39da399c5e50592",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nMCP Servers\nMCP Gateway\nSearch\nMCP Servers\nBulk Import\nAdd Server\nprototype-files\n\nSTDIO\n\nEnabled\nPrefix:\nprototype\nCommand:\nmock-adapter\nCWD:\n/synthetic\nSync Tools\nEdit\nDelete",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "MCP Servers",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-010.png",
+        "screenshotSha256": "55a37a87a889c362ac977f9903b9e6eb2cf6881df7a92dc0b39da399c5e50592",
+        "semantic": {
+          "route": "/tools",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nTools\n\nBrowse local tools and manage MCP servers.\n\nLocal Tools\nMCP Servers\nMCP Servers\nMCP Gateway\nSearch\nMCP Servers\nBulk Import\nAdd Server\nprototype-files\n\nSTDIO\n\nEnabled\nPrefix:\nprototype\nCommand:\nmock-adapter\nCWD:\n/synthetic\nSync Tools\nEdit\nDelete",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "MCP Servers",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-011",
+        "name": "Language preference transition",
+        "path": "/settings?section=language"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-011.png",
+        "screenshotSha256": "67321f84124f6b2f22c9530258787e57b82642cf55e12f2a9170e6e77413ce9d",
+        "semantic": {
+          "route": "/settings?section=language",
+          "bodyText": "返回工作区\nAPI 密钥\nToken 统计\n消息\n显示\n语言\n本地工具\nMCP 服务器\n应用包\n智能体包\n服务器设置\n扩展\n更新\n\n语言\n\n应用语言\n\n选择 AutoByteus 中产品界面文本的显示语言。\n\n显示语言\n系统默认\n英文\n简体中文\n当前偏好\n简体中文\n当前生效语言\n简体中文\n\n“系统默认”会在支持时跟随主机语言。不支持的语言会回退为英文。",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": [
+            "zh-CN"
+          ]
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-011.png",
+        "screenshotSha256": "67321f84124f6b2f22c9530258787e57b82642cf55e12f2a9170e6e77413ce9d",
+        "semantic": {
+          "route": "/settings?section=language",
+          "bodyText": "返回工作区\nAPI 密钥\nToken 统计\n消息\n显示\n语言\n本地工具\nMCP 服务器\n应用包\n智能体包\n服务器设置\n扩展\n更新\n\n语言\n\n应用语言\n\n选择 AutoByteus 中产品界面文本的显示语言。\n\n显示语言\n系统默认\n英文\n简体中文\n当前偏好\n简体中文\n当前生效语言\n简体中文\n\n“系统默认”会在支持时跟随主机语言。不支持的语言会回退为英文。",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": [
+            "zh-CN"
+          ]
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-012",
+        "name": "Desktop left-panel collapse",
+        "path": "/agents?view=list"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-012.png",
+        "screenshotSha256": "28e69b97ce6336ca98b6d55ac36fdce6a8b8eeab227e823e5dfbb56df2aa539f",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Reload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": true,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-012.png",
+        "screenshotSha256": "28e69b97ce6336ca98b6d55ac36fdce6a8b8eeab227e823e5dfbb56df2aa539f",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Reload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": true,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-013",
+        "name": "Narrow drawer focus and Escape recovery",
+        "path": "/agents?view=list",
+        "viewport": "narrow"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-013.png",
+        "screenshotSha256": "54ed48800f15837a6f40f337520dce56e141bcdd61807f7b2b5d9b504f056a9b",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nReload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agents",
+            "placeholder": null,
+            "title": "Agents"
+          },
+          "dialogs": [],
+          "leftPanelStrip": true,
+          "locale": "",
+          "actionEvidence": {
+            "openedAriaModal": "true",
+            "focusReturnedToStrip": true
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-013.png",
+        "screenshotSha256": "54ed48800f15837a6f40f337520dce56e141bcdd61807f7b2b5d9b504f056a9b",
+        "semantic": {
+          "route": "/agents?view=list",
+          "bodyText": "Agents\nReload\nCreate Agent\nIndividual agents\n2 agents\nDW\nDocumentation Writer\n\nA second deterministic synthetic agent.\n\nTools 2\nread_file\nwrite_file\nSkills 1\nprototype-writing\nRun\nView Details\n→\nRA\nResearch Assistant\n\nSynthetic local agent used only by the parity prototype.\n\nTools 2\nweb_search\nread_file\nSkills 1\nprototype-research\nRun\nView Details\n→",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Agents",
+            "placeholder": null,
+            "title": "Agents"
+          },
+          "dialogs": [],
+          "leftPanelStrip": true,
+          "locale": "",
+          "actionEvidence": {
+            "openedAriaModal": "true",
+            "focusReturnedToStrip": true
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-014",
+        "name": "Paired-mobile work picker",
+        "path": "/mobile",
+        "viewport": "narrow",
+        "mobile": "paired"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-014.png",
+        "screenshotSha256": "cb365badcab48c08bf7e044733977950892350fbb75b56baf01fcc3baa8f786c",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nPrototype Node\n\nhttp://127.0.0.1:4310\n\nConnected\nRecent work\nSwitch work\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone\n\nSWITCH WORK\n\nChoose work\nClose\nRecent !\nAgents\nTeams\nWorkspaces\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Switch work",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-014.png",
+        "screenshotSha256": "cb365badcab48c08bf7e044733977950892350fbb75b56baf01fcc3baa8f786c",
+        "semantic": {
+          "route": "/mobile",
+          "bodyText": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nPrototype Node\n\nhttp://127.0.0.1:4310\n\nConnected\nRecent work\nSwitch work\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone\n\nSWITCH WORK\n\nChoose work\nClose\nRecent !\nAgents\nTeams\nWorkspaces\nResearch Assistant\nCompare current navigation states\nIdle · Prototype Workspace\nProduct Review Team\nReview the current prototype baseline\nInactive · Prototype Workspace",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "Switch work",
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 329160,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-015",
+        "name": "Agent create success feedback and detail navigation",
+        "path": "/agents?view=create"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-015.png",
+        "screenshotSha256": "eb62453d4ad8510a47b49eebe320030fc91238c70f5e490bd5bdb0deebcfbcd4",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-created-fixture",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nPR\nPrototype Review Agent\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n0\n\nSKILLS\n\n0\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic agent created during deterministic journey validation.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nNot set\n\nPREFERRED MODEL\n\nNot set\n\nInstructions\nUse only the isolated prototype fixtures.\nSkills\n\nNone configured.\n\nTools\n\nNone configured.",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "feedback": "Agent definition created successfully!"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-015.png",
+        "screenshotSha256": "eb62453d4ad8510a47b49eebe320030fc91238c70f5e490bd5bdb0deebcfbcd4",
+        "semantic": {
+          "route": "/agents?view=detail&id=agent-created-fixture",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nBack to Agents\nPR\nPrototype Review Agent\n\nResearches a bounded topic and summarizes evidence.\n\nTOOLS\n\n0\n\nSKILLS\n\n0\n\nRun Agent\nEdit\nDelete\nDescription\n\nSynthetic agent created during deterministic journey validation.\n\nCATEGORY\n\nGeneral\n\nPREFERRED RUNTIME\n\nNot set\n\nPREFERRED MODEL\n\nNot set\n\nInstructions\nUse only the isolated prototype fixtures.\nSkills\n\nNone configured.\n\nTools\n\nNone configured.",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "feedback": "Agent definition created successfully!"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-016",
+        "name": "Skill delete confirmation dialog",
+        "path": "/skills"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-016.png",
+        "screenshotSha256": "7d6c4264c516ea866fc1d9bc6a5cfb4f248475cfcb62d53896a9e4cbcff2b483",
+        "semantic": {
+          "route": "/skills",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nSources\nReload\nCreate Skill\nprototype-research\n\nDemonstrates a deterministic synthetic skill.\n\n2 files\nView\nDisable\nDelete Skill\n\nAre you sure you want to delete the skill prototype-research? This action cannot be undone.\n\nCancel\nDelete",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "placeholder": null,
+            "title": "Delete Skill"
+          },
+          "dialogs": [
+            {
+              "label": null,
+              "modal": "true"
+            }
+          ],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "dialogText": "Delete Skill\n\nAre you sure you want to delete the skill prototype-research? This action cannot be undone.\n\nCancel\nDelete",
+            "ariaModal": "true"
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-016.png",
+        "screenshotSha256": "7d6c4264c516ea866fc1d9bc6a5cfb4f248475cfcb62d53896a9e4cbcff2b483",
+        "semantic": {
+          "route": "/skills",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nSources\nReload\nCreate Skill\nprototype-research\n\nDemonstrates a deterministic synthetic skill.\n\n2 files\nView\nDisable\nDelete Skill\n\nAre you sure you want to delete the skill prototype-research? This action cannot be undone.\n\nCancel\nDelete",
+          "invalid": [],
+          "active": {
+            "tag": "BUTTON",
+            "text": "",
+            "placeholder": null,
+            "title": "Delete Skill"
+          },
+          "dialogs": [
+            {
+              "label": null,
+              "modal": "true"
+            }
+          ],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "dialogText": "Delete Skill\n\nAre you sure you want to delete the skill prototype-research? This action cannot be undone.\n\nCancel\nDelete",
+            "ariaModal": "true"
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-017",
+        "name": "Application setup retry and deterministic recovery",
+        "path": "/applications/sample-app"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-017.png",
+        "screenshotSha256": "d92626394f5fe2ceffcf6fc9725a83c884fd748cc5939143101d978412be18fa",
+        "semantic": {
+          "route": "/applications/sample-app",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\n← Back to applications\nLaunch setup\nBrief Studio\n\nA synthetic embedded application for current-shell parity validation.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\n\nUnable to load application setup\n\nviews.map is not a function\n\nConfirm launch setup before opening the app\n\nviews.map is not a function\n\nEnter application",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "visibleErrorCount": 2
+          }
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-017.png",
+        "screenshotSha256": "d92626394f5fe2ceffcf6fc9725a83c884fd748cc5939143101d978412be18fa",
+        "semantic": {
+          "route": "/applications/sample-app",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\n← Back to applications\nLaunch setup\nBrief Studio\n\nA synthetic embedded application for current-shell parity validation.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\n\nUnable to load application setup\n\nviews.map is not a function\n\nConfirm launch setup before opening the app\n\nviews.map is not a function\n\nEnter application",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": {
+            "visibleErrorCount": 2
+          }
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    },
+    {
+      "journey": {
+        "id": "JRN-018",
+        "name": "Agent run setup navigation",
+        "path": "/agents?view=detail&id=agent-researcher"
+      },
+      "source": {
+        "target": "source",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/source/journeys/JRN-018.png",
+        "screenshotSha256": "4111045e70337c15aa199a2055154c9a732bd6e7c9a336c19d3b19dfa77b535e",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nAgent Definition\nResearch Assistant\nRuntime\nAutoByteus\n\nSelects the runtime backend used for this run.\n\nLLM Model\nPrototype Models / mock/gpt-prototype\n\nSelect a model...\n\nWorkspace Directory\nExisting\nNew\nSelect a workspace...\n\nSelect a previously loaded workspace.\n\nAuto approve tools\n\nHigh-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nRun Agent\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n ",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "prototype": {
+        "target": "prototype",
+        "screenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/prototype/journeys/JRN-018.png",
+        "screenshotSha256": "4111045e70337c15aa199a2055154c9a732bd6e7c9a336c19d3b19dfa77b535e",
+        "semantic": {
+          "route": "/workspace",
+          "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nAgent Definition\nResearch Assistant\nRuntime\nAutoByteus\n\nSelects the runtime backend used for this run.\n\nLLM Model\nPrototype Models / mock/gpt-prototype\n\nSelect a model...\n\nWorkspace Directory\nExisting\nNew\nSelect a workspace...\n\nSelect a previously loaded workspace.\n\nAuto approve tools\n\nHigh-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nRun Agent\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\n ",
+          "invalid": [],
+          "active": {
+            "tag": "BODY",
+            "text": null,
+            "placeholder": null,
+            "title": null
+          },
+          "dialogs": [],
+          "leftPanelStrip": false,
+          "locale": "",
+          "actionEvidence": null
+        },
+        "browserErrors": []
+      },
+      "comparison": {
+        "semanticEqual": true,
+        "screenshotEqual": true,
+        "perceptual": {
+          "changedPixels": 0,
+          "totalPixels": 1296000,
+          "changedPixelRatio": 0,
+          "maximumChannelDelta": 0,
+          "normalizedRenderingNoiseOnly": true
+        },
+        "nativeValidationPopoverVerified": false,
+        "pass": true
+      }
+    }
+  ]
+}

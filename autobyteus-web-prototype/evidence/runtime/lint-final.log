@@ -1,0 +1,4 @@
+
+> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> eslint prototype/scripts plugins/00.prototype-state.client.ts prototype/tests
+

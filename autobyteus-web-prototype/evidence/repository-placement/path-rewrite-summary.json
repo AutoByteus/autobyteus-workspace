@@ -1,0 +1,178 @@
+{
+  "requirementsRevision": "RER-004",
+  "correctedRoot": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
+  "filesRewritten": 42,
+  "replacementCount": 1441,
+  "binaryFilesContainingRejectedPath": [],
+  "remainingActiveStalePathFiles": [],
+  "rewrittenFiles": [
+    {
+      "path": "prototype-runbook.md",
+      "replacements": 6
+    },
+    {
+      "path": "ui-ux-spec.md",
+      "replacements": 2
+    },
+    {
+      "path": "comparison-report.md",
+      "replacements": 8
+    },
+    {
+      "path": "evidence-index.md",
+      "replacements": 13
+    },
+    {
+      "path": "prototype-bootstrap-report.md",
+      "replacements": 11
+    },
+    {
+      "path": "product-prototyper-baseline-review.md",
+      "replacements": 4
+    },
+    {
+      "path": "final-reference-screenshots/manifest.json",
+      "replacements": 15
+    },
+    {
+      "path": "evidence/interactions/browser-journey-results.json",
+      "replacements": 36
+    },
+    {
+      "path": "evidence/correction/correction-parity-results.json",
+      "replacements": 96
+    },
+    {
+      "path": "evidence/correction-matrix/correction-parity-results.json",
+      "replacements": 232
+    },
+    {
+      "path": "evidence/runtime/unit-final.log",
+      "replacements": 2
+    },
+    {
+      "path": "evidence/runtime/typecheck-whole-source-exploratory.log",
+      "replacements": 8
+    },
+    {
+      "path": "evidence/runtime/typecheck-final.log",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/runtime/boundary-validation.json",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/runtime/build-final.log",
+      "replacements": 13
+    },
+    {
+      "path": "evidence/runtime/fixtures-build.log",
+      "replacements": 2
+    },
+    {
+      "path": "evidence/runtime/source-observation-smoke.log",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/runtime/boundary-final.log",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/runtime/lint-final.log",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/runtime/evidence-docs-final.log",
+      "replacements": 2
+    },
+    {
+      "path": "evidence/interaction-discovery/interaction-discovery.json",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/presentation-code/presentation-code-parity.json",
+      "replacements": 370
+    },
+    {
+      "path": "evidence/presentation-code/presentation-code-parity-summary.json",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/comparison/browser-parity-results.json",
+      "replacements": 240
+    },
+    {
+      "path": "evidence/matrix/route-matrix-results.json",
+      "replacements": 246
+    },
+    {
+      "path": "evidence/validation/prototype-build.txt",
+      "replacements": 13
+    },
+    {
+      "path": "evidence/validation/browser-journeys-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/prototype-lint.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/prototype-typecheck.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/prototype-tests.txt",
+      "replacements": 2
+    },
+    {
+      "path": "evidence/validation/final-static-and-unit-validation.txt",
+      "replacements": 7
+    },
+    {
+      "path": "evidence/validation/correction-journeys-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/correction-parity-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/build.txt",
+      "replacements": 13
+    },
+    {
+      "path": "evidence/validation/product-prototyper-final-validation.txt",
+      "replacements": 20
+    },
+    {
+      "path": "evidence/validation/product-prototyper-final-package-consistency.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/browser-parity-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/boundary-validation.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/final-reference-capture.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/correction-matrix-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/validation/route-matrix-final.txt",
+      "replacements": 1
+    },
+    {
+      "path": "evidence/correction-journeys/correction-journey-results.json",
+      "replacements": 62
+    }
+  ]
+}

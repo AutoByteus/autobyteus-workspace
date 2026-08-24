@@ -1,0 +1,14 @@
+
+> autobyteus-web-prototype@0.1.0 test /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> vitest run
+
+
+ RUN  v3.2.7 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+
+ ✓ prototype/tests/fixture-contract.test.ts (4 tests) 9ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  09:38:57
+   Duration  1.06s (transform 179ms, setup 0ms, collect 204ms, tests 9ms, environment 0ms, prepare 323ms)
+
