@@ -21,6 +21,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-007` | source `Pass / 94`; prior test review `Not Applicable` | `Pass` | None |
 | `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-008` | test review `Pass`; source baseline `Pass / 94` | `Pass / 95` | None |
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-008` | source `Pass / 95`; prior test review `Pass` | `Not Applicable` | None |
+| `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-009` | test review `Not Applicable`; source baseline `Pass / 95` | `Pass / 95` | None |
 
 ## Revision Entries
 
@@ -432,3 +433,35 @@ No prior proportional test-review finding existed. `CRR-013` remains valid for t
 - Reviewer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-015-api-rev-008-no-durable-test-delta.log`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: Electron packaging/smoke, current tracked-base refresh, integrated-state checks, documentation confirmation, and finalization remain delivery-owned. If final base refresh creates a semantic conflict or changes durable coverage, it must be rerouted through the applicable design/source/API/E2E gates.
+
+### CRR-016 — Controlled workspace-selection Personal v1.4.57 source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `16`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-009`; no triggering code-review finding.
+- Relevant solution revision IDs: `SR-001`–`SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-008`; current authority `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-001`–`IR-009`
+- Relevant API/E2E revision IDs: retained history `API-REV-001`–`API-REV-008`; IR-009 current execution `N/A`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`, `DR-008`
+- Prior authoritative result: immediately prior proportional result `CRR-015 — Not Applicable`; latest implementation-source result `CRR-014 — Pass / 95`
+- Current authoritative result: `Pass / 95`
+- What changed in the review result and why: IR-009 is the exact reviewed two-parent merge of protected checkpoint `95c63b5a...` and Personal `389748b0b...`. Independent reproduction confirms the 95-path Personal delta, two changed-both paths, and two content conflicts. Every Personal-delta blob is retained exactly except the two semantically combined form specs; all five workspace production/type paths match Personal exactly. The current tree has one panel-owned transient `WorkspaceSelectionState`, controlled selector rendering and complete replacement events, thin Agent/Team relays, registration-before-launch, failure/no-fallback, and the independently owned callable provider rows/snapshots/settlement contract. No production adaptation, duplicate owner, compatibility event, persisted-data rewrite, or migration was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-009` | Standalone lifecycle/tool-readiness source remains untouched. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-009` | Launch reads/persisted platform state remain unchanged; no request-time schema work appears. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `IR-009` | Read-only event-journal recovery remains outside the changed web seam. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-009` | Exact bound-member identity is unaffected; no alias/fallback appears. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-009` | No duplicate process run manager or passive global lookup is introduced. |
+| `CR-006` | Resolved | Remains resolved | `IR-005`, `CRR-007`, `IR-009` | Canonical runtime-directory preparation remains before readiness. |
+| `CR-007` | Resolved | Remains resolved | `IR-006`, `CRR-009`, `IR-009` | Binding-owned exact `agentRunId` dispatch remains unaffected. |
+
+- New or remaining finding IDs: none.
+- Material score or classification changes: none; the complete IR-009 implementation remains `95/100`, every category is at least `9.0`, and the result is `Pass`. The score is overall source/structure quality, not a delta-only score or current-head real-system sign-off.
+- Validation evidence: independent topology/conflict/Personal-blob/retired-seam/size/diff/cleanup audits pass; focused workspace/provider selection passes 7 files / 100 tests; shared contracts and Nuxt production build pass. Full web characterization passes 420 files / 2320 tests and retains five failures across four blob-identical, separate fixture/localization paths. `nuxi typecheck` is toolchain-blocked before source diagnostics by `vue-tsc` resolving the non-exported TypeScript `./lib/tsc` subpath.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: current-head API/E2E must prove explicit New-path preservation through Team edits/delayed discovery, bound-node registration, launch-once/history projection, failure/no-fallback rendering, and the retained dual-host/provider/recovery/parity/cleanup matrix. Electron remains delivery-owned. `RunConfigPanel.vue` (433 effective lines) and `WorkspaceSelector.vue` (288) remain monitored structural pressure points rather than findings.
