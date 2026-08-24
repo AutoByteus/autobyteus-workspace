@@ -1,0 +1,10 @@
+Rendered frontend self-validation (IR-002): PASS
+Route: http://127.0.0.1:3001/workspace
+Definition: Nested Classroom Test Team
+Injected state: workspace inventory fetch rejected while configuration remained mounted
+Fresh hierarchy workspace issues: exactly root Team /; inherited nested Teams/Agents emitted no duplicate issues
+Before pending path: Run disabled
+After pending root New path: Run enabled for pending workspace creation action
+No workspace was created during this render-only check
+Viewport: 1440x1100
+Page errors: 0

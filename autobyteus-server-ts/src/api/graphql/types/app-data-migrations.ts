@@ -5,6 +5,9 @@ import {
   type AppDataMigrationStatus,
 } from "../../../app-data-migrations/domain/app-data-migration-types.js";
 import { getAppDataMigrationRunner } from "../../../app-data-migrations/app-data-migration-runner.js";
+import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
+import { TeamRunPackageCatalog } from "../../../run-history/services/team-run-package-catalog.js";
 
 export enum AppDataMigrationStatusEnum {
   NOT_RUN = "NOT_RUN",
@@ -110,6 +113,11 @@ export class AppDataMigrationResolver {
   ): Promise<AppDataMigrationMutationResult> {
     try {
       const snapshot = await this.runner.runMigration(migrationId);
+      if (migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID) {
+        // Manual Settings Retry is not complete until the current-package
+        // admission catalog reflects every V2 file produced by this attempt.
+        await new TeamRunPackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
+      }
       return {
         success: snapshot.status !== "FAILED",
         message: `Migration '${migrationId}' completed with status ${snapshot.status}.`,

@@ -4,13 +4,13 @@ import type {
   TaskExecution,
   TaskTeamMemberExecution,
   TeamRunExecutionTreeSnapshot,
-} from "../../../agent-team-execution/domain/team-run-execution-tree.js";
-import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-execution-index.js";
-import { addTaskExecutionToTree } from "../../../agent-team-execution/services/team-run-execution-tree-mutator.js";
+} from "./team-run-execution-tree-v1-types.js";
+import { TeamExecutionIndex } from "./team-execution-v1-index.js";
+import { addTaskExecutionToTree } from "./team-run-execution-tree-v1-mutator.js";
 import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskUpdate } from "../../../agent-team-execution/task-delegation/task-delegation-record-v1.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
-import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
+import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
 import {
   addressKey, array, object, parseAddress, referencePaths, text,
   type JsonRecord, type TokenExecutionEvidence,

@@ -1,0 +1,76 @@
+=== packaged electron ready verification ===
+2026-08-24T16:59:32Z
+{"status":"ok","message":"Server is running"}
+-- owned listener --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 65751 normy   31u  IPv4 0xf7f1600033a19ec1      0t0  TCP *:53559 (LISTEN)
+-- electron session processes --
+65096
+65113
+65114
+65118
+65119
+65751
+65758
+65778
+66082
+-- ordinary listener still intact --
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 33760 normy   26u  IPv4 0xb9ce9ee4fee8d5f      0t0  TCP *:29695 (LISTEN)
+{"status":"ok","message":"Server is running"}
+-- owned data root --
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/browser-artifacts
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/external-channel
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/external-channel/gateway-callback-outbox.json
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/llm
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/memory
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/memory/run_history_index.json
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/memory/team_run_history_index.json
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/agents
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/agents/autobyteus-memory-compactor
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/agents/autobyteus-retrospective-skill-improver
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/application-packages
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/application-packages/platform
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/extensions
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/extensions/messaging-gateway
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/agent-teams
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/logs
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/logs/app-data-migrations
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/logs/server.log
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/download
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/.env
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/db
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/db/production.db
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/db/production.db.secret.key
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/skills
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/extensions
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/logs
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/logs/app.log
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/blob_storage
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/DawnGraphiteCache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/GPUCache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Preferences
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/DIPS
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Cache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/DIPS-wal
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Shared Dictionary
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Network Persistent State
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Local State
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/DevToolsActivePort
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Trust Tokens-journal
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Trust Tokens
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/DawnWebGPUCache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Code Cache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Local Storage
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Cookies
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/session-data/Cookies-journal
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/user-data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/user-data/node-registry.v1.json
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/user-data/Code Cache
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/downloads
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/electron/crash-dumps

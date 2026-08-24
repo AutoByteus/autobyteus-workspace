@@ -1,0 +1,13 @@
+API-E2E-013 preflight 2026-08-24T19:21:01+02:00
+ordinary listener:
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 33760 normy   26u  IPv4 0xb9ce9ee4fee8d5f      0t0  TCP *:29695 (LISTEN)
+ordinary health:
+{"status":"ok","message":"Server is running"}
+package:
+2026-08-24T18:54:44+0200 33968 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+ccefec7f5dc563dfaeebcdd5c4a6541cc546e063be35f7cc480af62c760a13b5  /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+source env permissions/keys (names only):
+-rw------- normy staff 3405 /Users/normy/.autobyteus/server-data/.env
+AUTOBYTEUS_API_KEY
+DEEPSEEK_API_KEY

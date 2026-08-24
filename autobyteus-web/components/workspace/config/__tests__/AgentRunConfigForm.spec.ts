@@ -42,22 +42,22 @@ describe('AgentRunConfigForm', () => {
   let runtimeAvailabilityStore: any
 
   const setProviders = (providersWithModels: any[]) => {
-    llmStore.providersWithModels = providersWithModels
-    llmStore.providersWithModelsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
+    llmStore.providerRows = providersWithModels
   }
 
   beforeEach(() => {
     setActivePinia(createPinia())
 
     llmStore = {
-      providersWithModels: [],
-      providersWithModelsForSelection: [],
-      get models() {
-        return llmStore.providersWithModels.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))
-      },
+      providerRows: [],
+      providersWithModelsForSelection: vi.fn(() =>
+        llmStore.providerRows.filter((provider: any) => provider.models.length > 0)),
+      models: vi.fn(() =>
+        llmStore.providerRows.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))),
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       modelConfigSchemaByIdentifier: vi.fn((identifier: string) => {
-        const model = llmStore.providersWithModels.flatMap((provider: any) => provider.models).find((entry: any) => entry.modelIdentifier === identifier)
+        const model = llmStore.providerRows.flatMap((provider: any) => provider.models).find((entry: any) => entry.modelIdentifier === identifier)
         return model?.configSchema || null
       }),
     }

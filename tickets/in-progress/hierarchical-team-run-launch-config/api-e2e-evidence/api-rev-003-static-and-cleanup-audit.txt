@@ -1,0 +1,88 @@
+API-REV-003 focused execution/audit
+utc=2026-08-24T17:46:44Z
+git_diff_check=PASS
+hierarchy_final_summary:
+ ✓ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests) 13819ms
+     ✓ persists root, nested-Team, and exact-Agent configurations and restores them after process restart  3322ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1720ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  1751ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1795ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1740ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1752ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1738ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  19:45:49
+   Duration  14.31s (transform 30ms, setup 15ms, import 28ms, tests 13.82s, environment 0ms)
+
+production_upgrade_failure_summary:
+
+- Expected
++ Received
+
+@@ -1,10 +1,7 @@
+  {
+-   "applicationBinding": {
+-     "applicationId": "synthetic-migration-application",
+-     "bindingId": "synthetic-migration-binding",
+-   },
++   "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/lead",
+        "rules": [
+          "Review the migration evidence.",
+
+ ❯ assertConvertedPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:742:16
+    740|   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+    741|   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported…
+    742|   expect(tree).toMatchObject({
+       |                ^
+    743|     schemaVersion: 2,
+    744|     applicationBinding: APPLICATION_BINDING,
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1148:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+AssertionError: expected { schemaVersion: 2, …(5) } to match object { schemaVersion: 2, …(3) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,10 +1,7 @@
+  {
+-   "applicationBinding": {
+-     "applicationId": "synthetic-migration-application",
+-     "bindingId": "synthetic-migration-binding",
+-   },
++   "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/lead",
+        "rules": [
+          "Review the migration evidence.",
+
+ ❯ assertConvertedPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:742:16
+    740|   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+    741|   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported…
+    742|   expect(tree).toMatchObject({
+       |                ^
+    743|     schemaVersion: 2,
+    744|     applicationBinding: APPLICATION_BINDING,
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1215:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  19:44:52
+   Duration  14.71s (transform 3.17s, setup 18ms, import 4.23s, tests 9.99s, environment 0ms)
+
+owned_test_artifact_scan:
+none
+matching_live_process_scan:
+none

@@ -61,11 +61,11 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   const applicationManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'application.json'), 'utf8'));
   const backendManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'backend/bundle.json'), 'utf8'));
   assert.equal(applicationManifest.manifestVersion, '4');
-  assert.equal(applicationManifest.ui.frontendSdkContractVersion, '4');
+  assert.equal(applicationManifest.ui.frontendSdkContractVersion, '6');
   assert.deepEqual(Object.keys(applicationManifest.backend), ['bundleManifest']);
   assert.deepEqual(backendManifest.sdkCompatibility, {
-    backendDefinitionContractVersion: '4',
-    frontendSdkContractVersion: '4',
+    backendDefinitionContractVersion: '6',
+    frontendSdkContractVersion: '6',
   });
   assert.deepEqual(Object.keys(backendManifest.supportedExposures).sort(), [
     'commands', 'eventHandlers', 'graphql', 'notifications', 'queries', 'routes', 'webSockets',
@@ -153,7 +153,7 @@ test('validator rejects an explicit v3 backend-definition compatibility fixture'
   assert.equal(validation.diagnostics.some((diagnostic) => (
     diagnostic.code === 'UNSUPPORTED_CONTRACT_VERSION'
     && diagnostic.path === 'sdkCompatibility.backendDefinitionContractVersion'
-    && diagnostic.message.includes('must be "4"')
+    && diagnostic.message.includes('must be "6"')
   )), true);
 });
 

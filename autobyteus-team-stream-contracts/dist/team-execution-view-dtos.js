@@ -17,7 +17,7 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
     member_address: agentTeamAddressDtoSchema,
 }).strict();
 const launchConfigurationSchema = z.object({
-    runtime_kind: z.enum(["AUTOBYTEUS", "CLAUDE", "CODEX"]),
+    runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server"]),
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
     auto_execute_tools: z.boolean(),
@@ -54,16 +54,19 @@ const configuredTeamSchema = z.lazy(() => z.object({
     kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
     team_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
     team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+    default_launch_configuration: launchConfigurationSchema,
     members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
-    schema_version: z.literal(1), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
+    schema_version: z.literal(2), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
     application_binding: z.object({ application_id: nonEmptyStringSchema, binding_id: nonEmptyStringSchema }).strict().nullable(),
     handoffs: z.array(z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict()),
     root_team: z.object({
+        address: z.literal("/"),
         team_definition_id: nonEmptyStringSchema, team_definition_name: nonEmptyStringSchema,
         team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+        default_launch_configuration: launchConfigurationSchema,
         members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
         task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     }).strict(),

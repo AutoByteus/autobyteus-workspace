@@ -6,13 +6,13 @@ import {
 } from "../../agent-collaboration/domain/agent-team-address.js";
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
-  ConfiguredAgentExecution,
-  ConfiguredMemberExecution,
-  ConfiguredTeamExecution,
-  RootConfiguredTeamExecution,
+  ConfiguredAgentExecutionNode,
+  ConfiguredExecutionNode,
+  ConfiguredTeamExecutionNode,
+  RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamMemberExecution,
-  TeamRunExecutionTreeFileV1,
+  TeamRunExecutionTreeFileV2,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 
 const record = (value: unknown, label: string): Record<string, unknown> => {
@@ -76,7 +76,7 @@ const validateLaunchConfiguration = (value: unknown, label: string): void => {
     "skillAccessMode",
     "workspaceRootPath",
   ], label);
-  if (!["AUTOBYTEUS", "CLAUDE", "CODEX"].includes(String(launch.runtimeKind))) {
+  if (!["autobyteus", "claude_agent_sdk", "codex_app_server"].includes(String(launch.runtimeKind))) {
     throw new Error(`${label}.runtimeKind is unsupported.`);
   }
   required(launch.llmModelIdentifier, `${label}.llmModelIdentifier`);
@@ -113,7 +113,7 @@ const validateConfiguredMember = (value: unknown, label: string): void => {
   }
   exactKeys(member, [
     "address", "teamDefinitionId", "role", "description", "teamRunId",
-    "coordinatorAddress", "members", "taskExecutions",
+    "coordinatorAddress", "defaultLaunchConfiguration", "members", "taskExecutions",
   ], label);
   canonicalAddress(member.address, `${label}.address`);
   required(member.teamDefinitionId, `${label}.teamDefinitionId`);
@@ -121,6 +121,7 @@ const validateConfiguredMember = (value: unknown, label: string): void => {
   nullableString(member.description, `${label}.description`);
   required(member.teamRunId, `${label}.teamRunId`);
   canonicalAddress(member.coordinatorAddress, `${label}.coordinatorAddress`);
+  validateLaunchConfiguration(member.defaultLaunchConfiguration, `${label}.defaultLaunchConfiguration`);
   array(member.members, `${label}.members`).forEach((child, index) =>
     validateConfiguredMember(child, `${label}.members[${index}]`));
   array(member.taskExecutions, `${label}.taskExecutions`).forEach((task, index) =>
@@ -175,22 +176,24 @@ const validateTaskExecution = (value: unknown, label: string): void => {
 const validateRootTeam = (value: unknown): void => {
   const root = record(value, "rootTeam");
   exactKeys(root, [
-    "teamDefinitionId", "teamDefinitionName", "teamRunId", "coordinatorAddress",
-    "members", "taskExecutions",
+    "address", "teamDefinitionId", "teamDefinitionName", "teamRunId", "coordinatorAddress",
+    "defaultLaunchConfiguration", "members", "taskExecutions",
   ], "rootTeam");
+  if (root.address !== "/") throw new Error("rootTeam.address must be '/'.");
   required(root.teamDefinitionId, "rootTeam.teamDefinitionId");
   required(root.teamDefinitionName, "rootTeam.teamDefinitionName");
   required(root.teamRunId, "rootTeam.teamRunId");
   canonicalAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
+  validateLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration");
   array(root.members, "rootTeam.members").forEach((member, index) =>
     validateConfiguredMember(member, `rootTeam.members[${index}]`));
   array(root.taskExecutions, "rootTeam.taskExecutions").forEach((task, index) =>
     validateTaskExecution(task, `rootTeam.taskExecutions[${index}]`));
 };
 
-type ConfiguredPlacement = ConfiguredMemberExecution;
+type ConfiguredPlacement = ConfiguredExecutionNode;
 
-const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV1): void => {
+const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV2): void => {
   const configured = new Map<AgentTeamAddress, ConfiguredPlacement>();
   const agentRuns = new Set<string>();
   const teamRuns = new Set<string>();
@@ -205,7 +208,7 @@ const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV1): void => {
   };
 
   const visitConfigured = (
-    member: ConfiguredMemberExecution,
+    member: ConfiguredExecutionNode,
     parentAddress: AgentTeamAddress | "/",
   ): void => {
     if (getParentAgentTeamAddress(member.address) !== parentAddress) {
@@ -232,7 +235,7 @@ const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV1): void => {
 
   const visitTaskTeamMember = (
     member: TaskTeamMemberExecution,
-    sourceTeam: ConfiguredTeamExecution | RootConfiguredTeamExecution,
+    sourceTeam: ConfiguredTeamExecutionNode | RootConfiguredTeamExecutionNode,
   ): void => {
     const source = sourceTeam.members.find((candidate) => candidate.address === member.address);
     if (!source || ("agentRunId" in source) !== ("agentRunId" in member)) {
@@ -243,7 +246,7 @@ const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV1): void => {
       return;
     }
     addTeamRun(member.teamRunId);
-    const configuredTeam = source as ConfiguredTeamExecution;
+    const configuredTeam = source as ConfiguredTeamExecutionNode;
     member.members.forEach((child) => visitTaskTeamMember(child, configuredTeam));
     member.taskExecutions.forEach((task) => visitTask(task, member.teamRunId));
   };
@@ -259,12 +262,12 @@ const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV1): void => {
       return;
     }
     addTeamRun(task.teamRunId);
-    const configuredTeam = source as ConfiguredTeamExecution;
+    const configuredTeam = source as ConfiguredTeamExecutionNode;
     task.members.forEach((member) => visitTaskTeamMember(member, configuredTeam));
     task.taskExecutions.forEach((child) => visitTask(child, task.teamRunId));
   };
 
-  const visitOwnedTasks = (team: RootConfiguredTeamExecution | ConfiguredTeamExecution): void => {
+  const visitOwnedTasks = (team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode): void => {
     team.taskExecutions.forEach((task) => visitTask(task, team.teamRunId));
     team.members.forEach((member) => {
       if ("teamRunId" in member) visitOwnedTasks(member);
@@ -293,12 +296,12 @@ const deepFreeze = <T>(value: T): T => {
 export const validateTeamRunExecutionTreePayload = (
   value: unknown,
   expectedRootTeamRunId?: string,
-): TeamRunExecutionTreeFileV1 => {
+): TeamRunExecutionTreeFileV2 => {
   const payload = record(value, "TeamRun execution tree");
   exactKeys(payload, [
     "schemaVersion", "createdAt", "archivedAt", "applicationBinding", "handoffs", "rootTeam",
   ], "TeamRun execution tree");
-  if (payload.schemaVersion !== 1) throw new Error("TeamRun execution tree schemaVersion must be 1.");
+  if (payload.schemaVersion !== 2) throw new Error("TeamRun execution tree schemaVersion must be 2.");
   timestamp(payload.createdAt, "createdAt");
   if (payload.archivedAt !== null) timestamp(payload.archivedAt, "archivedAt");
   if (payload.applicationBinding !== null) {
@@ -309,7 +312,7 @@ export const validateTeamRunExecutionTreePayload = (
   }
   const handoffs = normalizeCollaborationHandoffs(payload.handoffs);
   validateRootTeam(payload.rootTeam);
-  const cloned = structuredClone({ ...payload, handoffs }) as unknown as TeamRunExecutionTreeFileV1;
+  const cloned = structuredClone({ ...payload, handoffs }) as unknown as TeamRunExecutionTreeFileV2;
   if (expectedRootTeamRunId && cloned.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${cloned.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
   }

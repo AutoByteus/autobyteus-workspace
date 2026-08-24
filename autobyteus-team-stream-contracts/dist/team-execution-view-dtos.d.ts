@@ -5,7 +5,7 @@ export declare const teamMemberExecutionIdentityDtoSchema: z.ZodObject<{
     member_address: z.ZodString;
 }, z.core.$strict>;
 export type AgentLaunchConfigurationDto = Readonly<{
-    runtime_kind: "AUTOBYTEUS" | "CLAUDE" | "CODEX";
+    runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server";
     llm_model_identifier: string;
     llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
     auto_execute_tools: boolean;
@@ -62,6 +62,7 @@ export type ConfiguredTeamExecutionDto = Readonly<{
     description: string | null;
     team_run_id: string;
     coordinator_address: string;
+    default_launch_configuration: AgentLaunchConfigurationDto;
     members: readonly ConfiguredMemberExecutionDto[];
     task_executions: readonly TaskExecutionDto[];
 }>;
@@ -69,7 +70,7 @@ export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | Configu
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export type TeamRunExecutionTreeDto = Readonly<{
-    schema_version: 1;
+    schema_version: 2;
     created_at: string;
     archived_at: string | null;
     application_binding: Readonly<{
@@ -82,10 +83,12 @@ export type TeamRunExecutionTreeDto = Readonly<{
         rules: readonly string[];
     }>[];
     root_team: Readonly<{
+        address: "/";
         team_definition_id: string;
         team_definition_name: string;
         team_run_id: string;
         coordinator_address: string;
+        default_launch_configuration: AgentLaunchConfigurationDto;
         members: readonly ConfiguredMemberExecutionDto[];
         task_executions: readonly TaskExecutionDto[];
     }>;

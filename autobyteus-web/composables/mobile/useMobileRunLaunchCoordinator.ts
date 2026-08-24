@@ -94,7 +94,7 @@ export function useMobileRunLaunchCoordinator() {
     if (config.teamDefinitionId !== draft.teamDefinitionId) {
       throw new Error('Team launch configuration is stale. Re-select the team before creating the run.');
     }
-    if (config.workspaceId !== draft.workspaceId) {
+    if (config.rootConfig.workspace.workspaceId !== draft.workspaceId) {
       throw new Error('Team launch workspace is stale. Re-select the workspace before creating the run.');
     }
     const readiness = teamRunConfigStore.launchReadiness;
@@ -126,9 +126,11 @@ export function useMobileRunLaunchCoordinator() {
     if (!teamRunConfigStore.config) {
       teamRunConfigStore.setTemplate(definition);
       teamRunConfigStore.applyConfigEdit({
-        kind: 'set_workspace',
-        workspaceId: draft.workspaceId,
-        workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
+        kind: 'set_root_workspace',
+        workspace: {
+          workspaceId: draft.workspaceId,
+          workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
+        },
       });
     }
     assertTeamConfigMatchesDraft(draft);

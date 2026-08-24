@@ -63,7 +63,7 @@ const projectedActivity = {
   provider: 'codex', boundaryKey: 'boundary-a', ts: 30,
 };
 
-describe('hydrateLiveTeamRunContext current V1 aggregate', () => {
+describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchTaskDelegationsMock.mockResolvedValue([]);

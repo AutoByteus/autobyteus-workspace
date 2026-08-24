@@ -1,0 +1,54 @@
+[
+  {
+    "run_id": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+    "root_team_run_id": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+    "member_display_name": "/Teacher",
+    "usage_report_count": 19,
+    "accounting_input_tokens": 416418,
+    "accounting_output_tokens": 2793,
+    "latest_runtime_kind": "codex_app_server",
+    "latest_model_provider": "OPENAI",
+    "latest_provider_name": null,
+    "latest_model_identifier": "gpt-5.6-luna",
+    "latest_model_value": "gpt-5.6-luna"
+  },
+  {
+    "run_id": "student_one_9132b1db849f44538ca07bec97e57621",
+    "root_team_run_id": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+    "member_display_name": "/StudentStudyGroup/student_one",
+    "usage_report_count": 2,
+    "accounting_input_tokens": 9204,
+    "accounting_output_tokens": 195,
+    "latest_runtime_kind": "autobyteus",
+    "latest_model_provider": "DEEPSEEK",
+    "latest_provider_name": "DeepSeek",
+    "latest_model_identifier": "deepseek-v4-flash",
+    "latest_model_value": "deepseek-v4-flash"
+  },
+  {
+    "run_id": "student_one_198db10e8cfd4682bbf0f79020a0a3e0",
+    "root_team_run_id": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+    "member_display_name": "/StudentStudyGroup/student_one",
+    "usage_report_count": 2,
+    "accounting_input_tokens": 9236,
+    "accounting_output_tokens": 133,
+    "latest_runtime_kind": "autobyteus",
+    "latest_model_provider": "DEEPSEEK",
+    "latest_provider_name": "DeepSeek",
+    "latest_model_identifier": "deepseek-v4-flash",
+    "latest_model_value": "deepseek-v4-flash"
+  },
+  {
+    "run_id": "student_two_14f752071824489fa2f0a8e095161090",
+    "root_team_run_id": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+    "member_display_name": "/StudentStudyGroup/student_two",
+    "usage_report_count": 3,
+    "accounting_input_tokens": 12977,
+    "accounting_output_tokens": 495,
+    "latest_runtime_kind": "autobyteus",
+    "latest_model_provider": "DEEPSEEK",
+    "latest_provider_name": "DeepSeek",
+    "latest_model_identifier": "deepseek-v4-flash",
+    "latest_model_value": "deepseek-v4-flash"
+  }
+]

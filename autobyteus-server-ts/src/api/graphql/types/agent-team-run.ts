@@ -72,7 +72,28 @@ export class TeamMemberConfigInput {
   skillAccessMode!: SkillAccessMode;
 
   @Field(() => String, { nullable: true })
-  workspaceId?: string | null;
+  workspaceRootPath?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+
+  @Field(() => String)
+  runtimeKind!: string;
+}
+
+@InputType()
+export class TeamScopeLaunchConfigInput {
+  @Field(() => String)
+  teamAddress!: string;
+
+  @Field(() => String)
+  llmModelIdentifier!: string;
+
+  @Field(() => Boolean)
+  autoExecuteTools!: boolean;
+
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
 
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
@@ -80,14 +101,17 @@ export class TeamMemberConfigInput {
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
 
-  @Field(() => String, { nullable: true })
-  runtimeKind?: string | null;
+  @Field(() => String)
+  runtimeKind!: string;
 }
 
 @InputType()
 export class CreateAgentTeamRunInput {
   @Field(() => String)
   teamDefinitionId!: string;
+
+  @Field(() => [TeamScopeLaunchConfigInput])
+  teamConfigs!: TeamScopeLaunchConfigInput[];
 
   @Field(() => [TeamMemberConfigInput])
   memberConfigs!: TeamMemberConfigInput[];
@@ -105,6 +129,7 @@ export class AgentTeamRunResolver {
     try {
       const run = await this.teamRunService.createTeamRun({
         teamDefinitionId: input.teamDefinitionId,
+        teamConfigs: input.teamConfigs,
         memberConfigs: input.memberConfigs,
       });
       return {

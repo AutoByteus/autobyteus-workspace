@@ -121,7 +121,7 @@ import { Icon } from '@iconify/vue';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   workspaceId: string | null;
   isLoading: boolean;
   error: string | null;
@@ -130,7 +130,10 @@ const props = defineProps<{
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
   controlVariant?: 'default' | 'quiet';
-}>();
+  autoSelectDefault?: boolean;
+}>(), {
+  autoSelectDefault: true,
+});
 
 const emit = defineEmits<{
   (e: 'select-existing', workspaceId: string): void;
@@ -232,7 +235,7 @@ const updateDisplayOnlyState = () => {
 };
 
 const maybeAutoSelectDefaultWorkspace = (): boolean => {
-  if (props.workspaceId || isInteractionDisabled.value) {
+  if (props.autoSelectDefault === false || props.workspaceId || isInteractionDisabled.value) {
     return false;
   }
   const tempWorkspaceId = workspaceStore.tempWorkspaceId;

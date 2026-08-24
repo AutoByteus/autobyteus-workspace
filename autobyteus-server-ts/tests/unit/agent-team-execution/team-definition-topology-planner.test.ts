@@ -25,6 +25,16 @@ const buildLeafConfig = (memberAddress: string) => ({
   applicationExecutionContext: null,
 });
 
+const buildTeamConfig = (teamAddress: string) => ({
+  teamAddress,
+  llmModelIdentifier: "gpt-test",
+  autoExecuteTools: false,
+  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  workspaceRootPath: "/tmp/workspace",
+  llmConfig: null,
+});
+
 const rootAndReviewDefinitions = () => new Map<string, unknown>([
   ["root-team", {
     name: "Root Team",
@@ -51,6 +61,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
     const plan = await buildPlanner(rootAndReviewDefinitions()).buildPlan({
       teamDefinitionId: "root-team",
       teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [
         buildLeafConfig("/Lead"),
         buildLeafConfig("/ReviewTeam/Reviewer"),
@@ -99,6 +110,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
     await expect(buildPlanner(definitions).buildPlan({
       teamDefinitionId: "root-team",
       teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [
         buildLeafConfig("/Lead"),
         buildLeafConfig("/ReviewTeam/Reviewer"),
@@ -127,6 +139,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
     await expect(planner.buildPlan({
       teamDefinitionId: "root-team",
       teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/SubTeam")],
       memberConfigs: [buildLeafConfig("/Worker")],
     })).rejects.toThrow("Launch settings for Team member '/SubTeam/Worker' were not provided");
   });
@@ -153,6 +166,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
     const plan = await planner.buildPlan({
       teamDefinitionId: "root-team",
       teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer")],
     });
 

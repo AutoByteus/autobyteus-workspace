@@ -39,6 +39,25 @@ export const collectConfiguredAgents = (
   return Object.freeze(agents);
 };
 
+export const collectConfiguredTeams = (
+  tree: TeamRunExecutionTreeDto,
+): readonly (ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'])[] => {
+  const teams: Array<ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team']> = [tree.root_team];
+  const visit = (members: readonly ConfiguredMemberExecutionDto[]): void => {
+    for (const member of members) {
+      if (member.kind === 'configured_team') { teams.push(member); visit(member.members); }
+    }
+  };
+  visit(tree.root_team.members);
+  return Object.freeze(teams);
+};
+
+export const findConfiguredTeamByAddress = (
+  tree: TeamRunExecutionTreeDto,
+  address: AgentTeamAddress,
+): ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'] | null =>
+  collectConfiguredTeams(tree).find((team) => (team === tree.root_team ? '/' : team.address) === address) ?? null;
+
 export const collectExecutionAgents = (tree: TeamRunExecutionTreeDto): readonly Readonly<{
   agentRunId: string;
   address: AgentTeamAddress;

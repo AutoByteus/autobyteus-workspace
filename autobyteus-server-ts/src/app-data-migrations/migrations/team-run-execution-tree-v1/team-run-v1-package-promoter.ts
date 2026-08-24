@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
-import { validateTeamRunStatePackage } from "../../../run-history/services/team-run-state-package-validator.js";
-import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
+import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
 import type { PlannedTeamRunV1Package } from "./predecessor-team-run-planner.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 

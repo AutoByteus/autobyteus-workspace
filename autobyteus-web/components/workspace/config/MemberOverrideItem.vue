@@ -42,6 +42,23 @@
       <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
         {{ selectedRuntimeUnavailableReason }}
       </p>
+      <p
+        v-if="runtimeCatalogState?.status === 'loading'"
+        role="status"
+        class="mt-2 rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700"
+        data-test="agent-runtime-catalog-loading"
+      >{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address: memberAddress }) }}</p>
+      <div
+        v-else-if="runtimeCatalogState?.status === 'error'"
+        role="alert"
+        class="mt-2 flex items-start justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+        data-test="agent-runtime-catalog-error"
+      >
+        <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address: memberAddress, error: runtimeCatalogState.error || '' }) }}</span>
+        <button type="button" class="font-semibold underline" @click="$emit('retry-runtime-catalog', effectiveRuntimeKind)">
+          {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}
+        </button>
+      </div>
     </div>
 
     <div v-if="isUnresolvedInheritedModel" class="mb-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700" data-testid="member-override-warning">
@@ -98,7 +115,7 @@
 
 <script setup lang="ts">
 import { computed, ref, toRef, watch } from 'vue'
-import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
@@ -118,12 +135,13 @@ import {
 } from '~/utils/teamRunConfigUtils'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
+import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
 
 const props = defineProps<{
   memberName: string
   memberAddress: string
   memberBreadcrumb?: string
-  override: MemberConfigOverride | undefined
+  override: AgentConfigOverride | undefined
   globalRuntimeKind: string
   globalLlmModel: string
   globalLlmConfig?: Record<string, unknown> | null
@@ -131,10 +149,12 @@ const props = defineProps<{
   isCoordinator?: boolean
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
+  runtimeCatalogState?: RuntimeModelCatalogState
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:override', memberAddress: string, override: MemberConfigOverride | null): void
+  (e: 'update:override', memberAddress: string, override: AgentConfigOverride | null): void
+  (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 const { t } = useLocalization()
 
@@ -264,8 +284,8 @@ const buildOverride = (input: {
   llmModelIdentifier?: string
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null
-}): MemberConfigOverride | null => {
-  const override: MemberConfigOverride = {}
+}): AgentConfigOverride | null => {
+  const override: AgentConfigOverride = {}
 
   if (input.runtimeKind) {
     override.runtimeKind = input.runtimeKind

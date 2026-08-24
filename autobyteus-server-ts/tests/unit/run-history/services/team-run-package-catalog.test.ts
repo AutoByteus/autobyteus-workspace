@@ -8,9 +8,9 @@ import { TaskDelegationRecordsV1Store } from "../../../../src/agent-team-executi
 import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
 import { TeamRunStatePackageLoader } from "../../../../src/run-history/services/team-run-state-package-loader.js";
 import {
-  resetTeamRunV1PackageCatalog,
-  TeamRunV1PackageCatalog,
-} from "../../../../src/run-history/services/team-run-v1-package-catalog.js";
+  resetTeamRunPackageCatalog,
+  TeamRunPackageCatalog,
+} from "../../../../src/run-history/services/team-run-package-catalog.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunFileCommitWriter } from "../../../../src/run-history/store/team-run-file-commit-writer.js";
 import {
@@ -105,18 +105,18 @@ const createPackage = (rootTeamRunId: string, tasks: readonly TaskFixture[], orp
   };
 };
 
-describe("TeamRunV1PackageCatalog restart repair", () => {
+describe("TeamRunPackageCatalog V2 restart repair", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
 
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-v1-catalog-"));
     layout = new AgentMemoryLayout(memoryDir);
-    resetTeamRunV1PackageCatalog(memoryDir);
+    resetTeamRunPackageCatalog(memoryDir);
   });
 
   afterEach(async () => {
-    resetTeamRunV1PackageCatalog(memoryDir);
+    resetTeamRunPackageCatalog(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
@@ -146,7 +146,7 @@ describe("TeamRunV1PackageCatalog restart repair", () => {
     }], "orphan-task-run");
     const teamMemoryDir = await writePackage(rootTeamRunId, state);
 
-    const catalog = new TeamRunV1PackageCatalog(memoryDir);
+    const catalog = new TeamRunPackageCatalog(memoryDir);
     await catalog.rebuild();
 
     expect(catalog.listAdmittedRootIds()).toEqual([rootTeamRunId]);
@@ -206,7 +206,7 @@ describe("TeamRunV1PackageCatalog restart repair", () => {
       taskRecordsStore: new TaskDelegationRecordsV1Store(failingWriter),
       communicationStore: new TeamCommunicationV1Store(failingWriter),
     });
-    const catalog = new TeamRunV1PackageCatalog(memoryDir, loader);
+    const catalog = new TeamRunPackageCatalog(memoryDir, loader);
 
     await catalog.rebuild();
 

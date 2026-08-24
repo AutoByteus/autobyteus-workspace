@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { buildSchema, Query, Resolver } from "type-graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockTeamRunService = vi.hoisted(() => ({
@@ -16,6 +17,12 @@ vi.mock(
 
 import { AgentTeamRunResolver } from "../../../../../src/api/graphql/types/agent-team-run.js";
 
+@Resolver()
+class TestQueryResolver {
+  @Query(() => Boolean)
+  testQuery(): boolean { return true; }
+}
+
 describe("AgentTeamRunResolver", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -26,7 +33,7 @@ describe("AgentTeamRunResolver", () => {
 
   it("routes restore through TeamRunService", async () => {
     mockTeamRunService.restoreTeamRun.mockResolvedValue({
-      runId: "team-run-1",
+      teamRunId: "team-run-1",
     });
     const resolver = new AgentTeamRunResolver();
 
@@ -38,5 +45,19 @@ describe("AgentTeamRunResolver", () => {
       teamRunId: "team-run-1",
     });
     expect(mockTeamRunService.restoreTeamRun).toHaveBeenCalledWith("team-run-1");
+  });
+
+  it("requires runtimeKind on every full-hierarchy Team and Agent input", async () => {
+    const schema = await buildSchema({
+      resolvers: [AgentTeamRunResolver, TestQueryResolver],
+      validate: false,
+    });
+
+    for (const inputTypeName of ["TeamScopeLaunchConfigInput", "TeamMemberConfigInput"]) {
+      const inputType = schema.getType(inputTypeName);
+      expect(inputType && "getFields" in inputType
+        ? inputType.getFields().runtimeKind?.type.toString()
+        : null).toBe("String!");
+    }
   });
 });

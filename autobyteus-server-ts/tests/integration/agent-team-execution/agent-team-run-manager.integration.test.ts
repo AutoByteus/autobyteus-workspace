@@ -128,13 +128,13 @@ const createFactory = (input: {
   };
 };
 
-describe("AgentTeamRunManager strict V1 package integration", () => {
+describe("AgentTeamRunManager strict current V2 package integration", () => {
   it.each([
     [[RuntimeKind.AUTOBYTEUS]],
     [[RuntimeKind.CODEX_APP_SERVER]],
     [[RuntimeKind.CLAUDE_AGENT_SDK]],
     [[RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
-  ] as const)("creates exactly one admitted root and the three-file V1 package for %j", async (runtimeKinds) => {
+  ] as const)("creates exactly one admitted root and the three-file current package for %j", async (runtimeKinds) => {
     const memoryDir = await createMemoryDir();
     initializeTaskIdentityAllocator(memoryDir);
     const config = createConfig(runtimeKinds);
@@ -175,14 +175,16 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
     ]);
     const tree = JSON.parse(await fs.readFile(path.join(rootDir, "team_run_execution_tree.json"), "utf8"));
     expect(tree).toMatchObject({
-      schemaVersion: 1,
+      schemaVersion: 2,
       rootTeam: {
+        address: "/",
         teamRunId: run.teamRunId,
         coordinatorAddress: "/Coordinator",
+        defaultLaunchConfiguration: config.rootTeam.defaultLaunchConfiguration,
       },
     });
     for (const member of tree.rootTeam.members) {
-      if ("agentRunId" in member && member.launchConfiguration.runtimeKind === "AUTOBYTEUS") {
+      if ("agentRunId" in member && member.launchConfiguration.runtimeKind === RuntimeKind.AUTOBYTEUS) {
         expect(member.platformAgentRunId).toBeNull();
       }
     }
@@ -207,8 +209,12 @@ describe("AgentTeamRunManager strict V1 package integration", () => {
     const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
 
     expect(restored.getExecutionTreeSnapshot()).toMatchObject({
-      schemaVersion: 1,
-      rootTeam: { teamRunId: config.rootTeam.teamRunId },
+      schemaVersion: 2,
+      rootTeam: {
+        address: "/",
+        teamRunId: config.rootTeam.teamRunId,
+        defaultLaunchConfiguration: config.rootTeam.defaultLaunchConfiguration,
+      },
     });
     expect(restored.getTaskRecordsSnapshot()).toEqual({
       schemaVersion: 1,

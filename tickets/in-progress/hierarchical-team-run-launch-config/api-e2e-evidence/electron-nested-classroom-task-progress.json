@@ -1,0 +1,69 @@
+{
+    "data": {
+        "getTaskDelegationRecords": [
+            {
+                "taskId": "task_68f735462a71437e830b9263499f7f49",
+                "delegatorAgentRunId": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+                "recipientAddress": "/StudentStudyGroup",
+                "targetAgentRunId": null,
+                "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_dbd4e13ac176487bb7eb2433a5214118",
+                "status": "accepted",
+                "description": "Please complete this bounded nested-team delegation task. Ask the students to return exactly the token NESTED_CLASSROOM_OK. The required final answer must contain exactly NESTED_CLASSROOM_OK and no alternative token. Submit the task result through the formal task lifecycle so the requesting coordinator can review it.",
+                "updates": [
+                    {
+                        "kind": "submission",
+                        "submissionId": "submission_fc729d20932d4b63a8cf5fd18d0f0c6e",
+                        "reviewId": null,
+                        "interruptionId": null,
+                        "reviewedSubmissionId": null,
+                        "decision": null,
+                        "content": "NESTED_CLASSROOM_OK",
+                        "createdAt": "2026-08-24T17:06:50.720Z",
+                        "referenceFiles": []
+                    },
+                    {
+                        "kind": "review",
+                        "submissionId": null,
+                        "reviewId": "review_13870f649e1e459f8e1355ba9fd4d84a",
+                        "interruptionId": null,
+                        "reviewedSubmissionId": "submission_fc729d20932d4b63a8cf5fd18d0f0c6e",
+                        "decision": "accept",
+                        "content": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK.",
+                        "createdAt": "2026-08-24T17:06:54.725Z",
+                        "referenceFiles": []
+                    }
+                ],
+                "createdAt": "2026-08-24T17:06:38.011Z"
+            },
+            {
+                "taskId": "task_7c225e9212904ebb87c992c117283f02",
+                "delegatorAgentRunId": "student_one_1d687eb0e64748999e7f35ef6e1e302e",
+                "recipientAddress": "/StudentStudyGroup/student_two",
+                "targetAgentRunId": "student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2",
+                "targetTeamRunId": null,
+                "status": "active",
+                "description": "Return exactly the token NESTED_CLASSROOM_OK. Your complete response/result must contain exactly NESTED_CLASSROOM_OK and no alternative token or extra text.",
+                "updates": [],
+                "createdAt": "2026-08-24T17:06:47.585Z"
+            }
+        ],
+        "getTeamCommunicationMessages": [
+            {
+                "messageId": "teammsg_Jt_h5gWzKIdPWgLaD-3f81AZJeNRjgDA",
+                "senderAgentRunId": "student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2",
+                "receiverAgentRunId": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+                "content": "NESTED_CLASSROOM_OK",
+                "messageType": "agent_message",
+                "createdAt": "2026-08-24T17:06:55.021Z"
+            },
+            {
+                "messageId": "teammsg_v9sIXo9YyRcmPWerYit57rKDoPpyTsmG",
+                "senderAgentRunId": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+                "receiverAgentRunId": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+                "content": "NESTED_CLASSROOM_OK",
+                "messageType": "agent_message",
+                "createdAt": "2026-08-24T17:07:10.962Z"
+            }
+        ]
+    }
+}

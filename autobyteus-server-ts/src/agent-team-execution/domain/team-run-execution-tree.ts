@@ -1,49 +1,10 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { AgentLaunchConfiguration } from "./team-run-config.js";
 
 export type IsoTimestamp = string;
 
-/** Exact persisted V1 runtime labels used by the normative TeamRun package. */
-export type TeamRunRuntimeKind = "AUTOBYTEUS" | "CLAUDE" | "CODEX";
-
-export const toTeamRunRuntimeKind = (
-  runtimeKind: RuntimeKind,
-): TeamRunRuntimeKind => {
-  switch (runtimeKind) {
-    case RuntimeKind.AUTOBYTEUS:
-      return "AUTOBYTEUS";
-    case RuntimeKind.CLAUDE_AGENT_SDK:
-      return "CLAUDE";
-    case RuntimeKind.CODEX_APP_SERVER:
-      return "CODEX";
-  }
-};
-
-export const fromTeamRunRuntimeKind = (
-  runtimeKind: TeamRunRuntimeKind,
-): RuntimeKind => {
-  switch (runtimeKind) {
-    case "AUTOBYTEUS":
-      return RuntimeKind.AUTOBYTEUS;
-    case "CLAUDE":
-      return RuntimeKind.CLAUDE_AGENT_SDK;
-    case "CODEX":
-      return RuntimeKind.CODEX_APP_SERVER;
-  }
-};
-
-export type AgentLaunchConfiguration = Readonly<{
-  runtimeKind: TeamRunRuntimeKind;
-  llmModelIdentifier: string;
-  llmConfig: Readonly<Record<string, unknown>> | null;
-  autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
-  workspaceRootPath: string | null;
-}>;
-
-export type ConfiguredAgentExecution = Readonly<{
+export type ConfiguredAgentExecutionNode = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
   role: string | null;
@@ -53,20 +14,21 @@ export type ConfiguredAgentExecution = Readonly<{
   launchConfiguration: AgentLaunchConfiguration;
 }>;
 
-export type ConfiguredTeamExecution = Readonly<{
+export type ConfiguredTeamExecutionNode = Readonly<{
   address: AgentTeamAddress;
   teamDefinitionId: string;
   role: string | null;
   description: string | null;
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
-  members: readonly ConfiguredMemberExecution[];
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  members: readonly ConfiguredExecutionNode[];
   taskExecutions: readonly TaskExecution[];
 }>;
 
-export type ConfiguredMemberExecution =
-  | ConfiguredAgentExecution
-  | ConfiguredTeamExecution;
+export type ConfiguredExecutionNode =
+  | ConfiguredAgentExecutionNode
+  | ConfiguredTeamExecutionNode;
 
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -104,12 +66,14 @@ export type TaskTeamExecution = Readonly<{
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
-export type RootConfiguredTeamExecution = Readonly<{
+export type RootConfiguredTeamExecutionNode = Readonly<{
+  address: "/";
   teamDefinitionId: string;
   teamDefinitionName: string;
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
-  members: readonly ConfiguredMemberExecution[];
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  members: readonly ConfiguredExecutionNode[];
   taskExecutions: readonly TaskExecution[];
 }>;
 
@@ -118,24 +82,24 @@ export type TeamRunApplicationBinding = Readonly<{
   bindingId: string;
 }>;
 
-export type TeamRunExecutionTreeFileV1 = Readonly<{
-  schemaVersion: 1;
+export type TeamRunExecutionTreeFileV2 = Readonly<{
+  schemaVersion: 2;
   createdAt: IsoTimestamp;
   archivedAt: IsoTimestamp | null;
   applicationBinding: TeamRunApplicationBinding | null;
   handoffs: readonly CollaborationHandoff[];
-  rootTeam: RootConfiguredTeamExecution;
+  rootTeam: RootConfiguredTeamExecutionNode;
 }>;
 
-export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFileV1;
+export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFileV2;
 
 export const isConfiguredAgentExecution = (
-  value: ConfiguredMemberExecution,
-): value is ConfiguredAgentExecution => "agentRunId" in value;
+  value: ConfiguredExecutionNode,
+): value is ConfiguredAgentExecutionNode => "agentRunId" in value;
 
 export const isConfiguredTeamExecution = (
-  value: ConfiguredMemberExecution,
-): value is ConfiguredTeamExecution => "teamRunId" in value;
+  value: ConfiguredExecutionNode,
+): value is ConfiguredTeamExecutionNode => "teamRunId" in value;
 
 export const isTaskAgentExecution = (
   value: TaskExecution,

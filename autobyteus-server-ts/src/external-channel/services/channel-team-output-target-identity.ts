@@ -29,7 +29,7 @@ export const resolveTeamBindingCurrentOutputIdentity = (
 };
 
 const findConfiguredAgentRunId = (
-  members: import("../../agent-team-execution/domain/team-run-execution-tree.js").RootConfiguredTeamExecution["members"],
+  members: import("../../agent-team-execution/domain/team-run-execution-tree.js").RootConfiguredTeamExecutionNode["members"],
   address: string,
 ): string | null => {
   for (const member of members) {

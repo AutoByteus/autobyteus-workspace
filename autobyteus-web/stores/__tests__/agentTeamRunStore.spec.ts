@@ -195,23 +195,29 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
   const config: TeamRunConfig = {
     teamDefinitionId: 'root-definition',
     teamDefinitionName: 'Nested Mixed Team',
-    runtimeKind: 'codex_app_server',
-    workspaceId: 'test-workspace',
-    workspaceMetadata: {
-      workspaceId: 'test-workspace',
-      workspaceRootPath: '/tmp/test-workspace',
-      displayName: 'test-workspace',
-      kind: 'filesystem',
+    rootConfig: {
+      runtimeKind: 'codex_app_server',
+      workspace: {
+        workspaceId: 'test-workspace',
+        workspaceMetadata: {
+          workspaceId: 'test-workspace',
+          workspaceRootPath: '/tmp/test-workspace',
+          displayName: 'test-workspace',
+          kind: 'filesystem',
+        },
+      },
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'NONE',
     },
-    llmModelIdentifier: 'gpt-5.4',
-    llmConfig: null,
-    autoExecuteTools: true,
-    skillAccessMode: 'NONE',
-    memberOverrides: {
-      '/BuildSquad/review_lead': {
+    teamOverrides: {
+      '/BuildSquad': {
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
       },
+    },
+    agentOverrides: {
       '/BuildSquad/implementer': {
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'gpt-5.6-luna',
@@ -557,6 +563,18 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       variables: {
         input: {
           teamDefinitionId: 'root-definition',
+          teamConfigs: expect.arrayContaining([
+            expect.objectContaining({
+              teamAddress: '/',
+              runtimeKind: 'codex_app_server',
+              llmModelIdentifier: 'gpt-5.4',
+            }),
+            expect.objectContaining({
+              teamAddress: '/BuildSquad',
+              runtimeKind: 'claude_agent_sdk',
+              llmModelIdentifier: 'claude-sonnet',
+            }),
+          ]),
           memberConfigs: expect.arrayContaining([
             expect.objectContaining({
               memberAddress: '/program_manager',
@@ -600,14 +618,14 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(true)
     expect(runStore.isDraftLaunchPending(draft.draftId)).toBe(true)
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(() => configStore.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'other-model' })).toThrow(/in flight/)
+    expect(() => configStore.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'other-model' })).toThrow(/in flight/)
     expect(() => configStore.focusMember('/BuildSquad/implementer')).toThrow(/in flight/)
     expect(() => configStore.setPendingInput('/BuildSquad/review_lead', { text: 'late', attachments: [] })).toThrow(/in flight/)
     expect(() => configStore.setWorkspaceLoading(true)).toThrow(/in flight/)
     expect(() => configStore.removeDraft(draft.draftId)).toThrow(/in flight/)
     expect(() => configStore.clearConfig()).toThrow(/in flight/)
     expect(() => useAgentSelectionStore().selectRun('other-run', 'team')).toThrow(/cannot change/)
-    await expect(runStore.launchDraft(draft)).rejects.toThrow(/start another launch/)
+    await expect(runStore.launchDraft(draft)).rejects.toThrow(/in flight/)
     expect(mockMutate).toHaveBeenCalledTimes(1)
 
     resolveAllocation({
@@ -631,10 +649,10 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(configStore.selectedDraft).toBe(draft)
     expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
     expect(selectionStore.subject).toEqual({ kind: 'team_draft', draftId: draft.draftId })
-    expect(() => configStore.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: false })).not.toThrow()
+    expect(() => configStore.applyConfigEdit({ kind: 'set_root_auto_execute_tools', autoExecuteTools: false })).not.toThrow()
     const retryDraft = configStore.selectedDraft!
     expect(retryDraft).not.toBe(draft)
-    expect(retryDraft.config.autoExecuteTools).toBe(false)
+    expect(retryDraft.config.rootConfig.autoExecuteTools).toBe(false)
 
     mockMutate.mockResolvedValueOnce({
       data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },

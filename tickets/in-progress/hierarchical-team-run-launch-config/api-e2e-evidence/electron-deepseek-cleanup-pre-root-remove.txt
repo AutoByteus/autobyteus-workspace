@@ -1,0 +1,13 @@
+API-E2E-013 cleanup verification pre-root-remove 2026-08-24T19:33:46+02:00
+port 54334:
+port 54427:
+owned root exists:
+yes
+owned-root process references:
+731
+732
+ordinary listener:
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 33760 normy   26u  IPv4 0xb9ce9ee4fee8d5f      0t0  TCP *:29695 (LISTEN)
+ordinary health:
+{"status":"ok","message":"Server is running"}

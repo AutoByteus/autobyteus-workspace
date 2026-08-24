@@ -17,7 +17,7 @@ import type { TeamMemberExecutionCommand } from "./team-member-execution-command
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
-import type { AgentLaunchConfiguration } from "./team-run-execution-tree.js";
+import type { AgentLaunchConfiguration } from "./team-run-config.js";
 import type { TeamRun } from "./team-run.js";
 import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";

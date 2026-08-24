@@ -1,0 +1,27 @@
+=== pre-electron ownership snapshot ===
+2026-08-24T16:51:30Z
+-- 29695 listener --
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 33760 normy   26u  IPv4 0xb9ce9ee4fee8d5f      0t0  TCP *:29695 (LISTEN)
+-- 29695 health --
+{"status":"ok","message":"Server is running"}
+-- possible prior owned launchers/nuxt --
+33133
+33134
+33135
+33760
+33848
+33881
+33882
+34889
+34913
+59511
+59822
+-- occupied candidate common ports --
+3000 37602,
+8000 27301,
+8001 4401,
+29695 33760,
+-- source package stat --
+/Users/normy/autobyteus_org/autobyteus-private-agents inode=84778192 mode=drwxr-xr-x size=352 mtime=Aug 24 11:19:22 2026
+?? .codex/

@@ -39,21 +39,23 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
     const source: TeamRunConfig = {
       teamDefinitionId: 'team-1',
       teamDefinitionName: 'Team One',
-      llmModelIdentifier: 'gpt-5.4',
-      runtimeKind: 'codex_app_server',
-      workspaceId: 'ws-1',
-      workspaceMetadata: null,
-      autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
-      isLocked: true,
-      llmConfig: {
-        reasoning_effort: 'high',
-        metadata: {
-          allowed: ['high'],
+      rootConfig: {
+        llmModelIdentifier: 'gpt-5.4',
+        runtimeKind: 'codex_app_server',
+        workspace: { workspaceId: 'ws-1', workspaceMetadata: null },
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        llmConfig: {
+          reasoning_effort: 'high',
+          metadata: { allowed: ['high'] },
         },
       },
-      memberOverrides: {
-        Reviewer: {
+      isLocked: true,
+      teamOverrides: {
+        '/Reviewers': { workspace: { workspaceId: 'team-ws', workspaceMetadata: null } },
+      },
+      agentOverrides: {
+        '/Reviewers/Reviewer': {
           llmModelIdentifier: 'gpt-5.3-codex',
           llmConfig: {
             reasoning_effort: 'medium',
@@ -66,14 +68,16 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
     }
 
     const seed = buildEditableTeamRunSeed(source)
-    ;((seed.llmConfig?.metadata as Record<string, unknown>).allowed as string[]).push('mutated')
-    ;((seed.memberOverrides.Reviewer.llmConfig?.nested as Record<string, unknown>).values as string[]).push('mutated')
+    ;((seed.rootConfig.llmConfig?.metadata as Record<string, unknown>).allowed as string[]).push('mutated')
+    ;((seed.agentOverrides['/Reviewers/Reviewer'].llmConfig?.nested as Record<string, unknown>).values as string[]).push('mutated')
 
     expect(seed.isLocked).toBe(false)
     expect(source.isLocked).toBe(true)
-    expect((source.llmConfig?.metadata as Record<string, unknown>).allowed).toEqual(['high'])
+    expect((source.rootConfig.llmConfig?.metadata as Record<string, unknown>).allowed).toEqual(['high'])
     expect(
-      (source.memberOverrides.Reviewer.llmConfig?.nested as Record<string, unknown>).values,
+      (source.agentOverrides['/Reviewers/Reviewer'].llmConfig?.nested as Record<string, unknown>).values,
     ).toEqual(['medium'])
+    expect(seed.rootConfig.workspace).not.toBe(source.rootConfig.workspace)
+    expect(seed.teamOverrides['/Reviewers'].workspace).not.toBe(source.teamOverrides['/Reviewers'].workspace)
   })
 })

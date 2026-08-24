@@ -1,0 +1,38 @@
+IR-002 static implementation audit: PASS
+
+Required generated fields:
+2406:export type TeamMemberConfigInput = {
+2407-  agentDefinitionId: Scalars['String']['input'];
+2408-  autoExecuteTools: Scalars['Boolean']['input'];
+2409-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+2410-  llmModelIdentifier: Scalars['String']['input'];
+2411-  memberAddress: Scalars['String']['input'];
+2412-  runtimeKind: Scalars['String']['input'];
+2413-  skillAccessMode: SkillAccessModeEnum;
+2414-  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
+--
+2463:export type TeamScopeLaunchConfigInput = {
+2464-  autoExecuteTools: Scalars['Boolean']['input'];
+2465-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+2466-  llmModelIdentifier: Scalars['String']['input'];
+2467-  runtimeKind: Scalars['String']['input'];
+2468-  skillAccessMode: SkillAccessModeEnum;
+2469-  teamAddress: Scalars['String']['input'];
+2470-  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
+2471-};
+
+Current-path stale V1 phrase scan (migration-owned match is expected and shown):
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts:72:    case "FAILED_TRANSFORMATION": return "The exact V1 tree could not be transformed deterministically.";
+
+Dependency direction:
+teamRunConfigUtils -> useDefinitionLaunchDefaults: no import
+18:} from '~/utils/teamRunConfigUtils'
+
+Relevant authored effective non-empty line counts:
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts 247
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts 152
+autobyteus-web/utils/teamRunLaunchReadiness.ts 87
+autobyteus-web/utils/teamRunConfigUtils.ts 56
+autobyteus-web/composables/useDefinitionLaunchDefaults.ts 153
+
+git diff --check: PASS

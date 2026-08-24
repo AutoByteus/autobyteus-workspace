@@ -90,6 +90,23 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
   });
 
+  it('does not create nested-scope intent when default auto-selection is disabled', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: { ...defaultProps, autoSelectDefault: false },
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('select-existing')).toBeFalsy();
+  });
+
   it('does not fetch workspaces or auto-select temp workspace in disabled display mode', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };

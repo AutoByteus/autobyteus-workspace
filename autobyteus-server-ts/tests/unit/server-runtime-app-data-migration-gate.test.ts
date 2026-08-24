@@ -125,8 +125,8 @@ vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
     listStatuses: vi.fn(),
   }),
 }));
-vi.mock("../../src/run-history/services/team-run-v1-package-catalog.js", () => ({
-  TeamRunV1PackageCatalog: class {
+vi.mock("../../src/run-history/services/team-run-package-catalog.js", () => ({
+  TeamRunPackageCatalog: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
 }));
@@ -185,13 +185,13 @@ vi.mock("../../src/logging/server-app-logger.js", () => ({
 }));
 
 import { startConfiguredServer } from "../../src/server-runtime.js";
-import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 
 describe("startConfiguredServer required app-data migration gates", () => {
   const finalSuccess = {
-    migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     status: "SUCCEEDED",
-    logPath: "/tmp/server-runtime-gate/team-run-v1.log",
+    logPath: "/tmp/server-runtime-gate/team-run-v2.log",
   };
   const readableSuccess = {
     migrationId: "20260803_custom_provider_readable_identity",
@@ -244,15 +244,15 @@ describe("startConfiguredServer required app-data migration gates", () => {
     }
   };
 
-  it("continues bootstrap and listen when final TeamRun migration reports a warning", async () => {
+  it("continues bootstrap and listen when TeamRun V2 migration reports a warning", async () => {
     mocks.runPending.mockResolvedValueOnce([{
-      migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+      migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
       status: "SUCCEEDED_WITH_WARNINGS",
-      displayName: "TeamRun execution-tree V1 migration",
+      displayName: "TeamRun execution-tree V2 migration",
       attempts: 1,
       summary: "Scanned 1; migrated 0; skipped 0; failed 1.",
       errorMessage: "identity mismatch",
-      logPath: "/tmp/team-run-v1-warning.log",
+      logPath: "/tmp/team-run-v2-warning.log",
     }, readableSuccess]);
 
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
@@ -272,7 +272,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
     expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
     expect(mocks.loggerWarn).toHaveBeenCalledWith(expect.stringContaining(
-      TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+      TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     ));
   });
 

@@ -162,12 +162,34 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     const solutionDesigner = createAgentContext('solution_designer');
     const codeReviewer = createAgentContext('code_reviewer');
 
-    teamContextsStore.addTeamContext(buildTeamContext([
+    const teamContext = buildTeamContext([
       ['solution_designer', solutionDesigner],
       ['code_reviewer', codeReviewer],
-    ], solutionDesigner.state.runId));
+    ], solutionDesigner.state.runId);
+    teamContextsStore.addTeamContext(teamContext);
     selectionStore.selectRun('team-1', 'team');
     teamRunStore.connectToTeamStream('team-1');
+    const callbacks = new Map<string, (payload: string) => void>();
+    for (const [event, callback] of mockWsOn.mock.calls) callbacks.set(event, callback);
+    const emit = (type: string, payload: Record<string, unknown>) =>
+      callbacks.get('onMessage')?.(JSON.stringify({ type, payload }));
+    emit('CONNECTED', { session_id: 'session-1', root_team_run_id: 'team-1' });
+    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', {
+      root_team_run_id: 'team-1',
+      base_change_sequence: 0,
+      execution_tree: teamContext.view.getExecutionTree(),
+      tasks: [],
+      messages: [],
+      agent_statuses: teamContext.view.listAgentContextEntries().map((entry) => ({
+        agent_run_id: entry.agentRunId,
+        member_address: entry.memberAddress,
+        status: 'running',
+        trigger: null,
+        tool_name: null,
+        error_message: null,
+        error_details: null,
+      })),
+    });
 
     const wrapper = mount(AgentUserInputTextArea, {
       global: {

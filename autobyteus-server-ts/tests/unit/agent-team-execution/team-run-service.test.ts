@@ -30,6 +30,19 @@ const launchConfig = (
   llmConfig: null,
 });
 
+const teamLaunchConfig = (
+  runtimeKind: RuntimeKind = RuntimeKind.AUTOBYTEUS,
+  workspaceRootPath: string | null = null,
+) => ({
+  teamAddress: "/",
+  llmModelIdentifier: "gpt-test",
+  autoExecuteTools: false,
+  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  runtimeKind,
+  workspaceRootPath,
+  llmConfig: null,
+});
+
 const createSubject = (
   activeRun: unknown = null,
   definitions: Map<string, unknown> = new Map([["team-def-1", rootDefinition]]),
@@ -156,7 +169,7 @@ describe("TeamRunService current root lifecycle", () => {
 
   it("returns null when exact current-package restore fails", async () => {
     const { service } = createSubject();
-    vi.spyOn(service, "restoreTeamRun").mockRejectedValue(new Error("missing V1 package"));
+    vi.spyOn(service, "restoreTeamRun").mockRejectedValue(new Error("missing current TeamRun package"));
 
     await expect(service.resolveActiveTeamRun("team-1")).resolves.toBeNull();
   });
@@ -201,6 +214,7 @@ describe("TeamRunService current root lifecycle", () => {
     await service.createTeamRun({
       teamDefinitionId: "team-def-1",
       teamRunId: "team-mixed-1",
+      teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER)],
       memberConfigs: [
         launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER),
         launchConfig("/Reviewer", RuntimeKind.CLAUDE_AGENT_SDK),
@@ -224,12 +238,46 @@ describe("TeamRunService current root lifecycle", () => {
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).toHaveBeenCalledOnce();
   });
 
+  it.each([
+    { subject: "Team", teamRuntime: undefined, memberRuntime: RuntimeKind.AUTOBYTEUS, expected: "teamConfigs[0].runtimeKind is required." },
+    { subject: "Team", teamRuntime: "   ", memberRuntime: RuntimeKind.AUTOBYTEUS, expected: "teamConfigs[0].runtimeKind is required." },
+    { subject: "Team", teamRuntime: "unsupported", memberRuntime: RuntimeKind.AUTOBYTEUS, expected: "[INVALID_RUNTIME_KIND]" },
+    { subject: "Agent", teamRuntime: RuntimeKind.AUTOBYTEUS, memberRuntime: undefined, expected: "memberConfigs[0].runtimeKind is required." },
+    { subject: "Agent", teamRuntime: RuntimeKind.AUTOBYTEUS, memberRuntime: "   ", expected: "memberConfigs[0].runtimeKind is required." },
+    { subject: "Agent", teamRuntime: RuntimeKind.AUTOBYTEUS, memberRuntime: "unsupported", expected: "[INVALID_RUNTIME_KIND]" },
+  ])("rejects a missing, blank, or invalid $subject runtime before workspace activation", async ({
+    teamRuntime,
+    memberRuntime,
+    expected,
+  }) => {
+    const { service, mocks } = createSubject();
+    const teamConfig = {
+      ...teamLaunchConfig(RuntimeKind.AUTOBYTEUS, "/tmp/strict-runtime-workspace"),
+      runtimeKind: teamRuntime,
+    };
+    const memberConfig = {
+      ...launchConfig("/Coordinator", RuntimeKind.AUTOBYTEUS, "/tmp/strict-runtime-workspace"),
+      runtimeKind: memberRuntime,
+    };
+
+    await expect(service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      teamRunId: "team-strict-runtime",
+      teamConfigs: [teamConfig],
+      memberConfigs: [memberConfig, launchConfig("/Reviewer")],
+    } as any)).rejects.toThrow(expected);
+
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+  });
+
   it("deduplicates workspace activation by canonical root and rejects unknown members before create", async () => {
     const { service, mocks } = createSubject();
 
     await service.createTeamRun({
       teamDefinitionId: "team-def-1",
       teamRunId: "team-workspace-1",
+      teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER, "/tmp/MetadataTeam")],
       memberConfigs: [
         launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER, "/tmp/MetadataTeam/"),
         launchConfig("/Reviewer", RuntimeKind.CODEX_APP_SERVER, "/tmp/MetadataTeam"),
@@ -242,6 +290,7 @@ describe("TeamRunService current root lifecycle", () => {
     await expect(service.createTeamRun({
       teamDefinitionId: "team-def-1",
       teamRunId: "team-invalid-1",
+      teamConfigs: [teamLaunchConfig()],
       memberConfigs: [
         launchConfig("/Coordinator"),
         launchConfig("/Reviewer"),

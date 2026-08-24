@@ -141,6 +141,7 @@ export type ApplicationTeamRunLaunch =
   | {
       kind: "AGENT_TEAM";
       mode: "memberConfigs";
+      teamDefaultConfig: ApplicationTeamRunPreset;
       memberConfigs: ApplicationTeamMemberLaunchConfig[];
     };
 

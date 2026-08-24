@@ -27,7 +27,7 @@ const missing = (error: unknown): boolean =>
   (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
 
 /** Process-local admission catalog rebuilt before current Team runtime is exposed. */
-export class TeamRunV1PackageCatalog {
+export class TeamRunPackageCatalog {
   private readonly state: CatalogState;
   private readonly layout: AgentMemoryLayout;
   private readonly packageLoader: Pick<TeamRunStatePackageLoader, "loadAndRepair">;
@@ -106,6 +106,6 @@ export class TeamRunV1PackageCatalog {
   }
 }
 
-export const resetTeamRunV1PackageCatalog = (memoryDir: string): void => {
+export const resetTeamRunPackageCatalog = (memoryDir: string): void => {
   states.delete(keyFor(memoryDir));
 };
