@@ -42,6 +42,7 @@ IR-005 resolves CRR-007 finding CR-006. Team launch-readiness reconciliation now
 
 - Integrated merge commit: `bd4e2403fd6630622e7789967e2f2815cc6f37f5`
 - Merge parents: reviewed checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29`; latest tracked base `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`
+- IR-005 implementation commit: `be6c9182b477d0c0d265cbe007c30d466c566a93`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`

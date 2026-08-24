@@ -100,7 +100,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Triggering finding IDs: `CR-006`
 - Classification: `Local Fix`
 - Prior authoritative result: `CRR-007` — `Fail — Local Fix` to `/implementation_engineer`, 9.0/10; the integrated active New/empty state left Run Team enabled while the immutable draft retained Existing/Temp
-- Current authoritative result: every exact-address active New selection with an empty trimmed path supplies the approved scoped blocker before activation; root/nested focused and rendered checks pass; ready for repeat source review
+- Current authoritative result: implementation commit `be6c9182b477d0c0d265cbe007c30d466c566a93` makes every exact-address active New selection with an empty trimmed path supply the approved scoped blocker before activation; root/nested focused and rendered checks pass; ready for repeat source review
 - Related solution revision IDs: `SR-002–SR-007` (current `SR-007`)
 - Related architecture-review revision IDs: `ARCH-REV-001`
 - Related code-review revision IDs: `CRR-007` (with historical `CRR-001–CRR-006` retained)
