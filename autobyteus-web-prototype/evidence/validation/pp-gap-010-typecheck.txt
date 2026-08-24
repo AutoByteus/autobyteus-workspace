@@ -1,0 +1,15 @@
+
+> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> nuxt prepare && vue-tsc --noEmit -p tsconfig.prototype.json
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.

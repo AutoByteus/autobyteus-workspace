@@ -1,0 +1,32 @@
+PP-GAP-009 direct Browser Tool replay
+Date: 2026-08-24 UTC
+Source URL: http://127.0.0.1:3110 (exact exported pin 8ef282ba77705180d985e7000d801f0e0068cdc1)
+Prototype URL: http://127.0.0.1:3210
+Scenario: team_launch; context: desktop; locale: English
+Actions: Agent Teams card Run -> /workspace draft -> select /synthetic/prototype-workspace -> Run Team
+
+Observed in exact pinned source:
+- route: /workspace
+- created Team row present: true
+- selection: {kind: team_run, rootTeamRunId: team-run-created-fixture}
+- draftCount: 0
+- registered Team IDs: [team-run-created-fixture]
+- projected workspaceRootPath: /synthetic/prototype-workspace
+- projected members: [/researcher: researcher, /writer: writer]
+
+Observed in prototype after final implementation edits:
+- route: /workspace
+- created Team row present: true
+- selection: {kind: team_run, rootTeamRunId: team-run-created-fixture}
+- draftCount: 0
+- registered Team IDs: [team-run-created-fixture]
+- projected workspaceRootPath: /synthetic/prototype-workspace
+- projected members: [/researcher: researcher, /writer: writer]
+- visible alerts: none
+
+Successful direct-replay screenshot evidence:
+- manual-source-complete-journey.png SHA-256 bcb83aeea621dbf184691e1a57c02a1415854422cd6ca635e6b06ad0774e0fb4
+- manual-prototype-complete-journey.png SHA-256 bcb83aeea621dbf184691e1a57c02a1415854422cd6ca635e6b06ad0774e0fb4
+- visual result: byte-identical
+
+Automated matched-browser terminal replay after final implementation edits independently reports JRN-050-A through JRN-050-D PASS with exact semantic state, exact Pinia contract, byte-identical screenshots, and zero source/prototype browser errors.

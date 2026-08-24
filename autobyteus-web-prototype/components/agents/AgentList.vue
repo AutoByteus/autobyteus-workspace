@@ -1,0 +1,280 @@
+<template>
+  <div class="h-full flex-1 overflow-auto bg-slate-50">
+    <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+      <div class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div class="relative flex-1 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M9 3a6 6 0 104.472 10.001l2.763 2.764a1 1 0 001.414-1.414l-2.764-2.763A6 6 0 009 3zm-4 6a4 4 0 118 0 4 4 0 01-8 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            v-model="searchQuery"
+            name="agent-search"
+            id="agent-search"
+            class="block w-full rounded-lg border-transparent bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            :placeholder="$t('agents.components.agents.AgentList.search_agents_by_name_or_description')"
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-2">
+          <button
+            @click="handleReload"
+            :disabled="reloading"
+            class="inline-flex items-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            :class="[
+              reloading
+                ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500'
+                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100',
+            ]"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" :class="{'animate-spin': reloading}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {{ reloading ? $t('agents.components.agents.AgentList.reloading') : $t('agents.components.agents.AgentList.reload') }}
+          </button>
+          <button
+            @click="$emit('navigate', { view: 'create' })"
+            class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >{{ $t('agents.components.agents.AgentList.create_agent') }}</button>
+        </div>
+      </div>
+
+
+      <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
+        <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        <p class="text-slate-600">{{ $t('agents.components.agents.AgentList.loading_agent_definitions') }}</p>
+      </div>
+      <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+        <p class="font-bold">{{ $t('agents.components.agents.AgentList.error_loading_agent_definitions') }}</p>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <div v-else-if="isSearchActive && filteredAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <AgentCard
+          v-for="agentDef in filteredAgentDefinitions"
+          :key="agentDef.id"
+          :agent-def="agentDef"
+          @view-details="viewDetails"
+          @run-agent="runAgent"
+        />
+      </div>
+
+      <div v-else-if="hasBrowseContent" class="space-y-8">
+        <section v-if="featuredAgentDefinitions.length > 0">
+          <div class="mb-3">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.featuredAgents') }}</h2>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentCard
+              v-for="agentDef in featuredAgentDefinitions"
+              :key="agentDef.id"
+              :agent-def="agentDef"
+              @view-details="viewDetails"
+              @run-agent="runAgent"
+            />
+          </div>
+        </section>
+
+        <section v-if="originSections.applicationGroups.length > 0">
+          <div class="mb-4">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.applicationAgents') }}</h2>
+          </div>
+          <div class="space-y-5">
+            <article
+              v-for="group in originSections.applicationGroups"
+              :key="group.key"
+              class="space-y-3"
+            >
+              <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <h3 class="text-base font-semibold text-slate-900">{{ group.label }}</h3>
+                <span class="text-sm text-slate-500">{{ formatAgentCount(group.count) }}</span>
+              </div>
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <AgentCard
+                  v-for="agentDef in group.agentDefinitions"
+                  :key="agentDef.id"
+                  :agent-def="agentDef"
+                  @view-details="viewDetails"
+                  @run-agent="runAgent"
+                />
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section v-if="originSections.sharedAgentDefinitions.length > 0">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.sharedAgents') }}</h2>
+            </div>
+            <span class="text-sm text-slate-500">{{ formatAgentCount(originSections.sharedAgentDefinitions.length) }}</span>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentCard
+              v-for="agentDef in originSections.sharedAgentDefinitions"
+              :key="agentDef.id"
+              :agent-def="agentDef"
+              @view-details="viewDetails"
+              @run-agent="runAgent"
+            />
+          </div>
+        </section>
+      </div>
+
+      <div v-else class="rounded-lg border border-slate-200 bg-white py-16 text-center shadow-sm">
+        <div class="text-slate-500">
+          <svg class="mx-auto mb-4 h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 7a4 4 0 014 4c0 1.37-.69 2.62-1.84 3.38-.42.28-.66.77-.66 1.28V17a1 1 0 01-1 1h-1.5a1 1 0 01-1-1v-1.34c0-.51-.25-1-.66-1.28A4 4 0 018 11a4 4 0 014-4zm-3 12h6M10 5.5a2 2 0 114 0" />
+          </svg>
+          <p class="mb-2 text-lg font-medium">{{ $t('agents.components.agents.AgentList.no_agents_found') }}</p>
+          <p class="text-slate-400">
+            {{ searchQuery.trim() ? $t('agents.components.agents.AgentList.emptyFiltered', { query: searchQuery.trim() }) : $t('agents.components.agents.AgentList.emptyDefault') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
+import AgentCard from '~/components/agents/AgentCard.vue';
+import { useRunActions } from '~/composables/useRunActions';
+import { useServerSettingsStore } from '~/stores/serverSettings';
+import { useToasts } from '~/composables/useToasts';
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  parseFeaturedCatalogItemsSetting,
+  splitFeaturedCatalogDefinitions,
+} from '~/utils/catalog/featuredCatalogItems';
+import { buildAgentDefinitionOriginSections } from '~/utils/catalog/agentDefinitionOriginGroups';
+import { normalizeDefinitionOwnershipScope } from '~/utils/definitionOwnership';
+
+const emit = defineEmits(['navigate']);
+
+const agentDefinitionStore = useAgentDefinitionStore();
+const { prepareAgentRun } = useRunActions();
+const { addToast } = useToasts();
+const { deleteResult } = storeToRefs(agentDefinitionStore);
+const serverSettingsStore = useServerSettingsStore();
+const { $t } = useNuxtApp();
+
+const agentDefinitions = computed(() => agentDefinitionStore.agentDefinitions);
+const discoverableAgentDefinitions = computed(() => agentDefinitions.value.filter(
+  (definition) => normalizeDefinitionOwnershipScope(definition) !== 'TEAM_LOCAL',
+));
+const loading = computed(() => agentDefinitionStore.loading);
+const error = computed<Error | null>(() => agentDefinitionStore.error instanceof Error ? agentDefinitionStore.error : agentDefinitionStore.error ? new Error(String(agentDefinitionStore.error)) : null);
+const errorMessage = computed(() => error.value?.message || '');
+
+const searchQuery = ref('');
+const reloading = ref(false);
+
+const isSearchActive = computed(() => searchQuery.value.trim().length > 0);
+
+// Watch for delete result and show it through the shared global toaster.
+watch(deleteResult, (newResult) => {
+  if (newResult) {
+    addToast(newResult.message, newResult.success ? 'success' : 'error');
+    agentDefinitionStore.clearDeleteResult();
+  }
+}, { immediate: true });
+
+const filteredAgentDefinitions = computed(() => {
+  if (!isSearchActive.value) {
+    return discoverableAgentDefinitions.value;
+  }
+  const lowerCaseQuery = searchQuery.value.trim().toLowerCase();
+  return discoverableAgentDefinitions.value.filter((agent) => {
+    const name = agent.name?.toLowerCase() ?? '';
+    const description = agent.description?.toLowerCase() ?? '';
+    const ownerTeamName = agent.ownerTeamName?.toLowerCase() ?? '';
+    const ownerApplicationName = agent.ownerApplicationName?.toLowerCase() ?? '';
+    const ownerPackageId = agent.ownerPackageId?.toLowerCase() ?? '';
+    const tools = (agent.toolNames ?? []).join(' ').toLowerCase();
+    const skills = (agent.skillNames ?? []).join(' ').toLowerCase();
+    return (
+      name.includes(lowerCaseQuery)
+      || description.includes(lowerCaseQuery)
+      || ownerTeamName.includes(lowerCaseQuery)
+      || ownerApplicationName.includes(lowerCaseQuery)
+      || ownerPackageId.includes(lowerCaseQuery)
+      || tools.includes(lowerCaseQuery)
+      || skills.includes(lowerCaseQuery)
+    );
+  });
+});
+
+const featuredSetting = computed(() => parseFeaturedCatalogItemsSetting(
+  serverSettingsStore.getSettingByKey(FEATURED_CATALOG_ITEMS_SETTING_KEY)?.value ?? null,
+).setting);
+
+const splitAgentDefinitions = computed(() => splitFeaturedCatalogDefinitions(
+  featuredSetting.value.items,
+  'AGENT',
+  discoverableAgentDefinitions.value,
+));
+
+const featuredAgentDefinitions = computed(() => (
+  isSearchActive.value ? [] : splitAgentDefinitions.value.featuredDefinitions
+));
+
+const regularAgentDefinitions = computed(() => (
+  splitAgentDefinitions.value.regularDefinitions
+));
+
+const originSections = computed(() => buildAgentDefinitionOriginSections(regularAgentDefinitions.value));
+const hasOriginSections = computed(() => (
+  originSections.value.applicationGroups.length > 0
+  || originSections.value.sharedAgentDefinitions.length > 0
+));
+const hasBrowseContent = computed(() => (
+  !isSearchActive.value
+  && (featuredAgentDefinitions.value.length > 0 || hasOriginSections.value)
+));
+
+const formatAgentCount = (count: number): string => (
+  count === 1
+    ? $t('agents.components.agents.AgentList.agentCountSingular', { count })
+    : $t('agents.components.agents.AgentList.agentCountPlural', { count })
+);
+
+onMounted(() => {
+  // Fetch main agent definitions
+  if (agentDefinitions.value.length === 0) {
+    agentDefinitionStore.fetchAllAgentDefinitions();
+  }
+  serverSettingsStore.fetchServerSettings().catch((error) => {
+    console.warn('Failed to load featured catalog settings:', error);
+  });
+});
+
+const handleReload = async () => {
+  reloading.value = true;
+  try {
+    await Promise.all([
+      agentDefinitionStore.refreshAndReloadAllAgentDefinitions(),
+      serverSettingsStore.reloadServerSettings(),
+    ]);
+  } catch (e) {
+    console.error("Failed to reload agents:", e);
+    // Optionally show a notification to the user
+  } finally {
+    reloading.value = false;
+  }
+};
+
+const viewDetails = (agentDefinitionId: string) => {
+  emit('navigate', { view: 'detail', id: agentDefinitionId });
+};
+
+const runAgent = (agentDef: AgentDefinition) => {
+  prepareAgentRun(agentDef);
+  navigateTo('/workspace');
+};
+
+</script>

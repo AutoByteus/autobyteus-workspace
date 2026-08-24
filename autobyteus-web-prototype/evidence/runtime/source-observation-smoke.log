@@ -1,0 +1,5 @@
+
+> autobyteus-web-prototype@0.1.0 source-observation:start /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/source-observation/mock-node.mjs
+
+[prototype-mock-node] listening on http://127.0.0.1:4399 scenario=populated

@@ -1,0 +1,11 @@
+{
+  "inventoryId": "JRN-050",
+  "gapId": "PP-GAP-009",
+  "sourcePin": "8ef282ba77705180d985e7000d801f0e0068cdc1",
+  "total": 4,
+  "passed": 4,
+  "failed": [],
+  "sourceBrowserErrors": [],
+  "prototypeBrowserErrors": [],
+  "journeyContractPassed": true
+}

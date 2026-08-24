@@ -1,0 +1,71 @@
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
+import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
+import { useGatewayCapabilityStore } from '~/stores/gatewayCapabilityStore';
+import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
+
+export function useMessagingSetupBootstrap() {
+  const gatewayStore = useGatewaySessionSetupStore();
+  const capabilityStore = useGatewayCapabilityStore();
+  const providerScopeStore = useMessagingProviderScopeStore();
+  const bindingStore = useMessagingChannelBindingSetupStore();
+
+  const bootstrapError = ref<string | null>(null);
+
+  async function bootstrapSetupState(): Promise<void> {
+    bootstrapError.value = null;
+    gatewayStore.initializeFromConfig();
+
+    try {
+      await gatewayStore.refreshManagedGatewayStatus({ silent: true });
+      await capabilityStore.loadCapabilities();
+      providerScopeStore.initialize(capabilityStore.capabilities);
+      await capabilityStore.loadWeComAccounts();
+      await bindingStore.loadCapabilities();
+      await bindingStore.loadBindingsIfEnabled();
+      await bindingStore.loadTeamDefinitionOptions();
+    } catch (error) {
+      bootstrapError.value = error instanceof Error ? error.message : 'Failed to bootstrap setup state';
+    }
+  }
+
+  onMounted(async () => {
+    await bootstrapSetupState();
+  });
+
+  watch(
+    () => gatewayStore.managedStatus?.providerStatusByProvider,
+    (providerStatusByProvider) => {
+      providerScopeStore.applyManagedAccountHints({
+        discordAccountId:
+          typeof providerStatusByProvider?.DISCORD?.accountId === 'string'
+            ? providerStatusByProvider.DISCORD.accountId
+            : null,
+        telegramAccountId:
+          typeof providerStatusByProvider?.TELEGRAM?.accountId === 'string'
+            ? providerStatusByProvider.TELEGRAM.accountId
+            : null,
+      });
+    },
+    { immediate: true, deep: true },
+  );
+
+  watch(
+    () => providerScopeStore.selectedProvider,
+    (provider) => {
+      if (provider === 'WECHAT') {
+        gatewayStore.setSessionProvider(provider);
+      }
+    },
+    { immediate: true },
+  );
+
+  onUnmounted(() => {
+    gatewayStore.stopSessionStatusAutoSync('view_unmounted');
+  });
+
+  return {
+    bootstrapError,
+    providerScopeStore,
+  };
+}

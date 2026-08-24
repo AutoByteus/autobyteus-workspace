@@ -1,0 +1,7 @@
+RER-004 stale active-root search
+Generated: 2026-08-24T06:27:53.312290+00:00
+Canonical root: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+Package files scanned: 1934
+Excluded generated/dependency directories: node_modules, .nuxt, .output
+Rejected active-root matches: 0
+Result: PASS

@@ -1,0 +1,14 @@
+Independent runtime check — 2026-08-22
+
+Source comparison frontend stopped: http://127.0.0.1:3100 -> connection refused
+Source-observation synthetic node stopped: http://127.0.0.1:4310 -> connection refused
+Canonical production-build prototype retained: http://127.0.0.1:3200 -> HTTP 200
+
+Persistent browser-tool verification after both evidence-only processes stopped:
+- Navigated fresh to http://127.0.0.1:3200/settings?section=messaging (HTTP 200)
+- route: /settings?section=messaging
+- embedded sourceCommit: 8ef282ba77705180d985e7000d801f0e0068cdc1
+- body contains Telegram fixture: true
+- locally rendered Iconify SVGs with path data: 3
+
+Conclusion: ordinary prototype review is independently runnable on port 3200 and does not depend on the pinned source or source-observation node.

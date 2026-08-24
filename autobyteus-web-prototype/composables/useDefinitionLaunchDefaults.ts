@@ -1,0 +1,122 @@
+import type { AgentDefinition } from '~/stores/agentDefinitionStore'
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+import {
+  DEFAULT_AGENT_RUNTIME_KIND,
+  type AgentRuntimeKind,
+} from '~/types/agent/AgentRunConfig'
+import type {
+  MemberConfigOverride,
+  TeamRunConfig,
+} from '~/types/agent/TeamRunConfig'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+import {
+  normalizeDefaultLaunchConfig,
+  normalizeModelConfigRecord,
+} from '~/types/launch/defaultLaunchConfig'
+
+export const normalizeModelIdentifier = (value: string | null | undefined): string =>
+  (value || '').trim()
+
+export const normalizeRuntimeKind = (
+  value: string | null | undefined,
+): AgentRuntimeKind => {
+  const normalized = (value || '').trim()
+  return (normalized || DEFAULT_AGENT_RUNTIME_KIND) as AgentRuntimeKind
+}
+
+export const normalizeModelConfig = normalizeModelConfigRecord
+
+export const cloneAgentConfig = (config: AgentRunConfig): AgentRunConfig => ({
+  ...config,
+  llmConfig: normalizeModelConfig(config.llmConfig),
+})
+
+export const buildEditableAgentRunSeed = (config: AgentRunConfig): AgentRunConfig => ({
+  ...cloneAgentConfig(config),
+  isLocked: false,
+})
+
+const cloneWorkspaceMetadata = (
+  metadata: WorkspaceMetadata | null,
+): WorkspaceMetadata | null => metadata
+  ? {
+      workspaceId: metadata.workspaceId,
+      workspaceRootPath: metadata.workspaceRootPath,
+      displayName: metadata.displayName,
+      kind: metadata.kind,
+    }
+  : null
+
+const cloneMemberOverride = (override: MemberConfigOverride): MemberConfigOverride => {
+  const cloned: MemberConfigOverride = {}
+  if (override.runtimeKind !== undefined) cloned.runtimeKind = override.runtimeKind
+  if (override.llmModelIdentifier !== undefined) cloned.llmModelIdentifier = override.llmModelIdentifier
+  if (override.autoExecuteTools !== undefined) cloned.autoExecuteTools = override.autoExecuteTools
+  if (Object.hasOwn(override, 'llmConfig')) cloned.llmConfig = normalizeModelConfig(override.llmConfig)
+  return cloned
+}
+
+export const cloneTeamConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
+  teamDefinitionId: config.teamDefinitionId,
+  teamDefinitionName: config.teamDefinitionName,
+  runtimeKind: config.runtimeKind,
+  workspaceId: config.workspaceId,
+  workspaceMetadata: cloneWorkspaceMetadata(config.workspaceMetadata),
+  llmModelIdentifier: config.llmModelIdentifier,
+  llmConfig: normalizeModelConfig(config.llmConfig),
+  autoExecuteTools: config.autoExecuteTools,
+  skillAccessMode: config.skillAccessMode,
+  memberOverrides: Object.fromEntries(
+    Object.entries(config.memberOverrides || {}).map(([memberAddress, override]) => [
+      memberAddress,
+      cloneMemberOverride(override),
+    ]),
+  ),
+  isLocked: config.isLocked,
+})
+
+export const buildEditableTeamRunSeed = (config: TeamRunConfig): TeamRunConfig => ({
+  ...cloneTeamConfig(config),
+  isLocked: false,
+})
+
+export const buildAgentRunTemplate = (
+  definition: Pick<AgentDefinition, 'id' | 'name' | 'avatarUrl' | 'defaultLaunchConfig'>,
+): AgentRunConfig => {
+  const defaults = normalizeDefaultLaunchConfig(definition.defaultLaunchConfig)
+
+  return {
+    agentDefinitionId: definition.id,
+    agentDefinitionName: definition.name,
+    agentAvatarUrl: definition.avatarUrl ?? null,
+    llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
+    runtimeKind: normalizeRuntimeKind(defaults?.runtimeKind),
+    workspaceId: null,
+    workspaceMetadata: null,
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+    isLocked: false,
+    llmConfig: normalizeModelConfig(defaults?.llmConfig),
+  }
+}
+
+export const buildTeamRunTemplate = (
+  definition: Pick<AgentTeamDefinition, 'id' | 'name' | 'defaultLaunchConfig'>,
+): TeamRunConfig => {
+  const defaults = normalizeDefaultLaunchConfig(definition.defaultLaunchConfig)
+
+  return {
+    teamDefinitionId: definition.id,
+    teamDefinitionName: definition.name,
+    runtimeKind: normalizeRuntimeKind(defaults?.runtimeKind),
+    workspaceId: null,
+    workspaceMetadata: null,
+    llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
+    llmConfig: normalizeModelConfig(defaults?.llmConfig),
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+    memberOverrides: {},
+    isLocked: false,
+  }
+}

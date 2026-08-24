@@ -1,0 +1,36 @@
+
+> autobyteus-web-prototype@0.1.0 validate:repository-placement /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+> node prototype/scripts/validate-repository-placement.mjs
+
+PASS prototype resolves to the corrected absolute root
+PASS Git top-level is the existing ticket worktree
+PASS owning branch is codex/initial-prototype-baseline
+PASS prototype root contains no nested .git entry
+PASS prototype is staged/tracked as ordinary owning-repository content
+PASS Git index contains no gitlink/submodule entry
+PASS Git index modes are ordinary files or symlinks
+PASS no canonical package file contains the rejected active root
+PASS pre-relocation inventory records all 1,924 approved files
+PASS all 808 approved evidence/reference images preserve their pre-relocation hashes
+PASS final-reference manifest retains VIS-001 through VIS-015
+PASS final-reference manifest uses corrected absolute image paths
+PASS final references retain zero browser errors and external resources
+PASS VIS-001 image hash matches its manifest
+PASS VIS-002 image hash matches its manifest
+PASS VIS-003 image hash matches its manifest
+PASS VIS-004 image hash matches its manifest
+PASS VIS-005 image hash matches its manifest
+PASS VIS-006 image hash matches its manifest
+PASS VIS-007 image hash matches its manifest
+PASS VIS-008 image hash matches its manifest
+PASS VIS-009 image hash matches its manifest
+PASS VIS-010 image hash matches its manifest
+PASS VIS-011 image hash matches its manifest
+PASS VIS-012 image hash matches its manifest
+PASS VIS-013 image hash matches its manifest
+PASS VIS-014 image hash matches its manifest
+PASS VIS-015 image hash matches its manifest
+PASS UI/UX specification records the corrected canonical root
+PASS PPA-001 and explicit user approval remain recorded
+PASS approved source pin remains recorded
+31/31 repository-placement checks passed.

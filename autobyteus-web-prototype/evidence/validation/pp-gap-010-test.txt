@@ -1,0 +1,15 @@
+
+> autobyteus-web-prototype@0.1.0 test /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> vitest run
+
+
+ RUN  v3.2.7 /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+
+ ✓ prototype/tests/host-scenario.test.ts (3 tests) 6ms
+ ✓ prototype/tests/fixture-contract.test.ts (5 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  09:22:37
+   Duration  646ms (transform 201ms, setup 0ms, collect 231ms, tests 14ms, environment 0ms, prepare 311ms)
+

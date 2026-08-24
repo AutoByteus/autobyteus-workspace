@@ -1,0 +1,8 @@
+
+> autobyteus-web-prototype@0.1.0 validate:gap-009 /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-gap-009.mjs
+
+PASS JRN-050-A Agent Teams catalog Run entry
+PASS JRN-050-B Workspace Team launch draft
+PASS JRN-050-C Chosen-workspace launch-ready draft
+PASS JRN-050-D Launched Team selected and projected in the chosen workspace tree

@@ -1,0 +1,6 @@
+
+> autobyteus-web-prototype@0.1.0 validate:correction-journeys /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-correction-journeys.mjs
+
+PASS JRN-023 Team message selection transition
+PASS JRN-049 Reopened team-history message selection

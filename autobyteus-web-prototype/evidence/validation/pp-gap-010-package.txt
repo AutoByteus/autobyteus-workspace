@@ -1,0 +1,31 @@
+
+> autobyteus-web-prototype@0.1.0 validate:gap-010-package /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-gap-010-package.mjs
+
+PASS Current correction root is canonical in bootstrap-owned docs
+PASS Source pin is stable across identity and evidence docs
+PASS Current correction status is RER-009 PP-GAP-010 accepted and user-confirmed
+PASS Stable correction IDs are inventoried
+PASS Inventory totals include member-focus correction
+PASS Comparison totals include the new exact rendered state
+PASS Renewed Product Prototyper acceptance is explicit
+PASS Final Product artifacts include the corrected journey
+PASS Prior PP-GAP-009 terminal evidence remains preserved
+PASS Gap summary is terminally passing
+PASS Gap summary has zero browser errors
+PASS All five checkpoint comparisons are byte-exact
+PASS Terminal member-focus contract matches pinned source exactly
+PASS Automated terminal screenshots are byte-identical
+PASS Direct Browser Tool terminal screenshots are byte-identical
+PASS Direct Browser Tool state record names the full focus contract
+PASS All focused validation logs exist
+PASS Final build log is successful
+PASS Focused browser log contains all five passes
+PASS Correction is on the required branch
+PASS Approved source pin exists in the repository
+PASS Working tree is clean or changes are isolated to prototype root — 23 prototype path(s)
+PASS Selected source frontend has no correction diff
+PASS Product-owned spec and final references are finalized for RER-009
+PASS Absolute artifact and root paths resolve — 42 checked
+
+25/25 PP-GAP-010 package-consistency checks pass.

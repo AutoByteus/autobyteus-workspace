@@ -1,0 +1,62 @@
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { getApolloClient } from '~/utils/apolloClient';
+import { GetAgentCustomizationOptions } from '~/graphql/queries/agentCustomizationOptionsQueries';
+import type { GetAgentCustomizationOptionsQuery } from '~/generated/graphql';
+
+export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOptions', () => {
+  // State
+  const toolNames = ref<string[]>([]);
+  const inputProcessors = ref<string[]>([]);
+  const llmResponseProcessors = ref<string[]>([]);
+  const toolExecutionResultProcessors = ref<string[]>([]);
+  const toolInvocationPreprocessors = ref<string[]>([]);
+  const lifecycleProcessors = ref<string[]>([]);
+  
+  const loading = ref(false);
+  const error = ref<any>(null);
+
+  // Actions
+  async function fetchAllAvailableOptions() {
+    loading.value = true;
+    error.value = null;
+    try {
+      const client = getApolloClient();
+      const { data, errors } = await client.query<GetAgentCustomizationOptionsQuery>({
+        query: GetAgentCustomizationOptions,
+      });
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map(e => e.message).join(', '));
+      }
+      
+      if (data) {
+        toolNames.value = data.availableToolNames || [];
+        toolInvocationPreprocessors.value = data.availableOptionalToolInvocationPreprocessorNames || [];
+        lifecycleProcessors.value = data.availableOptionalLifecycleProcessorNames || [];
+        inputProcessors.value = data.availableOptionalInputProcessorNames || [];
+        llmResponseProcessors.value = data.availableOptionalLlmResponseProcessorNames || [];
+        toolExecutionResultProcessors.value = data.availableOptionalToolExecutionResultProcessorNames || [];
+      }
+    } catch (e) {
+      error.value = e;
+      console.error("Failed to fetch agent definition options:", e);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  return {
+    // State
+    toolNames,
+    inputProcessors,
+    llmResponseProcessors,
+    toolExecutionResultProcessors,
+    toolInvocationPreprocessors,
+    lifecycleProcessors,
+    loading,
+    error,
+    // Actions
+    fetchAllAvailableOptions,
+  };
+});

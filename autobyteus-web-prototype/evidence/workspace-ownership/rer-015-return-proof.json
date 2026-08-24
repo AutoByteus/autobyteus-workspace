@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "package": "initial-prototype-baseline",
+  "requirementsRevision": "RER-015",
+  "workspaceRepository": "/home/autobyteus/workspace/autobyteus-workspace",
+  "workspaceRemote": "https://github.com/AutoByteus/autobyteus-workspace.git",
+  "canonicalPrototypeRoot": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
+  "branch": "personal",
+  "workspaceBaseAtHandoff": "dfe8922e4a4e260218893bee57c04dd56bf06324",
+  "protectedIndependentSourceRoot": "/home/autobyteus/workspace/autobyteus-web-prototype",
+  "protectedIndependentCommit": "0b02b0e1fbdbdefb78b91b1705bd497663694e0f",
+  "protectedIndependentTree": "9310f77805c01082783da8673d081fc5b6fe6e54",
+  "copiedTrackedFileCount": 2006,
+  "approvedSourcePin": "8ef282ba77705180d985e7000d801f0e0068cdc1",
+  "approvedPrototypeTree": "ca1d3f9ed58f0fc1f673ff013a351841bf78e575",
+  "approvedFileCount": 2001,
+  "approvedBinaryEvidenceAndAssetsCount": 848,
+  "approvedBaselineModifiedOnlyForActiveLocatorOrProvenance": [
+    "README.md",
+    "evidence-index.md",
+    "evidence/presentation-code/presentation-code-parity-summary.json",
+    "evidence/presentation-code/presentation-code-parity.json",
+    "evidence/runtime/boundary-validation.json",
+    "final-reference-screenshots/manifest.json",
+    "package.json",
+    "personal-integration-record.md",
+    "product-prototyper-baseline-review.md",
+    "prototype-runbook.md",
+    "prototype/scripts/audit-presentation-parity.mjs",
+    "prototype/scripts/validate-final-package.mjs",
+    "prototype/scripts/validate-gap-009-package.mjs",
+    "prototype/scripts/validate-gap-010-package.mjs",
+    "prototype/scripts/validate-personal-integration.mjs",
+    "prototype/scripts/validate-repository-placement.mjs",
+    "repository-placement-correction.md",
+    "ui-ux-spec.md"
+  ],
+  "approvedBaselineExactFileCount": 1983,
+  "approvedBinaryEvidenceAndAssetsExact": true,
+  "historicalRer013ArtifactsRetained": [
+    "independent-repository-migration.md",
+    "prototype/scripts/validate-independent-repository.mjs",
+    "evidence/repository-independence/rer-013-approved-tree-inventory.json",
+    "evidence/repository-independence/rer-013-migration-proof.json",
+    "evidence/repository-independence/rer-013-validation.txt"
+  ],
+  "rer015Additions": [
+    "workspace-repository-return.md",
+    "prototype/scripts/validate-workspace-ownership.mjs",
+    "evidence/workspace-ownership/rer-015-return-proof.json",
+    "evidence/workspace-ownership/rer-015-validation.txt"
+  ],
+  "ppa": [
+    "PPA-001",
+    "PPA-002"
+  ],
+  "userConfirmations": [
+    {
+      "date": "2026-08-22",
+      "message": "approved"
+    },
+    {
+      "date": "2026-08-24",
+      "message": "done. i checked. thanks"
+    }
+  ],
+  "jrn050": {
+    "checkpoints": [
+      "JRN-050-A",
+      "JRN-050-B",
+      "JRN-050-C",
+      "JRN-050-D",
+      "JRN-050-E"
+    ],
+    "passed": 5,
+    "sourceBrowserErrors": 0,
+    "prototypeBrowserErrors": 0,
+    "terminalSourceSha256": "2c3abd02848b1c2305f6b20db3a7565136c01a47875815dea13831ae09adf031",
+    "terminalPrototypeSha256": "2c3abd02848b1c2305f6b20db3a7565136c01a47875815dea13831ae09adf031"
+  },
+  "visualReferences": [
+    {
+      "id": "VIS-001",
+      "sha256": "e4f7eb3fa0819c59e96dfdc47d6fa077e481a45d947df356759a6f61c40469a0"
+    },
+    {
+      "id": "VIS-002",
+      "sha256": "2bb8b49f5e8f79dccd3738000e078555a335c3898d9ff85d942abc42dc9299f9"
+    },
+    {
+      "id": "VIS-003",
+      "sha256": "98af22531faa9708213f4028be7fd68dc178b7b8c357f4a0e5bb33b0fe1406c5"
+    },
+    {
+      "id": "VIS-004",
+      "sha256": "66e70a695eff793cf02967faf6f288f17c8a3b980f5553d9ae20a1eeefe5cd8c"
+    },
+    {
+      "id": "VIS-005",
+      "sha256": "cda00ce14ca7df45700bf8978cd4992055aca5efeca4343e2243c59d3e4bebcf"
+    },
+    {
+      "id": "VIS-006",
+      "sha256": "d458a19fc2190df966c5e02cc8c005bc8dfcd2987abaca19feeeb03c80a398ba"
+    },
+    {
+      "id": "VIS-007",
+      "sha256": "7ccf291505868a8d4e8acd7bdd939f81d7c6e839671106bb99a5993c5d2a6fb1"
+    },
+    {
+      "id": "VIS-008",
+      "sha256": "2d3555c0e5d59bb99d71e5cb5577a4f8c67cc0b845a8ebeeca4cbc663615c5a0"
+    },
+    {
+      "id": "VIS-009",
+      "sha256": "71db1c2265fac0cd74c57ffdb7617f063e3785d05902d6b2baaca1f649a9bed9"
+    },
+    {
+      "id": "VIS-010",
+      "sha256": "eab0d7a0603e3020d96149e5d4b74e665f19a3b6918d617c55175e205efa291a"
+    },
+    {
+      "id": "VIS-011",
+      "sha256": "7413de7c5da0fb6367d16f94b9403ecaa3be05dbb4a4d7521fb1440f35ec7ad4"
+    },
+    {
+      "id": "VIS-012",
+      "sha256": "334368952f58165056ff1b65003bd98aa08b91b23617eda977404c2edea76bf6"
+    },
+    {
+      "id": "VIS-013",
+      "sha256": "7eb2b68d302a739849f306600ab759e2c4a7bdf29f384ea7dc8a4711c7b480b9"
+    },
+    {
+      "id": "VIS-014",
+      "sha256": "51ca0cd60fd7f5e2ae662b33e8ee34d0aa092122743cf075e444aba2abf1e768"
+    },
+    {
+      "id": "VIS-015",
+      "sha256": "6120abcc8273c82fb99bd93e32b423072b25612ed59dcc9110f6efa1f35d04f2"
+    },
+    {
+      "id": "VIS-016",
+      "sha256": "cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f"
+    },
+    {
+      "id": "VIS-017",
+      "sha256": "b337371acbddb89fe3e14bbdc7122a9deed6e66a424e180ee09735dc7bf5c6eb"
+    }
+  ],
+  "unrelatedWorkspaceSiblingTrees": {
+    "memory-inspector-ux-redesign": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+    "memory-sync-transparency": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+    "mobile-pwa-navigation": "d3fc1d62e56db44b793e63665121106021543901",
+    "taskagent-team-tab-active-tasks": "320c0eef410da34bf2402025583955c0f80a9786",
+    "token-statistics-task-cost": "f39c4858737394968b8f889375d3f56f9c131207"
+  },
+  "nestedGit": false,
+  "gitlinkOrSubmodule": false,
+  "independentRemoteModified": false,
+  "observableChange": false,
+  "terminalValidationEvidence": "evidence/workspace-ownership/rer-015-validation.txt",
+  "finalCommitPolicy": "Live workspace personal/origin equality is terminal proof; this record does not embed its own commit hash.",
+  "validationTotals": {
+    "ppGap009": "20/20",
+    "ppGap010": "25/25",
+    "finalPackage": "86/86",
+    "boundaries": "13/13",
+    "retainedPresentation": "369/369",
+    "focusedTests": "2 files / 8 tests",
+    "productionHttp": 200,
+    "finalReferenceBrowser": "17/17",
+    "workspaceOwnership": "62/62"
+  }
+}

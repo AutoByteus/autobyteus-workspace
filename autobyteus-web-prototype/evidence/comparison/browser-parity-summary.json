@@ -1,0 +1,11 @@
+{
+  "total": 60,
+  "passed": 60,
+  "failed": [],
+  "sourceBrowserErrorScenarios": [
+    "ROUTE-029",
+    "STATE-007",
+    "STATE-008"
+  ],
+  "prototypeBrowserErrorScenarios": []
+}

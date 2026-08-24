@@ -1,0 +1,5 @@
+
+> autobyteus-web-prototype@0.1.0 validate:browser /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> node prototype/scripts/validate-browser.mjs
+
+PASS JRN-005 Team detail navigation
