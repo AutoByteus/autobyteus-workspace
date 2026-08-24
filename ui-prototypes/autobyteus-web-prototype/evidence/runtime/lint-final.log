@@ -1,0 +1,4 @@
+
+> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype
+> eslint prototype/scripts plugins/00.prototype-state.client.ts prototype/tests
+

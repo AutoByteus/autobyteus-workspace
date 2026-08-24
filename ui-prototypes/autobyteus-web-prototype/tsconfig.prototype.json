@@ -1,0 +1,19 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "types/electron.d.ts",
+    "types/prototype-autoloads.d.ts",
+    "plugins/00.prototype-state.client.ts",
+    "plugins/10.prototype-host-bootstrap.client.ts",
+    "prototype/tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".output",
+    "evidence"
+  ]
+}

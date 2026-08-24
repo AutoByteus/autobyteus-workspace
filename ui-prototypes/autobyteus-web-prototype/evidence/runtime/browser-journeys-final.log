@@ -1,0 +1,18 @@
+PASS JRN-001 Primary navigation
+PASS JRN-002 Agent search and keyboard focus
+PASS JRN-003 Agent detail navigation
+PASS JRN-004 Agent create required-field validation
+PASS JRN-005 Team detail navigation
+PASS JRN-006 Application catalog to application setup
+PASS JRN-007 Skill detail navigation
+PASS JRN-008 Memory source tab navigation
+PASS JRN-009 Node add validation
+PASS JRN-010 Tool collection switch
+PASS JRN-011 Language preference transition
+PASS JRN-012 Desktop left-panel collapse
+PASS JRN-013 Narrow drawer focus and Escape recovery
+PASS JRN-014 Paired-mobile work picker
+PASS JRN-015 Agent create success feedback and detail navigation
+PASS JRN-016 Skill delete confirmation dialog
+PASS JRN-017 Application setup retry and deterministic recovery
+PASS JRN-018 Agent run setup navigation

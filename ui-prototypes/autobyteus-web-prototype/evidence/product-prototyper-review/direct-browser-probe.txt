@@ -1,0 +1,25 @@
+Product Prototyper direct browser probe — 2026-08-22
+URL: http://127.0.0.1:3200
+Browser: persistent browser-tool Chromium tab
+
+Initial independent probe at /agents?view=list:
+- HTTP/browser navigation succeeded.
+- viewport reported 1510x777 for this inspection tab.
+- window.__AUTOBYTEUS_PROTOTYPE__.sourceCommit = 8ef282ba77705180d985e7000d801f0e0068cdc1
+- scenario = populated
+- context = desktop
+- document.documentElement.dataset.prototypeSnapshot = populated|desktop|/agents?view=list
+- external performance resources = []
+- headings = Workspaces; Individual agents; Documentation Writer; Research Assistant
+
+Configuration coverage probe:
+1. Called window.__AUTOBYTEUS_PROTOTYPE__.setScenario('populated', 'electron_internal').
+2. Navigated to /settings?section=extensions.
+3. Prototype reported context = electron_internal, but dataset prototypeSnapshot = populated|desktop|/settings?section=extensions.
+4. window.electronAPI was absent.
+5. The rendered body displayed: "Extensions are available only in the Electron desktop app."
+6. Screenshot: evidence/product-prototyper-review/electron-internal-context-fallback-extensions.png
+7. Navigated to /settings?section=updates under the same requested context.
+8. Prototype again used populated|desktop|/settings?section=updates and showed the browser-only notice; "Check for Updates" was disabled.
+
+This is not a pixel discrepancy in an existing comparison row. It demonstrates that an explicitly required Electron/internal-node context has no deterministic runnable snapshot and falls back to the browser/external-node frame. Source code contains materially different Electron-only/embedded-window surfaces, so the stated context-equivalence claim is not substantiated.

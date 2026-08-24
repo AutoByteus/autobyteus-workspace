@@ -1,0 +1,10 @@
+{
+  "requirementsRevision": "RER-004",
+  "approvedImageCount": 808,
+  "approvedImageHashesPreserved": 808,
+  "approvedImageHashMismatches": [],
+  "finalReferenceCount": 15,
+  "finalReferenceHashesPreserved": 15,
+  "finalReferenceHashMismatches": [],
+  "observableImageResult": "exactly preserved"
+}
