@@ -2,12 +2,12 @@
 
 ## Status
 
-`Released — v1.4.56 rollout verified` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. Repository finalization, tag publication, all five release workflows, GitHub assets, TestFlight upload, and Docker multi-arch publication succeeded. Only repository cleanup remains.
+`Complete — v1.4.56 released and repository cleaned` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. Repository finalization, all five release workflows, GitHub assets, TestFlight upload, Docker multi-arch publication, and task branch/worktree cleanup succeeded.
 
 ## Integrated State
 
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance`
-- Ticket branch: `codex/api-key-management-panel-performance`
+- Ticket worktree: removed after successful rollout
+- Ticket branch: merged, then deleted locally and from `origin`
 - Bootstrap base: `origin/personal@122adc91c184a75541489eea670ac29fcb43f4ab`
 - Latest tracked base checked: `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`
 - Reviewed candidate checkpoint before integration: `16b5696716c4cab025ddb9b6bf420d8dea796f89`
@@ -23,15 +23,12 @@
 - GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.56`
 - Current base relationship: the verified ticket state was current at final refresh, is archived, and the release commit is pushed as `origin/personal` and `v1.4.56`.
 
-## Testable macOS Electron Package
+## Electron Verification And Release Artifact
 
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.55.dmg`
-- DMG SHA-256: `ff490658657b2198b1063d7bbe707b3765cac0ce8fce00b0fbe3c782e626cfeb`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.55.zip`
-- ZIP SHA-256: `90969f9e42d780efed0390c9699fb82ddc5e2394ec99f49448817dd60ea51843`
-- Build target: macOS ARM64, AutoByteus `1.4.55`, Electron `42.4.1`, integrated backend included.
-- Local-build posture: unsigned and non-notarized by the documented local build command; suitable for hands-on verification, not publication or release-signing proof.
-- Structural checks: DMG and ZIP integrity, bundle metadata/architecture/resources, Prisma engines, and packaged `node-pty` native runtime/spawn passed.
+- Historical DR-003 local build: macOS ARM64 AutoByteus `1.4.55`, Electron `42.4.1`, unsigned/non-notarized; its task worktree was removed during DR-007 cleanup after user verification.
+- Historical verification checks: DMG/ZIP integrity, bundle metadata/architecture/resources, Prisma engines, and packaged `node-pty` native runtime/spawn passed. Recorded DMG SHA-256: `ff490658657b2198b1063d7bbe707b3765cac0ce8fce00b0fbe3c782e626cfeb`.
+- Published macOS ARM64 release artifact: `https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-arm64-1.4.56.dmg`
+- Published artifact digest: `sha256:6f0885d3f5e20908c7525b3dc7f8dde11bdbffea139fab048427b34ce781ec06`
 
 ## Delivered Behavior
 
@@ -78,15 +75,15 @@ Open the DR-003 DMG (or unpack the ZIP). Because it is a local unsigned/non-nota
 4. After changing a supported host in Server Settings, returning to API Keys does not show rows from the former endpoint and publishes only the replacement or unavailable state.
 5. Credential save success is not delayed or reversed by model discovery failure.
 
-Electron packaging and the bundled terminal-native runtime now pass on the current integrated state. GUI launch, IPC, window lifecycle, and updater behavior were not automation-run; those behaviors are part of this hands-on acceptance request.
+DR-003 Electron packaging and the bundled terminal-native runtime passed on the integrated state, and the user completed hands-on launch/Settings verification. IPC, window lifecycle, and updater behavior were not separately automation-run.
 
 ## Residual Signals
 
 - `BASELINE-E2E-001` through `BASELINE-E2E-004` are broader repository failures in unchanged files. They remain explicitly recorded and the whole server E2E suite is not represented as green.
-- Optional real-provider success was not run where credentials/capabilities were unavailable. Deterministic local provider protocols and failure paths passed.
+- Optional real-provider success was not established: Alibaba rejected the configured key with `401 InvalidApiKey`/`invalid_api_key`. Deterministic local provider protocols and failure paths passed.
 - External provider availability, quota, region, TLS, and payload drift remain environmental risks rather than changed-contract findings.
 - The local `pnpm exec nuxi typecheck` package-export blocker is not represented as a pass; the production Nuxt build passed.
-- The DR-003 package is unsigned/non-notarized and must not be treated as a release artifact. Signed macOS release-policy verification remains out of the authorized scope.
+- The historical DR-003 package was unsigned/non-notarized and is not a release artifact. Published macOS assets were produced by the successful release workflow, including its signing-policy verification.
 
 ## Documentation And Release Preparation
 
@@ -117,4 +114,4 @@ Electron packaging and the bundled terminal-native runtime now pass on the curre
 
 ## Finalization Hold
 
-The verification hold was released by `SR-008`. Target refresh, archive, repository finalization, `v1.4.56` publication, and rollout verification are complete. Delivery must now clean up the merged ticket branch and dedicated worktrees.
+The verification hold was released by `SR-008`. Target refresh, archive, repository finalization, `v1.4.56` publication, rollout verification, and post-finalization cleanup are complete. No delivery action remains.
