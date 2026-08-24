@@ -148,6 +148,48 @@ describe('WorkspaceSelector', () => {
     }]);
   });
 
+  it('does not overwrite an explicit New choice when the initial workspace fetch resolves late', async () => {
+    let resolveFetch!: () => void;
+    workspaceStoreMock.fetchAllWorkspaces = vi.fn(() => new Promise<void>((resolve) => {
+      resolveFetch = resolve;
+    }));
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: defaultProps,
+    });
+    await wrapper.vm.$nextTick();
+    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+
+    await wrapper.get('[role="tab"][aria-selected="true"]').trigger('click');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([{
+      mode: 'new',
+      existingWorkspaceId: null,
+      newWorkspacePath: '',
+    }]);
+
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'temp-ws', name: 'Temp Workspace', absolutePath: '/tmp/default' },
+    ];
+    resolveFetch();
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[role="tab"][aria-selected="true"]').text()).toContain('New');
+    expect(wrapper.find('input[type="text"]').exists()).toBe(true);
+    expect(wrapper.emitted('update:modelValue')).toEqual([[
+      {
+        mode: 'new',
+        existingWorkspaceId: null,
+        newWorkspacePath: '',
+      },
+    ]]);
+  });
+
   it('does not fetch workspaces or auto-select temp workspace in disabled display mode', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };

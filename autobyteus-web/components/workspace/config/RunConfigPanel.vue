@@ -25,6 +25,7 @@
 
       <AgentRunConfigForm
         v-else-if="effectiveAgentConfig && activeAgentDefinition"
+        :key="activeRunConfigContextRenderKey"
         :config="effectiveAgentConfig"
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
@@ -37,6 +38,7 @@
 
       <TeamRunConfigForm
         v-else-if="effectiveTeamConfig && activeTeamDefinition"
+        :key="activeRunConfigContextRenderKey"
         :config="effectiveTeamConfig"
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
@@ -449,6 +451,20 @@ const activeRunConfigContextIdentity = computed(() => {
   }
   if (effectiveAgentConfig.value) return effectiveAgentConfig.value
   return null
+})
+
+const agentBufferRenderKeys = new WeakMap<object, number>()
+let nextAgentBufferRenderKey = 1
+const activeRunConfigContextRenderKey = computed(() => {
+  const identity = activeRunConfigContextIdentity.value
+  if (typeof identity === 'string') return identity
+  if (!identity) return 'no-run-config-context'
+  let key = agentBufferRenderKeys.get(identity)
+  if (!key) {
+    key = nextAgentBufferRenderKey++
+    agentBufferRenderKeys.set(identity, key)
+  }
+  return `agent-draft:${key}`
 })
 
 watch(

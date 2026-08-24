@@ -688,7 +688,7 @@ describe('RunConfigPanel', () => {
     }) as any
     await wrapper.vm.$nextTick()
 
-    expect(form.props('workspaceSelection')).toEqual({
+    expect(wrapper.findComponent(TeamRunConfigForm).props('workspaceSelection')).toEqual({
       mode: 'existing',
       existingWorkspaceId: 'ws-second',
       newWorkspacePath: '/workspace/second',

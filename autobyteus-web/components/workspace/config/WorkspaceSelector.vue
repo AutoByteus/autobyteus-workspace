@@ -150,6 +150,7 @@ const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
 
 const mode = computed(() => props.modelValue.mode);
 const proposedDefaultWorkspaceId = ref<string | null>(null);
+const hasExplicitWorkspaceInteraction = ref(false);
 const isInteractionDisabled = computed(() => (props.disabled ?? false) || (props.workspaceLocked ?? false));
 const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
@@ -226,6 +227,7 @@ const maybeAutoSelectDefaultWorkspace = (): boolean => {
   if (
     props.modelValue.existingWorkspaceId
     || props.modelValue.newWorkspacePath
+    || hasExplicitWorkspaceInteraction.value
     || isInteractionDisabled.value
   ) {
     return false;
@@ -265,6 +267,7 @@ onMounted(async () => {
     workspaceOptions.value.length > 0
     && mode.value === 'new'
     && !props.modelValue.newWorkspacePath
+    && !hasExplicitWorkspaceInteraction.value
   ) {
     proposeSelection({ mode: 'existing' });
   }
@@ -289,21 +292,29 @@ watch(
 // Watch for workspace options changes - update mode if workspaces become available
 watch(workspaceOptions, (newOptions) => {
   if (isInteractionDisabled.value) return;
-  if (newOptions.length > 0 && mode.value === 'new' && !props.modelValue.newWorkspacePath) {
+  if (
+    newOptions.length > 0
+    && mode.value === 'new'
+    && !props.modelValue.newWorkspacePath
+    && !hasExplicitWorkspaceInteraction.value
+  ) {
     maybeAutoSelectDefaultWorkspace() || proposeSelection({ mode: 'existing' });
   }
 });
 
 // Handlers
 const handleModeChange = (nextMode: WorkspaceSelectionMode) => {
+  hasExplicitWorkspaceInteraction.value = true;
   proposeSelection({ mode: nextMode });
 };
 
 const handleExistingSelect = (workspaceId: string) => {
+  hasExplicitWorkspaceInteraction.value = true;
   proposeSelection({ mode: 'existing', existingWorkspaceId: workspaceId });
 };
 
 const handleNewPathInput = (event: Event) => {
+  hasExplicitWorkspaceInteraction.value = true;
   proposeSelection({
     mode: 'new',
     newWorkspacePath: (event.target as HTMLInputElement).value,
@@ -316,6 +327,7 @@ const handleBrowse = async () => {
 
   const selectedPath = await pickFolderPath();
   if (selectedPath) {
+    hasExplicitWorkspaceInteraction.value = true;
     proposeSelection({ mode: 'new', newWorkspacePath: selectedPath });
   }
 };
