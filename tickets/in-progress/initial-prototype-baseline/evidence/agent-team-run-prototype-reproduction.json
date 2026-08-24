@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-08-24T08:04:10.965Z",
+  "baseUrl": "http://127.0.0.1:3210",
+  "scenario": "populated",
+  "before": {
+    "route": "/agent-teams?view=team-list",
+    "runButtons": 1,
+    "leftPanelShowsNoHistory": true
+  },
+  "after": {
+    "route": "/agent-teams?view=team-list",
+    "leftPanelShowsNoHistory": true,
+    "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Team\nPR\nProduct Review Team\n\nA deterministic synthetic team with researcher and writer members.\n\nProduct\nRun\nView Details\n→\nR\nresearcher\nW\nwriter\n\nCoordinator\n\nresearcher\n\nMembers\n\n2\n\nNested Teams\n\n0"
+  },
+  "errors": [
+    {
+      "kind": "pageerror",
+      "message": "inFlightDrafts.keys is not a function"
+    }
+  ]
+}

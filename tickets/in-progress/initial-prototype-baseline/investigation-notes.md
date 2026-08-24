@@ -3,14 +3,14 @@
 ## Investigation Meta
 
 - Request / ticket: Initial prototype baseline
-- Workspace root: `/home/autobyteus/workspace/autobyteus-workspace`
+- Workspace root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline`
 - Repository mode: `Git`
-- Task worktree / branch: User explicitly authorized the RER-007 placement correction directly in `/home/autobyteus/workspace/autobyteus-workspace` on `personal`; no new ticket, branch, or worktree is to be created.
-- Base or reference revision: Prototype team fetched `origin/personal` at bootstrap kickoff on 2026-08-22 and pinned the then-latest exact commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- Bootstrap result: Observable prototype baseline accepted under PPA-001 and user-approved. The separate project is now validated at repository-root `autobyteus-web-prototype`, committed directly on `personal` at `dabc306abbb5c31b7643038c23996fb6c78898b3`, and pushed to `origin/personal` with no observable change.
-- Bootstrap blocker: None.
-- Current requirements revision ID: `RER-008`
-- Investigation status: Complete. Repository-root placement, evidence preservation, direct commit/push, and local/remote synchronization are verified; approved prototype source pin remains unchanged.
+- Task worktree / branch: Existing isolated worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on `codex/initial-prototype-baseline`. The user explicitly requires worktree isolation for RER-009; `personal` and `origin/personal` must not be modified without later separate authorization.
+- Base or reference revision: Worktree fast-forwarded to fetched `origin/personal` `52b4be02ea793f2071fe5a63a94664ab25196433`. Observable parity remains pinned to source commit `8ef282ba77705180d985e7000d801f0e0068cdc1` because that pin contains the required Agent Team launch behavior.
+- Bootstrap result: Prior appearance and unrelated behavior remain approved under PPA-001, but terminal completeness is reopened. Controlled reproduction proves the Agent Teams **Run** journey throws before navigation and cannot create the left-tree team run.
+- Bootstrap blocker: AC-010–AC-013 remain open pending focused prototype correction, controlled source/prototype journey evidence, review, and worktree commit proof.
+- Current requirements revision ID: `RER-009`
+- Investigation status: Focused analysis complete; `Prototype Needed` for Agent Team launch parity. No architecture or production engineering is required.
 
 ## Initial Request And Clarifications
 
@@ -18,6 +18,7 @@
 - Clarifications received: The captured baseline must use the latest source revision. This ticket is only for the product prototype and does not authorize architecture design or production software engineering.
 - User-supplied facts and constraints: An initial prototype baseline is the requested outcome; latest source is required; completion is terminal at the accepted product prototype.
 - Later placement constraint: Do not create another ticket or branch. Move the project directly on `personal`, commit, and push. Treat it as a separate root-level project.
+- Latest correction constraint: For the newly reported Agent Team launch defect, use the existing task worktree rather than editing `personal`. A reviewer must be able to click **Run** for a team, complete **Run Team**, and see/select that team in the workspace left tree.
 - Initial ambiguity: Resolved as `autobyteus-web`, following the prior recommendation and user's latest-source confirmation. A kickoff fetch must translate “latest” into an exact reproducible commit.
 
 ## Product And Domain Understanding
@@ -49,6 +50,10 @@
 | SRC-016 / 2026-08-24 | User / Git and directory inspection | User messages requiring repository-root placement and direct `personal` commit/push; `find ui-prototypes -mindepth 1 -maxdepth 1`; `git status`; local/remote revision check | Resolve the new canonical root and whether the shared `ui-prototypes` directory should be removed | `ui-prototypes` contains the accepted `autobyteus-web-prototype` plus five unrelated sibling projects. Local and remote `personal` were clean and synchronized at `c5b87df4d6db15969ba70adee9dfd8394b1e7385` before RER-007 edits. User explicitly authorizes no new ticket/branch and direct commit/push. | Move only `autobyteus-web-prototype` to repository root; preserve the five unrelated siblings and retain `ui-prototypes`; validate and push through Product Prototyper ownership. |
 | SRC-015A / 2026-08-24 | Command | `git diff --name-only 8ef282b...3ab4946... -- autobyteus-web` | Determine whether Git rebase alone updates the approved observable prototype baseline | 104 `autobyteus-web` files changed between the approved source pin and latest original branch, including visible settings/provider/token-usage surfaces. | Do not silently claim UI parity to `3ab4946...`; an explicit refresh requires prototype reconciliation and review. |
 | SRC-017 / 2026-08-24 | Product Prototyper / Git / Validation | Returned RER-007 package; `rer-007-proof.json`; `rer-007-validation.txt`; `rer-007-repository-placement-validation.txt`; local/remote/status verification | Verify AC-007–AC-009 and restore terminal completion | Direct push advanced `personal` from `c5b87df4...` to `dabc306ab...`; local and remote match with clean status. Root package has 1,940 tracked entries, no nested Git/gitlink, prior nested path absent, 1,934/1,934 approved files present, 808/808 evidence/reference images and 15/15 final references preserved, 40/40 placement and 73/73 package checks pass, build/browser checks pass, and all five unrelated sibling trees are exact. | Integrate RER-008 closure; no renewed UI review or architecture handoff. |
+| SRC-018 / 2026-08-24 | User / Git | User instruction to use the worktree; `git fetch origin personal`; fast-forward and worktree/status/merge-base inspection | Establish an isolated, current correction workspace | Existing worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on `codex/initial-prototype-baseline` was fast-forwarded to fetched `origin/personal` `52b4be02ea793f2071fe5a63a94664ab25196433` and cleaned of obsolete ignored build/dependency remnants before investigation. | Perform all RER-009 work and commits only in this worktree; do not modify `personal` or the remote. |
+| SRC-019 / 2026-08-24 | User | Current message reporting missing Agent Team **Run** behavior | Identify the allegedly incomplete journey and expected product outcome | User cannot run a selected Agent Team in the prototype and expects the source-supported flow to produce the team in the workspace left tree. | Reproduce, compare to pinned source, and reopen completeness if confirmed. |
+| SRC-020 / 2026-08-24 | Controlled prototype runtime | Browser reproduction at `/agent-teams?view=team-list` in populated desktop state; evidence JSON and screenshot | Verify the report as an observable defect | Before click there is one enabled **Run** and `No run history yet.`; after click the route remains the catalog, the tree remains empty, and the browser emits `inFlightDrafts.keys is not a function`. | AC-010 fails; inspect state hydration and action adaptation. |
+| SRC-021 / 2026-08-24 | Pinned source, prototype code, tests, and evidence audit | `AgentTeamList.vue`, `RunConfigPanel.vue`, `agentTeamRunStore.ts`, `runHistoryReadModel.ts`, `teamRunConfigStore.ts`, `plugins/00.prototype-state.client.ts`, source tests, scenario/journey inventories | Determine desired behavior, root causes, correction boundary, and why prior validation passed | Pinned source implements prepare/navigate/launch/register/select/tree projection. Prototype JSON hydration corrupts Map-backed draft state; `agentTeamRun.launchDraft` is replaced by a no-op; existing 49 journeys include pre-seeded team states but no catalog-to-launch-to-tree journey. | Record REQ-010–REQ-013 and require a focused correction plus terminal controlled journey. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -58,6 +63,7 @@
 | BEH-002 | User | Existing frontend bootstrap mode in shared contract | Current UI is served by the selected `autobyteus-web` pin | Its complete observable current state is reproduced and accepted as the baseline authority | SRC-002, SRC-008, SRC-010 | High; complete inventory accepted |
 | BEH-003 | System | Prototype mock and workspace-isolation rules | Production frontend calls services/auth/persistence/integrations | Prototype replaces those boundaries deterministically, blocks external/API boundaries, and uses only synthetic local state | SRC-002, SRC-010 | High; 13/13 boundary checks pass |
 | BEH-004 | Operational | User requires owning-workspace version control and classifies the baseline as a separate root-level project | Project is ordinary tracked content at repository-root `autobyteus-web-prototype`; the shared prototype collection retains five unrelated projects | Root placement is directly committed/pushed on synchronized `personal`; approval/evidence and unrelated sibling trees remain unchanged | SRC-013–SRC-017 | High; correction complete |
+| BEH-005 | User / System | Reviewer activates **Run** for an Agent Team and then **Run Team** from its workspace draft | Pinned source prepares the exact team draft, navigates to `/workspace`, creates/registers/selects a live team context, and projects it under the chosen workspace in the left tree | Prototype must reproduce that lifecycle deterministically with synthetic state and no production boundary | SRC-019–SRC-021 | High; current prototype fails before navigation and then has a second launch no-op |
 
 ## Relevant Codebase And Technical Facts
 
@@ -81,12 +87,14 @@
 | `corepack pnpm validate:final-package` | Corrected-root final package consistency | 73/73 checks pass from the relocated package. | Existing AC-001–AC-006 evidence remains valid after relocation. | Corrected prototype root |
 | Git/status and HTTP probes | Owning commit and runnable review | Branch `codex/initial-prototype-baseline` is clean at `6ed910fc...`; old external root absent; corrected-root production build serves HTTP 200 at port 3200. | Terminal locator and repository provenance are verified. | SRC-014 |
 | RER-007 proof and validation suite | Repository-root completion | Root package has 1,940 ordinary tracked entries; no nested Git/gitlink; 40/40 placement checks, 73/73 final-package checks, 7/7 prototype tests, 13/13 boundary checks, typecheck/lint/build, and 15/15 browser recaptures pass; 808/808 approved images and all five unrelated sibling trees are preserved. | AC-007–AC-009 are met without changing PPA-001 or the approved observable baseline. | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/repository-placement/rer-007-proof.json` and linked logs |
+| Controlled Playwright-compatible browser reproduction | Populated desktop Agent Teams catalog; click **Run** for `Product Review Team` | Click leaves the route at `/agent-teams?view=team-list`, leaves `No run history yet.`, and emits `inFlightDrafts.keys is not a function`. | AC-010 fails and baseline completeness must be reopened. | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/evidence/agent-team-run-prototype-reproduction.json`; adjacent PNG |
+| Pinned-source and prototype adapter audit | Catalog preparation, workspace launch, run registration/selection, left-tree projection, and evidence coverage | Source pin implements the full lifecycle. Prototype JSON-patches Map state into plain objects, omits `agentTeamRun` from local actions, and has no controlled end-to-end journey for this lifecycle. | A Map-only fix is insufficient; correction must restore both preparation and synthetic launch/tree projection and enforce them in terminal evidence. | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/agent-team-run-parity-analysis.md` |
 
 ## Stakeholder And User Evidence
 
 | Source / Actor | Need, Problem, Or Constraint | Evidence Strength | Requirement Implication | Open Question |
 | --- | --- | --- | --- | --- |
-| User | Wants the latest initial `autobyteus-web` prototype baseline and no downstream production engineering; requires the accepted project at repository root and authorizes direct `personal` commit/push without a new ticket/branch | Direct clarification and explicit approval | Product prototype remains the terminal outcome; repository placement was reopened and is now complete | None |
+| User | Wants a complete `autobyteus-web` prototype baseline and no downstream production engineering; reports that Agent Teams **Run** is missing/broken and requires worktree isolation for correction | Direct current clarification | Product prototype remains the terminal outcome, but completeness is reopened until the catalog-to-workspace-to-left-tree journey works and is reviewed | None; desired behavior is explicit |
 
 ## External Contracts, Standards, And Dependencies
 
@@ -104,38 +112,39 @@
 - Required semantics or data that must be preserved: Observable source data shapes and visible outcomes only.
 - Acceptable loss, reset, rebuild, or regeneration: All prototype-local synthetic state.
 - Privacy, retention, compliance, downtime, or operational constraints: No credentials, personal/customer data, production export, or production write.
-- Remaining evidence gap: None for the approved observable prototype boundary.
+- Remaining evidence gap: No controlled source/prototype journey currently covers Agent Teams catalog **Run** through **Run Team** to the left-tree live team/member state.
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — completed, including repository-root placement correction`
-- Decision rationale: Product Prototyper owns the accepted canonical runnable prototype and its path-sensitive evidence. The user explicitly changes that canonical root without requesting an observable redesign.
-- Requirement / behavior IDs involved: BEH-004; REQ-008–REQ-009; AC-007–AC-009.
-- Product decisions or uncertainties to resolve: None. The accepted project was moved to repository root, active locators were rewritten, evidence/hashes and unrelated siblings were preserved, validations passed, and the direct `personal` commit was pushed.
-- Critical journey and states: Complete current-state `autobyteus-web` inventory across browser, Electron, and mobile configurations, including known feature, locale, node, access, responsive, empty/loading/error/permission/recovery states.
+- Prototype needed: `Yes — focused current-experience parity correction required`
+- Decision rationale: Runtime evidence confirms a user-visible defect in an approved-source journey, and Product Prototyper owns the canonical runnable prototype, interaction specification, journey evidence, and user review.
+- Requirement / behavior IDs involved: BEH-005; REQ-010–REQ-013; AC-010–AC-013; SCN-005.
+- Product decisions or uncertainties to resolve: Restore Map-safe team draft state, implement deterministic local `agentTeamRun.launchDraft` behavior through the same observable registration/selection/tree projection lifecycle, and add terminal controlled source/prototype journey evidence. No whole-baseline source refresh or redesign is authorized.
+- Critical journey and states: Agent Teams populated catalog -> selected team launch draft -> valid workspace/runtime/model/member config -> **Run Team** -> exactly one selected team under the chosen workspace -> expandable/selectable member/coordinator state.
 - Known constraints and non-goals: Current-state parity only; same source technology; deterministic mock boundaries; isolated run; no screenshot/hotspot substitute; no future-state redesign.
 - Alternative evidence path / next action when no prototype is used: N/A; prototype is explicitly requested.
-- Prototype request artifact / message reference: Existing PPA-001 package plus completed RER-007 direct-root-placement correction and proof.
+- Prototype request artifact / message reference: RER-009 canonical requirements plus `agent-team-run-parity-analysis.md` and controlled reproduction evidence in the existing task worktree.
 
 ## Prototype Findings
 
-- Prototype package path: Canonical repository-root project `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`; the prior nested corrective source has been moved and is absent.
-- Approved UI/UX specification path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/ui-ux-spec.md`.
-- Review URL: `http://127.0.0.1:3200`.
+- Prototype package path for correction: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype` on `codex/initial-prototype-baseline`.
+- Approved UI/UX specification path for correction: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md`; its existing visual baseline remains approved, while the Agent Team launch-completeness claim must be reconciled.
+- Review URL: Product Prototyper must provide a worktree-root review URL after correction; the historical `http://127.0.0.1:3200` locator is not evidence of corrected RER-009 behavior.
 - Explicit user-confirmation reference: User message **“approved”** on 2026-08-22 immediately after review request for the complete corrected baseline; recorded in `ui-ux-spec.md`, `product-prototyper-baseline-review.md`, and the final-reference manifest.
-- Journeys and scenarios validated: `JRN-001`–`JRN-049`; all 49 pass. Complete stable inventory includes routes, configuration, state, host, workspace, mobile, locale/responsive, and discovery groups documented in `ui-ux-spec.md` and `parity-inventory.md`.
+- Journeys and scenarios validated: `JRN-001`–`JRN-049` historically pass, but none covers the complete Agent Teams catalog-to-launch-to-left-tree lifecycle. Pre-seeded team states do not substantiate that interaction. A new stable journey is mandatory.
 - Final visual-reference paths: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` and `manifest.json`; VIS-001–VIS-015 and their approved hashes remain exact.
 - Product decisions supported by evidence: Current-state baseline only; exact pin `8ef282ba77705180d985e7000d801f0e0068cdc1`; no future-state delta; no architecture/production-engineering authorization; local Monaco mirror removes ordinary-review external dependency without visible/interactive change.
 - Alternatives rejected or still open: Android/iOS and packaged-application authoring roots are excluded as independent baselines; no future-state redesign is requested.
 - Mocked boundaries and production gaps: All production services, persistence, authentication, host/native, execution, streaming, files, terminal, Browser/VNC, model/provider/tool/MCP, messaging, application, update/extension, and media boundaries are deterministic local simulations. Production readiness and integration fidelity remain unproven and out of scope.
-- Requirements sections affected: Document status, acceptance outcome, UI/UX locator, supplements, traceability, readiness, and completion classification.
+- Confirmed root causes: RC-001 JSON snapshot hydration converts `teamRunConfigStore` Maps into plain objects; RC-002 the generic prototype adapter replaces `agentTeamRun.launchDraft` with a no-op; RC-003 the prior evidence suite lacks the cross-surface journey.
+- Requirements sections affected: Document status, BEH-005, scope, REQ-010–REQ-013, AC-010–AC-013, SCN-005, UI/UX interaction authority, supplements, traceability, readiness, and completion classification.
 
 ## Supplemental Artifact Inventory
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current | Informational; approval is recorded in canonical requirements |
-| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/ui-ux-spec.md` | Product Prototyper | Canonical approved UI/UX supplement | Complete current-state baseline | All | Approved / PPA-001 | User-approved |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current through RER-009 | Informational; approval is recorded in canonical requirements |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md` | Product Prototyper | Canonical UI/UX supplement in the correction worktree | Complete current-state baseline plus required BEH-005 reconciliation | All | PPA-001 retained; Agent Team launch completeness reopened | Existing visuals/unrelated behavior approved; corrected interaction pending review |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` | Product Prototyper | Final visual-reference inventory | VIS-001–VIS-015 | REQ-002, REQ-005; AC-002, AC-005 | Final | User-approved baseline references |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Product Prototyper | Reference hashes and clean-capture evidence | 15 final references | REQ-002, REQ-005, REQ-006 | Final / 15 of 15 | User-approved evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Product Prototyper | Review history and PPA-001 | Initial gaps, corrections, acceptance, final decision | REQ-005, REQ-007; AC-005, AC-006 | Final | Acceptance and approval evidence |
@@ -148,6 +157,9 @@
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-scenarios.md` | Prototype Bootstrapper | Deterministic scenario catalog | Complete visible state/journey set | REQ-002, REQ-004 | Final | Approved baseline evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` | Product Prototyper | Repository-root canonical project | Complete approved project after move | REQ-008, REQ-009; AC-007–AC-009 | Complete at prototype commit `dabc306ab...`; pushed | Observable approval unchanged |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/repository-placement-correction.md` | Product Prototyper | Repository ownership, relocation, path rewrite, validation, and hash-preservation result | Cumulative RER-004/RER-007 correction | REQ-008, REQ-009; AC-007–AC-009 | Complete | Requirements-correction evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/agent-team-run-parity-analysis.md` | Requirements Engineering | Source/prototype parity analysis and focused correction boundary | RER-009 Agent Team launch | REQ-010–REQ-013; AC-010–AC-013 | Confirmed | Requirement-defining; corrected interaction not yet approved |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/evidence/agent-team-run-prototype-reproduction.json` | Requirements Engineering | Machine-readable failing browser reproduction | Catalog **Run** before/click/after | REQ-010–REQ-012; AC-010–AC-012 | Confirmed failure | Investigation evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/evidence/agent-team-run-prototype-after-click.png` | Requirements Engineering | Visual runtime support | Post-click failed state | REQ-010; AC-010 | Confirmed failure | Illustrative investigation evidence |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -160,6 +172,8 @@
 | RISK-003 | Risk | Two unchanged pinned-source unit-harness cases fail. | Failures could be mistaken for prototype gaps. | Bootstrap report records both; exact observable journeys JRN-047 and JRN-049 pass, so they are source harness defects rather than prototype discrepancies. | Controlled / non-blocking |
 | RISK-004 | Risk | Removing or moving the external standalone repository destructively before the corrected target is verified could lose approved evidence. | The approved package is large and contains normative evidence. | Product Prototyper copied and verified 1,924/1,924 files before path rewriting, preserved 808/808 evidence/reference image hashes, committed the target, then removed the external root. | Closed |
 | RISK-005 | Risk | Removing the entire `ui-prototypes` directory would delete five unrelated tracked prototype projects. | That deletion is not required to treat `autobyteus-web-prototype` as a separate root-level project and would expand scope destructively. | Moved only the accepted project; proof records all five other Git trees unchanged. | Closed in RER-008 |
+| ASM-004 | Assumption | The focused correction should remain pinned to source commit `8ef282ba...` rather than refresh to newer source. | The required behavior exists at the pin, and an unnecessary refresh would expand review scope. | Source inspection confirms the pin implements the journey; Product Prototyper preserves unrelated baseline evidence. | Validated for RER-009 |
+| RISK-006 | Risk | Route screenshots, retained source files, source-test classification, and pre-seeded team states can all pass while the actual cross-surface launch journey is broken. | Without an enforced end-to-end action sequence, the package can again be declared complete despite a critical user-visible no-op. | Add a stable controlled source/prototype journey and make its passing result a terminal final-package assertion. | Open; blocks AC-012 |
 
 ## Requirement Implications
 
@@ -167,12 +181,14 @@
 - `autobyteus-web` is the explicit source frontend; “latest” must be pinned to the exact newest `origin/personal` commit at bootstrap kickoff.
 - Once selected, every supported/discoverable observable client item in that application boundary is in parity scope; a partial mockup is not an acceptable baseline.
 - Safe deterministic mock boundaries and complete parity evidence are part of acceptance, not implementation preferences.
-- The approved package meets all observable parity requirements with no known missing, discrepant, unknown, or unsubstantiated UI inventory ID.
+- The prior package's terminal-complete claim is no longer valid: BEH-005 is a confirmed known discrepancy even though prior route, matrix, pre-seeded-state, and final-package checks passed.
 - Approval applies only to this pinned current-state prototype; later source refreshes or future-state changes require explicit reconciliation and approval.
 - Repository placement is requirements-defining for this ticket. The correction must preserve all approved observable evidence while replacing the rejected standalone provenance with ordinary files tracked by the existing workspace repository.
 - The new root-placement correction changes only the repository-relative project root. It explicitly does not remove the shared `ui-prototypes` directory because that directory contains five unrelated projects.
 - Direct work on `personal` was authorized only for this focused move and required active-reference updates; Product Prototyper fetched first, kept unrelated paths unchanged, validated, committed, and pushed successfully.
 - Git ancestry is now synchronized to latest fetched `origin/personal` at `3ab4946c...`. The approved prototype remains a reproducible snapshot of source pin `8ef282b...`; because 104 frontend files changed upstream, any request to make the observable baseline itself current requires explicit prototype refresh/reconciliation rather than silent file replacement.
+- The Agent Team launch requirement does not require that broader refresh because the exact behavior is present at source pin `8ef282b...`. Correct Map hydration, local synthetic launch/context/tree behavior, and journey coverage in the worktree only.
+- RER-009 must remain on `codex/initial-prototype-baseline` based on fetched `origin/personal` `52b4be02...`; do not edit, merge, or push `personal` unless the user separately authorizes integration after correction and review.
 
 ## Notes For Downstream Architecture Design
 
