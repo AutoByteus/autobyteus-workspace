@@ -7,10 +7,10 @@
 - Repository mode: `Git`
 - Task worktree / branch: User explicitly authorized the RER-007 placement correction directly in `/home/autobyteus/workspace/autobyteus-workspace` on `personal`; no new ticket, branch, or worktree is to be created.
 - Base or reference revision: Prototype team fetched `origin/personal` at bootstrap kickoff on 2026-08-22 and pinned the then-latest exact commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
-- Bootstrap result: Observable prototype baseline accepted under PPA-001 and user-approved. The merged package currently exists at `autobyteus-web-prototype`; user now requires the separate project at repository-root `autobyteus-web-prototype` without changing observable behavior.
-- Bootstrap blocker: Repository-root move, active-path rewrite, validation, direct `personal` commit, and push are pending.
-- Current requirements revision ID: `RER-007`
-- Investigation status: Complete for the root-placement decision; focused prototype placement correction is needed. Approved prototype source pin remains unchanged.
+- Bootstrap result: Observable prototype baseline accepted under PPA-001 and user-approved. The separate project is now validated at repository-root `autobyteus-web-prototype`, committed directly on `personal` at `dabc306abbb5c31b7643038c23996fb6c78898b3`, and pushed to `origin/personal` with no observable change.
+- Bootstrap blocker: None.
+- Current requirements revision ID: `RER-008`
+- Investigation status: Complete. Repository-root placement, evidence preservation, direct commit/push, and local/remote synchronization are verified; approved prototype source pin remains unchanged.
 
 ## Initial Request And Clarifications
 
@@ -47,7 +47,8 @@
 | SRC-014 / 2026-08-24 | Command / Runtime | Independent `corepack pnpm validate:repository-placement`; `corepack pnpm validate:final-package`; Git ownership/status checks; HTTP probe of port 3200 | Independently confirm returned correction and review availability | 31/31 placement checks and 73/73 final-package checks pass; owning branch is clean at `6ed910fc...`; old external root is absent; corrected production-build review URL returns HTTP 200. | Record RER-005 completion evidence. |
 | SRC-015 / 2026-08-24 | User / Command | User request to base the current project on latest original branch; `git fetch origin personal`; ancestry inspection; `git rebase origin/personal`; post-rebase validations | Synchronize the task branch without committing on the shared original branch | `origin/personal` advanced from `8ef282b...` to `3ab4946...`; task branch rebased successfully with no conflicts. Merge-base is now `3ab4946...`, branch was zero behind/four commits ahead before the RER-006 provenance commit, and 31/31 placement plus 73/73 package checks still pass. | Commit RER-006 provenance update on the task branch. |
 | SRC-016 / 2026-08-24 | User / Git and directory inspection | User messages requiring repository-root placement and direct `personal` commit/push; `find ui-prototypes -mindepth 1 -maxdepth 1`; `git status`; local/remote revision check | Resolve the new canonical root and whether the shared `ui-prototypes` directory should be removed | `ui-prototypes` contains the accepted `autobyteus-web-prototype` plus five unrelated sibling projects. Local and remote `personal` were clean and synchronized at `c5b87df4d6db15969ba70adee9dfd8394b1e7385` before RER-007 edits. User explicitly authorizes no new ticket/branch and direct commit/push. | Move only `autobyteus-web-prototype` to repository root; preserve the five unrelated siblings and retain `ui-prototypes`; validate and push through Product Prototyper ownership. |
-| SRC-016 / 2026-08-24 | Command | `git diff --name-only 8ef282b...3ab4946... -- autobyteus-web` | Determine whether Git rebase alone updates the approved observable prototype baseline | 104 `autobyteus-web` files changed between the approved source pin and latest original branch, including visible settings/provider/token-usage surfaces. | Do not silently claim UI parity to `3ab4946...`; an explicit refresh requires prototype reconciliation and review. |
+| SRC-015A / 2026-08-24 | Command | `git diff --name-only 8ef282b...3ab4946... -- autobyteus-web` | Determine whether Git rebase alone updates the approved observable prototype baseline | 104 `autobyteus-web` files changed between the approved source pin and latest original branch, including visible settings/provider/token-usage surfaces. | Do not silently claim UI parity to `3ab4946...`; an explicit refresh requires prototype reconciliation and review. |
+| SRC-017 / 2026-08-24 | Product Prototyper / Git / Validation | Returned RER-007 package; `rer-007-proof.json`; `rer-007-validation.txt`; `rer-007-repository-placement-validation.txt`; local/remote/status verification | Verify AC-007–AC-009 and restore terminal completion | Direct push advanced `personal` from `c5b87df4...` to `dabc306ab...`; local and remote match with clean status. Root package has 1,940 tracked entries, no nested Git/gitlink, prior nested path absent, 1,934/1,934 approved files present, 808/808 evidence/reference images and 15/15 final references preserved, 40/40 placement and 73/73 package checks pass, build/browser checks pass, and all five unrelated sibling trees are exact. | Integrate RER-008 closure; no renewed UI review or architecture handoff. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -56,7 +57,7 @@
 | BEH-001 | Operational | User requests latest baseline; shared prototype contract governs boundary selection | Repository contains multiple frontend/client applications | `autobyteus-web` at the latest fetched `origin/personal` commit is the selected application snapshot | SRC-001 through SRC-007 | High; kickoff commit must be reverified |
 | BEH-002 | User | Existing frontend bootstrap mode in shared contract | Current UI is served by the selected `autobyteus-web` pin | Its complete observable current state is reproduced and accepted as the baseline authority | SRC-002, SRC-008, SRC-010 | High; complete inventory accepted |
 | BEH-003 | System | Prototype mock and workspace-isolation rules | Production frontend calls services/auth/persistence/integrations | Prototype replaces those boundaries deterministically, blocks external/API boundaries, and uses only synthetic local state | SRC-002, SRC-010 | High; 13/13 boundary checks pass |
-| BEH-004 | Operational | User requires owning-workspace version control and now classifies the baseline as a separate root-level project | Project is ordinary tracked content at `autobyteus-web-prototype`; the containing directory also holds five unrelated prototypes | Move only this project to repository-root `autobyteus-web-prototype` directly on `personal`; preserve approval/evidence and leave the five unrelated siblings unchanged | SRC-013–SRC-016 | High; focused correction pending |
+| BEH-004 | Operational | User requires owning-workspace version control and classifies the baseline as a separate root-level project | Project is ordinary tracked content at repository-root `autobyteus-web-prototype`; the shared prototype collection retains five unrelated projects | Root placement is directly committed/pushed on synchronized `personal`; approval/evidence and unrelated sibling trees remain unchanged | SRC-013–SRC-017 | High; correction complete |
 
 ## Relevant Codebase And Technical Facts
 
@@ -79,12 +80,13 @@
 | `corepack pnpm validate:repository-placement` | Corrected ownership, paths, and hash preservation before and after branch rebase | 31/31 checks pass: owning worktree/branch, ordinary index modes, no nested Git/gitlink, no stale rejected root, corrected manifest paths, preserved approval/source pin, 808/808 image hashes and 15/15 final-reference hashes. | AC-007–AC-009 remain met after base synchronization. | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/repository-placement/repository-placement-validation.txt` |
 | `corepack pnpm validate:final-package` | Corrected-root final package consistency | 73/73 checks pass from the relocated package. | Existing AC-001–AC-006 evidence remains valid after relocation. | Corrected prototype root |
 | Git/status and HTTP probes | Owning commit and runnable review | Branch `codex/initial-prototype-baseline` is clean at `6ed910fc...`; old external root absent; corrected-root production build serves HTTP 200 at port 3200. | Terminal locator and repository provenance are verified. | SRC-014 |
+| RER-007 proof and validation suite | Repository-root completion | Root package has 1,940 ordinary tracked entries; no nested Git/gitlink; 40/40 placement checks, 73/73 final-package checks, 7/7 prototype tests, 13/13 boundary checks, typecheck/lint/build, and 15/15 browser recaptures pass; 808/808 approved images and all five unrelated sibling trees are preserved. | AC-007–AC-009 are met without changing PPA-001 or the approved observable baseline. | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/repository-placement/rer-007-proof.json` and linked logs |
 
 ## Stakeholder And User Evidence
 
 | Source / Actor | Need, Problem, Or Constraint | Evidence Strength | Requirement Implication | Open Question |
 | --- | --- | --- | --- | --- |
-| User | Wants the latest initial `autobyteus-web` prototype baseline and no downstream production engineering; requires the accepted project at repository root and authorizes direct `personal` commit/push without a new ticket/branch | Direct clarification and explicit approval | Product prototype remains the terminal outcome; only repository placement is reopened | None |
+| User | Wants the latest initial `autobyteus-web` prototype baseline and no downstream production engineering; requires the accepted project at repository root and authorizes direct `personal` commit/push without a new ticket/branch | Direct clarification and explicit approval | Product prototype remains the terminal outcome; repository placement was reopened and is now complete | None |
 
 ## External Contracts, Standards, And Dependencies
 
@@ -106,14 +108,14 @@
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — focused repository-root placement correction`
+- Prototype needed: `Yes — completed, including repository-root placement correction`
 - Decision rationale: Product Prototyper owns the accepted canonical runnable prototype and its path-sensitive evidence. The user explicitly changes that canonical root without requesting an observable redesign.
 - Requirement / behavior IDs involved: BEH-004; REQ-008–REQ-009; AC-007–AC-009.
-- Product decisions or uncertainties to resolve: No visual or interaction decision. Move only the accepted project to repository root, rewrite active locators, preserve evidence/hashes and unrelated siblings, validate, commit, and push directly on `personal`.
+- Product decisions or uncertainties to resolve: None. The accepted project was moved to repository root, active locators were rewritten, evidence/hashes and unrelated siblings were preserved, validations passed, and the direct `personal` commit was pushed.
 - Critical journey and states: Complete current-state `autobyteus-web` inventory across browser, Electron, and mobile configurations, including known feature, locale, node, access, responsive, empty/loading/error/permission/recovery states.
 - Known constraints and non-goals: Current-state parity only; same source technology; deterministic mock boundaries; isolated run; no screenshot/hotspot substitute; no future-state redesign.
 - Alternative evidence path / next action when no prototype is used: N/A; prototype is explicitly requested.
-- Prototype request artifact / message reference: Existing PPA-001 package plus RER-007 direct-root-placement correction.
+- Prototype request artifact / message reference: Existing PPA-001 package plus completed RER-007 direct-root-placement correction and proof.
 
 ## Prototype Findings
 
@@ -144,8 +146,8 @@
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/mock-boundaries.md` | Prototype Bootstrapper | Deterministic isolation contract | Production/external boundaries | REQ-004, REQ-006; AC-004 | Final | Approved boundary evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-runbook.md` | Prototype Bootstrapper | Reproducible run/validation instructions | Canonical prototype | REQ-003, REQ-006 | Final | Operational supplement |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-scenarios.md` | Prototype Bootstrapper | Deterministic scenario catalog | Complete visible state/journey set | REQ-002, REQ-004 | Final | Approved baseline evidence |
-| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` | Product Prototyper | Repository-root canonical project | Complete approved project after move | REQ-008, REQ-009; AC-007–AC-009 | Corrected root validated; commit/push pending | Observable approval unchanged |
-| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/repository-placement-correction.md` | Product Prototyper | Repository ownership, relocation, path rewrite, validation, and hash-preservation result | Cumulative RER-004/RER-007 correction | REQ-008, REQ-009; AC-007–AC-009 | Complete through pre-commit validation | Requirements-correction evidence |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` | Product Prototyper | Repository-root canonical project | Complete approved project after move | REQ-008, REQ-009; AC-007–AC-009 | Complete at prototype commit `dabc306ab...`; pushed | Observable approval unchanged |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/repository-placement-correction.md` | Product Prototyper | Repository ownership, relocation, path rewrite, validation, and hash-preservation result | Cumulative RER-004/RER-007 correction | REQ-008, REQ-009; AC-007–AC-009 | Complete | Requirements-correction evidence |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -157,7 +159,7 @@
 | RISK-002 | Risk | A complete `autobyteus-web` baseline may be substantially larger than feature-specific prototypes. | Schedule/effort may be significant, but the existing-frontend parity contract does not permit silent scope reduction. | Complete inventory and parity evidence delivered. | Closed |
 | RISK-003 | Risk | Two unchanged pinned-source unit-harness cases fail. | Failures could be mistaken for prototype gaps. | Bootstrap report records both; exact observable journeys JRN-047 and JRN-049 pass, so they are source harness defects rather than prototype discrepancies. | Controlled / non-blocking |
 | RISK-004 | Risk | Removing or moving the external standalone repository destructively before the corrected target is verified could lose approved evidence. | The approved package is large and contains normative evidence. | Product Prototyper copied and verified 1,924/1,924 files before path rewriting, preserved 808/808 evidence/reference image hashes, committed the target, then removed the external root. | Closed |
-| RISK-005 | Risk | Removing the entire `ui-prototypes` directory would delete five unrelated tracked prototype projects. | That deletion is not required to treat `autobyteus-web-prototype` as a separate root-level project and would expand scope destructively. | Move only `autobyteus-web-prototype`; preserve and verify the other five directory trees unchanged. | Controlled by RER-007 |
+| RISK-005 | Risk | Removing the entire `ui-prototypes` directory would delete five unrelated tracked prototype projects. | That deletion is not required to treat `autobyteus-web-prototype` as a separate root-level project and would expand scope destructively. | Moved only the accepted project; proof records all five other Git trees unchanged. | Closed in RER-008 |
 
 ## Requirement Implications
 
@@ -169,7 +171,7 @@
 - Approval applies only to this pinned current-state prototype; later source refreshes or future-state changes require explicit reconciliation and approval.
 - Repository placement is requirements-defining for this ticket. The correction must preserve all approved observable evidence while replacing the rejected standalone provenance with ordinary files tracked by the existing workspace repository.
 - The new root-placement correction changes only the repository-relative project root. It explicitly does not remove the shared `ui-prototypes` directory because that directory contains five unrelated projects.
-- Direct work on `personal` is authorized only for this focused move and required active-reference updates; Product Prototyper must fetch first, keep unrelated paths unchanged, validate, commit, and push.
+- Direct work on `personal` was authorized only for this focused move and required active-reference updates; Product Prototyper fetched first, kept unrelated paths unchanged, validated, committed, and pushed successfully.
 - Git ancestry is now synchronized to latest fetched `origin/personal` at `3ab4946c...`. The approved prototype remains a reproducible snapshot of source pin `8ef282b...`; because 104 frontend files changed upstream, any request to make the observable baseline itself current requires explicit prototype refresh/reconciliation rather than silent file replacement.
 
 ## Notes For Downstream Architecture Design

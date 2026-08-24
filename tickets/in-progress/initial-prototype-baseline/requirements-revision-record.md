@@ -13,6 +13,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-005 | Corrected owning-repository prototype package returned and verified | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; DEC-003 | Repository placement correction passes; approved observable baseline and evidence remain unchanged; terminal completion restored. |
 | RER-006 | User requests latest-original-branch task base | Approved / Prototype-Only Complete | Approved / Prototype-Only Complete | BEH-004; REQ-008; AC-007; ASM-002 | Task branch rebased onto latest `origin/personal`; commit identities rewritten; prototype approval/source pin preserved. |
 | RER-007 | User requires repository-root project placement and direct `personal` correction | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-004; REQ-008–REQ-009; AC-007–AC-009; SCN-004; QR-004; ASM-003; DEC-003 | Canonical target changes to root-level `autobyteus-web-prototype`; no new ticket/branch; move, validate, commit, and push directly on `personal`; preserve the five unrelated `ui-prototypes/*` projects. |
+| RER-008 | Validated repository-root package returned and pushed | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-004; REQ-008–REQ-009; AC-007–AC-009; QR-004; RISK-005 | Root placement, active locators, evidence/hash preservation, unrelated sibling trees, validation, direct commit/push, and local/remote synchronization verified; terminal completion restored. |
 
 ## Revision Entries
 
@@ -120,3 +121,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. This remains a prototype-only repository-placement correction with no architecture or production-engineering handoff.
 - Remaining gaps, assumptions, or blocked decisions: Move the project; rewrite active roots; prove complete file/hash and unrelated-sibling preservation; rerun applicable placement, final-package, build, and browser-reference checks; commit directly on current `personal`; push; verify local/remote equality and clean status.
 - Next action or recipient: Reclassify as `Prototype Needed` and route the cumulative RER-007 package to Product Prototyper. Do not create another ticket/branch and do not route to architecture.
+
+### RER-008 — Verify repository-root placement and restore completion
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: Product Prototyper returned the completed RER-007 correction with direct push proof, complete root-placement validation, preserved observable evidence, and unchanged unrelated sibling trees.
+- Prior authoritative status (`N/A` for `RER-001`): Draft / Prototype Needed
+- Current authoritative status: Approved / Prototype-Only Complete
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-004; REQ-008–REQ-009; AC-007–AC-009; QR-004; RISK-005. No observable UI/UX requirement ID changed.
+- Why this baseline or revision was recorded: Reconcile the Product Prototyper-owned correction into the canonical requirements, close the reopened placement criteria, and record the final remote-owning commit without altering RER-007 history.
+- Canonical artifact sections changed: Document status and approval reference; current/desired behavior; acceptance outcome; owning-branch evidence; supplement status; traceability; readiness; completion classification; investigation meta, source/runtime findings, prototype decision, artifact status, and risk closure.
+- Supplemental artifacts added, changed, or removed: Canonical root is `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`. Integrated `evidence/repository-placement/rer-007-proof.json`, `rer-007-validation.txt`, `rer-007-final-reference-capture.txt`, and `rer-007-repository-placement-validation.txt` from that root.
+- Prototype evidence or product decisions incorporated: Prototype commit `dabc306abbb5c31b7643038c23996fb6c78898b3` was pushed directly to `origin/personal`; final local/remote revisions match with clean status. The root has 1,940 ordinary tracked entries, no nested `.git` or gitlink, and the prior nested project path is absent. All 1,934 approved files remain present; 808/808 approved evidence/reference images and 15/15 normative final references preserve hashes; 40/40 placement and 73/73 final-package checks pass; typecheck, lint, 7/7 prototype tests, 13/13 boundary checks, production build, HTTP 200, and 15/15 clean browser recaptures pass. All five unrelated `ui-prototypes/*` Git trees remain exact.
+- User approval impact: No renewed review is required. Root placement and direct `personal` workflow were explicitly approved, while PPA-001, the 2026-08-22 user confirmation, source pin, screenshots, fixtures, interactions, and observable behavior remain unchanged.
+- Downstream architecture impact: None. This remains a completed prototype-only package and does not authorize architecture or production engineering.
+- Remaining gaps, assumptions, or blocked decisions: None for the approved prototype-only boundary.
+- Next action or recipient: Commit and push this requirements-owned RER-008 reconciliation on `personal`; apply terminal handoff rules. Do not route to architecture.
