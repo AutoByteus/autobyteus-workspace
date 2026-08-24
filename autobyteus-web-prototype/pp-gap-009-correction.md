@@ -6,7 +6,7 @@
 - Mode: `Correction`
 - Requirements revision: `RER-009`
 - Source authority: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Prototype root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Branch: `codex/initial-prototype-baseline`
 - Result: **Completed correction candidate at Bootstrapper return; subsequently accepted under `PPA-002` and user-confirmed on 2026-08-24.**
 - Unresolved IDs within the requested correction: **none**
@@ -47,7 +47,7 @@ All records are synthetic (`team-run-created-fixture`, `team-member-researcher-c
   - `JRN-050-C`: chosen-workspace, launch-ready draft.
   - `JRN-050-D`: launched Team selected/projected in the chosen workspace tree.
 
-Machine results: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/gap-009-summary.json` and `gap-009-results.json`.
+Machine results: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/gap-009-summary.json` and `gap-009-results.json`.
 
 Result: **4/4 checkpoints pass**. Each checkpoint has exact semantic state, exact Pinia contract, **byte-identical source/prototype screenshots**, and zero source/prototype browser errors. The final contract proves:
 
@@ -61,10 +61,10 @@ Result: **4/4 checkpoints pass**. Each checkpoint has exact semantic state, exac
 
 A direct Browser Tool replay independently exercised the same complete source and prototype journey. Final screenshots are byte-identical SHA-256 `bcb83aeea621dbf184691e1a57c02a1415854422cd6ca635e6b06ad0774e0fb4`:
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png`
 
-Direct replay state record: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt`.
+Direct replay state record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt`.
 
 ## Validation
 

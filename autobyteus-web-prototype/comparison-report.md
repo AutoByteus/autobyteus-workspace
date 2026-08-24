@@ -35,12 +35,12 @@ Electron conditions use the same deterministic browser-injected host bridge in t
 
 Machine evidence:
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/comparison/browser-parity-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/correction/correction-parity-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/matrix/route-matrix-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/correction-matrix/correction-parity-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/comparison/browser-parity-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction/correction-parity-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/matrix/route-matrix-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction-matrix/correction-parity-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
 
 ## Interaction Suites
 
@@ -53,10 +53,10 @@ Machine evidence:
 
 Journey evidence:
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/interactions/browser-journey-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/correction-journeys/correction-journey-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/interactions/browser-journey-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/correction-journeys/correction-journey-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/gap-009-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
 
 ## Discovery And Presentation Completeness
 
@@ -78,8 +78,8 @@ The final 48-row correction suite and both full matrices have zero source and ze
 
 Browser Tool evidence includes the retained production-build reviews plus a new direct RER-009 replay at the correction dev URLs:
 
-- Electron/internal Extensions: DOM, controls, bounds, installed/enabled status and native-only actions inspected; screenshot `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/manual/canonical-review-electron-internal-extensions.png`.
-- Populated team workspace: scenario/context, conversation, status, Files tree/viewer, workspace tabs and zero visible alerts inspected; screenshot `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/manual/canonical-review-workspace-team.png`.
+- Electron/internal Extensions: DOM, controls, bounds, installed/enabled status and native-only actions inspected; screenshot `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-electron-internal-extensions.png`.
+- Populated team workspace: scenario/context, conversation, status, Files tree/viewer, workspace tabs and zero visible alerts inspected; screenshot `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-workspace-team.png`.
 - RER-009 complete Team launch: exact source and prototype journeys were independently replayed through Browser Tool; final state/selection/draft/projection contracts match and screenshots are byte-identical at `evidence/gap-009/manual-{source,prototype}-complete-journey.png`.
 - PP-GAP-010 member focus: the complete source and prototype journeys were replayed through Browser Tool through `/writer` activation; focus, projection, `aria-current`, center header and screenshots match exactly at `evidence/gap-010/manual-{source,prototype}-writer-focus.png`.
 

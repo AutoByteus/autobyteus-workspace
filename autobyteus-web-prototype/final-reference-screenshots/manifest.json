@@ -9,7 +9,7 @@
     {
       "id": "VIS-001",
       "label": "Agents — populated browser/external-node catalog",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-001-agents-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-001-agents-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -28,7 +28,7 @@
     {
       "id": "VIS-002",
       "label": "Agents — recoverable catalog error",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-002-agents-error-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-002-agents-error-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -47,7 +47,7 @@
     {
       "id": "VIS-003",
       "label": "Electron/internal node — installed Voice Input extension",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-003-electron-extensions-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-003-electron-extensions-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -66,7 +66,7 @@
     {
       "id": "VIS-004",
       "label": "Electron/internal node — server failure details and recovery",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-004-electron-server-error-recovery-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-004-electron-server-error-recovery-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -85,7 +85,7 @@
     {
       "id": "VIS-005",
       "label": "Active agent workspace — conversation and Files viewer",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-005-agent-workspace-files-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-005-agent-workspace-files-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -104,7 +104,7 @@
     {
       "id": "VIS-006",
       "label": "Agent workspace — progressive streaming response",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-006-agent-workspace-streaming-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-006-agent-workspace-streaming-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -123,7 +123,7 @@
     {
       "id": "VIS-007",
       "label": "Active team workspace — messages and delegated work",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-007-team-workspace-messages-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-007-team-workspace-messages-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -142,7 +142,7 @@
     {
       "id": "VIS-008",
       "label": "Team workspace — reopened historical run",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-008-team-workspace-history-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-008-team-workspace-history-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -161,7 +161,7 @@
     {
       "id": "VIS-009",
       "label": "Managed Messaging settings",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-009-messaging-settings-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-009-messaging-settings-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -180,7 +180,7 @@
     {
       "id": "VIS-010",
       "label": "Agents — narrow Simplified Chinese layout",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-010-agents-narrow-zh.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-010-agents-narrow-zh.png",
       "viewport": {
         "width": 390,
         "height": 844
@@ -199,7 +199,7 @@
     {
       "id": "VIS-011",
       "label": "Paired mobile — active agent chat",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-011-mobile-agent-chat-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-011-mobile-agent-chat-en.png",
       "viewport": {
         "width": 390,
         "height": 844
@@ -218,7 +218,7 @@
     {
       "id": "VIS-012",
       "label": "Paired mobile — team messages and reference viewer",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-012-mobile-team-reference-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-012-mobile-team-reference-en.png",
       "viewport": {
         "width": 390,
         "height": 844
@@ -237,7 +237,7 @@
     {
       "id": "VIS-013",
       "label": "Paired mobile — permission denied and recovery guidance",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-013-mobile-permission-denied-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-013-mobile-permission-denied-en.png",
       "viewport": {
         "width": 390,
         "height": 844
@@ -256,7 +256,7 @@
     {
       "id": "VIS-014",
       "label": "Applications disabled — route recovery to Agents",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-014-applications-disabled-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-014-applications-disabled-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -275,7 +275,7 @@
     {
       "id": "VIS-015",
       "label": "Agents — empty catalog",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-015-agents-empty-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-015-agents-empty-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -294,7 +294,7 @@
     {
       "id": "VIS-016",
       "label": "Agent Team launch — chosen workspace and enabled Run Team action",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-016-team-launch-ready-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-016-team-launch-ready-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900
@@ -313,7 +313,7 @@
     {
       "id": "VIS-017",
       "label": "Launched Agent Team — writer selected under the chosen workspace",
-      "imagePath": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/VIS-017-team-launched-writer-focused-desktop-en.png",
+      "imagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/VIS-017-team-launched-writer-focused-desktop-en.png",
       "viewport": {
         "width": 1440,
         "height": 900

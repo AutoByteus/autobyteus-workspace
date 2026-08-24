@@ -1,6 +1,6 @@
 # Prototype Evidence Index
 
-Package `initial-prototype-baseline`, current requirements revision `RER-009`
+Package `initial-prototype-baseline`, current requirements revision `RER-011`
 (baseline pin established under `RER-002`; prior reviewed evidence preserved), pinned source
 `8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: accepted user-approved current-state baseline including the RER-009 `PP-GAP-009`/`PP-GAP-010` correction under `PPA-002`.
 
@@ -8,20 +8,21 @@ Package `initial-prototype-baseline`, current requirements revision `RER-009`
 
 | Artifact | Purpose |
 | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-bootstrap-report.md` | Completion status, correction trace, implementation and quality gate |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-009-correction.md` | Focused RER-009 root cause, implementation, stable IDs, exact evidence, validation and scope record |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-010-correction.md` | Focused member-selection/focus root cause, lightweight correction, `WKS-023`/`JRN-050-E`, exact evidence and scope record |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/parity-inventory.md` | Stable row/journey inventory and exact evidence mapping |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/comparison-report.md` | Controlled comparison conditions, totals and conclusion |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario/context catalog |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-runbook.md` | Install, run, select/reset and reproduce instructions |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/mock-boundaries.md` | Production-capability boundary and local simulation record |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Cumulative Product Prototyper acceptance and user-confirmation record through `PPA-002` |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved current-state supplement updated for `PPA-002` and `JRN-050` |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/README.md` | Post-confirmation normative visual inventory `VIS-001`–`VIS-017` |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final capture routes, scenarios, contexts, viewports, hashes and browser-boundary results |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/product-prototyper-review/rer-009-direct-review.txt` | Direct Product Prototyper replay, `PPA-002`, and user-confirmation record |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/repository-placement-correction.md` | Cumulative RER-004/RER-007 owning-repository placement, integrity and provenance record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-bootstrap-report.md` | Completion status, correction trace, implementation and quality gate |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/pp-gap-009-correction.md` | Focused RER-009 root cause, implementation, stable IDs, exact evidence, validation and scope record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/pp-gap-010-correction.md` | Focused member-selection/focus root cause, lightweight correction, `WKS-023`/`JRN-050-E`, exact evidence and scope record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/parity-inventory.md` | Stable row/journey inventory and exact evidence mapping |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/comparison-report.md` | Controlled comparison conditions, totals and conclusion |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario/context catalog |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-runbook.md` | Install, run, select/reset and reproduce instructions |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/mock-boundaries.md` | Production-capability boundary and local simulation record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Cumulative Product Prototyper acceptance and user-confirmation record through `PPA-002` |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved current-state supplement updated for `PPA-002` and `JRN-050` |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` | Post-confirmation normative visual inventory `VIS-001`–`VIS-017` |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final capture routes, scenarios, contexts, viewports, hashes and browser-boundary results |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/product-prototyper-review/rer-009-direct-review.txt` | Direct Product Prototyper replay, `PPA-002`, and user-confirmation record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/repository-placement-correction.md` | Cumulative RER-004/RER-007 owning-repository placement, integrity and provenance record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/personal-integration-record.md` | RER-011 rebase, canonical-locator, validation and direct-personal integration record |
 
 ## Rendered Parity Evidence
 
@@ -104,18 +105,22 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 | `evidence/repository-placement/rer-007-final-reference-capture.txt` | Repository-root browser recapture of all normative references |
 | `evidence/repository-placement/rer-007-repository-placement-validation.txt` | 40/40 root/top-level/index, stale-path, file/hash and sibling-tree checks pass |
 | `evidence/repository-placement/rer-007-proof.json` | Machine-readable preservation, ownership, stale-reference and sibling-tree proof |
+| `evidence/integration/rer-011-rebase-preservation.json` | Six-commit patch/tree preservation, final-reference hashes, unrelated sibling trees and active-locator proof |
+| `evidence/integration/rer-011-initial-rebase-prepromotion-validation.txt` | Historical runtime log for the initial rebase validation before a late remote advance was detected |
+| `evidence/integration/rer-011-initial-candidate-validation.txt` | Historical locator-candidate validation against the initial fetched remote head |
+| `evidence/integration/rer-011-final-rebase-prepromotion-validation.txt` | Terminal task-worktree runtime log for the final rebase: 20/20, 25/25, 86/86, production build and HTTP 200 |
 
 ## Manual Browser-Tool Evidence
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/manual/canonical-review-electron-internal-extensions.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/manual/canonical-review-workspace-team.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/manual/canonical-review-agents.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-electron-internal-extensions.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-workspace-team.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/manual/canonical-review-agents.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt`
 
 ## Historical Review Evidence
 
@@ -125,4 +130,4 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 
 These two files substantiate the original rejected baseline and are not current evidence. The corrected `HOST-*` rows and manual Electron screenshot demonstrate that the fallback no longer occurs.
 
-Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review, but RER-009 corrections reopened terminal completeness for `PP-GAP-009` and then `PP-GAP-010`. The focused correction evidence above—not the historical final references—substantiates the launch and member-focus journey. No final reference or `ui-ux-spec.md` artifact was regenerated; renewed Product Prototyper inspection and user review remain pending.
+Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review. RER-009 correction evidence and post-confirmation `VIS-016`/`VIS-017` substantiate the launch and member-focus journey accepted under `PPA-002` on 2026-08-24. RER-011 changes repository provenance only; no renewed UI review is required because all approved visual hashes and observable behavior remain exact.

@@ -3,11 +3,12 @@
 ## Review Identity
 
 - Package: `initial-prototype-baseline`
-- Requirements revisions: `RER-002` baseline acceptance and `RER-009` focused
-  Agent Team launch/member-selection parity acceptance
+- Requirements revisions: `RER-002` baseline acceptance, `RER-009` focused
+  Agent Team launch/member-selection parity acceptance, and `RER-011`
+  non-observable direct-`personal` integration
 - Review dates: `2026-08-22` and `2026-08-24`
 - Reviewed source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Canonical prototype root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Canonical prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Canonical review URL: `http://127.0.0.1:3210`
 - Original outcome: **Baseline Needed — not accepted**
 - Corrected-baseline outcome: **Accepted (`PPA-001`)**
@@ -104,8 +105,8 @@ This restriction governed the original return. The correction review below recor
 
 ## Direct Review Evidence
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/product-prototyper-review/direct-browser-probe.txt`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/product-prototyper-review/electron-internal-context-fallback-extensions.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/product-prototyper-review/direct-browser-probe.txt`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/product-prototyper-review/electron-internal-context-fallback-extensions.png`
 
 ## Corrected Baseline Review And Acceptance
 
@@ -114,7 +115,7 @@ This restriction governed the original return. The correction review below recor
 - Acceptance ID: `PPA-001`
 - Acceptance date: `2026-08-22`
 - Accepted boundary: complete current-state `autobyteus-web` experience at pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Accepted prototype: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Accepted prototype: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Accepted review URL: `http://127.0.0.1:3200`
 - Intentional current-state deltas: none
 
@@ -233,9 +234,10 @@ without a new ticket, branch, worktree, repository, submodule or gitlink.
 
 At the RER-007 placement stage, the approved project was placed at the owning
 repository root under repository-relative `autobyteus-web-prototype` on
-`personal`. That placement history is subsequently superseded for active
-RER-009 correction work by the mandatory isolated ticket worktree documented
-below. The five unrelated projects remaining in `ui-prototypes/` retained their
+`personal`. That placement was temporarily superseded for RER-009 correction
+and review by the mandatory isolated ticket worktree documented below, then
+restored as the canonical checkout through the separately authorized RER-011
+integration. The five unrelated projects remaining in `ui-prototypes/` retained their
 original Git-tree IDs. RER-007 did not reopen UI review or change the
 2026-08-22 user approval.
 
@@ -249,7 +251,7 @@ original Git-tree IDs. RER-007 did not reopen UI review or change the
 - Corrected gaps: `PP-GAP-009` and `PP-GAP-010`
 - Corrected inventory: `WKS-022`, `WKS-023`, and `JRN-050-A`–`JRN-050-E`
 - Accepted root:
-  `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+  `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Accepted branch/Bootstrapper correction commit:
   `codex/initial-prototype-baseline` /
   `da54757685e648ec068f44050fbad0217b334c5c`
@@ -302,3 +304,20 @@ production architecture, or production-engineering work.
 The focused RER-009 current-state correction is **accepted, user-confirmed, and
 finalized** under `PPA-002`. Known failed, missing, unknown or unsubstantiated
 UI inventory IDs: **none**.
+
+## RER-011 Direct Personal Integration
+
+The user separately authorized the already accepted cumulative package to be
+integrated **directly on the personal branch**. This is repository provenance
+work only: PPA-001/PPA-002, the source pin, all visible behavior, and
+VIS-001–VIS-017 remain unchanged and no renewed UI review is required.
+
+The complete six-commit task history was rebased onto the freshly fetched
+`origin/personal` head while preserving every patch identity and the exact
+pre-rebase prototype and requirements trees. The canonical active project root
+is now `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
+on `personal`. Pre-promotion and post-promotion validation, artifact hashes,
+unrelated-tree equivalence, and final Git ref equality are recorded by
+`personal-integration-record.md`, `evidence/integration/`, and the terminal
+handoff proof. This integration does not change the user-confirmed product
+decision.

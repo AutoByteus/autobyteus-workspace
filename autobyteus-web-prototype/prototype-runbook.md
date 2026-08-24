@@ -3,13 +3,13 @@
 ## Identity
 
 - Package: `initial-prototype-baseline`
-- Revision: `RER-009` focused current-experience correction; baseline pin established under `RER-002`
+- Revision: `RER-011` canonical integration of the approved `RER-009` correction; baseline pin established under `RER-002`
 - Status: approved current-state baseline including the user-confirmed RER-009 correction (`PPA-002`)
 - Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Selected source repository: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
-- Prototype: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
-- Owning worktree: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline`
-- Owning branch: `codex/initial-prototype-baseline`
+- Prototype: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
+- Owning repository: `/home/autobyteus/workspace/autobyteus-workspace`
+- Owning branch: `personal`
 - Canonical review URL: <http://127.0.0.1:3210>
 
 The selected source worktree may be newer than the approved pin. Source-versus-prototype evidence must run from an exact export or detached worktree at `8ef282b...`; do not reset the selected source worktree and do not treat its current HEAD as correction authority.
@@ -19,7 +19,7 @@ The selected source worktree may be newer than the approved pin. Source-versus-p
 Development:
 
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm install --ignore-workspace --frozen-lockfile
 corepack pnpm dev --port 3210
 ```
@@ -27,7 +27,7 @@ corepack pnpm dev --port 3210
 Production-build review on any free loopback port:
 
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm build
 PORT=3220 HOST=127.0.0.1 node .output/server/index.mjs
 ```
@@ -120,7 +120,7 @@ location.assign('/agents?view=list')
 ## Prototype Validation
 
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm typecheck
 corepack pnpm lint
 corepack pnpm test
@@ -149,7 +149,7 @@ Use three separate terminals:
 
 ```bash
 # 1. Controlled source-observation node
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 PROTOTYPE_MOCK_PORT=4311 corepack pnpm source-observation:start
 ```
 
@@ -163,14 +163,14 @@ corepack pnpm exec nuxt dev --host 127.0.0.1 --port 3110
 
 ```bash
 # 3. Prototype
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 corepack pnpm dev --port 3210
 ```
 
 Then run:
 
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 SOURCE_BASE_URL=http://127.0.0.1:3110 \
 PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
 MOCK_BASE_URL=http://127.0.0.1:4311 \
@@ -184,7 +184,7 @@ Expected result: `JRN-050-A`–`JRN-050-E` all pass; `gap-010-summary.json` repo
 After explicit user confirmation and from the production-build review server:
 
 ```bash
-cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+cd /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
 PROTOTYPE_BASE_URL=http://127.0.0.1:3210 corepack pnpm capture:final-references
 corepack pnpm validate:gap-009-package
 corepack pnpm validate:gap-010-package

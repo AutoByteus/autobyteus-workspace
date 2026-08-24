@@ -6,7 +6,7 @@
 - Request: `Current-Experience Bootstrap Correction`
 - Current requirements revision: `RER-009` (approved source pin established under `RER-002`)
 - Approved source authority: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Prototype root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Result: **Completed correction candidate at Bootstrapper return; subsequently accepted under `PPA-002` and user-confirmed on 2026-08-24.**
 - Scope: only the missing `JRN-050-E` member-focus checkpoint; the accepted source pin and earlier passing evidence were preserved.
 
@@ -31,8 +31,8 @@ The visible transition remains the exact pinned-source flow: activate `/writer` 
 
 Machine evidence:
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/gap-010-summary.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-results.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/gap-010-summary.json`
 
 Result: **5/5 `JRN-050-A`–`E` checkpoints pass**. Every checkpoint has exact semantic state, exact Pinia contract, byte-identical source/prototype screenshots, and zero browser errors. `JRN-050-E` proves:
 
@@ -48,9 +48,9 @@ Automated final screenshot SHA-256 for both source and prototype: `2c3abd02848b1
 
 The complete source and prototype journey was also replayed independently through Browser Tool. Terminal state was exact in both runtimes, and the screenshots are byte-identical:
 
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png`
-- `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt`
 
 Both manual screenshots SHA-256: `7d3cde0c06f3004e0d8657afb17b081ad27d220bf9816a610a976999f0df0a9f`.
 

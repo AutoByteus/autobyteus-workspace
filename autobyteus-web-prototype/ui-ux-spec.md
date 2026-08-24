@@ -19,16 +19,16 @@ current-state evidence.
 - Related requirements revisions: `RER-002` established the approved UI/UX
   basis; `RER-004` and `RER-007` corrected repository placement without an
   observable delta; `RER-009` restored the pinned-source Agent Team launch and
-  launched-member selection journey.
+  launched-member selection journey; and `RER-011` authorizes the final
+  non-observable integration of that accepted package on `personal`.
 - Product Prototyper acceptance references: `PPA-001` for the complete original
   baseline and `PPA-002` for the focused `RER-009` correction.
 - Source application: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
 - Source authority: `origin/personal` pinned at bootstrap kickoff to
   `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Runnable prototype root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Runnable prototype root: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Owning repository/branch:
-  `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` /
-  `codex/initial-prototype-baseline`
+  `/home/autobyteus/workspace/autobyteus-workspace` / `personal`
 - Review URL: <http://127.0.0.1:3210>
 - Explicit user-confirmation references: user message **“approved”** on
   `2026-08-22`, immediately following the Product Prototyper request to review
@@ -86,7 +86,8 @@ current-state evidence.
 | `AC-010` | Agent Teams catalog **Run** must create the exact valid Team draft and navigate to `/workspace` without browser error. | `JRN-050-A`–`JRN-050-B`; `VIS-016`. |
 | `AC-011` | **Run Team** must create and select exactly one deterministic synthetic Team context under the chosen workspace, with the Team and configured members selectable. | `WKS-022`, `WKS-023`, `JRN-050-C`–`JRN-050-E`; `VIS-017`. |
 | `AC-012` | Terminal validation must enforce the full controlled source-versus-prototype lifecycle rather than a pre-seeded state. | `JRN-050-A`–`JRN-050-E`, `validate:gap-010`, `validate:final-package`. |
-| `AC-013` | The correction and final prototype package remain isolated to the specified ticket worktree and branch. | Current root/branch identity, clean Git proof and no `personal` push. |
+| `AC-013` | The RER-009 correction and review remained isolated to the specified ticket worktree and branch until separately authorized integration. | Preserved task-branch history and pre-integration Git evidence. |
+| `AC-014`, `AC-015` | Direct `personal` integration must preserve concurrent remote history and every approved artifact without merge/force push or observable change. | RER-011 rebase-preservation record, focused/final/build/HTTP validation, unchanged VIS-001–VIS-017 hashes, and final ref-equality proof. |
 | `QR-001` | Preserve observable keyboard, focus, semantic and accessibility intent. | `JRN-002`, `JRN-004`, `JRN-009`, `JRN-013`, `JRN-022`, `JRN-030`, `JRN-045` and `DISC-011`. |
 | `QR-002` | Reproduce the same result for the same scenario/context/action sequence. | Deterministic scenario catalog, screenshot/body hashes and resettable local state. |
 | `QR-003` | Use no production credentials, production/customer data or service. | `mock-boundaries.md` and `validate:boundaries` pass. |
@@ -483,7 +484,7 @@ interaction affordances and responsive behavior are requirements-defining.
 
 ## Linked Prototype Evidence
 
-- Runnable prototype: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Runnable prototype: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Production-build review URL: <http://127.0.0.1:3210>
 - Run instructions: `prototype-runbook.md`
 - Accepted baseline review: `product-prototyper-baseline-review.md` (`PPA-001`, `PPA-002`)
@@ -500,6 +501,8 @@ interaction affordances and responsive behavior are requirements-defining.
   `evidence/product-prototyper-review/rer-009-direct-review.txt`
 - RER-009 exact correction: `pp-gap-010-correction.md` and
   `evidence/gap-010/gap-010-summary.json`
+- RER-011 integration record: `personal-integration-record.md` and
+  `evidence/integration/rer-011-rebase-preservation.json`
 - Relevant stable IDs: `ROUTE-001`–`ROUTE-041`, `CFG-001`–`CFG-011`,
   `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-023`,
   `MOB-001`–`MOB-014`, `JRN-001`–`JRN-050`, `DISC-001`–`DISC-017`,

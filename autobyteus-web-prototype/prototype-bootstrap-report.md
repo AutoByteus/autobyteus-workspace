@@ -21,7 +21,7 @@
 | Exact approved source commit | `8ef282ba77705180d985e7000d801f0e0068cdc1` |
 | Correction source observation | exact `git archive` export of the approved pin; source dev URL `http://127.0.0.1:3110` |
 | Controlled source node | `http://127.0.0.1:4311` (synthetic, loopback only) |
-| Prototype root | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype` |
+| Prototype root | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` |
 | Prototype correction review URL | `http://127.0.0.1:3210` |
 | Review command | `corepack pnpm dev --port 3210` |
 | Technology | Nuxt 3, Vue 3, TypeScript, Pinia, Tailwind, pinned source presentation conventions |
@@ -108,16 +108,16 @@ The initial build command detected the intentionally running prototype dev serve
 
 ## Durable Artifacts
 
-- Correction report: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-009-correction.md`
-- Current correction report: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/pp-gap-010-correction.md`
-- Inventory: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/parity-inventory.md`
-- Comparison report: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/comparison-report.md`
-- Evidence index: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence-index.md`
-- Scenarios: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-scenarios.md`
-- Runbook: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-runbook.md`
-- Mock boundary: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/mock-boundaries.md`
-- Machine evidence: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-009`
-- Current machine evidence: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/gap-010`
+- Correction report: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/pp-gap-009-correction.md`
+- Current correction report: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/pp-gap-010-correction.md`
+- Inventory: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/parity-inventory.md`
+- Comparison report: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/comparison-report.md`
+- Evidence index: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence-index.md`
+- Scenarios: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-scenarios.md`
+- Runbook: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/prototype-runbook.md`
+- Mock boundary: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/mock-boundaries.md`
+- Machine evidence: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-009`
+- Current machine evidence: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/gap-010`
 
 ## Quality-Gate Conclusion
 

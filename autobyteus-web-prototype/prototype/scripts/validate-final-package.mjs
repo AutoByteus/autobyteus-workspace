@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto'
 import { readFile, readdir, stat } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 
 const root = resolve(new URL('../..', import.meta.url).pathname)
 const sourceCommit = '8ef282ba77705180d985e7000d801f0e0068cdc1'
-const currentRoot = '/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype'
+const currentRoot = '/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype'
 const expectedVisualIds = Array.from({ length: 17 }, (_, index) => `VIS-${String(index + 1).padStart(3, '0')}`)
 
 const read = path => readFile(resolve(root, path), 'utf8')
@@ -28,7 +28,7 @@ const plugin = await read('plugins/00.prototype-state.client.ts')
 check(uiSpec.includes('- Status: **Approved**'), 'ui-ux-spec.md status is Approved')
 check(uiSpec.includes('**“done. i checked. thanks”** on `2026-08-24`'), 'explicit RER-009 user-confirmation reference is recorded')
 check(uiSpec.includes(sourceCommit), 'UI/UX specification records the pinned source commit')
-check(uiSpec.includes(currentRoot), 'UI/UX specification records the current ticket-worktree prototype root')
+check(uiSpec.includes(currentRoot), 'UI/UX specification records the canonical personal-checkout prototype root')
 check(uiSpec.includes('`PPA-002`'), 'UI/UX specification records the focused RER-009 Product Prototyper acceptance')
 check(review.includes('approved and finalized'), 'Product Prototyper final decision is recorded')
 check(inventory.includes('user-approved current-state baseline'), 'parity inventory reports accepted user-approved status')
@@ -77,7 +77,7 @@ check(manifest.approvalReference.includes('done. i checked. thanks'), 'final-ref
 check(manifest.results.map(row => row.id).join(',') === expectedVisualIds.join(','), 'final visual IDs are complete and ordered')
 for (const row of manifest.results) {
   check(row.browserErrors.length === 0 && row.externalResources.length === 0, `${row.id} has no browser errors or external resources`)
-  const image = await readFile(row.imagePath)
+  const image = await readFile(resolve(root, 'final-reference-screenshots', basename(row.imagePath)))
   check(sha256(image) === row.screenshotSha256, `${row.id} screenshot hash matches the manifest`)
   check(uiSpec.includes(`\`${row.id}\``), `${row.id} is mapped in ui-ux-spec.md`)
 }
