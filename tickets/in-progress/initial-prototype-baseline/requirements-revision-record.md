@@ -16,6 +16,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-008 | Validated repository-root package returned and pushed | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-004; REQ-008–REQ-009; AC-007–AC-009; QR-004; RISK-005 | Root placement, active locators, evidence/hash preservation, unrelated sibling trees, validation, direct commit/push, and local/remote synchronization verified; terminal completion restored. |
 | RER-009 | User reports broken Agent Team **Run** journey and mandates worktree isolation | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-005; REQ-010–REQ-013; AC-010–AC-013; SCN-005; ASM-004; DEC-004; RISK-006 | Controlled reproduction confirms catalog **Run** throws and launch would no-op; source pin supports the full left-tree outcome; focused prototype correction and enforced end-to-end evidence are required in the existing worktree. |
 | RER-010 | PPA-002 focused correction, exact terminal evidence, and explicit user confirmation | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-005; REQ-010–REQ-013; AC-010–AC-013; SCN-005; RISK-006 | `JRN-050-A`–`JRN-050-E`, VIS-016/VIS-017, focused/final validation, clean worktree provenance and direct user review close the parity gap; no architecture handoff applies. |
+| RER-011 | User authorizes direct integration on `personal`; remote has advanced | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007 | Preserve concurrent remote history by rebasing and revalidating the cumulative approved task package, then fast-forward and push `personal` directly with final ref equality. |
 
 ## Revision Entries
 
@@ -168,3 +169,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. DEC-002 remains authoritative; this prototype-only ticket terminates at the accepted runnable baseline.
 - Remaining gaps, assumptions, or blocked decisions: None within the approved current-state prototype boundary. The two previously recorded pinned-source unit-harness failures remain non-blocking because their observable obligations pass JRN-047/JRN-049. Integration from the task branch into `personal` remains a separate user-authorized action and is not part of RER-010.
 - Next action or recipient: Commit this requirements-owned reconciliation on `codex/initial-prototype-baseline`; apply dynamic handoff rules. Do not route to architecture and do not modify/push `personal` or `origin/personal`.
+
+### RER-011 — Authorize safe direct integration on personal
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: After RER-010 completion, the user clarified that this product-prototype-only package may be pushed **“directly on the personal branch.”** A fresh fetch then showed four new `origin/personal` commits not present in the task branch.
+- Prior authoritative status (`N/A` for `RER-001`): Approved / Prototype-Only Complete
+- Current authoritative status: Draft / Prototype Needed
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007.
+- Why this baseline or revision was recorded: Convert the user's separate integration authorization into a safe, testable prototype-owner task without losing concurrent remote history or weakening the approved PPA-002 package.
+- Canonical artifact sections changed: Document status/approval; BEH-006; in/out scope; REQ-014–REQ-015; AC-014–AC-015; SCN-006; traceability; readiness/completion; investigation meta/clarifications/source log/behavior/prototype decision/risk/implications.
+- Supplemental artifacts added, changed, or removed: No new behavior-defining supplement. The cumulative PPA-002 prototype and RER-010 requirements package remain authoritative.
+- Prototype evidence or product decisions incorporated: Fresh `origin/personal` is `389748b0b9f0dea051aaed18641de131cf0adbbb`; pre-RER-011 task head `f72adfce...` is four commits behind/five ahead from merge-base `52b4be02...`; remote-only and task-only changed-path sets do not intersect. The approved source pin remains `8ef282ba...`.
+- User approval impact: Direct `personal` integration is explicitly authorized. No renewed UI/UX review is required if rebase/integration preserves PPA-001/PPA-002, stable evidence and observable behavior exactly.
+- Downstream architecture impact: None. This is prototype repository integration, not architecture or production engineering.
+- Remaining gaps, assumptions, or blocked decisions: Rebase cumulative task history onto the newest fetched remote; validate hashes/history/package/build/HTTP; fast-forward clean local `personal`; push without force; prove task/local/remote equality and clean status.
+- Next action or recipient: Route `Prototype Needed` under dynamic handoff rules to Product Prototyper for direct `personal` integration. Do not route to architecture.

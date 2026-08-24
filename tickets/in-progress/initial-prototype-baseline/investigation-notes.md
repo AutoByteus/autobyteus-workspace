@@ -8,9 +8,9 @@
 - Task worktree / branch: Existing isolated worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on `codex/initial-prototype-baseline`. The user explicitly requires worktree isolation for RER-009; `personal` and `origin/personal` must not be modified without later separate authorization.
 - Base or reference revision: Worktree fast-forwarded to fetched `origin/personal` `52b4be02ea793f2071fe5a63a94664ab25196433`. Observable parity remains pinned to source commit `8ef282ba77705180d985e7000d801f0e0068cdc1` because that pin contains the required Agent Team launch behavior.
 - Bootstrap result: Complete current-state prototype accepted cumulatively under PPA-001 and PPA-002. The focused Agent Team launch correction passes exact source/prototype `JRN-050-A`–`JRN-050-E`, adds normative VIS-016/VIS-017, and is explicitly user-confirmed.
-- Bootstrap blocker: None. AC-010–AC-013 are satisfied; no known failed, missing, unknown, discrepant, or unsubstantiated UI inventory ID remains.
-- Current requirements revision ID: `RER-010`
-- Investigation status: Complete. Product-prototype-only terminal outcome is cleanly committed in the required task worktree; `personal` and `origin/personal` remain unchanged. No architecture or production engineering is authorized.
+- Bootstrap blocker: Observable prototype blockers remain none. Operational AC-014–AC-015 are open because `origin/personal` advanced after PPA-002 and must be preserved before the newly authorized direct push.
+- Current requirements revision ID: `RER-011`
+- Investigation status: Focused direct-personal integration packet ready for Product Prototyper. No architecture or production engineering is authorized.
 
 ## Initial Request And Clarifications
 
@@ -19,6 +19,7 @@
 - User-supplied facts and constraints: An initial prototype baseline is the requested outcome; latest source is required; completion is terminal at the accepted product prototype.
 - Later placement constraint: Do not create another ticket or branch. Move the project directly on `personal`, commit, and push. Treat it as a separate root-level project.
 - Latest correction constraint: For the newly reported Agent Team launch defect, use the existing task worktree rather than editing `personal`. A reviewer must be able to click **Run** for a team, complete **Run Team**, and see/select that team in the workspace left tree.
+- Latest integration authorization: User clarified **“directly on the personal branch”** after PPA-002/RER-010 completion. This is the separate authorization anticipated by REQ-013; it does not authorize force-push, concurrent-history loss, source refresh, or new product changes.
 - Initial ambiguity: Resolved as `autobyteus-web`, following the prior recommendation and user's latest-source confirmation. A kickoff fetch must translate “latest” into an exact reproducible commit.
 
 ## Product And Domain Understanding
@@ -56,6 +57,8 @@
 | SRC-021 / 2026-08-24 | Pinned source, prototype code, tests, and evidence audit | `AgentTeamList.vue`, `RunConfigPanel.vue`, `agentTeamRunStore.ts`, `runHistoryReadModel.ts`, `teamRunConfigStore.ts`, `plugins/00.prototype-state.client.ts`, source tests, scenario/journey inventories | Determine desired behavior, root causes, correction boundary, and why prior validation passed | Pinned source implements prepare/navigate/launch/register/select/tree projection. Prototype JSON hydration corrupts Map-backed draft state; `agentTeamRun.launchDraft` is replaced by a no-op; existing 49 journeys include pre-seeded team states but no catalog-to-launch-to-tree journey. | Record REQ-010–REQ-013 and require a focused correction plus terminal controlled journey. |
 | SRC-022 / 2026-08-24 | Product Prototyper / User | PPA-002 return; `ui-ux-spec.md`; `product-prototyper-baseline-review.md`; direct-review log; user response **“done. i checked. thanks”** | Determine whether RER-009 can close | User directly reviewed Run -> team draft -> synthetic workspace -> Run Team -> exactly one Team -> expand/collapse -> writer/researcher selection and confirmed completion immediately after the approval request. Product Prototyper accepted the focused correction under PPA-002. | Integrate PPA-002, new stable IDs/references, approval, and commit provenance into RER-010. |
 | SRC-023 / 2026-08-24 | Independent command/runtime verification | `corepack pnpm validate:gap-009-package`; `validate:gap-010-package`; `validate:final-package`; Git ref/status checks; HTTP probe at port 3210 | Verify terminal evidence and worktree isolation | 20/20 PP-GAP-009, 25/25 PP-GAP-010 and 86/86 final-package checks pass; review URL returns HTTP 200; worktree is clean at `3bce9d23...`; task branch is four commits ahead while `personal` and `origin/personal` both remain `52b4be02...`. | Close AC-010–AC-013 and the prototype-only package; do not route to architecture. |
+| SRC-024 / 2026-08-24 | User | Follow-up clarification **“directly on the personal branch”** | Resolve whether integration from the completed task worktree is now authorized | User explicitly authorizes the prototype-only package to be integrated and pushed directly on `personal`. | Reopen only repository integration; preserve PPA-002 and route execution to Product Prototyper. |
+| SRC-025 / 2026-08-24 | Git / Command | `git fetch origin personal`; ref, merge-base, divergence, log, changed-path intersection and shared-checkout status inspection | Determine safe direct-push preconditions | `origin/personal` advanced to `389748b0...`; task head `f72adfce...` is 4 behind/5 ahead with merge-base `52b4be02...`. Four remote-only commits change source/release/ticket paths; five task commits change prototype/requirements paths; intersection is empty. Local `personal` is clean but four behind remote. | Product Prototyper rebases the cumulative task package onto current remote, validates, fast-forwards local `personal`, then pushes without force. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -66,6 +69,7 @@
 | BEH-003 | System | Prototype mock and workspace-isolation rules | Production frontend calls services/auth/persistence/integrations | Prototype replaces those boundaries deterministically, blocks external/API boundaries, and uses only synthetic local state | SRC-002, SRC-010 | High; 13/13 boundary checks pass |
 | BEH-004 | Operational | User requires owning-workspace version control and classifies the baseline as a separate root-level project | Project is ordinary tracked content at repository-root `autobyteus-web-prototype`; the shared prototype collection retains five unrelated projects | Root placement is directly committed/pushed on synchronized `personal`; approval/evidence and unrelated sibling trees remain unchanged | SRC-013–SRC-017 | High; correction complete |
 | BEH-005 | User / System | Reviewer activates **Run** for an Agent Team and then **Run Team** from its workspace draft | Pinned source prepares the exact team draft, navigates to `/workspace`, creates/registers/selects a live team context, and projects it under the chosen workspace in the left tree | Prototype now reproduces that lifecycle deterministically with synthetic state, exact member focus, and no production boundary | SRC-019–SRC-023 | High; corrected and user-approved under PPA-002 |
+| BEH-006 | Operational | User authorizes direct integration on `personal` after task-worktree approval | Remote `personal` advanced independently after the task base; histories currently diverge without changed-path overlap | Rebase and validate the cumulative task package, then fast-forward and push `personal` with all refs equal and clean | SRC-024–SRC-025 | High; integration not yet performed |
 
 ## Relevant Codebase And Technical Facts
 
@@ -120,14 +124,14 @@
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — completed and accepted under PPA-002`
-- Decision rationale: Runtime evidence confirmed a user-visible defect in an approved-source journey; Product Prototyper corrected the canonical runnable prototype, finalized interaction/journey evidence, and completed user review.
-- Requirement / behavior IDs involved: BEH-005; REQ-010–REQ-013; AC-010–AC-013; SCN-005.
-- Product decisions or uncertainties to resolve: None. Map-safe draft state, deterministic local launch/registration/selection/tree projection and terminal controlled journey evidence are accepted; no whole-baseline source refresh or redesign occurred.
+- Prototype needed: `Yes — repository integration only`
+- Decision rationale: Product Prototyper owns the accepted canonical prototype and must preserve its path-sensitive evidence while rebasing, validating, fast-forwarding, and pushing the authorized `personal` integration.
+- Requirement / behavior IDs involved: BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006.
+- Product decisions or uncertainties to resolve: None. Preserve both histories, approved pin/evidence, and all remote-only work; no UI change or renewed user review is required if hashes/behavior remain exact.
 - Critical journey and states: Agent Teams populated catalog -> selected team launch draft -> valid workspace/runtime/model/member config -> **Run Team** -> exactly one selected team under the chosen workspace -> expandable/selectable member/coordinator state.
 - Known constraints and non-goals: Current-state parity only; same source technology; deterministic mock boundaries; isolated run; no screenshot/hotspot substitute; no future-state redesign.
 - Alternative evidence path / next action when no prototype is used: N/A; prototype is explicitly requested.
-- Prototype request artifact / message reference: RER-009 request and analysis, returned PPA-002 package, 2026-08-24 user-confirmation reference, and RER-010 reconciliation.
+- Prototype request artifact / message reference: RER-011 canonical requirements; direct-personal user authorization; PPA-002 package; SRC-025 divergence evidence.
 
 ## Prototype Findings
 
@@ -148,7 +152,7 @@
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current through RER-010 | Informational; approval is recorded in canonical requirements |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current through RER-011 | Informational; approval is recorded in canonical requirements |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md` | Product Prototyper | Canonical UI/UX supplement in the correction worktree | Complete current-state baseline including BEH-005 | All | Approved / PPA-001 and PPA-002 | User-approved cumulative baseline |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/README.md` | Product Prototyper | Final visual-reference inventory | VIS-001–VIS-017 | REQ-002, REQ-005, REQ-010–REQ-012 | Final | User-approved baseline references |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Product Prototyper | Reference hashes and clean-capture evidence | 17 final references | REQ-002, REQ-005, REQ-006, REQ-010–REQ-012 | Final / 17 of 17 | User-approved evidence |
@@ -182,6 +186,7 @@
 | RISK-005 | Risk | Removing the entire `ui-prototypes` directory would delete five unrelated tracked prototype projects. | That deletion is not required to treat `autobyteus-web-prototype` as a separate root-level project and would expand scope destructively. | Moved only the accepted project; proof records all five other Git trees unchanged. | Closed in RER-008 |
 | ASM-004 | Assumption | The focused correction should remain pinned to source commit `8ef282ba...` rather than refresh to newer source. | The required behavior exists at the pin, and an unnecessary refresh would expand review scope. | Source inspection confirms the pin implements the journey; Product Prototyper preserves unrelated baseline evidence. | Validated for RER-009 |
 | RISK-006 | Risk | Route screenshots, retained source files, source-test classification, and pre-seeded team states can all pass while the actual cross-surface launch journey is broken. | Without an enforced end-to-end action sequence, the package can again be declared complete despite a critical user-visible no-op. | `JRN-050-A`–`JRN-050-E` now execute the lifecycle and are required by the 86/86 final-package validator. | Closed in RER-010 |
+| RISK-007 | Risk | Pushing the task head directly without first incorporating current `origin/personal` would be non-fast-forward or could tempt unsafe force-push/history loss. | Four concurrent remote commits must survive the prototype integration. | Product Prototyper fetches/rebases onto the latest remote, validates both histories, uses fast-forward only, and verifies final ref equality. | Open; blocks AC-014–AC-015 |
 
 ## Requirement Implications
 
@@ -196,7 +201,7 @@
 - Direct work on `personal` was authorized only for this focused move and required active-reference updates; Product Prototyper fetched first, kept unrelated paths unchanged, validated, committed, and pushed successfully.
 - The correction worktree was synchronized to latest fetched `origin/personal` `52b4be02...` before RER-009. The approved prototype remains a reproducible snapshot of source pin `8ef282b...`; because later frontend commits exist, any request to refresh the observable baseline itself requires explicit prototype reconciliation rather than silent file replacement.
 - The Agent Team launch requirement did not require that broader refresh because the exact behavior is present at source pin `8ef282b...`; PPA-002 preserves that pin and adds no future-state behavior.
-- The accepted prototype is at `3bce9d23...`; after the RER-010 requirements reconciliation, `codex/initial-prototype-baseline` is clean and five commits ahead of unchanged `personal`/`origin/personal` `52b4be02...`. Any integration remains separately user-authorized.
+- The accepted prototype is at `3bce9d23...` with RER-010 at `f72adfce...`. The user now authorizes direct `personal` integration, but a fresh fetch shows `origin/personal` advanced to `389748b0...`; safe integration requires rebase and fast-forward validation rather than a direct non-fast-forward or force push.
 
 ## Notes For Downstream Architecture Design
 
