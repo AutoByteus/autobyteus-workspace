@@ -2,7 +2,16 @@
 
 ## Status
 
-`Complete — v1.4.56 released and repository cleaned` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. Repository finalization, all five release workflows, GitHub assets, TestFlight upload, Docker multi-arch publication, and task branch/worktree cleanup succeeded.
+`v1.4.56 released; manual Chinese server image building` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. Repository finalization, all five release workflows, GitHub assets, TestFlight upload, Docker multi-arch publication, and task branch/worktree cleanup succeeded.
+
+## Manual Chinese Server Image
+
+- Workflow: `Server Docker Release` (`workflow_dispatch`)
+- Run: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090`
+- Inputs: `release_tag=v1.4.56`, `release_ref=v1.4.56`, `publish_zh=true`
+- Immutable source: `v1.4.56@91134347c050bdbae2bd517300738bf94f5c2771`
+- Expected tags: `autobyteus/autobyteus-server:1.4.56-zh` and `autobyteus/autobyteus-server:latest-zh`
+- Current state: metadata succeeded; multi-arch build/push in progress.
 
 ## Integrated State
 

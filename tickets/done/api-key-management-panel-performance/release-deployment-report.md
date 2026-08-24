@@ -9,7 +9,7 @@ Scope completed through integrated-state delivery, documentation synchronization
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/delivery-revision-record.md`
-- Current delivery revision ID: `DR-007`
+- Current delivery revision ID: `DR-008`
 - Notes: DR-001's integration blocker is resolved. `SR-008` resolves DR-004 as external authentication plus an accepted deferred cosmetic issue; user verification and release authorization are explicit.
 
 ## Initial Delivery Integration Refresh
@@ -93,6 +93,8 @@ Scope completed through integrated-state delivery, documentation synchronization
 - Server Docker: workflow `32693279983` succeeded; `autobyteus/autobyteus-server:1.4.56` and `:latest` share digest `sha256:0d5f7a2c2c175ab600d711feae2821c64233645f90a7dc58707387c12e715d23` with Linux AMD64/ARM64 manifests.
 - Release notes handoff: archived curated `release-notes.md` was consumed by the helper and publication workflows.
 - Evidence: `validation-evidence/delivery-release-v1.4.56-dr006.log`.
+- Manual Chinese server variant: workflow dispatch run `32699138090` is in progress from immutable `v1.4.56`; metadata passed and the multi-arch build/push is running for `1.4.56-zh` plus `latest-zh`.
+- Manual run URL: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090`
 - Blocker: none
 
 ## Post-Finalization Cleanup
@@ -155,4 +157,4 @@ The tag-triggered workflows published GitHub artifacts, uploaded the signed iOS 
 
 ## Final Status
 
-`Complete — repository finalization, v1.4.56 publication/rollout, and branch/worktree cleanup succeeded. No delivery blocker remains.`
+`Pass — v1.4.56 publication and cleanup remain complete. The requested manual Chinese server-image workflow is running with no current blocker.`

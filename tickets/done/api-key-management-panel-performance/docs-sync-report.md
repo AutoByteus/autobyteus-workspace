@@ -3,8 +3,8 @@
 ## Scope And Integrated State
 
 - Ticket: `api-key-management-panel-performance`
-- Current delivery revision: `DR-007`
-- Trigger: `DR-007` completes repository cleanup after the authorized `v1.4.56` rollout passed.
+- Current delivery revision: `DR-008`
+- Trigger: `DR-008` manually dispatches the documented Chinese server Docker variant for `v1.4.56`.
 - Bootstrap base: `origin/personal@122adc91c184a75541489eea670ac29fcb43f4ab`.
 - Latest tracked base: `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`, fetched and rechecked on 2026-08-24.
 - Integration: the reviewed ticket lineage first merged at `f6f4d532f78f3b418dca471881f65d3415693f99`; delivery then protected DR-002 at `aca022c465c3bd2e6b787fc64c4ad3debc76e2bc` and merged the five newer base commits without conflict as `80308fb50884f67cdc29b30eabad1213a9a15f2e`.
@@ -69,6 +69,6 @@
 
 - Result: `Pass`
 - Release impact: `v1.4.56` changes version/publication metadata only; no additional canonical project-document edit is required.
-- Next action: none; documentation, finalization, release, rollout verification, and repository cleanup are complete.
+- Next action: monitor manual Server Docker Release run `32699138090`; no documentation edit is required because the runbook already defines `publish_zh`, `1.4.56-zh`, and `latest-zh`.
 - Finalization hold: released and satisfied.
 - Blocked/escalated follow-up: none. A valid paired Alibaba credential remains an external prerequisite for any later Token Plan `/models` compatibility check.

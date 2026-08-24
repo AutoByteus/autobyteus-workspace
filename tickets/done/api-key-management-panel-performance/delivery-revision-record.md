@@ -4,6 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
+| DR-008 | User requests the manual Chinese server Docker workflow for release `v1.4.56` | `DR-007` Pass — release and cleanup complete | In progress — workflow dispatch accepted; metadata passed; multi-arch build/push is running for `1.4.56-zh` and `latest-zh` | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `validation-evidence/delivery-server-docker-zh-dr008.log` |
 | DR-007 | Successful `DR-006` release rollout and post-finalization cleanup | `DR-006` Pass — v1.4.56 published and verified | Pass — merged ticket branch removed locally/remotely; ticket and release worktrees removed/pruned; main restored to current `personal`; unrelated `.article-work/` preserved | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `validation-evidence/delivery-cleanup-dr007.log` |
 | DR-006 | Documented `v1.4.56` release after DR-005 repository finalization | `DR-005` Pass — repository finalized and release ready | Pass — release commit/tag pushed; all five release workflows succeeded; GitHub assets, TestFlight upload, and Docker multi-arch tags verified | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `validation-evidence/delivery-release-v1.4.56-dr006.log` |
 | DR-005 | `SR-008` records explicit acceptance, no product update, and finalization/release authorization | `DR-004` resolved — external authentication with accepted cosmetic deferral | Pass — refreshed target, archived ticket, committed/pushed ticket branch, merged/pushed `personal`; clean release worktree prepared with unused `v1.4.56` candidate | `handoff-summary.md`, `release-deployment-report.md`, `validation-evidence/delivery-pre-finalization-dr005.log`, `validation-evidence/delivery-repository-finalization-dr005.log` |
@@ -13,6 +14,18 @@
 | DR-001 | `CRR-006` proportional review Pass over `API-REV-002`, with no unresolved ticket finding | N/A | Blocked — the mandatory merge of latest `origin/personal` produced four conflicts; classified `Local Fix` and routed to `/implementation_engineer` before docs sync or user handoff | `delivery-integration-blocker.md`, `docs-sync-report.md`, `release-deployment-report.md`, `validation-evidence/delivery-integration-refresh-dr001.log` |
 
 ## Revision Entries
+
+### DR-008 — Manual v1.4.56 Chinese server image dispatched
+
+- Trigger: the user requested the manually dispatched Chinese runtime build corresponding to the latest stable release.
+- Documented method: `Server Docker Release` `workflow_dispatch`, with `release_tag=v1.4.56`, `release_ref=v1.4.56`, and `publish_zh=true`.
+- Dispatch result: accepted as run `32699138090` at `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090`.
+- Source immutability: the build checks out release tag `v1.4.56@91134347c050bdbae2bd517300738bf94f5c2771`; later delivery and unrelated `personal` commits are not included.
+- Publish plan: the stable Chinese variant publishes `autobyteus/autobyteus-server:1.4.56-zh` and `autobyteus/autobyteus-server:latest-zh`. The repository convention is `latest-zh`, not Docker reference `latest:zh`.
+- Current result: `In progress` — `Resolve Release Metadata` succeeded and `Build And Push Server Image` is running.
+- Documentation result: `Pass — no long-lived documentation edit required`; the Docker runbook already documents this exact manual path and tag naming.
+- Next action: GitHub Actions completes the multi-platform build/push. Rollout can be verified from the run and Docker Hub digests.
+- Evidence: `validation-evidence/delivery-server-docker-zh-dr008.log`.
 
 ### DR-007 — Repository cleanup complete
 
