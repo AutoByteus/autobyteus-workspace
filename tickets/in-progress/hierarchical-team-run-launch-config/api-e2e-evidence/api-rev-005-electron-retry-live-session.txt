@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.57 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter playwright --executable /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --port 58449 --data-root /tmp/autobyteus-api-rev-005-retry-1787599 --hold-ms 1800000
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":58449,"dataRoot":"/private/tmp/autobyteus-api-rev-005-retry-1787599","ownsDataRoot":false,"clientBaseUrl":"http://127.0.0.1:58449","healthUrl":"http://127.0.0.1:58449/rest/health"}

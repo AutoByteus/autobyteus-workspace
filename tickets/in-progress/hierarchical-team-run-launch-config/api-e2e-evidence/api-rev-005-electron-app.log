@@ -1,0 +1,368 @@
+[2026-08-24T19:13:31.523Z] [INFO] [electron] Application started
+[2026-08-24T19:13:31.616Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-08-24T19:13:31.616Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-08-24T19:13:31.617Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/db
+[2026-08-24T19:13:31.617Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/logs
+[2026-08-24T19:13:31.617Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/download
+[2026-08-24T19:13:31.677Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:58455
+[2026-08-24T19:13:31.688Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-08-24T19:13:31.688Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-08-24T19:13:31.688Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-24T19:13:31.688Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data
+[2026-08-24T19:13:31.688Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-08-24T19:13:31.689Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/.env
+[2026-08-24T19:13:31.689Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-08-24T19:13:31.689Z] [INFO] [electron.server.base-server-manager] Port 58449 is free.
+[2026-08-24T19:13:31.689Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-08-24T19:13:32.450Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.1/dist/node-gyp-bin:/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.149.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0CDU6wg:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Using PATH from login shell
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Starting server with port: 58449
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:58449
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-24T19:13:32.451Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data
+[2026-08-24T19:13:32.451Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 58449 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data
+[2026-08-24T19:13:32.452Z] [INFO] [electron] Server process spawned with PID: 15970
+[2026-08-24T19:13:32.573Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-08-24T19:13:32.574Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-24T19:13:32.574Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data
+[2026-08-24T19:13:32.574Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-08-24T19:13:32.574Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/.env
+[2026-08-24T19:13:32.574Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/.env
+[2026-08-24T19:13:32.575Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (0) from ../../../../../../../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[2026-08-24T19:13:32.575Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-08-24T19:13:32.575Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:58449
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:58449
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/db
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/logs
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/download
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-24T19:13:32.577Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-08-24T19:13:33.302Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-08-24T19:13:33.303Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-08-24T19:13:33.400Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-08-24T19:13:33.402Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-08-24T19:13:33.666Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-08-24T19:13:33.669Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/db/production.db"
+[2026-08-24T19:13:33.836Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-08-24T19:13:33.862Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/db/production.db
+[2026-08-24T19:13:33.862Z] [INFO] [electron.embedded-server.stdout] 24 migrations found in prisma/migrations
+[2026-08-24T19:13:33.862Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-08-24T19:13:33.862Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-08-24T19:13:33.863Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-08-24T19:13:33.864Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-08-24T19:13:33.865Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-08-24T19:13:33.866Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-08-24T19:13:34.074Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T19:13:34.079Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 20 predefined settings
+[2026-08-24T19:13:34.079Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-08-24T19:13:34.118Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 49 items.
+[2026-08-24T19:13:34.118Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-08-24T19:13:34.118Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-08-24T19:13:34.135Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-08-24T19:13:34.136Z] [INFO] [electron.embedded-server.stdout] [2026-08-24T19:13:34.136Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T19:13:34.223Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787598814223,"pid":15970,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:58449"}
+[2026-08-24T19:13:34.223Z] [INFO] [electron.embedded-server.stdout] [2026-08-24T19:13:34.223Z] [INFO] [server.runtime] Server listening on 0.0.0.0:58449
+[2026-08-24T19:13:34.226Z] [INFO] [electron.embedded-server.stdout] [2026-08-24T19:13:34.226Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:58449
+[2026-08-24T19:13:34.228Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/temp_workspace
+[2026-08-24T19:13:34.229Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/temp_workspace.
+[2026-08-24T19:13:34.233Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-08-24T19:13:34.233Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-08-24T19:13:34.234Z] [INFO] [electron.embedded-server.stdout] Scheduling non-critical startup tasks to run in the background...
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-08-24T19:13:34.240Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-08-24T19:13:34.241Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-08-24T19:13:34.241Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-08-24T19:13:34.241Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-08-24T19:13:34.241Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-08-24T19:13:34.241Z] [INFO] [electron.embedded-server.stdout] Loading agent tool definitions...
+[2026-08-24T19:13:34.246Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-08-24T19:13:34.246Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-08-24T19:13:34.247Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-08-24T19:13:34.247Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-08-24T19:13:34.247Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Customizations' completed successfully.
+[2026-08-24T19:13:34.252Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-08-24T19:13:34.253Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 49 agent definitions into cache.
+[2026-08-24T19:13:34.253Z] [INFO] [electron.embedded-server.stdout] [2026-08-24T19:13:34.253Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T19:13:34.254Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-08-24T19:13:34.254Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Media Tools
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Background task 'Workspaces' completed successfully.
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-08-24T19:13:34.255Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Browser Tools
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Task Delegation Tools
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Published Artifact Tools
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-08-24T19:13:34.256Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Agent Communication Tools
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Tools' completed successfully.
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-08-24T19:13:34.257Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-08-24T19:13:34.286Z] [INFO] [electron.embedded-server.stdout] [2026-08-24T19:13:34.285Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+[2026-08-24T19:13:34.286Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 28 agent team definitions into cache.
+[2026-08-24T19:13:34.286Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-08-24T19:13:34.287Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 28 LLM models into cache.
+[2026-08-24T19:13:34.287Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-08-24T19:13:34.287Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-08-24T19:13:34.287Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-08-24T19:13:34.287Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-08-24T19:13:34.371Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-08-24T19:13:34.371Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-08-24T19:13:34.371Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-24T19:13:34.492Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-24T19:13:34.493Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-24T19:13:34.676Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-24T19:13:34.677Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-24T19:13:36.131Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-24T19:13:36.132Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-24T19:14:04.042Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787598844042,"pid":15970,"hostname":"MacBookPro","reqId":"req-c","err":{"type":"GraphQLError","message":"Agent package already exists.","stack":"Error: Agent package already exists.\n    at AgentPackageRootSettingsStore.addAdditionalRootPath (file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-packages/stores/agent-package-root-settings-store.js:66:19)\n    at AgentPackageService.importLocalPathPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-packages/services/agent-package-service.js:201:32)\n    at AgentPackageService.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-packages/services/agent-package-service.js:71:25)\n    at AgentPackageResolver.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/agent-packages.js:216:40)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importAgentPackage"],"locations":[{"line":1,"column":65}],"extensions":{}},"msg":"Agent package already exists."}
+[2026-08-24T19:16:50.704Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://127.0.0.1:1234
+[2026-08-24T19:16:50.708Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://127.0.0.1:11434
+[2026-08-24T19:16:50.710Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.718Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.719Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.719Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.720Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.720Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.721Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.721Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.722Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-08-24T19:16:50.726Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+[2026-08-24T19:18:22.565Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-08-24T19:18:22.565Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+[2026-08-24T19:18:22.566Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+[2026-08-24T19:18:22.567Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+[2026-08-24T19:18:22.580Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-08-24T19:18:22.580Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005
+[2026-08-24T19:18:22.580Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005.
+[2026-08-24T19:18:22.583Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_c9a0990d0d0b3483a139fc424da62e05cf9db7bf1f860d69867fc6e2d89c7485
+[2026-08-24T19:19:17.565Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+[2026-08-24T19:19:17.566Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+[2026-08-24T19:19:17.566Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005
+[2026-08-24T19:19:17.566Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005.
+[2026-08-24T19:19:17.566Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+[2026-08-24T19:19:17.566Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_c9a0990d0d0b3483a139fc424da62e05cf9db7bf1f860d69867fc6e2d89c7485
+[2026-08-24T19:19:17.639Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/test_teacher_2f66be30e21945c682e53011d072cc92/raw_traces_active.jsonl
+[2026-08-24T19:19:17.639Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/student_study_group_b8d3d47d923d4b3b8301160ab7276e8c/student_one_f54108a3d6564a609167345f324f36fd/raw_traces_active.jsonl
+[2026-08-24T19:19:17.640Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/student_study_group_b8d3d47d923d4b3b8301160ab7276e8c/student_two_fbdcbf23c8944dc5a165b84852eff699/raw_traces_active.jsonl
+[2026-08-24T19:20:08.267Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+[2026-08-24T19:20:08.268Z] [INFO] [electron.embedded-server.stdout] Created agent session 9b62ba13-ba24-46d9-947c-c4fc018eec14 for run nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+[2026-08-24T19:20:08.276Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=9b62ba13-ba24-46d9-947c-c4fc018eec14, run=nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+[2026-08-24T19:20:08.317Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+[2026-08-24T19:20:08.317Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+[2026-08-24T19:20:08.317Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+[2026-08-24T19:20:08.323Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005" command="codex" args=["app-server"] code=ENOENT open_fds=41 fs_read=0 fs_write=0
+[2026-08-24T19:20:08.324Z] [ERROR] [electron.embedded-server.stderr] Unexpected failure while preparing agent run 'test_teacher_2f66be30e21945c682e53011d072cc92' for runtime 'codex_app_server'. Error: Codex app server process error: Error: spawn codex ENOENT. [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005" command="codex" args=["app-server"] code=ENOENT open_fds=41 fs_read=0 fs_write=0
+[2026-08-24T19:20:08.324Z] [ERROR] [electron.embedded-server.stderr]     at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/runtime-management/codex/client/codex-app-server-client.js:43:34)
+[2026-08-24T19:20:08.324Z] [ERROR] [electron.embedded-server.stderr]     at ChildProcess.emit (node:events:509:28)
+[2026-08-24T19:20:08.324Z] [ERROR] [electron.embedded-server.stderr]     at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+[2026-08-24T19:20:08.324Z] [ERROR] [electron.embedded-server.stderr]     at onErrorNT (node:internal/child_process:508:16)
+[2026-08-24T19:20:08.325Z] [ERROR] [electron.embedded-server.stderr]     at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[2026-08-24T19:23:04.274Z] [INFO] [electron.embedded-server.stdout] Closed agent session 9b62ba13-ba24-46d9-947c-c4fc018eec14
+[2026-08-24T19:24:43.138Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-08-24T19:24:43.138Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005
+[2026-08-24T19:24:43.138Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005.
+[2026-08-24T19:24:43.140Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_d796095aa3fdfd835bbc0aa96609366293bed89115e419a701dbb1643affcdb3
+[2026-08-24T19:24:57.671Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005
+[2026-08-24T19:24:57.671Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005.
+[2026-08-24T19:24:57.671Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_d796095aa3fdfd835bbc0aa96609366293bed89115e419a701dbb1643affcdb3
+[2026-08-24T19:24:57.719Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run daily_assistant_a21c458e87b44a59b3699308bd469a49
+[2026-08-24T19:24:57.720Z] [INFO] [electron.embedded-server.stdout] Created agent session 73c693ee-7c64-4c95-9e08-c3c35b83350d for run daily_assistant_a21c458e87b44a59b3699308bd469a49
+[2026-08-24T19:24:57.721Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=73c693ee-7c64-4c95-9e08-c3c35b83350d, run=daily_assistant_a21c458e87b44a59b3699308bd469a49
+[2026-08-24T19:24:58.666Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005
+[2026-08-24T19:24:58.667Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005.
+[2026-08-24T19:24:58.667Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_d796095aa3fdfd835bbc0aa96609366293bed89115e419a701dbb1643affcdb3
+[2026-08-24T19:24:58.671Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/media
+[2026-08-24T19:24:58.671Z] [INFO] [electron.embedded-server.stdout] Resolved skill 'shell-first-operating-practice' to path: /Users/normy/autobyteus_org/autobyteus-skills/shell-first-operating-practice
+[2026-08-24T19:24:58.680Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-08-24T19:24:58.681Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': LLM instance 'DeepSeekLLM' and 21 tools prepared and stored in state.
+[2026-08-24T19:24:58.681Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Config and State linked.
+[2026-08-24T19:24:58.681Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'daily_assistant_a21c458e87b44a59b3699308bd469a49' with config: 'Daily Assistant'.
+[2026-08-24T19:24:58.681Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'.
+[2026-08-24T19:24:58.681Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Total registered contexts: 1
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Context registered.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49' created and stored successfully.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49' requesting runtime to start.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Starting worker.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Starting...
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49' asyncRun(): Starting.
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Runtime init completed (event store initialized).
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Runtime init completed (status deriver initialized).
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Runtime init completed (AgentEventInbox initialized).
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Runtime init completed (AgentEventScheduler initialized).
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49' to become idle (timeout: 30s)...
+[2026-08-24T19:24:58.682Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 88fbe52b-274e-4cc7-89c0-7cc552519cc6) initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Subscribed to notifier.
+[2026-08-24T19:24:58.683Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Starting direct runtime bootstrap lifecycle.
+[2026-08-24T19:24:58.683Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:24:58.683Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Bootstrapper starting direct lifecycle execution.
+[2026-08-24T19:24:58.683Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-08-24T19:24:58.683Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Executing McpServerPrewarmingStep.
+[2026-08-24T19:24:58.684Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-08-24T19:24:58.684Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Executing SystemPromptProcessingStep.
+[2026-08-24T19:24:58.684Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+[2026-08-24T19:24:58.684Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Final processed system prompt configured and captured. Trace ID: rt_1787599498683_e9d8377a-597e-42b4-b250-d6d2a9ca36a4. Final length: 3871.
+[2026-08-24T19:24:58.684Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-08-24T19:24:58.686Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:24:58.686Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49' initialized successfully. Entering main event scheduler loop.
+[2026-08-24T19:24:58.693Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49' has become idle.
+[2026-08-24T19:24:58.693Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 88fbe52b-274e-4cc7-89c0-7cc552519cc6) for 'daily_assistant_a21c458e87b44a59b3699308bd469a49': close() called. Unsubscribing all listeners and signaling.
+[2026-08-24T19:24:58.694Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 66f91ba0-1576-4600-8d53-2e06542be3d4) initialized for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Subscribed to notifier.
+[2026-08-24T19:24:58.707Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'daily_assistant_a21c458e87b44a59b3699308bd469a49'.
+[2026-08-24T19:24:58.711Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:24:58.711Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:24:58.711Z] [INFO] [electron.embedded-server.stdout] Agent run 'daily_assistant_a21c458e87b44a59b3699308bd469a49': UserInputContextBuildingProcessor completed. Final content length: 49
+[2026-08-24T19:24:58.712Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:00.153Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout] compaction_budget_evaluated {
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'daily_assistant_a21c458e87b44a59b3699308bd469a49',
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   prompt_tokens: 7152,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   effective_total_context_tokens: 1000000,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   context_derived_input_cap_tokens: 616000,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   provider_input_cap_tokens: null,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   effective_input_cap_tokens: 616000,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   reserved_output_tokens: 384000,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   safety_margin_tokens: 256,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   input_budget_tokens: 615744,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   compaction_ratio: 0.8,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   trigger_threshold_tokens: 492595,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   trigger_headroom_tokens: 49260,
+[2026-08-24T19:25:00.156Z] [INFO] [electron.embedded-server.stdout]   quality_retention_cap_tokens: 215510,
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout]   post_compaction_target_tokens: 215510,
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout]   budget_key: '615744:492595:215510:49260:215510',
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout]   override_active: false,
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout]   compaction_required: false,
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout]   threshold_episode_decision: 'none'
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] }
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] Agent run 'daily_assistant_a21c458e87b44a59b3699308bd469a49': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:00.157Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:44.699Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 66f91ba0-1576-4600-8d53-2e06542be3d4) for 'daily_assistant_a21c458e87b44a59b3699308bd469a49': close() called. Unsubscribing all listeners and signaling.
+[2026-08-24T19:25:44.700Z] [INFO] [electron.embedded-server.stdout] Removing agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49'. Attempting graceful shutdown.
+[2026-08-24T19:25:44.700Z] [INFO] [electron.embedded-server.stdout] Agent 'daily_assistant_a21c458e87b44a59b3699308bd469a49' requesting runtime to stop (timeout: 10s).
+[2026-08-24T19:25:44.701Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:44.701Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Stop requested.
+[2026-08-24T19:25:44.701Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 57158f24-f4b4-4b00-87f5-6892ffe7ea83, AgentID: daily_assistant_a21c458e87b44a59b3699308bd469a49) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-24T19:25:44.703Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49' asyncRun() loop has finished.
+[2026-08-24T19:25:44.703Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Running shutdown sequence on worker loop.
+[2026-08-24T19:25:44.704Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Shutdown resource cleanup completed successfully.
+[2026-08-24T19:25:44.704Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Shutdown sequence completed.
+[2026-08-24T19:25:44.704Z] [INFO] [electron.embedded-server.stdout] Unregistered AgentContext for agent_id 'daily_assistant_a21c458e87b44a59b3699308bd469a49'.
+[2026-08-24T19:25:44.704Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'daily_assistant_a21c458e87b44a59b3699308bd469a49': Context unregistered.
+[2026-08-24T19:25:44.704Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'daily_assistant_a21c458e87b44a59b3699308bd469a49' stop() method completed.
+[2026-08-24T19:25:44.722Z] [INFO] [electron.embedded-server.stdout] Closed agent session 73c693ee-7c64-4c95-9e08-c3c35b83350d
+[2026-08-24T19:25:44.722Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 73c693ee-7c64-4c95-9e08-c3c35b83350d

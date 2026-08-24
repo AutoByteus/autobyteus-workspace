@@ -443,15 +443,6 @@ const handleRun = async () => {
       }
 
       if (effectiveTeamConfig.value) {
-        if (!teamLaunchReadiness.value.canLaunch) {
-          const workspaceIssue = teamLaunchReadiness.value.blockingIssues.find(
-            (issue) => issue.code === 'WORKSPACE_REQUIRED',
-          )
-          if (workspaceIssue) {
-            teamRunConfigStore.setWorkspaceError(workspaceIssue.message, workspaceIssue.subjectAddress || '/')
-          }
-          return
-        }
         const draft = teamRunConfigStore.selectedDraft
         if (!draft) {
           throw new Error('Team launch draft is unavailable.')

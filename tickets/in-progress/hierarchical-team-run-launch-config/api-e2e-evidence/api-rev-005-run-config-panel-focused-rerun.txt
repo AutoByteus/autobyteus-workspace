@@ -1,0 +1,122 @@
+
+> autobyteus@1.4.57 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/RunConfigPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (35 tests | 2 failed) 2215ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 6ms
+   ✓ RunConfigPanel > renders Agent Form when Agent Template set 5ms
+   ✓ RunConfigPanel > renders Team Form when Team Template set 4ms
+   ✓ RunConfigPanel > triggers team run on button click when launch readiness passes 7ms
+   ✓ RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending 4ms
+   ✓ RunConfigPanel > loads a pending New workspace path before creating an agent run 4ms
+   ✓ RunConfigPanel > blocks agent run creation when pending New workspace loading fails 3ms
+   ✓ RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 3ms
+   ✓ RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits 4ms
+   ✓ RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config 3ms
+   ✓ RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode 3ms
+   × RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes 1020ms
+     → expected { mode: 'new', …(2) } to deeply equal { mode: 'existing', …(2) }
+   ✓ RunConfigPanel > loads a pending New workspace for 'fresh root with nested inherited memb…' using real hierarchy readiness 8ms
+   ✓ RunConfigPanel > loads a pending New workspace for 'nested Team with an inherited Agent' using real hierarchy readiness 8ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits 13ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root model' edits 5ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root reasoning and fast controls' edits 5ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root auto-execute' edits 5ms
+   ✓ RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'explicit nested Team override' edits 5ms
+   ✓ RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'exact nested Agent override' edits 7ms
+   ✓ RunConfigPanel > keeps the 'root Team' New workspace visible and blocks launch when registration fails 5ms
+   ✓ RunConfigPanel > keeps the 'nested Team' New workspace visible and blocks launch when registration fails 4ms
+   × RunConfigPanel > rehydrates address-qualified workspace selections only when the Team draft identity changes 1012ms
+     → expected { '/': { mode: 'new', …(2) }, …(1) } to deeply equal {}
+   ✓ RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 10ms
+   ✓ RunConfigPanel > disables team run when workspace is missing 7ms
+   ✓ RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode 7ms
+   ✓ RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode 6ms
+   ✓ RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team' 9ms
+   ✓ RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team' 5ms
+   ✓ RunConfigPanel > disables agent run when workspace is missing 4ms
+   ✓ RunConfigPanel > keeps draft agent configuration editable for workspace selection events 6ms
+   ✓ RunConfigPanel > keeps draft team configuration editable for workspace selection events 7ms
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 4ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 2ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes
+AssertionError: expected { mode: 'new', …(2) } to deeply equal { mode: 'existing', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "existingWorkspaceId": "ws-second",
+-   "mode": "existing",
+-   "newWorkspacePath": "/workspace/second",
++   "existingWorkspaceId": "ws-first",
++   "mode": "new",
++   "newWorkspacePath": "/workspace/pending-first",
+  }
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:616:48
+    614|     } as any
+    615|     await vi.waitFor(() => {
+    616|       expect(form.props('workspaceSelection')).toEqual({
+       |                                                ^
+    617|         mode: 'existing',
+    618|         existingWorkspaceId: 'ws-second',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates address-qualified workspace selections only when the Team draft identity changes
+AssertionError: expected { '/': { mode: 'new', …(2) }, …(1) } to deeply equal {}
+
+- Expected
++ Received
+
+- {}
++ {
++   "/": {
++     "existingWorkspaceId": "ws-first",
++     "mode": "new",
++     "newWorkspacePath": "/workspace/pending-first",
++   },
++   "/Research": {
++     "existingWorkspaceId": null,
++     "mode": "new",
++     "newWorkspacePath": "/workspace/pending-research",
++   },
++ }
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:910:70
+    908|       config: Object.freeze(structuredClone(secondConfig)),
+    909|     }) as any
+    910|     await vi.waitFor(() => expect(form.props('workspaceSelections')).t…
+       |                                                                      ^
+    911|     expect(form.props('config').rootConfig.workspace).toEqual({
+    912|       workspaceId: 'ws-second',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 33 passed (35)
+   Start at  21:03:02
+   Duration  7.97s (transform 3.25s, setup 4.80s, collect 360ms, tests 2.21s, environment 169ms, prepare 176ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

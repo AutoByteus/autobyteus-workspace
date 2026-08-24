@@ -9,6 +9,9 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/hierarchical-launch-configuration-behavior.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/team-execution-tree-v2-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/recovery-audit.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/done/remote-node-new-workspace-team-run-visibility/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/done/remote-node-new-workspace-team-run-visibility/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/done/remote-node-new-workspace-team-run-visibility/ui-ux-spec.md`
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md`
@@ -16,16 +19,16 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
-- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md` (`CRR-003`; formal successful proportional closure remains pending)
-- Delivery Revision Record (delivery re-entry only): N/A
-- Relevant Delivery Revision IDs: N/A
+- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md` (`CRR-006` proportional `Pass`; `TR-001` and `TR-002` resolved)
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Investigation Round: 4
-- Trigger: `code_reviewer` CRR-005 repeat implementation-source `Pass` for IR-003, returning resolved CR-005 / API-E2E-F-001 for a full strengthened production-upgrade rerun and then formal proportional review of TR-001/TR-002.
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: 5
+- Trigger: `code_reviewer` `CRR-008` integrated implementation-source `Pass` for `DR-001` / `IR-004` / `IR-005`, requiring fresh coverage decisions and proportional executable validation against integrated merge `bd4e2403fd6630622e7789967e2f2815cc6f37f5` and current artifact HEAD `5dc5105b14d5c215a70254ce317ad725d130f16e`.
 - Investigation Amendment: On 2026-08-24, after the first independent browser probe passed but before the round was finalized, the user explicitly requested import of the complete local package at `/Users/normy/autobyteus_org/autobyteus-private-agents`, execution of its nested `nested-classroom-test` Team, an actual packaged Electron E2E profile, browser interaction through the `open_tab` tool, and a real Codex `gpt-5.6-luna` nested delegation. This material validation extension is recorded here before that execution begins.
-- Prior Investigation Reviewed: API-REV-003 `Fail` / 89%, CRR-004's focused failure-origin review, IR-003, and CRR-005's repeat source-review `Pass`. The recovery audit's older stale-snapshot artifact remains intentionally non-authoritative.
-- Latest Authoritative Investigation: This file, round 4. API-REV-004 completed `Pass` / 99%; IR-003 resolved API-E2E-F-001 at the unchanged strengthened 4/4 production-upgrade boundary.
+- Prior Investigation Reviewed: API-REV-004 `Pass` / 99% and `CRR-006` proportional `Pass` remain authoritative for protected parent `393c27015a4380f77d33f7f55096077f0e1f6b29`; `DR-001`, `IR-004`, `IR-005`, and `CRR-008` establish a materially newer integrated state. The recovery audit's older stale-snapshot artifact remains intentionally non-authoritative.
+- Latest Authoritative Investigation: This file, round 5. API-REV-005 is complete at `Fail` / `89%` because the real integrated browser journey exposed `API-E2E-F-002`: successful New-workspace registration does not continue to TeamRun creation in the same accepted activation. No prior result is inferred for integrated HEAD.
 
 ## Current Requirement And Design Basis
 
@@ -260,7 +263,7 @@ These scores reflect repository/unit/integration/API/process/build evidence befo
 
 None at investigation time. A current required scenario failure will be recorded and routed only after validating whether its assertion is current.
 
-## Investigation Decision
+## Historical API-REV-004 Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`; execution completed through API-REV-004.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: cumulative API-REV-001/API-REV-003 `Yes` as listed; API-REV-004 `No` because both strengthened tests remained hash-identical.
@@ -369,3 +372,100 @@ None at investigation time. A current required scenario failure will be recorded
   - `api-e2e-evidence/api-rev-004-v2-production-upgrade-full.txt`
   - `api-e2e-evidence/api-rev-004-static-and-cleanup-audit.txt`
 - Handoff decision: send the cumulative successful package and both durable test files to `/code_reviewer` for formal proportional test-code review. `TR-001`/`TR-002` remain procedurally pending until that review passes; delivery remains blocked.
+
+## API-REV-005 Current-State Coverage Reinvestigation — Integrated Controlled Workspace Contract
+
+- Trigger: `DR-001` refreshed the feature against latest tracked base `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`; `IR-004` produced integrated merge `bd4e2403fd6630622e7789967e2f2815cc6f37f5`; `CRR-007` then exposed active New/empty Team readiness regression `CR-006`; `IR-005` at `be6c9182b477d0c0d265cbe007c30d466c566a93` corrected that behavior; and `CRR-008` passed current artifact HEAD `5dc5105b14d5c215a70254ce317ad725d130f16e` at 9.3/10. This round certifies that integrated state, not either parent in isolation.
+- Prior result boundary: API-REV-004 `Pass` / 99% and CRR-006's formal `TR-001`/`TR-002` closure remain valid historical evidence for protected parent `393c27015a4380f77d33f7f55096077f0e1f6b29`. They do not imply a result for integrated HEAD. No integrated API/E2E result exists before API-REV-005.
+- Current-base contract adopted through DR-001: workspace choice is one controlled union state for standalone Agent and exact Team address. Active `New` owns its raw path even when discovery completes late; non-workspace edits do not reset it; only explicit selection, successful canonical registration, or Agent/Team draft or selected-run identity transition may rehydrate it. Active New/empty is disabled before launch; active New/non-empty may suppress only the same-scope missing-workspace issue; inactive buffers never admit launch; registration failure retains pending input and canonical stored configuration.
+
+### Integrated Changed Surfaces And Boundaries
+
+| Surface | Integrated Delta | Required Evidence |
+| --- | --- | --- |
+| Standalone Agent workspace authoring | Controlled Existing/New state from latest base now coexists with hierarchical Team work | Empty/non-empty readiness, pending-path retention across runtime/model/config edits and late discovery, inactive-buffer exclusion, registration failure retention, exact canonical launch configuration, and identity-transition reset. |
+| Root Team workspace authoring | Address-keyed controlled selection plus IR-005 exact-address readiness overlay | Root active New/empty exact blocker, same-draft edit retention, non-empty registration before launch, failure retention, inactive-buffer exclusion, and canonical root launch configuration. |
+| Explicit nested Team workspace authoring | Exact-address pending state and readiness must not mutate or mask root/other scopes | `/Research` active New/empty exact blocker, non-empty selection retention across nested Team and exact Agent edits, exact nested registration, unchanged root configuration, failure retention, inactive-buffer exclusion, and address-local canonical launch configuration. |
+| Discovery / reactivity lifecycle | Async workspace discovery and immutable config replacement can arrive after user selection | `WorkspaceSelector.spec.ts` must retain explicit New through late discovery; `RunConfigPanel.spec.ts` must retain address-qualified pending state through immutable same-draft edits and reset only on identity change. |
+| Browser / web-equivalent desktop renderer | Integrated UI behavior crosses WorkspaceSelector, form, panel, Pinia, GraphQL, and server workspace registration | Fresh real Nuxt journey through AutoByteus `open_tab`, with semantic UI assertions plus GraphQL/filesystem correlation. Browser evidence is required because the integrated delta is user-facing and repository component coverage mocks the transport boundary. |
+| Server API, lifecycle, and persisted transition | Source is unchanged from the previously validated feature parent, but merge integration must not regress its contract | Fresh 7/7 hierarchical GraphQL lifecycle and 4/4 production-upgrade execution against rebuilt integrated server, preserving the CRR-006-reviewed complete assertions. |
+
+### Existing Durable Coverage Decisions Before Edit
+
+| Durable Path / Scenario | Decision | Current Evidence And Gap |
+| --- | --- | --- |
+| `autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts` | `Still Valid` | Directly covers controlled complete-value replacement, inactive buffers, Temp default, read-only/locked behavior, accessibility, and delayed discovery that must not overwrite explicit New. No edit required. |
+| `autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts` | `Still Valid` | Proves the standalone Agent form relays the complete controlled selection. Panel-level Agent launch/failure/edit coverage supplies ownership evidence. |
+| `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` | `Still Valid` | Proves root and explicit nested Team address-qualified selection relays. No stale flat Team contract remains. |
+| `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` | `Needs Update` | Current integrated coverage proves root/nested pending New registration, active empty blocker, one root auto-execute edit, one root failure, and one root inactive-buffer case. The latest-base parent had explicit coverage for runtime, model, `llmConfig`/thinking, global auto-execute, member override, and Team draft identity transition; those accepted scenarios were narrowed during conflict integration. The integrated hierarchy also requires the same retention/failure/inactive proof at `/Research`, with unchanged root configuration. Update this existing file rather than adding a parallel suite. |
+| `autobyteus-web/utils/__tests__/teamRunLaunchReadiness.spec.ts` and hierarchy/store suites | `Still Valid` | IR-005's pure exact-address readiness policy and hierarchy resolution are directly covered. Execute with adjacent workspace suites after the panel update. |
+| `autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | `Still Valid` | CRR-006 closed `TR-001`; the test asserts complete distinct Team/Agent configuration across disk, active API, process restart, and restore plus strict rejection. Preserve unchanged and rerun 7/7 against integrated build. |
+| `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | `Still Valid` | CRR-006 closed `TR-002`; the test retains distinct coordinators, binding, task, handoff, complete Agent snapshots, warning/retry, and idempotence. Preserve unchanged and rerun 4/4 against integrated build. |
+| Prior API-E2E-013 packaged Electron / DeepSeek nested-Team journey | `Still Valid` historical evidence only | It directly proved the user-requested private nested Team, explicit nested AutoByteus/DeepSeek config, ordinary message, formal delegation/acceptance, token/provider logs, V2 disk, history, and cleanup. Because its build predates DR-001, it cannot replace a fresh integrated workspace browser journey. |
+
+### Durable Coverage Delta Authorized For API-REV-005
+
+- Update exactly one existing durable path and no implementation source:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`
+- Restore accepted same-draft retention variants using current hierarchical edit kinds: root runtime, root model, root `llmConfig` containing reasoning/fast controls, root auto-execute, nested Team override, and exact nested Agent override.
+- Apply address-qualified launch assertions so root and `/Research` each prove one workspace creation, one canonical exact-scope store update, one launch, and no mutation of the other scope.
+- Apply root and `/Research` coverage to registration failure retention and inactive-buffer exclusion, and restore Team draft-identity rehydration. Retain the existing root/nested active New/whitespace exact-message cases unchanged in intent.
+- No durable browser test is added. The project has no repository browser suite for this route; a private imported package and provider identity would be unsuitable deterministic public fixtures. The temporary browser journey will use the real supported surface and record exact reproducible environment/evidence.
+
+### Planned Integrated Execution
+
+1. Run the changed `RunConfigPanel.spec.ts` and the six-file workspace configuration cohort, followed by directly adjacent workspace/store/hierarchy suites.
+2. Run the production Nuxt build to validate templates, generated integration, and route bundling.
+3. Rebuild the server and rerun the unchanged hierarchy lifecycle 7/7 and production-upgrade 4/4 boundaries; verify both CRR-006-reviewed server test hashes remain unchanged.
+4. Start only owned isolated server/Nuxt processes on reserved ports and owned data roots. Through AutoByteus `open_tab`, exercise standalone Agent, root Team, and explicit nested Team workspace controls on current integrated source. Correlate semantic UI state with GraphQL launch data and exact V2 disk state; include current hierarchical messaging/delegation where the imported private Team journey is used.
+5. Stop only owned listeners/processes, close the owned tab, remove owned roots, run `git diff --check`, and record process/filesystem cleanup.
+
+### API-REV-005 Pre-Execution Decision
+
+- Proceed To API/E2E Execution: `Yes`.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — one existing frontend durable test file will be updated; no file added or removed.
+- Broader Validation Decision: `Required`. The integrated change materially affects user-visible controlled state and launch readiness across form, panel, store, backend registration, and web-equivalent Electron renderer behavior. Component tests alone retain a transport/mock gap.
+- Current Confidence: not scored as a completed integrated result. API-REV-004's 99% is historical and is not carried forward automatically.
+- Failure Routing Gate: a current approved assertion failing because product source violates the contract will be recorded as an API/E2E failure and sent to `/code_reviewer` for focused origin review. A test-authoring or environment-harness defect remains API/E2E-owned.
+- Delivery Gate: closed. Any durable coverage edit requires successful execution and proportional test-code review by `/code_reviewer` before delivery may resume.
+
+### API-REV-005 Execution Outcome — Integrated State
+
+- Result: `Fail`.
+- Final validation confidence: `89%`. Repository checks were substantial, but a critical accepted browser journey fails and the current durable component mock does not reproduce its real Pinia/Vue continuation timing.
+- Durable coverage update completed before final execution: `RunConfigPanel.spec.ts` expanded from 24 to 35 cases. It now covers standalone Agent failure/empty/inactive/identity behavior; six root/nested/exact-Agent same-draft edit variants; address-qualified root and nested registration/launch; root/nested failure retention and inactive buffers; and Team identity reset. Final focused result: 1 file / 35 tests passed. Direct affected cohort: 9 files / 134 tests passed.
+- Integrated builds and preserved server boundaries:
+  - Nuxt production build passed: 3,730 modules / 15 prerendered routes.
+  - server `build:full` passed.
+  - unchanged hierarchy lifecycle test retained SHA-256 `bc4fda79...` and passed 7/7.
+  - unchanged production-upgrade test retained SHA-256 `3413ed1f...` and passed 4/4.
+- Browser/package/provider evidence:
+  - Built the current macOS arm64 Electron package after the generic all-platform command correctly failed on Darwin's unsupported Linux target.
+  - Started an isolated packaged backend and current Nuxt renderer, imported secrets only into the owned database, and used actual AutoByteus `open_tab`.
+  - Standalone Agent active New/empty remained disabled; a non-empty path survived the same-draft auto-approve edit; one activation advanced to the run surface; the first message created/started a real `autobyteus` / `deepseek-v4-flash` run whose metadata stored the exact path/model/runtime/auto-approve values and returned exact `AGENT_RUN_OK`.
+  - Root `/` active New/empty and nested `/StudentStudyGroup` active New/empty both disabled Run with exact `Enter a workspace path to run this team.` text. Root and nested non-empty pending paths survived subsequent root auto-approve and nested runtime/model changes respectively; root remained Codex/Luna while nested became AutoByteus/DeepSeek.
+  - `API-E2E-F-002`: the first accepted `Run Team` activation registered and canonicalized both New paths but created no TeamRun and returned to an enabled config panel. A second activation reused the registrations and created the TeamRun. This fails current-base `FR-003`, `FR-005`, `AC-001`, and the approved `Launch valid New -> Create/resolve workspace, then create Team` transition.
+  - After correcting the owned-harness local-directory/Codex-command prerequisite, a separate Existing-workspace run proved actual root Codex `gpt-5.6-luna`, nested AutoByteus `deepseek-v4-flash`, ordinary `/StudentStudyGroup` messaging with exact `INTEGRATED_SUBTEAM_MESSAGE_OK`, formal delegated task submission `INTEGRATED_SUBTEAM_TASK_OK`, and accepted `review_task_result`. Exact messages, accepted task record, and schema-V2 hierarchy were persisted.
+- Preliminary failure correlation: `handleRun` immediately rechecks `teamLaunchReadiness.value.canLaunch` after the awaited registration path updates the store. The observed runtime ordering is consistent with that projection still being stale at the immediate check. The current component mock synchronously changes readiness and therefore does not expose the scheduling boundary. Final origin belongs to `/code_reviewer` focused failure review.
+- Environment-only correction retained as evidence, not a product finding: the initial real Codex preparation attempt used a registered local path that did not yet exist as a process `cwd`, producing `ENOENT`; creating the owned directories and supplying the absolute Codex executable made the real provider/message/task lifecycle pass.
+- Cleanup: both Team runs and the Agent run were terminated; owned tabs closed; owned Nuxt and Electron processes stopped; ports 58449/58524 free; both owned data roots removed; AutoByteus `list_tabs` returned zero; `git diff --check` passed. The user-owned application and source secret file were not modified.
+- Durable-coverage routing: one repository-resident test file changed. Because the overall execution result is Fail, return the cumulative package and that test path to `/code_reviewer` for focused failure-origin review, not successful proportional review. Delivery remains blocked.
+
+#### API-REV-005 Confidence Scorecard
+
+| Category | Post-Repository | Final | Evidence / Limitation |
+| --- | ---: | ---: | --- |
+| Requirement and acceptance-criteria proof | 95% | 82% | Repository coverage passed, but the live first-activation Team contract is directly disproven. |
+| Changed-boundary execution directness | 93% | 95% | Real current renderer, packaged backend, filesystem V2, GraphQL/process/provider boundaries were exercised. |
+| Cross-boundary integration realism and mock gap | 88% | 96% | Browser/package/provider work closed most mock gaps and exposed the defect the component mock missed. |
+| Environment, configuration, identity, and fixture fidelity | 91% | 91% | Exact private nested Team and requested providers ran; one owned local-cwd prerequisite required correction and is documented. |
+| Failure, edge-case, lifecycle, and recovery evidence | 91% | 94% | Empty, failure-retention, inactive, identity, restart/migration, provider error, success, termination, and cleanup were exercised. |
+| User-surface, browser, and desktop-shell confidence | 88% | 82% | Actual `open_tab` and packaged shell were used, but the critical one-activation Team journey fails. |
+| Durable regression coverage quality and relevance | 95% | 83% | 35 focused cases are coherent and pass, but synchronous readiness mocks miss the real continuation failure. |
+
+- Overall post-repository confidence: `92%` (rounded simple average).
+- Overall final confidence: `89%` (rounded simple average).
+- Broader validation decision: `Required` and executed; it materially changed the outcome from apparently clean repository evidence to a real product failure.
+- Critical acceptance criteria directly proven: `No` — `FR-003` / `FR-005` / `AC-001` single-activation launch continuation fails.
+- Applicable category below 90%: requirement proof, user-surface confidence, durable regression quality.
+- Default clean target met: `No`.

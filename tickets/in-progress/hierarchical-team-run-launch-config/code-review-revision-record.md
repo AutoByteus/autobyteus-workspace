@@ -11,6 +11,8 @@
 | CRR-005 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-003 Local Fix handoff | CRR-004 — Fail, Local Fix; historical source result CRR-002 Pass | Pass — proceed to /api_e2e_engineer | CR-005 resolved; API-E2E-F-001 ready for rerun |
 | CRR-006 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md | Proportional API/E2E Test-Code Review / API-REV-004 Pass | CRR-003 test-review Fail; CRR-005 source Pass; API-REV-003 Fail | Pass — proceed to /delivery_engineer | TR-001, TR-002 resolved |
 | CRR-007 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-004 integrated merge correction after DR-001 | CRR-005 source Pass; CRR-006 test-review Pass; DR-001 integration reroute | Fail — Local Fix to /implementation_engineer | CR-006 |
+| CRR-008 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | Implementation Review / IR-005 Local Fix | CRR-007 — Fail, Local Fix, 9.0/10 | Pass — proceed to /api_e2e_engineer | CR-006 resolved |
+| CRR-009 | /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md | API/E2E Failure-Origin Review / API-REV-005 Fail | CRR-008 source Pass; API-REV-005 Fail / 89% | Fail — Local Fix to /implementation_engineer | CR-007; API-E2E-F-002 |
 
 ## Revision Entries
 
@@ -197,3 +199,58 @@ None. This is the initial proportional API/E2E test review; CR-001–CR-004 rema
 - Material score or classification changes: current integrated source disposition is Fail / Local Fix despite a 9.0 average because Runtime Correctness (8.2) and API/E2E Readiness (8.5) are below threshold and CR-006 is open. MP-CR-004 is Reachable from the normal TeamRun workspace selector action; no requirement or design ambiguity exists.
 - Recommended recipient: /implementation_engineer
 - Remaining risks or uncertainty: standalone typecheck remains toolchain-blocked; `RunConfigPanel.vue` is 498 effective lines; fresh integrated API/E2E and any resulting proportional test review remain mandatory after repeat source Pass. The dated recovery branch remains unmerged and is not relevant to CR-006.
+
+### CRR-008 — IR-005 resolves active-empty Team workspace readiness
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+- Review entry point and round: Implementation Review, round 5 / eighth completed review result
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md; IR-005 for CR-006
+- Relevant solution revision IDs: SR-002–SR-007; current basis SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-001
+- Relevant implementation revision IDs: IR-001–IR-005
+- Relevant API/E2E revision IDs: API-REV-001–API-REV-004 (historical protected-parent basis)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-007 — Fail, Local Fix to /implementation_engineer, 9.0/10
+- Current authoritative result: Pass — proceed to /api_e2e_engineer, 9.3/10
+- What changed in the review result and why: IR-005 moved exact-address pending workspace readiness reconciliation into `teamRunLaunchReadiness.ts`. Every active New selection with an empty trimmed path now supplies the approved scoped blocker before activation, active non-empty New suppresses only its same-address store workspace issue, and Existing mode ignores its inactive New buffer. The panel consumes the pure policy, root/nested focused cases cover retained Temp -> New/whitespace, and real desktop/narrow rendering shows disabled Run plus the exact message.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001–CR-005 | Resolved in prior source reviews | Remain resolved | CRR-002, CRR-005, IR-002, IR-003, IR-005 | IR-005 is confined to frontend pending workspace readiness and presents no contrary runtime, hierarchy-owner, dependency, terminology, or migration-binding evidence. |
+| TR-001, TR-002 | Resolved in CRR-006 | Remain resolved for unchanged durable test source | CRR-006, API-REV-004, IR-005 | IR-005 does not edit the strengthened server durable tests. Fresh integrated execution remains required because frontend integration changed after the historical pass. |
+| CR-006 | Open — Local Fix | Resolved | CRR-007, IR-005, MP-CR-004 | `applyPendingTeamWorkspaceReadiness` synthesizes/replaces/suppresses exact-address workspace issues according to active mode/path. Parameterized `/` and `/Research` cases retain Temp, disable Run, and show the approved message; inactive-buffer coverage remains. Reviewer suite: 6 files/93 tests Pass; production build Pass; rendered desktop/narrow evidence Pass. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: integrated source changes from CRR-007 Fail / 9.0 to CRR-008 Pass / 9.3; every category is at least 9.0. MP-CR-004 remains Reachable and its consequence is corrected; no premise was added or reclassified.
+- Recommended recipient: /api_e2e_engineer
+- Remaining risks or uncertainty: API-REV-004 and CRR-006 certify the protected first parent only. Fresh integrated coverage investigation/execution is mandatory for DR-001/IR-004/IR-005; return any repository-resident durable test delta for proportional review. Standalone typecheck and broader baseline/provider/Electron residuals remain as recorded. `RunConfigPanel.vue` is 497 effective lines; the recovery branch remains unmerged.
+
+### CRR-009 — API-REV-005 attributes first-click Team continuation failure to the frontend handoff
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+- Review entry point and round: API/E2E Failure-Origin Review, failure-origin round 2 / ninth completed review result
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md; API-REV-005 / API-E2E-014 / API-E2E-F-002; new finding CR-007
+- Relevant solution revision IDs: SR-002–SR-007; current basis SR-007
+- Relevant architecture-review revision IDs: ARCH-REV-001
+- Relevant implementation revision IDs: IR-001–IR-005
+- Relevant API/E2E revision IDs: API-REV-001–API-REV-005
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-008 — integrated implementation-source Pass, 9.3/10; API-REV-005 current execution Fail / 89%
+- Current authoritative result: Fail — Local Fix to /implementation_engineer
+- What changed in the review result and why: the exact approved Workspace Team action was exercised through current Nuxt, actual AutoByteus `open_tab`, and the isolated packaged backend. One activation successfully registered and canonicalized root and nested New paths but stopped before TeamRun creation; a second activation reused those registrations and launched one correct Team. Focused tracing localizes the loss to the frontend preparation-to-launch handoff. The panel inserts a component readiness gate after canonical preparation and before the existing exact-snapshot launch owner; the real sequence does not deterministically cross that gate. The exact full-renderer timing needs implementation instrumentation, but backend, provider, fixture, and projection origins are excluded.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001–CR-005 | Resolved in prior source reviews | Remain resolved | CRR-002, CRR-005, API-REV-005 | Integrated server build, hierarchy lifecycle 7/7, production upgrade 4/4, and exact eventual V2 configuration present no contrary evidence. |
+| CR-006 | Resolved in CRR-008 | Remains resolved | CRR-007, IR-005, CRR-008, API-REV-005 | Actual root and nested active New/empty states disabled Run with the exact approved message; active non-empty and inactive-buffer coverage also passed. |
+| TR-001, TR-002 | Resolved in CRR-006 | Remain resolved | CRR-006, API-REV-005 | Unchanged hierarchy lifecycle and production-upgrade durable tests passed 7/7 and 4/4. |
+| API-E2E-F-002 / CR-007 | N/A | Open — implementation-owned Local Fix | API-REV-005, MP-CR-005, CRR-009 | First click created both workspace registrations and no TeamRun; second click created the correct TeamRun. `RunConfigPanel.vue:440-461` is the post-preparation pre-launch boundary. |
+
+- New or remaining finding IDs: CR-007; API-E2E-F-002. The API-REV-005 `RunConfigPanel.spec.ts` delta remains pending successful proportional review.
+- Material score or classification changes: no failure-origin scorecard was recomputed. CRR-008's 9.3 score is historical; current disposition is Fail / implementation-owned Local Fix. MP-CR-005 is Reachable.
+- Recommended recipient: /implementation_engineer
+- Remaining risks or uncertainty: implementation must instrument the full renderer/workspace-store handoff rather than assume a generic Pinia timing defect; the reviewer's isolated real-store computed probe refreshed synchronously. After correction, repeat source review and the exact one-activation API/E2E rerun are mandatory. The changed durable component test must then receive formal proportional review after successful execution. Recovery-branch isolation and previously bounded baseline/toolchain/provider/Electron residuals remain unchanged.

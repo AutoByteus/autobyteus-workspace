@@ -1,0 +1,25 @@
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+Created and registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005.
+Created and registered workspace ID: agent_ws_c9a0990d0d0b3483a139fc424da62e05cf9db7bf1f860d69867fc6e2d89c7485
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005.
+Reusing registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+Reusing registered workspace ID: agent_ws_c9a0990d0d0b3483a139fc424da62e05cf9db7bf1f860d69867fc6e2d89c7485
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/test_teacher_2f66be30e21945c682e53011d072cc92/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/student_study_group_b8d3d47d923d4b3b8301160ab7276e8c/student_one_f54108a3d6564a609167345f324f36fd/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agent_teams/nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65/student_study_group_b8d3d47d923d4b3b8301160ab7276e8c/student_two_fbdcbf23c8944dc5a165b84852eff699/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+Created agent session 9b62ba13-ba24-46d9-947c-c4fc018eec14 for run nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+Agent Team WebSocket connected: session=9b62ba13-ba24-46d9-947c-c4fc018eec14, run=nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005.
+Reusing registered workspace ID: agent_ws_a776105874c11ad69b5ec33d47ed8fb4075e7b1598f250513bab6a00592b25b2
+[CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005" command="codex" args=["app-server"] code=ENOENT open_fds=41 fs_read=0 fs_write=0
+Closed agent session 9b62ba13-ba24-46d9-947c-c4fc018eec14

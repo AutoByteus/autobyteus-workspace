@@ -8,6 +8,7 @@
 | API-REV-002 | User explicit heterogeneous nested-Team provider/browser/lifecycle extension; API/E2E round 2 | SR-007, ARCH-REV-001, IR-002, CRR-002, API-REV-001 | Pass / 98% | Pass / 99% |
 | API-REV-003 | `code_reviewer` CRR-003/TR-001/TR-002 Local Fix; API/E2E round 3 | SR-007, ARCH-REV-001, IR-002, CRR-002, CRR-003, API-REV-001, API-REV-002 | Pass / 99% | Fail / 89% |
 | API-REV-004 | `code_reviewer` CRR-005 after IR-003 resolved CR-005/API-E2E-F-001; API/E2E round 4 | SR-007, ARCH-REV-001, IR-003, CRR-004, CRR-005, API-REV-003 | Fail / 89% | Pass / 99% |
+| API-REV-005 | `code_reviewer` CRR-008 integrated source Pass plus user real-browser/provider extension; API/E2E round 5 | DR-001, IR-004, IR-005, CRR-008, API-REV-004 | Pass / 99% | Fail / 89% |
 
 ## Revision Entries
 
@@ -148,3 +149,42 @@ None. API-REV-001 had no unresolved failure. API-REV-002 closes only its recorde
 - New or remaining failure IDs: None. API-E2E-F-001 is resolved.
 - Recommended recipient: `/code_reviewer` for formal proportional test-code review of the two strengthened durable paths. Do not proceed to delivery until it passes.
 - Remaining risks, blocked evidence, or untested scope: formal TR-001/TR-002 proportional closure is pending. Exhaustive unrelated provider permutations, dynamic post-launch Team mutation, and unchanged native IPC remain bounded/out of scope as previously recorded; the historical generic Electron build-host mismatch remains a setup/documentation residual with a passed host-native path.
+
+### API-REV-005 — Integrated controlled-workspace coverage and one-activation Team launch failure
+
+- Triggering role, report path, and round: `code_reviewer`; `code-review-report.md` / `code-review-revision-record.md` (`CRR-008`); round 5. The user extended the same round to require current packaged Electron, actual `open_tab`, complete private package, root Codex Luna, nested AutoByteus DeepSeek, disk V2, ordinary message, and formal delegation/acceptance.
+- Triggering scenario IDs: API-E2E-003, API-E2E-004, API-E2E-014, API-E2E-015, API-E2E-016, API-E2E-017; new failure `API-E2E-F-002`.
+- Related upstream revisions: DR-001, IR-004, IR-005, CRR-008, API-REV-004; current integrated merge `bd4e2403...`, current artifact HEAD `5dc5105...`.
+- Why recorded: API-REV-004/CRR-006 certified only the protected parent. The latest-base controlled-workspace behavior and IR-005 exact-address readiness required a fresh integrated investigation, durable coverage restoration, repository execution, and realistic browser/package validation.
+- Durable coverage changed:
+  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`.
+  - Expanded from 24 to 35 cases covering standalone Agent edge/identity behavior; six same-draft configuration edit types; exact root/nested registration and launch; root/nested failures and inactive buffers; and Team draft identity reset.
+  - No durable file was added or removed; implementation source was not changed.
+- Scenarios rechecked:
+  - API-E2E-003 passed 7/7 and retained hash `bc4fda79...`.
+  - API-E2E-004 passed 4/4 and retained hash `3413ed1f...`.
+  - API-E2E-017 passed 9 files / 134 tests; focused changed file passed 35/35; Nuxt and server builds passed.
+  - API-E2E-015 standalone Agent active New behavior and real DeepSeek message passed with exact persisted metadata.
+  - API-E2E-016 real heterogeneous nested Team passed after correcting the owned local-cwd prerequisite: root Codex/Luna, nested AutoByteus/DeepSeek, exact ordinary reply, exact formal task submission, accepted review, exact V2 disk.
+  - API-E2E-014 failed: first accepted Team activation registered/canonicalized both New paths but created no TeamRun; a second activation launched.
+- Environment/broader-validation delta: built the current macOS arm64 package after generic Darwin/all-platform mismatch; launched isolated packaged backend 58449; current Nuxt 58524; documented isolated secret import; private package already auto-registered; actual `open_tab`; provider retry with absolute Codex executable and owned existing directories; UI termination and complete owned cleanup.
+
+#### Prior Failure Resolution
+
+- `API-E2E-F-001` remains resolved: fresh production-upgrade 4/4 passed.
+- API-REV-004's prior result remains valid only for its protected-parent state and does not resolve the integrated API-E2E-F-002 failure.
+
+- New failure: `API-E2E-F-002`.
+- Expected: current-base FR-003 / FR-005 / AC-001 require one accepted Run Team activation to register the visible New workspace state and then create exactly one TeamRun.
+- Observed: the first activation issued both workspace registrations and canonicalized the UI but created no TeamRun; the configuration remained open. The second activation reused the registrations and created the TeamRun.
+- Preliminary classification: implementation-owned `Local Fix`. The runtime ordering is consistent with `handleRun` rechecking `teamLaunchReadiness.value.canLaunch` before the computed projection reflects `setWorkspaceLoaded`; the synchronous store mock masks that boundary. `/code_reviewer` must confirm the final origin.
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-005-team-registration-continuation-failure.md`
+- Prior result/confidence: `Pass` / `99%` (API-REV-004 protected-parent state).
+- Current result/confidence: `Fail` / `89%` (integrated state).
+- New or remaining failure IDs: `API-E2E-F-002`.
+- Recommended recipient: `/code_reviewer` for focused failure-origin review, with the changed durable test attached. Do not proceed to delivery.
+- Remaining risks: the durable component store mock does not expose the real computed-readiness continuation timing. Exhaustive unrelated providers, multi-node remote hosting, dynamic post-launch Team mutation, and unchanged native IPC remain bounded/out of scope.

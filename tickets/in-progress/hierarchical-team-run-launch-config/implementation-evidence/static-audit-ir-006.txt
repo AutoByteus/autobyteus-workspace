@@ -1,0 +1,25 @@
+IR-006 CR-007 static audit
+current HEAD: 5dc5105b14d5c215a70254ce317ad725d130f16e
+current branch: codex/hierarchical-team-run-launch-config
+unmerged entries:
+conflict markers in changed production/test source:
+temporary instrumentation symbols in production/test source:
+CR-007 source boundary:
+autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts:14:const runtimeKindSetSignature = (config: TeamRunConfig | null | undefined): string =>
+autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts:30:  const stop = watch(() => runtimeKindSetSignature(configRef.value), async () => {
+autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts:31:    await Promise.all(collectRuntimeKinds(configRef.value).map(reloadRuntimeKind))
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:450:        const launch = teamRunStore.launchDraft(draft)
+CR-007 deterministic coverage:
+autobyteus-web/composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts:44:  it('retains ready catalogs across immutable workspace edits and reloads only when the runtime set changes', async () => {
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:713:  it('registers two active New Team workspaces and hands the exact current draft to the launch owner on one click', async () => {
+API-REV-005 durable delta preservation anchors:
+420:  it('blocks agent run creation when pending New workspace loading fails', async () => {
+494:  it('preserves the controlled New workspace across mutable Agent buffer edits', async () => {
+907:  ])('keeps the $name New workspace visible and blocks launch when registration fails', async ({ address }) => {
+943:  it('rehydrates address-qualified workspace selections only when the Team draft identity changes', async () => {
+changed source effective non-empty line counts:
+autobyteus-web/components/workspace/config/RunConfigPanel.vue 488
+autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts 33
+port 3001 listener after render check:
+git diff --check:
+PASS

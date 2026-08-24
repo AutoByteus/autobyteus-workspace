@@ -1,0 +1,89 @@
+
+> autobyteus@1.4.57 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/config/__tests__ stores/__tests__/agentRunConfigStore.spec.ts stores/__tests__/teamRunConfigStore.spec.ts utils/__tests__/teamRunLaunchHierarchy.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+
+stderr | utils/__tests__/teamRunLaunchHierarchy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamRunLaunchHierarchy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamRunLaunchHierarchy.spec.ts (5 tests) 4ms
+ ✓ stores/__tests__/agentRunConfigStore.spec.ts (17 tests) 8ms
+ ✓ stores/__tests__/teamRunConfigStore.spec.ts (8 tests) 17ms
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (19 tests) 132ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (20 tests) 107ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 158ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (12 tests) 178ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (7 tests) 33ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (35 tests) 324ms
+
+ Test Files  9 passed (9)
+      Tests  134 passed (134)
+   Start at  21:05:29
+   Duration  8.95s (transform 4.62s, setup 61.17s, collect 2.83s, tests 961ms, environment 3.92s, prepare 3.66s)

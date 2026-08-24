@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_e26871fc1da44bd5b98a9c74e45da32d",
+  "messages": [
+    {
+      "messageId": "teammsg_NsWWqz49uvl0jfERzP4WibdnIORW7waP",
+      "senderAgentRunId": "test_teacher_0cd6b563c7c144b4b7028dfb1afb5824",
+      "receiverAgentRunId": "student_one_f91e0806bb3149ec9a3fc03300f712ed",
+      "content": "Please have your coordinator reply to /Teacher with exactly INTEGRATED_SUBTEAM_MESSAGE_OK.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T19:30:53.318Z"
+    },
+    {
+      "messageId": "teammsg_HKHIfoiNOigGmQS1w23CIWZn0C2lw54K",
+      "senderAgentRunId": "student_one_f91e0806bb3149ec9a3fc03300f712ed",
+      "receiverAgentRunId": "test_teacher_0cd6b563c7c144b4b7028dfb1afb5824",
+      "content": "INTEGRATED_SUBTEAM_MESSAGE_OK",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T19:33:37.591Z"
+    }
+  ]
+}

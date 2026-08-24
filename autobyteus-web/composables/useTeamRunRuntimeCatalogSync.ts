@@ -9,8 +9,10 @@ const collectRuntimeKinds = (config: TeamRunConfig | null | undefined): string[]
   const values = new Set<string>([config.rootConfig.runtimeKind])
   Object.values(config.teamOverrides).forEach((value) => value.runtimeKind && values.add(value.runtimeKind))
   Object.values(config.agentOverrides).forEach((value) => value.runtimeKind && values.add(value.runtimeKind))
-  return [...values].filter(Boolean)
+  return [...values].filter(Boolean).sort()
 }
+const runtimeKindSetSignature = (config: TeamRunConfig | null | undefined): string =>
+  collectRuntimeKinds(config).join('\u0000')
 export function useTeamRunRuntimeCatalogSync(
   configRef: Ref<TeamRunConfig | null | undefined>,
   options: TeamRunRuntimeCatalogSyncOptions = {},
@@ -25,8 +27,8 @@ export function useTeamRunRuntimeCatalogSync(
       store.setRuntimeModelCatalogError(runtimeKind, error instanceof Error ? error.message : String(error))
     }
   }
-  const stop = watch(() => collectRuntimeKinds(configRef.value), async (runtimeKinds) => {
-    await Promise.all(runtimeKinds.map(reloadRuntimeKind))
+  const stop = watch(() => runtimeKindSetSignature(configRef.value), async () => {
+    await Promise.all(collectRuntimeKinds(configRef.value).map(reloadRuntimeKind))
   }, { immediate: options.immediate ?? true })
   return { reloadRuntimeKind, stop }
 }
