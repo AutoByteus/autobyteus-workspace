@@ -2,7 +2,7 @@
 
 ## Status
 
-`Repository finalized; release v1.4.56 authorized and ready` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. The archived ticket is merged and pushed to `personal`; the documented release helper is the remaining publication step.
+`Released — v1.4.56 rollout verified` — `SR-008` classifies the live Alibaba observation as credential/account authorization rejection and records acceptance of the deferred cosmetic label. Repository finalization, tag publication, all five release workflows, GitHub assets, TestFlight upload, and Docker multi-arch publication succeeded. Only repository cleanup remains.
 
 ## Integrated State
 
@@ -18,7 +18,10 @@
 - Archived ticket commit: `79ef159409109ebe62c8a72be6db85de79c494d9`
 - Final `personal` merge: `e3307ead93c5c237f201b4721e12efa585a30dc6`
 - Integration method: merge of latest `origin/personal` into the protected ticket branch.
-- Current base relationship: the verified ticket state was current at final refresh, is archived, and is an ancestor of pushed `origin/personal@e3307ead93c5c237f201b4721e12efa585a30dc6`.
+- Release commit: `91134347c050bdbae2bd517300738bf94f5c2771`
+- Release tag: `v1.4.56`
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.56`
+- Current base relationship: the verified ticket state was current at final refresh, is archived, and the release commit is pushed as `origin/personal` and `v1.4.56`.
 
 ## Testable macOS Electron Package
 
@@ -87,31 +90,31 @@ Electron packaging and the bundled terminal-native runtime now pass on the curre
 
 ## Documentation And Release Preparation
 
-- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/docs-sync-report.md`
-- Prepared release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/release-notes.md`
-- Release status: not authorized or published. No version/tag/deployment action is currently in scope.
-- macOS build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/electron-build-mac-report.md`
+- Docs sync: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/docs-sync-report.md`
+- Prepared release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/release-notes.md`
+- Release status: published and rollout verified. All five release workflows completed successfully; signed iOS uploaded to TestFlight and the versioned/latest Docker multi-arch tags match.
+- macOS build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/electron-build-mac-report.md`
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/requirements.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/design-spec.md`
-- UI/UX: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/ui-ux-spec.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/implementation-handoff.md`
-- Implementation history: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/implementation-revision-record.md`
-- Source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/code-review-report.md`
-- Review history: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/api-e2e-coverage-investigation.md`
-- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/api-e2e-execution-coverage-report.md`
-- API/E2E history: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/api-e2e-revision-record.md`
-- Durable-test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/api-e2e-test-review-report.md`
-- Delivery history: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/delivery-revision-record.md`
-- Historical/resolved integration blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/delivery-integration-blocker.md`
-- Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/release-deployment-report.md`
-- macOS Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/done/api-key-management-panel-performance/electron-build-mac-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/requirements.md`
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/investigation-notes.md`
+- Design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/design-spec.md`
+- UI/UX: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/ui-ux-spec.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/implementation-handoff.md`
+- Implementation history: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/implementation-revision-record.md`
+- Source review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/code-review-report.md`
+- Review history: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/api-e2e-coverage-investigation.md`
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/api-e2e-execution-coverage-report.md`
+- API/E2E history: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/api-e2e-revision-record.md`
+- Durable-test review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/api-e2e-test-review-report.md`
+- Delivery history: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/delivery-revision-record.md`
+- Historical/resolved integration blocker: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/delivery-integration-blocker.md`
+- Delivery report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/release-deployment-report.md`
+- macOS Electron build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/api-key-management-panel-performance/electron-build-mac-report.md`
 
 ## Finalization Hold
 
-The verification hold was released by `SR-008`. Target refresh, archive, ticket-branch push, and `personal` merge/push are complete. Delivery must now run the documented `v1.4.56` release path, verify rollout, and clean up dedicated worktrees/branches when safe.
+The verification hold was released by `SR-008`. Target refresh, archive, repository finalization, `v1.4.56` publication, and rollout verification are complete. Delivery must now clean up the merged ticket branch and dedicated worktrees.
