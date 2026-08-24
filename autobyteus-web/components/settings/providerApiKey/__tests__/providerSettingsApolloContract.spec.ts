@@ -5,267 +5,133 @@ import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  RELOAD_LLM_MODELS,
-  SAVE_QWEN_CONFIGURATION,
-} from '~/graphql/mutations/llm_provider_mutations'
-import {
-  GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
-  GET_GEMINI_SETUP_CONFIG,
-  GET_PROVIDER_SETTINGS,
-  GET_QWEN_SETUP_STATUS,
+  GET_PROVIDER_CREDENTIAL_SETTINGS,
+  GET_PROVIDER_MODEL_CATALOG_SNAPSHOTS,
 } from '~/graphql/queries/llm_provider_queries'
+import {
+  ENSURE_PROVIDER_MODEL_CATALOG,
+  RELOAD_PROVIDER_MODEL_CATALOG,
+} from '~/graphql/mutations/llm_provider_mutations'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useProviderApiKeySectionRuntime } from '../useProviderApiKeySectionRuntime'
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
 vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({
-    t: (key: string, params?: Record<string, string>) =>
-      `${key}${params?.provider ? `:${params.provider}` : ''}`,
-  }),
+  useLocalization: () => ({ t: (key: string) => key }),
 }))
 
-const provider = (id: string, configured: boolean) => ({
-  __typename: 'LlmProviderObject',
+const provider = (id: string, catalogMode: 'STATIC' | 'DISCOVERED' = 'STATIC') => ({
+  __typename: 'CatalogProviderObject',
   id,
-  name: id === 'OPENAI' ? 'OpenAI' : id === 'ANTHROPIC' ? 'Anthropic' : id,
+  name: id === 'OPENAI' ? 'OpenAI' : id,
   providerType: id,
   isCustom: false,
   baseUrl: null,
-  apiKeyConfigured: configured,
-  status: 'NOT_APPLICABLE',
-  statusMessage: null,
+  catalogMode,
+})
+const model = (id: string, providerId: string) => ({
+  __typename: 'ModelDetail',
+  modelIdentifier: id,
+  name: id,
+  description: null,
+  value: id,
+  canonicalName: id,
+  providerId,
+  providerName: providerId,
+  providerType: providerId,
+  runtime: 'autobyteus',
+  hostUrl: null,
+  configSchema: null,
+  maxContextTokens: null,
+  activeContextTokens: null,
+  maxInputTokens: null,
+  maxOutputTokens: null,
+  metadataProvenance: null,
 })
 
-const model = (id: string, providerType: string) => ({
-  __typename: 'ModelDetail', modelIdentifier: id, name: id, providerType,
-})
-
-describe('provider-centric Settings Apollo contract', () => {
+describe('split provider credential/catalog Apollo contract', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('keeps one exact provider status across subordinate LLM/audio/image rows', async () => {
+  it('joins credential facts to credential-free local snapshots by provider ID', async () => {
     const cache = new InMemoryCache()
-    const link = new ApolloLink((operation: { operationName: string }) => new Observable((
-      observer: {
-        next: (value: { data: Record<string, unknown> }) => void
-        complete: () => void
-      },
-    ) => {
-      const data = operation.operationName === 'GetGeminiSetupConfig'
+    const link = new ApolloLink((operation: { operationName: string }) => new Observable((observer: never) => {
+      const sink = observer as never as { next: (value: unknown) => void; complete: () => void }
+      const data = operation.operationName === 'GetProviderCredentialSettings'
         ? {
-            getGeminiSetupConfig: {
-              __typename: 'GeminiSetupStateObject',
-              activeMode: null,
-              aiStudioConfigured: false,
-              vertexExpressConfigured: false,
-              vertexProject: null,
-            },
+            providerCredentialSettings: [{
+              __typename: 'ProviderCredentialSettingObject',
+              provider: provider('OPENAI'),
+              apiKeyConfigured: true,
+            }],
           }
-        : operation.operationName === 'GetQwenSetupStatus'
-          ? {
-              qwenSetupStatus: {
-                __typename: 'QwenSetupStatusObject',
-                effectiveBaseUrl: 'https://default.example/v1',
-                endpointSource: 'DEFAULT',
-                apiKeyConfigured: false,
-              },
-            }
         : {
-            providerSettings: [
-              {
-                __typename: 'ProviderSettingsGroup',
-                provider: provider('ANTHROPIC', false),
-                llmModels: [model('claude', 'ANTHROPIC')],
-                audioModels: [], imageModels: [], videoModels: [],
-              },
-              {
-                __typename: 'ProviderSettingsGroup',
-                provider: provider('OPENAI', true),
-                llmModels: [model('gpt-4.1', 'OPENAI')],
-                audioModels: [model('whisper-1', 'OPENAI')],
-                imageModels: [model('gpt-image-1', 'OPENAI')],
-                videoModels: [],
-              },
-            ],
+            providerModelCatalogSnapshots: [{
+              __typename: 'ProviderModelCatalogSnapshotObject',
+              runtimeKind: 'autobyteus',
+              ownerProvider: provider('OPENAI'),
+              sources: [],
+              llmModels: [model('gpt-4.1', 'OPENAI')],
+              audioModels: [], imageModels: [], videoModels: [],
+            }],
           }
-      observer.next({ data })
-      observer.complete()
+      sink.next({ data })
+      sink.complete()
     }))
     const client = new ApolloClient({ cache, link })
-    vi.mocked(getApolloClient).mockReturnValue(client as any)
+    vi.mocked(getApolloClient).mockReturnValue(client as never)
     const pinia = createPinia()
     setActivePinia(pinia)
     const wrapper = mount(defineComponent({
-      setup() {
-        const runtime = useProviderApiKeySectionRuntime()
-        return { runtime }
-      },
+      setup: () => ({ runtime: useProviderApiKeySectionRuntime() }),
       render: () => h('div'),
     }), { global: { plugins: [pinia] } })
 
-    await (wrapper.vm as any).runtime.initialize()
-
-    const runtime = (wrapper.vm as any).runtime
-    const read = (value: any) => value?.value ?? value
-    expect(read(runtime.allProvidersWithModels).filter((row: any) => !row.isDraft)).toHaveLength(2)
+    await (wrapper.vm as never as { runtime: { initialize: () => Promise<void> } }).runtime.initialize()
+    await vi.waitFor(() => {
+      expect(useLLMProviderConfigStore().catalogSnapshot('autobyteus').state).toBe('ready')
+    })
+    const runtime = (wrapper.vm as never as { runtime: Record<string, unknown> }).runtime
+    const read = (value: unknown) => (value as { value?: unknown })?.value ?? value
     expect(read(runtime.selectedProviderId)).toBe('OPENAI')
     expect(read(runtime.selectedProviderConfigured)).toBe(true)
-    expect(read(runtime.selectedProviderLlmModels)).toHaveLength(1)
-    expect(read(runtime.selectedProviderAudioModels)).toHaveLength(1)
-    expect(read(runtime.selectedProviderImageModels)).toHaveLength(1)
-    expect(runtime.isProviderConfigured('ANTHROPIC')).toBe(false)
-    expect(runtime.isProviderConfigured('OPENAI')).toBe(true)
-
-    const extracted = cache.extract()
-    expect(extracted['LlmProviderObject:OPENAI']).toEqual(expect.objectContaining({
-      apiKeyConfigured: true,
-    }))
-    expect(JSON.stringify(extracted)).not.toContain('credentialStatus')
+    expect(read(runtime.selectedProviderLlmModels)).toEqual([
+      expect.objectContaining({ modelIdentifier: 'gpt-4.1' }),
+    ])
+    expect(useLLMProviderConfigStore().providers('autobyteus')[0]?.provider)
+      .not.toHaveProperty('apiKeyConfigured')
+    expect(JSON.stringify(cache.extract())).not.toContain('credentialStatus')
   })
 
-  it('keeps committed Qwen status authoritative when the later view refresh rejects', async () => {
-    const status = {
-      effectiveBaseUrl: 'https://regional.example/v1',
-      endpointSource: 'CONFIGURED' as const,
-      apiKeyConfigured: true,
-    }
-    const refreshError = new Error('provider settings network failure')
+  it('keeps a static credential command independent from catalog operations', async () => {
     const client = {
-      mutate: vi.fn().mockResolvedValue({ data: { saveQwenConfiguration: status } }),
-      query: vi.fn()
-        .mockRejectedValueOnce(refreshError)
-        .mockResolvedValueOnce({
-          data: {
-            availableLlmProvidersWithModels: [],
-            availableAudioProvidersWithModels: [],
-            availableImageProvidersWithModels: [],
-            availableVideoProvidersWithModels: [],
-          },
-        }),
+      mutate: vi.fn().mockResolvedValue({ data: {
+        saveProviderApiKey: { provider: provider('OPENAI'), apiKeyConfigured: true },
+      } }),
+      query: vi.fn(),
     }
-    vi.mocked(getApolloClient).mockReturnValue(client as any)
-    const pinia = createPinia()
-    setActivePinia(pinia)
+    vi.mocked(getApolloClient).mockReturnValue(client as never)
+    setActivePinia(createPinia())
     const store = useLLMProviderConfigStore()
 
-    await expect(store.saveQwenConfiguration({
-      baseUrl: status.effectiveBaseUrl,
-      apiKey: 'synthetic-key',
-    })).resolves.toEqual(status)
-    expect(store.qwenSetup).toEqual(status)
+    await expect(store.setLLMProviderApiKey('OPENAI', 'synthetic-key'))
+      .resolves.toMatchObject({ apiKeyConfigured: true })
+    expect(client.mutate).toHaveBeenCalledTimes(1)
     expect(client.query).not.toHaveBeenCalled()
-
-    await expect(store.refreshProviderDataAfterQwenSave()).rejects.toBe(refreshError)
-    expect(store.qwenSetup).toEqual(status)
   })
 
-  it('recovers provider settings and catalog through Reload Models after post-save refresh rejection', async () => {
-    const initialGroup = {
-      __typename: 'ProviderSettingsGroup',
-      provider: provider('QWEN', false),
-      llmModels: [model('qwen3.8-max', 'QWEN')],
-      audioModels: [], imageModels: [], videoModels: [],
-    }
-    const recoveredGroup = {
-      ...initialGroup,
-      provider: provider('QWEN', true),
-    }
-    const status = {
-      __typename: 'QwenSetupStatusObject',
-      effectiveBaseUrl: 'https://regional.example/v1',
-      endpointSource: 'CONFIGURED' as const,
-      apiKeyConfigured: true,
-    }
-    const catalog = {
-      availableLlmProvidersWithModels: [{
-        provider: {
-          id: 'QWEN', name: 'Qwen', providerType: 'QWEN', isCustom: false,
-          baseUrl: null, status: 'NOT_APPLICABLE', statusMessage: null,
-        },
-        models: [{
-          modelIdentifier: 'qwen3.8-max', name: 'qwen3.8-max', value: 'qwen3.8-max',
-          canonicalName: 'qwen3.8-max', providerId: 'QWEN', providerName: 'Qwen',
-          providerType: 'QWEN', runtime: 'autobyteus',
-        }],
-      }],
-      availableAudioProvidersWithModels: [],
-      availableImageProvidersWithModels: [],
-      availableVideoProvidersWithModels: [],
-    }
-    let providerSettingsRequests = 0
-    let catalogRequests = 0
-    const query = vi.fn().mockImplementation(({ query: document }) => {
-      if (document === GET_PROVIDER_SETTINGS) {
-        providerSettingsRequests += 1
-        if (providerSettingsRequests === 2) {
-          return Promise.reject(new Error('provider settings network failure'))
-        }
-        return Promise.resolve({
-          data: { providerSettings: providerSettingsRequests === 1 ? [initialGroup] : [recoveredGroup] },
-        })
-      }
-      if (document === GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS) {
-        catalogRequests += 1
-        return Promise.resolve({ data: catalog })
-      }
-      if (document === GET_GEMINI_SETUP_CONFIG) {
-        return Promise.resolve({
-          data: {
-            getGeminiSetupConfig: {
-              activeMode: null, aiStudioConfigured: false,
-              vertexExpressConfigured: false, vertexProject: null,
-            },
-          },
-        })
-      }
-      if (document === GET_QWEN_SETUP_STATUS) {
-        return Promise.resolve({ data: { qwenSetupStatus: status } })
-      }
-      throw new Error('Unexpected query')
-    })
-    const mutate = vi.fn().mockImplementation(({ mutation }) => {
-      if (mutation === SAVE_QWEN_CONFIGURATION) {
-        return Promise.resolve({ data: { saveQwenConfiguration: status } })
-      }
-      if (mutation === RELOAD_LLM_MODELS) {
-        return Promise.resolve({ data: { reloadLlmModels: 'LLM models reloaded successfully' } })
-      }
-      throw new Error('Unexpected mutation')
-    })
-    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as any)
-    const pinia = createPinia()
-    setActivePinia(pinia)
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
-    const wrapper = mount(defineComponent({
-      setup() {
-        const runtime = useProviderApiKeySectionRuntime()
-        return { runtime }
-      },
-      render: () => h('div'),
-    }), { global: { plugins: [pinia] } })
-    const runtime = (wrapper.vm as any).runtime
-    const store = useLLMProviderConfigStore()
+  it('keeps credentials out of local snapshot and targeted catalog documents', () => {
+    const credentialText = GET_PROVIDER_CREDENTIAL_SETTINGS.loc?.source.body ?? ''
+    const catalogText = GET_PROVIDER_MODEL_CATALOG_SNAPSHOTS.loc?.source.body ?? ''
+    const ensureText = ENSURE_PROVIDER_MODEL_CATALOG.loc?.source.body ?? ''
+    const reloadText = RELOAD_PROVIDER_MODEL_CATALOG.loc?.source.body ?? ''
 
-    await runtime.initialize()
-    await expect(runtime.saveQwenConfiguration({
-      baseUrl: status.effectiveBaseUrl,
-      apiKey: 'synthetic-key',
-    })).resolves.toBe(true)
-    expect(store.providerSettingsGroups).toEqual([])
-    expect(store.hasFetchedProviderSettings).toBe(false)
-
-    await runtime.reloadAllModels()
-
-    expect(providerSettingsRequests).toBe(3)
-    expect(catalogRequests).toBe(2)
-    expect(store.providerSettingsGroups).toEqual([recoveredGroup])
-    expect(store.providersWithModels[0]?.models[0]?.modelIdentifier).toBe('qwen3.8-max')
-    expect(runtime.allProvidersWithModels.value.find(({ id }: { id: string }) => id === 'QWEN'))
-      .toEqual(expect.objectContaining({ apiKeyConfigured: true }))
-    expect(runtime.selectedProviderLlmModels.value[0]?.modelIdentifier).toBe('qwen3.8-max')
-    expect(runtime.notification.value.message).toContain('models_reloaded_successfully')
-    consoleError.mockRestore()
+    expect(credentialText).toContain('apiKeyConfigured')
+    expect(catalogText).not.toContain('apiKeyConfigured')
+    expect(catalogText).toContain('providerModelCatalogSnapshots')
+    expect(catalogText).toContain('sources')
+    expect(ensureText).toContain('ensureProviderModelCatalog')
+    expect(reloadText).toContain('reloadProviderModelCatalog')
+    expect(reloadText).not.toContain('reloadLlmModels')
   })
 })

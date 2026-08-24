@@ -3,6 +3,11 @@ import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { LMStudioLLM } from './api/lmstudio-llm.js';
+import {
+  joinDiscoveryEndpointPath,
+  normalizeDiscoveryEndpointIdentity,
+  tryNormalizeDiscoveryEndpointIdentity,
+} from './discovery-endpoint-identity.js';
 
 type LmstudioLoadedInstance = {
   config?: {
@@ -29,23 +34,21 @@ export class LMStudioModelProvider {
   static getHosts(): string[] {
     const hostsStr = process.env.LMSTUDIO_HOSTS;
     if (hostsStr) {
-      return hostsStr.split(',').map((host) => host.trim()).filter(Boolean);
+      return hostsStr.split(',')
+        .map((host) => host.trim())
+        .filter(Boolean)
+        .map((host) => tryNormalizeDiscoveryEndpointIdentity(host) ?? host);
     }
 
     return [LMStudioModelProvider.DEFAULT_LMSTUDIO_HOST];
   }
 
   static isValidUrl(url: string): boolean {
-    try {
-      const parsed = new URL(url);
-      return Boolean(parsed.protocol && parsed.host);
-    } catch {
-      return false;
-    }
+    return tryNormalizeDiscoveryEndpointIdentity(url) !== null;
   }
 
   private static async fetchNativeModels(hostUrl: string): Promise<LmstudioNativeModel[]> {
-    const endpoint = `${hostUrl.replace(/\/+$/, '')}/api/v1/models`;
+    const endpoint = joinDiscoveryEndpointPath(hostUrl, '/api/v1/models');
     const response = await fetch(endpoint);
     if (!response.ok) {
       throw new Error(`LM Studio native model discovery failed with status ${response.status}`);
@@ -67,25 +70,35 @@ export class LMStudioModelProvider {
     return contexts.every((value) => value === contexts[0]) ? contexts[0]! : null;
   }
 
-  static async getModels(): Promise<LLMModel[]> {
+  static async discoverModels(): Promise<{
+    models: LLMModel[];
+    successfulHostCount: number;
+    failedHostCount: number;
+  }> {
     const hosts = LMStudioModelProvider.getHosts();
     const allModels: LLMModel[] = [];
+    let successfulHostCount = 0;
+    let failedHostCount = 0;
 
     for (const hostUrl of hosts) {
       if (!LMStudioModelProvider.isValidUrl(hostUrl)) {
         console.error(`Invalid LM Studio host URL: ${hostUrl}, skipping.`);
+        failedHostCount += 1;
         continue;
       }
+      const endpointIdentity = normalizeDiscoveryEndpointIdentity(hostUrl);
 
-      console.log(`Discovering LM Studio models from host: ${hostUrl}`);
+      console.log(`Discovering LM Studio models from host: ${endpointIdentity}`);
 
       let models: LmstudioNativeModel[] = [];
       try {
-        models = await LMStudioModelProvider.fetchNativeModels(hostUrl);
+        models = await LMStudioModelProvider.fetchNativeModels(endpointIdentity);
       } catch (error: any) {
-        console.warn(`Could not connect to LM Studio at ${hostUrl}. Ensure the server is running.`, error?.message ?? error);
+        console.warn(`Could not connect to LM Studio at ${endpointIdentity}. Ensure the server is running.`, error?.message ?? error);
+        failedHostCount += 1;
         continue;
       }
+      successfulHostCount += 1;
 
       for (const modelInfo of models) {
         const modelId = modelInfo?.key;
@@ -99,7 +112,7 @@ export class LMStudioModelProvider {
             llmClass: LMStudioLLM,
             canonicalName: modelId,
             runtime: LLMRuntime.LMSTUDIO,
-            hostUrl: hostUrl,
+            hostUrl: endpointIdentity,
             defaultConfig: new LLMConfig({
               pricingConfig: new TokenPricingConfig({ inputTokenPricing: 0.0, outputTokenPricing: 0.0 })
             }),
@@ -108,12 +121,16 @@ export class LMStudioModelProvider {
           });
           allModels.push(llmModel);
         } catch (error: any) {
-          console.warn(`Failed to create LLMModel for '${modelId}' from ${hostUrl}: ${error?.message ?? error}`);
+          console.warn(`Failed to create LLMModel for '${modelId}' from ${endpointIdentity}: ${error?.message ?? error}`);
         }
       }
     }
 
-    return allModels;
+    return { models: allModels, successfulHostCount, failedHostCount };
+  }
+
+  static async getModels(): Promise<LLMModel[]> {
+    return (await LMStudioModelProvider.discoverModels()).models;
   }
 
   static async discoverAndRegister(): Promise<number> {

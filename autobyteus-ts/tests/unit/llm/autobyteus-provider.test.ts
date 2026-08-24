@@ -29,6 +29,7 @@ describe('AutobyteusModelProvider', () => {
   });
 
   it('keeps unknown context metadata as null instead of defaulting to 8192', async () => {
+    const controller = new AbortController();
     mockGetAvailableLlmModelsSync.mockResolvedValue({
       models: [
         {
@@ -47,7 +48,7 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], discoveryAuthentication(),
+      'https://autobyteus.example', discoveryAuthentication(), { signal: controller.signal },
     );
 
     expect(models).toHaveLength(1);
@@ -59,6 +60,7 @@ describe('AutobyteusModelProvider', () => {
       'https://autobyteus.example',
       'synthetic-gateway-key',
     );
+    expect(mockGetAvailableLlmModelsSync).toHaveBeenCalledWith({ signal: controller.signal });
   });
 
   it('prefers explicit server metadata when present', async () => {
@@ -85,7 +87,7 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], discoveryAuthentication(),
+      'https://autobyteus.example', discoveryAuthentication(),
     );
 
     expect(models).toHaveLength(1);
@@ -126,7 +128,7 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], discoveryAuthentication(),
+      'https://autobyteus.example', discoveryAuthentication(),
     );
     const modelInfo = models[0]?.toModelInfo();
 

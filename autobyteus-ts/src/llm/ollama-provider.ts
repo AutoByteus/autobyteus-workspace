@@ -4,6 +4,11 @@ import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { OllamaLLM } from './api/ollama-llm.js';
+import {
+  joinDiscoveryEndpointPath,
+  normalizeDiscoveryEndpointIdentity,
+  tryNormalizeDiscoveryEndpointIdentity,
+} from './discovery-endpoint-identity.js';
 
 type OllamaListModel = {
   model?: string;
@@ -79,23 +84,21 @@ export class OllamaModelProvider {
   static getHosts(): string[] {
     const hostsStr = process.env.OLLAMA_HOSTS;
     if (hostsStr) {
-      return hostsStr.split(',').map((host) => host.trim()).filter(Boolean);
+      return hostsStr.split(',')
+        .map((host) => host.trim())
+        .filter(Boolean)
+        .map((host) => tryNormalizeDiscoveryEndpointIdentity(host) ?? host);
     }
 
     return [OllamaModelProvider.DEFAULT_OLLAMA_HOST];
   }
 
   static isValidUrl(url: string): boolean {
-    try {
-      const parsed = new URL(url);
-      return Boolean(parsed.protocol && parsed.host);
-    } catch {
-      return false;
-    }
+    return tryNormalizeDiscoveryEndpointIdentity(url) !== null;
   }
 
   private static async fetchModelDetails(hostUrl: string, modelName: string): Promise<OllamaShowResponse> {
-    const response = await fetch(`${hostUrl.replace(/\/+$/, '')}/api/show`, {
+    const response = await fetch(joinDiscoveryEndpointPath(hostUrl, '/api/show'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: modelName })
@@ -109,7 +112,7 @@ export class OllamaModelProvider {
   }
 
   private static async fetchRunningModels(hostUrl: string): Promise<Map<string, OllamaRunningModel>> {
-    const response = await fetch(`${hostUrl.replace(/\/+$/, '')}/api/ps`);
+    const response = await fetch(joinDiscoveryEndpointPath(hostUrl, '/api/ps'));
     if (!response.ok) {
       throw new Error(`Ollama ps failed with status ${response.status}`);
     }
@@ -124,33 +127,43 @@ export class OllamaModelProvider {
     return runningModels;
   }
 
-  static async getModels(): Promise<LLMModel[]> {
+  static async discoverModels(): Promise<{
+    models: LLMModel[];
+    successfulHostCount: number;
+    failedHostCount: number;
+  }> {
     const hosts = OllamaModelProvider.getHosts();
     const allModels: LLMModel[] = [];
+    let successfulHostCount = 0;
+    let failedHostCount = 0;
 
     for (const hostUrl of hosts) {
       if (!OllamaModelProvider.isValidUrl(hostUrl)) {
         console.error(`Invalid Ollama host URL provided: '${hostUrl}', skipping.`);
+        failedHostCount += 1;
         continue;
       }
+      const endpointIdentity = normalizeDiscoveryEndpointIdentity(hostUrl);
 
-      console.info(`Discovering Ollama models from host: ${hostUrl}`);
-      const client = new Ollama({ host: hostUrl });
+      console.info(`Discovering Ollama models from host: ${endpointIdentity}`);
+      const client = new Ollama({ host: endpointIdentity });
 
       let models: OllamaListModel[] = [];
       try {
         const response: any = await client.list();
         models = response?.models ?? [];
       } catch (error: any) {
-        console.warn(`Could not connect to Ollama server at ${hostUrl}. Ensure it's running.`, error?.message ?? error);
+        console.warn(`Could not connect to Ollama server at ${endpointIdentity}. Ensure it's running.`, error?.message ?? error);
+        failedHostCount += 1;
         continue;
       }
+      successfulHostCount += 1;
 
       let runningModels = new Map<string, OllamaRunningModel>();
       try {
-        runningModels = await OllamaModelProvider.fetchRunningModels(hostUrl);
+        runningModels = await OllamaModelProvider.fetchRunningModels(endpointIdentity);
       } catch (error: any) {
-        console.warn(`Could not read running Ollama models from ${hostUrl}.`, error?.message ?? error);
+        console.warn(`Could not read running Ollama models from ${endpointIdentity}.`, error?.message ?? error);
       }
 
       for (const modelInfo of models) {
@@ -159,9 +172,9 @@ export class OllamaModelProvider {
 
         let modelDetails: OllamaShowResponse | null = null;
         try {
-          modelDetails = await OllamaModelProvider.fetchModelDetails(hostUrl, modelName);
+          modelDetails = await OllamaModelProvider.fetchModelDetails(endpointIdentity, modelName);
         } catch (error: any) {
-          console.warn(`Failed to fetch Ollama model details for '${modelName}' from ${hostUrl}: ${error?.message ?? error}`);
+          console.warn(`Failed to fetch Ollama model details for '${modelName}' from ${endpointIdentity}: ${error?.message ?? error}`);
         }
 
         const maxContextTokens = extractSupportedContextLength(modelDetails?.model_info);
@@ -177,7 +190,7 @@ export class OllamaModelProvider {
             llmClass: OllamaLLM,
             canonicalName: modelName,
             runtime: LLMRuntime.OLLAMA,
-            hostUrl: hostUrl,
+            hostUrl: endpointIdentity,
             defaultConfig: new LLMConfig({
               pricingConfig: new TokenPricingConfig({ inputTokenPricing: 0.0, outputTokenPricing: 0.0 })
             }),
@@ -186,12 +199,16 @@ export class OllamaModelProvider {
           });
           allModels.push(llmModel);
         } catch (error: any) {
-          console.warn(`Failed to create LLMModel for '${modelName}' from host ${hostUrl}: ${error?.message ?? error}`);
+          console.warn(`Failed to create LLMModel for '${modelName}' from host ${endpointIdentity}: ${error?.message ?? error}`);
         }
       }
     }
 
-    return allModels;
+    return { models: allModels, successfulHostCount, failedHostCount };
+  }
+
+  static async getModels(): Promise<LLMModel[]> {
+    return (await OllamaModelProvider.discoverModels()).models;
   }
 
   static async discoverAndRegister(): Promise<number> {

@@ -18,8 +18,9 @@ describe('useBindingLaunchPresetModelSelection', () => {
       activeLaunchPreset: computed(() => launchPreset as any),
       llmStore: {
         fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
-        providersWithModelsForSelection: [],
-        models: ['gpt-5.4', 'gpt-5.3-codex'],
+        ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+        providersWithModelsForSelection: vi.fn().mockReturnValue([]),
+        models: vi.fn().mockReturnValue(['gpt-5.4', 'gpt-5.3-codex']),
         modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null),
       } as any,
       runtimeAvailabilityStore: {
@@ -64,18 +65,21 @@ describe('useBindingLaunchPresetModelSelection', () => {
         providerType: 'QWEN',
       },
     ]
+    const providersWithModelsForSelection = vi.fn().mockReturnValue([
+      {
+        provider: { id: 'QWEN', name: 'Qwen' },
+        models: qwenModels,
+      },
+    ])
+    const models = vi.fn().mockReturnValue(qwenModels.map(model => model.modelIdentifier))
     const flow = useBindingLaunchPresetModelSelection({
       targetType: computed(() => 'AGENT' as const),
       activeLaunchPreset: computed(() => launchPreset as any),
       llmStore: {
         fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
-        providersWithModelsForSelection: [
-          {
-            provider: { id: 'QWEN', name: 'Qwen' },
-            models: qwenModels,
-          },
-        ],
-        models: qwenModels.map(model => model.modelIdentifier),
+        ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+        providersWithModelsForSelection,
+        models,
         modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null),
       } as any,
       runtimeAvailabilityStore: {
@@ -110,6 +114,7 @@ describe('useBindingLaunchPresetModelSelection', () => {
         ],
       },
     ])
+    expect(providersWithModelsForSelection).toHaveBeenCalledWith('autobyteus')
 
     flow.updateModel('qwen:glm-5.2')
 

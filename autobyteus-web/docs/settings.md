@@ -9,9 +9,13 @@ This document outlines the end-to-end architecture of how Agent and Agent Team e
 Settings -> API Key Management is a write-only credential surface backed by the
 server's centralized encrypted vault:
 
-- `providerSettings` returns each provider once with one provider-owned
-  `apiKeyConfigured` fact and credential-independent subordinate LLM, audio,
-  image, and video model lists;
+- `providerCredentialSettings(runtimeKind)` returns each provider once with its
+  descriptor, `catalogMode = STATIC | DISCOVERED`, and one provider-owned
+  `apiKeyConfigured` fact. It does not read or wait for model discovery;
+- `providerModelCatalogSnapshots(runtimeKind)` independently returns the
+  current in-process LLM, audio, image, and video rows plus source state. The
+  snapshot read initializes curated/static registries without network access
+  and never starts a dynamic source;
 - stored credential values are never returned;
 - ordinary built-in providers support Save/create-or-overwrite and value-free
   configured status, with no standalone credential-removal action;
@@ -32,26 +36,46 @@ server's centralized encrypted vault:
   the user to save a valid pair again before using Qwen;
 - configured and active state are value-free badges derived from the
   authoritative setup state and remain accurate after a Settings reload; and
-- successful commands refetch the provider-centered Settings read so the UI
-  reflects authoritative provider and catalog state.
+- successful credential/setup commands return the updated value-free setting
+  (and specialized Gemini/Qwen setup state) so the client applies committed
+  state directly without refetching or awaiting a catalog operation.
+
+API Keys starts the credential read and local catalog snapshot independently,
+but it awaits only the credential read before rendering provider navigation and
+the selected credential editor. Static providers show curated rows immediately
+and never show Reload. `AUTOBYTEUS`, `OLLAMA`, `LMSTUDIO`, and saved custom
+providers are `DISCOVERED`: selecting a cold source starts only that provider's
+`ensureProviderModelCatalog` operation. A later read reuses its in-process
+snapshot; only provider-local Reload forces `reloadProviderModelCatalog`. There
+is no page-level, global, static-provider, or all-capability Reload operation.
+
+Dynamic progress and failure stay inside the selected model section. Source
+state distinguishes `IDLE`, `LOADING`, `READY`, `PARTIAL`, `REFRESHING`,
+`STALE_ERROR`, and `ERROR`. Credential controls remain available during model
+loading/failure; current rows remain visible while refreshing; retained rows
+use stale copy only after their own failed refresh; and a partial response with
+no rows is unavailable/partial rather than an authoritative empty catalog.
 
 A successful Qwen mutation is the committed setup result. The client then
-refreshes both provider settings and the model catalog so the saved endpoint and
-the exact Qwen catalog (`qwen3.8-max`, `deepseek-v4-pro`,
-`deepseek-v4-flash-0731`, and `glm-5.2`) converge in the UI. Live catalog rows
-show the friendly names `DeepSeek V4 Pro (Qwen)`,
+applies the returned setup and credential setting directly. Qwen's static
+catalog (`qwen3.7-max`, `qwen3.8-max`, `deepseek-v4-pro`,
+`deepseek-v4-flash-0731`, `glm-5.2`, and `qwen3-max`) does not require endpoint
+discovery or Reload. Catalog rows show the friendly names `DeepSeek V4 Pro (Qwen)`,
 `DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` across Settings and the
 shared agent, team, application/member, and binding selection paths. Their
 option values remain the collision-safe `qwen:...` model identifiers, and Qwen
 provider requests continue to send the exact unprefixed model values. A stored
-selector missing from the live catalog remains visible by its raw identifier
+selector missing from the current catalog remains visible by its raw identifier
 for repair instead of receiving a guessed friendly name. If a subordinate
-refresh fails, the UI keeps the committed configured state and shows a warning
-rather than relabeling the save as failed. Global and selected-provider reloads
-likewise await both provider-settings and catalog refresh owners before showing
-success; either refresh failure keeps the operation in its failure path. The
-removed `qwen3.8-max-preview` value must not reappear after save, reload, or
-recovery.
+operation fails, the UI keeps the committed configured state rather than
+relabeling the save as failed. The removed `qwen3.8-max-preview` value must not
+reappear after save, catalog read, or recovery.
+
+An ordinary AutoByteus credential save returns after the vault commit. The
+server invalidates and starts only the AutoByteus LLM/audio/image sources in the
+background, and the mounted client separately starts or joins the matching
+non-forcing ensure after it has published credential success. Neither side
+turns the credential command into an awaited global refresh.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in

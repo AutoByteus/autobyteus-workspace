@@ -1,0 +1,31 @@
+{
+  "result": "Fail",
+  "timings": {},
+  "assertions": [],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787495673101
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787495673102
+    }
+  ],
+  "fixtureRequests": [],
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_EMPTY_RESPONSE",
+    "Failed to load resource: net::ERR_EMPTY_RESPONSE",
+    "Failed to load resource: net::ERR_EMPTY_RESPONSE"
+  ],
+  "pageErrors": [
+    "Failed to fetch"
+  ],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('navigation', { name: 'Providers' }).getByRole('button').filter({ hasText: 'OpenAI' }).first() to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:248:77"
+}

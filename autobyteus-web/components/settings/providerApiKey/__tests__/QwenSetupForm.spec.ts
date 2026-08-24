@@ -30,12 +30,12 @@ vi.mock('~/composables/useLocalization', () => ({
 const status = (endpointSource: 'DEFAULT' | 'CONFIGURED' = 'DEFAULT') => ({
   effectiveBaseUrl: 'https://dashscope.example/compatible-mode/v1',
   endpointSource,
-  apiKeyConfigured: true,
 })
 
 const mountForm = (overrides: Record<string, unknown> = {}) => mount(QwenSetupForm, {
   props: {
     setup: status(),
+    configured: true,
     saving: false,
     resetVersion: 0,
     errorMessage: null,

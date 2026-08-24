@@ -1,0 +1,150 @@
+HEAD: f6f4d532f78f3b418dca471881f65d3415693f99 (plus one API/E2E durable assertion correction)
+COMMAND: SETTINGS_BROWSER_OUTPUT_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser node /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs
+{
+  "result": "Pass",
+  "timings": {
+    "fullDocumentCredentialSurfaceMs": 200,
+    "domContentLoadedMs": 98,
+    "credentialSurfaceAfterDomContentLoadedMs": 102
+  },
+  "assertions": [
+    "production-build credential surface visible within 1500ms of full browser entry with a nonresponding Ollama endpoint configured and no discovery dependency",
+    "static OpenAI rows/form are independent and expose no Reload",
+    "dynamic model loading remains local and leaves the credential editor enabled",
+    "first targeted discovery publishes only Ollama and exposes provider-local Reload",
+    "same-authority path change clears only Ollama rows before replacement and remains usable after navigation",
+    "host save request order is UpdateServerSetting -> targeted EnsureProviderModelCatalog -> GetServerSettings",
+    "failed replacement shows localized unavailable/Retry state without restoring old rows or blocking credentials",
+    "768px tablet rendering has no document-level horizontal overflow"
+  ],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787503260653
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787503260653
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787503260753
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787503260871
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787503260887
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787503260887
+    },
+    {
+      "operationName": "GetWorkingContextCompactionStrategies",
+      "at": 1787503260894
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "at": 1787503260897
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "at": 1787503260898
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "at": 1787503260899
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "at": 1787503260901
+    },
+    {
+      "operationName": "GetSearchConfig",
+      "at": 1787503260901
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787503260956
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787503260962
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787503260963
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787503261197
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787503261205
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787503261206
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/path-a/api/tags",
+      "source": "path-a",
+      "at": 1787503260758
+    },
+    {
+      "method": "GET",
+      "path": "/path-a/api/ps",
+      "source": "path-a",
+      "at": 1787503260819
+    },
+    {
+      "method": "POST",
+      "path": "/path-a/api/show",
+      "source": "path-a",
+      "at": 1787503260823
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/tags",
+      "source": "path-b",
+      "at": 1787503260958
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/ps",
+      "source": "path-b",
+      "at": 1787503261061
+    },
+    {
+      "method": "POST",
+      "path": "/path-b/api/show",
+      "source": "path-b",
+      "at": 1787503261064
+    },
+    {
+      "method": "GET",
+      "path": "/path-c/api/tags",
+      "source": "path-c",
+      "at": 1787503261199
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "frontendUrl": "http://127.0.0.1:55836",
+  "backendUrl": "http://127.0.0.1:55834",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frontendMode": "production static build served by an owned loopback harness"
+}

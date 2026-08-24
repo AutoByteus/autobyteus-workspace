@@ -5,6 +5,7 @@ import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
+import { buildHostScopedMultimediaModelIdentifier } from '../model-identifier.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
@@ -58,13 +59,7 @@ export class AudioModel {
 
   get modelIdentifier(): string {
     if (this.runtime === MultimediaRuntime.AUTOBYTEUS && this.hostUrl) {
-      try {
-        const url = new URL(this.hostUrl);
-        const host = url.host || url.hostname || this.hostUrl;
-        return `${this.name}@${host}`;
-      } catch {
-        return `${this.name}@${this.hostUrl}`;
-      }
+      return buildHostScopedMultimediaModelIdentifier(this.name, this.hostUrl);
     }
 
     return this.name;

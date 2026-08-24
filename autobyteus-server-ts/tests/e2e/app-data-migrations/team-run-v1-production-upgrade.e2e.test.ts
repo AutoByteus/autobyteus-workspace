@@ -582,14 +582,14 @@ const createCurrentAgentRun = async (serverUrl: string, runtimeRoot: string, lab
     },
   });
   const models = await executeGraphql<{
-    availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
+    providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
   }>(serverUrl, `
     query DegradedModels($runtimeKind: String) {
-      availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { models { modelIdentifier } }
+      providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } }
     }
   `, { runtimeKind: "autobyteus" });
-  const modelIdentifier = models.availableLlmProvidersWithModels
-    .flatMap(({ models: values }) => values.map(({ modelIdentifier: value }) => value))
+  const modelIdentifier = models.providerModelCatalogSnapshots
+    .flatMap(({ llmModels: values }) => values.map(({ modelIdentifier: value }) => value))
     .find((value) => value.trim());
   expect(modelIdentifier).toBeTruthy();
   const workspaceRootPath = path.join(runtimeRoot, "degraded-current-workspace");
@@ -780,14 +780,14 @@ const exerciseHistoryAndNewWork = async (
   expect(createdAgent.createAgentDefinition.id).toBeTruthy();
 
   const models = await executeGraphql<{
-    availableLlmProvidersWithModels: Array<{ models: Array<{ modelIdentifier: string }> }>;
+    providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
   }>(serverUrl, `
     query PostMigrationModels($runtimeKind: String) {
-      availableLlmProvidersWithModels(runtimeKind: $runtimeKind) { models { modelIdentifier } }
+      providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } }
     }
   `, { runtimeKind: "autobyteus" });
-  const modelIdentifier = models.availableLlmProvidersWithModels
-    .flatMap((provider) => provider.models.map((model) => model.modelIdentifier))
+  const modelIdentifier = models.providerModelCatalogSnapshots
+    .flatMap((provider) => provider.llmModels.map((model) => model.modelIdentifier))
     .find((candidate) => candidate.trim());
   expect(modelIdentifier).toBeTruthy();
   const workspaceRootPath = path.join(runtimeRoot, "synthetic-workspace");

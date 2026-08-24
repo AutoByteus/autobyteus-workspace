@@ -50,11 +50,9 @@ export const loadRuntimeProviderGroupsForSelection = async (
   runtimeKind: AgentRuntimeKind,
   llmStore = useLLMProviderConfigStore(),
 ): Promise<ProviderWithModels[]> => {
-  const rows = await llmStore.fetchProvidersWithModels(runtimeKind)
-  const candidateRows = Array.isArray(rows) && rows.length > 0
-    ? rows
-    : (llmStore.providersWithModelsForSelection ?? [])
-  return cloneProviderRows(candidateRows)
+  await llmStore.fetchProvidersWithModels(runtimeKind)
+  await llmStore.ensureMissingDynamicProviders(runtimeKind)
+  return cloneProviderRows(llmStore.providersWithModelsForSelection(runtimeKind))
 }
 
 export const useRuntimeScopedModelSelection = (params: {
@@ -86,11 +84,26 @@ export const useRuntimeScopedModelSelection = (params: {
 
     isLoadingModels.value = true
     try {
-      const rows = await loadRuntimeProviderGroupsForSelection(normalizedRuntimeKind, llmStore)
+      await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+      const rows = cloneProviderRows(
+        llmStore.providersWithModelsForSelection(normalizedRuntimeKind),
+      )
       providerGroupsByRuntime.value = {
         ...providerGroupsByRuntime.value,
         [normalizedRuntimeKind]: rows,
       }
+      void llmStore.ensureMissingDynamicProviders(normalizedRuntimeKind)
+        .then(() => {
+          providerGroupsByRuntime.value = {
+            ...providerGroupsByRuntime.value,
+            [normalizedRuntimeKind]: cloneProviderRows(
+              llmStore.providersWithModelsForSelection(normalizedRuntimeKind),
+            ),
+          }
+        })
+        .catch((error) => {
+          console.error(`Failed to discover dynamic models for '${normalizedRuntimeKind}'.`, error)
+        })
     } finally {
       isLoadingModels.value = false
     }

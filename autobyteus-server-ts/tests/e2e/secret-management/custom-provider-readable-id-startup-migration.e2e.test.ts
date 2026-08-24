@@ -47,18 +47,29 @@ type AttemptLogDetail = {
   filePath?: string | null;
 };
 
-type ProviderSettingsResult = {
-  providerSettings: Array<{
+type ProviderCredentialSettingsResult = {
+  providerCredentialSettings: Array<{
     provider: {
       id: string;
       name: string;
-      apiKeyConfigured: boolean;
-      status: string;
     };
-    llmModels: Array<{
-      modelIdentifier: string;
-      value: string;
-    }>;
+    apiKeyConfigured: boolean;
+  }>;
+};
+
+type ProviderCatalogSnapshot = {
+  ownerProvider: {
+    id: string;
+    name: string;
+  };
+  sources: Array<{
+    modelKind: string;
+    state: string;
+    modelCount: number;
+  }>;
+  llmModels: Array<{
+    modelIdentifier: string;
+    value: string;
   }>;
 };
 
@@ -389,12 +400,14 @@ const readAttemptLog = (status: MigrationStatus): {
   };
 };
 
-const providerSettings = (serverUrl: string): Promise<ProviderSettingsResult> =>
-  executeGraphql<ProviderSettingsResult>(serverUrl, `
-    query ReadableProviderSettings {
-      providerSettings(runtimeKind: "autobyteus") {
-        provider { id name apiKeyConfigured status }
-        llmModels { modelIdentifier value }
+const providerCredentialSettings = (
+  serverUrl: string,
+): Promise<ProviderCredentialSettingsResult> =>
+  executeGraphql<ProviderCredentialSettingsResult>(serverUrl, `
+    query ReadableProviderCredentialSettings {
+      providerCredentialSettings(runtimeKind: "autobyteus") {
+        provider { id name }
+        apiKeyConfigured
       }
     }
   `);
@@ -402,15 +415,39 @@ const providerSettings = (serverUrl: string): Promise<ProviderSettingsResult> =>
 const waitForReadyProvider = async (
   serverUrl: string,
   providerId: string,
-): Promise<ProviderSettingsResult['providerSettings'][number]> => {
-  const timeoutAt = Date.now() + 20_000;
-  while (Date.now() < timeoutAt) {
-    const current = await providerSettings(serverUrl);
-    const row = current.providerSettings.find(({ provider }) => provider.id === providerId);
-    if (row?.provider.status === 'READY' && row.llmModels.length > 0) return row;
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-  throw new Error('READABLE_PROVIDER_RUNTIME_SYNC_TIMEOUT');
+): Promise<{
+  provider: { id: string; name: string };
+  apiKeyConfigured: boolean;
+  catalog: ProviderCatalogSnapshot;
+}> => {
+  const catalog = await executeGraphql<{
+    ensureProviderModelCatalog: ProviderCatalogSnapshot;
+  }>(serverUrl, `
+    mutation EnsureReadableProvider($providerId: String!) {
+      ensureProviderModelCatalog(
+        providerId: $providerId
+        runtimeKind: "autobyteus"
+      ) {
+        ownerProvider { id name }
+        sources { modelKind state modelCount }
+        llmModels { modelIdentifier value }
+      }
+    }
+  `, { providerId });
+  const credentials = await providerCredentialSettings(serverUrl);
+  const setting = credentials.providerCredentialSettings.find(
+    ({ provider }) => provider.id === providerId,
+  );
+  if (!setting) throw new Error('READABLE_PROVIDER_CREDENTIAL_SETTING_MISSING');
+  expect(catalog.ensureProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
+    modelKind: 'LLM',
+    state: 'READY',
+  }));
+  return {
+    provider: setting.provider,
+    apiKeyConfigured: setting.apiKeyConfigured,
+    catalog: catalog.ensureProviderModelCatalog,
+  };
 };
 
 const startDiscoveryFixture = async (credential: string, modelId = MODEL_SUFFIX) => {
@@ -522,7 +559,7 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
       defaults: { llmModelIdentifier: READABLE_IDENTIFIER },
     });
     expect(readJson(paths.excludedTrace).llmModelIdentifier).toBe(OLD_IDENTIFIER);
-    expect((await providerSettings(first.serverUrl)).providerSettings.some(
+    expect((await providerCredentialSettings(first.serverUrl)).providerCredentialSettings.some(
       ({ provider }) => provider.id === OLD_ID || provider.id === READABLE_ID,
     )).toBe(false);
 
@@ -625,15 +662,20 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     expect(application.profile.excludedNested.llmModelIdentifier).toBe(OLD_IDENTIFIER);
     expect(application.defaults.llmModelIdentifier).toBe(READABLE_IDENTIFIER);
     expect(readJson(paths.excludedTrace).llmModelIdentifier).toBe(OLD_IDENTIFIER);
-    expect((await providerSettings(server.serverUrl)).providerSettings.some(
+    expect((await providerCredentialSettings(server.serverUrl)).providerCredentialSettings.some(
       ({ provider }) => provider.id === OLD_ID || provider.id === READABLE_ID,
     )).toBe(false);
 
     const currentSecret = `readable-v2-current-secret-${Date.now()}`;
     const discovery = await startDiscoveryFixture(currentSecret);
-    await expect(executeGraphql<{ createCustomProvider: string }>(server.serverUrl, `
+    await expect(executeGraphql<{
+      createCustomProvider: { provider: { id: string }; apiKeyConfigured: boolean };
+    }>(server.serverUrl, `
       mutation BadCreate($input: CustomProviderInputObject!) {
-        createCustomProvider(input: $input)
+        createCustomProvider(input: $input) {
+          provider { id }
+          apiKeyConfigured
+        }
       }
     `, {
       input: {
@@ -643,13 +685,18 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
       },
     })).rejects.toThrow('TEST_GRAPHQL_REQUEST_FAILED');
     expect(listSecretIds(target.database.databasePath)).not.toContain(READABLE_SECRET_ID);
-    expect((await providerSettings(server.serverUrl)).providerSettings.some(
+    expect((await providerCredentialSettings(server.serverUrl)).providerCredentialSettings.some(
       ({ provider }) => provider.id === READABLE_ID,
     )).toBe(false);
 
-    const created = await executeGraphql<{ createCustomProvider: string }>(server.serverUrl, `
+    const created = await executeGraphql<{
+      createCustomProvider: { provider: { id: string }; apiKeyConfigured: boolean };
+    }>(server.serverUrl, `
       mutation Recreate($input: CustomProviderInputObject!) {
-        createCustomProvider(input: $input)
+        createCustomProvider(input: $input) {
+          provider { id }
+          apiKeyConfigured
+        }
       }
     `, {
       input: {
@@ -658,19 +705,20 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
         apiKey: currentSecret,
       },
     });
-    expect(created.createCustomProvider).toBe(READABLE_ID);
-    const ready = await waitForReadyProvider(server.serverUrl, READABLE_ID);
-    expect(ready.provider).toMatchObject({
-      id: READABLE_ID,
-      name: PROVIDER_NAME,
+    expect(created.createCustomProvider).toEqual({
+      provider: { id: READABLE_ID },
       apiKeyConfigured: true,
-      status: 'READY',
     });
-    expect(ready.llmModels).toContainEqual({
+    const ready = await waitForReadyProvider(server.serverUrl, READABLE_ID);
+    expect(ready).toMatchObject({
+      provider: { id: READABLE_ID, name: PROVIDER_NAME },
+      apiKeyConfigured: true,
+    });
+    expect(ready.catalog.llmModels).toContainEqual({
       modelIdentifier: READABLE_IDENTIFIER,
       value: MODEL_SUFFIX,
     });
-    expect(discovery.authorizedPaths).toEqual(['/v1/models', '/v1/models']);
+    expect(discovery.authorizedPaths).toEqual(['/v1/models']);
     expect(fs.readFileSync(customProviderPath(target.runtimeRoot), 'utf8')).not.toContain(currentSecret);
     expect(server.output()).not.toContain(legacySecret);
     expect(server.output()).not.toContain(currentSecret);
@@ -683,20 +731,26 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     });
     ownedServers.add(restarted);
     const restartedReady = await waitForReadyProvider(restarted.serverUrl, READABLE_ID);
-    expect(restartedReady.llmModels).toContainEqual({
+    expect(restartedReady.catalog.llmModels).toContainEqual({
       modelIdentifier: READABLE_IDENTIFIER,
       value: MODEL_SUFFIX,
     });
+    expect(discovery.authorizedPaths).toEqual(['/v1/models', '/v1/models']);
     expect(statusFor(await migrationStatuses(restarted.serverUrl), READABLE_MIGRATION_ID))
       .toMatchObject({ status: 'SUCCEEDED', attempts: 1 });
     expect(restarted.output()).not.toContain(currentSecret);
 
-    const deleted = await executeGraphql<{ deleteCustomProvider: boolean }>(restarted.serverUrl, `
+    const deleted = await executeGraphql<{
+      deleteCustomProvider: { providerId: string; deleted: boolean };
+    }>(restarted.serverUrl, `
       mutation DeleteReadableProvider($providerId: String!) {
-        deleteCustomProvider(providerId: $providerId)
+        deleteCustomProvider(providerId: $providerId) { providerId deleted }
       }
     `, { providerId: READABLE_ID });
-    expect(deleted.deleteCustomProvider).toBe(true);
+    expect(deleted.deleteCustomProvider).toEqual({
+      providerId: READABLE_ID,
+      deleted: true,
+    });
   }, 300_000);
 
   it('keeps collision selectors unchanged while removing both trusted old secrets after empty V3', async () => {

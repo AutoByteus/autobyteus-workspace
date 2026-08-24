@@ -1,0 +1,16 @@
+{
+  "result": "Fail",
+  "timings": {},
+  "assertions": [],
+  "graphqlOperations": [],
+  "fixtureRequests": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": false,
+    "fixtureStopped": true
+  },
+  "error": "Error: FRONTEND_READY_TIMEOUT\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:52:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:206:3"
+}

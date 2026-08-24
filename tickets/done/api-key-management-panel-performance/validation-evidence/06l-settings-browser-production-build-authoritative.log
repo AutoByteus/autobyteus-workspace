@@ -1,0 +1,148 @@
+{
+  "result": "Pass",
+  "timings": {
+    "fullDocumentCredentialSurfaceMs": 180,
+    "domContentLoadedMs": 86,
+    "credentialSurfaceAfterDomContentLoadedMs": 94
+  },
+  "assertions": [
+    "production-build credential surface visible within 1500ms of full browser entry with a nonresponding Ollama endpoint configured and no discovery dependency",
+    "static OpenAI rows/form are independent and expose no Reload",
+    "dynamic model loading remains local and leaves the credential editor enabled",
+    "first targeted discovery publishes only Ollama and exposes provider-local Reload",
+    "same-authority path change clears only Ollama rows before replacement and remains usable after navigation",
+    "host save request order is UpdateServerSetting -> targeted EnsureProviderModelCatalog -> GetServerSettings",
+    "failed replacement shows localized unavailable/Retry state without restoring old rows or blocking credentials",
+    "768px tablet rendering has no document-level horizontal overflow"
+  ],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787495835598
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787495835598
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787495835696
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787495835808
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787495835823
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787495835823
+    },
+    {
+      "operationName": "GetWorkingContextCompactionStrategies",
+      "at": 1787495835829
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "at": 1787495835830
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "at": 1787495835830
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "at": 1787495835831
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "at": 1787495835832
+    },
+    {
+      "operationName": "GetSearchConfig",
+      "at": 1787495835833
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787495835881
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787495835887
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787495835889
+    },
+    {
+      "operationName": "UpdateServerSetting",
+      "at": 1787495836125
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "at": 1787495836132
+    },
+    {
+      "operationName": "GetServerSettings",
+      "at": 1787495836134
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/path-a/api/tags",
+      "source": "path-a",
+      "at": 1787495835702
+    },
+    {
+      "method": "GET",
+      "path": "/path-a/api/ps",
+      "source": "path-a",
+      "at": 1787495835761
+    },
+    {
+      "method": "POST",
+      "path": "/path-a/api/show",
+      "source": "path-a",
+      "at": 1787495835763
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/tags",
+      "source": "path-b",
+      "at": 1787495835883
+    },
+    {
+      "method": "GET",
+      "path": "/path-b/api/ps",
+      "source": "path-b",
+      "at": 1787495835982
+    },
+    {
+      "method": "POST",
+      "path": "/path-b/api/show",
+      "source": "path-b",
+      "at": 1787495835985
+    },
+    {
+      "method": "GET",
+      "path": "/path-c/api/tags",
+      "source": "path-c",
+      "at": 1787495836128
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "frontendUrl": "http://127.0.0.1:54051",
+  "backendUrl": "http://127.0.0.1:54048",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frontendMode": "production static build served by an owned loopback harness"
+}

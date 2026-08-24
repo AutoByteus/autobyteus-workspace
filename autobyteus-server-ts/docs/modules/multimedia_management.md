@@ -10,11 +10,27 @@ Audio/image/video model catalogs and media-serving integration.
 - `src/services/media-storage-service.ts`
 - `src/api/rest/media.ts`
 
-## Main Services
+## Catalog Owners
 
-- `src/multimedia-management/services/audio-model-service.ts`
-- `src/multimedia-management/services/image-model-service.ts`
-- `src/multimedia-management/services/video-model-service.ts`
+- `autobyteus-ts/src/multimedia/audio/audio-client-factory.ts`
+- `autobyteus-ts/src/multimedia/image/image-client-factory.ts`
+- `autobyteus-ts/src/multimedia/video/video-client-factory.ts`
+- `src/llm-management/services/model-catalog-service.ts`
+- `src/llm-management/services/model-availability-service.ts`
+
+The SDK factories are the authoritative in-process audio/image/video row
+registries. Static rows initialize without network access. AutoByteus-discovered
+audio and image rows are atomically replaced under exact source IDs by the
+provider-targeted model catalog lifecycle; video remains static. The deleted
+audio/image/video model-service and cached-provider facades have no replacement
+aggregate cache or global Reload API.
+
+Media construction first accepts an already registered model. A missing
+persisted AutoByteus audio/image identifier may ensure only its exact configured
+source after restart and then recheck the registry. Full normalized endpoint
+identity is required; zero or ambiguous matches remain unavailable. See
+[LLM Management](./llm_management.md) for snapshot, ensure, invalidation,
+deadline, and partial/stale semantics shared with LLM discovery.
 
 ## Agent Tool Integration
 

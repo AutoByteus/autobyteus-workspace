@@ -57,7 +57,7 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     ]);
   });
 
-  it('constructs custom models with exact built-in metadata independent of endpoint URL', async () => {
+  it('constructs custom models with exact current built-in metadata independent of endpoint URL', async () => {
     const provider = new OpenAICompatibleEndpointModelProvider();
     const report = await provider.reloadSavedEndpoints([{
       endpoint: endpointA,
@@ -66,8 +66,8 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
 
     expect(report.models[0]).toMatchObject({
       maxContextTokens: 198_000,
-      maxInputTokens: 1_000_000,
-      maxOutputTokens: 128_000,
+      maxInputTokens: null,
+      maxOutputTokens: null,
       resolvedModelMetadata: {
         maxContextTokens: {
           value: 198_000,
@@ -75,6 +75,8 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
             kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'glm-5.2',
           },
         },
+        maxInputTokens: { value: null, source: { kind: 'unknown' } },
+        maxOutputTokens: { value: null, source: { kind: 'unknown' } },
       },
     });
 
@@ -177,15 +179,17 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
   });
 });
 
-describe('LLMFactory custom provider sync', () => {
+describe('LLMFactory custom source registration', () => {
   beforeEach(() => LLMFactory.resetForTests());
 
   it('registers discovered models and instantiates with separately supplied authentication', async () => {
-    const report = await LLMFactory.syncOpenAICompatibleEndpointModels([{
+    const report = await new OpenAICompatibleEndpointModelProvider().reloadSavedEndpoints([{
       endpoint: endpointA,
       discoveredModels: [discovered('model-a')],
     }]);
     expect(report.statuses[0]).toMatchObject({ endpointId: endpointA.id, status: 'READY' });
+    await LLMFactory.ensureInitialized();
+    LLMFactory.replaceSourceModels(`${endpointA.id}:LLM`, report.models);
 
     const models = await LLMFactory.listModelsByProvider(LLMProvider.OPENAI_COMPATIBLE);
     expect(models).toHaveLength(1);

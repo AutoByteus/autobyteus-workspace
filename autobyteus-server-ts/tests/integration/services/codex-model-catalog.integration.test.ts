@@ -200,8 +200,8 @@ describeCodexModelCatalogIntegration(
         schema,
         source: `
           query CodexModelSchemas($runtimeKind: String) {
-            availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-              models {
+            providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+              llmModels {
                 modelIdentifier
                 configSchema
               }
@@ -217,11 +217,11 @@ describeCodexModelCatalogIntegration(
       }
 
       const providers = (result.data as {
-        availableLlmProvidersWithModels: Array<{
-          models: ModelSchemaView[];
+        providerModelCatalogSnapshots: Array<{
+          llmModels: ModelSchemaView[];
         }>;
-      }).availableLlmProvidersWithModels;
-      const graphQlModels = providers.flatMap((provider) => provider.models);
+      }).providerModelCatalogSnapshots;
+      const graphQlModels = providers.flatMap((provider) => provider.llmModels);
       assertSchemaParity(rawModels, graphQlModels);
     });
   },

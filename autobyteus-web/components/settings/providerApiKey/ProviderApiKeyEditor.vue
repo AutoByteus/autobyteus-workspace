@@ -14,8 +14,8 @@
         type="button"
         @click="showApiKey = !showApiKey"
       >
-        <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid w-4 h-4"></span>
-        <span v-else class="i-heroicons-eye-20-solid w-4 h-4"></span>
+        <Icon v-if="showApiKey" icon="heroicons:eye-slash-20-solid" class="h-4 w-4" />
+        <Icon v-else icon="heroicons:eye-20-solid" class="h-4 w-4" />
       </button>
     </div>
     <button
@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{

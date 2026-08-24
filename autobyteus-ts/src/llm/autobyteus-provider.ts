@@ -6,6 +6,10 @@ import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { AutobyteusLLM } from './api/autobyteus-llm.js';
 import { ParameterDefinition, ParameterSchema, ParameterType } from '../utils/parameter-schema.js';
+import {
+  normalizeDiscoveryEndpointIdentity,
+  tryNormalizeDiscoveryEndpointIdentity,
+} from './discovery-endpoint-identity.js';
 
 type ModelInfoPayload = Record<string, unknown>;
 type ServerResponse = { models?: unknown };
@@ -91,108 +95,84 @@ export class AutobyteusModelProvider {
   static readonly DEFAULT_SERVER_URL = 'https://localhost:8000';
 
   static isValidUrl(url: string): boolean {
-    try {
-      const parsed = new URL(url);
-      return Boolean(parsed.protocol && parsed.host);
-    } catch {
-      return false;
-    }
+    return tryNormalizeDiscoveryEndpointIdentity(url) !== null;
   }
 
   static async getModels(
-    hosts: string[],
+    hostUrl: string,
     authentication: AutobyteusDiscoveryAuthentication,
+    options: { signal?: AbortSignal | null } = {},
   ): Promise<LLMModel[]> {
-    if (!hosts.length) return [];
+    if (!AutobyteusModelProvider.isValidUrl(hostUrl)) {
+      throw new Error('AUTOBYTEUS_LLM_DISCOVERY_HOST_INVALID');
+    }
+    const endpointIdentity = normalizeDiscoveryEndpointIdentity(hostUrl);
 
-    const allModels: LLMModel[] = [];
-    let authoritativeResponses = 0;
-
-    for (const hostUrl of hosts) {
-      if (!AutobyteusModelProvider.isValidUrl(hostUrl)) {
-        console.error(`Invalid Autobyteus host URL: ${hostUrl}, skipping.`);
-        continue;
+    const client = new AutobyteusClient(
+      endpointIdentity,
+      authentication.apiKey.revealToTrustedConsumer(),
+    );
+    try {
+      const response = await client.getAvailableLlmModelsSync(options);
+      if (!AutobyteusModelProvider.validateServerResponse(response)) {
+        throw new Error('AUTOBYTEUS_LLM_DISCOVERY_RESPONSE_INVALID');
       }
 
-      console.info(`Discovering Autobyteus models from host: ${hostUrl}`);
-      let client: AutobyteusClient | null = null;
-
-      try {
-        client = new AutobyteusClient(
-          hostUrl,
-          authentication.apiKey.revealToTrustedConsumer(),
-        );
-        const response = await client.getAvailableLlmModelsSync();
-
-        if (!AutobyteusModelProvider.validateServerResponse(response)) {
+      const responseRecord = response as ServerResponse;
+      const models = Array.isArray(responseRecord.models)
+        ? (responseRecord.models as ModelInfoPayload[])
+        : [];
+      const discovered: LLMModel[] = [];
+      for (const modelInfo of models) {
+        const validation = AutobyteusModelProvider.validateModelInfo(modelInfo);
+        if (!validation.valid) {
+          console.warn(validation.message);
           continue;
         }
-        authoritativeResponses += 1;
 
-        const responseRecord = response as ServerResponse;
-        const models = Array.isArray(responseRecord.models)
-          ? (responseRecord.models as ModelInfoPayload[])
-          : [];
-        for (const modelInfo of models) {
-          const validation = AutobyteusModelProvider.validateModelInfo(modelInfo);
-          if (!validation.valid) {
-            console.warn(validation.message);
-            continue;
-          }
-
-          const configData = modelInfo.config;
-          if (!configData || typeof configData !== 'object' || Array.isArray(configData)) {
-            console.warn('Config must be a dictionary');
-            continue;
-          }
-          const llmConfig = AutobyteusModelProvider.parseLLMConfig(configData as Record<string, unknown>);
-          if (!llmConfig) {
-            continue;
-          }
-
-          try {
-            const provider = AutobyteusModelProvider.parseProvider(String(modelInfo.provider));
-            const llmModel = new LLMModel({
-              name: String(modelInfo.name),
-              value: String(modelInfo.value),
-              provider,
-              llmClass: AutobyteusLLM,
-              canonicalName: (modelInfo.canonical_name as string | undefined) ?? String(modelInfo.name),
-              runtime: LLMRuntime.AUTOBYTEUS,
-              hostUrl: hostUrl,
-              defaultConfig: llmConfig,
-              configSchema: AutobyteusModelProvider.parseConfigSchema(modelInfo.config_schema),
-              maxContextTokens: isPositiveInteger(modelInfo.max_context_tokens)
-                ? modelInfo.max_context_tokens
-                : llmConfig.tokenLimit ?? null,
-              activeContextTokens: isPositiveInteger(modelInfo.active_context_tokens)
-                ? modelInfo.active_context_tokens
-                : null,
-              maxInputTokens: isPositiveInteger(modelInfo.max_input_tokens)
-                ? modelInfo.max_input_tokens
-                : null,
-              maxOutputTokens: isPositiveInteger(modelInfo.max_output_tokens)
-                ? modelInfo.max_output_tokens
-                : null
-            });
-            allModels.push(llmModel);
-          } catch (error: any) {
-            console.error(
-              `Failed to create LLMModel for '${modelInfo?.name ?? 'unknown'}' from ${hostUrl}: ${error?.message ?? error}`
-            );
-          }
+        const configData = modelInfo.config;
+        if (!configData || typeof configData !== 'object' || Array.isArray(configData)) {
+          console.warn('Config must be a dictionary');
+          continue;
         }
-      } catch {
-        console.warn('AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED');
-      } finally {
-        if (client) {
-          await client.close();
+        const llmConfig = AutobyteusModelProvider.parseLLMConfig(configData as Record<string, unknown>);
+        if (!llmConfig) continue;
+
+        try {
+          const provider = AutobyteusModelProvider.parseProvider(String(modelInfo.provider));
+          discovered.push(new LLMModel({
+            name: String(modelInfo.name),
+            value: String(modelInfo.value),
+            provider,
+            llmClass: AutobyteusLLM,
+            canonicalName: (modelInfo.canonical_name as string | undefined) ?? String(modelInfo.name),
+            runtime: LLMRuntime.AUTOBYTEUS,
+            hostUrl: endpointIdentity,
+            defaultConfig: llmConfig,
+            configSchema: AutobyteusModelProvider.parseConfigSchema(modelInfo.config_schema),
+            maxContextTokens: isPositiveInteger(modelInfo.max_context_tokens)
+              ? modelInfo.max_context_tokens
+              : llmConfig.tokenLimit ?? null,
+            activeContextTokens: isPositiveInteger(modelInfo.active_context_tokens)
+              ? modelInfo.active_context_tokens
+              : null,
+            maxInputTokens: isPositiveInteger(modelInfo.max_input_tokens)
+              ? modelInfo.max_input_tokens
+              : null,
+            maxOutputTokens: isPositiveInteger(modelInfo.max_output_tokens)
+              ? modelInfo.max_output_tokens
+              : null,
+          }));
+        } catch (error: unknown) {
+          console.warn(
+            `AUTOBYTEUS_LLM_MODEL_MAPPING_FAILED:${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       }
+      return discovered;
+    } finally {
+      await client.close();
     }
-
-    if (authoritativeResponses === 0) throw new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
-    return allModels;
   }
 
   private static validateServerResponse(response: unknown): boolean {

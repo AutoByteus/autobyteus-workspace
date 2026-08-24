@@ -37,8 +37,9 @@ export const useMediaDefaultModelsCard = () => {
   const saveErrorMessage = ref('')
   const successMessage = ref('')
 
-  const isCatalogLoading = computed(() => modelCatalogStore.isLoadingModels || modelCatalogStore.isReloadingModels)
-  const hasCatalogLoadResult = computed(() => modelCatalogStore.hasFetchedProviders || Boolean(catalogErrorMessage.value))
+  const catalogSnapshot = computed(() => modelCatalogStore.catalogSnapshot(MEDIA_MODEL_RUNTIME_KIND))
+  const isCatalogLoading = computed(() => ['loading', 'refreshing'].includes(catalogSnapshot.value.state))
+  const hasCatalogLoadResult = computed(() => catalogSnapshot.value.hasSuccessfulPayload || Boolean(catalogErrorMessage.value))
   const changedSettings = computed(() =>
     MEDIA_DEFAULT_MODEL_SETTINGS.filter((setting) => draftValues[setting.key] !== originalValues[setting.key]),
   )
@@ -63,10 +64,10 @@ export const useMediaDefaultModelsCard = () => {
 
   const providerGroupsForSetting = (setting: MediaDefaultModelSettingSpec): ProviderWithModels[] => (
     setting.catalogKind === 'audio'
-      ? modelCatalogStore.audioProvidersWithModels
+      ? modelCatalogStore.providerGroups(MEDIA_MODEL_RUNTIME_KIND, 'audio')
       : setting.catalogKind === 'video'
-        ? modelCatalogStore.videoProvidersWithModels
-        : modelCatalogStore.imageProvidersWithModels
+        ? modelCatalogStore.providerGroups(MEDIA_MODEL_RUNTIME_KIND, 'video')
+        : modelCatalogStore.providerGroups(MEDIA_MODEL_RUNTIME_KIND, 'image')
   )
 
   const optionForModel = (providerName: string, model: ModelInfo) => ({
@@ -140,6 +141,7 @@ export const useMediaDefaultModelsCard = () => {
   watch(() => serverSettingsStore.settings, syncFromStore, { deep: true, immediate: true })
   onMounted(() => {
     void modelCatalogStore.fetchProvidersWithModels(MEDIA_MODEL_RUNTIME_KIND)
+      .then(() => modelCatalogStore.ensureMissingDynamicProviders(MEDIA_MODEL_RUNTIME_KIND))
       .then(() => { catalogErrorMessage.value = '' })
       .catch((error: any) => {
         catalogErrorMessage.value = error?.message || t('settings.components.settings.MediaDefaultModelsCard.catalogLoadFailed')

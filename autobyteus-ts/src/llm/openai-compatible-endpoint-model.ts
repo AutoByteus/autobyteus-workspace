@@ -12,6 +12,26 @@ export const buildOpenAICompatibleEndpointModelIdentifier = (
   modelName: string,
 ): string => `openai-compatible:${providerId}:${modelName}`;
 
+export type OpenAICompatibleEndpointModelIdentifier = {
+  providerId: string;
+  modelName: string;
+};
+
+const OPENAI_COMPATIBLE_MODEL_PREFIX = 'openai-compatible:';
+
+export const parseOpenAICompatibleEndpointModelIdentifier = (
+  identifier: string,
+): OpenAICompatibleEndpointModelIdentifier | null => {
+  if (!identifier.startsWith(OPENAI_COMPATIBLE_MODEL_PREFIX)) return null;
+  const remainder = identifier.slice(OPENAI_COMPATIBLE_MODEL_PREFIX.length);
+  const separatorIndex = remainder.indexOf(':');
+  if (separatorIndex <= 0 || separatorIndex === remainder.length - 1) return null;
+  return {
+    providerId: remainder.slice(0, separatorIndex),
+    modelName: remainder.slice(separatorIndex + 1),
+  };
+};
+
 export type OpenAICompatibleEndpointModelInput = {
   endpoint: CustomLlmProviderRecord;
   discoveredModel: OpenAICompatibleEndpointDiscoveredModel;

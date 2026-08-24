@@ -118,13 +118,13 @@ export const useAgentRunStore = defineStore('agentRun', {
 
       if (isNewAgent && !config.llmModelIdentifier) {
         const llmProviderConfigStore = useLLMProviderConfigStore();
+        const modelRuntimeKind = config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND;
         config.llmModelIdentifier = await resolveRunnableModelIdentifier({
           candidateModels: [config.llmModelIdentifier],
-          getKnownModels: () => llmProviderConfigStore.models,
+          getKnownModels: () => llmProviderConfigStore.models(modelRuntimeKind),
           ensureModelsLoaded: async () => {
-            await llmProviderConfigStore.fetchProvidersWithModels(
-              config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-            );
+            await llmProviderConfigStore.fetchProvidersWithModels(modelRuntimeKind);
+            await llmProviderConfigStore.ensureMissingDynamicProviders(modelRuntimeKind);
           },
         });
       }

@@ -1,0 +1,47 @@
+COMMAND: scoped removed-contract Python audit; git diff --check
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance
+
+## Production executable source
+RESULT: PASS — no removed GraphQL name occurs in current production executable source.
+
+## Durable executable coverage occurrences
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:192:expect(queryFields).not.toContain('providerSettings');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:193:expect(queryFields).not.toContain('availableLlmProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:194:expect(queryFields).not.toContain('availableAudioProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:195:expect(queryFields).not.toContain('availableImageProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:196:expect(queryFields).not.toContain('availableVideoProvidersWithModels');
+autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:565:providerSettings: {
+RESULT: PASS — all five removed queries have independent absence assertions; no executable durable query uses them.
+CLASSIFICATION: electron-launch-profile-probe.mjs providerSettings is an evidence-object label, not a GraphQL operation.
+
+## Changed assertion
+   184	    `);
+   185	    const queryFields = schema.queryType.fields.map(({ name }) => name);
+   186	    const mutationFields = schema.mutationType.fields.map(({ name }) => name);
+   187	
+   188	    expect(queryFields).toEqual(expect.arrayContaining([
+   189	      'providerCredentialSettings',
+   190	      'providerModelCatalogSnapshots',
+   191	    ]));
+   192	    expect(queryFields).not.toContain('providerSettings');
+   193	    expect(queryFields).not.toContain('availableLlmProvidersWithModels');
+   194	    expect(queryFields).not.toContain('availableAudioProvidersWithModels');
+   195	    expect(queryFields).not.toContain('availableImageProvidersWithModels');
+   196	    expect(queryFields).not.toContain('availableVideoProvidersWithModels');
+   197	    expect(mutationFields).toEqual(expect.arrayContaining([
+   198	      'saveProviderApiKey',
+   199	      'saveGeminiAiStudio',
+   200	      'saveGeminiVertexExpress',
+   201	      'saveGeminiVertexProject',
+   202	      'useGeminiMode',
+   203	      'deleteCustomProvider',
+   204	    ]));
+   205	    expect(mutationFields).toEqual(expect.arrayContaining([
+
+## Documentation follow-up signal
+12:- `providerSettings` returns each provider once with one provider-owned
+50:rather than relabeling the save as failed. Global and selected-provider reloads
+CLASSIFICATION: stale durable documentation; delivery documentation sync remains required.
+
+## Patch hygiene
+RESULT: PASS — git diff --check.

@@ -1,10 +1,18 @@
-import type {
-  GetProviderSettingsQuery,
-  ModelMetadataProvenance,
-} from '~/generated/graphql'
+import type { ModelMetadataProvenance } from '~/generated/graphql'
 import type { LLMProvider } from '~/types/llm'
 
-export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE'
+export type CatalogMode = 'STATIC' | 'DISCOVERED'
+export type CatalogRequestState = 'idle' | 'loading' | 'ready' | 'error'
+export type ModelGroupKind = 'audio' | 'image' | 'video'
+export type ModelKind = 'LLM' | 'AUDIO' | 'IMAGE' | 'VIDEO'
+export type ModelSourceState =
+  | 'IDLE'
+  | 'LOADING'
+  | 'READY'
+  | 'PARTIAL'
+  | 'REFRESHING'
+  | 'STALE_ERROR'
+  | 'ERROR'
 
 export interface CatalogProviderRecord {
   id: string
@@ -12,8 +20,12 @@ export interface CatalogProviderRecord {
   providerType: LLMProvider
   isCustom: boolean
   baseUrl?: string | null
-  status: LlmProviderStatus
-  statusMessage?: string | null
+  catalogMode: CatalogMode
+}
+
+export interface ProviderCredentialSetting {
+  provider: CatalogProviderRecord
+  apiKeyConfigured: boolean
 }
 
 export interface ModelInfo {
@@ -40,82 +52,102 @@ export interface ProviderWithModels {
   models: ModelInfo[]
 }
 
-export type ProviderSettingsGroup = GetProviderSettingsQuery['providerSettings'][number]
-
-export interface CustomLlmProviderDraftInput {
-  name: string
-  baseUrl: string
-  apiKey: string
+export interface ModelSourceStatus {
+  modelKind: ModelKind
+  state: ModelSourceState
+  modelCount: number
+  successfulUnitCount: number
+  failedUnitCount: number
+  safeMessage?: string | null
 }
 
-export interface CustomLlmProviderProbeModel {
-  id: string
-  name: string
+export interface ProviderModelCatalogSnapshot {
+  runtimeKind: string
+  ownerProvider: CatalogProviderRecord
+  sources: ModelSourceStatus[]
+  llmModels: ModelInfo[]
+  audioModels: ModelInfo[]
+  imageModels: ModelInfo[]
+  videoModels: ModelInfo[]
 }
 
-export interface CustomLlmProviderProbeResult {
-  discoveredModels: CustomLlmProviderProbeModel[]
+export interface DiscoverySettingCatalogTarget {
+  ownerProviderId: string
+  modelKinds: ModelKind[]
 }
 
+export interface RuntimeCatalogSnapshot {
+  runtimeKind: string
+  currentRequestId: number
+  state: CatalogRequestState
+  hasSuccessfulPayload: boolean
+  providersById: Record<string, ProviderModelCatalogSnapshot>
+  errorMessage: string | null
+}
+
+export interface CustomLlmProviderDraftInput { name: string; baseUrl: string; apiKey: string }
+export interface CustomLlmProviderProbeModel { id: string; name: string }
+export interface CustomLlmProviderProbeResult { discoveredModels: CustomLlmProviderProbeModel[] }
 export type QwenEndpointSource = 'DEFAULT' | 'CONFIGURED'
-
-export interface QwenSetupStatus {
-  effectiveBaseUrl: string
-  endpointSource: QwenEndpointSource
-  apiKeyConfigured: boolean
+export interface QwenSetupStatus { effectiveBaseUrl: string; endpointSource: QwenEndpointSource }
+export interface QwenConfigurationInput { baseUrl: string; apiKey: string }
+export interface QwenConfigurationCommandResult {
+  setup: QwenSetupStatus
+  credentialSetting: ProviderCredentialSetting
 }
-
-export interface QwenConfigurationInput {
-  baseUrl: string
-  apiKey: string
-}
-
 export const defaultQwenSetupStatus = (): QwenSetupStatus => ({
-  effectiveBaseUrl: '',
-  endpointSource: 'DEFAULT',
-  apiKeyConfigured: false,
+  effectiveBaseUrl: '', endpointSource: 'DEFAULT',
 })
-
 export type GeminiConfigurationOption = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT'
-
 export interface GeminiSetupConfigState {
   activeMode: GeminiConfigurationOption | null
   aiStudioConfigured: boolean | null
   vertexExpressConfigured: boolean | null
-  vertexProject: {
-    project: string
-    location: string
-  } | null
+  vertexProject: { project: string; location: string } | null
 }
-
+export interface GeminiConfigurationCommandResult {
+  setup: GeminiSetupConfigState
+  credentialSetting: ProviderCredentialSetting
+}
 export interface GeminiOptionSaveInput {
   option: GeminiConfigurationOption
   apiKey?: string | null
   project?: string | null
   location?: string | null
 }
-
 export const defaultGeminiSetup = (): GeminiSetupConfigState => ({
   activeMode: null,
   aiStudioConfigured: null,
   vertexExpressConfigured: null,
   vertexProject: null,
 })
-
 export const isGeminiOptionConfigured = (
   setup: GeminiSetupConfigState,
   option: GeminiConfigurationOption,
-): boolean => {
-  if (option === 'AI_STUDIO') return setup.aiStudioConfigured === true
-  if (option === 'VERTEX_EXPRESS') return setup.vertexExpressConfigured === true
-  return setup.vertexProject !== null
-}
-
+): boolean => option === 'AI_STUDIO'
+  ? setup.aiStudioConfigured === true
+  : option === 'VERTEX_EXPRESS'
+    ? setup.vertexExpressConfigured === true
+    : setup.vertexProject !== null
 export const isGeminiOptionAvailable = (
   setup: GeminiSetupConfigState,
   option: GeminiConfigurationOption,
-): boolean => {
-  if (option === 'AI_STUDIO') return setup.aiStudioConfigured !== null
-  if (option === 'VERTEX_EXPRESS') return setup.vertexExpressConfigured !== null
-  return true
+): boolean => option === 'AI_STUDIO'
+  ? setup.aiStudioConfigured !== null
+  : option === 'VERTEX_EXPRESS'
+    ? setup.vertexExpressConfigured !== null
+    : true
+export const normalizeCatalogRuntimeKind = (runtimeKind: string): string => {
+  if (typeof runtimeKind !== 'string') throw new Error('runtimeKind is required')
+  const normalized = runtimeKind.trim().toLowerCase()
+  if (!normalized) throw new Error('runtimeKind is required')
+  return normalized
 }
+export const emptyRuntimeCatalogSnapshot = (runtimeKind: string): RuntimeCatalogSnapshot => ({
+  runtimeKind: normalizeCatalogRuntimeKind(runtimeKind),
+  currentRequestId: 0,
+  state: 'idle',
+  hasSuccessfulPayload: false,
+  providersById: {},
+  errorMessage: null,
+})

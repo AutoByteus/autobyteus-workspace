@@ -67,8 +67,7 @@ const provider = (id: string, name: string) => ({
   providerType: 'OPENAI' as any,
   isCustom: false,
   baseUrl: null,
-  status: 'READY' as const,
-  statusMessage: null,
+  catalogMode: 'STATIC' as const,
 })
 
 const model = (modelIdentifier: string, providerId: string, providerName: string) => ({
@@ -112,6 +111,21 @@ const videoProvidersWithModels: ProviderWithModels[] = [
   },
 ]
 
+const providerSnapshots = Object.fromEntries([
+  ...audioProvidersWithModels.map(group => [group.provider.id, {
+    runtimeKind: 'autobyteus', ownerProvider: group.provider, sources: [],
+    llmModels: [], audioModels: group.models, imageModels: [], videoModels: [],
+  }]),
+  ...imageProvidersWithModels.map(group => [group.provider.id, {
+    runtimeKind: 'autobyteus', ownerProvider: group.provider, sources: [],
+    llmModels: [], audioModels: [], imageModels: group.models, videoModels: [],
+  }]),
+  ...videoProvidersWithModels.map(group => [group.provider.id, {
+    runtimeKind: 'autobyteus', ownerProvider: group.provider, sources: [],
+    llmModels: [], audioModels: [], imageModels: [], videoModels: group.models,
+  }]),
+])
+
 const setting = (key: string, value: string): ServerSetting => ({
   key,
   value,
@@ -130,14 +144,16 @@ const mountComponent = async (settings: ServerSetting[] = []) => {
         isUpdating: false,
       },
       llmProviderConfig: {
-        imageProvidersWithModels,
-        audioProvidersWithModels,
-        videoProvidersWithModels,
-        providersWithModels: [],
-        isLoadingModels: false,
-        isReloadingModels: false,
-        hasFetchedProviders: true,
-        modelRuntimeKind: 'autobyteus',
+        catalogByRuntimeKind: {
+          autobyteus: {
+            runtimeKind: 'autobyteus',
+            currentRequestId: 1,
+            state: 'ready',
+            hasSuccessfulPayload: true,
+            providersById: providerSnapshots,
+            errorMessage: null,
+          },
+        },
       },
     },
   })
@@ -147,7 +163,9 @@ const mountComponent = async (settings: ServerSetting[] = []) => {
   serverSettingsStore.updateServerSetting = vi.fn().mockResolvedValue(true)
 
   const modelCatalogStore = useLLMProviderConfigStore()
-  modelCatalogStore.fetchProvidersWithModels = vi.fn().mockResolvedValue([])
+  modelCatalogStore.fetchProvidersWithModels = vi.fn()
+    .mockResolvedValue(modelCatalogStore.catalogSnapshot('autobyteus'))
+  modelCatalogStore.ensureMissingDynamicProviders = vi.fn().mockResolvedValue(undefined)
 
   const wrapper = mount(MediaDefaultModelsCard, {
     global: {

@@ -42,11 +42,12 @@ export function useBindingLaunchPresetModelSelection(input: {
     validateSelectedModel = false,
   ) => {
     await llmStore.fetchProvidersWithModels(runtimeKind);
+    await llmStore.ensureMissingDynamicProviders(runtimeKind);
     const preset = activeLaunchPreset.value;
     if (
       validateSelectedModel &&
       preset.llmModelIdentifier &&
-      !llmStore.models.includes(preset.llmModelIdentifier)
+      !llmStore.models(runtimeKind).includes(preset.llmModelIdentifier)
     ) {
       preset.llmModelIdentifier = '';
       preset.llmConfig = null;
@@ -128,7 +129,9 @@ export function useBindingLaunchPresetModelSelection(input: {
   });
 
   const availableProviderGroups = computed(() => {
-    return llmStore.providersWithModelsForSelection ?? [];
+    return llmStore.providersWithModelsForSelection(
+      normalizeRuntimeKind(activeLaunchPreset.value.runtimeKind),
+    );
   });
 
   const groupedModelOptions = computed<GroupedOption[]>(() => {
@@ -150,7 +153,10 @@ export function useBindingLaunchPresetModelSelection(input: {
     if (!activeLaunchPreset.value.llmModelIdentifier) {
       return null;
     }
-    return llmStore.modelConfigSchemaByIdentifier(activeLaunchPreset.value.llmModelIdentifier);
+    return llmStore.modelConfigSchemaByIdentifier(
+      normalizeRuntimeKind(activeLaunchPreset.value.runtimeKind),
+      activeLaunchPreset.value.llmModelIdentifier,
+    );
   });
 
   const selectedRuntimeUnavailableReason = computed(() => {

@@ -398,8 +398,8 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
   const fetchAutoByteusModelIdentifier = async (): Promise<string> => {
     const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models {
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels {
             modelIdentifier
           }
         }
@@ -407,16 +407,16 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     `;
 
     const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{ modelIdentifier: string }>;
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, {
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
 
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
       (provider) =>
-        provider.models
+        provider.llmModels
           .map((model) => model.modelIdentifier)
           .filter(
             (modelIdentifier): modelIdentifier is string =>
@@ -452,8 +452,8 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
   const fetchPreferredCodexToolModelIdentifier = async (): Promise<string> => {
     const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models {
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels {
             modelIdentifier
           }
         }
@@ -461,16 +461,16 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     `;
 
     const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{ modelIdentifier: string }>;
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
 
-    const allModelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+    const allModelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
       (provider) =>
-        provider.models
+        provider.llmModels
           .map((model) => model.modelIdentifier)
           .filter(
             (modelIdentifier): modelIdentifier is string =>
@@ -479,7 +479,7 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     );
     if (allModelIdentifiers.length === 0) {
       throw new Error(
-        "No Codex runtime model was returned by availableLlmProvidersWithModels.",
+        "No Codex runtime model was returned by providerModelCatalogSnapshots.",
       );
     }
 

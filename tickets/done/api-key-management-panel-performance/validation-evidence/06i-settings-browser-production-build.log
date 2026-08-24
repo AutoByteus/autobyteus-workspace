@@ -1,0 +1,16 @@
+{
+  "result": "Fail",
+  "timings": {},
+  "assertions": [],
+  "graphqlOperations": [],
+  "fixtureRequests": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "error": "Error: PRODUCTION_WEB_BUILD_REQUIRED\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:37:25)\n    at startProductionFrontend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:69:3)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:225:20\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+}

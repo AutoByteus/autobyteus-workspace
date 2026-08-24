@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import type { AxiosError } from 'axios';
+import { joinDiscoveryEndpointPath } from '../llm/discovery-endpoint-identity.js';
 
 export type AutobyteusMediaKind = 'image' | 'audio' | 'video';
 
@@ -17,7 +18,7 @@ const INLINE_MEDIA_MAX_BYTES_ENV: Record<AutobyteusMediaKind, string> = {
 };
 
 export const joinAutobyteusUrl = (baseUrl: string, requestPath: string): string =>
-  new URL(requestPath, baseUrl).toString();
+  joinDiscoveryEndpointPath(baseUrl, requestPath);
 
 export const formatAutobyteusHttpError = (error: AxiosError): Error => {
   const response = error.response;

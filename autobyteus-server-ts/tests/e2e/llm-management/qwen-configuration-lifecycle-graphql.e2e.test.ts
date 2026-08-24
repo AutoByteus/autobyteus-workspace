@@ -41,6 +41,22 @@ type QwenStatus = {
   apiKeyConfigured: boolean;
 };
 
+type QwenStatusPayload = {
+  qwenSetupStatus: Omit<QwenStatus, 'apiKeyConfigured'>;
+  providerCredentialSettings: Array<{
+    provider: { id: string };
+    apiKeyConfigured: boolean;
+  }>;
+};
+
+type QwenCommandResult = {
+  setup: Omit<QwenStatus, 'apiKeyConfigured'>;
+  credentialSetting: {
+    provider: { id: string };
+    apiKeyConfigured: boolean;
+  };
+};
+
 type CatalogModel = {
   modelIdentifier: string;
   value: string;
@@ -49,8 +65,8 @@ type CatalogModel = {
 };
 
 type CatalogProvider = {
-  provider: { id: string; name: string };
-  models: CatalogModel[];
+  ownerProvider: { id: string; name: string };
+  llmModels: CatalogModel[];
 };
 
 const serverEnvironment = {
@@ -64,6 +80,9 @@ const statusQuery = `
     qwenSetupStatus {
       effectiveBaseUrl
       endpointSource
+    }
+    providerCredentialSettings(runtimeKind: "autobyteus") {
+      provider { id }
       apiKeyConfigured
     }
   }
@@ -72,18 +91,20 @@ const statusQuery = `
 const saveMutation = `
   mutation SaveQwenLifecycleConfiguration($input: QwenConfigurationInput!) {
     saveQwenConfiguration(input: $input) {
-      effectiveBaseUrl
-      endpointSource
-      apiKeyConfigured
+      setup { effectiveBaseUrl endpointSource }
+      credentialSetting {
+        provider { id }
+        apiKeyConfigured
+      }
     }
   }
 `;
 
 const catalogQuery = `
   query QwenLifecycleCatalog {
-    availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-      provider { id name }
-      models {
+    providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+      ownerProvider { id name }
+      llmModels {
         modelIdentifier
         value
         providerId
@@ -112,6 +133,23 @@ const requireData = <T>(payload: GraphqlPayload<T>): T => {
   expect(payload.data).toBeTruthy();
   return payload.data!;
 };
+
+const readQwenStatus = async (serverUrl: string): Promise<QwenStatus> => {
+  const data = requireData(await postGraphql<QwenStatusPayload>(serverUrl, statusQuery));
+  const credential = data.providerCredentialSettings.find(
+    ({ provider }) => provider.id === 'QWEN',
+  );
+  expect(credential).toBeDefined();
+  return {
+    ...data.qwenSetupStatus,
+    apiKeyConfigured: credential!.apiKeyConfigured,
+  };
+};
+
+const mapQwenCommandResult = (result: QwenCommandResult): QwenStatus => ({
+  ...result.setup,
+  apiKeyConfigured: result.credentialSetting.apiKeyConfigured,
+});
 
 const obstructDurableEnvironmentCommit = async <T>(
   environmentPath: string,
@@ -323,16 +361,13 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
       });
       runningServers.add(firstServer);
 
-      const initial = requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        firstServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus;
+      const initial = await readQwenStatus(firstServer.serverUrl);
       expect(initial.endpointSource).toBe('DEFAULT');
       expect(initial.apiKeyConfigured).toBe(false);
 
       const noPriorFailure = await obstructDurableEnvironmentCommit(
         firstServer.runtimeEnvironmentPath,
-        () => postGraphql<{ saveQwenConfiguration: QwenStatus }>(
+        () => postGraphql<{ saveQwenConfiguration: QwenCommandResult }>(
           firstServer.serverUrl,
           saveMutation,
           { input: { baseUrl: qwenBaseUrl, apiKey: noPriorFailureKey } },
@@ -346,13 +381,10 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
           }),
         }),
       ]);
-      const afterNoPriorFailure = requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        firstServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus;
+      const afterNoPriorFailure = await readQwenStatus(firstServer.serverUrl);
       expect(afterNoPriorFailure).toEqual(initial);
 
-      const failedProbe = await postGraphql<{ saveQwenConfiguration: QwenStatus }>(
+      const failedProbe = await postGraphql<{ saveQwenConfiguration: QwenCommandResult }>(
         firstServer.serverUrl,
         saveMutation,
         { input: { baseUrl: qwenBaseUrl, apiKey: badProbeKey } },
@@ -360,16 +392,15 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
       expect(failedProbe.errors).toHaveLength(1);
       expect(JSON.stringify(failedProbe)).not.toContain(badProbeKey);
       expect(JSON.stringify(failedProbe)).not.toContain(providerPrivateMarker);
-      expect(requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        firstServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus).toEqual(initial);
+      expect(await readQwenStatus(firstServer.serverUrl)).toEqual(initial);
 
-      const saved = requireData(await postGraphql<{ saveQwenConfiguration: QwenStatus }>(
+      const savedCommand = requireData(await postGraphql<{ saveQwenConfiguration: QwenCommandResult }>(
         firstServer.serverUrl,
         saveMutation,
         { input: { baseUrl: `${qwenBaseUrl}/`, apiKey: durableKey } },
       )).saveQwenConfiguration;
+      expect(savedCommand.credentialSetting.provider.id).toBe('QWEN');
+      const saved = mapQwenCommandResult(savedCommand);
       expect(saved).toEqual({
         effectiveBaseUrl: qwenBaseUrl,
         endpointSource: 'CONFIGURED',
@@ -378,11 +409,11 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
       expect(JSON.stringify(saved)).not.toContain(durableKey);
 
       const firstCatalog = requireData(await postGraphql<{
-        availableLlmProvidersWithModels: CatalogProvider[];
-      }>(firstServer.serverUrl, catalogQuery)).availableLlmProvidersWithModels;
-      const qwenProvider = firstCatalog.find(({ provider: candidate }) => candidate.id === 'QWEN');
+        providerModelCatalogSnapshots: CatalogProvider[];
+      }>(firstServer.serverUrl, catalogQuery)).providerModelCatalogSnapshots;
+      const qwenProvider = firstCatalog.find(({ ownerProvider: candidate }) => candidate.id === 'QWEN');
       expect(qwenProvider).toBeDefined();
-      const qwenModels = new Map(qwenProvider!.models.map((model) => [model.value, model]));
+      const qwenModels = new Map(qwenProvider!.llmModels.map((model) => [model.value, model]));
       expect(qwenModels.get('qwen3.8-max')).toMatchObject({
         modelIdentifier: 'qwen3.8-max', providerId: 'QWEN', maxContextTokens: 1_000_000,
       });
@@ -392,19 +423,19 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
       expect(qwenModels.get('glm-5.2')).toMatchObject({
         modelIdentifier: 'qwen:glm-5.2', providerId: 'QWEN', maxContextTokens: 198_000,
       });
-      expect(qwenProvider!.models.some(({ value }) => value === 'qwen3.8-max-preview')).toBe(false);
-      expect(firstCatalog.find(({ provider: candidate }) => candidate.id === 'DEEPSEEK')?.models)
+      expect(qwenProvider!.llmModels.some(({ value }) => value === 'qwen3.8-max-preview')).toBe(false);
+      expect(firstCatalog.find(({ ownerProvider: candidate }) => candidate.id === 'DEEPSEEK')?.llmModels)
         .toEqual(expect.arrayContaining([
           expect.objectContaining({ modelIdentifier: 'deepseek-v4-pro', value: 'deepseek-v4-pro' }),
         ]));
-      expect(firstCatalog.find(({ provider: candidate }) => candidate.id === 'GLM')?.models)
+      expect(firstCatalog.find(({ ownerProvider: candidate }) => candidate.id === 'GLM')?.llmModels)
         .toEqual(expect.arrayContaining([
-          expect.objectContaining({ modelIdentifier: 'glm-5.2', value: 'glm-5.2' }),
+          expect.objectContaining({ modelIdentifier: 'glm-5.3', value: 'glm-5.3' }),
         ]));
 
       const restoredFailure = await obstructDurableEnvironmentCommit(
         firstServer.runtimeEnvironmentPath,
-        () => postGraphql<{ saveQwenConfiguration: QwenStatus }>(
+        () => postGraphql<{ saveQwenConfiguration: QwenCommandResult }>(
           firstServer.serverUrl,
           saveMutation,
           { input: { baseUrl: `${qwenBaseUrl}/`, apiKey: rejectedReplacementKey } },
@@ -418,10 +449,7 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
           }),
         }),
       ]);
-      expect(requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        firstServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus).toEqual(saved);
+      expect(await readQwenStatus(firstServer.serverUrl)).toEqual(saved);
 
       const environmentAfterCommit = await fsPromises.readFile(firstServer.runtimeEnvironmentPath, 'utf8');
       expect(environmentAfterCommit.match(/^QWEN_BASE_URL=/gm)).toHaveLength(1);
@@ -438,14 +466,11 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
         environment: serverEnvironment,
       });
       runningServers.add(secondServer);
-      expect(requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        secondServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus).toEqual(saved);
+      expect(await readQwenStatus(secondServer.serverUrl)).toEqual(saved);
       const restartedCatalog = requireData(await postGraphql<{
-        availableLlmProvidersWithModels: CatalogProvider[];
-      }>(secondServer.serverUrl, catalogQuery)).availableLlmProvidersWithModels;
-      expect(restartedCatalog.find(({ provider: candidate }) => candidate.id === 'QWEN')?.models)
+        providerModelCatalogSnapshots: CatalogProvider[];
+      }>(secondServer.serverUrl, catalogQuery)).providerModelCatalogSnapshots;
+      expect(restartedCatalog.find(({ ownerProvider: candidate }) => candidate.id === 'QWEN')?.llmModels)
         .toEqual(expect.arrayContaining([
           expect.objectContaining({ modelIdentifier: 'qwen3.8-max', value: 'qwen3.8-max' }),
           expect.objectContaining({ modelIdentifier: 'qwen:deepseek-v4-pro', value: 'deepseek-v4-pro' }),
@@ -489,10 +514,7 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
         environment: serverEnvironment,
       });
       runningServers.add(keyOnlyServer);
-      expect(requireData(await postGraphql<{ qwenSetupStatus: QwenStatus }>(
-        keyOnlyServer.serverUrl,
-        statusQuery,
-      )).qwenSetupStatus).toEqual({
+      expect(await readQwenStatus(keyOnlyServer.serverUrl)).toEqual({
         effectiveBaseUrl: initial.effectiveBaseUrl,
         endpointSource: 'DEFAULT',
         apiKeyConfigured: true,
