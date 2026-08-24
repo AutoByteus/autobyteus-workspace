@@ -1,0 +1,40 @@
+DR-004 sanitized live-provider investigation
+Date: 2026-08-24
+Integrated merge: 80308fb50884f67cdc29b30eabad1213a9a15f2e
+Tracked base at delivered build: origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869
+
+SAFETY
+- No plaintext credential, credential suffix, Authorization header, or secret-bearing response body is recorded.
+- The existing production vault was read only through the trusted resolver.
+- The authenticated route control used GET rather than POST and could not create an inference completion or consume model credits.
+
+CONFIGURATION CLASSIFICATION
+- Provider ID: provider_alibaba_cloud
+- Provider type: OPENAI_COMPATIBLE
+- Configured base URL: https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1
+- Credential state: nonempty
+- Credential class only: TOKEN_PLAN_PREFIX (documented sk-sp- class)
+
+CREDENTIAL-FREE ROUTE PROBES
+- GET token-plan .../compatible-mode/v1/models -> HTTP 401, provider code InvalidApiKey, message classification: no API key provided
+- GET token-plan .../compatible-mode/v1/chat/completions -> HTTP 401, provider type invalid_request_error, message classification: no API key provided
+- GET dashscope-intl control .../compatible-mode/v1/models -> HTTP 401, provider type invalid_request_error, message classification: no API key provided
+
+AUTHENTICATED SAFE PROBES USING THE TRUSTED RESOLVER
+- GET token-plan .../compatible-mode/v1/models -> HTTP 401, content type application/json, provider code InvalidApiKey
+- GET token-plan .../compatible-mode/v1/chat/completions -> HTTP 401, content type application/json, provider code invalid_api_key, provider type invalid_request_error
+
+SOURCE-PATH CHECK
+- Discovery endpoint: normalized {baseUrl}/models
+- Method: GET
+- Authentication: Authorization Bearer with trimmed key
+- Response arrays accepted: top-level array, data, or models
+- Runtime credential binding: exact custom provider ID, llmMetadata/apiKey slot
+
+CLASSIFICATION
+- Primary origin: Alibaba Cloud credential/account authorization rejection.
+- Not supported by evidence: AutoByteus endpoint construction, auth-header, response-parser, persistence, or Electron packaging defect.
+- Configured URL: official Alibaba Cloud Singapore Token Plan OpenAI-compatible base URL.
+- Valid-key /models capability: not established because authentication fails first.
+- Visible "null models": separate cosmetic AutoByteus presentation defect, explicitly accepted for deferral by the user.
+- User disposition: finalize and release; no code or product update requested.

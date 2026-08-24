@@ -186,3 +186,27 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: architecture re-review should verify the exact non-global store-to-store return path, server/client stale-response fencing, full-source clearing, status lattice, and cleanup inventory. On Pass, route the cumulative package plus code-review evidence to `/implementation_engineer`; the paused `IR-003` source must not resume beforehand.
 - Next recipient or routing: `/architecture_reviewer`
 - Remaining gaps or risks: architecture decision pending; clearing a changed source temporarily removes otherwise unchanged peer-host rows by design; authority-only persisted identifiers remain conservatively resolvable only to a unique current full endpoint; process snapshots remain ephemeral. Persisted data remains `Not Affected`: no migration, rewrite, compatibility branch, or durable cache is introduced.
+
+### SR-008 — Classify DR-004 as external authentication and defer cosmetic null-count rendering
+
+- Triggering role, report path, and round: `/delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/user-verification-finding-dr004.md`; user verification after `DR-003`
+- Triggering finding IDs: `DR-004`; live Alibaba Cloud custom-provider unavailable observation
+- Prior authoritative result: delivery classification was `Unclear`, with repository finalization held while solution design distinguished AutoByteus discovery behavior from Alibaba capability/configuration/authentication behavior and independently assessed the visible `null models` label.
+- Current authoritative result: the observed discovery failure is an Alibaba Cloud credential/account authorization rejection, not an established AutoByteus code or configured-base-URL defect. The separate `null models` string is a bounded AutoByteus presentation defect; the user explicitly accepts deferring it and requests no update. No solution behavior is revised.
+- Why this revision entry is recorded: source inspection plus secret-safe live diagnostics proved the configured official Token Plan endpoint receives the expected Bearer request, while Alibaba returns `401 InvalidApiKey` for exact `/models` and the non-inference `/chat/completions` route control. The stored secret was never printed or recorded; only its documented Token Plan key class was classified.
+- Resolution:
+  - Preserve the existing custom-provider discovery, credential/catalog independence, and localized unavailable-state design.
+  - Treat `Configured` as the existing server-owned secret-presence Boolean, not a claim that the remote provider currently accepts the value.
+  - Record the official Alibaba endpoint/key pairing and `401 InvalidApiKey` interpretation alongside the sanitized live evidence.
+  - Make no source or product change for `null models` because the user expressly accepts the cosmetic state for now.
+  - Do not add manual model identifiers, inference-only custom-provider support, provider-specific compatibility code, durable cache, data migration, or credential migration under this disposition.
+- Approved behavior or requirement IDs affected: none; `REQ-001`–`REQ-018` and `AC-001`–`AC-022` remain unchanged.
+- Canonical artifacts and sections updated:
+  - `investigation-notes.md` — DR-004 live evidence, official provider contract, classification, residual compatibility question, and user disposition
+  - `solution-revision-record.md` — this no-solution-change classification entry
+- Supplemental artifacts updated, added, or removed:
+  - added `validation-evidence/solution-dr004-sanitized-live-probe.log`
+  - `requirements.md`, `design-spec.md`, and `ui-ux-spec.md` are unchanged
+- Downstream and architecture-review impact: no architecture, implementation, code-review, or API/E2E reroute is required because the user authorized no product change. Delivery may update `DR-004` to external authentication with accepted cosmetic deferral and proceed with finalization/release.
+- Next recipient or routing: `/delivery_engineer`
+- Remaining gaps or risks: a new valid paired Alibaba credential must be used to determine whether Token Plan exposes `/models`; if inference succeeds but model listing remains unsupported, manual model-ID support would require a separate user-approved requirement. Persisted data remains `Not Affected`; no migration, rewrite, or compatibility branch exists.

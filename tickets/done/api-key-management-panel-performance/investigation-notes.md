@@ -270,3 +270,30 @@ The user reports that opening API Key Management is repeatedly very slow. The su
 ## Notes For Architecture Reviewer
 
 Review `SR-007` against `CRR-001`. `CODE-002` is closed by the direct successful Server Settings action -> exact provider Pinia clear-and-ensure -> guarded publication path, which works while API Keys is unmounted and introduces no event bus or global refresh. Carry `CODE-001` full-endpoint clearing, `CODE-003` mixed-current partial semantics, and `CODE-004` exact deletions as bounded implementation corrections. Preserve the `ARCH-REV-007` simplifications and decisions: no global/static Reload, duplicate aggregate rows, global FIFO, compatibility identifier, durable cache, or migration.
+
+## DR-004 Live Alibaba Cloud Classification (2026-08-24)
+
+### Evidence and safety boundary
+
+- The running DR-003 Electron package and embedded server were inspected at integrated merge `80308fb50884f67cdc29b30eabad1213a9a15f2e`. The packaged runtime and GUI had already reproduced the selected custom provider's localized unavailable state.
+- Source inspection confirmed that custom OpenAI-compatible discovery normalizes the configured base URL, calls exact `GET {baseUrl}/models`, trims the key, sends `Authorization: Bearer <key>` plus `Accept: application/json`, and accepts a top-level array, `data`, or `models` array. The custom runtime synchronizer resolves the exact provider's metadata credential before invoking that adapter.
+- A credential-free route probe showed that both the configured Token Plan `/models` route and an inference-route control are present and reject missing authentication with `401`; the configured base URL is therefore not a nonexistent or malformed route.
+- A capability-safe diagnostic resolved the current stored credential through the production vault without printing, copying, or persisting its value. It recorded only that the value is nonempty and belongs to the documented Token Plan `sk-sp-` key class.
+- Using that resolved value, exact `/models` returned `401` / `InvalidApiKey`. A non-inference `GET` control against `/chat/completions` also returned `401` / `invalid_api_key`; no completion request was made and no model credits were consumed. The same authentication rejection on the inference route rules out an AutoByteus-only `/models` parser or endpoint-construction failure as the cause of the observed state.
+- Sanitized evidence is recorded at `validation-evidence/solution-dr004-sanitized-live-probe.log`. It contains no credential value, credential suffix, response body, or secret-bearing request header.
+
+### Official provider contract
+
+- Alibaba Cloud documents `https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1` as the Singapore Token Plan OpenAI-compatible base URL and requires the dedicated key from the same plan: <https://www.alibabacloud.com/help/en/model-studio/base-url>.
+- Alibaba's Token Plan quick start states that Token Plan keys use the `sk-sp-` prefix and that plan keys/base URLs are isolated and must be paired: <https://www.alibabacloud.com/help/en/model-studio/token-plan-team-quickstart>.
+- Alibaba classifies `401-InvalidApiKey/invalid_api_key` as an incorrect key, with common causes including a wrong/deleted key or a plan/endpoint/region mismatch: <https://www.alibabacloud.com/help/en/model-studio/error-code>.
+- Alibaba's third-party-tool instructions ask the user to enter an exact supported model ID and do not establish a guaranteed Token Plan `/models` listing contract: <https://www.alibabacloud.com/help/en/model-studio/more-tools>. Whether a newly valid Token Plan key exposes `/models` therefore remains a follow-up compatibility question, not the cause of this credential-rejected observation.
+
+### Classification and disposition
+
+1. **Observed model failure:** Alibaba Cloud credential/account authorization behavior. The configured URL is the documented Token Plan URL and AutoByteus sends the documented Bearer scheme, but Alibaba rejects the stored key before either model-list or inference-route capability can be evaluated. Likely provider-side conditions are a reset/deleted/revoked key or a current seat/account/plan association mismatch.
+2. **Not established:** an AutoByteus discovery, URL construction, header, response parsing, persistence, or Electron packaging defect. No evidence supports changing those paths for this incident.
+3. **Not established:** configuration pointing at an incorrect inference-only URL. The configured URL is Alibaba's documented OpenAI-compatible Token Plan base URL. A valid-key `/models` success remains unproven because authentication fails first.
+4. **Adjacent compatibility possibility:** if a newly valid paired credential succeeds for inference but the provider still does not expose `/models`, supporting manual model-ID entry would be a separate requirement/design request. It is not authorized or required to close DR-004.
+5. **`null models`:** confirmed bounded AutoByteus presentation defect. `modelCountForProvider()` intentionally returns `null` for unknown/loading/error counts; the sidebar converts it to a neutral em dash, while `CustomProviderDetailsCard.vue` interpolates the sentinel into `{{count}} models`. This does not cause discovery failure. On 2026-08-24 the user explicitly accepted deferring this cosmetic defect and requested no update.
+6. **Release decision:** the user explicitly stated the credential issue is acceptable for current delivery, accepted the `null models` deferral, and authorized finalization and release. No requirements, design, source, test, persistence, migration, or compatibility change is requested.

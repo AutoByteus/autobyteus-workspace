@@ -1,0 +1,49 @@
+Delivery pre-finalization audit DR-005
+started_utc=2026-08-24T05:17:49Z
+head=80308fb50884f67cdc29b30eabad1213a9a15f2e
+base=a00f0d07d00450785c424b6ab79d2ca8fe828869
+divergence=5	0
+
+[patch hygiene]
+git_diff_check=pass
+
+[repository artifact hygiene]
+Repository artifact hygiene check passed.
+Tracked files scanned: 24340
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+
+[authorized disposition]
+tickets/in-progress/api-key-management-panel-performance/user-verification-finding-dr004.md:43:## Solution-Design Disposition (`SR-008`)
+tickets/in-progress/api-key-management-panel-performance/user-verification-finding-dr004.md:49:- Authenticated exact `GET /models` returned `401 InvalidApiKey`.
+tickets/in-progress/api-key-management-panel-performance/user-verification-finding-dr004.md:61:Evidence: `solution-revision-record.md` (`SR-008`), `investigation-notes.md`, and `validation-evidence/solution-dr004-sanitized-live-probe.log`.
+tickets/in-progress/api-key-management-panel-performance/investigation-notes.md:282:- Using that resolved value, exact `/models` returned `401` / `InvalidApiKey`. A non-inference `GET` control against `/chat/completions` also returned `401` / `invalid_api_key`; no completion request was made and no model credits were consumed. The same authentication rejection on the inference route rules out an AutoByteus-only `/models` parser or endpoint-construction failure as the cause of the observed state.
+tickets/in-progress/api-key-management-panel-performance/investigation-notes.md:289:- Alibaba classifies `401-InvalidApiKey/invalid_api_key` as an incorrect key, with common causes including a wrong/deleted key or a plan/endpoint/region mismatch: <https://www.alibabacloud.com/help/en/model-studio/error-code>.
+tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md:190:### SR-008 — Classify DR-004 as external authentication and defer cosmetic null-count rendering
+tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md:195:- Current authoritative result: the observed discovery failure is an Alibaba Cloud credential/account authorization rejection, not an established AutoByteus code or configured-base-URL defect. The separate `null models` string is a bounded AutoByteus presentation defect; the user explicitly accepts deferring it and requests no update. No solution behavior is revised.
+tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md:196:- Why this revision entry is recorded: source inspection plus secret-safe live diagnostics proved the configured official Token Plan endpoint receives the expected Bearer request, while Alibaba returns `401 InvalidApiKey` for exact `/models` and the non-inference `/chat/completions` route control. The stored secret was never printed or recorded; only its documented Token Plan key class was classified.
+tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md:200:  - Record the official Alibaba endpoint/key pairing and `401 InvalidApiKey` interpretation alongside the sanitized live evidence.
+tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md:210:- Downstream and architecture-review impact: no architecture, implementation, code-review, or API/E2E reroute is required because the user authorized no product change. Delivery may update `DR-004` to external authentication with accepted cosmetic deferral and proceed with finalization/release.
+
+[release preflight]
+current_web_version=1.4.55
+current_gateway_version=1.4.55
+next_release_candidate=v1.4.56 available
+
+[uncommitted boundary]
+ M tickets/in-progress/api-key-management-panel-performance/delivery-revision-record.md
+ M tickets/in-progress/api-key-management-panel-performance/docs-sync-report.md
+ M tickets/in-progress/api-key-management-panel-performance/handoff-summary.md
+ M tickets/in-progress/api-key-management-panel-performance/investigation-notes.md
+ M tickets/in-progress/api-key-management-panel-performance/release-deployment-report.md
+ M tickets/in-progress/api-key-management-panel-performance/solution-revision-record.md
+?? tickets/in-progress/api-key-management-panel-performance/electron-build-mac-report.md
+?? tickets/in-progress/api-key-management-panel-performance/user-verification-finding-dr004.md
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/delivery-electron-artifact-verification-dr003.log
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/delivery-electron-build-dr003.log
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/delivery-focused-post-integration-dr003.log
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/delivery-handoff-readiness-dr003.log
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/delivery-pre-finalization-dr005.log
+?? tickets/in-progress/api-key-management-panel-performance/validation-evidence/solution-dr004-sanitized-live-probe.log
+final_status=pass-authorized-for-archive-finalization-release
+finished_utc=2026-08-24T05:17:53Z

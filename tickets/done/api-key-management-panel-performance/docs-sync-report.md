@@ -3,17 +3,17 @@
 ## Scope And Integrated State
 
 - Ticket: `api-key-management-panel-performance`
-- Current delivery revision: `DR-002`
-- Trigger: delivery re-entry after `IR-007` resolved DR-001, integrated source review `CRR-007` passed, `API-REV-003` passed at 96.7%, and proportional durable-test review `CRR-008` passed with no finding.
+- Current delivery revision: `DR-004`
+- Trigger: `SR-008` resolves the hands-on Alibaba Cloud observation as external credential/account authentication, with the separate cosmetic nullable-count label accepted for deferral and no product update requested.
 - Bootstrap base: `origin/personal@122adc91c184a75541489eea670ac29fcb43f4ab`.
-- Latest tracked base: `origin/personal@7edfb162559ec5a6eb4c00c23a929920eabe3dc1`, fetched on 2026-08-23.
-- Integration: merge commit `f6f4d532f78f3b418dca471881f65d3415693f99`; parents are the DR-001 reviewed checkpoint and exact latest base.
+- Latest tracked base: `origin/personal@a00f0d07d00450785c424b6ab79d2ca8fe828869`, fetched and rechecked on 2026-08-24.
+- Integration: the reviewed ticket lineage first merged at `f6f4d532f78f3b418dca471881f65d3415693f99`; delivery then protected DR-002 at `aca022c465c3bd2e6b787fc64c4ad3debc76e2bc` and merged the five newer base commits without conflict as `80308fb50884f67cdc29b30eabad1213a9a15f2e`.
 - Integrated validated checkpoint: `d7f6f4108b09f66f92875b2fa29ac17f3a8387ca`, containing the API-REV-003 evidence and CRR-008-approved one-line durable correction.
-- Post-integration verification reference: `api-e2e-execution-coverage-report.md` (`API-REV-003`), `api-e2e-test-review-report.md` (`CRR-008`), and the `validation-evidence/09*` set.
+- Post-integration verification reference: `api-e2e-execution-coverage-report.md` (`API-REV-003`), `api-e2e-test-review-report.md` (`CRR-008`), the `validation-evidence/09*` set, and DR-003's Electron build/artifact/focused-validation evidence.
 
 ## Result
 
-`Pass — Updated`. Documentation now matches the final integrated, reviewed, and validated credential/catalog contract. DR-001's blocked report is superseded for current delivery status but retained as history.
+`Pass — no additional long-lived documentation impact`. The five DR-002 edits remain accurate. `Configured` intentionally denotes secret presence rather than remote validation, while the Alibaba `401 InvalidApiKey` result is account/credential-specific operational evidence. The accepted `null models` presentation defect is deferred without changing intended behavior, so no canonical project doc should advertise it as a supported state.
 
 ## Long-Lived Docs Reviewed
 
@@ -24,7 +24,7 @@
 | `autobyteus-server-ts/docs/modules/secret_management.md` | Updated | Documented credential-only status reads and direct command results; clarified catalog independence, exact custom-source seed/removal, and AutoByteus post-commit background discovery without credential-command delay. |
 | `autobyteus-server-ts/docs/modules/multimedia_management.md` | Updated | Removed deleted audio/image/video service owners; recorded SDK factory ownership, AutoByteus source-local audio/image replacement, static video behavior, and exact persisted-model availability after restart. |
 | `autobyteus-ts/docs/provider_model_catalogs.md` | Updated | Added registry/dynamic-source ownership and no-global-Reload boundaries. Reconciled integrated current Gemini 3.7, GLM 5.3 versus Qwen-owned GLM 5.2, Grok 4.6, Kimi K3, and current static Qwen catalog wording. |
-| Root and package `README.md` files | No change | Repository setup, build, test, Electron packaging, release, and deployment commands are unchanged by the ticket. |
+| Root and package `README.md` files | Reviewed; no change | Delivery followed the root packaged-Electron guidance and the web macOS logs/no-notarization command successfully. Repository setup, build, test, packaging, release, and deployment instructions remain accurate and are unchanged by this ticket. |
 | `autobyteus-server-ts/docs/ARCHITECTURE.md` and module index | No change | Existing top-level module boundaries remain accurate; the detailed ownership change is canonical in the updated LLM/multimedia module docs. |
 
 ## Durable Design / Runtime Knowledge Promoted
@@ -58,9 +58,16 @@
 - Current operation/source cross-check: documented GraphQL operations and source lifecycle owners exist in the integrated source.
 - Evidence: `validation-evidence/delivery-docs-sync-dr002.log`.
 
+### DR-003 re-entry check
+
+- The five incoming base commits concern finalized nested-team history restart/hydration behavior and do not replace or contradict the credential/catalog documentation synchronized in DR-002.
+- The current root/web README and `autobyteus-web/docs/electron_packaging.md` instructions accurately produced the integrated macOS ARM64 DMG and ZIP.
+- No additional durable project-doc edit is required for this delivery re-entry.
+- Electron build/verification details are authoritative in `electron-build-mac-report.md` and the DR-003 evidence logs.
+
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next action: obtain explicit user verification/acceptance of the integrated handoff.
-- Finalization hold: ticket archive, terminal commit/push, target merge, version/tag/release/publication/deployment, and cleanup remain prohibited until that signal.
-- Blocked/escalated follow-up: none. The verification hold is a required workflow gate, not a defect.
+- Next action: archive and finalize the verified ticket, then execute the explicitly authorized documented release path.
+- Finalization hold: released by the user disposition recorded in `SR-008`; the mandatory final target refresh still applies.
+- Blocked/escalated follow-up: none. A valid paired Alibaba credential remains an external prerequisite for any later Token Plan `/models` compatibility check.
