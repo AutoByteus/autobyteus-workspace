@@ -1,0 +1,15 @@
+DR-008 manual zh server Docker dispatch
+requested_utc=2026-08-24T06:53:10Z
+command=gh workflow run release-server-docker.yml --ref personal -f release_tag=v1.4.56 -f release_ref=v1.4.56 -f publish_zh=true
+workflow=.github/workflows/release-server-docker.yml
+runbook=autobyteus-server-ts/docker/README.md#github-release-automation
+release_tag=v1.4.56
+release_ref=v1.4.56
+release_ref_commit=91134347c050bdbae2bd517300738bf94f5c2771
+publish_zh=true
+expected_version_tag=autobyteus/autobyteus-server:1.4.56-zh
+expected_stable_tag=autobyteus/autobyteus-server:latest-zh
+note=repository syntax is latest-zh, not latest:zh
+
+=== workflow status ===
+{"conclusion":"","databaseId":32699138090,"event":"workflow_dispatch","headSha":"dd0d730b4685e143a1975d52b82c1af869e9b1c7","jobs":[{"conclusion":"success","name":"Resolve Release Metadata","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090/job/97346963110"},{"conclusion":"","name":"Build And Push Server Image","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090/job/97346977754"}],"name":"Server Docker Release","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32699138090"}

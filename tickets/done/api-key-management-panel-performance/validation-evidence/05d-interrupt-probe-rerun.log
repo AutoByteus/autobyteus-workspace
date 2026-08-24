@@ -1,0 +1,16 @@
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:497
+  throw new Error(`Interrupt result presentation probe failed after cleanup: ${summary}`, {
+        ^
+
+Error: Interrupt result presentation probe failed after cleanup: SR008-BR-001: page.waitForFunction: Timeout 30000ms exceeded.; probe: page.waitForFunction: Timeout 30000ms exceeded.
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:497:9 {
+  [cause]: page.waitForFunction: Timeout 30000ms exceeded.
+      at openFixture (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:303:16)
+      at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:315:31
+      at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:198:57)
+      at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:314:3 {
+    name: 'TimeoutError'
+  }
+}
+
+Node.js v22.23.1

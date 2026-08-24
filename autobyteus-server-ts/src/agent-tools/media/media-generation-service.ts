@@ -21,6 +21,7 @@ import { createGeminiRuntimeResolver } from '../../llm-management/services/gemin
 import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 import { getServerSettingsService } from '../../services/server-settings-service.js';
 import { MediaOperationLease } from './media-operation-lease.js';
+import { getModelAvailabilityService } from '../../llm-management/services/model-availability-service.js';
 
 type ImageClientLike = {
   generateImage(prompt: string, inputImageUrls?: string[] | null, generationConfig?: Record<string, unknown> | null, options?: MediaOperationOptions): Promise<ImageGenerationResponse>;
@@ -76,8 +77,14 @@ export class MediaGenerationService {
   constructor(dependencies: MediaGenerationServiceDependencies = {}) {
     this.modelResolver = dependencies.modelResolver ?? getMediaModelResolver();
     this.pathResolver = dependencies.pathResolver ?? getMediaPathResolver();
-    this.createImageClient = dependencies.createImageClient ?? ((modelIdentifier) => Promise.resolve(ImageClientFactory.createImageClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("image"), ImageClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
-    this.createAudioClient = dependencies.createAudioClient ?? ((modelIdentifier) => Promise.resolve(AudioClientFactory.createAudioClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("audio"), AudioClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
+    this.createImageClient = dependencies.createImageClient ?? (async (modelIdentifier) => {
+      await getModelAvailabilityService().ensureModelAvailable(modelIdentifier, 'IMAGE');
+      return ImageClientFactory.createImageClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("image"), ImageClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined);
+    });
+    this.createAudioClient = dependencies.createAudioClient ?? (async (modelIdentifier) => {
+      await getModelAvailabilityService().ensureModelAvailable(modelIdentifier, 'AUDIO');
+      return AudioClientFactory.createAudioClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("audio"), AudioClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined);
+    });
     this.createVideoClient = dependencies.createVideoClient ?? ((modelIdentifier) => Promise.resolve(VideoClientFactory.createVideoClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("video"), VideoClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
     this.getServerTimeout = dependencies.getServerTimeout ?? (() =>
       getServerSettingsService().getSettingValue(MEDIA_OPERATION_TIMEOUT_SETTING)

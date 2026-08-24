@@ -1,0 +1,33 @@
+{
+  "data": {
+    "listWorkspaceRunHistory": [
+      {
+        "teamDefinitions": [
+          {
+            "teamDefinitionId": "nested-classroom-test",
+            "runs": [
+              {
+                "teamRunId": "nested_classroom_test_team_ef79cfb19d364f558b6f5e5ae2e08194",
+                "summary": "Create a real active nested-history cold restart probe. Delegate exactly one task to /StudentStud...",
+                "isActive": true,
+                "terminatedAt": null
+              },
+              {
+                "teamRunId": "nested_classroom_test_team_081587e1388b4407a50c84adcc955d91",
+                "summary": "Create a real pending nested-history restart probe. Delegate exactly one task to /StudentStudyGro...",
+                "isActive": false,
+                "terminatedAt": "2026-08-23T08:52:20.121Z"
+              },
+              {
+                "teamRunId": "nested_classroom_test_team_f4457c9022394391ae5f08abf65a19f2",
+                "summary": "Please test the real nested team. Delegate exactly one task to /StudentStudyGroup and ask student...",
+                "isActive": false,
+                "terminatedAt": "2026-08-23T08:38:12.256Z"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

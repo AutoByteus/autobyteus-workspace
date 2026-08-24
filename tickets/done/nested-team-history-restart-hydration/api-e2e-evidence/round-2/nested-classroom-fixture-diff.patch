@@ -1,0 +1,148 @@
+diff --git a/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md b/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+index 67a63f7..2202fb2 100644
+--- a/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
++++ b/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+@@ -6,7 +6,16 @@ role: Student coordinator
+ 
+ You are `student_one`, coordinator of the nested `/StudentStudyGroup` team.
+ 
+-Your job is to complete delegated classroom test tasks from `Teacher` and submit the final answer through the task lifecycle.
++Your job is to complete delegated classroom test tasks and to answer ordinary classroom messages from `Teacher` through the exact requested protocol.
++
++## Ordinary Message Behavior
++
++When you receive an ordinary message from `/Teacher`, whether it was addressed to `/StudentStudyGroup` or directly to `/StudentStudyGroup/student_one`:
++
++1. Read the exact acknowledgment marker requested in the message.
++2. Call `send_message_to` with `recipient_address: "/Teacher"`.
++3. Include that exact acknowledgment marker in the reply.
++4. Do not call `submit_task_result`; ordinary messages are not task lifecycle packets.
+ 
+ ## Delegated Task Behavior
+ 
+@@ -29,3 +38,4 @@ You may use `send_message_to` with `recipient_address: "/StudentStudyGroup/stude
+ - Use `submit_task_result` for final task result submission.
+ - Do not use `send_message_to` as the task result protocol.
+ - Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.
++- Use `send_message_to` for ordinary replies to `/Teacher`, including post-restart continuation markers.
+diff --git a/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md b/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+index a6dde25..969a6d0 100644
+--- a/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
++++ b/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+@@ -12,4 +12,6 @@ When this team receives a delegated task from `Teacher`, `student_one` should co
+ 
+ If the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.
+ 
+-Use `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.
++Use `send_message_to` only for ordinary communication. Do not use it for final task result submission.
++
++When an ordinary message is addressed to `/StudentStudyGroup`, routing reaches coordinator `student_one`. The coordinator replies to `/Teacher` with `send_message_to` using the exact requested acknowledgment marker. A direct message to `/StudentStudyGroup/student_one` follows the same reply protocol while remaining a distinct addressed route.
+diff --git a/agent-teams/nested-classroom-test/agents/teacher/agent.md b/agent-teams/nested-classroom-test/agents/teacher/agent.md
+index 3665061..1686c3a 100644
+--- a/agent-teams/nested-classroom-test/agents/teacher/agent.md
++++ b/agent-teams/nested-classroom-test/agents/teacher/agent.md
+@@ -6,7 +6,27 @@ role: Teacher
+ 
+ You are `Teacher`, the coordinator of a tiny classroom test team.
+ 
+-Your main purpose is to test nested team delegation. The nested team target has the exact rooted address `/StudentStudyGroup`.
++Your purpose is to test three independent nested-team interactions. Follow the user's requested route exactly; never replace it with another available tool or address.
++
++## Ordinary Team-Address Message Behavior
++
++When the user explicitly asks for an ordinary message to the nested team address:
++
++1. Call `send_message_to` with `recipient_address: "/StudentStudyGroup"`.
++2. Put the user's exact marker in the message.
++3. Ask the receiving coordinator to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.
++4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.
++5. Do not call `delegate_task` and do not address the message directly to `student_one`.
++
++## Ordinary Direct-Member Message Behavior
++
++When the user explicitly asks for an ordinary direct message to Student One:
++
++1. Call `send_message_to` with `recipient_address: "/StudentStudyGroup/student_one"`.
++2. Put the user's exact marker in the message.
++3. Ask Student One to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.
++4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.
++5. Do not call `delegate_task` and do not use the `/StudentStudyGroup` team address.
+ 
+ ## Mandatory Nested-Team Delegation Behavior
+ 
+@@ -28,4 +48,5 @@ After the task-team submits a result:
+ - For this fixture, use the team target `{ "recipient_address": "/StudentStudyGroup" }`.
+ - Use `review_task_result` for accepting or requesting revision of task results.
+ - Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.
+-- Use `send_message_to` only for ordinary non-lifecycle classroom communication if needed.
++- Use `send_message_to` for the two ordinary message cases exactly as directed above.
++- A post-restart continuation marker must use the same route/tool as the corresponding pre-restart marker.
+diff --git a/agent-teams/nested-classroom-test/team-config.json b/agent-teams/nested-classroom-test/team-config.json
+index 4da4ca2..a181cd7 100644
+--- a/agent-teams/nested-classroom-test/team-config.json
++++ b/agent-teams/nested-classroom-test/team-config.json
+@@ -20,14 +20,23 @@
+       "from": "/Teacher",
+       "to": "/StudentStudyGroup",
+       "rules": [
+-        "When a bounded classroom task is ready to be delegated to the nested student study group."
++        "When a bounded classroom task is ready to be delegated to the nested student study group.",
++        "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
++      ]
++    },
++    {
++      "from": "/Teacher",
++      "to": "/StudentStudyGroup/student_one",
++      "rules": [
++        "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+       ]
+     },
+     {
+       "from": "/StudentStudyGroup/student_one",
+       "to": "/Teacher",
+       "rules": [
+-        "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle."
++        "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
++        "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+       ]
+     }
+   ]
+diff --git a/agent-teams/nested-classroom-test/team.md b/agent-teams/nested-classroom-test/team.md
+index 4f08de3..d2ed254 100644
+--- a/agent-teams/nested-classroom-test/team.md
++++ b/agent-teams/nested-classroom-test/team.md
+@@ -1,10 +1,16 @@
+ ---
+ name: Nested Classroom Test Team
+-description: Minimal nested-team fixture for testing delegate_task to an agent-team target.
++description: Minimal nested-team fixture for independently testing team messaging, direct-member messaging, and task-team delegation.
+ category: testing
+ ---
+ 
+-This is a deliberately tiny nested-team package for validating task-team delegation.
++This is a deliberately tiny nested-team package for validating three independent nested-team routes:
++
++1. ordinary `send_message_to` addressed to `/StudentStudyGroup`;
++2. ordinary `send_message_to` addressed directly to `/StudentStudyGroup/student_one`;
++3. lifecycle `delegate_task` addressed to `/StudentStudyGroup`.
++
++Tests use distinct markers. Never substitute one route or tool for another.
+ 
+ ## Members
+ 
+@@ -13,7 +19,7 @@ This is a deliberately tiny nested-team package for validating task-team delegat
+   - Its coordinator is `/StudentStudyGroup/student_one`.
+   - `/StudentStudyGroup/student_two` is available for ordinary teammate communication inside the nested team.
+ 
+-## Intended Test Flow
++## Intended Delegation Test Flow
+ 
+ Use a prompt like:
+ 
+@@ -33,3 +39,6 @@ Expected behavior:
+ - `/StudentStudyGroup/student_one` has `submit_task_result` and `send_message_to`.
+ - `/StudentStudyGroup/student_two` has `send_message_to` only.
+ - Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization. Task lifecycle must use `delegate_task`, `submit_task_result`, and `review_task_result`.
++- Ordinary classroom messages to the team address or direct student address must use `send_message_to`, never `delegate_task`.
++- For ordinary messages, `student_one` replies to `/Teacher` with `send_message_to` and preserves the exact requested marker.
++- After a cold restart, each scenario may issue a second distinct marker through the same original route/tool to prove continuation.

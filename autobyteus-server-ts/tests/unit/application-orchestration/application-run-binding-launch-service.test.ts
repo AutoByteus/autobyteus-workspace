@@ -7,6 +7,7 @@ import type {
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
+import { buildOpenAICompatibleEndpointModelIdentifier } from "autobyteus-ts/llm/openai-compatible-endpoint-model.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationCurrentModelSelectionPolicy } from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 
@@ -55,7 +56,9 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
   },
 });
 
-const buildService = () => {
+const buildService = (input: {
+  ensureAutoByteusModelAvailable?: (modelIdentifier: string) => Promise<void>;
+} = {}) => {
   const executionResourceResolver = {
     resolveExecutionResource: vi.fn(async (
       _applicationId: string,
@@ -88,7 +91,11 @@ const buildService = () => {
       throw new CurrentModelSelectionRequiredError(modelIdentifier);
     }
   });
+  const ensureAutoByteusModelAvailable = vi.fn(
+    input.ensureAutoByteusModelAvailable ?? (async () => undefined),
+  );
   const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    ensureAutoByteusModelAvailable,
     requireCurrentAutoByteusModelIdentifier,
   });
 
@@ -107,6 +114,7 @@ const buildService = () => {
     lookupStore,
     agentRunService,
     teamRunService,
+    ensureAutoByteusModelAvailable,
     requireCurrentAutoByteusModelIdentifier,
   };
 };
@@ -208,6 +216,38 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         ],
       },
     })).rejects.toMatchObject({ code: "CURRENT_MODEL_SELECTION_REQUIRED" });
+    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("rejects a second dynamic team leaf before allocation or creation", async () => {
+    const identifierA = buildOpenAICompatibleEndpointModelIdentifier("provider-a", "model-a");
+    const identifierB = buildOpenAICompatibleEndpointModelIdentifier("provider-b", "model-b");
+    const { service, ensureAutoByteusModelAvailable, teamRunService } = buildService({
+      ensureAutoByteusModelAvailable: async (modelIdentifier) => {
+        if (modelIdentifier === identifierB) throw new Error("provider B unavailable");
+      },
+    });
+
+    await expect(service.startAgentTeamRunBinding(applicationId, {
+      ...buildTeamInput(),
+      launch: {
+        kind: "AGENT_TEAM",
+        mode: "memberConfigs",
+        memberConfigs: [identifierA, identifierB].map((llmModelIdentifier, index) => ({
+          memberAddress: index === 0 ? "/researcher" : "/writer",
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier,
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as never,
+        })),
+      },
+    })).rejects.toMatchObject({
+      name: "ApplicationModelAvailabilityError",
+      modelIdentifier: identifierB,
+    });
+    expect(ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(1, identifierA);
+    expect(ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(2, identifierB);
     expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
   });

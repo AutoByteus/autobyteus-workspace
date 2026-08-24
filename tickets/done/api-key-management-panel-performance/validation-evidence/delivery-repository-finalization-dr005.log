@@ -1,0 +1,572 @@
+Delivery repository finalization DR-005
+recorded_utc=2026-08-24T05:20:24Z
+
+Ticket branch finalization
+started_utc=2026-08-24T05:19:11Z
+Repository artifact hygiene check passed.
+Tracked files scanned: 24348
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+[codex/api-key-management-panel-performance 79ef15940] chore(delivery): finalize API key catalog performance
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 104 files changed, 2525 insertions(+), 176 deletions(-)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/api-e2e-coverage-investigation.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/api-e2e-execution-coverage-report.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/api-e2e-revision-record.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/api-e2e-test-review-report.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/api-key-panel-loading.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/architecture-review-revision-record.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/code-review-report.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/code-review-revision-record.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/delivery-integration-blocker.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/delivery-revision-record.md (50%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/design-review-report.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/design-spec.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/docs-sync-report.md (70%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/electron-build-mac-report.md
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/handoff-summary.md (50%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/implementation-handoff.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/implementation-revision-record.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/investigation-notes.md (87%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/release-deployment-report.md
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/release-notes.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/requirements.md (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/solution-revision-record.md (89%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/ui-ux-spec.md (100%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/user-verification-finding-dr004.md
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/01-focused-current-contract.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/01b-focused-repaired.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/01c-media-repaired.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/01d-focused-current-contract-pass.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/01e-sdk-server-changed-boundary-units.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/02-updated-durable.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/02b-custom-provider-restart-repaired.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/03-server-e2e.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/03b-file-explorer-rerun.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/03c-unrelated-failure-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/04-builds.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/04b-live-preflight.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05a-web-affected-tests.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05b-web-guards-build.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe/evidence.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe/nuxt.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun/evidence.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun/nuxt.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic/evidence.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic/nuxt.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract/evidence.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract/nuxt.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06-settings-browser-probe.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06b-settings-browser-probe-rerun.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06c-settings-browser-probe-final.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06d-settings-browser-probe-final.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06e-settings-browser-probe-current-fixture.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06f-settings-browser-probe-final-pass.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06g-settings-browser-production-preview.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06h-settings-browser-production-preview.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06i-settings-browser-production-build.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06j-settings-browser-production-build.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06k-settings-browser-production-build-final.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/06l-settings-browser-production-build-authoritative.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/07-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/07b-audit-final.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/07c-audit-final-clean.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/08-provider-secret-test-001-fix.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/08b-removed-contract-test-001-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09a-integrated-sdk-focused.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09b-integrated-server-focused-units.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09c-integrated-server-e2e.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09c2-integrated-qwen-coverage-fix.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09d-integrated-builds-preflight.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09e-integrated-web.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser/evidence.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser/nuxt.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/01-ollama-pending-desktop.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/02-ollama-replaced-desktop.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/03-ollama-unavailable-tablet.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-backend.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-frontend.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-summary.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09h-integrated-final-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09h2-integrated-final-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/09i-integrated-artifact-finalization-audit.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/01-ollama-pending-desktop.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/02-ollama-replaced-desktop.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/03-ollama-unavailable-tablet.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/settings-browser-backend.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/settings-browser-frontend.log (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/browser/settings-browser-summary.json (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/delivery-docs-sync-dr002.log (100%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-electron-artifact-verification-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-electron-build-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-focused-post-integration-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-handoff-readiness-dr003.log
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/delivery-integration-refresh-dr001.log (100%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-pre-finalization-dr005.log
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/ir-007-token-usage-en.png (100%)
+ rename tickets/{in-progress => done}/api-key-management-panel-performance/validation-evidence/ir-007-token-usage-zh-CN.png (100%)
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/solution-dr004-sanitized-live-probe.log
+ delete mode 100644 tickets/in-progress/api-key-management-panel-performance/release-deployment-report.md
+ticket_commit=79ef159409109ebe62c8a72be6db85de79c494d9
+remote:
+remote: Create a pull request for 'codex/api-key-management-panel-performance' on GitHub by visiting:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/api-key-management-panel-performance
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new branch]          codex/api-key-management-panel-performance -> codex/api-key-management-panel-performance
+branch 'codex/api-key-management-panel-performance' set up to track 'origin/codex/api-key-management-panel-performance'.
+ticket_push=pass
+finished_utc=2026-08-24T05:19:17Z
+
+Personal target finalization
+started_utc=2026-08-24T05:19:44Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Already up to date.
+target_before_merge=a00f0d07d00450785c424b6ab79d2ca8fe828869
+Merge made by the 'ort' strategy.
+ .../docs/modules/llm_management.md                 |  240 +-
+ .../docs/modules/multimedia_management.md          |   26 +-
+ .../docs/modules/secret_management.md              |   38 +-
+ .../autobyteus-agent-run-backend-factory.ts        |   15 +-
+ .../autobyteus/available-llm-construction.ts       |   23 +
+ .../agent-tools/media/media-generation-service.ts  |   11 +-
+ .../graphql/types/llm-provider-model-catalog.ts    |  139 +
+ .../src/api/graphql/types/llm-provider.ts          |  454 +-
+ .../builtins/built-in-llm-provider-catalog.ts      |   14 +-
+ .../llm-management/llm-providers/domain/models.ts  |   68 +-
+ .../custom-llm-provider-runtime-sync-service.ts    |  119 +-
+ .../llm-providers/services/llm-provider-service.ts |  270 +-
+ .../providers/autobyteus-llm-model-provider.ts     |  103 -
+ .../cached-autobyteus-llm-model-provider.ts        |   61 -
+ .../services/autobyteus-model-catalog.ts           |   56 -
+ .../autobyteus-remote-model-discovery-service.ts   |  228 +-
+ .../services/dynamic-model-source-lifecycle.ts     |  181 +
+ .../services/model-availability-service.ts         |  164 +
+ .../services/model-catalog-service.ts              |  525 ++-
+ .../providers/audio-model-provider.ts              |   65 -
+ .../providers/cached-audio-model-provider.ts       |   59 -
+ .../providers/cached-image-model-provider.ts       |   59 -
+ .../providers/cached-video-model-provider.ts       |   55 -
+ .../providers/image-model-provider.ts              |   65 -
+ .../services/audio-model-service.ts                |   48 -
+ .../services/image-model-service.ts                |   48 -
+ .../services/video-model-service.ts                |   44 -
+ .../src/services/server-settings-service.ts        |    6 +
+ .../team-run-v1-production-upgrade.e2e.test.ts     |   16 +-
+ ...tom-provider-model-metadata-graphql.e2e.test.ts |  140 +-
+ .../model-metadata-provenance-graphql.e2e.test.ts  |  106 +-
+ ...wen-configuration-lifecycle-graphql.e2e.test.ts |  116 +-
+ .../e2e/media/server-owned-media-tools.e2e.test.ts |   28 +-
+ .../e2e/runtime/agent-runtime-graphql.e2e.test.ts  |   12 +-
+ .../all-runtime-send-message-matrix.e2e.test.ts    |   12 +-
+ .../autobyteus-team-runtime-graphql.e2e.test.ts    |   12 +-
+ .../claude-team-inter-agent-roundtrip.e2e.test.ts  |   14 +-
+ .../codex-single-agent-history-title.e2e.test.ts   |   14 +-
+ ...ndalone-send-message-global-routing.e2e.test.ts |   12 +-
+ .../codex-team-inter-agent-roundtrip.e2e.test.ts   |   14 +-
+ .../context-file-storage-runtime.e2e.test.ts       |   10 +-
+ .../e2e/runtime/mixed-task-delegation.e2e.test.ts  |    6 +-
+ .../runtime/mixed-team-runtime-graphql.e2e.test.ts |   26 +-
+ .../nested-mixed-team-runtime-graphql.e2e.test.ts  |   36 +-
+ .../token-usage-runtime-graphql.e2e.test.ts        |   12 +-
+ ...vider-readable-id-startup-migration.e2e.test.ts |  136 +-
+ .../provider-secret-lifecycle-graphql.e2e.test.ts  |  260 +-
+ .../server-restart-secret-lifecycle.e2e.test.ts    |   28 +-
+ .../token-usage/token-usage-model-list.e2e.test.ts |   36 +-
+ .../claude-model-catalog.integration.test.ts       |   10 +-
+ .../codex-model-catalog.integration.test.ts        |   12 +-
+ .../unit/api/graphql/types/llm-provider.test.ts    |  245 +-
+ ...tobyteus-remote-model-discovery-service.test.ts |  176 +-
+ .../llm-providers/llm-provider-service.test.ts     |  513 +--
+ ...ustom-llm-provider-runtime-sync-service.test.ts |   85 +
+ .../autobyteus-llm-model-provider.test.ts          |   61 -
+ .../providers/cached-llm-model-provider.test.js    |   49 -
+ .../providers/llm-model-provider.test.js           |   67 -
+ .../dynamic-model-source-lifecycle.test.ts         |  109 +
+ .../services/llm-model-service.test.js             |   46 -
+ .../services/model-availability-service.test.ts    |  132 +
+ .../services/model-catalog-service.test.ts         |  207 +-
+ .../providers/audio-model-provider.test.js         |   40 -
+ .../providers/audio-model-provider.test.ts         |   51 -
+ .../providers/cached-audio-model-provider.test.js  |   35 -
+ .../providers/cached-audio-model-provider.test.ts  |   43 -
+ .../providers/cached-image-model-provider.test.js  |   35 -
+ .../providers/cached-image-model-provider.test.ts  |   43 -
+ .../providers/image-model-provider.test.js         |   40 -
+ .../providers/image-model-provider.test.ts         |   51 -
+ .../services/audio-model-service.test.js           |   36 -
+ .../services/audio-model-service.test.ts           |   43 -
+ .../services/image-model-service.test.js           |   36 -
+ .../services/image-model-service.test.ts           |   43 -
+ autobyteus-ts/docs/provider_model_catalogs.md      |  148 +-
+ .../src/clients/autobyteus-client-utils.ts         |    3 +-
+ autobyteus-ts/src/clients/autobyteus-client.ts     |   74 +-
+ autobyteus-ts/src/llm/autobyteus-provider.ts       |  156 +-
+ .../src/llm/discovery-endpoint-identity.ts         |   37 +
+ autobyteus-ts/src/llm/index.ts                     |    1 +
+ autobyteus-ts/src/llm/llm-factory.ts               |  349 +-
+ autobyteus-ts/src/llm/llm-model-pricing.ts         |  132 +
+ autobyteus-ts/src/llm/lmstudio-provider.ts         |   47 +-
+ autobyteus-ts/src/llm/models.ts                    |   53 +-
+ autobyteus-ts/src/llm/ollama-provider.ts           |   57 +-
+ .../src/llm/openai-compatible-endpoint-model.ts    |   20 +
+ .../src/multimedia/audio/audio-client-factory.ts   |   64 +-
+ autobyteus-ts/src/multimedia/audio/audio-model.ts  |    9 +-
+ .../multimedia/audio/autobyteus-audio-provider.ts  |   94 +-
+ .../multimedia/image/autobyteus-image-provider.ts  |   94 +-
+ .../src/multimedia/image/image-client-factory.ts   |   64 +-
+ autobyteus-ts/src/multimedia/image/image-model.ts  |    9 +-
+ autobyteus-ts/src/multimedia/index.ts              |    1 +
+ autobyteus-ts/src/multimedia/model-identifier.ts   |   28 +
+ .../unit/clients/autobyteus-client-utils.test.ts   |   16 +
+ .../tests/unit/llm/autobyteus-provider.test.ts     |    8 +-
+ .../unit/llm/discovery-endpoint-identity.test.ts   |   30 +
+ .../unit/llm/dynamic-model-identifiers.test.ts     |   91 +
+ .../openai-compatible-endpoint-provider.test.ts    |   14 +-
+ .../multimedia/autobyteus-model-providers.test.ts  |   62 +
+ .../components/settings/ProviderAPIKeyManager.vue  |   58 +-
+ .../__tests__/MediaDefaultModelsCard.spec.ts       |   40 +-
+ .../__tests__/ProviderAPIKeyManager.spec.ts        |   17 +-
+ .../providerApiKey/ProviderApiKeyEditor.vue        |    5 +-
+ .../providerApiKey/ProviderModelBrowser.vue        |  194 +-
+ .../providerApiKey/ProviderModelSection.vue        |  145 +
+ .../providerApiKey/ProviderModelSectionGroup.vue   |   36 +
+ .../settings/providerApiKey/QwenSetupForm.vue      |    5 +-
+ .../__tests__/ProviderModelBrowser.spec.ts         |   87 +-
+ .../providerApiKey/__tests__/QwenSetupForm.spec.ts |    2 +-
+ .../providerSettingsApolloContract.spec.ts         |  304 +-
+ .../useProviderApiKeySectionRuntime.spec.ts        |  438 +-
+ .../customProvider/CustomProviderDetailsCard.vue   |   14 -
+ .../__tests__/CustomProviderDetailsCard.spec.ts    |   43 +
+ .../useProviderApiKeySectionRuntime.ts             |  210 +-
+ .../settings/useMediaDefaultModelsCard.ts          |   12 +-
+ .../useRuntimeScopedModelSelection.spec.ts         |   73 +
+ .../launch-preset-model-selection.spec.ts          |   23 +-
+ .../launch-preset-model-selection.ts               |   12 +-
+ .../composables/useRuntimeScopedModelSelection.ts  |   25 +-
+ autobyteus-web/docs/settings.md                    |   56 +-
+ autobyteus-web/generated/graphql.ts                |  569 ++-
+ .../graphql/mutations/llm_provider_mutations.ts    |   83 +-
+ .../graphql/queries/llm_provider_queries.ts        |  152 +-
+ .../localization/messages/en/api-key-settings.ts   |   98 +
+ autobyteus-web/localization/messages/en/index.ts   |    6 +
+ .../messages/en/package-migration-settings.ts      |   40 +
+ .../localization/messages/en/settings.ts           |  264 --
+ .../messages/en/token-usage-settings.ts            |  156 +
+ .../messages/zh-CN/api-key-settings.ts             |   98 +
+ .../localization/messages/zh-CN/index.ts           |    6 +
+ .../messages/zh-CN/package-migration-settings.ts   |   40 +
+ .../localization/messages/zh-CN/settings.ts        |  264 --
+ .../messages/zh-CN/token-usage-settings.ts         |  156 +
+ .../stores/__tests__/agentRunStore.spec.ts         |    8 +-
+ autobyteus-web/stores/agentRunStore.ts             |    8 +-
+ .../stores/llmProviderCatalogPublication.ts        |   42 +
+ autobyteus-web/stores/llmProviderConfig.ts         |  617 +--
+ autobyteus-web/stores/llmProviderConfigSupport.ts  |  132 +-
+ autobyteus-web/stores/runHistoryDraftActions.ts    |    8 +-
+ autobyteus-web/stores/serverSettings.ts            |   32 +
+ .../interrupt-result-presentation.page.vue         |   63 +-
+ .../e2e/interrupt-result-presentation-probe.mjs    |  113 +-
+ .../tests/stores/llmProviderConfigStore.test.ts    |  466 +-
+ .../tests/stores/serverSettingsStore.test.ts       |   61 +
+ test-support/live-e2e/live-e2e-harness.ts          |   17 +-
+ .../api-e2e-coverage-investigation.md              |  325 ++
+ .../api-e2e-execution-coverage-report.md           |  266 ++
+ .../api-e2e-revision-record.md                     |  110 +
+ .../api-e2e-test-review-report.md                  |   65 +
+ .../api-key-panel-loading.png                      |  Bin 0 -> 247795 bytes
+ .../architecture-review-revision-record.md         |  200 +
+ .../code-review-report.md                          |  203 +
+ .../code-review-revision-record.md                 |  226 +
+ .../delivery-integration-blocker.md                |   78 +
+ .../delivery-revision-record.md                    |   76 +
+ .../design-review-report.md                        |  342 ++
+ .../design-spec.md                                 | 1145 +++++
+ .../docs-sync-report.md                            |   73 +
+ .../electron-build-mac-report.md                   |   83 +
+ .../handoff-summary.md                             |  115 +
+ .../implementation-handoff.md                      |  201 +
+ .../implementation-revision-record.md              |  158 +
+ .../investigation-notes.md                         |  299 ++
+ .../release-deployment-report.md                   |  145 +
+ .../release-notes.md                               |   22 +
+ .../requirements.md                                |  210 +
+ .../solution-revision-record.md                    |  212 +
+ .../ui-ux-spec.md                                  |  282 ++
+ .../user-verification-finding-dr004.md             |   61 +
+ .../01-focused-current-contract.log                |  593 +++
+ .../validation-evidence/01b-focused-repaired.log   |  314 ++
+ .../validation-evidence/01c-media-repaired.log     |  205 +
+ .../01d-focused-current-contract-pass.log          |  392 ++
+ .../01e-sdk-server-changed-boundary-units.log      |  186 +
+ .../validation-evidence/02-updated-durable.log     | 1270 ++++++
+ .../02b-custom-provider-restart-repaired.log       |  356 ++
+ .../validation-evidence/03-server-e2e.log          | 4584 ++++++++++++++++++++
+ .../03b-file-explorer-rerun.log                    |  726 ++++
+ .../03c-unrelated-failure-audit.log                |    7 +
+ .../validation-evidence/04-builds.log              |   28 +
+ .../validation-evidence/04b-live-preflight.log     |  205 +
+ .../validation-evidence/05a-web-affected-tests.log |  396 ++
+ .../validation-evidence/05b-web-guards-build.log   |  250 ++
+ .../validation-evidence/05c-interrupt-probe.log    |   16 +
+ .../05c-interrupt-probe/evidence.json              |  134 +
+ .../05c-interrupt-probe/nuxt.log                   |   87 +
+ .../05d-interrupt-probe-rerun.log                  |   16 +
+ .../05d-interrupt-probe-rerun/evidence.json        |   97 +
+ .../05d-interrupt-probe-rerun/nuxt.log             |   17 +
+ .../05e-interrupt-probe-diagnostic.log             |   16 +
+ .../05e-interrupt-probe-diagnostic/evidence.json   |  102 +
+ .../05e-interrupt-probe-diagnostic/nuxt.log        |   17 +
+ .../05f-interrupt-probe-current-contract.log       |    1 +
+ .../evidence.json                                  |  472 ++
+ .../05f-interrupt-probe-current-contract/nuxt.log  |   17 +
+ .../06-settings-browser-probe.log                  |   40 +
+ .../06b-settings-browser-probe-rerun.log           |   40 +
+ .../06c-settings-browser-probe-final.log           |   44 +
+ .../06d-settings-browser-probe-final.log           |   52 +
+ .../06e-settings-browser-probe-current-fixture.log |  147 +
+ .../06f-settings-browser-probe-final-pass.log      |  147 +
+ .../06g-settings-browser-production-preview.log    |   16 +
+ .../06h-settings-browser-production-preview.log    |   16 +
+ .../06i-settings-browser-production-build.log      |   16 +
+ .../06j-settings-browser-production-build.log      |   31 +
+ ...06k-settings-browser-production-build-final.log |  148 +
+ ...ings-browser-production-build-authoritative.log |  148 +
+ .../validation-evidence/07-audit.log               |  336 ++
+ .../validation-evidence/07b-audit-final.log        | 1380 ++++++
+ .../validation-evidence/07c-audit-final-clean.log  |   72 +
+ .../08-provider-secret-test-001-fix.log            |   92 +
+ .../08b-removed-contract-test-001-audit.log        |   47 +
+ .../09a-integrated-sdk-focused.log                 |   14 +
+ .../09b-integrated-server-focused-units.log        |  174 +
+ .../09c-integrated-server-e2e.log                  |  280 ++
+ .../09c2-integrated-qwen-coverage-fix.log          |  117 +
+ .../09d-integrated-builds-preflight.log            |  269 ++
+ .../validation-evidence/09e-integrated-web.log     |  637 +++
+ .../09f-integrated-interrupt-browser.log           |    3 +
+ .../09f-integrated-interrupt-browser/evidence.json |  472 ++
+ .../09f-integrated-interrupt-browser/nuxt.log      |   84 +
+ .../09g-integrated-settings-browser.log            |  150 +
+ .../01-ollama-pending-desktop.png                  |  Bin 0 -> 76560 bytes
+ .../02-ollama-replaced-desktop.png                 |  Bin 0 -> 80643 bytes
+ .../03-ollama-unavailable-tablet.png               |  Bin 0 -> 65251 bytes
+ .../settings-browser-backend.log                   |  202 +
+ .../settings-browser-frontend.log                  |    1 +
+ .../settings-browser-summary.json                  |  148 +
+ .../09h-integrated-final-audit.log                 |   53 +
+ .../09h2-integrated-final-audit.log                |   67 +
+ .../09i-integrated-artifact-finalization-audit.log |   22 +
+ .../browser/01-ollama-pending-desktop.png          |  Bin 0 -> 76803 bytes
+ .../browser/02-ollama-replaced-desktop.png         |  Bin 0 -> 80634 bytes
+ .../browser/03-ollama-unavailable-tablet.png       |  Bin 0 -> 65297 bytes
+ .../browser/settings-browser-backend.log           |  199 +
+ .../browser/settings-browser-frontend.log          |    1 +
+ .../browser/settings-browser-probe.mjs             |  372 ++
+ .../browser/settings-browser-summary.json          |  148 +
+ .../delivery-docs-sync-dr002.log                   |   53 +
+ ...livery-electron-artifact-verification-dr003.log |   90 +
+ .../delivery-electron-build-dr003.log              | 1425 ++++++
+ .../delivery-focused-post-integration-dr003.log    |  445 ++
+ .../delivery-handoff-readiness-dr003.log           |   41 +
+ .../delivery-integration-refresh-dr001.log         |   36 +
+ .../delivery-pre-finalization-dr005.log            |   49 +
+ .../validation-evidence/ir-007-token-usage-en.png  |  Bin 0 -> 185532 bytes
+ .../ir-007-token-usage-zh-CN.png                   |  Bin 0 -> 160899 bytes
+ .../solution-dr004-sanitized-live-probe.log        |   40 +
+ 249 files changed, 30672 insertions(+), 6490 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-execution/backends/autobyteus/available-llm-construction.ts
+ create mode 100644 autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts
+ delete mode 100644 autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+ create mode 100644 autobyteus-server-ts/src/llm-management/services/dynamic-model-source-lifecycle.ts
+ create mode 100644 autobyteus-server-ts/src/llm-management/services/model-availability-service.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+ delete mode 100644 autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/llm-management/providers/cached-llm-model-provider.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/llm-management/providers/llm-model-provider.test.js
+ create mode 100644 autobyteus-server-ts/tests/unit/llm-management/services/dynamic-model-source-lifecycle.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/llm-management/services/llm-model-service.test.js
+ create mode 100644 autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/audio-model-provider.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/audio-model-provider.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-audio-model-provider.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-audio-model-provider.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-image-model-provider.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/cached-image-model-provider.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/image-model-provider.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/providers/image-model-provider.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/services/audio-model-service.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/services/audio-model-service.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/services/image-model-service.test.js
+ delete mode 100644 autobyteus-server-ts/tests/unit/multimedia-management/services/image-model-service.test.ts
+ create mode 100644 autobyteus-ts/src/llm/discovery-endpoint-identity.ts
+ create mode 100644 autobyteus-ts/src/llm/llm-model-pricing.ts
+ create mode 100644 autobyteus-ts/src/multimedia/model-identifier.ts
+ create mode 100644 autobyteus-ts/tests/unit/clients/autobyteus-client-utils.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/llm/discovery-endpoint-identity.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/llm/dynamic-model-identifiers.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/multimedia/autobyteus-model-providers.test.ts
+ create mode 100644 autobyteus-web/components/settings/providerApiKey/ProviderModelSection.vue
+ create mode 100644 autobyteus-web/components/settings/providerApiKey/ProviderModelSectionGroup.vue
+ create mode 100644 autobyteus-web/components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+ create mode 100644 autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+ create mode 100644 autobyteus-web/localization/messages/en/api-key-settings.ts
+ create mode 100644 autobyteus-web/localization/messages/en/package-migration-settings.ts
+ create mode 100644 autobyteus-web/localization/messages/en/token-usage-settings.ts
+ create mode 100644 autobyteus-web/localization/messages/zh-CN/api-key-settings.ts
+ create mode 100644 autobyteus-web/localization/messages/zh-CN/package-migration-settings.ts
+ create mode 100644 autobyteus-web/localization/messages/zh-CN/token-usage-settings.ts
+ create mode 100644 autobyteus-web/stores/llmProviderCatalogPublication.ts
+ create mode 100644 tickets/done/api-key-management-panel-performance/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/api-e2e-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/api-key-panel-loading.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/architecture-review-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/code-review-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/code-review-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/delivery-integration-blocker.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/delivery-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/design-review-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/design-spec.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/docs-sync-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/electron-build-mac-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/handoff-summary.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/implementation-handoff.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/implementation-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/investigation-notes.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/release-deployment-report.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/release-notes.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/requirements.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/solution-revision-record.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/ui-ux-spec.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/user-verification-finding-dr004.md
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/01-focused-current-contract.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/01b-focused-repaired.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/01c-media-repaired.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/01d-focused-current-contract-pass.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/01e-sdk-server-changed-boundary-units.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/02-updated-durable.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/02b-custom-provider-restart-repaired.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/03-server-e2e.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/03b-file-explorer-rerun.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/03c-unrelated-failure-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/04-builds.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/04b-live-preflight.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05a-web-affected-tests.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05b-web-guards-build.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe/evidence.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05c-interrupt-probe/nuxt.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun/evidence.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05d-interrupt-probe-rerun/nuxt.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic/evidence.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05e-interrupt-probe-diagnostic/nuxt.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract/evidence.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/05f-interrupt-probe-current-contract/nuxt.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06-settings-browser-probe.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06b-settings-browser-probe-rerun.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06c-settings-browser-probe-final.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06d-settings-browser-probe-final.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06e-settings-browser-probe-current-fixture.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06f-settings-browser-probe-final-pass.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06g-settings-browser-production-preview.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06h-settings-browser-production-preview.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06i-settings-browser-production-build.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06j-settings-browser-production-build.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06k-settings-browser-production-build-final.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/06l-settings-browser-production-build-authoritative.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/07-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/07b-audit-final.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/07c-audit-final-clean.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/08-provider-secret-test-001-fix.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/08b-removed-contract-test-001-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09a-integrated-sdk-focused.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09b-integrated-server-focused-units.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09c-integrated-server-e2e.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09c2-integrated-qwen-coverage-fix.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09d-integrated-builds-preflight.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09e-integrated-web.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser/evidence.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser/nuxt.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/01-ollama-pending-desktop.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/02-ollama-replaced-desktop.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/03-ollama-unavailable-tablet.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-backend.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-frontend.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09g-integrated-settings-browser/settings-browser-summary.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09h-integrated-final-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09h2-integrated-final-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/09i-integrated-artifact-finalization-audit.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/01-ollama-pending-desktop.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/02-ollama-replaced-desktop.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/03-ollama-unavailable-tablet.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/settings-browser-backend.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/settings-browser-frontend.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/browser/settings-browser-summary.json
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-docs-sync-dr002.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-electron-artifact-verification-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-electron-build-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-focused-post-integration-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-handoff-readiness-dr003.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-integration-refresh-dr001.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/delivery-pre-finalization-dr005.log
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/ir-007-token-usage-en.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/ir-007-token-usage-zh-CN.png
+ create mode 100644 tickets/done/api-key-management-panel-performance/validation-evidence/solution-dr004-sanitized-live-probe.log
+target_merge_commit=e3307ead93c5c237f201b4721e12efa585a30dc6
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   a00f0d07d..e3307ead9  personal -> personal
+target_push=pass
+finished_utc=2026-08-24T05:19:50Z
+
+FINAL STATE
+personal_head=e3307ead93c5c237f201b4721e12efa585a30dc6
+origin_personal=e3307ead93c5c237f201b4721e12efa585a30dc6
+ticket_commit=79ef159409109ebe62c8a72be6db85de79c494d9
+ticket_is_ancestor_of_personal=yes
+ticket_archive=pass
+## personal...origin/personal
+?? tickets/done/api-key-management-panel-performance/validation-evidence/delivery-repository-finalization-dr005.log

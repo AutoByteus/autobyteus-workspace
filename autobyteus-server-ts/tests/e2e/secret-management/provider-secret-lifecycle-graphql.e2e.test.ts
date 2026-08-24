@@ -12,6 +12,37 @@ import {
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 
+type ProviderCredentialSetting = {
+  provider: {
+    id: string;
+    name: string;
+    providerType: string;
+    isCustom: boolean;
+    baseUrl: string | null;
+    catalogMode: string;
+  };
+  apiKeyConfigured: boolean;
+};
+
+type ProviderCatalogSnapshot = {
+  ownerProvider: { id: string; name: string };
+  sources: Array<{ modelKind: string; state: string; modelCount: number }>;
+  llmModels: Array<{ modelIdentifier: string }>;
+  audioModels: Array<{ modelIdentifier: string }>;
+  imageModels: Array<{ modelIdentifier: string }>;
+  videoModels: Array<{ modelIdentifier: string }>;
+};
+
+type GeminiCommandResult = {
+  setup: {
+    activeMode: string | null;
+    aiStudioConfigured: boolean | null;
+    vertexExpressConfigured: boolean | null;
+    vertexProject: { project: string; location: string } | null;
+  };
+  credentialSetting: ProviderCredentialSetting;
+};
+
 describe('provider and Gemini one-vault GraphQL E2E', () => {
   let server: RunningTestServer;
   let runtimeRoot: string;
@@ -20,28 +51,36 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
   const execute = <T>(query: string, variables: Record<string, unknown> = {}) =>
     executeGraphql<T>(server.serverUrl, query, variables);
 
-  const providerSettings = () => execute<{
-    providerSettings: Array<{
-      provider: {
-        id: string;
-        apiKeyConfigured: boolean;
-        status: string;
-        statusMessage: string | null;
-      };
-      llmModels: Array<{ modelIdentifier: string }>;
-      audioModels: Array<{ modelIdentifier: string }>;
-      imageModels: Array<{ modelIdentifier: string }>;
-      videoModels: Array<{ modelIdentifier: string }>;
-    }>;
+  const providerCredentialSettings = () => execute<{
+    providerCredentialSettings: ProviderCredentialSetting[];
   }>(`
-    query ProviderSettings {
-      providerSettings(runtimeKind: "autobyteus") {
+    query ProviderCredentialSettings {
+      providerCredentialSettings(runtimeKind: "autobyteus") {
         provider {
           id
-          apiKeyConfigured
-          status
-          statusMessage
+          name
+          providerType
+          isCustom
+          baseUrl
+          catalogMode
         }
+        apiKeyConfigured
+      }
+    }
+  `);
+
+  const provider = async (providerId: string) =>
+    (await providerCredentialSettings()).providerCredentialSettings.find(
+      ({ provider: candidate }) => candidate.id === providerId,
+    ) ?? null;
+
+  const providerCatalogSnapshots = () => execute<{
+    providerModelCatalogSnapshots: ProviderCatalogSnapshot[];
+  }>(`
+    query ProviderModelCatalogSnapshots {
+      providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+        ownerProvider { id name }
+        sources { modelKind state modelCount }
         llmModels { modelIdentifier }
         audioModels { modelIdentifier }
         imageModels { modelIdentifier }
@@ -50,9 +89,9 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     }
   `);
 
-  const provider = async (providerId: string) =>
-    (await providerSettings()).providerSettings.find(
-      ({ provider: candidate }) => candidate.id === providerId,
+  const providerCatalog = async (providerId: string) =>
+    (await providerCatalogSnapshots()).providerModelCatalogSnapshots.find(
+      ({ ownerProvider }) => ownerProvider.id === providerId,
     ) ?? null;
 
   const geminiStatus = () => execute<{
@@ -89,30 +128,37 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
   });
 
   it('saves and replaces a provider key without value readback', async () => {
-    expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(false);
+    expect((await provider('AUTOBYTEUS'))?.apiKeyConfigured).toBe(false);
     const mutation = `
       mutation Save($providerId: String!, $apiKey: String!) {
-        saveProviderApiKey(providerId: $providerId, apiKey: $apiKey)
+        saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
+          provider { id name providerType isCustom baseUrl catalogMode }
+          apiKeyConfigured
+        }
       }
     `;
     const firstCanary = 'synthetic-graphql-secret-first';
-    const first = await execute<{ saveProviderApiKey: boolean }>(mutation, {
+    const first = await execute<{ saveProviderApiKey: ProviderCredentialSetting }>(mutation, {
       providerId: 'AUTOBYTEUS',
       apiKey: firstCanary,
     });
-    expect(first.saveProviderApiKey).toBe(true);
+    expect(first.saveProviderApiKey).toMatchObject({
+      provider: { id: 'AUTOBYTEUS' },
+      apiKeyConfigured: true,
+    });
     expect(JSON.stringify(first)).not.toContain(firstCanary);
 
     const secondCanary = 'synthetic-graphql-secret-second';
-    const second = await execute<{ saveProviderApiKey: boolean }>(mutation, {
+    const second = await execute<{ saveProviderApiKey: ProviderCredentialSetting }>(mutation, {
       providerId: 'AUTOBYTEUS',
       apiKey: secondCanary,
     });
-    expect(second.saveProviderApiKey).toBe(true);
+    expect(second.saveProviderApiKey).toMatchObject({
+      provider: { id: 'AUTOBYTEUS' },
+      apiKeyConfigured: true,
+    });
     expect(JSON.stringify(second)).not.toContain(secondCanary);
-    expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(true);
-
-    expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(true);
+    expect((await provider('AUTOBYTEUS'))?.apiKeyConfigured).toBe(true);
     const evidence = server.output() + fs.readFileSync(server.runtimeEnvironmentPath, 'utf8');
     expect(evidence).not.toContain(firstCanary);
     expect(evidence).not.toContain(secondCanary);
@@ -120,19 +166,35 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
 
   it('exposes only the approved ordinary-provider and Gemini configuration commands', async () => {
     const schema = await execute<{
+      queryType: {
+        fields: Array<{ name: string }>;
+      };
       mutationType: {
         fields: Array<{ name: string }>;
       };
     }>(`
       query MutationSurface {
+        queryType: __type(name: "Query") {
+          fields { name }
+        }
         mutationType: __type(name: "Mutation") {
           fields { name }
         }
       }
     `);
-    const fields = schema.mutationType.fields.map(({ name }) => name);
+    const queryFields = schema.queryType.fields.map(({ name }) => name);
+    const mutationFields = schema.mutationType.fields.map(({ name }) => name);
 
-    expect(fields).toEqual(expect.arrayContaining([
+    expect(queryFields).toEqual(expect.arrayContaining([
+      'providerCredentialSettings',
+      'providerModelCatalogSnapshots',
+    ]));
+    expect(queryFields).not.toContain('providerSettings');
+    expect(queryFields).not.toContain('availableLlmProvidersWithModels');
+    expect(queryFields).not.toContain('availableAudioProvidersWithModels');
+    expect(queryFields).not.toContain('availableImageProvidersWithModels');
+    expect(queryFields).not.toContain('availableVideoProvidersWithModels');
+    expect(mutationFields).toEqual(expect.arrayContaining([
       'saveProviderApiKey',
       'saveGeminiAiStudio',
       'saveGeminiVertexExpress',
@@ -140,8 +202,28 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       'useGeminiMode',
       'deleteCustomProvider',
     ]));
-    expect(fields).not.toContain('removeProviderApiKey');
-    expect(fields).not.toContain('removeGeminiConfiguration');
+    expect(mutationFields).toEqual(expect.arrayContaining([
+      'ensureProviderModelCatalog',
+      'reloadProviderModelCatalog',
+    ]));
+    expect(mutationFields).not.toContain('reloadLlmModels');
+    expect(mutationFields).not.toContain('reloadAudioModels');
+    expect(mutationFields).not.toContain('reloadImageModels');
+    expect(mutationFields).not.toContain('reloadVideoModels');
+    expect(mutationFields).not.toContain('removeProviderApiKey');
+    expect(mutationFields).not.toContain('removeGeminiConfiguration');
+  });
+
+  it('serves five warm credential descriptor reads within the local budget', async () => {
+    await providerCredentialSettings();
+    const durations: number[] = [];
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const startedAt = performance.now();
+      const result = await providerCredentialSettings();
+      durations.push(performance.now() - startedAt);
+      expect(result.providerCredentialSettings.length).toBeGreaterThan(0);
+    }
+    expect(Math.max(...durations)).toBeLessThan(250);
   });
 
   it('keeps Gemini configuration independent and activation explicit with no priority/fallback', async () => {
@@ -154,33 +236,43 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
 
     const aiCanary = 'synthetic-gemini-ai-studio';
     const expressCanary = 'synthetic-gemini-vertex-express';
-    const aiSaved = await execute<{ saveGeminiAiStudio: Record<string, unknown> }>(`
+    const aiSaved = await execute<{ saveGeminiAiStudio: GeminiCommandResult }>(`
       mutation SaveAi($apiKey: String!, $activateAfterSave: Boolean!) {
         saveGeminiAiStudio(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
-          activeMode aiStudioConfigured vertexExpressConfigured
-          vertexProject { project location }
+          setup {
+            activeMode aiStudioConfigured vertexExpressConfigured
+            vertexProject { project location }
+          }
+          credentialSetting { provider { id } apiKeyConfigured }
         }
       }
     `, { apiKey: aiCanary, activateAfterSave: false });
-    expect(aiSaved.saveGeminiAiStudio).toMatchObject({
+    expect(aiSaved.saveGeminiAiStudio.setup).toMatchObject({
       activeMode: null,
       aiStudioConfigured: true,
       vertexExpressConfigured: false,
     });
-    const expressSaved = await execute<{ saveGeminiVertexExpress: Record<string, unknown> }>(`
+    expect(aiSaved.saveGeminiAiStudio.credentialSetting).toMatchObject({
+      provider: { id: 'GEMINI' },
+      apiKeyConfigured: true,
+    });
+    const expressSaved = await execute<{ saveGeminiVertexExpress: GeminiCommandResult }>(`
       mutation SaveExpress($apiKey: String!, $activateAfterSave: Boolean!) {
         saveGeminiVertexExpress(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
-          activeMode aiStudioConfigured vertexExpressConfigured
-          vertexProject { project location }
+          setup {
+            activeMode aiStudioConfigured vertexExpressConfigured
+            vertexProject { project location }
+          }
+          credentialSetting { provider { id } apiKeyConfigured }
         }
       }
     `, { apiKey: expressCanary, activateAfterSave: false });
-    expect(expressSaved.saveGeminiVertexExpress).toMatchObject({
+    expect(expressSaved.saveGeminiVertexExpress.setup).toMatchObject({
       activeMode: null,
       aiStudioConfigured: true,
       vertexExpressConfigured: true,
     });
-    const projectSaved = await execute<{ saveGeminiVertexProject: Record<string, unknown> }>(`
+    const projectSaved = await execute<{ saveGeminiVertexProject: GeminiCommandResult }>(`
       mutation SaveProject(
         $project: String!
         $location: String!
@@ -191,8 +283,11 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
           location: $location
           activateAfterSave: $activateAfterSave
         ) {
-          activeMode aiStudioConfigured vertexExpressConfigured
-          vertexProject { project location }
+          setup {
+            activeMode aiStudioConfigured vertexExpressConfigured
+            vertexProject { project location }
+          }
+          credentialSetting { provider { id } apiKeyConfigured }
         }
       }
     `, {
@@ -200,7 +295,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       location: 'europe-west1',
       activateAfterSave: false,
     });
-    expect(projectSaved.saveGeminiVertexProject).toMatchObject({
+    expect(projectSaved.saveGeminiVertexProject.setup).toMatchObject({
       activeMode: null,
       vertexProject: {
         project: 'synthetic-project',
@@ -218,21 +313,24 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     });
 
     const activate = async (mode: string) =>
-      await execute<{ useGeminiMode: Record<string, unknown> }>(`
+      await execute<{ useGeminiMode: GeminiCommandResult }>(`
         mutation UseMode($mode: GeminiSetupMode!) {
           useGeminiMode(mode: $mode) {
-            activeMode aiStudioConfigured vertexExpressConfigured
-            vertexProject { project location }
+            setup {
+              activeMode aiStudioConfigured vertexExpressConfigured
+              vertexProject { project location }
+            }
+            credentialSetting { provider { id } apiKeyConfigured }
           }
         }
       `, { mode });
-    expect((await activate('AI_STUDIO')).useGeminiMode).toMatchObject({
+    expect((await activate('AI_STUDIO')).useGeminiMode.setup).toMatchObject({
       activeMode: 'AI_STUDIO',
     });
-    expect((await activate('VERTEX_PROJECT')).useGeminiMode).toMatchObject({
+    expect((await activate('VERTEX_PROJECT')).useGeminiMode.setup).toMatchObject({
       activeMode: 'VERTEX_PROJECT',
     });
-    expect((await activate('VERTEX_EXPRESS')).useGeminiMode).toMatchObject({
+    expect((await activate('VERTEX_EXPRESS')).useGeminiMode.setup).toMatchObject({
       activeMode: 'VERTEX_EXPRESS',
     });
 
@@ -280,22 +378,10 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       instructionCode: null,
       assurance: 'LOCAL_HARDENED',
     });
-    const catalogs = await execute<{
-      availableLlmProvidersWithModels: Array<{
-        provider: { id: string; name: string };
-        models: Array<{ modelIdentifier: string }>;
-      }>;
-    }>(`
-      query Catalogs {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider { id name }
-          models { modelIdentifier }
-        }
-      }
-    `);
-    expect(catalogs.availableLlmProvidersWithModels.length).toBeGreaterThan(0);
-    expect(catalogs.availableLlmProvidersWithModels.some(
-      (row) => row.provider.id === 'OPENAI' && row.models.length > 0,
+    const catalogs = await providerCatalogSnapshots();
+    expect(catalogs.providerModelCatalogSnapshots.length).toBeGreaterThan(0);
+    expect(catalogs.providerModelCatalogSnapshots.some(
+      (row) => row.ownerProvider.id === 'OPENAI' && row.llmModels.length > 0,
     )).toBe(true);
     expect(JSON.stringify({ status, catalogs })).not.toMatch(
       /synthetic-(?:graphql-secret|gemini)/,
@@ -364,45 +450,59 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       expect(JSON.stringify(probe)).not.toContain(syntheticCredential);
 
       const created = await execute<{
-        createCustomProvider: string;
+        createCustomProvider: ProviderCredentialSetting;
       }>(`
         mutation Create($input: CustomProviderInputObject!) {
-          createCustomProvider(input: $input)
+          createCustomProvider(input: $input) {
+            provider { id name providerType isCustom baseUrl catalogMode }
+            apiKeyConfigured
+          }
         }
       `, { input });
-      providerId = created.createCustomProvider;
+      providerId = created.createCustomProvider.provider.id;
       expect(providerId).toMatch(/^provider_/);
+      expect(created.createCustomProvider.apiKeyConfigured).toBe(true);
       expect(JSON.stringify(created)).not.toContain(syntheticCredential);
 
       const customSettings = await provider(providerId);
       expect(customSettings).toMatchObject({
         provider: {
           id: providerId,
-          apiKeyConfigured: true,
-          status: 'READY',
         },
+        apiKeyConfigured: true,
       });
-      expect(customSettings?.llmModels.map((model) => model.modelIdentifier)).toEqual([
+      const customCatalog = await providerCatalog(providerId);
+      expect(customCatalog?.sources).toContainEqual(expect.objectContaining({
+        modelKind: 'LLM',
+        state: 'READY',
+        modelCount: 2,
+      }));
+      expect(customCatalog?.llmModels.map((model) => model.modelIdentifier)).toEqual([
         `openai-compatible:${providerId}:synthetic-model-a`,
         `openai-compatible:${providerId}:synthetic-model-b`,
       ]);
-      expect(authorizedDiscoveryRequests).toBeGreaterThanOrEqual(2);
+      expect(authorizedDiscoveryRequests).toBe(2);
 
-      const deleted = await execute<{ deleteCustomProvider: boolean }>(`
+      const deleted = await execute<{
+        deleteCustomProvider: { providerId: string; deleted: boolean };
+      }>(`
         mutation Delete($providerId: String!) {
-          deleteCustomProvider(providerId: $providerId)
+          deleteCustomProvider(providerId: $providerId) { providerId deleted }
         }
       `, { providerId });
-      expect(deleted.deleteCustomProvider).toBe(true);
+      expect(deleted.deleteCustomProvider).toEqual({ providerId, deleted: true });
       expect(await provider(providerId)).toBeNull();
+      expect(await providerCatalog(providerId)).toBeNull();
       providerId = null;
       const evidence = server.output() + fs.readFileSync(server.runtimeEnvironmentPath, 'utf8');
       expect(evidence).not.toContain(syntheticCredential);
     } finally {
       if (providerId) {
-        await execute<{ deleteCustomProvider: boolean }>(`
+        await execute<{
+          deleteCustomProvider: { providerId: string; deleted: boolean };
+        }>(`
           mutation Delete($providerId: String!) {
-            deleteCustomProvider(providerId: $providerId)
+            deleteCustomProvider(providerId: $providerId) { providerId deleted }
           }
         `, { providerId }).catch(() => undefined);
       }

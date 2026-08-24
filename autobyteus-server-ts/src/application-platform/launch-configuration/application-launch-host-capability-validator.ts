@@ -2,7 +2,6 @@ import type {
   ApplicationEffectiveLaunchConfiguration,
   ApplicationLaunchIssue,
 } from "@autobyteus/application-sdk-contracts";
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import type { ModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
@@ -12,6 +11,7 @@ import type {
 import type {
   ApplicationCurrentModelSelectionPolicy,
 } from "./application-current-model-selection-policy.js";
+import { ApplicationModelAvailabilityError } from "./application-current-model-selection-policy.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
@@ -45,8 +45,7 @@ export class ApplicationLaunchHostCapabilityValidator {
     configuration: ApplicationEffectiveLaunchConfiguration,
   ): Promise<ApplicationLaunchIssue[]> {
     const issues: ApplicationLaunchIssue[] = [];
-    const modelsByRuntime = new Map<string, ModelInfo[] | Error>();
-    const credentialByRuntimeAndProvider = new Map<
+    const credentialByAuthority = new Map<
       string,
       Awaited<ReturnType<ApplicationProviderCredentialReadinessPort["getReadiness"]>>
     >();
@@ -81,36 +80,39 @@ export class ApplicationLaunchHostCapabilityValidator {
           llmModelIdentifier: leaf.llmModelIdentifier,
         });
       } catch (error) {
-        if (!(error instanceof CurrentModelSelectionRequiredError)) throw error;
+        if (
+          !(error instanceof CurrentModelSelectionRequiredError)
+          && !(error instanceof ApplicationModelAvailabilityError)
+        ) {
+          throw error;
+        }
         issues.push(issue(
           configuration,
           leaf,
-          "CURRENT_MODEL_SELECTION_REQUIRED",
+          error instanceof CurrentModelSelectionRequiredError
+            ? "CURRENT_MODEL_SELECTION_REQUIRED"
+            : "MODEL_UNAVAILABLE",
           error.message,
         ));
         continue;
       }
 
-      let models = modelsByRuntime.get(runtimeKind);
-      if (!models) {
-        try {
-          models = await this.dependencies.modelCatalogService.listLlmModels(runtimeKind);
-        } catch (error) {
-          models = error instanceof Error ? error : new Error(String(error));
-        }
-        modelsByRuntime.set(runtimeKind, models);
-      }
-      if (models instanceof Error) {
+      let models;
+      try {
+        models = await this.dependencies.modelCatalogService.listLlmModels(runtimeKind);
+      } catch (error) {
+        const failure = error instanceof Error ? error : new Error(String(error));
         issues.push(issue(
           configuration,
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${models.message}`,
+          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${failure.message}`,
         ));
         continue;
       }
+      const modelIdentifier = leaf.llmModelIdentifier.trim();
       const model = models.find((candidate) =>
-        candidate.model_identifier === leaf.llmModelIdentifier);
+        candidate.model_identifier === modelIdentifier);
       if (!model) {
         issues.push(issue(
           configuration,
@@ -130,16 +132,20 @@ export class ApplicationLaunchHostCapabilityValidator {
         ));
         continue;
       }
-      const credentialKey =
-        `${runtimeKind}:${model.provider_id}:${workspaceRootPath}`;
-      let credential = credentialByRuntimeAndProvider.get(credentialKey);
+      const authority = this.dependencies.providerCredentialReadiness.resolveAuthority({
+        runtimeKind,
+        model,
+        workspaceRootPath,
+      });
+      const credentialKey = this.dependencies.providerCredentialReadiness
+        .getAuthorityCacheKey(authority);
+      let credential = credentialKey
+        ? credentialByAuthority.get(credentialKey)
+        : undefined;
       if (!credential) {
-        credential = await this.dependencies.providerCredentialReadiness.getReadiness({
-          runtimeKind,
-          model,
-          workspaceRootPath,
-        });
-        credentialByRuntimeAndProvider.set(credentialKey, credential);
+        credential = await this.dependencies.providerCredentialReadiness
+          .getReadiness(authority);
+        if (credentialKey) credentialByAuthority.set(credentialKey, credential);
       }
       if (!credential.configured) {
         issues.push(issue(

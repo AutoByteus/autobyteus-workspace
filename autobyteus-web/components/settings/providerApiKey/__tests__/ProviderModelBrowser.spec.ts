@@ -17,9 +17,15 @@ const createProps = (overrides: Record<string, unknown> = {}) => ({
   imageModels: [],
   videoModels: [{ modelIdentifier: 'gemini-omni-flash-preview', name: 'Gemini Omni Flash Preview', providerType: 'GEMINI' }],
   isLoadingModels: false,
+  isRefreshingModels: false,
   isReloadingModels: false,
+  hasSuccessfulPayload: true,
+  hasPartialResult: false,
+  hasStaleResult: false,
+  hasUnavailableSource: false,
+  modelErrorMessage: null,
   isReloadingSelectedProvider: false,
-  canReloadSelectedProvider: true,
+  canReloadSelectedProvider: false,
   isProviderConfigured: (providerId: string) => providerId === 'OPENAI',
   ...overrides,
 })
@@ -36,6 +42,14 @@ const mountComponent = (overrides: Record<string, unknown> = {}) =>
           'settings.components.settings.ProviderAPIKeyManager.reload_models_for_selected_provider': 'Reload models for selected provider',
           'settings.components.settings.ProviderAPIKeyManager.reload_models': 'Reload Models',
           'settings.components.settings.ProviderAPIKeyManager.reloading_models': 'Reloading models...',
+          'settings.components.settings.ProviderAPIKeyManager.models': 'Models',
+          'settings.components.settings.ProviderAPIKeyManager.loading_models': 'Loading models...',
+          'settings.components.settings.ProviderAPIKeyManager.refreshing_models': 'Refreshing models...',
+          'settings.components.settings.ProviderAPIKeyManager.retry': 'Retry',
+          'settings.components.settings.ProviderAPIKeyManager.some_model_sources_unavailable': 'Some model sources are unavailable.',
+          'settings.components.settings.ProviderAPIKeyManager.showing_last_known_models': 'Could not refresh models. Showing last known models.',
+          'settings.components.settings.ProviderAPIKeyManager.models_unavailable': 'Models unavailable',
+          'settings.components.settings.ProviderAPIKeyManager.models_unavailable_description': 'Try again.',
           'settings.components.settings.ProviderAPIKeyManager.llm_models': 'LLM Models',
           'settings.components.settings.ProviderAPIKeyManager.audio_models': 'Audio Models',
           'settings.components.settings.ProviderAPIKeyManager.image_models': 'Image Models',
@@ -136,12 +150,81 @@ describe('ProviderModelBrowser', () => {
   })
 
   it('emits selection and reload intents without touching the store', async () => {
-    const wrapper = mountComponent()
+    const wrapper = mountComponent({ canReloadSelectedProvider: true })
 
     await wrapper.findAll('button').find((button) => button.text().includes('OpenAI'))!.trigger('click')
     await wrapper.findAll('button').find((button) => button.text().includes('Reload Models'))!.trigger('click')
 
     expect(wrapper.emitted('select-provider')).toEqual([['OPENAI']])
     expect(wrapper.emitted('reload-selected-provider')).toEqual([[]])
+  })
+
+  it('keeps configuration rendered while initial model loading is pending', () => {
+    const wrapper = mountComponent({
+      llmModels: [], audioModels: [], videoModels: [],
+      isLoadingModels: true,
+      hasSuccessfulPayload: false,
+    })
+    expect(wrapper.get('[data-testid="config-slot"]').exists()).toBe(true)
+    expect(wrapper.get('[role="status"]').text()).toContain('Loading models...')
+    expect(wrapper.text()).not.toContain('No Models Found')
+  })
+
+  it('retains rows and reports model-only progress during refresh', () => {
+    const wrapper = mountComponent({ isRefreshingModels: true })
+    expect(wrapper.text()).toContain('Refreshing models...')
+    expect(wrapper.text()).toContain('gpt-4o')
+    expect(wrapper.get('[data-testid="config-slot"]').exists()).toBe(true)
+  })
+
+  it('shows partial, unavailable/retry, and successful empty states in the model area', async () => {
+    const partial = mountComponent({ hasPartialResult: true })
+    expect(partial.text()).toContain('Some model sources are unavailable.')
+    expect(partial.get('[role="status"]').exists()).toBe(true)
+
+    const emptyPartial = mountComponent({
+      llmModels: [], audioModels: [], imageModels: [], videoModels: [],
+      hasSuccessfulPayload: true,
+      hasPartialResult: true,
+    })
+    expect(emptyPartial.get('[role="alert"]').text()).toContain('Models unavailable')
+    expect(emptyPartial.get('[role="alert"]').text()).toContain('Some model sources are unavailable.')
+    expect(emptyPartial.text()).not.toContain('No Models Found')
+
+    const stale = mountComponent({
+      hasStaleResult: true,
+      canReloadSelectedProvider: true,
+    })
+    expect(stale.text()).toContain('Could not refresh models. Showing last known models.')
+    expect(stale.findAll('button').some(button => button.text().includes('Retry'))).toBe(true)
+
+    const unavailable = mountComponent({
+      llmModels: [], audioModels: [], imageModels: [], videoModels: [],
+      hasSuccessfulPayload: false,
+      hasUnavailableSource: true,
+      canReloadSelectedProvider: true,
+      modelErrorMessage: 'AUTOBYTEUS_LLM_DISCOVERY_FAILED',
+    })
+    expect(unavailable.get('[role="alert"]').text()).toContain('Models unavailable')
+    expect(unavailable.text()).toContain('Try again.')
+    expect(unavailable.text()).not.toContain('AUTOBYTEUS_LLM_DISCOVERY_FAILED')
+    const retry = unavailable.findAll('button').find(button => button.text().includes('Retry'))
+    expect(retry).toBeTruthy()
+    await retry!.trigger('click')
+    expect(unavailable.emitted('reload-selected-provider')).toEqual([[]])
+
+    const empty = mountComponent({
+      llmModels: [], audioModels: [], imageModels: [], videoModels: [],
+      hasSuccessfulPayload: true,
+    })
+    expect(empty.text()).toContain('No Models Found')
+    expect(empty.find('[role="alert"]').exists()).toBe(false)
+  })
+
+  it('hides Reload for static providers and shows it only for dynamic providers', () => {
+    expect(mountComponent({ canReloadSelectedProvider: false }).text())
+      .not.toContain('Reload Models')
+    expect(mountComponent({ canReloadSelectedProvider: true }).text())
+      .toContain('Reload Models')
   })
 })

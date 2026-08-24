@@ -9,6 +9,7 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 
 const mockConfig = vi.hoisted(() => ({
   get: vi.fn(),
+  getAppDataDir: vi.fn(),
 }));
 
 const mockImageClientFactory = vi.hoisted(() => ({
@@ -18,6 +19,7 @@ const mockImageClientFactory = vi.hoisted(() => ({
   describeConstructionTarget: vi.fn(),
   createImageClient: vi.fn(),
   syncRuntimeModels: vi.fn(),
+  listSourceModels: vi.fn(),
 }));
 
 const mockAudioClientFactory = vi.hoisted(() => ({
@@ -27,6 +29,7 @@ const mockAudioClientFactory = vi.hoisted(() => ({
   describeConstructionTarget: vi.fn(),
   createAudioClient: vi.fn(),
   syncRuntimeModels: vi.fn(),
+  listSourceModels: vi.fn(),
 }));
 
 const mockVideoClientFactory = vi.hoisted(() => ({
@@ -190,6 +193,7 @@ const createVideoSchema = (): ParameterSchema =>
 
 const configureMediaFactories = (): void => {
   mockConfig.get.mockImplementation((key: string) => configValues[key]);
+  mockConfig.getAppDataDir.mockReturnValue(mkTempDir());
   mockImageClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockImageClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockImageClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -216,6 +220,7 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("editA"),
     },
   ]);
+  mockImageClientFactory.listSourceModels.mockReturnValue([]);
   mockAudioClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockAudioClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockAudioClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -230,6 +235,7 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("speechA"),
     },
   ]);
+  mockAudioClientFactory.listSourceModels.mockReturnValue([]);
   mockVideoClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockVideoClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockVideoClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -693,12 +699,12 @@ describe("server-owned media tools API/E2E boundary", () => {
       schema,
       source: `
         query VideoProviders {
-          availableVideoProvidersWithModels(runtimeKind: "autobyteus") {
-            provider {
+          providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+            ownerProvider {
               id
               name
             }
-            models {
+            videoModels {
               modelIdentifier
               value
               providerId
@@ -714,9 +720,9 @@ describe("server-owned media tools API/E2E boundary", () => {
     }
 
     const data = result.data as {
-      availableVideoProvidersWithModels: Array<{
-        provider: { id: string; name: string };
-        models: Array<{
+      providerModelCatalogSnapshots: Array<{
+        ownerProvider: { id: string; name: string };
+        videoModels: Array<{
           modelIdentifier: string;
           value: string;
           providerId: string;
@@ -724,17 +730,17 @@ describe("server-owned media tools API/E2E boundary", () => {
         }>;
       }>;
     };
-    const geminiProvider = data.availableVideoProvidersWithModels.find(
-      (entry) => entry.provider.id === "GEMINI",
+    const geminiProvider = data.providerModelCatalogSnapshots.find(
+      (entry) => entry.ownerProvider.id === "GEMINI",
     );
 
     expect(geminiProvider).toBeDefined();
-    expect(geminiProvider?.models.map((model) => model.modelIdentifier).sort()).toEqual([
+    expect(geminiProvider?.videoModels.map((model) => model.modelIdentifier).sort()).toEqual([
       "video-a",
       "video-b",
     ]);
-    expect(geminiProvider?.models[0]?.providerId).toBe("GEMINI");
-    expect(geminiProvider?.models[0]?.configSchema).toMatchObject({
+    expect(geminiProvider?.videoModels[0]?.providerId).toBe("GEMINI");
+    expect(geminiProvider?.videoModels[0]?.configSchema).toMatchObject({
       type: "object",
       properties: expect.any(Object),
     });

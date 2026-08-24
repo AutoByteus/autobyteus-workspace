@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import { useServerSettingsStore } from '~/stores/serverSettings'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { getApolloClient } from '~/utils/apolloClient'
 
@@ -458,6 +459,66 @@ describe('serverSettings store', () => {
     }))
     expect(queryMock).toHaveBeenCalledOnce()
     expect(store.getSettingByKey('AUTOBYTEUS_COMPACTION_TRIGGER_RATIO')?.value).toBe('0.6')
+  })
+
+  it('starts exact provider catalog convergence after a discovery setting commit without awaiting it', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        updateServerSetting: "Server setting 'AUTOBYTEUS_LLM_SERVER_HOSTS' has been updated successfully.",
+      },
+    })
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
+        getServerSettings: [],
+      },
+    })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock, query: queryMock } as any)
+    const convergence = vi.spyOn(
+      useLLMProviderConfigStore(),
+      'convergeAfterDiscoverySettingCommit',
+    ).mockReturnValue(new Promise(() => undefined))
+
+    await expect(
+      useServerSettingsStore().updateServerSetting(
+        'AUTOBYTEUS_LLM_SERVER_HOSTS',
+        '["https://models.example.invalid/v2"]',
+      ),
+    ).resolves.toBe(true)
+
+    expect(convergence).toHaveBeenCalledWith('autobyteus', {
+      ownerProviderId: 'AUTOBYTEUS',
+      modelKinds: ['LLM', 'AUDIO', 'IMAGE'],
+    })
+    expect(convergence.mock.invocationCallOrder[0]).toBeLessThan(queryMock.mock.invocationCallOrder[0]!)
+  })
+
+  it('does not converge a model catalog for an unrelated server setting', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        updateServerSetting: "Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' has been updated successfully.",
+      },
+    })
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
+        getServerSettings: [],
+      },
+    })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock, query: queryMock } as any)
+    const convergence = vi.spyOn(
+      useLLMProviderConfigStore(),
+      'convergeAfterDiscoverySettingCommit',
+    )
+
+    await useServerSettingsStore().updateServerSetting(
+      'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO',
+      '0.6',
+    )
+
+    expect(convergence).not.toHaveBeenCalled()
   })
 
 })

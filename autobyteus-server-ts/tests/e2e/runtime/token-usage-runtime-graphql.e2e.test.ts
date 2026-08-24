@@ -328,8 +328,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
   ): Promise<string> => {
     const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models {
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels {
             modelIdentifier
           }
         }
@@ -337,13 +337,13 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
     `;
 
     const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{ modelIdentifier: string }>;
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, { runtimeKind });
 
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models
+    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+      provider.llmModels
         .map((model) => model.modelIdentifier)
         .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.trim().length > 0),
     );

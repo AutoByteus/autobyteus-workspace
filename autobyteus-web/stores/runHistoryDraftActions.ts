@@ -48,13 +48,13 @@ export const createDraftRunForHistoryStore = async (
     ?? pickPreferredRunTemplate(templateCandidates, workspaceId);
   const bufferedModelCandidate = agentRunConfigStore.config?.agentDefinitionId === options.agentDefinitionId
     ? agentRunConfigStore.config.llmModelIdentifier : '';
+  const modelRuntimeKind = preferredTemplate?.config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND;
   const resolvedModelIdentifier = await resolveRunnableModelIdentifier({
     candidateModels: [preferredTemplate?.config.llmModelIdentifier, bufferedModelCandidate],
-    getKnownModels: () => llmProviderConfigStore.models,
+    getKnownModels: () => llmProviderConfigStore.models(modelRuntimeKind),
     ensureModelsLoaded: async () => {
-      await llmProviderConfigStore.fetchProvidersWithModels(
-        preferredTemplate?.config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-      );
+      await llmProviderConfigStore.fetchProvidersWithModels(modelRuntimeKind);
+      await llmProviderConfigStore.ensureMissingDynamicProviders(modelRuntimeKind);
     },
   });
   if (!resolvedModelIdentifier) throw new Error('No model is available to start a new run.');

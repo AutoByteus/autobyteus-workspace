@@ -264,8 +264,8 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
   const fetchPreferredClaudeToolModelIdentifier = async (): Promise<string> => {
     const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models {
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels {
             modelIdentifier
           }
         }
@@ -273,20 +273,20 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
     `;
 
     const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{ modelIdentifier: string }>;
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, {
       runtimeKind: "claude_agent_sdk",
     });
 
-    const allModelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models
+    const allModelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+      provider.llmModels
         .map((model) => model.modelIdentifier)
         .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.length > 0),
     );
     if (allModelIdentifiers.length === 0) {
-      throw new Error("No Claude runtime model was returned by availableLlmProvidersWithModels.");
+      throw new Error("No Claude runtime model was returned by providerModelCatalogSnapshots.");
     }
     return allModelIdentifiers.includes("haiku") ? "haiku" : allModelIdentifiers[0]!;
   };

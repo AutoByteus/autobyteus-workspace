@@ -40,18 +40,22 @@ const flushPromises = async () => {
 describe('AgentRunConfigForm', () => {
   let llmStore: any
   let runtimeAvailabilityStore: any
+  let providerRowsForSelection: any[]
 
   const setProviders = (providersWithModels: any[]) => {
     llmStore.providersWithModels = providersWithModels
-    llmStore.providersWithModelsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
+    providerRowsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
   }
 
   beforeEach(() => {
     setActivePinia(createPinia())
+    providerRowsForSelection = []
 
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: [],
+      providersWithModelsForSelection: vi.fn(() => providerRowsForSelection),
+      providerSnapshots: vi.fn(() => []),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       get models() {
         return llmStore.providersWithModels.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))
       },

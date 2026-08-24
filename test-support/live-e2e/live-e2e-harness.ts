@@ -1439,20 +1439,19 @@ export class LiveE2eHarness {
       configured = data.getSearchConfig.serperStorageState === 'CONFIGURED';
     } else {
       const data = await executeGraphql<{
-        providerSettings: Array<{
-          provider: { id: string; apiKeyConfigured: boolean };
+        providerCredentialSettings: Array<{
+          provider: { id: string };
+          apiKeyConfigured: boolean;
         }>;
       }>(this.serverUrl, `
         query ProviderStatus {
-          providerSettings(runtimeKind: "autobyteus") {
-            provider {
-              id
-              apiKeyConfigured
-            }
+          providerCredentialSettings(runtimeKind: "autobyteus") {
+            provider { id }
+            apiKeyConfigured
           }
         }
       `);
-      const provider = data.providerSettings.find(
+      const provider = data.providerCredentialSettings.find(
         ({ provider: candidate }) => candidate.id === scenario.providerId,
       );
       if (!provider) {
@@ -1464,7 +1463,7 @@ export class LiveE2eHarness {
           instructionCode: 'SECRET_PROVIDER_STATUS_UNAVAILABLE',
         };
       }
-      configured = provider.provider.apiKeyConfigured;
+      configured = provider.apiKeyConfigured;
     }
     if (!scenario.requiredSecretId) {
       throw new Error('LIVE_E2E_REQUIRED_SECRET_ID_MISSING');

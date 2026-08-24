@@ -437,19 +437,19 @@ describeNestedMixedRuntime(
     const fetchAutoByteusModelIdentifier = async (): Promise<string> => {
       const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models { modelIdentifier }
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels { modelIdentifier }
         }
       }
     `;
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          models: Array<{ modelIdentifier: string }>;
+        providerModelCatalogSnapshots: Array<{
+          llmModels: Array<{ modelIdentifier: string }>;
         }>;
       }>(query, { runtimeKind: RuntimeKind.AUTOBYTEUS });
-      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
         (provider) =>
-          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+          provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean),
       );
       if (modelIdentifiers.length === 0) {
         throw new Error(
@@ -476,19 +476,19 @@ describeNestedMixedRuntime(
     const fetchPreferredCodexModelIdentifier = async (): Promise<string> => {
       const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models { modelIdentifier }
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels { modelIdentifier }
         }
       }
     `;
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          models: Array<{ modelIdentifier: string }>;
+        providerModelCatalogSnapshots: Array<{
+          llmModels: Array<{ modelIdentifier: string }>;
         }>;
       }>(query, { runtimeKind: RuntimeKind.CODEX_APP_SERVER });
-      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
         (provider) =>
-          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+          provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean),
       );
       if (modelIdentifiers.length === 0) {
         throw new Error("No Codex runtime model identifier was returned.");
@@ -519,19 +519,19 @@ describeNestedMixedRuntime(
     const fetchPreferredClaudeModelIdentifier = async (): Promise<string> => {
       const query = `
       query Models($runtimeKind: String) {
-        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          models { modelIdentifier }
+        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+          llmModels { modelIdentifier }
         }
       }
     `;
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          models: Array<{ modelIdentifier: string }>;
+        providerModelCatalogSnapshots: Array<{
+          llmModels: Array<{ modelIdentifier: string }>;
         }>;
       }>(query, { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK });
-      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
         (provider) =>
-          provider.models.map((model) => model.modelIdentifier).filter(Boolean),
+          provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean),
       );
       if (modelIdentifiers.length === 0) {
         throw new Error("No Claude runtime model identifier was returned.");

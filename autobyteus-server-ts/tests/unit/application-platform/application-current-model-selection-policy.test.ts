@@ -1,6 +1,12 @@
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
+import { buildHostScopedLlmModelIdentifier } from "autobyteus-ts/llm/models.js";
+import { buildOpenAICompatibleEndpointModelIdentifier } from "autobyteus-ts/llm/openai-compatible-endpoint-model.js";
+import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { describe, expect, it, vi } from "vitest";
-import { ApplicationCurrentModelSelectionPolicy } from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
+import {
+  ApplicationCurrentModelSelectionPolicy,
+  ApplicationModelAvailabilityError,
+} from "../../../src/application-platform/launch-configuration/application-current-model-selection-policy.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const buildPolicy = () => {
@@ -9,10 +15,15 @@ const buildPolicy = () => {
       throw new CurrentModelSelectionRequiredError(modelIdentifier);
     }
   });
+  const ensureAutoByteusModelAvailable = vi.fn(async (modelIdentifier: string) => {
+    if (modelIdentifier.includes("unavailable")) throw new Error("sensitive provider detail");
+  });
   return {
     policy: new ApplicationCurrentModelSelectionPolicy({
+      ensureAutoByteusModelAvailable,
       requireCurrentAutoByteusModelIdentifier,
     }),
+    ensureAutoByteusModelAvailable,
     requireCurrentAutoByteusModelIdentifier,
   };
 };
@@ -45,15 +56,67 @@ describe("ApplicationCurrentModelSelectionPolicy", () => {
     });
   });
 
+  it.each([
+    buildOpenAICompatibleEndpointModelIdentifier("provider-a", "dynamic-model"),
+    buildHostScopedLlmModelIdentifier(
+      "dynamic-model",
+      LLMRuntime.OLLAMA,
+      "http://127.0.0.1:11434",
+    ),
+    buildHostScopedLlmModelIdentifier(
+      "dynamic-model",
+      LLMRuntime.LMSTUDIO,
+      "http://127.0.0.1:1234",
+    ),
+    buildHostScopedLlmModelIdentifier(
+      "dynamic-model",
+      LLMRuntime.AUTOBYTEUS,
+      "https://models.example.test",
+    ),
+  ])("delegates canonical dynamic identifier %s to selected-provider availability", async (
+    modelIdentifier,
+  ) => {
+    const {
+      policy,
+      ensureAutoByteusModelAvailable,
+      requireCurrentAutoByteusModelIdentifier,
+    } = buildPolicy();
+
+    await expect(policy.requireCurrentSelection({
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      llmModelIdentifier: ` ${modelIdentifier} `,
+    })).resolves.toBe(RuntimeKind.AUTOBYTEUS);
+    expect(ensureAutoByteusModelAvailable).toHaveBeenCalledExactlyOnceWith(modelIdentifier);
+    expect(requireCurrentAutoByteusModelIdentifier).not.toHaveBeenCalled();
+  });
+
+  it("maps a selected-provider failure to the application-safe dynamic availability error", async () => {
+    const { policy } = buildPolicy();
+    const modelIdentifier = buildOpenAICompatibleEndpointModelIdentifier(
+      "provider-a",
+      "unavailable-model",
+    );
+
+    await expect(policy.requireCurrentSelection({
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      llmModelIdentifier: modelIdentifier,
+    })).rejects.toEqual(new ApplicationModelAvailabilityError(modelIdentifier));
+  });
+
   it.each([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK])(
     "leaves the provider-owned %s model outside the AutoByteus membership guard",
     async (runtimeKind) => {
-      const { policy, requireCurrentAutoByteusModelIdentifier } = buildPolicy();
+      const {
+        policy,
+        ensureAutoByteusModelAvailable,
+        requireCurrentAutoByteusModelIdentifier,
+      } = buildPolicy();
 
       await expect(policy.requireCurrentSelection({
         runtimeKind,
         llmModelIdentifier: "provider-owned-model",
       })).resolves.toBe(runtimeKind);
+      expect(ensureAutoByteusModelAvailable).not.toHaveBeenCalled();
       expect(requireCurrentAutoByteusModelIdentifier).not.toHaveBeenCalled();
     },
   );

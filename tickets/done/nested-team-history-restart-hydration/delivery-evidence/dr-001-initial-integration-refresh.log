@@ -1,0 +1,36 @@
+DR-001 initial delivery integration refresh
+recorded_utc=2026-08-23T12:12:55Z
+workspace=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration
+branch=codex/nested-team-history-restart-hydration
+bootstrap_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+source_head=78bfd0a3453fd66f2677dd99a1edb7a44e040607
+source_head_subject=fix(web): restore settled task history navigation
+command=git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+latest_origin_personal=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+merge_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+ticket_ahead_behind=2	0
+base_commits_not_in_ticket=0
+integration_method=Already current
+new_base_commits_integrated=no
+checkpoint_commit=not needed; no base integration was required
+post_integration_executable_rerun=no
+no_rerun_rationale=origin/personal remained exactly at the reviewed bootstrap base; the reviewed HEAD already contains it and delivery changed documentation only after the current-base check
+
+External dedicated fixture state preservation check
+fixture_repo=/Users/normy/autobyteus_org/autobyteus-private-agents
+command=git fetch origin main
+From github.com-ryan:AutoByteus/autobyteus-private-agents
+ * branch            main       -> FETCH_HEAD
+fixture_branch=main
+fixture_head=db8d100bedff216fd60dbf7eda870bcff0dd5a91
+fixture_origin_main=db8d100bedff216fd60dbf7eda870bcff0dd5a91
+fixture_ahead_behind=0	0
+fixture_changed_paths=5
+fixture_live_patch_sha256=9d361fc90b626487785f637828c37ffca240cbb132db49f10ec9179e4b2cf015
+fixture_retained_patch_sha256=9d361fc90b626487785f637828c37ffca240cbb132db49f10ec9179e4b2cf015
+fixture_patch_match=PASS
+durable_live_patch_sha256=e4d86b11bc4bf15358c9982d0f7eb8118aea8da2ec917476ba84fb3af7d241cb
+durable_retained_patch_sha256=e4d86b11bc4bf15358c9982d0f7eb8118aea8da2ec917476ba84fb3af7d241cb
+durable_patch_match=PASS

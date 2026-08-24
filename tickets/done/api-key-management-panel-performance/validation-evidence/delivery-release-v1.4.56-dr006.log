@@ -1,0 +1,135 @@
+DR-006 release and rollout verification
+generated_utc=2026-08-24T05:52:34Z
+
+=== documented release helper ===
+Authorized release v1.4.56
+started_utc=2026-08-24T05:21:56Z
+pre_release_head=108ef49975b67a30c50eda31bc27e5379bd9dece
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance-release
+> bash scripts/desktop-release.sh release 1.4.56 -- --release-notes tickets/done/api-key-management-panel-performance/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.55 -> 1.4.56
+Updating autobyteus-message-gateway/package.json: 1.4.55 -> 1.4.56
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.56
+Synced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance-release/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+Release tag: v1.4.56
+Server version: 0.1.1
+[personal 91134347c] chore(release): bump workspace release version to 1.4.56
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 25 insertions(+), 14 deletions(-)
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   108ef4997..91134347c  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.56 -> v1.4.56
+Release complete and pushed: branch 'personal', tag 'v1.4.56'.
+release_commit=91134347c050bdbae2bd517300738bf94f5c2771
+tag_commit=91134347c050bdbae2bd517300738bf94f5c2771
+web_version=1.4.56
+gateway_version=1.4.56
+finished_utc=2026-08-24T05:22:04Z
+
+=== workflow conclusions ===
+32693280042	iOS App Store Connect Release	completed	success	91134347c050bdbae2bd517300738bf94f5c2771	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280042
+32693279983	Server Docker Release	completed	success	91134347c050bdbae2bd517300738bf94f5c2771	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279983
+32693280030	Desktop Release	completed	success	91134347c050bdbae2bd517300738bf94f5c2771	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030
+32693279984	Release Messaging Gateway	completed	success	91134347c050bdbae2bd517300738bf94f5c2771	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279984
+32693280035	Android APK Release	completed	success	91134347c050bdbae2bd517300738bf94f5c2771	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280035
+
+=== successful job summaries ===
+iOS App Store Connect Release	Resolve iOS Release Metadata	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280042/job/97330667059
+iOS App Store Connect Release	Build And Test iOS App	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280042/job/97330724113
+iOS App Store Connect Release	Validate iOS Publish Secrets	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280042/job/97331803779
+iOS App Store Connect Release	Archive And Upload To App Store Connect	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280042/job/97331861011
+Server Docker Release	Resolve Release Metadata	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279983/job/97330666841
+Server Docker Release	Build And Push Server Image	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279983/job/97330684926
+Desktop Release	Resolve Release Metadata	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330667253
+Desktop Release	Build macOS Intel x64	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330732043
+Desktop Release	Build Linux ARM64	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330732048
+Desktop Release	Build Windows x64	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330732051
+Desktop Release	Build Linux x64	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330732074
+Desktop Release	Build macOS ARM64	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97330732148
+Desktop Release	Publish GitHub Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280030/job/97333657430
+Release Messaging Gateway	Resolve Release Metadata	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279984/job/97330666909
+Release Messaging Gateway	Build Runtime Package	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279984/job/97330734600
+Release Messaging Gateway	Publish GitHub Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693279984/job/97331021791
+Android APK Release	Resolve Android Release Metadata	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280035/job/97330667138
+Android APK Release	Build Android APK	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280035/job/97330729292
+Android APK Release	Publish Android APK To GitHub Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32693280035/job/97331221511
+
+=== GitHub release ===
+{"isDraft":false,"isPrerelease":false,"name":"v1.4.56","publishedAt":"2026-08-24T05:24:47Z","tagName":"v1.4.56","targetCommitish":"91134347c050bdbae2bd517300738bf94f5c2771","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.56"}
+
+=== release assets ===
+autobyteus-message-gateway-1.4.56-node-generic.tar.gz	47246821	sha256:163a226712e86451305441c47ee74e985a840550e6e5a4252009d47e80c586ac	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/autobyteus-message-gateway-1.4.56-node-generic.tar.gz
+autobyteus-message-gateway-1.4.56-node-generic.tar.gz.json	429	sha256:0fd984bf288adfbd8cefd06adba59aa44a8e6c8022de649b2284eefab72db0c6	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/autobyteus-message-gateway-1.4.56-node-generic.tar.gz.json
+autobyteus-message-gateway-1.4.56-node-generic.tar.gz.sha256	120	sha256:ddd7c0d70d07c16815aa4488274f54da84e2b6856129131b4a101938b6ddf09c	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/autobyteus-message-gateway-1.4.56-node-generic.tar.gz.sha256
+AutoByteus_personal_android-1.4.56-release.apk	1846691	sha256:6d19f72af715f6d60a4dc3c0968d90d36e16bde309c670558dc8149b913413f5	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_android-1.4.56-release.apk
+AutoByteus_personal_android-1.4.56-release.apk.sha256	113	sha256:f9fdd8bf11292c93a0c6c11a5008083d74313e1022c7351d1691c852daa9645e	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_android-1.4.56-release.apk.sha256
+AutoByteus_personal_linux-arm64-1.4.56.AppImage	428394080	sha256:4bc2291a0b02085e1774710d83ed67431a3caea2cce87ee4bd3f5c9cf8571d79	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_linux-arm64-1.4.56.AppImage
+AutoByteus_personal_linux-x64-1.4.56.AppImage	440851068	sha256:f7cf4a28edb7c790a21a41e760b8bea7352874331edf70bc766f04c9162799e8	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_linux-x64-1.4.56.AppImage
+AutoByteus_personal_macos-arm64-1.4.56.dmg	497448949	sha256:6f0885d3f5e20908c7525b3dc7f8dde11bdbffea139fab048427b34ce781ec06	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-arm64-1.4.56.dmg
+AutoByteus_personal_macos-arm64-1.4.56.dmg.blockmap	517170	sha256:7e2f6213b849bd06289158dc142cf1a9893d19a39b3aa0c056cb614cf1602727	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-arm64-1.4.56.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.4.56.zip	491576884	sha256:e040ad2d4f105b51d874a9c6ea447cfc68ad2eebd59d2faa41d78e51dcce6117	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-arm64-1.4.56.zip
+AutoByteus_personal_macos-arm64-1.4.56.zip.blockmap	504421	sha256:1df356fea67222f1070c090a86afe87a8726d18a903285513792d3d30f3d21c7	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-arm64-1.4.56.zip.blockmap
+AutoByteus_personal_macos-x64-1.4.56.dmg	519933250	sha256:6537cdae0b3b93807eb616aa56928b516faa6e7c98c01402bc1a0c53a07ced11	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-x64-1.4.56.dmg
+AutoByteus_personal_macos-x64-1.4.56.dmg.blockmap	541629	sha256:6b5184835cb8b4a8a2bc374291b16f64b09335e715c8fde255e181f614502804	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-x64-1.4.56.dmg.blockmap
+AutoByteus_personal_macos-x64-1.4.56.zip	513216719	sha256:8653b71d6241e4e6107ca0d0f12b3c73cfb319f64e011c2b42d563a236805edf	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-x64-1.4.56.zip
+AutoByteus_personal_macos-x64-1.4.56.zip.blockmap	525595	sha256:edf8f434d334a4ae71458b983be71ea90863ba946028b0b6336e0f9597d733a3	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_macos-x64-1.4.56.zip.blockmap
+AutoByteus_personal_windows-1.4.56.exe	319448287	sha256:da97f729196c18b8537346eaa1e588cb086531a1f2215f2cdfafa3363e140951	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/AutoByteus_personal_windows-1.4.56.exe
+latest-linux-arm64.yml	417	sha256:6260b6527267cdb8141858756e121e9210536ef1bb46cf88c2ab50e06f30ab1f	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/latest-linux-arm64.yml
+latest-linux.yml	413	sha256:2a7d5ccd78ec7b4977f5ebfd00bffaa0e080bbf4b19ef6dbe5c133907c0dfddd	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/latest-linux.yml
+latest-mac.yml	897	sha256:cf456a5d395bf1c4a30f4c7590c65b34e7c62ea06cb5868e89c52e183a01eea4	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/latest-mac.yml
+latest.yml	354	sha256:f5de4a7643f09cf817d075de9134e80da8d8e25fd0a21a5d67f7d9cd46605374	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/latest.yml
+release-manifest.json	904	sha256:5b78332662fde4a48c6a7dda40bf8d0c607d654a0986808122d737c3acb8a634	uploaded	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.56/release-manifest.json
+
+=== remote refs ===
+origin/personal	91134347c050bdbae2bd517300738bf94f5c2771
+local-personal	91134347c050bdbae2bd517300738bf94f5c2771
+v1.4.56	91134347c050bdbae2bd517300738bf94f5c2771
+release-commit-ancestor-of-origin-personal	yes
+
+=== Docker Hub version tag ===
+Name:      docker.io/autobyteus/autobyteus-server:1.4.56
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:0d5f7a2c2c175ab600d711feae2821c64233645f90a7dc58707387c12e715d23
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.56@sha256:4876fd3b6e3f07fd45ea77a39ba210b055a5c869fc5781a7a192fdb7411dc202
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.56@sha256:6e119371b20defbf2398616b6c5e1041110d4e1197a66aaf1959d207fa56de73
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+=== Docker Hub latest tag ===
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:0d5f7a2c2c175ab600d711feae2821c64233645f90a7dc58707387c12e715d23
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:4876fd3b6e3f07fd45ea77a39ba210b055a5c869fc5781a7a192fdb7411dc202
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:6e119371b20defbf2398616b6c5e1041110d4e1197a66aaf1959d207fa56de73
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64

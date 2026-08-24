@@ -1,0 +1,54 @@
+DR-007 cleanup stage 1
+started_utc=2026-08-24T05:54:35Z
+=== ticket worktree pre-status ===
+## codex/api-key-management-panel-performance...origin/codex/api-key-management-panel-performance
+=== merge containment ===
+ticket_branch_ancestor_of_personal=yes
+=== remove ticket worktree ===
+ticket_worktree_removed=yes
+=== delete remote ticket branch ===
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/api-key-management-panel-performance
+=== delete local ticket branch ===
+Deleted branch codex/api-key-management-panel-performance (was 79ef15940).
+=== prune ===
+stage1_finished_utc=2026-08-24T05:54:55Z
+ticket_cleanup_verified=yes
+=== release worktree pre-status ===
+## personal...origin/personal
+=== remove release worktree ===
+release_worktree_removed=yes
+=== prune ===
+=== restore main personal ===
+Previous HEAD position was e3307ead9 Merge API key management panel performance
+Switched to branch 'personal'
+Your branch is up to date with 'origin/personal'.
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Already up to date.
+=== verify main ===
+## personal...origin/personal
+?? .article-work/
+head	849946ca95497d56706544202c7002e0e817739b
+origin/personal	849946ca95497d56706544202c7002e0e817739b
+tag	91134347c050bdbae2bd517300738bf94f5c2771
+release_worktree_absent=yes
+article_work_preserved=yes
+stage2_finished_utc=2026-08-24T05:55:13Z
+=== final cleanup audit ===
+generated_utc=2026-08-24T05:56:15Z
+ticket_worktree_exists	no
+release_worktree_exists	no
+local_ticket_branch_exists	no
+remote_ticket_branch_exists	no
+current_branch	personal
+head	849946ca95497d56706544202c7002e0e817739b
+origin_personal	849946ca95497d56706544202c7002e0e817739b
+release_tag	91134347c050bdbae2bd517300738bf94f5c2771
+article_work_preserved	yes
+=== task worktree registrations ===
+none

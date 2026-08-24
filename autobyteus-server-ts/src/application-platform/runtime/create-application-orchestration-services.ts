@@ -47,6 +47,7 @@ import { buildApplicationStorageLayout } from "../../application-storage/utils/a
 import { ApplicationProviderCredentialReadinessAdapter } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
 import { ApplicationCurrentModelSelectionPolicy } from "../launch-configuration/application-current-model-selection-policy.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
+import { getModelAvailabilityService } from "../../llm-management/services/model-availability-service.js";
 
 export const createApplicationOrchestrationServices = (input: {
   appConfig: AppConfig;
@@ -131,6 +132,12 @@ export const createApplicationOrchestrationServices = (input: {
     agentTeamDefinitionService: input.agentTeamDefinitionService,
   });
   const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    ensureAutoByteusModelAvailable: (modelIdentifier) =>
+      getModelAvailabilityService().ensureModelAvailable(
+        modelIdentifier,
+        "LLM",
+        "autobyteus",
+      ),
     requireCurrentAutoByteusModelIdentifier: (modelIdentifier) =>
       LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
   });

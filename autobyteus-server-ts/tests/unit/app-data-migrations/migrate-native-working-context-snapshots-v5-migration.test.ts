@@ -30,6 +30,8 @@ import { RawTraceActiveFileNameMigration } from "../../../src/app-data-migration
 import { OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../../src/app-data-migrations/migrations/raw-trace-active-file-name-migration-files.js";
 import { RawTraceRotationLayoutMigration } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
+import { TeamAgentMemoryLayoutAppDataMigration } from "../../../src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -337,11 +339,13 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
 
   it("runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade", async () => {
     const defaultDefinitions = new AppDataMigrationRegistry().listDefinitions();
+    const v1Index = defaultDefinitions.findIndex((item) => item.id === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID);
+    const layoutIndex = defaultDefinitions.findIndex((item) => item instanceof TeamAgentMemoryLayoutAppDataMigration);
     const externalIndex = defaultDefinitions.findIndex((item) => item instanceof RemoveExternalRuntimeWorkingContextSnapshotsMigration);
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect(externalIndex).toBeGreaterThanOrEqual(0);
+    expect([layoutIndex, externalIndex]).toEqual([v1Index + 1, v1Index + 2]);
     expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
       externalIndex + 1,
       externalIndex + 2,
@@ -365,6 +369,24 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
 
     const repository = new InMemoryMigrationRepository();
     const pipeline = [
+      {
+        id: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+        displayName: "Satisfied V1 fixture prerequisite",
+        description: "Keeps this standalone upgrade fixture isolated from TeamRun persistence.",
+        requiredOnStartup: true,
+        execute: async () => ({
+          status: "SUCCEEDED" as const,
+          summary: {
+            scannedCount: 0,
+            migratedCount: 0,
+            skippedCount: 0,
+            failedCount: 0,
+            details: [],
+          },
+          errorMessage: null,
+        }),
+      },
+      new TeamAgentMemoryLayoutAppDataMigration(memoryDir),
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(memoryDir),
       new RawTraceRotationLayoutMigration(memoryDir),
       new RawTraceActiveFileNameMigration(memoryDir),

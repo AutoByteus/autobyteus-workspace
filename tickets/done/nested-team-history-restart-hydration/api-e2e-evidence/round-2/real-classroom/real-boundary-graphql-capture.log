@@ -1,0 +1,223 @@
+{
+  "scenario": "round-2-real-cold-boundary",
+  "graphqlUrl": "http://127.0.0.1:62318/graphql",
+  "results": {
+    "002A": {
+      "rootTeamRunId": "nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7",
+      "coldInactive": true,
+      "configuredStudentInCanonicalTree": true,
+      "configuredStudentProjection": {
+        "agentRunId": "student_one_903758e38a1b44aa9362e50d51dddf99",
+        "conversationCount": 10,
+        "activityCount": 3,
+        "lastActivityAt": "2026-08-23T11:33:13.576Z",
+        "markersPresent": {
+          "NTH_LIVE_002A_TEAM_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_POST_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_POST_20260823": true
+        }
+      },
+      "configuredStudentEventMonitor": {
+        "eventCount": 10,
+        "markersPresent": {
+          "NTH_LIVE_002A_TEAM_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_POST_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_POST_20260823": true
+        }
+      },
+      "directRootTeacherProjection": {
+        "agentRunId": "test_teacher_991d7534dc2442e9988a35d4880a0f96",
+        "conversationCount": 16,
+        "activityCount": 3,
+        "lastActivityAt": "2026-08-23T11:33:13.575Z",
+        "markersPresent": {
+          "NTH_LIVE_002A_TEAM_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_PRE_20260823": true,
+          "NTH_LIVE_002A_TEAM_POST_20260823": true,
+          "NTH_LIVE_002A_TEAM_ACK_POST_20260823": true
+        }
+      },
+      "communication": {
+        "messageCount": 4,
+        "senderReceiverOrderExact": true,
+        "markersInExactOrder": true,
+        "timestampsStrictlyOrdered": true,
+        "preReferenceExact": true,
+        "otherReferenceListsEmpty": true,
+        "messageIds": [
+          "teammsg__Xly1t4EXyd_FcJbqOFWYp9VlMFpGWoB",
+          "teammsg_aShrtdueB3wHtFJsHQf0aRyYoJu0QrJa",
+          "teammsg_QZ-1ND8wttbZ7YO-iR-T6n98uIrPmWr-",
+          "teammsg_LFxn8l9_ped7hUTwgNpu0SmrpVcGw9iV"
+        ],
+        "createdAt": [
+          "2026-08-23T11:27:51.837Z",
+          "2026-08-23T11:27:54.853Z",
+          "2026-08-23T11:33:11.658Z",
+          "2026-08-23T11:33:13.557Z"
+        ]
+      }
+    },
+    "002B": {
+      "rootTeamRunId": "nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8",
+      "coldInactive": true,
+      "configuredStudentInCanonicalTree": true,
+      "configuredStudentProjection": {
+        "agentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+        "conversationCount": 9,
+        "activityCount": 4,
+        "lastActivityAt": "2026-08-23T11:37:00.316Z",
+        "markersPresent": {
+          "NTH_LIVE_002B_DIRECT_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_POST_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_POST_20260823": true
+        }
+      },
+      "configuredStudentEventMonitor": {
+        "eventCount": 9,
+        "markersPresent": {
+          "NTH_LIVE_002B_DIRECT_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_POST_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_POST_20260823": true
+        }
+      },
+      "directRootTeacherProjection": {
+        "agentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+        "conversationCount": 13,
+        "activityCount": 3,
+        "lastActivityAt": "2026-08-23T11:37:00.316Z",
+        "markersPresent": {
+          "NTH_LIVE_002B_DIRECT_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823": true,
+          "NTH_LIVE_002B_DIRECT_POST_20260823": true,
+          "NTH_LIVE_002B_DIRECT_ACK_POST_20260823": true
+        }
+      },
+      "communication": {
+        "messageCount": 4,
+        "senderReceiverOrderExact": true,
+        "markersInExactOrder": true,
+        "timestampsStrictlyOrdered": true,
+        "preReferenceExact": true,
+        "otherReferenceListsEmpty": true,
+        "messageIds": [
+          "teammsg_3oRocV--XnNY--gwYrqThtvpSZX8uVlc",
+          "teammsg_emTp4U4KjqT2AWxI4cxgcfXpBnq7jrOi",
+          "teammsg_3oqhEvPg4cFd08TY3SGDO132cQXK79Q5",
+          "teammsg_PJpGVoU9YGt2Aee4cBEMTnE_5_cEZ_yp"
+        ],
+        "createdAt": [
+          "2026-08-23T11:36:00.306Z",
+          "2026-08-23T11:36:02.898Z",
+          "2026-08-23T11:36:58.480Z",
+          "2026-08-23T11:37:00.284Z"
+        ]
+      }
+    },
+    "002C": {
+      "rootTeamRunId": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+      "coldInactive": true,
+      "settledTaskTeamCount": 2,
+      "taskStudentProjections": [
+        {
+          "agentRunId": "student_one_79d53aa12c0b4eb991798634792c081e",
+          "conversationCount": 5,
+          "activityCount": 2,
+          "lastActivityAt": "2026-08-23T11:40:03.648Z",
+          "markersPresent": {
+            "NTH_LIVE_002C_TASK_PRE_20260823": true,
+            "NTH_LIVE_002C_RESULT_PRE_20260823": true
+          }
+        },
+        {
+          "agentRunId": "student_one_c6d4050ab3b444409a066b0a7fad5d2e",
+          "conversationCount": 9,
+          "activityCount": 3,
+          "lastActivityAt": "2026-08-23T11:43:12.001Z",
+          "markersPresent": {
+            "NTH_LIVE_002C_TASK_POST_20260823": true,
+            "NTH_LIVE_002C_RESULT_POST_20260823": true
+          }
+        }
+      ],
+      "taskStudentEventMonitors": [
+        {
+          "eventCount": 5,
+          "markersPresent": {
+            "NTH_LIVE_002C_TASK_PRE_20260823": true,
+            "NTH_LIVE_002C_RESULT_PRE_20260823": true
+          }
+        },
+        {
+          "eventCount": 9,
+          "markersPresent": {
+            "NTH_LIVE_002C_TASK_POST_20260823": true,
+            "NTH_LIVE_002C_RESULT_POST_20260823": true
+          }
+        }
+      ],
+      "directRootTeacherProjection": {
+        "agentRunId": "test_teacher_af4c9a17d3a146788d17618fe72687bf",
+        "conversationCount": 24,
+        "activityCount": 7,
+        "lastActivityAt": "2026-08-23T11:43:11.616Z",
+        "markersPresent": {
+          "NTH_LIVE_002C_TASK_PRE_20260823": true,
+          "NTH_LIVE_002C_RESULT_PRE_20260823": true,
+          "NTH_LIVE_002C_TASK_POST_20260823": true,
+          "NTH_LIVE_002C_RESULT_POST_20260823": true
+        }
+      },
+      "taskRecords": [
+        {
+          "taskId": "task_e9be1a9290fe40a5b51d395a1af00e31",
+          "recipientAddress": "/StudentStudyGroup",
+          "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_3df63a0af69049ca9447ccad153e1ad9",
+          "status": "accepted",
+          "descriptionMarkers": {
+            "NTH_LIVE_002C_TASK_PRE_20260823": true,
+            "NTH_LIVE_002C_TASK_POST_20260823": false
+          },
+          "updates": [
+            {
+              "kind": "submission",
+              "decision": null,
+              "content": "NTH_LIVE_002C_RESULT_PRE_20260823"
+            },
+            {
+              "kind": "review",
+              "decision": "accept",
+              "content": "Accepting the nested delegation test result for marker NTH_LIVE_002C_TASK_PRE_20260823."
+            }
+          ]
+        },
+        {
+          "taskId": "task_0b816fd80193474494bf1adf9bc76ca4",
+          "recipientAddress": "/StudentStudyGroup",
+          "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_eba4511499fb4a57a271e4a38cb287c6",
+          "status": "accepted",
+          "descriptionMarkers": {
+            "NTH_LIVE_002C_TASK_PRE_20260823": false,
+            "NTH_LIVE_002C_TASK_POST_20260823": true
+          },
+          "updates": [
+            {
+              "kind": "submission",
+              "decision": null,
+              "content": "NTH_LIVE_002C_RESULT_POST_20260823"
+            },
+            {
+              "kind": "review",
+              "decision": "accept",
+              "content": "Accepting the post-restart nested delegation test result for marker NTH_LIVE_002C_TASK_POST_20260823."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,338 @@
+import { getApolloClient } from '~/utils/apolloClient';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useWorkspaceStore } from '~/stores/workspace';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentRunStore } from '~/stores/agentRunStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import {
+  ListWorkspaceRunHistory,
+} from '~/graphql/queries/runHistoryQueries';
+import type {
+  ListWorkspaceRunHistoryQueryData,
+  RunHistoryWorkspaceGroup,
+  RunResumeConfigPayload,
+  TeamRunHistoryItem,
+  TeamRunResumeConfigPayload,
+} from '~/stores/runHistoryTypes';
+import {
+  buildNextAgentAvatarIndex,
+  flattenWorkspaceTeamRuns,
+} from '~/stores/runHistoryStoreSupport';
+import {
+  findAgentNameByRunId,
+  normalizeRootPath,
+} from '~/stores/runHistoryReadModel';
+import {
+  openAgentRun,
+} from '~/services/runOpen/agentRunOpenCoordinator';
+import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
+import {
+  hydrateLiveTeamRunContext,
+} from '~/services/runHydration/teamRunContextHydrationService';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import {
+  applyActiveRuntimePlaceholder,
+  applyMemberOrHistoryStatusSnapshot,
+  applyOfflineOrTerminalCleanup,
+} from '~/services/runStatus/agentRuntimeStatusState';
+
+export type RunHistorySelectionMode = 'desktop' | 'mobile';
+
+interface RunHistoryOpenOptions {
+  selectionMode?: RunHistorySelectionMode;
+}
+
+export interface RunHistoryFetchStoreLike {
+  loading: boolean;
+  error: string | null;
+  workspaceGroups: RunHistoryWorkspaceGroup[];
+  agentAvatarByDefinitionId: Record<string, string>;
+  resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
+  teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
+  selectedRunId: string | null;
+  selectedTeamRunId: string | null;
+  selectedTeamMemberAddress: string | null;
+  openingRun: boolean;
+  findAgentNameByRunId(runId: string): string | null;
+  ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
+  resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
+}
+
+export const fetchRunHistoryTree = async (
+  store: RunHistoryFetchStoreLike,
+  limitPerAgent = 6,
+  options: { quiet?: boolean } = {},
+): Promise<void> => {
+  const quiet = options.quiet === true;
+  if (!quiet) {
+    store.loading = true;
+    store.error = null;
+  }
+
+  try {
+    const windowNodeContextStore = useWindowNodeContextStore();
+    const isReady = await windowNodeContextStore.waitForBoundBackendReady();
+    if (!isReady) {
+      throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
+    }
+
+    const client = getApolloClient();
+    const workspaceHistoryResult = await client.query<ListWorkspaceRunHistoryQueryData>({
+      query: ListWorkspaceRunHistory,
+      variables: { limitPerAgent },
+      fetchPolicy: 'network-only',
+    });
+
+    if (workspaceHistoryResult.errors && workspaceHistoryResult.errors.length > 0) {
+      throw new Error(workspaceHistoryResult.errors.map((error: { message: string }) => error.message).join(', '));
+    }
+
+    store.workspaceGroups = workspaceHistoryResult.data?.listWorkspaceRunHistory || [];
+    store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
+      store.agentAvatarByDefinitionId,
+      { loadDefinitionsIfNeeded: true },
+    );
+    await reconcileDiscoveredActiveRuns(store);
+  } catch (error: any) {
+    if (!quiet) {
+      store.error = error?.message || 'Failed to load run history.';
+    }
+  } finally {
+    if (!quiet) {
+      store.loading = false;
+    }
+  }
+};
+
+const listActiveAgentRuns = (
+  workspaceGroups: RunHistoryWorkspaceGroup[],
+): Map<string, RunHistoryWorkspaceGroup['agentDefinitions'][number]['runs'][number]> => {
+  const activeRuns = new Map<string, RunHistoryWorkspaceGroup['agentDefinitions'][number]['runs'][number]>();
+  workspaceGroups.forEach((workspaceGroup) => {
+    workspaceGroup.agentDefinitions.forEach((agentGroup) => {
+      agentGroup.runs
+        .filter((run) => run.isActive || run.shouldConnectStream === true)
+        .forEach((run) => {
+          const runId = run.runId.trim();
+          if (runId) {
+            activeRuns.set(runId, run);
+          }
+        });
+    });
+  });
+  return activeRuns;
+};
+
+const listActiveTeamRuns = (
+  workspaceGroups: RunHistoryWorkspaceGroup[],
+): TeamRunHistoryItem[] =>
+  flattenWorkspaceTeamRuns(workspaceGroups).filter((teamRun) => teamRun.isActive);
+
+export const reconcileDiscoveredActiveRuns = async (
+  store: RunHistoryFetchStoreLike,
+): Promise<void> => {
+  const activeAgentRunById = listActiveAgentRuns(store.workspaceGroups);
+  const activeAgentRunIds = new Set(activeAgentRunById.keys());
+  const activeTeamRuns = listActiveTeamRuns(store.workspaceGroups);
+  const activeTeamRunById = new Map<string, TeamRunHistoryItem>();
+  activeTeamRuns.forEach((teamRun) => {
+    const teamRunId = teamRun.teamRunId.trim();
+    if (teamRunId) {
+      activeTeamRunById.set(teamRunId, teamRun);
+    }
+  });
+  const activeTeamRunIds = new Set(activeTeamRunById.keys());
+  const agentContextsStore = useAgentContextsStore();
+  const agentRunStore = useAgentRunStore();
+  const teamContextsStore = useAgentTeamContextsStore();
+  const agentTeamRunStore = useAgentTeamRunStore();
+
+  for (const [runId, context] of agentContextsStore.runs.entries()) {
+    if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
+      continue;
+    }
+
+    if (agentRunStore.isAgentStreamReady(runId)) {
+      agentRunStore.disconnectAgentStream(runId);
+    }
+    if (context.state.currentStatus !== AgentStatus.Error) {
+      applyOfflineOrTerminalCleanup(context);
+    } else {
+      applyOfflineOrTerminalCleanup(context, AgentStatus.Error);
+    }
+  }
+
+  for (const runId of activeAgentRunIds) {
+    const activeRun = activeAgentRunById.get(runId);
+    const existingContext = agentContextsStore.getRun(runId);
+    if (existingContext) {
+      existingContext.config.isLocked = true;
+      const streamConnected = agentRunStore.isAgentStreamReady(runId);
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true, streamConnected });
+      if (!streamConnected) {
+        agentRunStore.connectToAgentStream(runId);
+      }
+      continue;
+    }
+
+    try {
+      await hydrateLiveRunContext({
+        runId,
+        fallbackAgentName: findAgentNameByRunId(store.workspaceGroups, runId),
+        resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+          store.resolveWorkspaceMetadataByRootPath(rootPath),
+        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+        currentStatus: activeRun?.status ?? AgentStatus.Running,
+      });
+      agentRunStore.connectToAgentStream(runId);
+    } catch (error) {
+      console.warn(`[runHistorySync] Failed to hydrate active run '${runId}'.`, error);
+    }
+  }
+
+  for (const teamContext of teamContextsStore.allTeamRuns) {
+    const rootTeamRunId = teamContext.view.getRootTeamRunId();
+    if (activeTeamRunIds.has(rootTeamRunId)) {
+      continue;
+    }
+
+    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
+      agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
+    }
+    teamContext.view.setRootTeamActive(false);
+    teamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
+      if (agentContext.state.currentStatus !== AgentStatus.Error) {
+        applyOfflineOrTerminalCleanup(agentContext);
+      } else {
+        applyOfflineOrTerminalCleanup(agentContext, AgentStatus.Error);
+      }
+    });
+  }
+
+  for (const [teamRunId, activeTeamRun] of activeTeamRunById.entries()) {
+    const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
+    if (existingTeamContext) {
+      existingTeamContext.view.setRootTeamActive(true);
+      const streamReopenRequired = agentTeamRunStore.isTeamStreamReopenRequired(teamRunId);
+      const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
+      if (!streamReopenRequired) {
+        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
+          agentContext.config.isLocked = true;
+          applyActiveRuntimePlaceholder(agentContext, {
+            preserveExistingLive: true,
+            streamConnected,
+          });
+        });
+      }
+      if (!streamConnected && !streamReopenRequired) {
+        agentTeamRunStore.connectToTeamStream(teamRunId);
+      }
+      continue;
+    }
+
+    try {
+      const result = await hydrateLiveTeamRunContext({
+        teamRunId,
+        agentRunId: activeTeamRun.members.find(
+          (member) => member.memberAddress === activeTeamRun.coordinatorAddress,
+        )?.agentRunId ?? null,
+        resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+          store.resolveWorkspaceMetadataByRootPath(rootPath),
+        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+      });
+      teamContextsStore.addTeamContext(result.hydratedContext);
+      agentTeamRunStore.connectToTeamStream(teamRunId);
+    } catch (error) {
+      console.warn(`[runHistorySync] Failed to hydrate active team run '${teamRunId}'.`, error);
+    }
+  }
+};
+
+export const openHistoricalRun = async (
+  store: RunHistoryFetchStoreLike,
+  runId: string,
+  options: RunHistoryOpenOptions = {},
+): Promise<void> => {
+  store.openingRun = true;
+  store.error = null;
+
+  try {
+    const result = await openAgentRun({
+      runId,
+      fallbackAgentName: store.findAgentNameByRunId(runId),
+      resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+        store.resolveWorkspaceMetadataByRootPath(rootPath),
+      selectionMode: options.selectionMode,
+    });
+
+    store.resumeConfigByRunId[runId] = result.resumeConfig;
+    store.selectedRunId = result.runId;
+    store.selectedTeamRunId = null;
+    store.selectedTeamMemberAddress = null;
+  } catch (error: any) {
+    store.error = error?.message || `Failed to open run '${runId}'.`;
+    throw error;
+  } finally {
+    store.openingRun = false;
+  }
+};
+
+export const resolveRunHistoryWorkspaceMetadataByRootPath = async (
+  rootPath: string,
+): Promise<WorkspaceMetadata | null> => {
+  const workspaceStore = useWorkspaceStore();
+  try {
+    return await workspaceStore.resolveWorkspaceMetadataByRootPath(rootPath);
+  } catch {
+    return null;
+  }
+};
+
+export const ensureRunHistoryWorkspaceByRootPath = async (
+  rootPath: string,
+): Promise<string | null> => {
+  const workspaceStore = useWorkspaceStore();
+  if (!rootPath.trim()) {
+    return null;
+  }
+
+  const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
+  const findWorkspaceIdByRootPath = (): string | null => {
+    const matchingWorkspace = workspaceStore.allWorkspaces.find((workspace) => {
+      const normalizedWorkspaceRoot = normalizeRootPath(
+        workspace.absolutePath
+          || workspace.workspaceConfig?.root_path
+          || workspace.workspaceConfig?.rootPath
+          || null,
+      );
+      return normalizedWorkspaceRoot === normalizedRootPath;
+    });
+    return matchingWorkspace?.workspaceId || null;
+  };
+
+  const cachedWorkspaceId = findWorkspaceIdByRootPath();
+  if (cachedWorkspaceId) {
+    return cachedWorkspaceId;
+  }
+
+  if (!workspaceStore.workspacesFetched) {
+    try {
+      await workspaceStore.fetchAllWorkspaces();
+    } catch {
+      // Fallback to direct creation below.
+    }
+  }
+
+  try {
+    const fetchedWorkspaceId = findWorkspaceIdByRootPath();
+    if (fetchedWorkspaceId) {
+      return fetchedWorkspaceId;
+    }
+
+    return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+  } catch {
+    return null;
+  }
+};

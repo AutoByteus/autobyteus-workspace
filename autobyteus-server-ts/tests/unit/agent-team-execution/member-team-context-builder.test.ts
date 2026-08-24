@@ -3,6 +3,11 @@ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
@@ -28,13 +33,34 @@ const findTeam = (root: TeamRunAgentTeamNode, address: string): TeamRunAgentTeam
   return found;
 };
 
+const physicalScopeForTeam = (
+  root: TeamRunAgentTeamNode,
+  address: string,
+): TeamRunPhysicalScope => {
+  const visit = (
+    node: TeamRunAgentTeamNode,
+    scope: TeamRunPhysicalScope,
+  ): TeamRunPhysicalScope | null => {
+    if (node.address === address) return scope;
+    for (const child of node.children) {
+      if (child.kind !== "agent_team") continue;
+      const found = visit(child, createChildTeamRunPhysicalScope(scope, child.teamRunId));
+      if (found) return found;
+    }
+    return null;
+  };
+  const found = visit(root, createRootTeamRunPhysicalScope(root.teamRunId));
+  if (!found) throw new Error(`missing Team node '${address}'`);
+  return found;
+};
+
 const buildContext = (input: {
   config: TeamRunConfig;
   teamRunId: string;
   teamAddress: string;
   agentNode: TeamRunAgentNode;
 }) => new TeamRunContext({
-  rootTeamRunId: input.config.rootTeam.teamRunId,
+  physicalScope: physicalScopeForTeam(input.config.rootTeam, input.teamAddress),
   teamRunId: input.teamRunId,
   teamBackendKind: TeamBackendKind.MIXED,
   teamNode: findTeam(input.config.rootTeam, input.teamAddress),

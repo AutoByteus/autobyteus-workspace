@@ -1,0 +1,5 @@
+restart_type=abrupt_process_kill
+signal=SIGKILL
+pid=10406
+parent_pid=10099
+killed_at=2026-08-23T09:04:59Z

@@ -1,0 +1,39 @@
+=== canonical artifacts ===
+PASS api-e2e-coverage-investigation.md lines=     312
+PASS api-e2e-execution-coverage-report.md lines=     230
+PASS api-e2e-revision-record.md lines=      55
+=== key evidence ===
+PASS api-e2e-evidence/round-2/server-durable-e2e.log
+PASS api-e2e-evidence/round-2/frontend-focused.log
+PASS api-e2e-evidence/round-2/frontend-build.log
+PASS api-e2e-evidence/round-2/server-build.log
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002a-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002b-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-result.json
+PASS api-e2e-evidence/round-2/real-classroom/real-boundary-graphql-summary.json
+PASS api-e2e-evidence/round-2/real-classroom/cleanup-report.txt
+=== JSON parse ===
+PASS api-e2e-evidence/round-2/real-classroom/real-boundary-graphql-summary.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002a-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002b-aborted-cleanup.json
+PASS api-e2e-evidence/round-2/real-classroom/catalog-checks.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre-result.json
+PASS api-e2e-evidence/round-2/real-classroom/nth-live-002b-post-result.json
+PASS api-e2e-evidence/round-2/real-classroom/real-boundary-graphql.json
+PASS api-e2e-evidence/round-2/real-classroom/health-initial.json
+=== current result tokens ===
+api-e2e-execution-coverage-report.md:19:- Current API/E2E Revision ID: `API-REV-002`
+api-e2e-execution-coverage-report.md:223:- Result: `Pass`
+api-e2e-execution-coverage-report.md:224:- Final validation confidence: `98.6%`
+api-e2e-execution-coverage-report.md:230:- Notes: `API-REV-002` is the current revision; round-1 `Fail` remains historical in the revision record only.
+api-e2e-revision-record.md:8:| `API-REV-002` | `code_reviewer` / `CRR-003` / API/E2E round 2 | `SR-007`, `ARCH-REV-003`, `IR-002`, `CRR-003` | `Fail` / `82.7%` | `Pass` / `98.6%` |
+api-e2e-revision-record.md:33:### API-REV-002 — Resolve cold historical task navigation and execute three exact live routes
+=== diff checks ===

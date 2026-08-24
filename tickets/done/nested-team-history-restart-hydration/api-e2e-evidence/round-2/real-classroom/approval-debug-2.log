@@ -1,0 +1,46 @@
+CONSOLE error Failed to load resource: the server responded with a status of 404 (File not found)
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+CONSOLE log [useTerminalSession] Connecting to: ws://127.0.0.1:62318/ws/terminal/6bd8f7c2-f1c3-49ad-8ae0-f05b8b1f2184
+WS ws://127.0.0.1:62318/ws/terminal/6bd8f7c2-f1c3-49ad-8ae0-f05b8b1f2184
+CONSOLE log [useTerminalSession] Connected
+WS ws://127.0.0.1:62318/ws/agent-team/nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7
+CONSOLE log Team WebSocket transport connected
+RECV {"type":"TEAM_EXECUTION_VIEW_SNAPSHOT","payload":{"root_team_run_id":"nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7","base_change_sequence":561,"execution_tree":{"schema_version":1,"created_at":"2026-08-23T11:18:45.921Z","archived_at":null,"application_binding":null,"handoffs":[{"from":"/Teacher","to":"/StudentStudyGroup","rules":["When a bounded classroom task is ready to be delegated to the nested student study group.","When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."]},{"from":"/Teacher","to":"/StudentStudyGroup/student_one","rules":["When an ordinary classroom test message must be sent directly to Student One at the exact member address."]},{"from":"/StudentStudyGroup/student_one","to":"/Teacher","rules":["Whe
+CONSOLE log serverStore: Checking server health at http://127.0.0.1:62318/health
+CONSOLE error Failed to load resource: the server responded with a status of 404 (Not Found)
+CENTER T
+Teacher
+Running
+You
+NTH_LIVE_002A_TEAM_PRE_20260823. Use ordinary send_message_to exactly once to recipient_address "/StudentStudyGroup". The message must contain exact request marker NTH_LIVE_002A_TEAM_PRE_20260823 and ask the receiving coordinator to reply to /Teacher using send_message_to with exact acknowledgment marker NTH_LIVE_002A_TEAM_ACK_PRE_20260823. Attach this exact reference file on your send_message_to call: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/team-address-reference.txt. Do not use delegate_task. Do not address /StudentStudyGroup/student_one directly.
+T
+Teacher
+Thinking
+send_message_to
+Context Files (0)
+(drag, paste, or upload)
+ALLBUTTONS [
+  '',
+  '',
+  'Thinking',
+  'send_message_to',
+  'Context Files (0)(drag, paste, or upload)',
+  '',
+  ''
+]
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-center-pane"]').getByRole('button', { name: 'Approve', exact: true }) to be visible[22m
+
+    at /private/tmp/debug-approve.mjs:4:594 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1

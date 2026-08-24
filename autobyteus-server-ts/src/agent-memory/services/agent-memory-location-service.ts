@@ -11,6 +11,7 @@ import type {
   TeamMemberAgentMemoryLocation,
 } from "../domain/agent-memory-location.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
+import { normalizeTeamRunPhysicalScope } from "../../agent-team-execution/domain/team-run-physical-scope.js";
 
 const optional = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;
@@ -76,10 +77,7 @@ export class AgentMemoryLocationService {
   }
 
   private normalizeScope(input: AgentMemoryScope): AgentMemoryScope {
-    return {
-      rootTeamRunId: required(input.rootTeamRunId, "rootTeamRunId"),
-      ancestorTeamRunIds: input.ancestorTeamRunIds.map((id, index) => required(id, `ancestorTeamRunIds[${index}]`)),
-    };
+    return normalizeTeamRunPhysicalScope(input);
   }
 
   private matchesTeam(location: LocatedTeamAgentExecution, teamRunId: string): boolean {
@@ -92,7 +90,7 @@ export class AgentMemoryLocationService {
 const toMemoryLocation = (located: LocatedTeamAgentExecution): TeamMemberAgentMemoryLocation => ({
   kind: "team_member",
   rootTeamRunId: located.rootTeamRunId,
-  ancestorTeamRunIds: [...located.ancestorTeamRunIds],
+  ancestorTeamRunIds: located.ancestorTeamRunIds,
   memberAddress: located.memberAddress,
   agentRunId: located.agentRunId,
   configuredPlacement: located.configuredPlacement,

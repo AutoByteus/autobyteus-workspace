@@ -1,0 +1,6 @@
+runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe
+database=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/db/production.db
+backend_port=62318
+frontend_port=62319
+agent_package=/Users/normy/autobyteus_org/autobyteus-agents
+private_package=/Users/normy/autobyteus_org/autobyteus-private-agents

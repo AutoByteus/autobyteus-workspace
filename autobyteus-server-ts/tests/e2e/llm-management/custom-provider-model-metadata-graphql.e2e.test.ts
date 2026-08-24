@@ -10,7 +10,6 @@ import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { getModelMetadataProvisioningService } from '../../../src/llm-management/services/model-metadata-provisioning-service.js';
-import { getCustomLlmProviderRuntimeSyncService } from '../../../src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.js';
 import {
   getSecretVaultRuntime,
   resetSecretVaultRuntimeForTests,
@@ -34,15 +33,19 @@ type GraphqlModel = {
 };
 
 type GraphqlProvider = {
-  provider: {
+  ownerProvider: {
     id: string;
     name: string;
     providerType: string;
     isCustom: boolean;
     baseUrl: string | null;
-    status: string;
   };
-  models: GraphqlModel[];
+  sources: Array<{
+    modelKind: string;
+    state: string;
+    modelCount: number;
+  }>;
+  llmModels: GraphqlModel[];
 };
 
 describe('custom provider metadata GraphQL E2E', () => {
@@ -61,19 +64,19 @@ describe('custom provider metadata GraphQL E2E', () => {
 
   const customProvider = async (): Promise<GraphqlProvider> => {
     const result = await execute<{
-      availableLlmProvidersWithModels: GraphqlProvider[];
+      providerModelCatalogSnapshots: GraphqlProvider[];
     }>(`
       query CustomProviderMetadata {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider {
+        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+          ownerProvider {
             id
             name
             providerType
             isCustom
             baseUrl
-            status
           }
-          models {
+          sources { modelKind state modelCount }
+          llmModels {
             modelIdentifier
             value
             providerId
@@ -86,8 +89,8 @@ describe('custom provider metadata GraphQL E2E', () => {
         }
       }
     `);
-    const resultProvider = result.availableLlmProvidersWithModels.find(
-      (entry) => entry.provider.id === createdProviderId,
+    const resultProvider = result.providerModelCatalogSnapshots.find(
+      (entry) => entry.ownerProvider.id === createdProviderId,
     );
     if (!resultProvider) throw new Error('Synthetic custom provider was not returned by GraphQL.');
     return resultProvider;
@@ -180,9 +183,17 @@ describe('custom provider metadata GraphQL E2E', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const created = await execute<{ createCustomProvider: string }>(`
+    const created = await execute<{
+      createCustomProvider: {
+        provider: { id: string };
+        apiKeyConfigured: boolean;
+      };
+    }>(`
       mutation CreateCustomProvider($input: CustomProviderInputObject!) {
-        createCustomProvider(input: $input)
+        createCustomProvider(input: $input) {
+          provider { id }
+          apiKeyConfigured
+        }
       }
     `, {
       input: {
@@ -191,58 +202,63 @@ describe('custom provider metadata GraphQL E2E', () => {
         apiKey: 'synthetic-custom-provider-key',
       },
     });
-    createdProviderId = created.createCustomProvider;
+    createdProviderId = created.createCustomProvider.provider.id;
     expect(createdProviderId).toBe('provider_synthetic_metadata_gateway');
+    expect(created.createCustomProvider.apiKeyConfigured).toBe(true);
 
     const provider = await customProvider();
-    expect(provider.provider).toMatchObject({
+    expect(provider.ownerProvider).toMatchObject({
       id: createdProviderId,
       name: 'Synthetic Metadata Gateway',
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       isCustom: true,
       baseUrl: 'https://gateway.example.test/v1',
-      status: 'READY',
     });
-    expect(provider.models).toHaveLength(5);
+    expect(provider.sources).toContainEqual(expect.objectContaining({
+      modelKind: 'LLM',
+      state: 'READY',
+      modelCount: 5,
+    }));
+    expect(provider.llmModels).toHaveLength(5);
 
-    const live = provider.models.find((model) => model.value === 'qwen3.8-max');
-    expect(live).toMatchObject({
+    const advertised = provider.llmModels.find((model) => model.value === 'qwen3.8-max');
+    expect(advertised).toMatchObject({
       modelIdentifier: 'openai-compatible:provider_synthetic_metadata_gateway:qwen3.8-max',
       providerId: createdProviderId,
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       maxContextTokens: 654321,
       maxInputTokens: 600000,
       maxOutputTokens: 8192,
-      metadataProvenance: 'LIVE',
+      metadataProvenance: null,
     });
 
-    const inferredDeepSeek = provider.models.find((model) => model.value === 'deepseek-v4-pro');
+    const inferredDeepSeek = provider.llmModels.find((model) => model.value === 'deepseek-v4-pro');
     expect(inferredDeepSeek).toMatchObject({
       modelIdentifier: 'openai-compatible:provider_synthetic_metadata_gateway:deepseek-v4-pro',
       maxContextTokens: 1_000_000,
-      metadataProvenance: 'CURATED_FALLBACK',
+      metadataProvenance: null,
     });
 
-    const inferredGlm = provider.models.find((model) => model.value === 'glm-5.2');
+    const inferredGlm = provider.llmModels.find((model) => model.value === 'glm-5.2');
     expect(inferredGlm).toMatchObject({
       maxContextTokens: 198_000,
-      metadataProvenance: 'CURATED_FALLBACK',
+      metadataProvenance: null,
     });
 
-    const unknown = provider.models.find((model) => model.value === 'synthetic-unknown-model');
+    const unknown = provider.llmModels.find((model) => model.value === 'synthetic-unknown-model');
     expect(unknown).toMatchObject({
       maxContextTokens: null,
       maxInputTokens: null,
       maxOutputTokens: null,
-      metadataProvenance: 'CURATED_ONLY',
+      metadataProvenance: null,
     });
 
-    const nearMatch = provider.models.find((model) => model.value === 'deepseek-v4-pro-0713');
+    const nearMatch = provider.llmModels.find((model) => model.value === 'deepseek-v4-pro-0713');
     expect(nearMatch).toMatchObject({
       maxContextTokens: null,
       maxInputTokens: null,
       maxOutputTokens: null,
-      metadataProvenance: 'CURATED_ONLY',
+      metadataProvenance: null,
     });
 
     const providerConfig = await readFile(
@@ -254,23 +270,44 @@ describe('custom provider metadata GraphQL E2E', () => {
     expect(providerConfig).not.toContain('private_provider_payload');
     expect(JSON.stringify(provider)).not.toContain('synthetic-custom-provider-key');
     expect(JSON.stringify(provider)).not.toContain('must-not-cross-server-boundary');
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('preserves the last-known-good custom catalog when a subsequent discovery fails', async () => {
     const fetchMock = vi.mocked(globalThis.fetch);
     fetchMock.mockRejectedValueOnce(new Error('synthetic gateway offline'));
 
-    const report = await getCustomLlmProviderRuntimeSyncService().syncSavedProviders();
-    expect(report.statuses).toEqual([expect.objectContaining({
-      endpointId: createdProviderId,
-      status: 'STALE_ERROR',
-      preservedPreviousModels: true,
+    const refreshed = await execute<{
+      reloadProviderModelCatalog: GraphqlProvider;
+    }>(`
+      mutation ReloadCustomProvider($providerId: String!) {
+        reloadProviderModelCatalog(
+          providerId: $providerId
+          runtimeKind: "autobyteus"
+        ) {
+          ownerProvider { id name providerType isCustom baseUrl }
+          sources { modelKind state modelCount }
+          llmModels {
+            modelIdentifier
+            value
+            providerId
+            providerType
+            maxContextTokens
+            maxInputTokens
+            maxOutputTokens
+            metadataProvenance
+          }
+        }
+      }
+    `, { providerId: createdProviderId });
+    expect(refreshed.reloadProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
+      modelKind: 'LLM',
+      state: 'STALE_ERROR',
       modelCount: 5,
-    })]);
+    }));
 
     const provider = await customProvider();
-    expect(provider.models.map((model) => model.value)).toEqual([
+    expect(provider.llmModels.map((model) => model.value)).toEqual([
       'deepseek-v4-pro',
       'deepseek-v4-pro-0713',
       'glm-5.2',
@@ -282,31 +319,36 @@ describe('custom provider metadata GraphQL E2E', () => {
   it('cleans up the synthetic provider and derived model registry state', async () => {
     expect(createdProviderId).not.toBeNull();
     const deletedProviderId = createdProviderId!;
-    const deleted = await execute<{ deleteCustomProvider: boolean }>(`
+    const deleted = await execute<{
+      deleteCustomProvider: { providerId: string; deleted: boolean };
+    }>(`
       mutation DeleteCustomProvider($providerId: String!) {
-        deleteCustomProvider(providerId: $providerId)
+        deleteCustomProvider(providerId: $providerId) { providerId deleted }
       }
     `, { providerId: deletedProviderId });
-    expect(deleted.deleteCustomProvider).toBe(true);
+    expect(deleted.deleteCustomProvider).toEqual({
+      providerId: deletedProviderId,
+      deleted: true,
+    });
 
     const afterDelete = await execute<{
-      availableLlmProvidersWithModels: Array<{
-        provider: { id: string };
-        models: Array<{ providerId: string }>;
+      providerModelCatalogSnapshots: Array<{
+        ownerProvider: { id: string };
+        llmModels: Array<{ providerId: string }>;
       }>;
     }>(`
       query CustomProviderCatalogAfterDelete {
-        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
-          provider { id }
-          models { providerId }
+        providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
+          ownerProvider { id }
+          llmModels { providerId }
         }
       }
     `);
-    expect(afterDelete.availableLlmProvidersWithModels).not.toEqual(expect.arrayContaining([
-      expect.objectContaining({ provider: { id: deletedProviderId } }),
+    expect(afterDelete.providerModelCatalogSnapshots).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({ ownerProvider: { id: deletedProviderId } }),
     ]));
-    const remainingModelProviderIds = afterDelete.availableLlmProvidersWithModels
-      .flatMap(({ models }) => models.map(({ providerId }) => providerId));
+    const remainingModelProviderIds = afterDelete.providerModelCatalogSnapshots
+      .flatMap(({ llmModels }) => llmModels.map(({ providerId }) => providerId));
     expect(remainingModelProviderIds).not.toContain(deletedProviderId);
 
     const providerConfig = await readFile(

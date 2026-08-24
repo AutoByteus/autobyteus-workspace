@@ -1,0 +1,40 @@
+{
+  "scenario": "NTH-LIVE-002A",
+  "phase": "pre-restart",
+  "rootTeamRunId": "nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7",
+  "teacherId": "test_teacher_991d7534dc2442e9988a35d4880a0f96",
+  "studentId": "student_one_903758e38a1b44aa9362e50d51dddf99",
+  "request": "NTH_LIVE_002A_TEAM_PRE_20260823",
+  "ack": "NTH_LIVE_002A_TEAM_ACK_PRE_20260823",
+  "refPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/team-address-reference.txt",
+  "uiTeacherContainsAck": true,
+  "uiStudentContainsAck": true,
+  "uiCommunicationContainsRequest": true,
+  "uiCommunicationContainsAck": true,
+  "messages": [
+    {
+      "messageId": "teammsg__Xly1t4EXyd_FcJbqOFWYp9VlMFpGWoB",
+      "senderAgentRunId": "test_teacher_991d7534dc2442e9988a35d4880a0f96",
+      "receiverAgentRunId": "student_one_903758e38a1b44aa9362e50d51dddf99",
+      "content": "Request marker: NTH_LIVE_002A_TEAM_PRE_20260823. Please reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002A_TEAM_ACK_PRE_20260823. Reference file attached for your context.",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/team-address-reference.txt"
+      ],
+      "createdAt": "2026-08-23T11:27:51.837Z"
+    },
+    {
+      "messageId": "teammsg_aShrtdueB3wHtFJsHQf0aRyYoJu0QrJa",
+      "senderAgentRunId": "student_one_903758e38a1b44aa9362e50d51dddf99",
+      "receiverAgentRunId": "test_teacher_991d7534dc2442e9988a35d4880a0f96",
+      "content": "NTH_LIVE_002A_TEAM_ACK_PRE_20260823",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-23T11:27:54.853Z"
+    }
+  ],
+  "screenshotPath": "api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-before-stop.png",
+  "terminatedAt": "2026-08-23T11:31:13.481Z",
+  "browserControlFlowEvidence": "nth-live-002a-pre-assert.log reached student, teacher, and terminate only after all semantic UI waits passed.",
+  "approvalNote": "Initial browser disconnected before the pending button became actionable; exact pending invocations were approved through a real browser WebSocket on the same canonical Team route."
+}

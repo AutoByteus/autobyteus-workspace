@@ -1,0 +1,12 @@
+{
+  "abortedRootTeamRunId": "nested_classroom_test_team_249473656fd14be59b960afba90493d5",
+  "reason": "The first auto-execution probe terminated after a UI substring matched the requested ack inside the request text, before the real reply persisted. This harness wait was corrected to require two canonical messages.",
+  "cleanup": {
+    "data": {
+      "deleteStoredTeamRun": {
+        "success": true,
+        "message": "Team run 'nested_classroom_test_team_249473656fd14be59b960afba90493d5' deleted permanently."
+      }
+    }
+  }
+}

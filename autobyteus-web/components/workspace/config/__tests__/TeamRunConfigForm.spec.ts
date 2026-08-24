@@ -191,11 +191,12 @@ describe('TeamRunConfigForm', () => {
 
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: [],
+      providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
+      providerSnapshots: vi.fn(() => []),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
         llmStore.providersWithModels = rows
-        llmStore.providersWithModelsForSelection = rows
         return rows
       }),
     }

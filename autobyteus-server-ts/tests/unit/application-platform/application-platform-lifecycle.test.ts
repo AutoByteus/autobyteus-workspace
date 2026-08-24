@@ -139,16 +139,18 @@ describe("ApplicationPlatformLifecycle", () => {
       });
       const releaseClient = vi.fn(async () => undefined);
       const credentialReadiness = new ApplicationProviderCredentialReadinessAdapter({
-        llmProviderService: { listProviderSettings: vi.fn() } as never,
+        llmProviderService: { getProviderCredentialSetting: vi.fn() } as never,
         codexClientManager: { acquireClient, releaseClient } as never,
       });
       dependencies.storageLifecycleService = storageLifecycleService as never;
       dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {
-        await expect(credentialReadiness.getReadiness({
+        const authority = credentialReadiness.resolveAuthority({
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           model: {} as never,
           workspaceRootPath: layout.runtimeDir,
-        })).resolves.toEqual({ configured: true, reason: null });
+        });
+        await expect(credentialReadiness.getReadiness(authority))
+          .resolves.toEqual({ configured: true, reason: null });
         await expect(fs.access(layout.platformDatabasePath)).rejects.toThrow();
         await expect(fs.access(layout.appDatabasePath)).rejects.toThrow();
       });

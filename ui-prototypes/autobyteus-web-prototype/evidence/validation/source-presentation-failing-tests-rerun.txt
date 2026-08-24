@@ -1,0 +1,25 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts (1 test | 1 failed) 31ms
+   × focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member 30ms
+     → expected "spy" to be called 1 times, but got 0 times
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test | 1 failed) 70ms
+   × Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 69ms
+     → Cannot read properties of undefined (reading 'value')
+
+ Test Files  2 failed (2)
+      Tests  2 failed (2)
+   Start at  11:32:20
+   Duration  9.20s (transform 4.86s, setup 14.73s, collect 817ms, tests 101ms, environment 1.14s, prepare 649ms)
+

@@ -1,0 +1,10 @@
+cleanup_at=2026-08-23T09:17:37Z
+runtime_root=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+runtime_existed_before=true
+runtime_exists_after=false
+imported_provider_secrets_removed_with_isolated_database=true
+private_team_package_import_removed_with_isolated_database=true
+owned_backend_listener_58376_remaining=false
+owned_ipv4_frontend_listener_3000_remaining=false
+autobyteus_browser_tab_closed=true
+unrelated_ipv6_listener_pid_37602_untouched=true

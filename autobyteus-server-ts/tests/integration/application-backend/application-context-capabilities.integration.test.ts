@@ -439,6 +439,7 @@ describe("Application context capability integration", () => {
         getAgentDefinitionById: vi.fn(async (definitionId: string) => ({ id: definitionId, name: "Sample Agent" })),
       } as never,
       currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
     });

@@ -1,0 +1,21 @@
+# DR-004 Pre-finalization Audit
+date=2026-08-24
+api_authority=API-REV-004 Pass 98.7%
+review_authority=CRR-006 Not Applicable / ready for delivery; CRR-004 durable/fixture Pass; CRR-003 source Pass 9.62/10
+ticket_head=78bfd0a3453fd66f2677dd99a1edb7a44e040607
+origin_personal=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+ahead_behind=0	2
+base_commits_not_in_ticket=none
+durable_patch_sha256=e4d86b11bc4bf15358c9982d0f7eb8118aea8da2ec917476ba84fb3af7d241cb
+durable_patch_cmp=PASS
+private_fixture_commit=54f6141157ec1097c07d00499c4468f8511509d8
+private_fixture_push=PASS
+json_parse=PASS
+git_diff_check=PASS
+secret_audits=round-2 PASS 12/0; round-3 PASS 12/0
+archive_max_relative_path_length=89
+archive_max_relative_path=api-e2e-evidence/real-classroom/live-active-cold-ui-team-control-and-missing-task-row.png
+archive_transition=PASS
+release=NOT_REQUESTED_NOT_PERFORMED
+cached_source_and_docs_diff_check=PASS
+retained_raw_evidence_whitespace=EXPECTED (immutable logs/patches excluded from whitespace normalization)

@@ -10,6 +10,7 @@ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -36,7 +37,7 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
     platformAgentRunId: overrides.platformAgentRunId ?? null,
   });
   const teamContext = new TeamRunContext({
-    rootTeamRunId: "team-run-1",
+    physicalScope: createRootTeamRunPhysicalScope("team-run-1"),
     teamRunId: "team-run-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: teamConfig.rootTeam,

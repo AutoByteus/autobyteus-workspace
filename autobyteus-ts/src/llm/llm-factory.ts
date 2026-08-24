@@ -2,37 +2,27 @@ import { BaseLLM } from './base.js';
 import { LLMModel, ModelInfo } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
-import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
+import { LLMConfig } from './utils/llm-config.js';
+import {
+  buildModelPricingInfo,
+  type ModelPricingInfo,
+  type ModelPricingLookupInput,
+} from './llm-model-pricing.js';
+export type {
+  PricingStatus,
+  ModelPricingTierInfo,
+  ModelPricingInfo,
+  ModelPricingLookupInput,
+} from './llm-model-pricing.js';
 import { applyRawLlmConfigOverrides, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
-import { OllamaModelProvider } from './ollama-provider.js';
-import { LMStudioModelProvider } from './lmstudio-provider.js';
 import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
-import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
-import {
-  OpenAICompatibleEndpointModel,
-} from './openai-compatible-endpoint-model.js';
-import {
-  OpenAICompatibleEndpointModelProvider,
-  type OpenAICompatibleEndpointDiscoveryResult,
-  type OpenAICompatibleEndpointReloadReport,
-} from './openai-compatible-endpoint-provider.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 import { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
-import type { ModelPricingInfo, ModelPricingTierInfo, PricingStatus } from './model-pricing-types.js';
-
-export type { ModelPricingInfo, ModelPricingTierInfo, PricingStatus } from './model-pricing-types.js';
 export { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 
 export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
-
-export type ModelPricingLookupInput = {
-  modelIdentifier?: string | null;
-  modelValue?: string | null;
-  canonicalName?: string | null;
-  modelProvider?: LLMProvider | string | null;
-};
 
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
@@ -59,21 +49,6 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
   );
 };
 
-const groupEndpointModelsByEndpoint = (
-  models: OpenAICompatibleEndpointModel[],
-): Map<string, OpenAICompatibleEndpointModel[]> => {
-  const grouped = new Map<string, OpenAICompatibleEndpointModel[]>();
-
-  for (const model of models) {
-    const endpointId = model.endpointId;
-    const existing = grouped.get(endpointId) ?? [];
-    existing.push(model);
-    grouped.set(endpointId, existing);
-  }
-
-  return grouped;
-};
-
 const isRawConfigRecord = (value: unknown): value is RawLlmConfigOverrides =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
@@ -81,35 +56,37 @@ export class LLMFactory {
   private static modelsByProvider = new Map<LLMProvider, LLMModel[]>();
   private static modelsByIdentifier = new Map<string, LLMModel>();
   private static initialized = false;
-  private static openAICompatibleEndpointProvider = new OpenAICompatibleEndpointModelProvider();
-  private static lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint = new Map<
-    string,
-    OpenAICompatibleEndpointModel[]
-  >();
+  private static initializing: Promise<void> | null = null;
+  private static modelIdsBySource = new Map<string, Set<string>>();
+  private static sourceByModelId = new Map<string, string>();
 
   static async ensureInitialized(): Promise<void> {
-    if (!LLMFactory.initialized) {
-      await LLMFactory.initializeRegistry();
+    if (LLMFactory.initialized) return;
+    LLMFactory.initializing ??= LLMFactory.initializeRegistry().then(() => {
       LLMFactory.initialized = true;
-    }
+    }).finally(() => {
+      LLMFactory.initializing = null;
+    });
+    await LLMFactory.initializing;
   }
 
   static async reinitialize(): Promise<void> {
-    await LLMFactory.ensureInitialized();
-    const retainedGatewayModels = Array.from(LLMFactory.modelsByIdentifier.values())
-      .filter((model) => model.runtime === LLMRuntime.AUTOBYTEUS);
+    await LLMFactory.initializing;
     LLMFactory.modelsByProvider.clear();
     LLMFactory.modelsByIdentifier.clear();
+    LLMFactory.modelIdsBySource.clear();
+    LLMFactory.sourceByModelId.clear();
     await LLMFactory.initializeRegistry();
-    for (const model of retainedGatewayModels) LLMFactory.registerModel(model);
     LLMFactory.initialized = true;
   }
 
   static resetForTests(): void {
     LLMFactory.initialized = false;
+    LLMFactory.initializing = null;
     LLMFactory.modelsByProvider.clear();
     LLMFactory.modelsByIdentifier.clear();
-    LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint.clear();
+    LLMFactory.modelIdsBySource.clear();
+    LLMFactory.sourceByModelId.clear();
   }
 
   private static async initializeRegistry(): Promise<void> {
@@ -119,35 +96,25 @@ export class LLMFactory {
       LLMFactory.registerModel(model);
     }
 
-    await OllamaModelProvider.discoverAndRegister();
-    await LMStudioModelProvider.discoverAndRegister();
   }
 
-  private static replaceProviderModels(provider: LLMProvider, models: LLMModel[]): void {
-    const currentProviderModels = LLMFactory.modelsByProvider.get(provider) ?? [];
-    for (const model of currentProviderModels) {
-      LLMFactory.modelsByIdentifier.delete(model.modelIdentifier);
-    }
-
-    LLMFactory.modelsByProvider.set(provider, []);
-
-    for (const model of models) {
-      LLMFactory.registerModel(model);
-    }
+  private static removeModel(identifier: string): void {
+    const current = LLMFactory.modelsByIdentifier.get(identifier);
+    if (!current) return;
+    LLMFactory.modelsByIdentifier.delete(identifier);
+    const providerModels = LLMFactory.modelsByProvider.get(current.provider) ?? [];
+    LLMFactory.modelsByProvider.set(
+      current.provider,
+      providerModels.filter((model) => model.modelIdentifier !== identifier),
+    );
+    const source = LLMFactory.sourceByModelId.get(identifier);
+    if (source) LLMFactory.modelIdsBySource.get(source)?.delete(identifier);
+    LLMFactory.sourceByModelId.delete(identifier);
   }
 
   static registerModel(model: LLMModel): void {
     const identifier = model.modelIdentifier;
-    const existing = LLMFactory.modelsByIdentifier.get(identifier);
-    if (existing) {
-      const providerModels = LLMFactory.modelsByProvider.get(existing.provider);
-      if (providerModels) {
-        const index = providerModels.indexOf(existing);
-        if (index !== -1) {
-          providerModels.splice(index, 1);
-        }
-      }
-    }
+    if (LLMFactory.modelsByIdentifier.has(identifier)) LLMFactory.removeModel(identifier);
 
     LLMFactory.modelsByIdentifier.set(identifier, model);
     const providerModels = LLMFactory.modelsByProvider.get(model.provider) ?? [];
@@ -155,21 +122,65 @@ export class LLMFactory {
     LLMFactory.modelsByProvider.set(model.provider, providerModels);
   }
 
-  static async syncOpenAICompatibleEndpointModels(
-    discoveryResults: OpenAICompatibleEndpointDiscoveryResult[],
-  ): Promise<OpenAICompatibleEndpointReloadReport> {
+  static replaceSourceModels(sourceId: string, models: readonly LLMModel[]): number {
+    if (!LLMFactory.initialized) throw new Error('LLM_FACTORY_NOT_INITIALIZED');
+    const source = sourceId.trim();
+    if (!source) throw new Error('LLM_MODEL_SOURCE_REQUIRED');
+    const identifiers = new Set<string>();
+    for (const model of models) {
+      const identifier = model.modelIdentifier;
+      if (identifiers.has(identifier)) throw new Error(`LLM_MODEL_SOURCE_DUPLICATE:${identifier}`);
+      identifiers.add(identifier);
+      const existingOwner = LLMFactory.sourceByModelId.get(identifier);
+      const existing = LLMFactory.modelsByIdentifier.get(identifier);
+      if (existing && existingOwner !== source) {
+        throw new Error(`LLM_MODEL_SOURCE_COLLISION:${identifier}`);
+      }
+    }
+
+    for (const identifier of LLMFactory.modelIdsBySource.get(source) ?? []) {
+      LLMFactory.removeModel(identifier);
+    }
+    LLMFactory.modelIdsBySource.set(source, new Set());
+    for (const model of models) {
+      LLMFactory.registerModel(model);
+      LLMFactory.sourceByModelId.set(model.modelIdentifier, source);
+      LLMFactory.modelIdsBySource.get(source)!.add(model.modelIdentifier);
+    }
+    return models.length;
+  }
+
+  static removeSourceModels(sourceId: string): void {
+    LLMFactory.replaceSourceModels(sourceId, []);
+  }
+
+  static retainSourceModels(
+    sourceId: string,
+    predicate: (model: LLMModel) => boolean,
+  ): number {
+    const source = sourceId.trim();
+    const retained = Array.from(LLMFactory.modelIdsBySource.get(source) ?? [])
+      .map((identifier) => LLMFactory.modelsByIdentifier.get(identifier))
+      .filter((model): model is LLMModel => model !== undefined && predicate(model));
+    return LLMFactory.replaceSourceModels(source, retained);
+  }
+
+  static sourceModelCount(sourceId: string): number {
+    return LLMFactory.modelIdsBySource.get(sourceId.trim())?.size ?? 0;
+  }
+
+  static async listSourceModels(sourceId: string): Promise<ModelInfo[]> {
     await LLMFactory.ensureInitialized();
+    return Array.from(LLMFactory.modelIdsBySource.get(sourceId.trim()) ?? [])
+      .map((identifier) => LLMFactory.modelsByIdentifier.get(identifier))
+      .filter((model): model is LLMModel => Boolean(model))
+      .sort((left, right) => left.modelIdentifier.localeCompare(right.modelIdentifier))
+      .map((model) => model.toModelInfo());
+  }
 
-    const report = await LLMFactory.openAICompatibleEndpointProvider.reloadSavedEndpoints(
-      discoveryResults,
-      LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint,
-    );
-
-    LLMFactory.replaceProviderModels(LLMProvider.OPENAI_COMPATIBLE, report.models);
-    LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint =
-      groupEndpointModelsByEndpoint(report.models);
-
-    return report;
+  static async hasRegisteredModel(modelIdentifier: string): Promise<boolean> {
+    await LLMFactory.ensureInitialized();
+    return LLMFactory.modelsByIdentifier.has(modelIdentifier);
   }
 
   private static composeEffectiveConfig(model: LLMModel, configInput?: LLMFactoryConfigInput): LLMConfig {
@@ -317,172 +328,18 @@ export class LLMFactory {
   }
 
 
-  static async getModelPricingInfo(input: ModelPricingLookupInput): Promise<ModelPricingInfo | null> {
+  static async getModelPricingInfo(input: ModelPricingLookupInput): Promise<ModelPricingInfo> {
     await LLMFactory.ensureInitialized();
-    const model = LLMFactory.findModelForPricingLookup(input);
-    if (!model) {
-      return {
-        model_identifier: input.modelIdentifier ?? null,
-        model_value: input.modelValue ?? null,
-        canonical_name: input.canonicalName ?? null,
-        model_provider: input.modelProvider ? String(input.modelProvider) : null,
-        pricing_status: 'missing',
-        pricing_source: null,
-        price_config_id: null,
-        currency: null,
-        input_price_per_million: null,
-        output_price_per_million: null,
-        cached_input_read_price_per_million: null,
-        cached_input_write_price_per_million: null,
-        cached_input_write_5m_price_per_million: null,
-        cached_input_write_1h_price_per_million: null,
-        input_price_tiers: [],
-        pricing_schedule: null,
-        trusted_dimensions: {
-          input: false,
-          output: false,
-          cached_input_read: false,
-          cached_input_write: false,
-          cached_input_write_5m: false,
-          cached_input_write_1h: false,
-        },
-        missing_reason: 'model_not_found',
-      };
-    }
-
-    const pricingConfig = model.defaultConfig?.pricingConfig;
-    if (!(pricingConfig instanceof TokenPricingConfig)) {
-      return LLMFactory.buildMissingPricingInfo(model, 'pricing_config_absent');
-    }
-
-    const tierInfos = pricingConfig.inputTokenPricingTiers.map((tier): ModelPricingTierInfo => ({
-      tier_id: tier.tierId ?? null,
-      max_input_tokens: tier.maxInputTokens ?? null,
-      input_price_per_million: tier.inputTokenPricing ?? null,
-      output_price_per_million: tier.outputTokenPricing ?? null,
-      cached_input_read_price_per_million: tier.cachedInputReadTokenPricing ?? null,
-      cached_input_write_price_per_million: tier.cachedInputWriteTokenPricing ?? null,
-      cached_input_write_5m_price_per_million: tier.cachedInputWrite5mTokenPricing ?? null,
-      cached_input_write_1h_price_per_million: tier.cachedInputWrite1hTokenPricing ?? null,
-      trusted_dimensions: {
-        input: tier.inputTokenPricing !== undefined,
-        output: tier.outputTokenPricing !== undefined,
-        cached_input_read: tier.cachedInputReadTokenPricing !== undefined,
-        cached_input_write: tier.cachedInputWriteTokenPricing !== undefined,
-        cached_input_write_5m: tier.cachedInputWrite5mTokenPricing !== undefined,
-        cached_input_write_1h: tier.cachedInputWrite1hTokenPricing !== undefined,
-      },
-    }));
-    const inputTrusted = pricingConfig.inputTokenPricingTrusted;
-    const outputTrusted = pricingConfig.outputTokenPricingTrusted;
-    const status: PricingStatus = inputTrusted && outputTrusted ? 'trusted' : 'missing';
-    const missingReason = status === 'trusted'
-      ? undefined
-      : (!inputTrusted && !outputTrusted ? 'pricing_config_absent' : 'dimension_missing');
-
-    return {
-      model_identifier: model.modelIdentifier,
-      model_value: model.value,
-      canonical_name: model.canonicalName,
-      model_provider: model.provider,
-      pricing_status: status,
-      pricing_source: status === 'trusted'
-        ? pricingConfig.pricingSource ?? 'autobyteus_model_catalog'
-        : null,
-      price_config_id: status === 'trusted'
-        ? `autobyteus_model_catalog:${model.provider}:${model.canonicalName}`
-        : null,
-      currency: status === 'trusted' ? pricingConfig.currency : null,
-      input_price_per_million: inputTrusted ? pricingConfig.inputTokenPricing : null,
-      output_price_per_million: outputTrusted ? pricingConfig.outputTokenPricing : null,
-      cached_input_read_price_per_million: pricingConfig.cachedInputReadTokenPricingTrusted
-        ? pricingConfig.cachedInputReadTokenPricing
-        : null,
-      cached_input_write_price_per_million: pricingConfig.cachedInputWriteTokenPricingTrusted
-        ? pricingConfig.cachedInputWriteTokenPricing
-        : null,
-      cached_input_write_5m_price_per_million: pricingConfig.cachedInputWrite5mTokenPricingTrusted
-        ? pricingConfig.cachedInputWrite5mTokenPricing
-        : null,
-      cached_input_write_1h_price_per_million: pricingConfig.cachedInputWrite1hTokenPricingTrusted
-        ? pricingConfig.cachedInputWrite1hTokenPricing
-        : null,
-      input_price_tiers: status === 'trusted' ? tierInfos : [],
-      pricing_schedule: pricingConfig.pricingSchedule,
-      trusted_dimensions: {
-        input: inputTrusted,
-        output: outputTrusted,
-        cached_input_read: pricingConfig.cachedInputReadTokenPricingTrusted,
-        cached_input_write: pricingConfig.cachedInputWriteTokenPricingTrusted,
-        cached_input_write_5m: pricingConfig.cachedInputWrite5mTokenPricingTrusted,
-        cached_input_write_1h: pricingConfig.cachedInputWrite1hTokenPricingTrusted,
-      },
-      ...(missingReason ? { missing_reason: missingReason } : {}),
-    };
-  }
-
-  private static buildMissingPricingInfo(
-    model: LLMModel,
-    missingReason: NonNullable<ModelPricingInfo['missing_reason']>,
-  ): ModelPricingInfo {
-    return {
-      model_identifier: model.modelIdentifier,
-      model_value: model.value,
-      canonical_name: model.canonicalName,
-      model_provider: model.provider,
-      pricing_status: 'missing',
-      pricing_source: null,
-      price_config_id: null,
-      currency: null,
-      input_price_per_million: null,
-      output_price_per_million: null,
-      cached_input_read_price_per_million: null,
-      cached_input_write_price_per_million: null,
-      cached_input_write_5m_price_per_million: null,
-      cached_input_write_1h_price_per_million: null,
-      input_price_tiers: [],
-      pricing_schedule: null,
-      trusted_dimensions: {
-        input: false,
-        output: false,
-        cached_input_read: false,
-        cached_input_write: false,
-        cached_input_write_5m: false,
-        cached_input_write_1h: false,
-      },
-      missing_reason: missingReason,
-    };
-  }
-
-  private static findModelForPricingLookup(input: ModelPricingLookupInput): LLMModel | null {
-    const candidates = Array.from(LLMFactory.modelsByIdentifier.values());
-    const provider = input.modelProvider ? String(input.modelProvider) : null;
-    const exactKeys = [input.modelIdentifier, input.modelValue, input.canonicalName]
-      .map((value) => value?.trim())
-      .filter((value): value is string => Boolean(value));
-
-    const direct = exactKeys
-      .map((key) => LLMFactory.modelsByIdentifier.get(key) ?? null)
-      .find((candidate): candidate is LLMModel => {
-        if (!candidate) return false;
-        return !provider || candidate.provider === provider;
-      });
-    if (direct) return direct;
-
-    return candidates.find((model) => {
-      if (provider && model.provider !== provider) return false;
-      return exactKeys.some((key) =>
-        model.modelIdentifier === key ||
-        model.value === key ||
-        model.name === key ||
-        model.canonicalName === key
-      );
-    }) ?? null;
+    return buildModelPricingInfo(Array.from(LLMFactory.modelsByIdentifier.values()), input);
   }
 
   static async reloadModels(provider: LLMProvider): Promise<number> {
     await LLMFactory.ensureInitialized();
 
+    const [{ LMStudioModelProvider }, { OllamaModelProvider }] = await Promise.all([
+      import('./lmstudio-provider.js'),
+      import('./ollama-provider.js'),
+    ]);
     const providerHandlers: Partial<Record<LLMProvider, { getModels: () => Promise<LLMModel[]> }>> = {
       [LLMProvider.LMSTUDIO]: LMStudioModelProvider,
       [LLMProvider.OLLAMA]: OllamaModelProvider,
@@ -506,7 +363,7 @@ export class LLMFactory {
       return LLMFactory.modelsByProvider.get(provider)?.length ?? 0;
     }
 
-    LLMFactory.replaceProviderModels(provider, newModels);
+    await LLMFactory.replaceSourceModels(String(provider), newModels);
     return newModels.length;
   }
 }

@@ -174,21 +174,17 @@ export class TeamRunExecutionTreeLocationService {
     agent: ReturnType<TeamExecutionIndex["listAgentExecutions"]>[number],
     isActive: boolean,
   ): LocatedTeamAgentExecution {
-    const ancestors = [...index.listTeamAncestorsDeepestFirst(agent.containingTeamRunId)]
-      .reverse().slice(1).map((team) => team.teamRunId);
+    const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
     const configured = index.getConfiguredPlacement(agent.address);
     const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
     return Object.freeze({
-      rootTeamRunId: tree.rootTeam.teamRunId,
+      rootTeamRunId: scope.rootTeamRunId,
       containingTeamRunId: agent.containingTeamRunId,
-      ancestorTeamRunIds: Object.freeze(ancestors),
+      ancestorTeamRunIds: scope.ancestorTeamRunIds,
       agentRunId: agent.agentRunId,
       memberAddress: agent.address,
       configuredPlacement,
-      memoryDir: this.layout.getTeamAgentRunDirPath({
-        rootTeamRunId: tree.rootTeam.teamRunId,
-        ancestorTeamRunIds: ancestors,
-      }, agent.agentRunId),
+      memoryDir: this.layout.getTeamAgentRunDirPath(scope, agent.agentRunId),
       tree,
       isActive,
     });

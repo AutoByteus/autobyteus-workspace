@@ -443,8 +443,7 @@ export class MixedAgentMemberHandle {
       autoExecuteTools: node.autoExecuteTools,
       workspaceId,
       memoryDir: (this.options.memoryLocationService ?? getAgentMemoryLocationService()).getTeamAgentRunLocation({
-        rootTeamRunId: this.options.teamContext.rootTeamRunId,
-        ancestorTeamRunIds: [],
+        ...this.options.teamContext.physicalScope,
         agentRunId: this.context.agentRunId,
       }).memoryDir,
       llmConfig: node.llmConfig as Record<string, unknown> | null,

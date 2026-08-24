@@ -1,0 +1,322 @@
+import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
+
+export type MessagingProvider = 'WHATSAPP' | 'WECOM' | 'WECHAT' | 'DISCORD' | 'TELEGRAM';
+export type PersonalSessionProvider = 'WHATSAPP' | 'WECHAT';
+
+export type MessagingTransport = 'BUSINESS_API' | 'PERSONAL_SESSION';
+
+export type ExternalChannelBindingTargetType = 'AGENT' | 'TEAM';
+
+export type GatewayStepStatus = 'UNKNOWN' | 'READY' | 'BLOCKED';
+
+export type PersonalSessionStatus = 'PENDING_QR' | 'ACTIVE' | 'DEGRADED' | 'STOPPED';
+
+export type SessionStatusAutoSyncState = 'idle' | 'running' | 'paused' | 'stopped';
+
+export type SetupStepKey = 'gateway' | 'personal_session' | 'binding' | 'verification';
+
+export type SetupStepStateStatus = 'PENDING' | 'READY' | 'BLOCKED' | 'DONE';
+
+export type VerificationCheckKey = 'gateway' | 'provider' | 'session' | 'binding' | 'launch_preset';
+
+export type VerificationCheckStatus = 'PENDING' | 'RUNNING' | 'PASSED' | 'FAILED' | 'SKIPPED';
+
+export interface SetupVerificationCheck {
+  key: VerificationCheckKey;
+  label: string;
+  status: VerificationCheckStatus;
+  detail?: string;
+  startedAt?: string;
+  completedAt?: string;
+}
+
+export type SetupBlockerActionType = 'RERUN_VERIFICATION';
+
+export interface SetupBlockerAction {
+  type: SetupBlockerActionType;
+  label: string;
+}
+
+export interface ExternalChannelBindingModel {
+  id: string;
+  provider: MessagingProvider;
+  transport: MessagingTransport;
+  accountId: string;
+  peerId: string;
+  threadId: string | null;
+  targetType: ExternalChannelBindingTargetType;
+  targetAgentDefinitionId: string | null;
+  targetTeamDefinitionId: string | null;
+  launchPreset: ExternalChannelLaunchPresetModel | null;
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetModel | null;
+  teamRunId: string | null;
+  updatedAt: string;
+}
+
+export interface ExternalChannelTeamDefinitionOptionModel {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  description: string;
+  coordinatorMemberName: string;
+  memberCount: number;
+}
+
+export interface ExternalChannelLaunchPresetModel {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: AgentRuntimeKind;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  llmConfig: Record<string, unknown> | null;
+}
+
+export interface ExternalChannelTeamLaunchPresetModel {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: AgentRuntimeKind;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  llmConfig: Record<string, unknown> | null;
+}
+
+export interface ExternalChannelBindingDraft {
+  provider: MessagingProvider;
+  transport: MessagingTransport;
+  accountId: string;
+  peerId: string;
+  threadId: string | null;
+  targetType: ExternalChannelBindingTargetType;
+  targetAgentDefinitionId: string;
+  targetTeamDefinitionId: string;
+  launchPreset: ExternalChannelLaunchPresetModel;
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetModel;
+}
+
+export interface ExternalChannelCapabilityModel {
+  bindingCrudEnabled: boolean;
+  reason?: string;
+  acceptedProviderTransportPairs?: string[];
+}
+
+export type WeChatSetupMode = 'WECOM_APP_BRIDGE' | 'DIRECT_PERSONAL_SESSION';
+
+export interface GatewayCapabilitiesModel {
+  whatsappBusinessEnabled: boolean;
+  wechatModes: WeChatSetupMode[];
+  defaultWeChatMode: WeChatSetupMode | null;
+  wecomAppEnabled: boolean;
+  wechatPersonalEnabled: boolean;
+  discordEnabled: boolean;
+  discordAccountId: string | null;
+  telegramEnabled: boolean;
+  telegramAccountId: string | null;
+}
+
+export type GatewayWeComAccountMode = 'APP' | 'LEGACY';
+
+export interface GatewayWeComAccountModel {
+  accountId: string;
+  label: string;
+  mode: GatewayWeComAccountMode;
+}
+
+export interface GatewayWeComAccountListModel {
+  items: GatewayWeComAccountModel[];
+}
+
+export interface GatewayHealthModel {
+  status: 'ok' | 'degraded' | 'error';
+  version?: string;
+  timestamp?: string;
+}
+
+export interface GatewayPersonalSessionQrModel {
+  code: string;
+  expiresAt: string;
+}
+
+export interface GatewayPersonalSessionModel {
+  sessionId: string;
+  accountLabel: string;
+  status: PersonalSessionStatus;
+  qr?: GatewayPersonalSessionQrModel;
+}
+
+export type GatewayPeerType = 'USER' | 'GROUP';
+
+export interface GatewayPeerCandidate {
+  peerId: string;
+  peerType: GatewayPeerType;
+  threadId: string | null;
+  displayName: string | null;
+  lastMessageAt: string;
+}
+
+export interface GatewayPeerCandidatesModel {
+  sessionId: string;
+  accountLabel: string;
+  status: PersonalSessionStatus;
+  updatedAt: string;
+  items: GatewayPeerCandidate[];
+}
+
+export interface GatewayDiscordPeerCandidatesModel {
+  accountId: string;
+  updatedAt: string;
+  items: GatewayPeerCandidate[];
+}
+
+export interface GatewayTelegramPeerCandidatesModel {
+  accountId: string;
+  updatedAt: string;
+  items: GatewayPeerCandidate[];
+}
+
+export type GatewayRuntimeReliabilityState = 'HEALTHY' | 'CRITICAL_LOCK_LOST';
+
+export interface GatewayRuntimeReliabilityStatusModel {
+  runtime: {
+    state: GatewayRuntimeReliabilityState;
+    criticalCode: string | null;
+    updatedAt: string;
+    workers: {
+      inboundForwarder: {
+        running: boolean;
+        lastError: string | null;
+        lastErrorAt: string | null;
+      };
+      outboundSender: {
+        running: boolean;
+        lastError: string | null;
+        lastErrorAt: string | null;
+      };
+    };
+    locks: {
+      inbox: {
+        ownerId: string | null;
+        held: boolean;
+        lost: boolean;
+        lastHeartbeatAt: string | null;
+        lastError: string | null;
+      };
+      outbox: {
+        ownerId: string | null;
+        held: boolean;
+        lost: boolean;
+        lastHeartbeatAt: string | null;
+        lastError: string | null;
+      };
+    };
+  };
+  queue: {
+    inboundDeadLetterCount: number;
+    inboundCompletedUnboundCount: number;
+    outboundDeadLetterCount: number;
+  };
+}
+
+export interface ManagedMessagingGatewayProviderConfigModel {
+  whatsappBusinessEnabled: boolean;
+  whatsappBusinessSecret: string;
+  wecomAppEnabled: boolean;
+  wecomWebhookToken: string;
+  wecomAppAccounts: GatewayWeComAccountModel[];
+  discordEnabled: boolean;
+  discordBotToken: string;
+  discordAccountId: string;
+  discordDiscoveryMaxCandidates: number;
+  discordDiscoveryTtlSeconds: number;
+  telegramEnabled: boolean;
+  telegramBotToken: string;
+  telegramAccountId: string;
+  telegramPollingEnabled: boolean;
+  telegramWebhookEnabled: boolean;
+  telegramWebhookSecretToken: string;
+}
+
+export interface ManagedMessagingGatewayProviderStatusModel {
+  provider: MessagingProvider;
+  supported: boolean;
+  selectedTransport: MessagingTransport;
+  configured: boolean;
+  effectivelyEnabled: boolean;
+  blockedReason: string | null;
+  accountId: string | null;
+}
+
+export interface ManagedMessagingGatewayStatusModel {
+  supported: boolean;
+  enabled: boolean;
+  lifecycleState: string;
+  message: string | null;
+  lastError: string | null;
+  activeVersion: string | null;
+  desiredVersion: string | null;
+  releaseTag: string | null;
+  installedVersions: string[];
+  bindHost: string | null;
+  bindPort: number | null;
+  pid: number | null;
+  providerConfig: ManagedMessagingGatewayProviderConfigModel;
+  providerStatusByProvider: Partial<
+    Record<MessagingProvider, ManagedMessagingGatewayProviderStatusModel>
+  >;
+  supportedProviders: MessagingProvider[];
+  excludedProviders: MessagingProvider[];
+  diagnostics: Record<string, unknown>;
+  runtimeReliabilityStatus: GatewayRuntimeReliabilityStatusModel | null;
+  runtimeRunning: boolean;
+}
+
+export interface SetupStepState {
+  key: SetupStepKey;
+  status: SetupStepStateStatus;
+  detail?: string;
+}
+
+export interface SetupBlocker {
+  code:
+    | 'GATEWAY_UNREACHABLE'
+    | 'GATEWAY_RUNTIME_CRITICAL'
+    | 'PROVIDER_NOT_READY'
+    | 'PERSONAL_MODE_DISABLED'
+    | 'SESSION_NOT_READY'
+    | 'SERVER_BINDING_API_UNAVAILABLE'
+    | 'BINDING_NOT_READY'
+    | 'TARGET_RUNTIME_NOT_ACTIVE'
+    | 'TARGET_OPTIONS_UNAVAILABLE'
+    | 'VERIFICATION_ERROR';
+  step: SetupStepKey;
+  message: string;
+  actions?: SetupBlockerAction[];
+}
+
+export interface SetupVerificationResult {
+  ready: boolean;
+  blockers: SetupBlocker[];
+  checks: SetupVerificationCheck[];
+  checkedAt: string;
+}
+
+export interface BindingScopeInput {
+  provider: MessagingProvider;
+  transport: MessagingTransport;
+  accountId?: string | null;
+}
+
+export interface GatewayReadinessSnapshot {
+  gatewayReady: boolean;
+  gatewayBlockedReason: string | null;
+  runtimeReliabilityState: GatewayRuntimeReliabilityState | null;
+  runtimeReliabilityCriticalReason: string | null;
+  personalSessionReady: boolean;
+  personalSessionBlockedReason: string | null;
+}
+
+export interface BindingReadinessSnapshot {
+  capabilityEnabled: boolean;
+  capabilityBlockedReason: string | null;
+  hasBindings: boolean;
+  bindingError: string | null;
+  bindingsInScope: number;
+}

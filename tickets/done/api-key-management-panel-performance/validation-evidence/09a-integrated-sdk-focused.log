@@ -1,0 +1,14 @@
+HEAD: f6f4d532f78f3b418dca471881f65d3415693f99
+COMMAND: pnpm -C autobyteus-ts exec vitest run tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/dynamic-model-identifiers.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/autobyteus-ts
+
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (4 tests) 4ms
+ ✓ tests/unit/llm/dynamic-model-identifiers.test.ts (5 tests) 4ms
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 6ms
+
+ Test Files  3 passed (3)
+      Tests  15 passed (15)
+   Start at  18:36:08
+   Duration  640ms (transform 549ms, setup 45ms, import 1.54s, tests 15ms, environment 0ms)
+

@@ -1,0 +1,53 @@
+COMMAND: merged identity/current-contract/durable-coverage/locale/size/scoped-patch audit
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance
+
+## Integrated merge identity
+HEAD: f6f4d532f78f3b418dca471881f65d3415693f99
+PARENTS: 16b5696716c4cab025ddb9b6bf420d8dea796f89 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+RESULT: PASS — exact merge commit and ordered parents; no unmerged paths.
+RESULT: PASS — no conflict markers in the four resolved paths.
+
+## Removed production contracts
+RESULT: PASS — removed aggregate queries, global reloads, and obsolete shared types are absent from production executable source.
+
+## Removed-query occurrences in current durable coverage
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:192:expect(queryFields).not.toContain('providerSettings');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:193:expect(queryFields).not.toContain('availableLlmProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:194:expect(queryFields).not.toContain('availableAudioProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:195:expect(queryFields).not.toContain('availableImageProvidersWithModels');
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts:196:expect(queryFields).not.toContain('availableVideoProvidersWithModels');
+autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:565:providerSettings: {
+RESULT: PASS — all five removed queries are independently asserted absent; no durable executable query uses them.
+CLASSIFICATION: electron-launch-profile-probe.mjs providerSettings is an evidence-object label, not a GraphQL operation.
+
+## Qwen/current built-in GLM coverage split
+modelIdentifier: 'qwen:glm-5.2', providerId: 'QWEN' => 1
+modelIdentifier: 'glm-5.3', value: 'glm-5.3' => 1
+modelIdentifier: 'qwen:glm-5.2', value: 'glm-5.2' => 1
+model: 'glm-5.2', path: '/compatible-mode/v1/chat/completions' => 1
+RESULT: PASS — Qwen-derived GLM 5.2 routing remains; separate built-in GLM assertion is current 5.3.
+
+## Integrated locale composition
+en: base=0 token_usage=0 composed=0 unique=0
+RESULT: FAIL — locale composition count/uniqueness mismatch.
+
+## Scoped patch hygiene
+RESULT: PASS — current working-tree diff check.
+
+## Stale delivery documentation signals
+autobyteus-server-ts/docs/modules/secret_management.md:113:Settings -> API Key Management reads one `providerSettings(runtimeKind)`
+autobyteus-server-ts/docs/modules/llm_management.md:53:`providerSettings(runtimeKind?)` is the sole read authority for Settings -> API
+autobyteus-server-ts/docs/modules/llm_management.md:79:`providerSettings` for authoritative state. Secret values are never returned.
+autobyteus-server-ts/docs/modules/llm_management.md:86:- `availableLlmProvidersWithModels(runtimeKind?)`
+autobyteus-server-ts/docs/modules/llm_management.md:87:- `availableAudioProvidersWithModels(runtimeKind?)`
+autobyteus-server-ts/docs/modules/llm_management.md:88:- `availableImageProvidersWithModels(runtimeKind?)`
+autobyteus-server-ts/docs/modules/llm_management.md:89:- `availableVideoProvidersWithModels(runtimeKind?)`
+autobyteus-server-ts/docs/modules/llm_management.md:112:- `reloadLlmModels(runtimeKind?)`
+autobyteus-server-ts/docs/modules/llm_management.md:160:`availableLlmProvidersWithModels(runtimeKind: "claude_agent_sdk")`.
+autobyteus-server-ts/docs/modules/llm_management.md:259:- Custom providers are returned in the same `providerSettings` collection as
+autobyteus-server-ts/docs/modules/llm_management.md:370:5. The client refetches canonical `providerSettings`; no echoed input,
+autobyteus-server-ts/docs/modules/llm_management.md:384:   `providerSettings`.
+autobyteus-server-ts/docs/modules/llm_management.md:419:- `reloadLlmModels(runtimeKind?)`
+autobyteus-web/docs/settings.md:12:- `providerSettings` returns each provider once with one provider-owned
+autobyteus-web/docs/settings.md:50:rather than relabeling the save as failed. Global and selected-provider reloads
+CLASSIFICATION: long-lived documentation remains delivery-owned and pending; no executable source impact.

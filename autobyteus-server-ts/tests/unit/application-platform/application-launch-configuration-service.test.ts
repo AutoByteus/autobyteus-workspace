@@ -4,6 +4,7 @@ import type {
   ApplicationResolvedResourceLaunchBaseline,
 } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
+import { buildOpenAICompatibleEndpointModelIdentifier } from "autobyteus-ts/llm/openai-compatible-endpoint-model.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ApplicationLaunchConfigurationService,
@@ -127,6 +128,7 @@ const createHarness = (input: {
     provenance: "PACKAGE" | "SELECTED_RESOURCE",
   ) => ApplicationResolvedResourceLaunchBaseline | Promise<ApplicationResolvedResourceLaunchBaseline>;
   initialStored?: StoredApplicationLaunchOverride | null;
+  ensureAutoByteusModelAvailable?: (modelIdentifier: string) => Promise<void>;
   requireCurrentAutoByteusModelIdentifier?: (modelIdentifier: string) => Promise<void>;
 } = {}) => {
   let stored = input.initialStored ? structuredClone(input.initialStored) : null;
@@ -166,7 +168,11 @@ const createHarness = (input: {
   const requireCurrentAutoByteusModelIdentifier = vi.fn(
     input.requireCurrentAutoByteusModelIdentifier ?? (async () => undefined),
   );
+  const ensureAutoByteusModelAvailable = vi.fn(
+    input.ensureAutoByteusModelAvailable ?? (async () => undefined),
+  );
   const currentModelSelectionPolicy = new ApplicationCurrentModelSelectionPolicy({
+    ensureAutoByteusModelAvailable,
     requireCurrentAutoByteusModelIdentifier,
   });
   const service = new ApplicationLaunchConfigurationService({
@@ -193,6 +199,7 @@ const createHarness = (input: {
     listOverrides,
     upsertOverride,
     removeOverride,
+    ensureAutoByteusModelAvailable,
     requireCurrentAutoByteusModelIdentifier,
     getStored: () => stored ? structuredClone(stored) : null,
   };
@@ -440,6 +447,69 @@ describe("ApplicationLaunchConfigurationService selected-resource resolution", (
       },
     });
 
+    expect(harness.upsertOverride).not.toHaveBeenCalled();
+    expect(harness.getStored()).toEqual(prior);
+  });
+
+  it("rejects a second dynamic leaf failure before writing the prior row", async () => {
+    const identifierA = buildOpenAICompatibleEndpointModelIdentifier("provider-a", "model-a");
+    const identifierB = buildOpenAICompatibleEndpointModelIdentifier("provider-b", "model-b");
+    const harness = createHarness({
+      initialStored: {
+        slotKey: slot.slotKey,
+        executionResourceRef: { state: "absent" },
+        launchOverride: { state: "absent" },
+        legacyLaunchDefaults: { state: "absent" },
+        updatedAt: "2026-08-23T10:00:00.000Z",
+      },
+      ensureAutoByteusModelAvailable: async (modelIdentifier) => {
+        if (modelIdentifier === identifierB) throw new Error("provider B unavailable");
+      },
+      buildBaseline: (ref, provenance) => {
+        const baseline = resourceKey(ref) === resourceKey(packageRef)
+          ? packageBaseline()
+          : alternateBaseline();
+        return {
+          ...baseline,
+          leaves: baseline.leaves.map((leaf, index) => ({
+            ...leaf,
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: index === 0 ? identifierA : identifierB,
+            provenance: {
+              ...leaf.provenance,
+              runtimeKind: {
+                kind: provenance === "PACKAGE"
+                  ? "PACKAGE_AGENT_DEFAULT"
+                  : "SELECTED_RESOURCE_AGENT_DEFAULT",
+                agentDefinitionId: leaf.agentDefinitionId,
+              },
+              llmModelIdentifier: {
+                kind: provenance === "PACKAGE"
+                  ? "PACKAGE_AGENT_DEFAULT"
+                  : "SELECTED_RESOURCE_AGENT_DEFAULT",
+                agentDefinitionId: leaf.agentDefinitionId,
+              },
+            },
+          })),
+        };
+      },
+    });
+    const prior = harness.getStored();
+
+    await expect(harness.service.upsertOverride(applicationId, slot.slotKey, {
+      executionResourceRef: packageRef,
+      launchOverride: null,
+    })).rejects.toMatchObject({
+      readiness: {
+        status: "HOST_REQUIREMENT_MISSING",
+        issues: [expect.objectContaining({
+          code: "MODEL_UNAVAILABLE",
+          memberAddress: "/writer",
+        })],
+      },
+    });
+    expect(harness.ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(1, identifierA);
+    expect(harness.ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(2, identifierB);
     expect(harness.upsertOverride).not.toHaveBeenCalled();
     expect(harness.getStored()).toEqual(prior);
   });

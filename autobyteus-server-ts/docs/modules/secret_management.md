@@ -110,30 +110,38 @@ governance and keeps its Codex-owned authentication behavior.
 - GraphQL and Settings expose only value-free configured state and vault
   failures through typed errors.
 
-Settings -> API Key Management reads one `providerSettings(runtimeKind)`
-collection. Each exact provider appears once with one provider-owned
-`apiKeyConfigured` Boolean plus its existing LLM/audio/image/video
-`ModelDetail` lists. The web does not merge repeated capability rows or keep a
-second credential-state map. Ordinary provider and Gemini Settings support
-save/overwrite, not a separate credential-removal action; save commands return
-only completion and the screen refetches the canonical provider group. Saving
-a replacement never reads the old value back. The existing custom-provider
-Delete action remains provider lifecycle ownership and removes only that
-provider's metadata and vault credential. Catalogs and curated models remain
-available when a credential is missing or the vault is unavailable.
+Settings -> API Key Management reads credential state through
+`providerCredentialSettings(runtimeKind)`. Each exact provider appears once
+with its descriptor and one provider-owned `apiKeyConfigured` Boolean. That
+read contains no model rows and performs no discovery; model state is an
+independent `providerModelCatalogSnapshots(runtimeKind)` projection. Ordinary
+provider and Gemini Settings support save/overwrite, not a separate
+credential-removal action. Successful commands return the updated value-free
+credential setting (plus specialized setup state where applicable), and the
+client applies it directly instead of refetching or awaiting a catalog action.
+Saving a replacement never reads the old value back. The existing
+custom-provider Delete action remains provider lifecycle ownership and removes
+only that provider's metadata, vault credential, lifecycle, and registry rows.
+Static/curated catalogs remain available when a credential is missing or the
+vault is unavailable.
 
 Custom OpenAI-compatible provider metadata remains in
 `<app-data-dir>/llm/custom-llm-providers.json` version 3 and contains only
 non-secret provider metadata. Its readable provider ID is deterministically
 derived from the normalized name and is the vault consumer identity. Create
-rolls metadata back if credential storage fails; a rejected create leaves no
-readable-ID secret. Delete removes the credential and metadata before
-refreshing the authoritative catalog.
+rolls metadata back if credential storage or source seeding fails; a rejected
+create leaves no readable-ID secret. The create command's successful discovery
+result seeds only that provider's in-process source. Delete removes the
+credential and metadata before removing that exact source; neither operation
+performs a global catalog refresh.
 
 AutoByteus remote discovery and invocation always use the intrinsic
 `provider.autobyteus.api-key`, regardless of a discovered model's downstream
 display provider. `AUTOBYTEUS_LLM_SERVER_HOSTS` remains ordinary non-secret
-configuration.
+configuration. A committed AutoByteus key replacement returns after the vault
+commit. It then invalidates and starts only the AutoByteus LLM/audio/image
+sources in the background; the credential command does not wait for remote
+hosts or relabel discovery failure as a credential failure.
 
 ## Gemini Setup And Metadata
 

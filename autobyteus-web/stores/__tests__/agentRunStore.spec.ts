@@ -34,7 +34,8 @@ const {
     errors: [],
   }),
   llmProviderConfigStoreMock: {
-    models: ['gpt-4-fallback'],
+    knownModels: ['gpt-4-fallback'],
+    models: vi.fn(),
     fetchProvidersWithModels: vi.fn().mockResolvedValue(undefined),
   },
   runHistoryStoreMock: {
@@ -132,7 +133,8 @@ describe('agentRunStore', () => {
         mockInterruptGeneration.mockReturnValue(true);
         mockServiceOptions.value = null;
         addToastMock.mockReset();
-        llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
+        llmProviderConfigStoreMock.knownModels = ['gpt-4-fallback'];
+        llmProviderConfigStoreMock.models.mockImplementation(() => llmProviderConfigStoreMock.knownModels);
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
         contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
         mutateMock.mockResolvedValue({
@@ -375,7 +377,7 @@ describe('agentRunStore', () => {
 
     it('sendUserInputAndSubscribe should throw when no model is available anywhere', async () => {
         mockAgentContext.config.llmModelIdentifier = '';
-        llmProviderConfigStoreMock.models = [];
+        llmProviderConfigStoreMock.knownModels = [];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
         const store = useAgentRunStore();
 

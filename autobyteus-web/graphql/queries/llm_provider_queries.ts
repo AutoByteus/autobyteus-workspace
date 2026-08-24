@@ -1,146 +1,52 @@
 import gql from 'graphql-tag'
 
-export const GET_PROVIDER_SETTINGS = gql`
-  query GetProviderSettings($runtimeKind: String) {
-    providerSettings(runtimeKind: $runtimeKind) {
-      provider {
-        id
-        name
-        providerType
-        isCustom
-        baseUrl
-        apiKeyConfigured
-        status
-        statusMessage
-      }
-      llmModels { modelIdentifier name providerType }
-      audioModels { modelIdentifier name providerType }
-      imageModels { modelIdentifier name providerType }
-      videoModels { modelIdentifier name providerType }
+export const GET_PROVIDER_CREDENTIAL_SETTINGS = gql`
+  query GetProviderCredentialSettings($runtimeKind: String) {
+    providerCredentialSettings(runtimeKind: $runtimeKind) {
+      provider { id name providerType isCustom baseUrl catalogMode }
+      apiKeyConfigured
     }
   }
 `
 
-export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
-  query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
-    availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-      provider {
-        id
-        name
-        providerType
-        isCustom
-        baseUrl
-        status
-        statusMessage
-      }
-      models {
-        modelIdentifier
-        name
-        description
-        value
-        canonicalName
-        providerId
-        providerName
-        providerType
-        runtime
-        hostUrl
-        configSchema
-        maxContextTokens
-        activeContextTokens
-        maxInputTokens
-        maxOutputTokens
-        metadataProvenance
-      }
+export const PROVIDER_MODEL_CATALOG_SNAPSHOT_FIELDS = gql`
+  fragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {
+    runtimeKind
+    ownerProvider { id name providerType isCustom baseUrl catalogMode }
+    sources {
+      modelKind state modelCount successfulUnitCount failedUnitCount safeMessage
     }
-    availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
-      provider {
-        id
-        name
-        providerType
-        isCustom
-        baseUrl
-        status
-        statusMessage
-      }
-      models {
-        modelIdentifier
-        name
-        value
-        canonicalName
-        providerId
-        providerName
-        providerType
-        runtime
-        hostUrl
-      }
+    llmModels {
+      modelIdentifier name description value canonicalName providerId providerName providerType
+      runtime hostUrl configSchema maxContextTokens activeContextTokens maxInputTokens
+      maxOutputTokens metadataProvenance
     }
-    availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
-      provider {
-        id
-        name
-        providerType
-        isCustom
-        baseUrl
-        status
-        statusMessage
-      }
-      models {
-        modelIdentifier
-        name
-        value
-        canonicalName
-        providerId
-        providerName
-        providerType
-        runtime
-        hostUrl
-      }
-    }
-    availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
-      provider {
-        id
-        name
-        providerType
-        isCustom
-        baseUrl
-        status
-        statusMessage
-      }
-      models {
-        modelIdentifier
-        name
-        value
-        canonicalName
-        providerId
-        providerName
-        providerType
-        runtime
-        hostUrl
-      }
+    audioModels { modelIdentifier name value canonicalName providerId providerName providerType runtime hostUrl }
+    imageModels { modelIdentifier name description value canonicalName providerId providerName providerType runtime hostUrl }
+    videoModels { modelIdentifier name value canonicalName providerId providerName providerType runtime hostUrl }
+  }
+`
+
+export const GET_PROVIDER_MODEL_CATALOG_SNAPSHOTS = gql`
+  query GetProviderModelCatalogSnapshots($runtimeKind: String) {
+    providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+      ...ProviderModelCatalogSnapshotFields
     }
   }
+  ${PROVIDER_MODEL_CATALOG_SNAPSHOT_FIELDS}
 `
 
 export const GET_GEMINI_SETUP_CONFIG = gql`
   query GetGeminiSetupConfig {
     getGeminiSetupConfig {
-      activeMode
-      aiStudioConfigured
-      vertexExpressConfigured
-      vertexProject {
-        project
-        location
-      }
+      activeMode aiStudioConfigured vertexExpressConfigured
+      vertexProject { project location }
     }
   }
 `
 
 export const GET_QWEN_SETUP_STATUS = gql`
   query GetQwenSetupStatus {
-    qwenSetupStatus {
-      effectiveBaseUrl
-      endpointSource
-      apiKeyConfigured
-    }
+    qwenSetupStatus { effectiveBaseUrl endpointSource }
   }
 `

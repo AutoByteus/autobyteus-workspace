@@ -1,7 +1,10 @@
 import type { ApplicationEffectiveLaunchConfiguration } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import { ApplicationLaunchConfigurationError } from "./application-launch-configuration-diagnostics.js";
-import type { ApplicationCurrentModelSelectionPolicy } from "./application-current-model-selection-policy.js";
+import {
+  ApplicationModelAvailabilityError,
+  type ApplicationCurrentModelSelectionPolicy,
+} from "./application-current-model-selection-policy.js";
 
 export const requireApplicationCurrentModelSelections = async (
   policy: ApplicationCurrentModelSelectionPolicy,
@@ -17,11 +20,18 @@ export const requireApplicationCurrentModelSelections = async (
         llmModelIdentifier: leaf.llmModelIdentifier,
       });
     } catch (error) {
-      if (!(error instanceof CurrentModelSelectionRequiredError)) throw error;
+      if (
+        !(error instanceof CurrentModelSelectionRequiredError)
+        && !(error instanceof ApplicationModelAvailabilityError)
+      ) {
+        throw error;
+      }
       issues.push({
         severity: "blocking" as const,
         scope: "HOST_CAPABILITY" as const,
-        code: "CURRENT_MODEL_SELECTION_REQUIRED" as const,
+        code: error instanceof CurrentModelSelectionRequiredError
+          ? "CURRENT_MODEL_SELECTION_REQUIRED" as const
+          : "MODEL_UNAVAILABLE" as const,
         slotKey: configuration.slotKey,
         memberAddress: leaf.memberAddress,
         message: error.message,

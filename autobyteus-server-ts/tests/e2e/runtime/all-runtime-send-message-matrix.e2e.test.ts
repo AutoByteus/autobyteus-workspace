@@ -469,14 +469,14 @@ describeAllRuntimeMatrix(
       runtimeKind: RuntimeKind,
     ): Promise<string> => {
       const result = await execGraphql<{
-        availableLlmProvidersWithModels: Array<{
-          models: Array<{ modelIdentifier: string }>;
+        providerModelCatalogSnapshots: Array<{
+          llmModels: Array<{ modelIdentifier: string }>;
         }>;
       }>(
         `
           query Models($runtimeKind: String) {
-            availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-              models {
+            providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+              llmModels {
                 modelIdentifier
               }
             }
@@ -485,9 +485,9 @@ describeAllRuntimeMatrix(
         { runtimeKind },
       );
 
-      const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap(
+      const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap(
         (provider) =>
-          provider.models
+          provider.llmModels
             .map((model) => model.modelIdentifier)
             .filter(
               (modelIdentifier): modelIdentifier is string =>

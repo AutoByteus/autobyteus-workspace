@@ -2,12 +2,18 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   testAgentNode,
@@ -22,18 +28,18 @@ const createAgentRunManager = () => {
       runId,
       config,
       isActive: () => true,
-      getPlatformAgentRunId: () => `${runId}-platform`,
       getStatusSnapshot: () => ({ status: "idle" }),
       subscribeToEvents: () => () => undefined,
       postUserMessage: async () => ({ accepted: true }),
       approveToolInvocation: async () => ({ accepted: true }),
       interrupt: async () => ({ accepted: true }),
-      terminate: async () => ({ accepted: true }),
     };
     return {
       runId,
       runtimeKind: config.runtimeKind,
-      platformAgentRunId: `${runId}-platform`,
+      platformAgentRunId: config.runtimeKind === RuntimeKind.AUTOBYTEUS
+        ? runId
+        : `platform-${runId}`,
       commitPublication: () => run,
       abort: async () => ({ kind: "aborted" as const }),
     };
@@ -57,8 +63,28 @@ const createHandle = (input: {
     }
     return null;
   };
+  const findPhysicalScope = (
+    node: TeamRunAgentTeamNode,
+    scope: TeamRunPhysicalScope,
+  ): TeamRunPhysicalScope | null => {
+    if (node.address === input.teamAddress) return scope;
+    for (const child of node.children) {
+      if (child.kind !== "agent_team") continue;
+      const found = findPhysicalScope(
+        child,
+        createChildTeamRunPhysicalScope(scope, child.teamRunId),
+      );
+      if (found) return found;
+    }
+    return null;
+  };
   const teamNode = findTeam(input.config.rootTeam);
   if (!teamNode) throw new Error(`missing Team node '${input.teamAddress}'`);
+  const physicalScope = findPhysicalScope(
+    input.config.rootTeam,
+    createRootTeamRunPhysicalScope(input.config.rootTeam.teamRunId),
+  );
+  if (!physicalScope) throw new Error(`missing Team scope '${input.teamAddress}'`);
   const memberContext = new MixedAgentMemberContext({
     address: input.node.address,
     agentRunId: input.node.agentRunId,
@@ -66,22 +92,34 @@ const createHandle = (input: {
     platformAgentRunId: null,
   });
   const teamContext = new TeamRunContext({
-    rootTeamRunId: input.config.rootTeam.teamRunId,
+    physicalScope,
     teamRunId: input.teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode,
     handoffs: input.config.handoffs,
     runtimeContext: new MixedTeamRunContext({
       memberContexts: [memberContext],
+      configuredMemberActivationMode: "fresh",
     }),
   });
-  return new MixedAgentMemberHandle({
+  const memoryLocationService = new AgentMemoryLocationService({
+    memoryDir: appConfigProvider.config.getMemoryDir(),
+  });
+  const getTeamAgentRunLocation = vi.spyOn(
+    memoryLocationService,
+    "getTeamAgentRunLocation",
+  );
+  const revokeAgentToolMcpSessionsForRun = vi.fn();
+  const acceptPlatformBinding = vi.fn(async () => undefined);
+  const handle = new MixedAgentMemberHandle({
     teamContext,
     context: memberContext,
     config: input.node,
     activationMode: "fresh",
     agentRunManager: { prepareNewAgentRun: input.prepareNewAgentRun } as never,
-    activityInspector: { inspect: () => ({ kind: "none" }) } as never,
+    agentToolMcpSessionManager: { revokeAgentToolMcpSessionsForRun } as never,
+    memoryLocationService,
+    activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
     memberTeamContextBuilder: {
       build: vi.fn(async () => testMemberTeamContext({
         rootTeamRunId: input.config.rootTeam.teamRunId,
@@ -90,13 +128,19 @@ const createHandle = (input: {
       })),
     } as never,
     publish: vi.fn(),
-    acceptPlatformBinding: vi.fn(async () => undefined),
+    acceptPlatformBinding,
     deliverInterAgentMessage: vi.fn(),
   });
+  return {
+    handle,
+    getTeamAgentRunLocation,
+    revokeAgentToolMcpSessionsForRun,
+    acceptPlatformBinding,
+  };
 };
 
 describe("MixedAgentMemberHandle memory location", () => {
-  it("derives a direct member memory directory solely from root TeamRun and AgentRun identity", async () => {
+  it("uses the root scope for a direct root member", async () => {
     const worker = testAgentNode("/worker", {
       agentRunId: "worker-run-1",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -107,26 +151,37 @@ describe("MixedAgentMemberHandle memory location", () => {
       children: [worker],
     });
     const { prepareNewAgentRun } = createAgentRunManager();
-    const handle = createHandle({
-      config,
-      teamRunId: "team-run-1",
-      teamAddress: "/",
-      node: worker,
-      prepareNewAgentRun,
-    });
+    const {
+      handle,
+      getTeamAgentRunLocation,
+      revokeAgentToolMcpSessionsForRun,
+      acceptPlatformBinding,
+    } = createHandle({ config, teamRunId: "team-run-1", teamAddress: "/", node: worker, prepareNewAgentRun });
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
       .resolves.toMatchObject({ accepted: true });
-    expect(prepareNewAgentRun).toHaveBeenCalledWith({
-      runId: "worker-run-1",
-      config: expect.objectContaining({
+    expect(prepareNewAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: "worker-run-1",
+        config: expect.objectContaining({
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
           .getTeamAgentRunDirPath({ rootTeamRunId: "team-run-1", ancestorTeamRunIds: [] }, "worker-run-1"),
+        }),
       }),
+    );
+    expect(getTeamAgentRunLocation).toHaveBeenCalledWith({
+      rootTeamRunId: "team-run-1",
+      ancestorTeamRunIds: [],
+      agentRunId: "worker-run-1",
     });
+    expect(acceptPlatformBinding).toHaveBeenCalledWith(expect.objectContaining({
+      platformAgentRunId: "platform-worker-run-1",
+    }));
+    handle.dispose();
+    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenCalledWith("worker-run-1");
   });
 
-  it("uses the root plus globally unique AgentRun identity for a nested configured member", async () => {
+  it("includes the containing configured TeamRun boundary for a nested member", async () => {
     const worker = testAgentNode("/sub_team/worker", {
       agentRunId: "nested-worker-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -145,7 +200,12 @@ describe("MixedAgentMemberHandle memory location", () => {
       ],
     });
     const { prepareNewAgentRun } = createAgentRunManager();
-    const handle = createHandle({
+    const {
+      handle,
+      getTeamAgentRunLocation,
+      revokeAgentToolMcpSessionsForRun,
+      acceptPlatformBinding,
+    } = createHandle({
       config,
       teamRunId: "sub-team-run",
       teamAddress: "/sub_team",
@@ -155,15 +215,27 @@ describe("MixedAgentMemberHandle memory location", () => {
 
     await expect(handle.postMessage(new AgentInputUserMessage("hello", SenderType.USER)))
       .resolves.toMatchObject({ accepted: true });
-    expect(prepareNewAgentRun).toHaveBeenCalledWith({
-      runId: "nested-worker-run",
-      config: expect.objectContaining({
-        memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
-          .getTeamAgentRunDirPath({
-            rootTeamRunId: "root-run",
-            ancestorTeamRunIds: [],
-          }, "nested-worker-run"),
+    expect(prepareNewAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: "nested-worker-run",
+        config: expect.objectContaining({
+          memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
+            .getTeamAgentRunDirPath({
+              rootTeamRunId: "root-run",
+              ancestorTeamRunIds: ["sub-team-run"],
+            }, "nested-worker-run"),
+        }),
       }),
+    );
+    expect(getTeamAgentRunLocation).toHaveBeenCalledWith({
+      rootTeamRunId: "root-run",
+      ancestorTeamRunIds: ["sub-team-run"],
+      agentRunId: "nested-worker-run",
     });
+    expect(acceptPlatformBinding).toHaveBeenCalledWith(expect.objectContaining({
+      platformAgentRunId: "platform-nested-worker-run",
+    }));
+    handle.dispose();
+    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenCalledWith("nested-worker-run");
   });
 });

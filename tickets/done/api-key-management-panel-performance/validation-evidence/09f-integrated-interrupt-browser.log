@@ -1,0 +1,3 @@
+HEAD: f6f4d532f78f3b418dca471881f65d3415693f99 (plus one API/E2E durable assertion correction)
+COMMAND: node autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser
+Interrupt result presentation probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/09f-integrated-interrupt-browser/evidence.json

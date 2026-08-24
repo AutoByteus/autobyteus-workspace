@@ -125,57 +125,55 @@ export class AutobyteusClient {
     };
   }
 
-  async getAvailableLlmModels(): Promise<JsonRecord> {
-    try {
-      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/llm'));
-      return response.data;
-    } catch (error) {
-      throw this.handleAxiosError(error, 'Async LLM model fetch error');
-    }
+  async getAvailableLlmModels(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.asyncClient, '/models/llm', options, 'Async LLM model fetch error');
   }
 
-  async getAvailableLlmModelsSync(): Promise<JsonRecord> {
-    try {
-      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/llm'));
-      return response.data;
-    } catch (error) {
-      throw this.handleAxiosError(error, 'Sync LLM model fetch error');
-    }
+  async getAvailableLlmModelsSync(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.syncClient, '/models/llm', options, 'Sync LLM model fetch error');
   }
 
-  async getAvailableImageModels(): Promise<JsonRecord> {
-    try {
-      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/image'));
-      return response.data;
-    } catch (error) {
-      throw this.handleAxiosError(error, 'Async image model fetch error');
-    }
+  async getAvailableImageModels(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.asyncClient, '/models/image', options, 'Async image model fetch error');
   }
 
-  async getAvailableImageModelsSync(): Promise<JsonRecord> {
-    try {
-      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/image'));
-      return response.data;
-    } catch (error) {
-      throw this.handleAxiosError(error, 'Sync image model fetch error');
-    }
+  async getAvailableImageModelsSync(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.syncClient, '/models/image', options, 'Sync image model fetch error');
   }
 
-  async getAvailableAudioModels(): Promise<JsonRecord> {
-    try {
-      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/audio'));
-      return response.data;
-    } catch (error) {
-      throw this.handleAxiosError(error, 'Async audio model fetch error');
-    }
+  async getAvailableAudioModels(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.asyncClient, '/models/audio', options, 'Async audio model fetch error');
   }
 
-  async getAvailableAudioModelsSync(): Promise<JsonRecord> {
+  async getAvailableAudioModelsSync(
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
+    return this.fetchAvailableModels(this.syncClient, '/models/audio', options, 'Sync audio model fetch error');
+  }
+
+  private async fetchAvailableModels(
+    client: AxiosInstance,
+    resourcePath: string,
+    options: AutobyteusRequestOptions,
+    errorPrefix: string,
+  ): Promise<JsonRecord> {
     try {
-      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/audio'));
+      const response = await client.get(joinAutobyteusUrl(this.serverUrl, resourcePath), {
+        signal: options.signal ?? undefined,
+      });
       return response.data;
     } catch (error) {
-      throw this.handleAxiosError(error, 'Sync audio model fetch error');
+      throw this.handleAxiosError(error, errorPrefix);
     }
   }
 

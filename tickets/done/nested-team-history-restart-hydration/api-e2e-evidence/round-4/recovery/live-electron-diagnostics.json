@@ -1,0 +1,550 @@
+{
+  "capturedAt": "2026-08-24T04:15:54.090272+00:00",
+  "server": {
+    "baseUrl": "http://127.0.0.1:29695",
+    "dataDir": "/Users/normy/.autobyteus/server-data"
+  },
+  "target": {
+    "rootTeamRunId": "nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a",
+    "isActive": false,
+    "createdAt": "2026-08-20T16:38:54.598Z",
+    "rootDirectory": {
+      "exists": true,
+      "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a",
+      "kind": "directory",
+      "size": 352,
+      "modifiedAtEpoch": 1787543987.3922017
+    }
+  },
+  "teams": [
+    {
+      "origin": "root_team",
+      "address": "/",
+      "teamRunId": "nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a",
+      "ancestorTeamRunIds": [],
+      "settledAt": null
+    },
+    {
+      "origin": "configured_team",
+      "address": "/StudentStudyGroup",
+      "teamRunId": "student_study_group_d5e7da72c5e94cbe8e5b264b736de274",
+      "ancestorTeamRunIds": [],
+      "settledAt": null
+    },
+    {
+      "origin": "task_team",
+      "address": "/StudentStudyGroup",
+      "teamRunId": "team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b",
+      "ancestorTeamRunIds": [],
+      "settledAt": "2026-08-20T16:39:49.184Z"
+    },
+    {
+      "origin": "task_team",
+      "address": "/StudentStudyGroup",
+      "teamRunId": "team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21",
+      "ancestorTeamRunIds": [],
+      "settledAt": "2026-08-20T16:40:55.773Z"
+    },
+    {
+      "origin": "task_team",
+      "address": "/StudentStudyGroup",
+      "teamRunId": "team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642",
+      "ancestorTeamRunIds": [],
+      "settledAt": "2026-08-20T16:44:32.248Z"
+    },
+    {
+      "origin": "task_team",
+      "address": "/StudentStudyGroup",
+      "teamRunId": "team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26",
+      "ancestorTeamRunIds": [],
+      "settledAt": "2026-08-20T16:47:06.308Z"
+    }
+  ],
+  "agents": [
+    {
+      "origin": "configured_agent",
+      "address": "/Teacher",
+      "agentRunId": "test_teacher_a91082a10db940cd84d926f832819fe4",
+      "ancestorTeamRunIds": [],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787243950.6875017
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 54319,
+        "modifiedAtEpoch": 1787244430.8330839,
+        "sha256": "d151701e3daaeb12d15730fd0d026ebfe10df8c390cbf86feb0761c0e96c1f65",
+        "nonEmptyLineCount": 124
+      },
+      "flatDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787243950.6875017
+      },
+      "flatRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 54319,
+        "modifiedAtEpoch": 1787244430.8330839,
+        "sha256": "d151701e3daaeb12d15730fd0d026ebfe10df8c390cbf86feb0761c0e96c1f65",
+        "nonEmptyLineCount": 124
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4"
+      ],
+      "projection": {
+        "conversationCount": 90,
+        "activityCount": 34,
+        "lastActivityAt": "2026-08-20T16:47:10.832Z",
+        "summary": "give student team a hard middle school math task",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 90,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "configured_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_1914195019d548bcb18b3c769d726377",
+      "ancestorTeamRunIds": [
+        "student_study_group_d5e7da72c5e94cbe8e5b264b736de274"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_one_1914195019d548bcb18b3c769d726377",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787243983.994771
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_one_1914195019d548bcb18b3c769d726377/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 37825,
+        "modifiedAtEpoch": 1787460799.3324893,
+        "sha256": "141157cbbb3bf0035c2dee523a7a87904925536925c70676dc5574e9330123f7",
+        "nonEmptyLineCount": 77
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_1914195019d548bcb18b3c769d726377"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_1914195019d548bcb18b3c769d726377/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_one_1914195019d548bcb18b3c769d726377"
+      ],
+      "projection": {
+        "conversationCount": 60,
+        "activityCount": 17,
+        "lastActivityAt": "2026-08-23T04:53:19.332Z",
+        "summary": "You received a message from sender name: Teacher, sender id: test_teacher_a91082a10db940cd84d926f...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 60,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "configured_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_96b429c2b22243c788f13e642ad1553d",
+      "ancestorTeamRunIds": [
+        "student_study_group_d5e7da72c5e94cbe8e5b264b736de274"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_two_96b429c2b22243c788f13e642ad1553d",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787243995.5114958
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_two_96b429c2b22243c788f13e642ad1553d/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 4878,
+        "modifiedAtEpoch": 1787244059.8505454,
+        "sha256": "653c569ca03f0ba4cbd774acd935b17d17340ba4062fe518e1184db097934c81",
+        "nonEmptyLineCount": 10
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_96b429c2b22243c788f13e642ad1553d"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_96b429c2b22243c788f13e642ad1553d/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_study_group_d5e7da72c5e94cbe8e5b264b736de274/student_two_96b429c2b22243c788f13e642ad1553d"
+      ],
+      "projection": {
+        "conversationCount": 8,
+        "activityCount": 2,
+        "lastActivityAt": "2026-08-20T16:40:59.850Z",
+        "summary": "You received a message from sender name: student_one, sender id: student_one_1914195019d548bcb18b...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 8,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_7c05431d59074513a054b548ee529e55",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b/student_one_7c05431d59074513a054b548ee529e55",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787243964.8929946
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b/student_one_7c05431d59074513a054b548ee529e55/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 1967,
+        "modifiedAtEpoch": 1787243974.4740155,
+        "sha256": "c256c68385bb7566219733e307183349e154a042a6b519ad8ee8f107b8e16621",
+        "nonEmptyLineCount": 4
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_7c05431d59074513a054b548ee529e55"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_7c05431d59074513a054b548ee529e55/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b/student_one_7c05431d59074513a054b548ee529e55"
+      ],
+      "projection": {
+        "conversationCount": 3,
+        "activityCount": 1,
+        "lastActivityAt": "2026-08-20T16:39:34.473Z",
+        "summary": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_a91082a10db940cd84d926f...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 3,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_9c406c17298e41328d5a71a93d3e6c5e",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b"
+      ],
+      "canonicalDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b/student_two_9c406c17298e41328d5a71a93d3e6c5e"
+      },
+      "canonicalRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b/student_two_9c406c17298e41328d5a71a93d3e6c5e/raw_traces_active.jsonl"
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_9c406c17298e41328d5a71a93d3e6c5e"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_9c406c17298e41328d5a71a93d3e6c5e/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787244028.8264706
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 2188,
+        "modifiedAtEpoch": 1787244039.8759518,
+        "sha256": "a5ec938f46323d125c647b02b2522a728cf22ad9257d947129dae07a57cc4f80",
+        "nonEmptyLineCount": 4
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46"
+      ],
+      "projection": {
+        "conversationCount": 3,
+        "activityCount": 1,
+        "lastActivityAt": "2026-08-20T16:40:39.875Z",
+        "summary": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_a91082a10db940cd84d926f...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 3,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_8d4fd9ede9fd443ba1341eb427045601",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21"
+      ],
+      "canonicalDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21/student_two_8d4fd9ede9fd443ba1341eb427045601"
+      },
+      "canonicalRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21/student_two_8d4fd9ede9fd443ba1341eb427045601/raw_traces_active.jsonl"
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_8d4fd9ede9fd443ba1341eb427045601"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_8d4fd9ede9fd443ba1341eb427045601/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_210398f0b40a4223b71aaa910abdd89f",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642/student_one_210398f0b40a4223b71aaa910abdd89f",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787244252.2414389
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642/student_one_210398f0b40a4223b71aaa910abdd89f/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 2394,
+        "modifiedAtEpoch": 1787244268.8725083,
+        "sha256": "591acfb9646b7f6acdafad7e2b4baff08db261dfe312f378d011772051d3e7e8",
+        "nonEmptyLineCount": 4
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_210398f0b40a4223b71aaa910abdd89f"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_210398f0b40a4223b71aaa910abdd89f/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642/student_one_210398f0b40a4223b71aaa910abdd89f"
+      ],
+      "projection": {
+        "conversationCount": 3,
+        "activityCount": 1,
+        "lastActivityAt": "2026-08-20T16:44:28.872Z",
+        "summary": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_a91082a10db940cd84d926f...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 3,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_772529c5195e4940a3f69220831396a9",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642"
+      ],
+      "canonicalDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642/student_two_772529c5195e4940a3f69220831396a9"
+      },
+      "canonicalRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642/student_two_772529c5195e4940a3f69220831396a9/raw_traces_active.jsonl"
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_772529c5195e4940a3f69220831396a9"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_772529c5195e4940a3f69220831396a9/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_5228784099e54bccb2ab4c63b1b24928",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26"
+      ],
+      "canonicalDirectory": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26/student_one_5228784099e54bccb2ab4c63b1b24928",
+        "kind": "directory",
+        "size": 96,
+        "modifiedAtEpoch": 1787244388.2774575
+      },
+      "canonicalRawTrace": {
+        "exists": true,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26/student_one_5228784099e54bccb2ab4c63b1b24928/raw_traces_active.jsonl",
+        "kind": "file",
+        "size": 4088,
+        "modifiedAtEpoch": 1787244412.9239697,
+        "sha256": "511e1b3344847005f5556b596071b80ab015d2f8a8501c439daba2e0fc0b3eba",
+        "nonEmptyLineCount": 8
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_5228784099e54bccb2ab4c63b1b24928"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_5228784099e54bccb2ab4c63b1b24928/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26/student_one_5228784099e54bccb2ab4c63b1b24928"
+      ],
+      "projection": {
+        "conversationCount": 6,
+        "activityCount": 2,
+        "lastActivityAt": "2026-08-20T16:46:52.923Z",
+        "summary": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_a91082a10db940cd84d926f...",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 6,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_23e2d96396814536986f1250e1102207",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26"
+      ],
+      "canonicalDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26/student_two_23e2d96396814536986f1250e1102207"
+      },
+      "canonicalRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26/student_two_23e2d96396814536986f1250e1102207/raw_traces_active.jsonl"
+      },
+      "flatDirectory": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_23e2d96396814536986f1250e1102207"
+      },
+      "flatRawTrace": {
+        "exists": false,
+        "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_23e2d96396814536986f1250e1102207/raw_traces_active.jsonl"
+      },
+      "allDirectoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    }
+  ],
+  "layoutMigration": null,
+  "layoutMigrationLog": null
+}

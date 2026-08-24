@@ -21,21 +21,23 @@ const translations: Record<string, string> = {
 const provider = (overrides: Record<string, unknown> = {}) => ({
   id: 'OPENAI', name: 'OpenAI', label: 'OpenAI', totalModels: 1,
   isCustom: false, providerType: 'OPENAI', baseUrl: null,
-  apiKeyConfigured: true, status: 'NOT_APPLICABLE', statusMessage: null,
+  apiKeyConfigured: true, catalogMode: 'STATIC',
   ...overrides,
 })
 
 const createRuntime = (overrides: Record<string, any> = {}) => ({
-  loading: ref(false), saving: ref(false), activating: ref(false),
+  loading: ref(false), credentialError: ref(null), saving: ref(false), activating: ref(false),
   notification: ref(null), providerEditorResetVersion: ref(0),
-  isLoadingModels: ref(false), isReloadingModels: ref(false),
+  isLoadingModels: ref(false), isRefreshingModels: ref(false), isReloadingModels: ref(false),
+  reloadingProvider: ref(null), modelErrorMessage: ref(null),
+  hasPartialModelResult: ref(false), hasUnavailableModelSource: ref(false),
+  catalogHasSuccessfulPayload: ref(true),
   geminiSetup: ref({
     activeMode: null, aiStudioConfigured: false,
     vertexExpressConfigured: false, vertexProject: null,
   }),
   qwenSetup: ref({
     effectiveBaseUrl: 'https://default.example/v1', endpointSource: 'DEFAULT',
-    apiKeyConfigured: false,
   }),
   qwenFormResetVersion: ref(0), qwenSaveErrorMessage: ref(null), qwenSaveErrorCode: ref(null),
   allProvidersWithModels: ref([provider()]),
@@ -44,14 +46,14 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   selectedProviderLabel: ref('OpenAI'),
   selectedProviderLlmModels: ref([{ modelIdentifier: 'gpt-4.1', name: 'GPT 4.1', providerType: 'OPENAI' }]),
   selectedProviderAudioModels: ref([]), selectedProviderImageModels: ref([]), selectedProviderVideoModels: ref([]),
-  selectedProviderConfigured: ref(true), canReloadSelectedProvider: ref(true),
+  selectedProviderConfigured: ref(true), canReloadSelectedProvider: ref(false),
   isReloadingSelectedProvider: ref(false), isProviderConfigured: vi.fn(() => true),
   customProviderDraft: ref({ name: '', baseUrl: '', apiKey: '' }),
   customProviderProbeResult: ref(null), customProviderError: ref(null),
   isProbingCustomProvider: ref(false), isSavingCustomProvider: ref(false),
   isDeletingCustomProvider: ref(false), isCustomProviderProbeStale: ref(false),
   canProbeCustomProvider: ref(false), canSaveCustomProvider: ref(false),
-  initialize: vi.fn().mockResolvedValue(undefined), selectProvider: vi.fn(), reloadAllModels: vi.fn(),
+  initialize: vi.fn().mockResolvedValue(undefined), selectProvider: vi.fn(),
   reloadSelectedProvider: vi.fn(), saveGeminiConfigurationOption: vi.fn(),
   saveAndActivateGeminiConfigurationOption: vi.fn(), activateGeminiConfigurationOption: vi.fn(),
   saveProviderApiKey: vi.fn(), updateCustomProviderDraft: vi.fn(),
@@ -73,7 +75,7 @@ const mountComponent = async (overrides: Record<string, any> = {}) => {
         },
         QwenSetupForm: {
           name: 'QwenSetupForm',
-          props: ['setup', 'saving', 'resetVersion', 'errorMessage', 'errorCode'],
+          props: ['setup', 'configured', 'saving', 'resetVersion', 'errorMessage', 'errorCode'],
           emits: ['save', 'clear-error'],
           template: '<button data-testid="qwen-form" @click="$emit(\'save\', { baseUrl: \'https://qwen.example/v1\', apiKey: \'synthetic-key\' })">Qwen</button>',
         },
@@ -103,6 +105,7 @@ describe('ProviderAPIKeyManager', () => {
     expect(wrapper.text()).toContain('API Key Management')
     expect(wrapper.text()).toContain('gpt-4.1')
     expect(wrapper.find('[data-testid="api-key-editor"]').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('Reload all')
   })
 
   it('renders the draft custom-provider path without credential-status gating', async () => {

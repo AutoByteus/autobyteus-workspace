@@ -1,0 +1,364 @@
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { getApolloClient } from '~/utils/apolloClient'
+import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
+import {
+  CreateAgentDefinition,
+  DeleteAgentDefinition,
+  RefreshAgentDefinitionCatalog,
+  UpdateAgentDefinition,
+} from '~/graphql/mutations/agentDefinitionMutations'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
+import {
+  normalizeDefinitionOwnershipScope,
+  type DefinitionOwnershipScope,
+} from '~/utils/definitionOwnership'
+
+export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
+
+export interface AgentDefinition {
+  __typename?: 'AgentDefinition'
+  id: string
+  name: string
+  role?: string | null
+  description: string
+  instructions: string
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames: string[]
+  inputProcessorNames: string[]
+  llmResponseProcessorNames: string[]
+  toolExecutionResultProcessorNames: string[]
+  toolInvocationPreprocessorNames: string[]
+  lifecycleProcessorNames: string[]
+  skillNames: string[]
+  ownershipScope?: AgentDefinitionOwnershipScope | null
+  ownerTeamId?: string | null
+  ownerTeamName?: string | null
+  ownerApplicationId?: string | null
+  ownerApplicationName?: string | null
+  ownerPackageId?: string | null
+  ownerLocalApplicationId?: string | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
+}
+
+export interface CreateAgentDefinitionInput {
+  name: string
+  role?: string | null
+  description: string
+  instructions: string
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames?: string[]
+  inputProcessorNames?: string[]
+  llmResponseProcessorNames?: string[]
+  toolExecutionResultProcessorNames?: string[]
+  toolInvocationPreprocessorNames?: string[]
+  lifecycleProcessorNames?: string[]
+  skillNames?: string[]
+  defaultLaunchConfig?: DefaultLaunchConfig | null
+}
+
+export interface UpdateAgentDefinitionInput {
+  id: string
+  name?: string | null
+  role?: string | null
+  description?: string | null
+  instructions?: string | null
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames?: string[]
+  inputProcessorNames?: string[]
+  llmResponseProcessorNames?: string[]
+  toolExecutionResultProcessorNames?: string[]
+  toolInvocationPreprocessorNames?: string[]
+  lifecycleProcessorNames?: string[]
+  skillNames?: string[]
+  defaultLaunchConfig?: DefaultLaunchConfig | null
+}
+
+interface DeleteResult {
+  success: boolean
+  message: string
+}
+
+export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
+  const agentDefinitions = ref<AgentDefinition[]>([])
+  const loading = ref(false)
+  const error = ref<unknown>(null)
+  const deleteResult = ref<DeleteResult | null>(null)
+
+  const fetchAllAgentDefinitions = async () => {
+    if (agentDefinitions.value.length > 0) {
+      return
+    }
+
+    const windowNodeContextStore = useWindowNodeContextStore()
+    const isReady = await windowNodeContextStore.waitForBoundBackendReady()
+    if (!isReady) {
+      error.value = new Error('Bound backend is not ready')
+      return
+    }
+
+    loading.value = true
+    error.value = null
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.query({
+        query: GetAgentDefinitions,
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to fetch agent definitions:', cause)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const reloadAllAgentDefinitions = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.query({
+        query: GetAgentDefinitions,
+        fetchPolicy: 'network-only',
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to reload agent definitions:', cause)
+      throw cause
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const refreshAndReloadAllAgentDefinitions = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const client = getApolloClient()
+      const mutationResult = await client.mutate({
+        mutation: RefreshAgentDefinitionCatalog,
+      })
+
+      if (mutationResult.errors && mutationResult.errors.length > 0) {
+        throw new Error(mutationResult.errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      const { data, errors } = await client.query({
+        query: GetAgentDefinitions,
+        fetchPolicy: 'network-only',
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to refresh agent definition catalog:', cause)
+      throw cause
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const createAgentDefinition = async (
+    input: CreateAgentDefinitionInput,
+  ): Promise<AgentDefinition | null> => {
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: CreateAgentDefinition,
+        variables: { input },
+        update: (cache: any, result: { data?: { createAgentDefinition?: AgentDefinition | null } }) => {
+          if (!result.data?.createAgentDefinition) {
+            return
+          }
+
+          const existingData = cache.readQuery({
+            query: GetAgentDefinitions,
+          }) as { agentDefinitions: AgentDefinition[] } | null
+          if (!existingData) {
+            return
+          }
+
+          const nextAgentDefinitions = [
+            result.data.createAgentDefinition,
+            ...existingData.agentDefinitions,
+          ]
+
+          cache.writeQuery({
+            query: GetAgentDefinitions,
+            data: {
+              agentDefinitions: nextAgentDefinitions,
+            },
+          })
+
+          agentDefinitions.value = nextAgentDefinitions as AgentDefinition[]
+        },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      return data?.createAgentDefinition || null
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to create agent definition:', cause)
+      throw cause
+    }
+  }
+
+  const updateAgentDefinition = async (
+    input: UpdateAgentDefinitionInput,
+  ): Promise<AgentDefinition | null> => {
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: UpdateAgentDefinition,
+        variables: { input },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      if (!data?.updateAgentDefinition) {
+        return null
+      }
+
+      const index = agentDefinitions.value.findIndex((definition) => definition.id === input.id)
+      if (index !== -1) {
+        const nextAgentDefinitions = [...agentDefinitions.value]
+        nextAgentDefinitions[index] = {
+          ...nextAgentDefinitions[index],
+          ...data.updateAgentDefinition,
+        }
+        agentDefinitions.value = nextAgentDefinitions
+      }
+
+      return data.updateAgentDefinition
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to update agent definition:', cause)
+      throw cause
+    }
+  }
+
+  const deleteAgentDefinition = async (id: string): Promise<DeleteResult | null> => {
+    deleteResult.value = null
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: DeleteAgentDefinition,
+        variables: { id },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      if (!data?.deleteAgentDefinition) {
+        return null
+      }
+
+      deleteResult.value = data.deleteAgentDefinition
+      if (data.deleteAgentDefinition.success) {
+        agentDefinitions.value = agentDefinitions.value.filter((definition) => definition.id !== id)
+        await reloadAllAgentDefinitions()
+      }
+
+      return data.deleteAgentDefinition
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to delete agent definition:', cause)
+      throw cause
+    }
+  }
+
+  const clearDeleteResult = () => {
+    deleteResult.value = null
+  }
+
+  const invalidateAgentDefinitions = (): void => {
+    agentDefinitions.value = []
+    loading.value = false
+    error.value = null
+    deleteResult.value = null
+  }
+
+  const getAgentDefinitionById = computed(() => (
+    (id: string) => agentDefinitions.value.find((definition) => definition.id === id)
+  ))
+
+  const sharedAgentDefinitions = computed(() => (
+    agentDefinitions.value.filter(
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'SHARED',
+    )
+  ))
+
+  const teamLocalAgentDefinitions = computed(() => (
+    agentDefinitions.value.filter(
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'TEAM_LOCAL',
+    )
+  ))
+
+  const applicationOwnedAgentDefinitions = computed(() => (
+    agentDefinitions.value.filter(
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'APPLICATION_OWNED',
+    )
+  ))
+
+  const getTeamLocalAgentDefinitionsByOwnerTeamId = computed(() => (
+    (ownerTeamId: string): AgentDefinition[] => teamLocalAgentDefinitions.value.filter(
+      (definition) => (definition.ownerTeamId || '').trim() === ownerTeamId.trim(),
+    )
+  ))
+
+  const getApplicationOwnedAgentDefinitionsByOwnerApplicationId = computed(() => (
+    (ownerApplicationId: string): AgentDefinition[] => applicationOwnedAgentDefinitions.value.filter(
+      (definition) => (definition.ownerApplicationId || '').trim() === ownerApplicationId.trim(),
+    )
+  ))
+
+  const getDeleteResult = computed(() => deleteResult.value)
+
+  return {
+    agentDefinitions,
+    sharedAgentDefinitions,
+    teamLocalAgentDefinitions,
+    applicationOwnedAgentDefinitions,
+    loading,
+    error,
+    deleteResult,
+    fetchAllAgentDefinitions,
+    reloadAllAgentDefinitions,
+    refreshAndReloadAllAgentDefinitions,
+    createAgentDefinition,
+    updateAgentDefinition,
+    deleteAgentDefinition,
+    clearDeleteResult,
+    invalidateAgentDefinitions,
+    getAgentDefinitionById,
+    getTeamLocalAgentDefinitionsByOwnerTeamId,
+    getApplicationOwnedAgentDefinitionsByOwnerApplicationId,
+    getDeleteResult,
+  }
+})

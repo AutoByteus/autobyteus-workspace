@@ -1,0 +1,7 @@
+
+---UNCHANGED FAILURE AUDIT---
+UNCHANGED autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+UNCHANGED autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+UNCHANGED autobyteus-server-ts/tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+UNCHANGED autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+HEAD_LACKS_MISSING_IMPORT_TARGET

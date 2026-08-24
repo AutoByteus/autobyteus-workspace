@@ -1,0 +1,40 @@
+{
+  "result": "Fail",
+  "timings": {
+    "credentialSurfaceMs": 1692
+  },
+  "assertions": [],
+  "graphqlOperations": [
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "at": 1787494180781
+    },
+    {
+      "operationName": "GetProviderCredentialSettings",
+      "at": 1787494180781
+    }
+  ],
+  "fixtureRequests": [
+    {
+      "method": "GET",
+      "path": "/path-a/api/tags",
+      "source": "path-a",
+      "at": 1787494178269
+    },
+    {
+      "method": "POST",
+      "path": "/path-a/api/show",
+      "source": "path-a",
+      "at": 1787494181024
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "cleanup": {
+    "backendStopped": true,
+    "runtimeRemoved": true,
+    "frontendStopped": true,
+    "fixtureStopped": true
+  },
+  "error": "Error: CREDENTIAL_SURFACE_TOO_SLOW:1692\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:38:25)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/api-key-management-panel-performance/tickets/in-progress/api-key-management-panel-performance/validation-evidence/browser/settings-browser-probe.mjs:240:3\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:452:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)"
+}

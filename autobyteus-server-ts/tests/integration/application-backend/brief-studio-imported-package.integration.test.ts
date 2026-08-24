@@ -692,6 +692,7 @@ describe("Brief Studio imported package integration", () => {
       teamRunService: fakeTeamRunService as never,
       agentDefinitionService: fakeAgentDefinitionService as never,
       currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
     });

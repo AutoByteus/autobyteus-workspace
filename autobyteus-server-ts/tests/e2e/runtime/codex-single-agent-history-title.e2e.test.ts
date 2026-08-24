@@ -242,14 +242,14 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
 
   const fetchCodexModelIdentifier = async (): Promise<string> => {
     const result = await execGraphql<{
-      availableLlmProvidersWithModels: Array<{
-        models: Array<{ modelIdentifier: string }>;
+      providerModelCatalogSnapshots: Array<{
+        llmModels: Array<{ modelIdentifier: string }>;
       }>;
     }>(
       `
         query Models($runtimeKind: String) {
-          availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-            models {
+          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+            llmModels {
               modelIdentifier
             }
           }
@@ -258,8 +258,8 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
       { runtimeKind: "codex_app_server" },
     );
 
-    const modelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
-      provider.models
+    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
+      provider.llmModels
         .map((model) => model.modelIdentifier)
         .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.trim().length > 0),
     );
@@ -278,7 +278,7 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
     const fallback = modelIdentifiers.find((value) => value.toLowerCase().includes("codex"));
     const selected = preferred ?? fallback ?? modelIdentifiers[0];
     if (!selected) {
-      throw new Error("No Codex model identifier was returned by availableLlmProvidersWithModels.");
+      throw new Error("No Codex model identifier was returned by providerModelCatalogSnapshots.");
     }
     return selected;
   };

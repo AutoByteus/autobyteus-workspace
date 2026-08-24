@@ -1,0 +1,12 @@
+COMMAND: git diff --check
+RESULT: PASS
+
+DURABLE COVERAGE PATHS (tracked diff):
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+
+DURABLE COVERAGE PATHS (new):
+autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+UNREVIEWED PRODUCTION SOURCE PATHS:
+RESULT: NONE
