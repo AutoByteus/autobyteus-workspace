@@ -95,7 +95,7 @@ import TeamRunConfigForm from './TeamRunConfigForm.vue'
 import StoredTeamRunConfigForm from './StoredTeamRunConfigForm.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
-import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import { isTeamLaunchRepairRequiredError, type TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 
@@ -362,7 +362,11 @@ const handleRun = async () => {
     if (effectiveTeamConfig.value) {
       const draft = teamRunConfigStore.selectedDraft
       if (!draft) throw new Error('Team launch draft is unavailable.')
-      await teamRunStore.launchDraft(draft)
+      try {
+        await teamRunStore.launchDraft(draft)
+      } catch (error) {
+        if (!isTeamLaunchRepairRequiredError(error)) throw error
+      }
       return
     }
     isRunPreparationPending.value = true

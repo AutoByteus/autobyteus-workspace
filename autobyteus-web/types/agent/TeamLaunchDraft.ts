@@ -84,5 +84,21 @@ export interface TeamLaunchDraft {
   readonly pendingInputsByMemberAddress: Readonly<Record<AgentTeamAddress, TeamLaunchPendingInput>>
 }
 
+export class TeamLaunchRepairRequiredError extends Error {
+  readonly code = 'TEAM_LAUNCH_REPAIR_REQUIRED'
+  readonly addresses: readonly AgentTeamAddress[]
+
+  constructor(addresses: readonly AgentTeamAddress[], duringWorkspacePreparation = false) {
+    super(duringWorkspacePreparation
+      ? `Team topology changed during workspace preparation for ${addresses.join(', ')}. Review the repaired configuration and retry.`
+      : `Team topology changed. Removed stale launch settings for ${addresses.join(', ')}. Review the repaired configuration and retry.`)
+    this.name = 'TeamLaunchRepairRequiredError'
+    this.addresses = [...addresses]
+  }
+}
+
+export const isTeamLaunchRepairRequiredError = (error: unknown): error is TeamLaunchRepairRequiredError =>
+  typeof error === 'object' && error !== null && 'code' in error && error.code === 'TEAM_LAUNCH_REPAIR_REQUIRED'
+
 export const createTeamLaunchDraftId = (): TeamLaunchDraftId =>
   `team-draft-${crypto.randomUUID()}` as TeamLaunchDraftId

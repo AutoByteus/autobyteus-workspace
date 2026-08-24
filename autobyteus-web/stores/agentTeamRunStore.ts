@@ -29,7 +29,7 @@ import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContex
 import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWorkspaceStore } from '~/stores/workspace';
-import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft';
+import { TeamLaunchRepairRequiredError, type TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
@@ -312,7 +312,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       };
       const preparation = drafts.reconcileAndPlanSelectedDraftLaunch(draft, resolveMemberTree());
       if (preparation.status === 'repaired') {
-        throw new Error(`Team topology changed. Removed stale launch settings for ${preparation.addresses.join(', ')}. Review the repaired configuration and retry.`);
+        throw new TeamLaunchRepairRequiredError(preparation.addresses);
       }
       if (preparation.status === 'blocked') {
         throw new Error('Enter a workspace path to run this team.');
@@ -328,7 +328,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             request.teamAddresses,
           );
           if (authorization.status === 'repaired') {
-            throw new Error(`Team topology changed during workspace preparation for ${authorization.addresses.join(', ')}. Review the repaired configuration and retry.`);
+            throw new TeamLaunchRepairRequiredError(authorization.addresses, true);
           }
           try {
             const workspaceId = await workspaceStore.createWorkspace({ root_path: request.rootPath });
@@ -343,7 +343,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
               { workspaceId, workspaceMetadata },
             );
             if (completion.status === 'repaired') {
-              throw new Error(`Team topology changed during workspace preparation for ${completion.addresses.join(', ')}. Review the repaired configuration and retry.`);
+              throw new TeamLaunchRepairRequiredError(completion.addresses, true);
             }
           } catch (error) {
             if (drafts.isWorkspacePreparationActive(plan)) {
@@ -354,7 +354,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
                 error instanceof Error ? error.message : 'Failed to load workspace',
               );
               if (failure.status === 'repaired') {
-                throw new Error(`Team topology changed during workspace preparation for ${failure.addresses.join(', ')}. Review the repaired configuration and retry.`);
+                throw new TeamLaunchRepairRequiredError(failure.addresses, true);
               }
             }
             throw error;
@@ -363,7 +363,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (plan.requests.length) useRightSideTabs().setActiveTab('files');
         const finalized = drafts.finalizeWorkspacePreparation(plan, resolveMemberTree());
         if (finalized.status === 'repaired') {
-          throw new Error(`Team topology changed during workspace preparation for ${finalized.addresses.join(', ')}. Review the repaired configuration and retry.`);
+          throw new TeamLaunchRepairRequiredError(finalized.addresses, true);
         }
         const currentDraft = finalized.draft;
         const memberTree = resolveMemberTree();

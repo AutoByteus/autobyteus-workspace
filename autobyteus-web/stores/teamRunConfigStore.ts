@@ -219,8 +219,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     launchReadiness(): TeamRunLaunchReadiness {
       const base = evaluateTeamRunLaunchReadiness(this.selectedDraft?.config, this.runtimeModelCatalogs, this.memberTree)
       const blockingIssues = applyTeamWorkspaceAuthoringReadiness(
-        base.blockingIssues,
-        this.selectedDraft?.teamWorkspaceAuthoringByTeamAddress ?? {},
+        base.blockingIssues, this.selectedDraft?.teamWorkspaceAuthoringByTeamAddress ?? {}, this.memberTree,
       )
       return { ...base, canLaunch: blockingIssues.length === 0, blockingIssues }
     },

@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { computed } from 'vue'
+import { mount } from '@vue/test-utils'
+import { computed, nextTick } from 'vue'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
+import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue'
+import TeamRunConfigForm from '~/components/workspace/config/TeamRunConfigForm.vue'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -36,6 +39,7 @@ const {
   runHistoryStoreMock,
   contextFileUploadStoreMock,
   teamDefinitions,
+  teamDefinitionRevision,
   mockServiceOptions,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
@@ -68,6 +72,7 @@ const {
     finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: unknown[] }) => attachments),
   },
   teamDefinitions: new Map<string, unknown>(),
+  teamDefinitionRevision: { current: null as { value: number } | null },
   mockServiceOptions: { value: null as unknown },
 }))
 
@@ -131,11 +136,24 @@ vi.mock('~/composables/useRightSideTabs', () => ({
   useRightSideTabs: () => ({ setActiveTab: vi.fn() }),
 }))
 
-vi.mock('~/stores/agentTeamDefinitionStore', () => ({
-  useAgentTeamDefinitionStore: () => ({
-    getAgentTeamDefinitionById: (id: string) => teamDefinitions.get(id) ?? null,
-  }),
-}))
+vi.mock('~/stores/agentTeamDefinitionStore', async () => {
+  const { ref } = await import('vue')
+  const revision = ref(0)
+  teamDefinitionRevision.current = revision
+  return {
+    useAgentTeamDefinitionStore: () => ({
+      getAgentTeamDefinitionById: (id: string) => {
+        revision.value
+        return teamDefinitions.get(id) ?? null
+      },
+    }),
+  }
+})
+
+const notifyTeamDefinitionChange = (): void => {
+  if (!teamDefinitionRevision.current) throw new Error('Team definition revision is unavailable.')
+  teamDefinitionRevision.current.value += 1
+}
 
 const setActiveTeam = (team: AgentTeamContext): void => {
   teamContextsStoreMock.activeTeamContext = team
@@ -193,6 +211,7 @@ const configureSelectedNestedLaunchDraft = (): Readonly<{
       { memberName: 'implementer', refType: 'AGENT', ref: 'impl-definition' },
     ],
   })
+  notifyTeamDefinitionChange()
   const configStore = useTeamRunConfigStore()
   configStore.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
   configStore.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
@@ -270,6 +289,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     teamContextsStoreMock.activeTeamContext = null
     teamContextsStoreMock.getTeamContextById.mockReset()
     teamDefinitions.clear()
+    notifyTeamDefinitionChange()
     contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(
       async ({ attachments }: { attachments: unknown[] }) => attachments,
     )
@@ -674,24 +694,44 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(configStore.teamWorkspaceAuthoringViewFor('/BuildSquad').selection.mode).toBe('new')
   })
 
-  it('performs zero registration when a pending Team address is already stale before launch', async () => {
+  it('enables the first rendered repair activation for a stale empty Team and performs zero registration or create', async () => {
     const { configStore } = configureSelectedNestedLaunchDraft()
     configStore.applyTeamWorkspaceAuthoringCommand({
       kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/BuildSquad',
-      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/stale-build' },
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '   ' },
     })
+    expect(configStore.launchReadiness.canLaunch).toBe(false)
+    expect(configStore.launchReadiness.blockingIssues).toContainEqual(expect.objectContaining({
+      code: 'WORKSPACE_REQUIRED', subjectAddress: '/BuildSquad',
+    }))
+
     teamDefinitions.set('root-definition', {
       id: 'root-definition', name: 'Nested Mixed Team', coordinatorMemberName: 'program_manager',
       nodes: [{ memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' }],
     })
+    notifyTeamDefinitionChange()
+    await nextTick()
     const createWorkspace = vi.spyOn(useWorkspaceStore(), 'createWorkspace')
+    const runStore = useAgentTeamRunStore()
+    const launchDraft = vi.spyOn(runStore, 'launchDraft')
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true, StoredTeamRunConfigForm: true },
+      },
+    })
 
-    await expect(useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)).rejects.toThrow('Team topology changed')
+    expect(configStore.launchReadiness).toEqual(expect.objectContaining({ canLaunch: true, blockingIssues: [] }))
+    expect(configStore.repairNotice).toBeNull()
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+    await wrapper.find('.run-btn').trigger('click')
+    await vi.waitFor(() => expect(configStore.repairNotice?.addresses).toContain('/BuildSquad'))
 
     expect(createWorkspace).not.toHaveBeenCalled()
     expect(mockMutate).not.toHaveBeenCalled()
     expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
     expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
+    expect(wrapper.findComponent(TeamRunConfigForm).props('repairAddresses')).toContain('/BuildSquad')
+    expect(launchDraft).toHaveBeenCalledOnce()
   })
 
   it('rejects a workspace result when topology changes after registration dispatch and never creates a TeamRun', async () => {

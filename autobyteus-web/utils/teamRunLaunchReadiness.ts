@@ -3,7 +3,7 @@ import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceAuthoringState } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
 import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
-import { resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
+import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
 export type TeamRunLaunchBlockingIssueCode =
   | 'TOPOLOGY_REQUIRED'
@@ -32,9 +32,12 @@ const ownsWorkspaceSelection = (scope: TeamRunConfigurationView['root']): boolea
 export const applyTeamWorkspaceAuthoringReadiness = (
   issues: readonly TeamRunLaunchBlockingIssue[],
   values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>,
+  memberTree: readonly TeamDefinitionMemberNode[] | null | undefined,
 ): TeamRunLaunchBlockingIssue[] => {
+  const currentTeamAddresses = new Set(memberTree ? indexTeamLaunchTopology(memberTree).teams.keys() : [])
   const pendingNewEntries = (Object.entries(values) as Array<[AgentTeamAddress, TeamWorkspaceAuthoringState | undefined]>)
-    .filter((entry): entry is [AgentTeamAddress, TeamWorkspaceAuthoringState] => entry[1]?.selectionMode === 'new')
+    .filter((entry): entry is [AgentTeamAddress, TeamWorkspaceAuthoringState] =>
+      currentTeamAddresses.has(entry[0]) && entry[1]?.selectionMode === 'new')
   const emptyPathAddresses = new Set(pendingNewEntries
     .filter(([, value]) => !value.newWorkspacePath.trim())
     .map(([address]) => address))

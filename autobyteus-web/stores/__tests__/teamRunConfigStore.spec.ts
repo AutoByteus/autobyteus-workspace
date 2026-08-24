@@ -291,6 +291,43 @@ describe('teamRunConfigStore hierarchical launch intent', () => {
     expect(store.repairNotice).toBeNull()
   })
 
+  it('blocks a current empty New Team but lets the same stale entry reach atomic topology repair', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.6-luna'])
+    store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet', 'claude-opus', 'claude-opus-student'])
+    const draftId = store.selectedDraft!.draftId
+    store.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/Research',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '   ' },
+    })
+
+    expect(store.launchReadiness.canLaunch).toBe(false)
+    expect(store.launchReadiness.blockingIssues).toContainEqual(expect.objectContaining({
+      code: 'WORKSPACE_REQUIRED', subjectAddress: '/Research',
+    }))
+
+    useAgentTeamDefinitionStore().agentTeamDefinitions = [
+      definition('root-def', 'teacher', [
+        { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+        { memberName: 'Sibling', ref: 'sibling-def', refType: 'AGENT_TEAM' },
+      ]),
+      ...definitions.filter((item) => item.id === 'sibling-def'),
+    ]
+
+    expect(store.memberTree?.some((member) => member.address === '/Research')).toBe(false)
+    expect(store.launchReadiness).toEqual(expect.objectContaining({ canLaunch: true, blockingIssues: [] }))
+    expect(store.repairNotice).toBeNull()
+
+    const result = store.reconcileAndPlanSelectedDraftLaunch(store.selectedDraft!, store.memberTree!)
+
+    expect(result.status).toBe('repaired')
+    expect(result.addresses).toEqual(['/Research', '/Research/Study', '/Research/Study/student'])
+    expect(store.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/Research']).toBeUndefined()
+    expect(store.config?.teamOverrides['/Research']).toBeUndefined()
+    expect(store.repairNotice?.addresses).toEqual(['/Research', '/Research/Study', '/Research/Study/student'])
+  })
+
   it('prunes removed/kind-changed Team config and active/inactive buffers while preserving root authoring', () => {
     const store = useTeamRunConfigStore()
     store.setConfig(hierarchicalConfig())

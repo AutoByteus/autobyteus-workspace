@@ -282,3 +282,32 @@ None. This is the initial proportional API/E2E test review; CR-001–CR-004 rema
 - Material score or classification changes: prior complete source score 9.3 Pass -> current complete integrated score 8.9 Fail. MP-CR-006 and MP-CR-007 are Reachable under explicit governing contracts. Classification escalates from repeated Local Fix to Design Impact.
 - Recommended recipient: /solution_designer
 - Remaining risks or uncertainty: the exact packaged first-click rerun remains outstanding; broad server baseline/typecheck/provider/Electron residuals remain bounded; `RunConfigPanel.vue` is 488 effective lines and should not receive another coordination patch without ownership redesign; long-lived docs remain pending; the dated recovery branch remains unmerged and supplies no missing correction.
+
+### CRR-011 — Complete SR-008 / IR-007 source review finds a stale-empty repair deadlock
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
+- Review entry point and round: Implementation Review, round 7 / eleventh completed review result
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-handoff.md`; IR-007 for CR-008/CR-009; new finding CR-010
+- Relevant solution revision IDs: `SR-002–SR-008`; current basis `SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`; current `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001–IR-007`; current `IR-007`
+- Relevant API/E2E revision IDs: `API-REV-001–API-REV-005`; exact integrated rerun still pending
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: `CRR-010` — Fail, Design Impact to `/solution_designer`, 8.9/10
+- Current authoritative result: `Fail` — Local Fix to `/implementation_engineer`, 9.1/10
+- What changed in the review result and why: SR-008/IR-007 resolves both prior architecture findings. Team workspace authoring state is now draft-owned and registration/admission has one launch owner; planner validation now precedes all configured Team/Agent allocation. The complete repeat review found one separate reachable boundary defect: after a nested Team with active New/empty workspace input disappears from the supported prelaunch topology, the stale empty-path issue disables `Run Team` before the launch owner can reconcile/prune it. The UI is stuck with no editor and no repair notice. This is a bounded derived-readiness omission, not renewed split authority.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001–CR-007` | Resolved/source-resolved | Remain resolved | `CRR-002`, `CRR-005`, `CRR-008`, `IR-002`, `IR-003`, `IR-005`, `IR-006`, `IR-007` | Complete source trace and current focused suites found no regression in strict runtime input, stable-topology workspace readiness, dependency direction, terminology, migration binding, active-empty blocking for valid subjects, or the first-click preparation-to-launch handoff. Exact API-E2E-014 rerun remains pending. |
+| `CR-008` | Open — Design Impact | Resolved in design and source | `CRR-010`, `SR-008`, `ARCH-REV-002`, `IR-007`; `MP-CR-006`, `MP-ARCH-001` | `TeamLaunchDraft`/store are the sole per-draft Team workspace authority; `agentTeamRunStore.launchDraft` owns plan/authorize/register/complete/finalize/admit/create; panel map/loop/global Team loading/second gate are removed. Non-empty stale-before-launch and post-dispatch tests prove zero stale create/attachment. |
+| `CR-009` | Open — Design Impact | Resolved in design and source | `CRR-010`, `SR-008`, `ARCH-REV-002`, `IR-007`; `MP-CR-007` | Planner owns root/nested Team and Agent allocation after full graph/address/kind/coverage/definition/skill validation; service/application preallocation inputs are removed. Reviewer server suite: 4 files / 41 tests passed, including invalid full/root-only/application zero-effect coverage. |
+| `TR-001`, `TR-002` | Resolved | Remain resolved for unchanged server durable boundaries | `CRR-006`, `API-REV-004`, `API-REV-005`, `IR-007` | No contrary source change. Fresh integrated execution remains mandatory after source Pass. |
+| `CR-010` | N/A | Open — implementation-owned Local Fix | `CRR-011`, `IR-007`, `MP-CR-008` | `teamRunConfigStore.launchReadiness` applies stale active-New/empty entries after current-tree evaluation; `RunConfigPanel` disables activation before launch reconciliation. Reviewer real-Pinia probe reproduced stale `/Research`, `WORKSPACE_REQUIRED`, `canLaunch=false`, and no repair notice. |
+
+- New or remaining finding IDs: `CR-010`. Historical `API-E2E-F-002` requires the exact rerun after source Pass; the API-REV-005 component test delta remains pending proportional review after a successful execution.
+- Material score or classification changes: prior 8.9 Design Impact -> current 9.1 Local Fix. The complete architecture review finds SR-008's ownership/interfaces sound; CR-008 and CR-009 are resolved. New `MP-CR-008` is Reachable and lowers only Runtime Correctness and API/E2E Readiness below 9.0.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: `teamRunConfigStore.ts` is exactly 500 effective lines after a `+320/-80` delta; exact API-E2E-014 is pending; application integration fixtures remain 2/5 due recorded current-base fixture drift; standalone typecheck/broad baseline/provider/Electron residuals and pending delivery docs remain bounded. No recovery branch was merged or cherry-picked.
