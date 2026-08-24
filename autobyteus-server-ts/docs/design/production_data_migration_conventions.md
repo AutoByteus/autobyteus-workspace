@@ -269,6 +269,31 @@ statement reported a problem.
 - If security, privacy, retention, or storage rules require removal, apply that
   contract even when business code ignores the residue.
 
+Observable residue is not a generic warning exception. A product may approve a
+bounded nonfatal disposition for a non-semantic physical mirror only when all
+of the following are explicit and verified:
+
+1. the canonical target independently validates;
+2. every current semantic local and imported reader resolves that target and
+   never selects the residue;
+3. the existing mirror contract already permits source-deleted files to remain;
+4. no security, privacy, retention, or storage-removal contract requires
+   cleanup; and
+5. the product explicitly accepts the bounded storage consequence instead of
+   silently inferring it from migration success.
+
+The nested Team Agent-memory layout repair is the narrow current example.
+Memory Sync v1 recursively emits replace operations and does not propagate
+deletes, so it may export both a preserved flat conflict source and the valid
+canonical directory, or retain a pre-upgrade flat import after local
+relocation. Local and imported Team-memory readers derive the one semantic
+member location from the validated V1 execution tree. The migration may
+therefore report `SUCCEEDED_WITH_WARNINGS` for a valid canonical target plus
+that approved sync-visible residue. A missing or invalid canonical target still
+reports `FAILED`; the exception does not authorize a runtime fallback, sync
+filter, tombstone/delete protocol, remote cleanup, or migration-status sync
+gate.
+
 Warning evidence must use aggregate reason counts and capped examples. It must
 not grow with source cardinality.
 
@@ -280,6 +305,7 @@ not grow with source cardinality.
 | Inert old database column/table remains | Current target is complete; no current repository or dynamic discovery reads the residue; no removal contract applies. | `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`, depending on the migration contract; runtime remains current-only. |
 | Structured file keeps an obsolete attribute | Required current attributes validate; the current parser safely ignores the known old attribute. | `SUCCEEDED_WITH_WARNINGS` with bounded cleanup evidence; do not restore a legacy parser. |
 | Superseded file remains beside a valid canonical file | The current path is complete and unambiguous; current code neither enumerates nor loads the old file. | `SUCCEEDED_WITH_WARNINGS` when cleanup was nonessential; never probe the old file as fallback. |
+| Approved replace-only physical mirror retains both nested Team-memory paths | The canonical target independently validates; semantic local/imported readers use only the V1-tree-derived target; Memory Sync v1 may still mirror or retain the old flat path because it propagates no deletes. | `SUCCEEDED_WITH_WARNINGS` with bounded evidence and the documented storage consequence. A missing/invalid canonical target remains `FAILED`; do not add a legacy reader or infer a general observable-residue exception. |
 | One capability's current data is incomplete | Current platform exists, but required current data for that bounded capability did not complete. | `FAILED`, capability-scoped; start unrelated work and gate the affected operation. |
 | Required current database/file shape is absent | A required current table, column, constraint, file, attribute, or core invariant is missing or invalid. | `FAILED`, critical or capability-scoped according to its actual owner; no legacy fallback. |
 | Residue is observable or independently prohibited | Current discovery sees both shapes, or a governing security/privacy/retention rule requires removal. | `FAILED` or capability-scoped failure; the presence of a new target does not make the residue a warning. |

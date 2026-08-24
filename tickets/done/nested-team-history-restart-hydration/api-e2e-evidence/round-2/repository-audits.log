@@ -1,0 +1,43 @@
+=== timestamp ===
+2026-08-23T11:50:30Z
+=== branch/head ===
+codex/nested-team-history-restart-hydration
+78bfd0a3453fd66f2677dd99a1edb7a44e040607
+=== git diff --check ===
+=== worktree durable test diff ===
+diff --git a/autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts b/autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+index ab7b158a5..0b71ac869 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+@@ -210,6 +210,9 @@ const {
+     disconnectAgentStream: vi.fn(),
+   },
+   agentTeamRunStoreMock: {
++    stopPendingTeamIds: { __v_isRef: true, value: {} as Record<string, boolean> },
++    isTeamStreamReopenRequired: vi.fn().mockReturnValue(false),
++    getTeamStreamRecoveryNotice: vi.fn().mockReturnValue(null),
+     terminateTeamRun: vi.fn().mockResolvedValue(undefined),
+     connectToTeamStream: vi.fn(),
+     disconnectTeamStream: vi.fn(),
+=== worktree status ===
+ M api-e2e-coverage-investigation.md
+ M autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+ M code-review-report.md
+ M code-review-revision-record.md
+?? api-e2e-evidence/round-2/
+=== private fixture JSON parse ===
+PASS
+=== private fixture diff check ===
+=== private fixture diff stat ===
+ .../agents/student-one/agent.md                    | 12 ++++++++++-
+ .../agent-teams/student-study-group/team.md        |  4 +++-
+ .../nested-classroom-test/agents/teacher/agent.md  | 25 ++++++++++++++++++++--
+ agent-teams/nested-classroom-test/team-config.json | 13 +++++++++--
+ agent-teams/nested-classroom-test/team.md          | 15 ++++++++++---
+ 5 files changed, 60 insertions(+), 9 deletions(-)
+=== private fixture status ===
+ M agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+ M agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+ M agent-teams/nested-classroom-test/agents/teacher/agent.md
+ M agent-teams/nested-classroom-test/team-config.json
+ M agent-teams/nested-classroom-test/team.md

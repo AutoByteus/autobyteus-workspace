@@ -1,0 +1,366 @@
+{
+  "capturedAt": "2026-08-23T19:15:34.596257+00:00",
+  "target": {
+    "rootTeamRunId": "nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a",
+    "isActive": false,
+    "createdAt": "2026-08-20T16:38:54.598Z",
+    "rootDirectory": {
+      "exists": true,
+      "path": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a",
+      "kind": "directory",
+      "size": 384,
+      "modifiedAtEpoch": 1787244426.3171089
+    }
+  },
+  "layoutMigration": {
+    "migrationId": "20260823_repair_team_agent_memory_layout",
+    "displayName": "Repair Team Agent memory layout",
+    "status": "SUCCEEDED",
+    "requiredOnStartup": true,
+    "recoveryAction": "NONE",
+    "canRetry": false,
+    "attempts": 1,
+    "startedAt": "2026-08-23T09:05:09.856Z",
+    "completedAt": "2026-08-23T09:05:09.870Z",
+    "summary": "Scanned 12; migrated 0; skipped 12; failed 0.",
+    "errorMessage": null,
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/logs/app-data-migrations/20260823_repair_team_agent_memory_layout-2026-08-23T09-05-09-869Z.log"
+  },
+  "layoutMigrationLog": {
+    "exists": false,
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/logs/app-data-migrations/20260823_repair_team_agent_memory_layout-2026-08-23T09-05-09-869Z.log"
+  },
+  "agents": [
+    {
+      "origin": "configured_agent",
+      "address": "/Teacher",
+      "agentRunId": "test_teacher_a91082a10db940cd84d926f832819fe4",
+      "ancestorTeamRunIds": [],
+      "canonicalDirectoryExists": true,
+      "canonicalTraceExists": true,
+      "canonicalTraceSize": 54319,
+      "canonicalTraceLineCount": 124,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 54319,
+      "flatTraceLineCount": 124,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/test_teacher_a91082a10db940cd84d926f832819fe4"
+      ],
+      "projection": {
+        "conversationCount": 90,
+        "activityCount": 34,
+        "lastActivityAt": "2026-08-20T16:47:10.832Z",
+        "summary": "give student team a hard middle school math task",
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 90,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "configured_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_1914195019d548bcb18b3c769d726377",
+      "ancestorTeamRunIds": [
+        "student_study_group_d5e7da72c5e94cbe8e5b264b736de274"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 37825,
+      "flatTraceLineCount": 77,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_1914195019d548bcb18b3c769d726377"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "configured_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_96b429c2b22243c788f13e642ad1553d",
+      "ancestorTeamRunIds": [
+        "student_study_group_d5e7da72c5e94cbe8e5b264b736de274"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 4878,
+      "flatTraceLineCount": 10,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_two_96b429c2b22243c788f13e642ad1553d"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_7c05431d59074513a054b548ee529e55",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 1967,
+      "flatTraceLineCount": 4,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_7c05431d59074513a054b548ee529e55"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_9c406c17298e41328d5a71a93d3e6c5e",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_068aa3fb6e9f446b89a69ae845a6e36b"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": false,
+      "flatTraceExists": false,
+      "flatTraceSize": null,
+      "flatTraceLineCount": null,
+      "directoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 2188,
+      "flatTraceLineCount": 4,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_c9aa4701ce9d4cfb941e3ab0c0af6e46"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_8d4fd9ede9fd443ba1341eb427045601",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f7df940318a94b2e96867f1e65087c21"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": false,
+      "flatTraceExists": false,
+      "flatTraceSize": null,
+      "flatTraceLineCount": null,
+      "directoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_210398f0b40a4223b71aaa910abdd89f",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 2394,
+      "flatTraceLineCount": 4,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_210398f0b40a4223b71aaa910abdd89f"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_772529c5195e4940a3f69220831396a9",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_1ef00315540545fa8f77064897d03642"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": false,
+      "flatTraceExists": false,
+      "flatTraceSize": null,
+      "flatTraceLineCount": null,
+      "directoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_one",
+      "agentRunId": "student_one_5228784099e54bccb2ab4c63b1b24928",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": true,
+      "flatTraceExists": true,
+      "flatTraceSize": 4088,
+      "flatTraceLineCount": 8,
+      "directoryMatches": [
+        "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_83a531dc8def4e82bbc946a02661bb8a/student_one_5228784099e54bccb2ab4c63b1b24928"
+      ],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    },
+    {
+      "origin": "task_team_agent",
+      "address": "/StudentStudyGroup/student_two",
+      "agentRunId": "student_two_23e2d96396814536986f1250e1102207",
+      "ancestorTeamRunIds": [
+        "team_local_team_nested_classroom_test_student_st_f5cb5e97c7fc4c53a4f9dd32bde15b26"
+      ],
+      "canonicalDirectoryExists": false,
+      "canonicalTraceExists": false,
+      "canonicalTraceSize": null,
+      "canonicalTraceLineCount": null,
+      "flatDirectoryExists": false,
+      "flatTraceExists": false,
+      "flatTraceSize": null,
+      "flatTraceLineCount": null,
+      "directoryMatches": [],
+      "projection": {
+        "conversationCount": 0,
+        "activityCount": 0,
+        "lastActivityAt": null,
+        "summary": null,
+        "hasEarlierActiveTraceEvents": false
+      },
+      "eventMonitor": {
+        "eventCount": 0,
+        "hasEarlier": false,
+        "cursorStatus": "VALID"
+      }
+    }
+  ]
+}

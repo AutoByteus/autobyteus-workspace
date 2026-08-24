@@ -216,12 +216,9 @@ export class RootTeamRun {
         agentRunId: execution.agentRunId,
       }),
       containingTeamRunId: execution.containingTeamRunId,
-      ancestorTeamRunIds: Object.freeze(
-        [...this.index.listTeamAncestorsDeepestFirst(execution.containingTeamRunId)]
-          .reverse()
-          .slice(1)
-          .map((team) => team.teamRunId),
-      ),
+      ancestorTeamRunIds: this.index
+        .getTeamRunPhysicalScope(execution.containingTeamRunId)
+        .ancestorTeamRunIds,
       launchConfiguration: "launchConfiguration" in execution.source
         ? execution.source.launchConfiguration
         : null,

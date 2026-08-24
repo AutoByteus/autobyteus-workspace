@@ -3,6 +3,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -32,7 +33,7 @@ const createBackend = (): TeamRunBackend => ({
 
 const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
   new TeamRunContext({
-    rootTeamRunId: "team-run-1",
+    physicalScope: createRootTeamRunPhysicalScope("team-run-1"),
     teamRunId: "team-run-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,

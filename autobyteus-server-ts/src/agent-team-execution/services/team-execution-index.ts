@@ -13,6 +13,11 @@ import type {
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
 import type { TaskExecutionReference } from "../task-delegation/task-delegation-record-v1.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "../domain/team-run-physical-scope.js";
 
 export type AgentExecutionKind = "configured" | "task" | "task_team_member";
 export type TeamExecutionKind = "configured" | "task" | "task_team_member";
@@ -143,6 +148,15 @@ export class TeamExecutionIndex {
 
   listContainingTeamAncestorsForAgent(agentRunId: string): readonly IndexedTeamExecution[] {
     return this.listTeamAncestorsDeepestFirst(this.requireAgent(agentRunId).containingTeamRunId);
+  }
+
+  getTeamRunPhysicalScope(teamRunId: string): TeamRunPhysicalScope {
+    const chain = [...this.listTeamAncestorsDeepestFirst(teamRunId)].reverse();
+    let scope = createRootTeamRunPhysicalScope(this.rootTeamRunId);
+    for (const team of chain.slice(1)) {
+      scope = createChildTeamRunPhysicalScope(scope, team.teamRunId);
+    }
+    return scope;
   }
 
   isLiveAgent(agentRunId: string): boolean {

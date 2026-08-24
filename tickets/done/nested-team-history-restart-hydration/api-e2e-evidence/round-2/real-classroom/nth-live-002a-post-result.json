@@ -1,0 +1,39 @@
+{
+  "scenario": "NTH-LIVE-002A",
+  "phase": "post-cold-restart",
+  "rootTeamRunId": "nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7",
+  "pre": "NTH_LIVE_002A_TEAM_PRE_20260823",
+  "preAck": "NTH_LIVE_002A_TEAM_ACK_PRE_20260823",
+  "request": "NTH_LIVE_002A_TEAM_POST_20260823",
+  "ack": "NTH_LIVE_002A_TEAM_ACK_POST_20260823",
+  "coldHistory": {
+    "studentConversation": true,
+    "eventMonitor": true,
+    "activity": true,
+    "teamCommunication": true,
+    "lastActivityRendered": true,
+    "eventCountText": "2 Events",
+    "studentRowText": "S\nstudent_one\n14m"
+  },
+  "continuation": {
+    "teacherConversation": true,
+    "teamCommunication": true,
+    "sameRouteTool": true
+  },
+  "screenshots": {
+    "coldShot": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-cold-history.png",
+    "continuedShot": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-post-continuation.png"
+  },
+  "terminateMutation": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

@@ -5,6 +5,10 @@ import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mix
 import { MixedAgentMemberContext, MixedSubTeamMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { address, testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -25,7 +29,7 @@ const config = testTeamRunConfig({
 });
 
 const createContext = () => new TeamRunContext({
-  rootTeamRunId: rootRunId,
+  physicalScope: createRootTeamRunPhysicalScope(rootRunId),
   teamRunId: rootRunId,
   teamBackendKind: TeamBackendKind.MIXED,
   teamNode: config.rootTeam,
@@ -77,7 +81,12 @@ const createFakeTeamRun = (
   const frozenScope = Object.freeze({ interruptActiveTurns, prepareMemberRuns, finish: scopeFinish });
   const commit = vi.fn(() => ({ finish }));
   const context = new TeamRunContext({
-    rootTeamRunId: rootRunId,
+    physicalScope: teamNode.teamRunId === rootRunId
+      ? createRootTeamRunPhysicalScope(rootRunId)
+      : createChildTeamRunPhysicalScope(
+          createRootTeamRunPhysicalScope(rootRunId),
+          teamNode.teamRunId,
+        ),
     teamRunId: teamNode.teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode,
@@ -140,7 +149,7 @@ const buildManager = () => {
 
 describe("MixedTeamManager current local execution mechanics", () => {
   it("materializes only the exact configured child TeamRun ID", async () => {
-    const { manager, materializeConfiguredChild } = buildManager();
+    const { manager, context, materializeConfiguredChild } = buildManager();
 
     await expect(manager.getOrCreateConfiguredChildTeam("configured-review-team-run"))
       .resolves.toMatchObject({ teamRunId: "configured-review-team-run" });
@@ -149,7 +158,7 @@ describe("MixedTeamManager current local execution mechanics", () => {
 
     expect(materializeConfiguredChild).toHaveBeenCalledOnce();
     expect(materializeConfiguredChild).toHaveBeenCalledWith(expect.objectContaining({
-      rootTeamRunId: rootRunId,
+      parentContext: context,
       configuredMemberActivationMode: "restore",
       teamNode: expect.objectContaining({
         address: "/review_team",

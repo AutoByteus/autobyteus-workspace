@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { TaskExecutionDto } from '@autobyteus/team-stream-contracts'
 import { openTeamRun, reopenTeamRunAfterStreamLoss } from '~/services/runOpen/teamRunOpenCoordinator'
 import {
   buildTestTeamContext,
@@ -71,6 +72,7 @@ const makeTeam = (input: {
   focus?: string
   active?: boolean
   tasks?: ReturnType<typeof testTaskRecord>[]
+  taskExecutions?: TaskExecutionDto[]
 } = {}) => buildTestTeamContext({
   teamRunId: ROOT,
   teamDefinitionId: 'team-def-1',
@@ -83,6 +85,7 @@ const makeTeam = (input: {
   ],
   isActive: input.active ?? true,
   tasks: input.tasks,
+  taskExecutions: input.taskExecutions,
 })
 
 const hydration = (team: ReturnType<typeof makeTeam>) => ({
@@ -163,6 +166,42 @@ describe('openTeamRun current exact execution identity', () => {
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'task-agent-run-1' }))
     expect(hydrated.view.getFocusedAgentRunId()).toBe('task-agent-run-1')
     expect(result.focusedAgentRunId).toBe('task-agent-run-1')
+  })
+
+  it('opens an exact settled task Agent through the normal inactive historical path', async () => {
+    const record = testTaskRecord({
+      taskId: 'settled-task-1',
+      delegatorAgentRunId: 'run-a',
+      recipientAddress: '/member-b',
+      target: { agentRunId: 'settled-task-agent-run-1' },
+      status: 'interrupted',
+    })
+    const hydrated = makeTeam({
+      active: false,
+      tasks: [record],
+      taskExecutions: [{
+        kind: 'task_agent', address: '/member-b', agent_run_id: 'settled-task-agent-run-1',
+        platform_agent_run_id: null, started_at: '2026-08-14T12:00:00.000Z',
+        settled_at: '2026-08-14T12:05:00.000Z',
+      }],
+    })
+    getTeamContextByIdMock.mockReturnValue(makeTeam())
+    hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
+
+    const result = await openTeamRun({
+      teamRunId: ROOT,
+      agentRunId: 'settled-task-agent-run-1',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    })
+
+    expect(hydrated.view.getFocusedAgentRunId()).toBe('settled-task-agent-run-1')
+    expect(result).toMatchObject({
+      focusedAgentRunId: 'settled-task-agent-run-1',
+      focusedMemberAddress: '/member-b',
+    })
+    expect(disconnectTeamStreamMock).toHaveBeenCalledWith(ROOT)
+    expect(connectToTeamStreamMock).not.toHaveBeenCalled()
   })
 
   it('rejects an absent requested AgentRun without silently substituting another focus', async () => {

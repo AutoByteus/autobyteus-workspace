@@ -42,7 +42,7 @@ export class MixedTaskTeamExecutionRegistry {
     try {
       root = await this.options.subTeamRunFactory.prepareFreshTaskTeam({
         handoffs: input.handoffs,
-        rootTeamRunId: this.options.teamContext.rootTeamRunId,
+        parentContext: this.options.teamContext,
         teamNode: input.teamNode,
       });
       this.preparedTeamRuns.set(teamRunId, root);

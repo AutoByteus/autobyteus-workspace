@@ -6,29 +6,46 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MixedTaskAgentExecutionRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import {
+  createChildTeamRunPhysicalScope,
+  createRootTeamRunPhysicalScope,
+} from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import {
+  testAgentNode,
+  testAgentTeamNode,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
-  it("prepares a fresh task Agent in the root plus exact AgentRun memory scope and releases work only after commit", async () => {
-    const workerNode = testAgentNode("/worker", {
+  it("keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit", async () => {
+    const workerNode = testAgentNode("/review/worker", {
       agentRunId: "worker-template-run",
       agentDefinitionId: "agent-worker",
       llmModelIdentifier: "model-1",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
+    const reviewTeam = testAgentTeamNode({
+      address: "/review",
+      coordinatorAddress: workerNode.address,
+      teamRunId: "review-team-run",
+      children: [workerNode],
+    });
     const config = testTeamRunConfig({
       rootTeamRunId: "owning-team-run",
       rootTeamDefinitionId: "team-def",
-      coordinatorAddress: "/worker",
-      children: [workerNode],
+      coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead"), reviewTeam],
     });
     const teamContext = new TeamRunContext({
-      rootTeamRunId: "owning-team-run",
-      teamRunId: "owning-team-run",
+      physicalScope: createChildTeamRunPhysicalScope(
+        createRootTeamRunPhysicalScope("owning-team-run"),
+        reviewTeam.teamRunId,
+      ),
+      teamRunId: reviewTeam.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
-      teamNode: config.rootTeam,
+      teamNode: reviewTeam,
       handoffs: config.handoffs,
       runtimeContext: new MixedTeamRunContext({
         memberContexts: [new MixedAgentMemberContext({
@@ -37,13 +54,14 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           platformAgentRunId: null,
         })],
+        configuredMemberActivationMode: "fresh",
       }),
     });
     const postedMessages: AgentInputUserMessage[] = [];
     const createdConfigs: unknown[] = [];
-    const createAgentRun = vi.fn(async (runConfig, runId) => {
+    const prepareNewAgentRun = vi.fn(async ({ config: runConfig, runId }) => {
       createdConfigs.push(runConfig);
-      return {
+      const run = {
         runId,
         config: runConfig,
         isActive: () => true,
@@ -61,12 +79,20 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
           commit: () => ({ finish: async () => ({ accepted: true as const }) }),
         }),
       };
+      return {
+        runId,
+        runtimeKind: runConfig.runtimeKind,
+        platformAgentRunId: `platform-${runId}`,
+        commitPublication: () => run,
+        abort: async () => ({ kind: "aborted" as const }),
+      };
     });
     const registry = new MixedTaskAgentExecutionRegistry({
       teamContext,
-      agentRunManager: { createAgentRun } as never,
+      agentRunManager: { prepareNewAgentRun } as never,
       publish: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
+      acceptPlatformBinding: vi.fn(async () => undefined),
     });
     const taskAgentRunId = "worker_00000000000000000000000000000001";
     const message = new AgentInputUserMessage("start task", SenderType.USER);
@@ -79,21 +105,30 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
       message,
     });
 
-    expect(prepared.binding).toEqual({ kind: "agent", address: "/worker", agentRunId: taskAgentRunId });
+    expect(prepared.binding).toEqual({
+      kind: "agent",
+      address: "/review/worker",
+      agentRunId: taskAgentRunId,
+    });
     expect(registry.get(taskAgentRunId)).toBeNull();
     expect(postedMessages).toEqual([]);
     prepared.sealForCommit();
-    const committed = prepared.commit();
+    const committed = prepared.commitAfterDurability();
     expect(registry.get(taskAgentRunId)).not.toBeNull();
     committed.releaseWork();
 
     await vi.waitFor(() => expect(postedMessages).toEqual([message]));
-    expect(createAgentRun).toHaveBeenCalledWith(
+    expect(prepareNewAgentRun).toHaveBeenCalledWith(
       expect.objectContaining({
-        memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
-          .getTeamAgentRunDirPath({ rootTeamRunId: "owning-team-run", ancestorTeamRunIds: [] }, taskAgentRunId),
+        runId: taskAgentRunId,
+        config: expect.objectContaining({
+          memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
+            .getTeamAgentRunDirPath({
+              rootTeamRunId: "owning-team-run",
+              ancestorTeamRunIds: ["review-team-run"],
+            }, taskAgentRunId),
+        }),
       }),
-      taskAgentRunId,
     );
     expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
   });

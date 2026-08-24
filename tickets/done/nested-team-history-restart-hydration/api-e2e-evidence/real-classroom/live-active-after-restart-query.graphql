@@ -1,0 +1,30 @@
+query RealNestedColdRestart($teamRunId: String!, $taskAgentRunId: String!, $teacherAgentRunId: String!) {
+  taskProjection: getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $taskAgentRunId) {
+    agentRunId summary lastActivityAt conversation activities hasEarlierActiveTraceEvents
+  }
+  directRootProjection: getTeamMemberRunProjection(teamRunId: $teamRunId, agentRunId: $teacherAgentRunId) {
+    agentRunId summary lastActivityAt conversation activities hasEarlierActiveTraceEvents
+  }
+  taskEventMonitor: getTeamMemberEventMonitorActiveTracePage(teamRunId: $teamRunId, agentRunId: $taskAgentRunId) {
+    beforeCursor hasEarlier loadedEarlierCount activeGeneration cursorStatus
+    events {
+      eventId turnGroupId occurredAtMs
+      visuals {
+        __typename
+        ... on EventMonitorUserVisual { kind text }
+        ... on EventMonitorAssistantTextVisual { kind content }
+        ... on EventMonitorThinkingVisual { kind content }
+        ... on EventMonitorToolCardVisual { kind invocationId toolName statusKey errorMessage }
+      }
+    }
+  }
+  communication: getTeamCommunicationMessages(teamRunId: $teamRunId) {
+    messageId senderAgentRunId receiverAgentRunId content messageType createdAt
+    referenceFiles { referenceId path type createdAt updatedAt }
+  }
+  tasks: getTaskDelegationRecords(teamRunId: $teamRunId) {
+    taskId delegatorAgentRunId recipientAddress targetAgentRunId targetTeamRunId status description createdAt
+    updates { kind submissionId reviewId interruptionId decision content createdAt }
+  }
+  resume: getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
+}

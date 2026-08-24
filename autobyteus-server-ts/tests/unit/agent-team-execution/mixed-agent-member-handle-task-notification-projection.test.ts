@@ -15,6 +15,7 @@ import {
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -104,32 +105,45 @@ const buildHandle = () => {
     platformAgentRunId: null,
   });
   const teamContext = new TeamRunContext({
-    rootTeamRunId: "team-run-1",
+    physicalScope: createRootTeamRunPhysicalScope("team-run-1"),
     teamRunId: "team-run-1",
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: teamConfig.rootTeam,
     handoffs: teamConfig.handoffs,
     runtimeContext: new MixedTeamRunContext({
       memberContexts: [memberContext],
+      configuredMemberActivationMode: "fresh",
     }),
   });
   const publishedEvents: TeamRunEvent[] = [];
   const backends: FakeAgentRunBackend[] = [];
-  const createAgentRun = vi.fn(async (agentRunConfig: AgentRunConfig, runId: string) => {
+  const prepareNewAgentRun = vi.fn(async ({ config: agentRunConfig, runId }: {
+    config: AgentRunConfig;
+    runId: string;
+  }) => {
     const backend = new FakeAgentRunBackend(agentRunConfig);
     backends.push(backend);
-    return new AgentRun({
+    const run = new AgentRun({
       context: new AgentRunContext({ runId, config: agentRunConfig, runtimeContext: null }),
       backend,
     });
+    return {
+      runId,
+      runtimeKind: agentRunConfig.runtimeKind,
+      platformAgentRunId: runId,
+      commitPublication: () => run,
+      abort: async () => ({ kind: "aborted" as const }),
+    };
   });
   const handle = new MixedAgentMemberHandle({
     teamContext,
     context: memberContext,
     config,
-    agentRunManager: { createAgentRun } as never,
+    agentRunManager: { prepareNewAgentRun } as never,
     memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+    activityInspector: { inspect: vi.fn(() => ({ kind: "none" as const })) } as never,
     publish: (event) => publishedEvents.push(event),
+    acceptPlatformBinding: vi.fn(async () => undefined),
     notifyStatusChange: vi.fn(),
     deliverInterAgentMessage: vi.fn(),
   });

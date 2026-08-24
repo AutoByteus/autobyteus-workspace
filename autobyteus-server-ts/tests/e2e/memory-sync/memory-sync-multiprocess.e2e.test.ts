@@ -5,6 +5,11 @@ import net from "node:net";
 import { createRequire } from "node:module";
 import { execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  testAgentNode,
+  testAgentTeamNode,
+  testExecutionTree,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 const require = createRequire(import.meta.url);
 const serverRoot = path.resolve(import.meta.dirname, "../../..");
@@ -12,6 +17,12 @@ const appEntry = path.join(serverRoot, "dist", "app.js");
 const sourceNodeId = "multiprocess-source-node";
 const sourceRunId = "mp-source-run";
 const sourceTeamRunId = "mp-source-team-run";
+const retainedTeamRunId = "mp-retained-team-run";
+const retainedChildTeamRunId = "mp-retained-child-team-run";
+const retainedAgentRunId = "mp-retained-agent-run";
+const conflictTeamRunId = "mp-conflict-team-run";
+const conflictChildTeamRunId = "mp-conflict-child-team-run";
+const conflictAgentRunId = "mp-conflict-agent-run";
 
 type ServerProcess = {
   name: string;
@@ -25,6 +36,47 @@ type ServerProcess = {
 const writeText = (filePath: string, content: string) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content, "utf-8");
+};
+
+const writeCurrentNestedTeamPackage = (input: {
+  memoryDir: string;
+  rootTeamRunId: string;
+  childTeamRunId: string;
+  agentRunId: string;
+  teamDefinitionId: string;
+}): { rootDir: string; flatDir: string; canonicalDir: string } => {
+  const rootDir = path.join(input.memoryDir, "agent_teams", input.rootTeamRunId);
+  const tree = testExecutionTree({
+    rootTeamRunId: input.rootTeamRunId,
+    rootTeamDefinitionId: input.teamDefinitionId,
+    teamDefinitionName: input.teamDefinitionId,
+    coordinatorAddress: "/lead",
+    children: [
+      testAgentNode("/lead"),
+      testAgentTeamNode({
+        address: "/nested",
+        coordinatorAddress: "/nested/member",
+        teamRunId: input.childTeamRunId,
+        children: [testAgentNode("/nested/member", { agentRunId: input.agentRunId })],
+      }),
+    ],
+  });
+  writeText(path.join(rootDir, "team_run_execution_tree.json"), `${JSON.stringify(tree, null, 2)}\n`);
+  writeText(path.join(rootDir, "task_delegation_records.json"), `${JSON.stringify({
+    schemaVersion: 1,
+    rootTeamRunId: input.rootTeamRunId,
+    records: [],
+  }, null, 2)}\n`);
+  writeText(path.join(rootDir, "team_communication_messages.json"), `${JSON.stringify({
+    schemaVersion: 1,
+    rootTeamRunId: input.rootTeamRunId,
+    messages: [],
+  }, null, 2)}\n`);
+  return {
+    rootDir,
+    flatDir: path.join(rootDir, input.agentRunId),
+    canonicalDir: path.join(rootDir, input.childTeamRunId, input.agentRunId),
+  };
 };
 
 const appendLog = (logs: string[], chunk: Buffer) => {
@@ -199,6 +251,49 @@ const seedSourceMemory = (sourceDataDir: string): void => {
   }, null, 2));
 
   writeText(path.join(memoryDir, "imports", "already-imported", "agents", "echo.txt"), "must not echo");
+
+  const retained = writeCurrentNestedTeamPackage({
+    memoryDir,
+    rootTeamRunId: retainedTeamRunId,
+    childTeamRunId: retainedChildTeamRunId,
+    agentRunId: retainedAgentRunId,
+    teamDefinitionId: "mp-retained-team-definition",
+  });
+  writeText(path.join(retained.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+    id: "mp-retained-flat-trace",
+    trace_type: "user",
+    source_event: "memory-sync-multiprocess-e2e",
+    content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
+    turn_id: "mp-retained-turn",
+    seq: 1,
+    ts: 1,
+  })}\n`);
+
+  const conflict = writeCurrentNestedTeamPackage({
+    memoryDir,
+    rootTeamRunId: conflictTeamRunId,
+    childTeamRunId: conflictChildTeamRunId,
+    agentRunId: conflictAgentRunId,
+    teamDefinitionId: "mp-conflict-team-definition",
+  });
+  writeText(path.join(conflict.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+    id: "mp-conflict-flat-trace",
+    trace_type: "user",
+    source_event: "memory-sync-multiprocess-e2e",
+    content: "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
+    turn_id: "mp-conflict-flat-turn",
+    seq: 1,
+    ts: 1,
+  })}\n`);
+  writeText(path.join(conflict.canonicalDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+    id: "mp-conflict-canonical-trace",
+    trace_type: "assistant",
+    source_event: "memory-sync-multiprocess-e2e",
+    content: "MP_001_CANONICAL_IMPORTED_HISTORY",
+    turn_id: "mp-conflict-canonical-turn",
+    seq: 1,
+    ts: 2,
+  })}\n`);
 };
 
 describe("Memory Sync multi-process backend e2e", () => {
@@ -321,6 +416,151 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "upload.partial"))).toBe(false);
     expect(fs.existsSync(path.join(importRoot, "agent_teams", sourceTeamRunId, "team_run_metadata.json"))).toBe(true);
     expect(fs.existsSync(path.join(importRoot, "imports", "already-imported", "agents", "echo.txt"))).toBe(false);
+    const importedConflictFlatTrace = path.join(
+      importRoot,
+      "agent_teams",
+      conflictTeamRunId,
+      conflictAgentRunId,
+      "raw_traces_active.jsonl",
+    );
+    const importedConflictCanonicalTrace = path.join(
+      importRoot,
+      "agent_teams",
+      conflictTeamRunId,
+      conflictChildTeamRunId,
+      conflictAgentRunId,
+      "raw_traces_active.jsonl",
+    );
+    expect(fs.readFileSync(importedConflictFlatTrace, "utf8"))
+      .toContain("MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC");
+    expect(fs.readFileSync(importedConflictCanonicalTrace, "utf8"))
+      .toContain("MP_001_CANONICAL_IMPORTED_HISTORY");
+
+    const importedConflictRuns = await graphql<{
+      listAgentTeamRunsWithMemory: {
+        total: number;
+        entries: Array<{ teamRunId: string; memberTargets: Array<{ agentRunId: string }> }>;
+      };
+    }>(hubServer, `
+      query ImportedConflictRuns($source: MemoryExplorerSourceInput!) {
+        listAgentTeamRunsWithMemory(
+          teamDefinitionId: "mp-conflict-team-definition",
+          source: $source,
+          search: null,
+          page: 1,
+          pageSize: 10
+        ) {
+          total
+          entries { teamRunId memberTargets { agentRunId } }
+        }
+      }
+    `, { source: { type: "IMPORTED", sourceNodeId } });
+    expect(importedConflictRuns.listAgentTeamRunsWithMemory).toEqual({
+      total: 1,
+      entries: [{
+        teamRunId: conflictTeamRunId,
+        memberTargets: [{ agentRunId: conflictAgentRunId }],
+      }],
+    });
+
+    const importedConflictView = await graphql<{
+      getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
+    }>(hubServer, `
+      query ImportedConflictView($source: MemoryExplorerSourceInput!) {
+        getTeamMemberRunMemoryView(
+          teamRunId: "mp-conflict-team-run",
+          agentRunId: "mp-conflict-agent-run",
+          source: $source,
+          includeRawTraces: true
+        ) { rawTraces { id content } }
+      }
+    `, { source: { type: "IMPORTED", sourceNodeId } });
+    expect(importedConflictView.getTeamMemberRunMemoryView.rawTraces).toEqual([
+      expect.objectContaining({
+        id: "mp-conflict-canonical-trace",
+        content: "MP_001_CANONICAL_IMPORTED_HISTORY",
+      }),
+    ]);
+    expect(JSON.stringify(importedConflictView)).not.toContain(
+      "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
+    );
+
+    const sourceRetainedFlatDir = path.join(
+      sourceServer.dataDir,
+      "memory",
+      "agent_teams",
+      retainedTeamRunId,
+      retainedAgentRunId,
+    );
+    const sourceRetainedCanonicalDir = path.join(
+      sourceServer.dataDir,
+      "memory",
+      "agent_teams",
+      retainedTeamRunId,
+      retainedChildTeamRunId,
+      retainedAgentRunId,
+    );
+    fs.mkdirSync(path.dirname(sourceRetainedCanonicalDir), { recursive: true });
+    fs.renameSync(sourceRetainedFlatDir, sourceRetainedCanonicalDir);
+
+    const secondSync = await graphql<{
+      startMemorySync: {
+        scannedFiles: number;
+        changedFiles: number;
+        committedBatches: number;
+        duplicateBatches: number;
+        deferredFiles: number;
+      };
+    }>(sourceServer, `
+      mutation StartPostRelocationSync {
+        startMemorySync { scannedFiles changedFiles committedBatches duplicateBatches deferredFiles }
+      }
+    `);
+    expect(secondSync.startMemorySync).toMatchObject({
+      committedBatches: 1,
+      duplicateBatches: 0,
+      deferredFiles: 0,
+    });
+    expect(secondSync.startMemorySync.changedFiles).toBeGreaterThanOrEqual(1);
+
+    const importedRetainedFlatTrace = path.join(
+      importRoot,
+      "agent_teams",
+      retainedTeamRunId,
+      retainedAgentRunId,
+      "raw_traces_active.jsonl",
+    );
+    const importedRetainedCanonicalTrace = path.join(
+      importRoot,
+      "agent_teams",
+      retainedTeamRunId,
+      retainedChildTeamRunId,
+      retainedAgentRunId,
+      "raw_traces_active.jsonl",
+    );
+    expect(fs.readFileSync(importedRetainedFlatTrace, "utf8"))
+      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
+    expect(fs.readFileSync(importedRetainedCanonicalTrace, "utf8"))
+      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
+
+    const importedRetainedView = await graphql<{
+      getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
+    }>(hubServer, `
+      query ImportedRetainedView($source: MemoryExplorerSourceInput!) {
+        getTeamMemberRunMemoryView(
+          teamRunId: "mp-retained-team-run",
+          agentRunId: "mp-retained-agent-run",
+          source: $source,
+          includeRawTraces: true
+        ) { rawTraces { id content } }
+      }
+    `, { source: { type: "IMPORTED", sourceNodeId } });
+    expect(importedRetainedView.getTeamMemberRunMemoryView.rawTraces).toEqual([
+      expect.objectContaining({
+        id: "mp-retained-flat-trace",
+        content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
+      }),
+    ]);
 
     const sourceMetadata = JSON.parse(fs.readFileSync(path.join(importRoot, "source-node.json"), "utf-8")) as { sourceNodeId: string; displayName: string | null; lastSyncStatus: string };
     const manifest = JSON.parse(fs.readFileSync(path.join(importRoot, "sync-manifest.json"), "utf-8")) as { sourceNodeId: string; totals: { fileCount: number }; files: Record<string, unknown> };

@@ -1,0 +1,86 @@
+cold open B
+continue B
+{
+  "scenario": "NTH-LIVE-002B",
+  "phase": "post-cold-restart",
+  "rootTeamRunId": "nested_classroom_test_team_431afd3c08ae4cc6a62a065aad769da8",
+  "pre": "NTH_LIVE_002B_DIRECT_PRE_20260823",
+  "preAck": "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823",
+  "request": "NTH_LIVE_002B_DIRECT_POST_20260823",
+  "ack": "NTH_LIVE_002B_DIRECT_ACK_POST_20260823",
+  "coldHistory": {
+    "studentConversation": true,
+    "eventMonitor": true,
+    "activity": true,
+    "teamCommunication": true,
+    "lastActivityRendered": true,
+    "eventCountText": "3 Events",
+    "studentRowText": "S\nstudent_one\nnow"
+  },
+  "continuation": {
+    "studentConversation": true,
+    "teacherConversation": true,
+    "teamCommunication": true,
+    "exactToolArgs": {
+      "content": "Post-restart continuation of the direct-member route with marker NTH_LIVE_002B_DIRECT_POST_20260823.\n\nPlease reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002B_DIRECT_ACK_POST_20260823.",
+      "recipient_address": "/StudentStudyGroup/student_one"
+    },
+    "sameRouteTool": true
+  },
+  "messages": [
+    {
+      "messageId": "teammsg_3oRocV--XnNY--gwYrqThtvpSZX8uVlc",
+      "senderAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "receiverAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "content": "Ordinary direct-member test message with marker NTH_LIVE_002B_DIRECT_PRE_20260823.\n\nPlease reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002B_DIRECT_ACK_PRE_20260823. The reference file is attached for your context.",
+      "messageType": "agent_message",
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe/temp_workspace/api-e2e-round2-references/direct-member-reference.txt"
+      ],
+      "createdAt": "2026-08-23T11:36:00.306Z"
+    },
+    {
+      "messageId": "teammsg_emTp4U4KjqT2AWxI4cxgcfXpBnq7jrOi",
+      "senderAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "receiverAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "content": "NTH_LIVE_002B_DIRECT_ACK_PRE_20260823",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-23T11:36:02.898Z"
+    },
+    {
+      "messageId": "teammsg_3oqhEvPg4cFd08TY3SGDO132cQXK79Q5",
+      "senderAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "receiverAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "content": "Post-restart continuation of the direct-member route with marker NTH_LIVE_002B_DIRECT_POST_20260823.\n\nPlease reply to /Teacher using send_message_to with the exact acknowledgment marker NTH_LIVE_002B_DIRECT_ACK_POST_20260823.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-23T11:36:58.480Z"
+    },
+    {
+      "messageId": "teammsg_PJpGVoU9YGt2Aee4cBEMTnE_5_cEZ_yp",
+      "senderAgentRunId": "student_one_8116c6fc7a834e6fa9763103ba3b1f64",
+      "receiverAgentRunId": "test_teacher_3b963c9dc5984060814f4ade26635c4a",
+      "content": "NTH_LIVE_002B_DIRECT_ACK_POST_20260823",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-23T11:37:00.284Z"
+    }
+  ],
+  "screenshots": {
+    "coldShot": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-cold-history.png",
+    "continuedShot": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-post-continuation.png"
+  },
+  "terminateMutation": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

@@ -16,6 +16,10 @@ import {
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
+import {
+  createRootTeamRunPhysicalScope,
+  type TeamRunPhysicalScope,
+} from "../../domain/team-run-physical-scope.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (
@@ -48,7 +52,7 @@ export class MixedTeamRunBackendFactory {
     if (config.rootTeam.teamRunId !== teamRunId) throw new Error(`Root TeamRun id '${config.rootTeam.teamRunId}' does not match '${teamRunId}'.`);
     return this.createBackendForNode({
       config,
-      rootTeamRunId: teamRunId,
+      physicalScope: createRootTeamRunPhysicalScope(teamRunId),
       teamNode: config.rootTeam,
       configuredMemberActivationMode: "fresh",
       callbacks,
@@ -63,7 +67,7 @@ export class MixedTeamRunBackendFactory {
     if (config.rootTeam.teamRunId !== teamRunId) throw new Error(`Root TeamRun id '${config.rootTeam.teamRunId}' does not match '${teamRunId}'.`);
     return this.createBackendForNode({
       config,
-      rootTeamRunId: teamRunId,
+      physicalScope: createRootTeamRunPhysicalScope(teamRunId),
       teamNode: config.rootTeam,
       configuredMemberActivationMode: "restore",
       callbacks,
@@ -72,7 +76,7 @@ export class MixedTeamRunBackendFactory {
 
   createBackendForNode(input: {
     config: TeamRunConfig;
-    rootTeamRunId: string;
+    physicalScope: TeamRunPhysicalScope;
     teamNode: TeamRunAgentTeamNode;
     configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
     callbacks: MixedTeamRunCallbacks;
@@ -98,7 +102,7 @@ export class MixedTeamRunBackendFactory {
     config?: TeamRunConfig;
     handoffs?: readonly import("../../../agent-collaboration/domain/collaboration-handoff.js").CollaborationHandoff[];
     applicationBinding?: import("../../domain/team-run-config.js").TeamRunApplicationBinding | null;
-    rootTeamRunId: string;
+    physicalScope: TeamRunPhysicalScope;
     teamNode: TeamRunAgentTeamNode;
     configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
   }): TeamRunContext<MixedTeamRunContext> {
@@ -107,7 +111,7 @@ export class MixedTeamRunBackendFactory {
       configuredMemberActivationMode: input.configuredMemberActivationMode,
     });
     return new TeamRunContext({
-      rootTeamRunId: input.rootTeamRunId,
+      physicalScope: input.physicalScope,
       teamRunId: input.teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode: input.teamNode,

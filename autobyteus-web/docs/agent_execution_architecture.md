@@ -310,19 +310,30 @@ controls, or removed technical metadata. Messages remains an independent,
 unchanged message-owned surface.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
-surface for workspaces, runs, teams, durable members, and live transient
-execution identities. `runHistoryStore` owns one cached, indexed navigation
-projection that includes completed stable-plus-transient `executionRows` and
-focused-member identity for every team. Components consume those rows rather
-than reading live `AgentTeamContext` or rebuilding rows per workspace. The
-projection may reuse the shared status-dot presentation for workspace rows and
-stable member rows, but transient task executions remain navigation-only rows
-rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
-task-team roots with child rows are collapsed by default; their
-user-controlled disclosure state is keyed by the transient execution row identity
-so simultaneous task-team executions do not accidentally share expansion state.
-When a transient task-team row has children, activating the row body toggles that
-identity-keyed disclosure state while also selecting/focusing the transient row;
+surface for workspaces, runs, teams, durable members, and task execution
+identities. `runHistoryStore` owns one cached, indexed navigation projection that
+includes completed stable-plus-transient `executionRows` and focused-member
+identity for every team. Components consume those rows rather than reading live
+`AgentTeamContext` or rebuilding rows per workspace.
+
+`TeamExecutionViewState` derives one closed navigation purpose from authoritative
+root liveness. `LIVE_EXECUTION` excludes settled task subtrees and applies the
+existing focus-repair behavior. `HISTORICAL_INSPECTION` retains settled task
+Agents, task Teams, their members, and deeper task executions already persisted
+in the V1 tree/context so a cold-reopened exact AgentRun remains selectable. This
+historical discoverability does not recreate contexts, change task status,
+connect streams, resume work, or add the row to live execution membership. If a
+historical view becomes active again, focus is repaired after the purpose change
+when the focused settled execution is no longer live-eligible.
+
+The projection may reuse the shared status-dot presentation for workspace rows
+and stable member rows, but task executions remain navigation-only rows rather
+than ordinary durable `TeamMemberTreeRow` history rows. Task-team roots with
+child rows are collapsed by default; their user-controlled disclosure state is
+keyed by the execution row identity so simultaneous task-team executions do not
+accidentally share expansion state. When a task-team row has children,
+activating the row body toggles that identity-keyed disclosure state while also
+selecting/focusing the row;
 the explicit disclosure control remains a stopped toggle-only target.
 Workspaces must not render delegated-task summary blocks, task reference rows,
 raw task arguments, approval controls, or delegated-task Technical details.
@@ -348,9 +359,11 @@ task-agent identity, then exact logical route/path identity, then compatible
 run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
 generated-run-id heuristic or any other run-id-format parser as a routing
 authority. After delegator acceptance and backend settlement or offline cleanup,
-the frontend removes the transient task execution root, scoped children, and
-nested task-agent projections while preserving the structural member/team
-topology and the history that records the delegated task completion.
+an active view removes the task execution root, scoped children, and nested
+task-agent projections while preserving the structural member/team topology and
+the task record. An inactive historical view may project those same persisted
+execution identities for inspection; doing so does not make them live or
+resumable.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

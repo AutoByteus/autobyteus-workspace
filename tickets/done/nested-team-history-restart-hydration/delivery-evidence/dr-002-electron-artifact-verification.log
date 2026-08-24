@@ -1,0 +1,45 @@
+DR-002 Electron artifact verification
+recorded_utc=2026-08-23T17:13:37Z
+source_head=78bfd0a3453fd66f2677dd99a1edb7a44e040607
+package_version=1.4.55
+platform=Darwin
+host_arch=arm64
+dmg=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.55.dmg
+zip=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.55.zip
+app=/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg_bytes=463743990
+zip_bytes=457968416
+dmg_sha256=88770afab5b17e51037d17874ba50c886866033f30416d5d90ec688b846b2744
+zip_sha256=aa459a48caab10f899a96e63b3c1e2cfd334cbc79752dfb6323f5398f561a3d5
+bundle_display_name=AutoByteus
+bundle_short_version=1.4.55
+bundle_version=1.4.55
+binary=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+app_asar=PASS
+embedded_server_dist_app=PASS
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $77320C4B
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $76F1E480
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $E906DFB1
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $DF354A48
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $E906DFB1
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F61EFC48
+Die überprüfte CRC32-Prüfsumme ist $A7E0462C
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.55.dmg" is VALID
+dmg_verify=PASS
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+TeamIdentifier=not set
+signing=local ad-hoc only; identity/notarization intentionally disabled by README local-test command
+gui_launch=not performed; artifact left ready for explicit user testing
+publication=none
+final_result=PASS

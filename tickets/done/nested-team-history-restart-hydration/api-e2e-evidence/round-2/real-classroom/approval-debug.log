@@ -1,0 +1,13 @@
+CONSOLE error Failed to load resource: the server responded with a status of 404 (File not found)
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE log Workspace.vue: Mounted. Fetching server settings and loading profiles...
+CONSOLE log [useTerminalSession] Connecting to: ws://127.0.0.1:62318/ws/terminal/aac9566c-d2f8-437c-afc5-a2229076cb29
+WS ws://127.0.0.1:62318/ws/terminal/aac9566c-d2f8-437c-afc5-a2229076cb29
+CONSOLE log [useTerminalSession] Connected
+WS ws://127.0.0.1:62318/ws/agent-team/nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7
+CONSOLE log Team WebSocket transport connected
+RECV {"type":"TEAM_EXECUTION_VIEW_SNAPSHOT","payload":{"root_team_run_id":"nested_classroom_test_team_dfde8972891d45dd84d8dc32b1ce2dd7","base_change_sequence":561,"execution_tree":{"schema_version":1,"created_at":"2026-08-23T11:18:45.921Z","archived_at":null,"application_binding":null,"handoffs":[{"from":"/Teacher","to":"/StudentStudyGroup","rules":["When a bounded classroom task is ready to be delegated to the nested student study group.","When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."]},{"from":"/Teacher","to":"/StudentStudyGroup/student_one","rules":["When an ordinary classroom test message must be sent directly to Student One at the exact member address."]},{"from":"/StudentStudyGroup/student_one","to":"/Teacher","rules":["Whe
+CONSOLE log serverStore: Checking server health at http://127.0.0.1:62318/health
+CONSOLE error Failed to load resource: the server responded with a status of 404 (Not Found)

@@ -1,0 +1,36 @@
+=== final timestamp/head ===
+2026-08-23T11:58:02Z
+codex/nested-team-history-restart-hydration
+78bfd0a3453fd66f2677dd99a1edb7a44e040607
+=== result authority ===
+19:- Current API/E2E Revision ID: `API-REV-002`
+221:## Latest Authoritative Result
+223:- Result: `Pass`
+224:- Final validation confidence: `98.6%`
+8:| `API-REV-002` | `code_reviewer` / `CRR-003` / API/E2E round 2 | `SR-007`, `ARCH-REV-003`, `IR-002`, `CRR-003` | `Fail` / `82.7%` | `Pass` / `98.6%` |
+33:### API-REV-002 — Resolve cold historical task navigation and execute three exact live routes
+308:- Round-2 final confidence: `98.6%`; every applicable category is at least 98%.
+311:- Recommended Recipient: `/code_reviewer` for proportional durable-test/fixture review.
+=== assertions from JSON summary ===
+PASS A/B/C cold GraphQL assertions
+PASS parsed nth-live-002a-post-result.json
+PASS parsed nth-live-002b-post-result.json
+PASS parsed nth-live-002c-post-result.json
+PASS parsed nth-live-002c-live-projection-result.json
+=== cleanup ===
+cleanup_started_utc=2026-08-23T11:50:19Z
+backend_pid=56644
+56644 node autobyteus-server-ts/dist/app.js --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-round2-classroom.omOfCe --host 127.0.0.1 --port 62318
+frontend_pid=13949
+13949 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 62319 --bind 127.0.0.1 --directory autobyteus-web/dist/public
+backend_alive_after=no
+frontend_alive_after=no
+runtime_exists_after=no
+port_62318_listener_count=0
+port_62319_listener_count=0
+cleanup_completed_utc=2026-08-23T11:50:20Z
+=== no secret values ===
+secret_values_checked=12
+secret_value_hits=0
+result=PASS
+=== diff checks ===

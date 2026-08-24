@@ -47,6 +47,7 @@ type AttemptLogDetail = {
 };
 
 const FINAL_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+const TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
@@ -698,7 +699,7 @@ const assertLedgerTransition = (
     database.close();
   }
   const afterRows = readMigrationLedger(databasePath);
-  expect(afterRows).toHaveLength(beforeRows.length + 2);
+  expect(afterRows).toHaveLength(beforeRows.length + 3);
   const transitionedBeforeRows = beforeRows.map((row) => {
     if (typeof row.summary !== "string") return row;
     const legacy = JSON.parse(row.summary) as ExecutionCounts;
@@ -708,12 +709,18 @@ const assertLedgerTransition = (
   expect(afterRows.slice(beforeRows.length)).toEqual(expect.arrayContaining([
     expect.objectContaining({ migration_id: FINAL_MIGRATION_ID, attempts: 1 }),
     expect.objectContaining({
+      migration_id: TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID,
+      status: "SUCCEEDED",
+      attempts: 1,
+    }),
+    expect.objectContaining({
       migration_id: TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID,
       status: "SUCCEEDED",
       attempts: 1,
     }),
   ]));
   expect(afterRows.filter(({ migration_id }) => migration_id === FINAL_MIGRATION_ID)).toHaveLength(1);
+  expect(afterRows.filter(({ migration_id }) => migration_id === TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID)).toHaveLength(1);
   expect(afterRows.filter(({ migration_id }) => migration_id === TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID)).toHaveLength(1);
   expect(afterRows.find(({ migration_id }) => migration_id === REMOVED_CANONICAL_MIGRATION_ID)).toMatchObject({
     status: "FAILED",

@@ -1,0 +1,40 @@
+=== excluded misconfigured restart evidence ===
+excluded_attempt_started_at=2026-08-23T09:05:45Z
+reason=DATABASE_URL was omitted; process read shared default database and was stopped before validation requests
+no_validation_requests_sent=true
+=== 09:05 migration/startup lines ===
+api-e2e-evidence/real-classroom/excluded-misconfigured-restart.txt:1:excluded_attempt_started_at=2026-08-23T09:05:45Z
+api-e2e-evidence/real-classroom/excluded-misconfigured-restart.txt:2:reason=DATABASE_URL was omitted; process read shared default database and was stopped before validation requests
+api-e2e-evidence/real-classroom/backend-initialize.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-initialize.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/backend-initialize.log:40:SQLite database production.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db
+api-e2e-evidence/real-classroom/backend-restart.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-restart.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/backend-final-restart.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-final-restart.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/backend-restart.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-restart.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/secret-import-dry-run.log:3:> pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db --dry-run
+api-e2e-evidence/real-classroom/secret-import-dry-run.log:51:Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+api-e2e-evidence/real-classroom/secret-import-dry-run.log:52:TARGET /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:55:[2026-08-23T09:05:55.464Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:57:[2026-08-23T09:05:55.550Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58376
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:58:[2026-08-23T09:05:55.551Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:58376
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:92:[2026-08-23T09:05:55.579Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:125:[2026-08-23T09:05:55.609Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:55:[2026-08-23T09:05:55.464Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:57:[2026-08-23T09:05:55.550Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58376
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:58:[2026-08-23T09:05:55.551Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:58376
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:92:[2026-08-23T09:05:55.579Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+api-e2e-evidence/real-classroom/backend-active-cold-restart.log:125:[2026-08-23T09:05:55.609Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+api-e2e-evidence/real-classroom/secret-import.log:3:> pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db
+api-e2e-evidence/real-classroom/secret-import.log:53:Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+api-e2e-evidence/real-classroom/backend-live.log:3:App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB
+api-e2e-evidence/real-classroom/backend-live.log:38:Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/autobyteus-server-ts/tests/.tmp/api-e2e-real-nested-classroom.OgUByB/db/production.db"
+=== file timestamps ===
+2026-08-23T11:05:45Z api-e2e-evidence/real-classroom/excluded-misconfigured-restart.txt
+2026-08-23T12:42:43Z api-e2e-evidence/real-classroom/backend-active-cold-restart.log

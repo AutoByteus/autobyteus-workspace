@@ -4,6 +4,7 @@ import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mix
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { address, testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -48,7 +49,7 @@ const createMixedManager = () => {
     children: [solutionNode, reviewerNode],
   });
   const context = new TeamRunContext({
-    rootTeamRunId: teamRunId,
+    physicalScope: createRootTeamRunPhysicalScope(teamRunId),
     teamRunId,
     teamBackendKind: TeamBackendKind.MIXED,
     teamNode: config.rootTeam,
@@ -60,19 +61,27 @@ const createMixedManager = () => {
         runtimeKind: node.runtimeKind,
         platformAgentRunId: null,
       })),
+      configuredMemberActivationMode: "fresh",
     }),
   });
   const runs = new Map<string, ReturnType<typeof createFakeAgentRun>>();
-  const createAgentRun = vi.fn(async (_config, runId: string) => {
+  const prepareNewAgentRun = vi.fn(async ({ config, runId }) => {
     const run = createFakeAgentRun(runId);
     runs.set(runId, run);
-    return run;
+    return {
+      runId,
+      runtimeKind: config.runtimeKind,
+      platformAgentRunId: `platform-${runId}`,
+      commitPublication: () => run,
+      abort: async () => ({ kind: "aborted" as const }),
+    };
   });
   const manager = new MixedTeamManager(context, {
     subTeamRunFactory: { createOrRestore: vi.fn() } as never,
-    agentRunManager: { createAgentRun } as never,
+    agentRunManager: { prepareNewAgentRun } as never,
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
+    acceptPlatformBinding: vi.fn(async () => undefined),
   });
   return { manager, runs, reviewerNode };
 };
@@ -116,7 +125,7 @@ describe("MixedTeamManager exact direct AgentRun routing", () => {
       message: initial,
     });
     prepared.sealForCommit();
-    prepared.commit().releaseWork();
+    prepared.commitAfterDurability().releaseWork();
     await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledWith(initial));
 
     await expect(manager.executeDirectAgentCommand(taskAgentRunId, { kind: "interrupt" }))
