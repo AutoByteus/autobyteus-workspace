@@ -1,0 +1,674 @@
+
+> autobyteus@1.4.56 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/integration/workspace-history-draft-send.integration.test.ts stores/__tests__/runHistoryStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts electron/extensions/__tests__/managedExtensionService.spec.ts localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts --run --reporter=dot
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/workspace-history-draft-send.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | electron/extensions/__tests__/managedExtensionService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | electron/extensions/__tests__/managedExtensionService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/workspace-history-draft-send.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+xstderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > drops an incompatible explicit model when the runtime override changes
+[Vue warn]: Unhandled error during execution of native event handler
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" memberAddress="/reviewer"  ... >
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime
+[Vue warn]: Unhandled error during execution of native event handler
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" memberAddress="/reviewer"  ... >
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > feeds cleaned inherited-global fallback rows into readiness and materialization without stale config
+[Vue warn]: Unhandled error during execution of native event handler
+  at <MemberOverrideItem memberName="Reviewer" memberRouteKey="reviewer" memberAddress="/reviewer"  ... >
+  at <VTUROOT>
+
+···············x··x·················x····xx····xxxxxstderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+Error interrupting generation: Error: TEAM_STREAM_NOT_READY: The Team stream is not ready for commands.
+    at TeamStreamingService.requireCurrentAgentRun (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:202:30)
+    at TeamStreamingService.interruptGeneration (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:140:29)
+    at Proxy.interruptFocusedMemberGeneration (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/stores/agentTeamRunStore.ts:294:59)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at Proxy.interruptGeneration (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/stores/activeContextStore.ts:221:32)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at handleStop (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue:317:24)
+    at handlePrimaryAction (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue:329:5)
+    at callWithErrorHandling (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19)
+    at Object.callWithAsyncErrorHandling (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17)
+
+xnvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+···
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/workspace-history-draft-send.integration.test.ts > workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model
+TypeError: llmProviderConfigStore.models is not a function
+ ❯ Object.getKnownModels stores/runHistoryDraftActions.ts:54:50
+     52|   const resolvedModelIdentifier = await resolveRunnableModelIdentifier…
+     53|     candidateModels: [preferredTemplate?.config.llmModelIdentifier, bu…
+     54|     getKnownModels: () => llmProviderConfigStore.models(modelRuntimeKi…
+       |                                                  ^
+     55|     ensureModelsLoaded: async () => {
+     56|       await llmProviderConfigStore.fetchProvidersWithModels(modelRunti…
+ ❯ resolveRunnableModelIdentifier utils/runLaunchPolicy.ts:73:29
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:52:35
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:130:7
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts:138:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > creates draft run for selected workspace and agent
+TypeError: llmProviderConfigStore.models is not a function
+ ❯ Object.getKnownModels stores/runHistoryDraftActions.ts:54:50
+     52|   const resolvedModelIdentifier = await resolveRunnableModelIdentifier…
+     53|     candidateModels: [preferredTemplate?.config.llmModelIdentifier, bu…
+     54|     getKnownModels: () => llmProviderConfigStore.models(modelRuntimeKi…
+       |                                                  ^
+     55|     ensureModelsLoaded: async () => {
+     56|       await llmProviderConfigStore.fetchProvidersWithModels(modelRunti…
+ ❯ resolveRunnableModelIdentifier utils/runLaunchPolicy.ts:73:29
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:52:35
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:130:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1496:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run
+TypeError: llmProviderConfigStore.models is not a function
+ ❯ Object.getKnownModels stores/runHistoryDraftActions.ts:54:50
+     52|   const resolvedModelIdentifier = await resolveRunnableModelIdentifier…
+     53|     candidateModels: [preferredTemplate?.config.llmModelIdentifier, bu…
+     54|     getKnownModels: () => llmProviderConfigStore.models(modelRuntimeKi…
+       |                                                  ^
+     55|     ensureModelsLoaded: async () => {
+     56|       await llmProviderConfigStore.fetchProvidersWithModels(modelRunti…
+ ❯ resolveRunnableModelIdentifier utils/runLaunchPolicy.ts:73:29
+ ❯ createDraftRunForHistoryStore stores/runHistoryDraftActions.ts:52:35
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:130:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1656:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts:190:24
+    188|     await wrapper.get('button[title="Stop generation"]').trigger('clic…
+    189|
+    190|     expect(mockWsSend).toHaveBeenCalledTimes(1);
+       |                        ^
+    191|     expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
+    192|       type: 'INTERRUPT_GENERATION',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts > zh-CN action-label consistency > keeps shared run and action labels translated in the swept catalogs
+AssertionError: expected undefined to be '获取统计数据' // Object.is equality
+
+- Expected:
+"获取统计数据"
+
++ Received:
+undefined
+
+ ❯ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts:18:103
+     16|     expect(zhCnSettingsMessages['settings.components.settings.NodeMana…
+     17|     expect(zhCnSettingsMessages['settings.components.settings.NodeMana…
+     18|     expect(zhCnSettingsMessages['settings.components.settings.TokenUsa…
+       |                                                                                                       ^
+     19|   });
+     20| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > drops an incompatible explicit model when the runtime override changes
+AssertionError: expected undefined to deeply equal [ '/reviewer', …(1) ]
+
+- Expected:
+[
+  "/reviewer",
+  {
+    "runtimeKind": "claude_agent_sdk",
+  },
+]
+
++ Received:
+undefined
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:317:27
+    315|
+    316|     const events = wrapper.emitted('update:override') || []
+    317|     expect(events.at(-1)).toEqual([
+       |                           ^
+    318|       '/reviewer',
+    319|       {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime
+AssertionError: expected undefined to deeply equal [ '/reviewer', null ]
+
+- Expected:
+[
+  "/reviewer",
+  null,
+]
+
++ Received:
+undefined
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:344:27
+    342|
+    343|     const events = wrapper.emitted('update:override') || []
+    344|     expect(events.at(-1)).toEqual([
+       |                           ^
+    345|       '/reviewer',
+    346|       null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > passes missing historical config state into member model config display
+AssertionError: expected 'ReviewerRuntimeGlobal defaultAutoByte…' to contain 'Not recorded for this historical run'
+
+Expected: "Not recorded for this historical run"
+Received: "ReviewerRuntimeGlobal defaultAutoByteusCodex App ServerClaude Agent SDKLLM ModelGlobal defaultAuto approveGlobal default"
+
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:548:28
+    546|     await nextTick()
+    547|
+    548|     expect(wrapper.text()).toContain('Not recorded for this historical…
+       |                            ^
+    549|     expect(wrapper.find('[data-testid="missing-historical-config-value…
+    550|     expect(wrapper.find('select[id^="config-reviewer"]').exists()).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps inherited effort-only reasoning compact until expanded and displays the schema default
+Error: Unable to get [data-testid="advanced-params-toggle"] within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../../../autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:569:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > keeps compact advanced collapsed when inherited global thinking-on model changes
+Error: Unable to get [data-testid="advanced-params-toggle"] within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../../../autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:605:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member model selection whose effective thinking is on
+Error: Unable to get [data-testid="advanced-params-toggle"] within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../../../autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:636:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts > MemberOverrideItem > opens compact advanced for an explicit member runtime selection to an effective-on model
+Error: Unable to get [data-testid="advanced-params-toggle"] within: <div class="bg-white p-3" data-test="member-override-item" memberroutekey="reviewer">
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2"><span class="text-[0.95rem] font-semibold text-slate-800">Reviewer</span>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">Runtime</label><select id="override-runtime--reviewer" class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500" value="">
+      <option value="">Global default</option>
+      <option value="autobyteus">AutoByteus</option>
+      <option value="codex_app_server">Codex App Server</option>
+      <option value="claude_agent_sdk">Claude Agent SDK</option>
+    </select>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class="mb-3"><label class="mb-1 block text-xs text-gray-500">LLM Model</label>
+    <div class="w-full">
+      <div class="relative"><button type="button" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50"><span class="text-gray-500">Global default</span><svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg></button></div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="mb-1 text-xs text-gray-500">Auto approve</div><input id="override-auto--reviewer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"><label for="override-auto--reviewer" class="ml-2 select-none text-xs text-gray-600">Global default</label>
+  </div>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../../../autobyteus-workspace-superrepo/node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/config/__tests__/MemberOverrideItem.spec.ts:674:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 17 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "renders concise member override copy". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.ensureMissingDynamicProviders is not a function
+ ❯ loadRuntimeProviderGroupsForSelection composables/useRuntimeScopedModelSelection.ts:54:18
+     52| ): Promise<ProviderWithModels[]> => {
+     53|   await llmStore.fetchProvidersWithModels(runtimeKind)
+     54|   await llmStore.ensureMissingDynamicProviders(runtimeKind)
+       |                  ^
+     55|   return cloneProviderRows(llmStore.providersWithModelsForSelection(ru…
+     56| }
+ ❯ Proxy.handleRuntimeChange components/workspace/config/MemberOverrideItem.vue:320:20
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.ensureMissingDynamicProviders is not a function
+ ❯ loadRuntimeProviderGroupsForSelection composables/useRuntimeScopedModelSelection.ts:54:18
+     52| ): Promise<ProviderWithModels[]> => {
+     53|   await llmStore.fetchProvidersWithModels(runtimeKind)
+     54|   await llmStore.ensureMissingDynamicProviders(runtimeKind)
+       |                  ^
+     55|   return cloneProviderRows(llmStore.providersWithModelsForSelection(ru…
+     56| }
+ ❯ Proxy.handleRuntimeChange components/workspace/config/MemberOverrideItem.vue:320:20
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.ensureMissingDynamicProviders is not a function
+ ❯ loadRuntimeProviderGroupsForSelection composables/useRuntimeScopedModelSelection.ts:54:18
+     52| ): Promise<ProviderWithModels[]> => {
+     53|   await llmStore.fetchProvidersWithModels(runtimeKind)
+     54|   await llmStore.ensureMissingDynamicProviders(runtimeKind)
+       |                  ^
+     55|   return cloneProviderRows(llmStore.providersWithModelsForSelection(ru…
+     56| }
+ ❯ Proxy.handleRuntimeChange components/workspace/config/MemberOverrideItem.vue:320:20
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "passes missing historical config state into member model config display". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps inherited effort-only reasoning compact until expanded and displays the schema default". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps compact advanced collapsed when inherited global thinking-on model changes". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "opens compact advanced for an explicit member model selection whose effective thinking is on". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: llmStore.providersWithModelsForSelection is not a function
+ ❯ ensureModelsForRuntime composables/useRuntimeScopedModelSelection.ts:89:18
+     87|       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
+     88|       const rows = cloneProviderRows(
+     89|         llmStore.providersWithModelsForSelection(normalizedRuntimeKind…
+       |                  ^
+     90|       )
+     91|       providerGroupsByRuntime.value = {
+
+This error originated in "components/workspace/config/__tests__/MemberOverrideItem.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "opens compact advanced for an explicit member runtime selection to an effective-on model". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  5 failed | 1 passed (6)
+      Tests  12 failed | 45 passed (57)
+     Errors  17 errors
+   Start at  10:50:47
+   Duration  8.37s (transform 3.34s, setup 32.86s, collect 1.40s, tests 2.08s, environment 1.96s, prepare 1.12s)
+
+ ELIFECYCLE  Command failed with exit code 1.

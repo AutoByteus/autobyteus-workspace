@@ -1,0 +1,47 @@
+Remote-node new-workspace Team-run visibility — DR-001 docs/handoff validation
+Recorded: 2026-08-24 (Europe/Berlin)
+
+1. Mirrored section comparison
+   Method: extract `### Editable Run Workspace Selection` through the next
+   level-three heading from each long-lived doc and compare with `cmp -s`.
+   Result: PASS
+   Compared section length: 48 lines
+
+2. Integrated source-contract anchors
+   WorkspaceSelectionState:
+     AgentRunConfigForm.vue; TeamRunConfigForm.vue; WorkspaceSelector.vue;
+     RunConfigPanel.vue; types/workspace/WorkspaceSelectionState.ts
+   hasExplicitWorkspaceInteraction:
+     WorkspaceSelector.vue
+   activeRunConfigContextIdentity / activeRunConfigContextRenderKey:
+     RunConfigPanel.vue
+   update:modelValue controlled event:
+     WorkspaceSelector.vue and focused form/selector coverage
+   Result: PASS
+
+3. Durable-doc contract content
+   Required concepts matched: complete replacement, stable identity, delayed
+   workspace discovery, no hidden fallback, canonical registered workspace.
+   Match count: 5
+   Obsolete partial-contract phrases (`keeps only a pending absolute path` and
+   `emits that pending path to RunConfigPanel`) present: NO
+   Result: PASS
+
+4. Repository hygiene
+   Command: git diff --check
+   Result: PASS
+   Trailing-whitespace scan across the five initial delivery artifacts: PASS
+
+5. Artifact/result coherence
+   Required non-empty initial artifacts: delivery-integrated-state-refresh.log,
+   docs-sync-report.md, handoff-summary.md, release-deployment-report.md, and
+   delivery-revision-record.md
+   Result: PASS
+   Upstream API/E2E report: Pass; 96.7% final validation confidence
+   Proportional test-code report: Not Applicable
+   Ticket state: tickets/in-progress (no tickets/done copy)
+
+Overall result
+  PASS — long-lived docs are synchronized with each other and with the
+  integrated implementation contract; the delivery handoff artifacts are
+  coherent and retain the required pre-verification hold.

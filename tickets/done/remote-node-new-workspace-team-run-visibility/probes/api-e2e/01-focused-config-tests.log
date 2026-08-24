@@ -1,0 +1,114 @@
+
+> autobyteus@1.4.56 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/WorkspaceSelector.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > renders with New tab selected by default when no workspaces exist 9ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > renders only the controlled selection and emits complete raw replacement values 12ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > auto-selects temp workspace on mount when no workspace is selected 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not overwrite an explicit New choice when the initial workspace fetch resolves late 4ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not fetch workspaces or auto-select temp workspace in disabled display mode 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not fetch workspaces or emit selection in locked display mode 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > auto-selects temp workspace again when workspace selection resets to empty 5ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > hides Browse button when not in Electron environment 2ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > shows Browse button when in Electron environment 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > hides Browse button in mobile runtime even if an Electron folder API is present 1ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > calls showFolderDialog when Browse button is clicked 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not update path when dialog is canceled 2ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > emits pending workspace input while typing without a Load action 17ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not invoke a hidden preload flow when Enter is pressed in New mode 3ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > disables Browse button when isLoading is true 1ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > disables Browse button when disabled prop is true 1ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not show normal New-mode helper text for Electron mode 1ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > does not show normal New-mode helper text for browser mode 1ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts > WorkspaceSelector > keeps error feedback visible below the New workspace path field 2ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > renders correctly and loads runtime-scoped providers 19ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > relays the complete controlled workspace selection without retaining a local copy 5ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > populates provider-grouped model options for non-AutoByteus runtimes 5ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > uses model identifiers as labels for AutoByteus runtime selections 5ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > uses friendly labels for custom providers on AutoByteus runtime selections 4ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > renders DeepSeek AutoByteus model selection with constrained thinking controls 16ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > renders Codex effort-only reasoning defaults visibly without materializing display defaults 22ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > starts primary advanced collapsed for OpenAI Responses off defaults 7ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > updates config when the runtime and model selection change 5ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > renders selected existing run configuration as read-only and expands advanced model settings 6ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts > AgentRunConfigForm > shows not-recorded historical model config state when selected run metadata remains null 8ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 31ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > toggles the member override disclosure without mutating config fields 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders runtime selector and member override entries 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > relays the complete controlled workspace selection without retaining a local copy 8ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 13ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 33ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders placeholder when nothing selected 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating a team run 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across same-draft Team edit 'set_runtime' 6ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across same-draft Team edit 'set_model' 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across same-draft Team edit 'set_llm_config' 13ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across same-draft Team edit 'set_auto_execute_tools' 8ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across same-draft Team edit 'set_member_override' 7ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps the New path visible and blocks Team launch when registration fails 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates workspace selection only when the Team draft identity changes 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > emits the closed model edit while leaving inherited-config pruning to the store owner 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > emits the closed runtime edit while leaving inherited-config pruning to the store owner 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 4ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 7ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing 3ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events 4ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > returns to event view from selection-mode config header action 3ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates a selected run once when its configuration becomes available 5ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 2ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 3ms
+
+ Test Files  4 passed (4)
+      Tests  69 passed (69)
+   Start at  10:46:39
+   Duration  6.71s (transform 3.42s, setup 21.79s, collect 900ms, tests 450ms, environment 1.21s, prepare 783ms)

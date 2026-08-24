@@ -1,0 +1,18 @@
+start
+launched
+got page
+clicked run
+workspace
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByPlaceholder('Absolute path to workspace')[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility/tickets/done/remote-node-new-workspace-team-run-visibility/probes/api-e2e/config-inspect.mjs:14:59 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1

@@ -55,7 +55,11 @@ describe('WorkspaceSelector', () => {
   });
 
   const defaultProps = {
-    workspaceId: null,
+    modelValue: {
+      mode: 'new' as const,
+      existingWorkspaceId: null,
+      newWorkspacePath: '',
+    },
     isLoading: false,
     error: null,
     disabled: false,
@@ -72,6 +76,56 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.find('input[type="text"]').attributes('placeholder') || '').toMatch(/absolute path to workspace/i);
   });
 
+  it('renders only the controlled selection and emits complete raw replacement values', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'temp-ws', name: 'Temp Workspace', absolutePath: '/tmp/default' },
+    ];
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        modelValue: {
+          mode: 'existing',
+          existingWorkspaceId: 'temp-ws',
+          newWorkspacePath: '/workspace/inactive-buffer',
+        },
+      },
+    });
+    await flushPromises();
+
+    const tabs = wrapper.findAll('[role="tab"]');
+    expect(tabs[0].attributes('aria-selected')).toBe('true');
+    expect(tabs[1].attributes('aria-selected')).toBe('false');
+
+    await tabs[1].trigger('click');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([{
+      mode: 'new',
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '/workspace/inactive-buffer',
+    }]);
+    expect(wrapper.find('input[type="text"]').exists()).toBe(false);
+
+    await wrapper.setProps({
+      modelValue: {
+        mode: 'new',
+        existingWorkspaceId: 'temp-ws',
+        newWorkspacePath: '/workspace/inactive-buffer',
+      },
+    });
+    expect(wrapper.findAll('[role="tab"]')[1].attributes('aria-selected')).toBe('true');
+
+    await wrapper.get('input[type="text"]').setValue('  /workspace/raw-path  ');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([{
+      mode: 'new',
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '  /workspace/raw-path  ',
+    }]);
+  });
+
   it('auto-selects temp workspace on mount when no workspace is selected', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
@@ -86,8 +140,54 @@ describe('WorkspaceSelector', () => {
     await flushPromises();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.emitted('select-existing')).toBeTruthy();
-    expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([{
+      mode: 'existing',
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '',
+    }]);
+  });
+
+  it('does not overwrite an explicit New choice when the initial workspace fetch resolves late', async () => {
+    let resolveFetch!: () => void;
+    workspaceStoreMock.fetchAllWorkspaces = vi.fn(() => new Promise<void>((resolve) => {
+      resolveFetch = resolve;
+    }));
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: defaultProps,
+    });
+    await wrapper.vm.$nextTick();
+    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+
+    await wrapper.get('[role="tab"][aria-selected="true"]').trigger('click');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([{
+      mode: 'new',
+      existingWorkspaceId: null,
+      newWorkspacePath: '',
+    }]);
+
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'temp-ws', name: 'Temp Workspace', absolutePath: '/tmp/default' },
+    ];
+    resolveFetch();
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[role="tab"][aria-selected="true"]').text()).toContain('New');
+    expect(wrapper.find('input[type="text"]').exists()).toBe(true);
+    expect(wrapper.emitted('update:modelValue')).toEqual([[
+      {
+        mode: 'new',
+        existingWorkspaceId: null,
+        newWorkspacePath: '',
+      },
+    ]]);
   });
 
   it('does not fetch workspaces or auto-select temp workspace in disabled display mode', async () => {
@@ -103,8 +203,11 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        workspaceId: 'agent_ws_metadata',
-        initialPath: '/tmp/ProjectA',
+        modelValue: {
+          mode: 'new',
+          existingWorkspaceId: 'agent_ws_metadata',
+          newWorkspacePath: '/tmp/ProjectA',
+        },
         disabled: true,
       },
     });
@@ -113,7 +216,7 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
-    expect(wrapper.emitted('select-existing')).toBeFalsy();
+    expect(wrapper.emitted('update:modelValue')).toBeFalsy();
     const input = wrapper.find('input[type="text"]');
     expect(input.exists()).toBe(true);
     expect((input.element as HTMLInputElement).value).toBe('/tmp/ProjectA');
@@ -128,8 +231,11 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        workspaceId: 'agent_ws_locked_reference',
-        initialPath: '/tmp/LockedProject',
+        modelValue: {
+          mode: 'new',
+          existingWorkspaceId: 'agent_ws_locked_reference',
+          newWorkspacePath: '/tmp/LockedProject',
+        },
         workspaceLocked: true,
       },
     });
@@ -138,7 +244,7 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
-    expect(wrapper.emitted('select-existing')).toBeFalsy();
+    expect(wrapper.emitted('update:modelValue')).toBeFalsy();
     expect((wrapper.find('input[type="text"]').element as HTMLInputElement).value).toBe('/tmp/LockedProject');
     expect(wrapper.text()).toContain('Workspace is fixed for this run.');
   });
@@ -154,19 +260,33 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        workspaceId: 'ws-1',
+        modelValue: {
+          mode: 'existing',
+          existingWorkspaceId: 'ws-1',
+          newWorkspacePath: '',
+        },
       },
     });
 
     await flushPromises();
     await wrapper.vm.$nextTick();
 
-    await wrapper.setProps({ workspaceId: null });
+    await wrapper.setProps({
+      modelValue: {
+        mode: 'new',
+        existingWorkspaceId: null,
+        newWorkspacePath: '',
+      },
+    });
     await flushPromises();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.emitted('select-existing')).toBeTruthy();
-    expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([{
+      mode: 'existing',
+      existingWorkspaceId: 'temp-ws',
+      newWorkspacePath: '',
+    }]);
   });
 
   it('hides Browse button when not in Electron environment', async () => {
@@ -237,8 +357,8 @@ describe('WorkspaceSelector', () => {
 
     expect(mockShowFolderDialog).toHaveBeenCalled();
     expect(wrapper.emitted('load-new')).toBeFalsy();
-    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
-      { mode: 'new', pendingPath: '/selected/folder/path' },
+    expect(wrapper.emitted('update:modelValue')).toContainEqual([
+      { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/selected/folder/path' },
     ]);
   });
 
@@ -287,8 +407,8 @@ describe('WorkspaceSelector', () => {
 
     expect(wrapper.find('button[title="Load workspace"]').exists()).toBe(false);
     expect(wrapper.emitted('load-new')).toBeFalsy();
-    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
-      { mode: 'new', pendingPath: '/test/workspace/path' },
+    expect(wrapper.emitted('update:modelValue')).toContainEqual([
+      { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/test/workspace/path' },
     ]);
     expect(wrapper.text()).not.toContain('Path will be loaded when you run');
     expect(wrapper.text()).not.toContain('/test/workspace/path');
@@ -306,8 +426,8 @@ describe('WorkspaceSelector', () => {
     await flushPromises();
 
     expect(wrapper.emitted('load-new')).toBeFalsy();
-    expect(wrapper.emitted('workspace-input-change')).toContainEqual([
-      { mode: 'new', pendingPath: '/test/workspace/path' },
+    expect(wrapper.emitted('update:modelValue')).toContainEqual([
+      { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/test/workspace/path' },
     ]);
   });
 

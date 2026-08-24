@@ -1,0 +1,460 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "listWorkspaceRunHistory": [
+        {
+          "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace",
+          "workspaceName": "autobyteus-workspace",
+          "teamDefinitions": [
+            {
+              "teamDefinitionId": "software-engineering-team",
+              "teamDefinitionName": "Software Engineering Team",
+              "runs": [
+                {
+                  "teamRunId": "software_engineering_team_4cb4299212f940a08402bc0fd795c17d",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace",
+                  "summary": "",
+                  "createdAt": "2026-08-24T09:05:34.283Z",
+                  "terminatedAt": null,
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_412a00d5da654ad7bb0300445db017f5",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_fcc63e3f2a744d87b459943af8f307aa",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_e0807ed89d9d47b9ab791d2c78def88b",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_4e7cb0fe3441479cbd4cdc210cfae7fb",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_91f5f2c1f6384033819ce86fa65c648e",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_149be35f8ad0446883d497fd590da085",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "workspaceRootPath": "/home/autobyteus/workspace",
+          "workspaceName": "workspace",
+          "teamDefinitions": [
+            {
+              "teamDefinitionId": "software-engineering-team",
+              "teamDefinitionName": "Software Engineering Team",
+              "runs": [
+                {
+                  "teamRunId": "software_engineering_team_f7589167f330406383ba79a7a2404d58",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "",
+                  "createdAt": "2026-08-24T07:36:50.659Z",
+                  "terminatedAt": null,
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_16ac4908b32b4d5caf7e7829480e9f80",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_b77dbe2927bf420a8da08c8efb160b04",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_f177003d8f8b433581f31f489609b559",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_eef3399453b2478cae30c27881c10b7c",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_3bd798b9ffb6406190d4e155872ffaca",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_852903369dd342fdb2a2ab694537f60e",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_929ca7af82334853955a0a5bd6c43e48",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "hello",
+                  "createdAt": "2026-08-24T06:48:47.321Z",
+                  "terminatedAt": null,
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_4933bf378de0484ebf4f8682249b6bcd",
+                      "status": "idle",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_eea786a89d664478ac85243e5d0324ee",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_22dd7134043740fba25531ffafb73861",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_ca6d913a012a4662a8c4d7ffdefc492c",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_9c3c2886ad144a45856d7fadc0fff638",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_103b212fb19e43e8bf8560f6f47d835d",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_b02897d2e2d941d492afbd6304691d61",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "",
+                  "createdAt": "2026-08-24T06:47:21.679Z",
+                  "terminatedAt": null,
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_92f528c5b3d2412eb400523a3148ee05",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_3e7d38e48bd74a09aa2aed6c553fc8c8",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_98c5674a05384803b6b89f7b5782d056",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_d24392aae9064669846e28268209b788",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_ab225e0eab784d02b34be3812ebd0326",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_708a924df7a54ea79c3e615e26047797",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_ce581ae9b8da4ef894ee21d5feda99e9",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "check whether you are on the latest personal branch thanks",
+                  "createdAt": "2026-08-24T06:46:29.482Z",
+                  "terminatedAt": null,
+                  "isActive": true,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_a556399376604b299f0d9d645793f5d1",
+                      "status": "idle",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_3cc35bfb3c5d4e03af7014b4e3b4852e",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_9fa9e480b93547939364d074166f52f8",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_d6e1ac5c750f49bdae35642daf8faf48",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_efc3292306c6411a8d5c6cf19b650659",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_fb785cf07f844a12beca869e9c11c862",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_8bb84235662642c39fa0c5d7514b437a",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "could you try to use open_tab to open google.com",
+                  "createdAt": "2026-07-18T04:08:05.582Z",
+                  "terminatedAt": null,
+                  "isActive": false,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_bc454924898d4d469b4d9cfad43eb146",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_aeb10e4a59b84215995cd4afe8b725bd",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_bebb4aa5d9a5425c997989b95341c6e5",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_1e80dc477029474e8cb1a0a2919425d6",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_3252009014954d1585b6e6c59cf0b206",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_a720c678bd50482bb4c9ea1474216900",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                },
+                {
+                  "teamRunId": "software_engineering_team_bd75981515814e9cb826045cf56eaa88",
+                  "teamDefinitionId": "software-engineering-team",
+                  "teamDefinitionName": "Software Engineering Team",
+                  "coordinatorAddress": "/solution_designer",
+                  "workspaceRootPath": "/home/autobyteus/workspace",
+                  "summary": "",
+                  "createdAt": "2026-07-13T17:20:08.069Z",
+                  "terminatedAt": null,
+                  "isActive": false,
+                  "members": [
+                    {
+                      "memberAddress": "/solution_designer",
+                      "displayName": "solution_designer",
+                      "agentRunId": "solution_designer_32f8ae50049d485e9dbade7c2f1f7705",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/architecture_reviewer",
+                      "displayName": "architecture_reviewer",
+                      "agentRunId": "architecture_reviewer_0088dd329c53460783b091bbec70da55",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/implementation_engineer",
+                      "displayName": "implementation_engineer",
+                      "agentRunId": "implementation_engineer_534ba7b3397b451b8d1f63492cb03c1f",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/code_reviewer",
+                      "displayName": "code_reviewer",
+                      "agentRunId": "code_reviewer_5eccca794e7d4a9ba2637b8457d3e6c2",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/api_e2e_engineer",
+                      "displayName": "api_e2e_engineer",
+                      "agentRunId": "api_e2e_engineer_6e1f87c4748040e09d2aef823fe4b088",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    },
+                    {
+                      "memberAddress": "/delivery_engineer",
+                      "displayName": "delivery_engineer",
+                      "agentRunId": "delivery_engineer_6a3ee51ebe874dcab8c64fb7b982664b",
+                      "status": "offline",
+                      "runtimeKind": "CODEX",
+                      "workspaceRootPath": "/home/autobyteus/workspace"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

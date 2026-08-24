@@ -6,7 +6,7 @@
     <div class="flex rounded-lg bg-gray-100 p-1 mb-3" role="tablist">
       <button
         type="button"
-        @click="mode = 'existing'"
+        @click="handleModeChange('existing')"
         :disabled="existingDisabled || isInteractionDisabled"
         class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         :class="[
@@ -25,7 +25,7 @@
       </button>
       <button
         type="button"
-        @click="mode = 'new'"
+        @click="handleModeChange('new')"
         :disabled="isInteractionDisabled"
         class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         :class="[
@@ -47,7 +47,7 @@
     <!-- Existing Workspace Dropdown -->
     <div v-if="mode === 'existing'" class="transition-all duration-200">
       <SearchableSelect
-        :model-value="workspaceId"
+        :model-value="modelValue.existingWorkspaceId"
         @update:model-value="handleExistingSelect"
         :options="workspaceOptions"
         :disabled="isInteractionDisabled"
@@ -64,7 +64,8 @@
         <div class="relative flex-grow">
           <input
             type="text"
-            v-model="tempPath"
+            :value="modelValue.newWorkspacePath"
+            @input="handleNewPathInput"
             @keydown.enter.prevent
             :disabled="isLoading || isInteractionDisabled"
             :class="newWorkspaceInputClass"
@@ -112,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -120,12 +121,15 @@ import SearchableSelect from '~/components/common/SearchableSelect.vue';
 import { Icon } from '@iconify/vue';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates';
+import type {
+  WorkspaceSelectionMode,
+  WorkspaceSelectionState,
+} from '~/types/workspace/WorkspaceSelectionState';
 
 const props = defineProps<{
-  workspaceId: string | null;
+  modelValue: WorkspaceSelectionState;
   isLoading: boolean;
   error: string | null;
-  initialPath?: string;
   disabled?: boolean;
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
@@ -133,8 +137,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'select-existing', workspaceId: string): void;
-  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void;
+  (e: 'update:modelValue', selection: WorkspaceSelectionState): void;
 }>();
 
 const workspaceStore = useWorkspaceStore();
@@ -145,10 +148,9 @@ const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
   hasElectronFolderDialog: typeof window !== 'undefined' && Boolean(window.electronAPI?.showFolderDialog),
 }));
 
-// Local state
-const mode = ref<'existing' | 'new'>('new');
-const tempPath = ref(props.initialPath || '');
-const successMessage = ref<string | null>(null);
+const mode = computed(() => props.modelValue.mode);
+const proposedDefaultWorkspaceId = ref<string | null>(null);
+const hasExplicitWorkspaceInteraction = ref(false);
 const isInteractionDisabled = computed(() => (props.disabled ?? false) || (props.workspaceLocked ?? false));
 const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
@@ -194,10 +196,18 @@ const workspaceOptions = computed(() => {
 const existingDisabled = computed(() => workspaceOptions.value.length === 0);
 
 const selectedWorkspace = computed(() => {
-  if (!props.workspaceId) return null;
-  return workspaceStore.workspaces[props.workspaceId] || null;
+  if (!props.modelValue.existingWorkspaceId) return null;
+  return workspaceStore.workspaces[props.modelValue.existingWorkspaceId] || null;
 });
-const trimmedPendingPath = computed(() => tempPath.value.trim());
+const successMessage = computed(() => {
+  if (mode.value === 'existing' && selectedWorkspace.value) {
+    return `Workspace: ${selectedWorkspace.value.name}`;
+  }
+  if (isInteractionDisabled.value && props.modelValue.newWorkspacePath) {
+    return `Workspace: ${props.modelValue.newWorkspacePath}`;
+  }
+  return null;
+});
 const showSuccessMessage = computed(() =>
   Boolean(successMessage.value) &&
   (mode.value === 'existing' || isInteractionDisabled.value),
@@ -208,46 +218,35 @@ const showHelperTextArea = computed(() =>
   showSuccessMessage.value ||
   mode.value === 'existing',
 );
-const emitWorkspaceInput = () => {
-  emit('workspace-input-change', {
-    mode: mode.value,
-    pendingPath: mode.value === 'new' ? trimmedPendingPath.value : '',
-  });
-};
-
-const updateDisplayOnlyState = () => {
-  if (props.workspaceId && selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
-    mode.value = 'existing';
-    return;
-  }
-  if (props.initialPath) {
-    tempPath.value = props.initialPath;
-    successMessage.value = `Workspace: ${props.initialPath}`;
-    mode.value = 'new';
-    return;
-  }
-  successMessage.value = null;
-  mode.value = 'new';
+const proposeSelection = (changes: Partial<WorkspaceSelectionState>) => {
+  if (isInteractionDisabled.value) return;
+  emit('update:modelValue', { ...props.modelValue, ...changes });
 };
 
 const maybeAutoSelectDefaultWorkspace = (): boolean => {
-  if (props.workspaceId || isInteractionDisabled.value) {
+  if (
+    props.modelValue.existingWorkspaceId
+    || props.modelValue.newWorkspacePath
+    || hasExplicitWorkspaceInteraction.value
+    || isInteractionDisabled.value
+  ) {
     return false;
   }
   const tempWorkspaceId = workspaceStore.tempWorkspaceId;
   if (!tempWorkspaceId) {
     return false;
   }
-  emit('select-existing', tempWorkspaceId);
-  mode.value = 'existing';
+  if (proposedDefaultWorkspaceId.value === tempWorkspaceId) {
+    return true;
+  }
+  proposedDefaultWorkspaceId.value = tempWorkspaceId;
+  proposeSelection({ mode: 'existing', existingWorkspaceId: tempWorkspaceId });
   return true;
 };
 
 // Initialize mode based on available workspaces
 onMounted(async () => {
   if (isInteractionDisabled.value) {
-    updateDisplayOnlyState();
     return;
   }
 
@@ -264,51 +263,21 @@ onMounted(async () => {
     return; // Skip further mode logic, we've auto-selected
   }
   
-  // Set initial mode based on whether workspaces exist
-  if (workspaceOptions.value.length > 0) {
-    mode.value = 'existing';
+  if (
+    workspaceOptions.value.length > 0
+    && mode.value === 'new'
+    && !props.modelValue.newWorkspacePath
+    && !hasExplicitWorkspaceInteraction.value
+  ) {
+    proposeSelection({ mode: 'existing' });
+  }
+});
+
+watch(() => props.modelValue.existingWorkspaceId, (workspaceId) => {
+  if (workspaceId) {
+    proposedDefaultWorkspaceId.value = null;
   } else {
-    mode.value = 'new';
-  }
-  
-  // If we already have a selected workspace, show success
-  if (props.workspaceId && selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
-    mode.value = 'existing';
-  } else if (props.initialPath) {
-    successMessage.value = `Workspace: ${props.initialPath}`;
-    mode.value = 'new';
-  }
-});
-
-// Watch for workspace changes
-watch(() => props.workspaceId, (newId) => {
-  if (isInteractionDisabled.value) {
-    updateDisplayOnlyState();
-    return;
-  }
-  if (newId && workspaceStore.workspaces[newId]) {
-    const ws = workspaceStore.workspaces[newId];
-    successMessage.value = `Workspace: ${ws.name}`;
-    return;
-  }
-  if (newId && props.initialPath) {
-    successMessage.value = `Workspace: ${props.initialPath}`;
-    return;
-  }
-  maybeAutoSelectDefaultWorkspace();
-});
-
-watch(() => props.initialPath, (newPath) => {
-  if (newPath && !tempPath.value) {
-    tempPath.value = newPath;
-  }
-  if (isInteractionDisabled.value) {
-    updateDisplayOnlyState();
-    return;
-  }
-  if (props.workspaceId && newPath && !selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${newPath}`;
+    maybeAutoSelectDefaultWorkspace();
   }
 });
 
@@ -323,30 +292,33 @@ watch(
 // Watch for workspace options changes - update mode if workspaces become available
 watch(workspaceOptions, (newOptions) => {
   if (isInteractionDisabled.value) return;
-  if (newOptions.length > 0 && mode.value === 'new' && !tempPath.value) {
-    // Auto-switch to existing mode if workspaces become available
-    mode.value = 'existing';
-  }
-});
-
-watch(isInteractionDisabled, (disabled) => {
-  if (disabled) {
-    updateDisplayOnlyState();
-  }
-});
-
-// Clear success message when mode changes or error occurs
-watch([mode, () => props.error], () => {
-  if (props.error) {
-    successMessage.value = null;
+  if (
+    newOptions.length > 0
+    && mode.value === 'new'
+    && !props.modelValue.newWorkspacePath
+    && !hasExplicitWorkspaceInteraction.value
+  ) {
+    maybeAutoSelectDefaultWorkspace() || proposeSelection({ mode: 'existing' });
   }
 });
 
 // Handlers
+const handleModeChange = (nextMode: WorkspaceSelectionMode) => {
+  hasExplicitWorkspaceInteraction.value = true;
+  proposeSelection({ mode: nextMode });
+};
+
 const handleExistingSelect = (workspaceId: string) => {
-  if (isInteractionDisabled.value) return;
-  successMessage.value = null;
-  emit('select-existing', workspaceId);
+  hasExplicitWorkspaceInteraction.value = true;
+  proposeSelection({ mode: 'existing', existingWorkspaceId: workspaceId });
+};
+
+const handleNewPathInput = (event: Event) => {
+  hasExplicitWorkspaceInteraction.value = true;
+  proposeSelection({
+    mode: 'new',
+    newWorkspacePath: (event.target as HTMLInputElement).value,
+  });
 };
 
 // Native folder picker (Electron only)
@@ -355,10 +327,8 @@ const handleBrowse = async () => {
 
   const selectedPath = await pickFolderPath();
   if (selectedPath) {
-    tempPath.value = selectedPath;
-    successMessage.value = null;
+    hasExplicitWorkspaceInteraction.value = true;
+    proposeSelection({ mode: 'new', newWorkspacePath: selectedPath });
   }
 };
-
-watch([mode, tempPath], emitWorkspaceInput, { immediate: true });
 </script>

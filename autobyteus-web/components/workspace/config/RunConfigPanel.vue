@@ -25,26 +25,26 @@
 
       <AgentRunConfigForm
         v-else-if="effectiveAgentConfig && activeAgentDefinition"
+        :key="activeRunConfigContextRenderKey"
         :config="effectiveAgentConfig"
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
-        :initial-path="initialWorkspacePath"
+        :workspace-selection="workspaceSelection"
         :workspace-locked="isWorkspaceLockedForSelectedAgentRun"
         :runtime-locked="isRuntimeLockedForSelectedAgentRun"
         :read-only="isSelectionMode"
-        @select-existing="handleSelectExisting"
-        @workspace-input-change="handleWorkspaceInputChange"
+        @update:workspace-selection="handleWorkspaceSelectionChange"
       />
 
       <TeamRunConfigForm
         v-else-if="effectiveTeamConfig && activeTeamDefinition"
+        :key="activeRunConfigContextRenderKey"
         :config="effectiveTeamConfig"
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
-        :initial-path="initialWorkspacePath"
+        :workspace-selection="workspaceSelection"
         :read-only="isSelectionMode || isRunPreparationPending || isTeamLaunchPending"
-        @select-existing="handleSelectExisting"
-        @workspace-input-change="handleWorkspaceInputChange"
+        @update:workspace-selection="handleWorkspaceSelectionChange"
         @edit-config="handleTeamConfigEdit"
       />
 
@@ -91,6 +91,7 @@ import TeamRunConfigForm from './TeamRunConfigForm.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -106,9 +107,11 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore()
 const { setActiveTab } = useRightSideTabs()
 const { t: $t } = useLocalization()
 
-type PendingWorkspaceInput = { mode: 'existing' | 'new'; pendingPath: string }
-
-const pendingWorkspaceInput = ref<PendingWorkspaceInput>({ mode: 'existing', pendingPath: '' })
+const workspaceSelection = ref<WorkspaceSelectionState>({
+  mode: 'new',
+  existingWorkspaceId: null,
+  newWorkspacePath: '',
+})
 const isRunPreparationPending = ref(false)
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
 const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null))
@@ -203,7 +206,7 @@ const effectiveWorkspaceLoadingState = computed(() => {
   return { isLoading: false, error: null, loadedPath: null }
 })
 
-const initialWorkspacePath = computed(() => {
+const currentWorkspacePath = computed(() => {
   if (isSelectionMode.value) {
     return resolveWorkspacePath(effectiveTeamConfig.value || effectiveAgentConfig.value || null)
   }
@@ -216,7 +219,7 @@ const initialWorkspacePath = computed(() => {
   return ''
 })
 
-const handleSelectExisting = (workspaceId: string) => {
+const applyExistingWorkspaceSelection = (workspaceId: string) => {
   if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value) {
     return
   }
@@ -239,21 +242,21 @@ const handleTeamConfigEdit = (edit: TeamLaunchConfigEdit) => {
   teamRunConfigStore.applyConfigEdit(edit)
 }
 
-const handleWorkspaceInputChange = (input: PendingWorkspaceInput) => {
-  if (isRunPreparationPending.value || isTeamLaunchPending.value) return
-  pendingWorkspaceInput.value = {
-    mode: input.mode,
-    pendingPath: input.mode === 'new' ? input.pendingPath.trim() : '',
+const handleWorkspaceSelectionChange = (selection: WorkspaceSelectionState) => {
+  if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value) return
+  workspaceSelection.value = { ...selection }
+  if (selection.mode === 'existing' && selection.existingWorkspaceId) {
+    applyExistingWorkspaceSelection(selection.existingWorkspaceId)
   }
 }
 
 const currentPendingNewPath = computed(() =>
-  pendingWorkspaceInput.value.mode === 'new'
-    ? pendingWorkspaceInput.value.pendingPath.trim()
+  workspaceSelection.value.mode === 'new'
+    ? workspaceSelection.value.newWorkspacePath.trim()
     : '',
 )
 
-const isNewWorkspaceInputMode = computed(() => pendingWorkspaceInput.value.mode === 'new')
+const isNewWorkspaceInputMode = computed(() => workspaceSelection.value.mode === 'new')
 const activeWorkspaceConfigStore = () =>
   effectiveTeamConfig.value ? teamRunConfigStore : effectiveAgentConfig.value ? runConfigStore : null
 const setActiveWorkspaceError = (message: string) => activeWorkspaceConfigStore()?.setWorkspaceError(message)
@@ -269,6 +272,11 @@ const setActiveWorkspaceLoaded = (workspaceId: string, fallbackPath: string) => 
     || workspace?.workspaceConfig?.rootPath
     || fallbackPath
   activeWorkspaceConfigStore()?.setWorkspaceLoaded(workspaceId, loadedPath, workspaceMetadata)
+  workspaceSelection.value = {
+    mode: 'existing',
+    existingWorkspaceId: workspaceId,
+    newWorkspacePath: workspaceSelection.value.newWorkspacePath,
+  }
 }
 
 const ensurePendingWorkspaceLoadedForRun = async (): Promise<boolean> => {
@@ -289,6 +297,11 @@ const ensurePendingWorkspaceLoadedForRun = async (): Promise<boolean> => {
   const activeConfig = effectiveTeamConfig.value || effectiveAgentConfig.value
   const currentWorkspacePath = resolveWorkspacePath(activeConfig)
   if (activeConfig?.workspaceId && normalizeRootPath(currentWorkspacePath) === normalizeRootPath(pendingPath)) {
+    workspaceSelection.value = {
+      mode: 'existing',
+      existingWorkspaceId: activeConfig.workspaceId,
+      newWorkspacePath: workspaceSelection.value.newWorkspacePath,
+    }
     return true
   }
 
@@ -401,14 +414,64 @@ const showConversationView = () => {
   workspaceCenterViewStore.showChat()
 }
 
+const deriveWorkspaceSelection = (): WorkspaceSelectionState => {
+  const config = effectiveTeamConfig.value || effectiveAgentConfig.value || null
+  const existingWorkspaceId = config?.workspaceId || null
+  const newWorkspacePath = currentWorkspacePath.value
+  const preserveReadOnlyPathDisplay = Boolean(
+    isSelectionMode.value
+    && existingWorkspaceId
+    && newWorkspacePath
+    && !workspaceStore.workspaces[existingWorkspaceId],
+  )
+  return {
+    mode: existingWorkspaceId && !preserveReadOnlyPathDisplay ? 'existing' : 'new',
+    existingWorkspaceId,
+    newWorkspacePath,
+  }
+}
+
+const selectedRunContextIdentity = computed(() => {
+  const subject = selectionStore.subject
+  if (subject?.kind === 'agent_run') {
+    return `agent-run:${subject.runId}:${effectiveAgentConfig.value ? 'ready' : 'pending'}`
+  }
+  if (subject?.kind === 'team_run') {
+    return `team-run:${subject.rootTeamRunId}:${effectiveTeamConfig.value ? 'ready' : 'pending'}`
+  }
+  return null
+})
+
+const activeRunConfigContextIdentity = computed(() => {
+  if (selectedRunContextIdentity.value) return selectedRunContextIdentity.value
+  if (effectiveTeamConfig.value) {
+    return teamRunConfigStore.selectedDraft?.draftId
+      ? `team-draft:${teamRunConfigStore.selectedDraft.draftId}`
+      : null
+  }
+  if (effectiveAgentConfig.value) return effectiveAgentConfig.value
+  return null
+})
+
+const agentBufferRenderKeys = new WeakMap<object, number>()
+let nextAgentBufferRenderKey = 1
+const activeRunConfigContextRenderKey = computed(() => {
+  const identity = activeRunConfigContextIdentity.value
+  if (typeof identity === 'string') return identity
+  if (!identity) return 'no-run-config-context'
+  let key = agentBufferRenderKeys.get(identity)
+  if (!key) {
+    key = nextAgentBufferRenderKey++
+    agentBufferRenderKeys.set(identity, key)
+  }
+  return `agent-draft:${key}`
+})
+
 watch(
-  () => [
-    effectiveAgentConfig.value,
-    effectiveTeamConfig.value,
-    isSelectionMode.value ? 'selection' : 'draft',
-  ],
+  activeRunConfigContextIdentity,
   () => {
-    pendingWorkspaceInput.value = { mode: 'existing', pendingPath: '' }
+    workspaceSelection.value = deriveWorkspaceSelection()
   },
+  { immediate: true },
 )
 </script>
