@@ -6,6 +6,7 @@
         :address="node.address"
         :display-name="node.displayName"
         :effective-config="teamView(node.address).effectiveConfig"
+        :workspace-selection="workspaceSelectionFor(node.address)"
         :inherited-config="parentTeamView(node.address).effectiveConfig"
         :override="teamView(node.address).override"
         :is-customized="teamView(node.address).isCustomized"
@@ -15,8 +16,7 @@
         :runtime-catalog-state="catalogStateFor(teamView(node.address).effectiveConfig.runtimeKind)"
         @update-override="emit('update-team', node.address, $event)"
         @reset="emit('reset-team', node.address)"
-        @select-existing="forwardSelectExisting"
-        @workspace-input-change="forwardWorkspaceInput"
+        @update:workspace-selection="forwardWorkspaceSelection"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
       >
         <div v-if="node.children.length" class="mt-4 border-l border-slate-200 pl-3">
@@ -28,13 +28,13 @@
             :disabled="disabled"
             :read-only-mode="readOnlyMode"
             :workspace-state-for="workspaceStateFor"
+            :workspace-selection-for="workspaceSelectionFor"
             :catalog-state-for="catalogStateFor"
             :nested="true"
             @update-team="forwardTeamUpdate"
             @reset-team="forwardTeamReset"
             @update-agent="forwardAgentUpdate"
-            @select-existing="forwardSelectExisting"
-            @workspace-input-change="forwardWorkspaceInput"
+            @update:workspace-selection="forwardWorkspaceSelection"
             @retry-runtime-catalog="forwardRetryRuntimeCatalog"
           />
         </div>
@@ -74,6 +74,7 @@ import type {
   TeamScopeConfigOverride,
 } from '~/types/agent/TeamRunConfig'
 import type { RuntimeModelCatalogState, WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import MemberOverrideItem from './MemberOverrideItem.vue'
 import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
@@ -87,14 +88,14 @@ const props = withDefaults(defineProps<{
   readOnlyMode?: boolean
   nested?: boolean
   workspaceStateFor: (address: AgentTeamAddress) => WorkspaceLoadingState
+  workspaceSelectionFor: (address: AgentTeamAddress) => Readonly<WorkspaceSelectionState>
   catalogStateFor: (runtimeKind: string) => RuntimeModelCatalogState
 }>(), { readOnlyMode: false, nested: false })
 const emit = defineEmits<{
   (e: 'update-team', address: AgentTeamAddress, override: TeamScopeConfigOverride | null): void
   (e: 'reset-team', address: AgentTeamAddress): void
   (e: 'update-agent', address: AgentTeamAddress, override: AgentConfigOverride | null): void
-  (e: 'select-existing', address: AgentTeamAddress, workspaceId: string): void
-  (e: 'workspace-input-change', address: AgentTeamAddress, input: { mode: 'existing' | 'new'; pendingPath: string }): void
+  (e: 'update:workspace-selection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 
@@ -122,7 +123,7 @@ const breadcrumb = (address: AgentTeamAddress): string => address.split('/').fil
 const forwardTeamUpdate = (address: AgentTeamAddress, override: TeamScopeConfigOverride | null) => emit('update-team', address, override)
 const forwardTeamReset = (address: AgentTeamAddress) => emit('reset-team', address)
 const forwardAgentUpdate = (address: AgentTeamAddress, override: AgentConfigOverride | null) => emit('update-agent', address, override)
-const forwardSelectExisting = (address: AgentTeamAddress, workspaceId: string) => emit('select-existing', address, workspaceId)
-const forwardWorkspaceInput = (address: AgentTeamAddress, input: { mode: 'existing' | 'new'; pendingPath: string }) => emit('workspace-input-change', address, input)
+const forwardWorkspaceSelection = (address: AgentTeamAddress, selection: WorkspaceSelectionState) =>
+  emit('update:workspace-selection', address, selection)
 const forwardRetryRuntimeCatalog = (runtimeKind: string) => emit('retry-runtime-catalog', runtimeKind)
 </script>

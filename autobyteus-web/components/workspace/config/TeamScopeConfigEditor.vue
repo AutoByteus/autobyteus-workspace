@@ -91,15 +91,13 @@
 
       <div class="mt-6">
         <WorkspaceSelector
-          :workspace-id="effectiveConfig.workspaceId"
+          :model-value="workspaceSelection"
           :is-loading="workspaceLoadingState.isLoading"
           :error="workspaceLoadingState.error"
-          :initial-path="effectiveConfig.workspaceRootPath || workspaceLoadingState.loadedPath || ''"
           :disabled="disabled"
           :auto-select-default="isRoot"
           control-variant="quiet"
-          @select-existing="selectWorkspace"
-          @workspace-input-change="updateWorkspaceInput"
+          @update:model-value="updateWorkspaceSelection"
         />
       </div>
 
@@ -136,6 +134,7 @@ import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelCon
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ResolvedTeamRunLaunchConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import type { RuntimeModelCatalogState, WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import WorkspaceSelector from './WorkspaceSelector.vue'
@@ -144,6 +143,7 @@ const props = withDefaults(defineProps<{
   address: AgentTeamAddress
   displayName: string
   effectiveConfig: Readonly<ResolvedTeamRunLaunchConfig>
+  workspaceSelection: Readonly<WorkspaceSelectionState>
   inheritedConfig?: Readonly<ResolvedTeamRunLaunchConfig> | null
   override?: Readonly<TeamScopeConfigOverride> | null
   isRoot?: boolean
@@ -166,8 +166,7 @@ const emit = defineEmits<{
   (e: 'update-root', field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: unknown): void
   (e: 'update-override', override: TeamScopeConfigOverride | null): void
   (e: 'reset'): void
-  (e: 'select-existing', address: AgentTeamAddress, workspaceId: string): void
-  (e: 'workspace-input-change', address: AgentTeamAddress, input: { mode: 'existing' | 'new'; pendingPath: string }): void
+  (e: 'update:workspace-selection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 const { t } = useLocalization()
@@ -223,7 +222,8 @@ const updateField = (field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: u
   emitOverride(next)
 }
 const resetScope = () => { if (!props.disabled) emit('reset') }
-const selectWorkspace = (workspaceId: string) => { if (!props.disabled) emit('select-existing', props.address, workspaceId) }
-const updateWorkspaceInput = (input: { mode: 'existing' | 'new'; pendingPath: string }) => { if (!props.disabled) emit('workspace-input-change', props.address, input) }
+const updateWorkspaceSelection = (selection: WorkspaceSelectionState) => {
+  if (!props.disabled) emit('update:workspace-selection', props.address, selection)
+}
 const retryCatalog = () => { if (!props.disabled) emit('retry-runtime-catalog', props.effectiveConfig.runtimeKind) }
 </script>

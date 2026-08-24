@@ -1,0 +1,120 @@
+2026-08-24 09:09:21,872 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+2026-08-24 09:09:28,161 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-08-24 09:09:30,470 DEBG 'autobyteus_server' stderr output:
+[CodexAppServerClient] stderr: [2m2026-08-24T09:09:30.468233Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+
+2026-08-24 09:09:31,294 DEBG 'autobyteus_server' stdout output:
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /home/autobyteus/workspace/autobyteus-workspace
+
+2026-08-24 09:09:31,294 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace.
+
+2026-08-24 09:09:31,297 DEBG 'autobyteus_server' stdout output:
+Created and registered workspace ID: agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2
+
+2026-08-24 09:09:31,306 DEBG 'autobyteus_server' stdout output:
+Creating new workspace for rootPath: /home/autobyteus/workspace/autobyteus-workspace
+
+2026-08-24 09:09:31,307 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace.
+Reusing registered workspace ID: agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2
+
+2026-08-24 09:09:31,312 DEBG 'autobyteus_server' stdout output:
+Created WorkspaceFileExplorer for agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2 (graphql-folder-children).
+
+2026-08-24 09:09:31,317 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/autobyteus-workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-08-24 09:09:31,373 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/solution_designer_313843a0b25e42ab9c12f2e131292c16/raw_traces_active.jsonl
+
+2026-08-24 09:09:31,373 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/architecture_reviewer_9d6012279f834cb4a208160adb47184e/raw_traces_active.jsonl
+
+2026-08-24 09:09:31,375 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/implementation_engineer_51eb10c92083440fb2a9af5bd7bbd957/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/code_reviewer_0b837aa37b844817936a0f17c01b768b/raw_traces_active.jsonl
+
+2026-08-24 09:09:31,377 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/api_e2e_engineer_4b2c02b54adf4a79943c55e3a16dc627/raw_traces_active.jsonl
+
+2026-08-24 09:09:31,378 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agent_teams/software_engineering_team_f298fa4255b24490ba70af8a6051c5a6/delivery_engineer_58ca3d611f814ed3995c0fe2b684ae27/raw_traces_active.jsonl
+
+2026-08-24 09:09:36,494 DEBG 'autobyteus_server' stdout output:
+Created terminal session b8266eaa-07ae-4956-94ed-1c4fc6d3c00b using backend PtySession for target /root
+
+2026-08-24 09:09:36,494 DEBG 'autobyteus_server' stdout output:
+Terminal WebSocket connected: b8266eaa-07ae-4956-94ed-1c4fc6d3c00b
+
+2026-08-24 09:09:36,495 DEBG 'autobyteus_server' stdout output:
+Terminal websocket attached for cwd /root
+
+2026-08-24 09:09:36,880 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+2026-08-24 09:09:44,197 DEBG 'autobyteus_server' stdout output:
+GraphQL mutation to remove registered workspace
+
+2026-08-24 09:09:44,197 DEBG 'autobyteus_server' stdout output:
+Closing FileSystemWorkspace agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2
+
+2026-08-24 09:09:51,883 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+2026-08-24 09:09:57,498 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace
+
+2026-08-24 09:09:57,499 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/autobyteus-workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace
+
+2026-08-24 09:09:57,499 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee for workspace agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2
+
+2026-08-24 09:09:57,499 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee for workspace agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2. Active sessions: 1
+
+2026-08-24 09:09:57,499 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee for workspace agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2
+
+2026-08-24 09:09:57,499 DEBG 'autobyteus_server' stderr output:
+Ignoring extra file watcher lease release for /home/autobyteus/workspace/autobyteus-workspace (file-explorer-websocket)
+
+2026-08-24 09:09:57,500 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee
+Closed file explorer session 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee. Active sessions: 0
+File explorer WebSocket disconnected: 176ed55a-9ba5-4bbb-aa1b-4988cdb1b9ee
+
+2026-08-24 09:09:57,536 DEBG 'autobyteus_server' stdout output:
+Closed PTY session b8266eaa-07ae-4956-94ed-1c4fc6d3c00b
+
+2026-08-24 09:09:57,546 DEBG 'autobyteus_server' stdout output:
+Terminal WebSocket disconnected: b8266eaa-07ae-4956-94ed-1c4fc6d3c00b
+
+2026-08-24 09:10:05,394 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace
+Acquired file watcher lease for /home/autobyteus/workspace (file-explorer-websocket); active leases: 1
+
+2026-08-24 09:10:05,394 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 80feb471-6c6d-4f7b-9d89-26494c36b1c9 for workspace temp_ws_default
+Created file explorer session 80feb471-6c6d-4f7b-9d89-26494c36b1c9 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 80feb471-6c6d-4f7b-9d89-26494c36b1c9 for workspace temp_ws_default
+Released file watcher lease for /home/autobyteus/workspace (file-explorer-websocket); active leases: 0
+
+2026-08-24 09:10:05,394 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace
+FileExplorerSession closed: 80feb471-6c6d-4f7b-9d89-26494c36b1c9
+Closed file explorer session 80feb471-6c6d-4f7b-9d89-26494c36b1c9. Active sessions: 0
+File explorer WebSocket disconnected: 80feb471-6c6d-4f7b-9d89-26494c36b1c9
+
+2026-08-24 09:10:06,868 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+2026-08-24 09:10:21,881 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".

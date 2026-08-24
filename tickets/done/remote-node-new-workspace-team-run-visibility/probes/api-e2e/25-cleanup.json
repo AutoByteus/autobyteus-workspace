@@ -1,0 +1,54 @@
+[
+  {
+    "action": "terminate",
+    "teamRunId": "software_engineering_team_4cb4299212f940a08402bc0fd795c17d",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "delete-history",
+    "teamRunId": "software_engineering_team_4cb4299212f940a08402bc0fd795c17d",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "deleteStoredTeamRun": {
+            "success": true,
+            "message": "Team run 'software_engineering_team_4cb4299212f940a08402bc0fd795c17d' deleted permanently."
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "remove-workspace-registration",
+    "workspaceId": "agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "removeWorkspace": {
+            "success": true,
+            "message": "Workspace removed from Workspaces. Files, memories, and run history were not deleted.",
+            "workspaceId": "agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2",
+            "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "post-cleanup-verification",
+    "targetWorkspacePresent": false,
+    "targetTeamPresent": false
+  }
+]

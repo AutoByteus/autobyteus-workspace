@@ -1,0 +1,41 @@
+Remote-node new-workspace Team-run visibility — DR-001 integrated-state refresh
+Recorded: 2026-08-24 (Europe/Berlin)
+
+Recorded bootstrap base
+  branch: origin/personal
+  revision: 52b4be02ea793f2071fe5a63a94664ab25196433
+  source: investigation-notes.md, Environment Discovery / Bootstrap Context
+
+Refresh command
+  git fetch origin personal
+Result
+  PASS
+  origin/personal after fetch: 52b4be02ea793f2071fe5a63a94664ab25196433
+
+Candidate state
+  ticket branch: codex/remote-node-new-workspace-team-run-visibility
+  reviewed implementation HEAD: 2950019a34eada253a888b9568c1b34284f0c74d
+  merge-base(HEAD, origin/personal): 52b4be02ea793f2071fe5a63a94664ab25196433
+  rev-list --left-right --count HEAD...origin/personal: 2 0
+
+Assessment
+  Base advanced after bootstrap: NO
+  New base commits integrated: NO
+  Integration method: ALREADY CURRENT
+  Local checkpoint commit: NOT NEEDED. There was no integration operation and
+    therefore no risk of an integration rewrite losing the reviewed candidate.
+  Conflict/effective-behavior change: NONE
+  Delivery-owned edits began after this assessment: YES
+
+Post-integration executable-check decision
+  Additional executable rerun: NO
+  Rationale: origin/personal is still exactly the reviewed bootstrap revision,
+    so delivery integrated no new source or behavior. API-REV-001 already
+    executed the candidate source at 2950019a34eada253a888b9568c1b34284f0c74d
+    and passed at 96.7% final confidence; CRR-003 then confirmed that API/E2E
+    changed no repository-resident durable test code. Repeating that same live
+    environment-bound matrix would add no integrated-state evidence.
+
+Result
+  PASS — ticket branch is current with the latest tracked remote base and is
+  safe for delivery-owned documentation and handoff edits.

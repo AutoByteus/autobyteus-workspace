@@ -1,0 +1,19 @@
+{
+    "data": {
+        "workspaces": [
+            {
+                "workspaceId": "temp_ws_default",
+                "name": "Temp Workspace",
+                "displayName": "Temp Workspace",
+                "workspaceRootPath": "/home/autobyteus/workspace",
+                "absolutePath": "/home/autobyteus/workspace",
+                "kind": "temp",
+                "isTemp": true,
+                "config": {
+                    "rootPath": "/home/autobyteus/workspace",
+                    "workspaceId": "temp_ws_default"
+                }
+            }
+        ]
+    }
+}

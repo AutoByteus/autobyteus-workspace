@@ -1,0 +1,51 @@
+[
+  {
+    "action": "terminate",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "delete",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "deleteStoredTeamRun": {
+            "success": true,
+            "message": "Team run 'software_engineering_team_f298fa4255b24490ba70af8a6051c5a6' deleted permanently."
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "remove-workspace",
+    "result": {
+      "status": 200,
+      "body": {
+        "data": {
+          "removeWorkspace": {
+            "success": true,
+            "message": "Workspace removed from Workspaces. Files, memories, and run history were not deleted.",
+            "workspaceId": "agent_ws_becd3ecaff89706972c1fac769b98f892c38aa730b96071a1f2da926f996d3a2",
+            "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace"
+          }
+        }
+      }
+    }
+  },
+  {
+    "action": "verify",
+    "targetWorkspacePresent": false,
+    "targetTeamPresent": false
+  }
+]

@@ -13,14 +13,14 @@
       address="/"
       :display-name="teamDefinition.name"
       :effective-config="configurationView.root.effectiveConfig"
+      :workspace-selection="workspaceSelectionFor('/')"
       :is-root="true"
       :disabled="isFormReadOnly"
       :read-only="readOnlyMode"
       :workspace-loading-state="workspaceStateFor('/')"
       :runtime-catalog-state="catalogStateFor(configurationView.root.effectiveConfig.runtimeKind)"
       @update-root="handleRootUpdate"
-      @select-existing="forwardSelectExisting"
-      @workspace-input-change="forwardWorkspaceInput"
+      @update:workspace-selection="forwardWorkspaceSelection"
       @retry-runtime-catalog="retryRuntimeCatalog"
     />
 
@@ -43,12 +43,12 @@
           :disabled="isFormReadOnly"
           :read-only-mode="readOnlyMode"
           :workspace-state-for="workspaceStateFor"
+          :workspace-selection-for="workspaceSelectionFor"
           :catalog-state-for="catalogStateFor"
           @update-team="handleTeamUpdate"
           @reset-team="handleTeamReset"
           @update-agent="handleAgentUpdate"
-          @select-existing="forwardSelectExisting"
-          @workspace-input-change="forwardWorkspaceInput"
+          @update:workspace-selection="forwardWorkspaceSelection"
           @retry-runtime-catalog="retryRuntimeCatalog"
         />
       </div>
@@ -69,6 +69,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride, TeamRunConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { useTeamRunConfigStore, type RuntimeModelCatalogState, type WorkspaceLoadingState } from '~/stores/teamRunConfigStore'
 import { buildTeamMemberTreeFromDefinition, flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers'
 import { resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
@@ -82,12 +83,12 @@ const props = defineProps<{
   teamDefinition: AgentTeamDefinition
   workspaceLoadingState?: WorkspaceLoadingState
   workspaceLoadingStates?: Readonly<Record<AgentTeamAddress, WorkspaceLoadingState>>
+  workspaceSelections?: Readonly<Partial<Record<AgentTeamAddress, WorkspaceSelectionState>>>
   repairAddresses?: readonly AgentTeamAddress[]
   readOnly?: boolean
 }>()
 const emit = defineEmits<{
-  (e: 'select-existing', address: AgentTeamAddress, workspaceId: string): void
-  (e: 'workspace-input-change', address: AgentTeamAddress, input: { mode: 'existing' | 'new'; pendingPath: string }): void
+  (e: 'update:workspaceSelection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'edit-config', edit: TeamLaunchConfigEdit): void
 }>()
 const definitions = useAgentTeamDefinitionStore()
@@ -104,6 +105,17 @@ const repairAddresses = computed(() => props.repairAddresses || [])
 const workspaceStateFor = (address: AgentTeamAddress): WorkspaceLoadingState => props.workspaceLoadingStates?.[address]
   ?? (address === '/' ? props.workspaceLoadingState : null)
   ?? { isLoading: false, error: null, loadedPath: null }
+const workspaceSelectionFor = (address: AgentTeamAddress): Readonly<WorkspaceSelectionState> => {
+  const explicit = props.workspaceSelections?.[address]
+  if (explicit) return explicit
+  const effective = configurationView.value.teamsByAddress[address]?.effectiveConfig
+  if (!effective) throw new Error(`Team launch view is missing '${address}'.`)
+  return {
+    mode: effective.workspaceId ? 'existing' : 'new',
+    existingWorkspaceId: effective.workspaceId,
+    newWorkspacePath: effective.workspaceRootPath || workspaceStateFor(address).loadedPath || '',
+  }
+}
 const catalogStateFor = (runtimeKind: string): RuntimeModelCatalogState => launchConfigStore.runtimeModelCatalogStates[runtimeKind]
   ?? { status: 'idle', error: null }
 const { reloadRuntimeKind } = useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
@@ -119,6 +131,6 @@ const handleRootUpdate = (field: 'runtime' | 'model' | 'llmConfig' | 'auto', val
 const handleTeamUpdate = (teamAddress: AgentTeamAddress, override: TeamScopeConfigOverride | null) => emit('edit-config', { kind: 'set_team_override', teamAddress, override })
 const handleTeamReset = (teamAddress: AgentTeamAddress) => emit('edit-config', { kind: 'reset_team_override', teamAddress })
 const handleAgentUpdate = (agentAddress: AgentTeamAddress, override: AgentConfigOverride | null) => emit('edit-config', { kind: 'set_agent_override', agentAddress, override })
-const forwardSelectExisting = (address: AgentTeamAddress, workspaceId: string) => emit('select-existing', address, workspaceId)
-const forwardWorkspaceInput = (address: AgentTeamAddress, input: { mode: 'existing' | 'new'; pendingPath: string }) => emit('workspace-input-change', address, input)
+const forwardWorkspaceSelection = (address: AgentTeamAddress, selection: WorkspaceSelectionState) =>
+  emit('update:workspaceSelection', address, selection)
 </script>

@@ -1,0 +1,10 @@
+IR-004 integrated frontend render self-validation: PASS
+Route: http://127.0.0.1:3001/workspace
+Backend: http://127.0.0.1:8006
+Definition: Northstar Operating Company (6 nested Teams, 47 displayed scopes/Agents)
+Root explicit New before unrelated immutable edit: /home/autobyteus/workspace/ir-004-integration
+Root explicit New after root auto-approve edit: /home/autobyteus/workspace/ir-004-integration
+Root New aria-selected after edit: true
+Nested /engineering_org remained inherited: true
+Viewports: 1440x1100 and 900x1000
+Page errors: 0

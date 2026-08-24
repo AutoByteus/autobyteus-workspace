@@ -1,0 +1,407 @@
+cards 1
+URL http://127.0.0.1:3107/workspace
+BODY Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+Software Engineering Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (6)
+Run Team
+
+A default team model is required before running this team.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+.codex
+autobyteus-agents
+autobyteus-mcps
+autobyteus-workspace
+No file selected
+
+Select a file from the explorer to view or edit its content.
+BUTTONS [
+  {
+    text: 'Agents',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: '',
+    title: 'Collapse left panel',
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Agent Teams',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Skills',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Memory',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Nodes',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: '',
+    title: 'Add workspace',
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Temp Workspace',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: 'false',
+    disabled: false
+  },
+  {
+    text: 'Settings',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Select a model',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Existing',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'New',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: '📁 Temp Workspace (Default)\nDefault temporary workspace',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Auto approve tools',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Team Members Override (6)',
+    title: null,
+    aria: null,
+    test: 'team-member-overrides-toggle',
+    expanded: 'false',
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Global default',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Run Team',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: true
+  },
+  {
+    text: 'Files',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Terminal',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Activity',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Token',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'Artifacts',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: 'VNC Viewer',
+    title: null,
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: '',
+    title: 'Toggle Sidebar',
+    aria: null,
+    test: 'right-side-panel-toggle',
+    expanded: null,
+    disabled: false
+  },
+  {
+    text: '',
+    title: 'Maximize view',
+    aria: null,
+    test: null,
+    expanded: null,
+    disabled: false
+  }
+]
+SELECTS [
+  {
+    id: 'team-run-runtime-kind',
+    value: 'autobyteus',
+    aria: null,
+    labels: [ 'Runtime' ],
+    options: [ [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--solution_designer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--architecture_reviewer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--implementation_engineer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--code_reviewer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--api_e2e_engineer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--delivery_engineer',
+    value: '',
+    aria: null,
+    labels: [],
+    options: [ [Object], [Object], [Object], [Object] ]
+  }
+]
+INPUTS [
+  {
+    id: 'override-auto--solution_designer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: 'override-auto--architecture_reviewer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: 'override-auto--implementation_engineer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: 'override-auto--code_reviewer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: 'override-auto--api_e2e_engineer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: 'override-auto--delivery_engineer',
+    type: 'checkbox',
+    value: 'on',
+    placeholder: '',
+    aria: null,
+    disabled: false
+  },
+  {
+    id: '',
+    type: 'text',
+    value: '',
+    placeholder: 'Search...',
+    aria: null,
+    disabled: false
+  }
+]
+ERRORS []

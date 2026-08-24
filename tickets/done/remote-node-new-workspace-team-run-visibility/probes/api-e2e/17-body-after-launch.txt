@@ -1,0 +1,54 @@
+Agents
+Agent Teams
+Skills
+Memory
+Nodes
+Workspaces
+autobyteus-workspace
+TEAMS
+SE
+Software Engineering Team
+(1)
+New - Software Engineering Team
+now
+S
+solution_designer
+now
+A
+architecture_reviewer
+now
+I
+implementation_engineer
+now
+C
+code_reviewer
+now
+A
+api_e2e_engineer
+now
+D
+delivery_engineer
+now
+Temp Workspace
+Settings
+S
+solution_designer
+Offline
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
+
+Tasks
+0 tasks

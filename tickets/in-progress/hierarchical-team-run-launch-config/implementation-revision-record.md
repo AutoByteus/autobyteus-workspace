@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-001 | `architecture_reviewer`; `design-review-report.md`; initial recovered implementation round | N/A | `Initial Baseline` | `SR-002–SR-007`, `ARCH-REV-001`; `CRR/API-REV/DR: N/A` | Complete implementation baseline prepared for code review |
 | IR-002 | `code_reviewer`; `code-review-report.md`; CRR-001 / review round 1 | `CR-001–CR-004` | `Local Fix` | `SR-002–SR-007`, `ARCH-REV-001`, `CRR-001`; `API-REV/DR: N/A` | Four source-review findings resolved and implementation prepared for repeat code review |
 | IR-003 | `code_reviewer`; `code-review-report.md`; CRR-004 failure-origin round | `CR-005`, `API-E2E-F-001` | `Local Fix` | `SR-002–SR-007`, `ARCH-REV-001`, `CRR-004`, `API-REV-003`; `DR: N/A` | Predecessor nested application-binding preservation corrected and prepared for repeat source review |
+| IR-004 | `delivery_engineer`; `delivery-integration-blocker.md`; DR-001 integrated-state refresh | `DR-001` six-file merge conflict set | `Local Fix` | `SR-007`, `ARCH-REV-001`, `CRR-005–CRR-006`, `API-REV-004`, `DR-001` | Latest tracked base integrated with hierarchical and controlled workspace semantics preserved; prepared for repeat source review |
 
 ## Revision Entries
 
@@ -71,3 +72,23 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: focused predecessor/V1/V2 migration unit suites passed 4 files/13 tests; server `build:full` passed; durable-test preservation/source/size audit and `git diff --check` passed. API/E2E was intentionally not rerun by implementation engineering; CRR-004 requires source Pass first.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: repeat source review must pass before `/api_e2e_engineer` reruns the full strengthened 4/4 production-upgrade coverage and returns the durable-test state for repeat proportional review; unchanged historical server-suite/typecheck and delivery base-refresh limitations remain in `implementation-handoff.md`.
+
+### IR-004 — Integrate latest-base controlled workspace selection with hierarchical Team scopes
+
+- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md`; `DR-001` initial integrated-state refresh
+- Triggering finding IDs: `DR-001` six-file merge conflict set caused by current-base commits `bfbeb0810` and `2950019a3`
+- Classification: `Local Fix`
+- Prior authoritative result: protected checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29` had passed `CRR-005`, `API-REV-004` (99%; hierarchy 7/7 and production upgrade 4/4), and `CRR-006`; delivery's required merge to `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4` stopped with six frontend conflicts
+- Current authoritative result: active merge conflicts are resolved without choosing either behavior wholesale; the integrated source/test state passes implementation-scoped checks and is ready for repeat source review
+- Related solution revision IDs: `SR-002–SR-007` (current `SR-007`)
+- Related architecture-review revision IDs: `ARCH-REV-001`
+- Related code-review revision IDs: `CRR-005` source Pass and `CRR-006` proportional test-review Pass are the pre-integration basis; new review pending
+- Related API/E2E revision IDs: `API-REV-004` Pass / 99% is the pre-integration basis; fresh integrated investigation/execution pending
+- Related delivery revision IDs: `DR-001`
+- Why this implementation revision is recorded: latest base introduced a complete controlled `WorkspaceSelectionState`, stable context identity, and explicit-user precedence during asynchronous workspace discovery, while the reviewed ticket introduced exact-address root/nested Team workspace ownership. The six conflicts and two automatically merged adjacent files required one coherent integrated contract.
+- Approved behavior or requirement IDs affected: hierarchical `BEH-001`, `BEH-002`, `BEH-004`, `BEH-009`, `R-001`, `R-007`, `R-015`, `R-019`, `AC-003`, `AC-012`, `AC-016`; current-base remote-workspace `FR-001–FR-007` and `AC-001–AC-009`
+- Implementation delta: made `WorkspaceSelector` controlled by the shared three-field state while retaining root-only default auto-selection and explicit-mode discovery guards; extended that contract through Team-scope/tree/form relays with an exact-address selection map owned by `RunConfigPanel`; retained stable draft identity so immutable edits preserve New/path; resolves only active New selections before launch; keeps failed paths visible; blocks inactive New buffers in Existing mode; resets exact Team selection on explicit scope reset; and preserves current-base independent-prototype removal.
+- Changed files or areas: `WorkspaceSelectionState.ts`; six workspace configuration Vue components; four focused component suites including automatically merged `WorkspaceSelector.spec.ts`; IR-004 implementation artifacts and evidence. Incoming current-base docs/package/release state and independent-prototype removal remain integrated without ticket-side rollback.
+- Local validation and result: focused workspace-config suites passed 6 files/91 tests; production Nuxt build passed (3,730 client modules, 15 prerendered routes); web/localization guards passed; merge/static/diff audit passed; real Nuxt render at desktop/narrow viewports preserved explicit root New/path across an immutable auto-approve edit, kept nested `/engineering_org` inherited, and recorded zero page errors. Standalone Nuxt typecheck remained environment-blocked before source diagnostics by the known `vue-tsc`/TypeScript export mismatch.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: IR-004's integrated frontend source/test delta requires repeat source review, then fresh API/E2E coverage investigation/execution and proportional test review as applicable before delivery re-entry. No push, archival, release, deployment, tag, or cleanup is claimed.

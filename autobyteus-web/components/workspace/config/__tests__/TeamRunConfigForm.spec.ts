@@ -99,6 +99,11 @@ describe('TeamRunConfigForm hierarchical scopes', () => {
       address: '/',
       isRoot: true,
       disabled: false,
+      workspaceSelection: {
+        mode: 'existing',
+        existingWorkspaceId: 'root-ws',
+        newWorkspacePath: '/workspace/root',
+      },
       effectiveConfig: expect.objectContaining({
         runtimeKind: 'codex_app_server',
         llmModelIdentifier: 'gpt-5.6-luna',
@@ -159,22 +164,29 @@ describe('TeamRunConfigForm hierarchical scopes', () => {
     ])
   })
 
-  it('emits root edits and address-qualified workspace events without local policy merging', async () => {
-    const wrapper = mountForm()
+  it('emits root edits and complete address-qualified workspace selections without local policy merging', async () => {
+    const nestedSelection = {
+      mode: 'new' as const,
+      existingWorkspaceId: 'root-ws',
+      newWorkspacePath: '/workspace/study',
+    }
+    const wrapper = mountForm({ workspaceSelections: { '/StudentStudyGroup': nestedSelection } })
     const root = wrapper.findComponent(TeamScopeConfigEditor)
     const tree = wrapper.findComponent(TeamMemberConfigTree)
 
+    expect(tree.props('workspaceSelectionFor')('/StudentStudyGroup')).toEqual(nestedSelection)
     root.vm.$emit('update-root', 'model', 'gpt-5.5')
-    root.vm.$emit('select-existing', '/', 'ws-next')
-    tree.vm.$emit('workspace-input-change', '/StudentStudyGroup', { mode: 'new', pendingPath: '/workspace/study' })
+    const rootSelection = { mode: 'existing', existingWorkspaceId: 'ws-next', newWorkspacePath: '' }
+    root.vm.$emit('update:workspace-selection', '/', rootSelection)
+    tree.vm.$emit('update:workspace-selection', '/StudentStudyGroup', nestedSelection)
     await wrapper.vm.$nextTick()
 
     expect(wrapper.emitted('edit-config')).toEqual([
       [{ kind: 'set_root_model', llmModelIdentifier: 'gpt-5.5' }],
     ])
-    expect(wrapper.emitted('select-existing')).toEqual([['/', 'ws-next']])
-    expect(wrapper.emitted('workspace-input-change')).toEqual([
-      ['/StudentStudyGroup', { mode: 'new', pendingPath: '/workspace/study' }],
+    expect(wrapper.emitted('update:workspaceSelection')).toEqual([
+      ['/', rootSelection],
+      ['/StudentStudyGroup', nestedSelection],
     ])
   })
 

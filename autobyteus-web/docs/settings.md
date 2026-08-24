@@ -850,23 +850,49 @@ inferred file type is an image or another supported viewer family.
 
 For editable single-agent and team launches,
 `components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
-not a separate workspace-loading step. Existing mode emits the selected visible
-workspace id immediately. New mode keeps only a pending absolute path and emits
-that pending path to `RunConfigPanel.vue`; it does not render a user-facing
-**Load** button, pressing Enter in the path input does not preload the
-workspace, and the helper copy must indicate that the path will be loaded when
-the user runs the agent or team.
+not a separate workspace-loading step. `RunConfigPanel.vue` owns one complete
+transient `WorkspaceSelectionState` (`mode`, `existingWorkspaceId`, and
+`newWorkspacePath`) that governs both the rendered controls and launch
+preparation. `WorkspaceSelector.vue` is controlled by that value and emits
+complete replacement values; `AgentRunConfigForm.vue` and
+`TeamRunConfigForm.vue` only relay the contract. The selector must not keep a
+second authoritative mode or path. `mode` is the active-choice discriminator,
+while the inactive Existing id and New path may remain buffered so switching
+tabs does not discard the other value.
+
+Existing mode applies the selected visible workspace id to the active launch
+config immediately. New mode keeps the entered absolute path transient until
+submission; it does not render a user-facing **Load** button, pressing Enter in
+the path input does not preload the workspace, and the helper copy must indicate
+that the path will be loaded when the user runs the agent or team. Automatic
+Temp/Existing initialization is only a proposal for an untouched run-config
+context. Once the user explicitly changes the mode, Existing value, path, or
+folder selection, delayed workspace discovery must not overwrite that choice.
+
+The controlled state is derived again only when the active run-config context
+really changes: a selected Agent/Team run identity (including its initial
+hydration-ready transition), a Team draft id, or the standalone Agent launch
+buffer identity. Immutable edits within the same Team draft—runtime, model,
+thinking options, auto-approve, or member overrides—are value changes, not
+context changes, and therefore preserve the visible and launch workspace state.
+The Agent and Team form instances use the same stable identity so selector-local
+initialization/interaction guards reset for a genuine context transition rather
+than for an unrelated config replacement.
 
 `RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
 with a non-empty pending path, **Run Agent** / **Run Team** first calls the
 workspace creation/registration path, updates the active launch config with the
-registered workspace metadata, and only then creates the local standalone or
-team run. The pending New path takes precedence over any previously selected
-workspace. If registration fails or the New path is blank, no run is created and
-the workspace error is shown in the config panel. While this submit-time load is
-in progress, duplicate run clicks are blocked; the Run button is otherwise
-allowed to be enabled before any explicit preload when the pending path and the
-rest of the launch config are valid.
+canonical registered workspace id and metadata, transitions the controlled
+selection to that canonical Existing identity, and only then creates the local
+standalone or team run. The active New path takes precedence over any dormant
+previously selected workspace. If registration fails or the New path is blank,
+New mode and the entered path are preserved, no run is created, and the
+workspace error is shown in the config panel; there is no hidden fallback to
+Temp/Existing. While this submit-time load is in progress, duplicate run clicks
+are blocked; the Run button is otherwise allowed to be enabled before any
+explicit preload when the pending path and the rest of the launch config are
+valid. The bound server remains authoritative for interpreting and
+canonicalizing the supplied absolute path.
 
 ### Existing Run Configuration Inspection
 

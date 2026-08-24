@@ -41,6 +41,7 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
     config: null,
     selectedDraft: null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+    workspaceLoadingStates: {} as Record<string, { isLoading: boolean; error: string | null; loadedPath: string | null }>,
     launchReadiness: { canLaunch: false, blockingIssues: [], unresolvedMembers: [] },
     applyConfigEdit: vi.fn((edit: any) => {
       const config = structuredClone(teamRunState.config || {}) as any
@@ -58,12 +59,18 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
         }) as any
       }
     }),
-    setWorkspaceLoading: vi.fn((isLoading: boolean) => {
+    setWorkspaceLoading: vi.fn((isLoading: boolean, address = '/') => {
       teamRunState.workspaceLoadingState.isLoading = isLoading
       if (isLoading) teamRunState.workspaceLoadingState.error = null
+      teamRunState.workspaceLoadingStates[address] = {
+        isLoading,
+        error: isLoading ? null : teamRunState.workspaceLoadingStates[address]?.error ?? null,
+        loadedPath: teamRunState.workspaceLoadingStates[address]?.loadedPath ?? null,
+      }
     }),
     setWorkspaceLoaded: vi.fn((workspaceId: string, path: string, workspaceMetadata: any, address = '/') => {
       teamRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: path }
+      teamRunState.workspaceLoadingStates[address] = { isLoading: false, error: null, loadedPath: path }
       const config = structuredClone(teamRunState.config || {}) as any
       const workspace = { workspaceId, workspaceMetadata }
       if (address === '/') config.rootConfig.workspace = workspace
@@ -76,9 +83,10 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
         }) as any
       }
     }),
-    setWorkspaceError: vi.fn((message: string) => {
+    setWorkspaceError: vi.fn((message: string, address = '/') => {
       teamRunState.workspaceLoadingState.isLoading = false
       teamRunState.workspaceLoadingState.error = message
+      teamRunState.workspaceLoadingStates[address] = { isLoading: false, error: message, loadedPath: null }
     }),
     clearConfig: vi.fn(),
   },
@@ -192,6 +200,7 @@ describe('RunConfigPanel', () => {
     teamRunState.config = null
     teamRunState.selectedDraft = null
     teamRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
+    teamRunState.workspaceLoadingStates = {}
     teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
     agentRunState.updateAgentConfig.mockClear()
     agentRunState.setWorkspaceLoading.mockClear()
@@ -206,9 +215,10 @@ describe('RunConfigPanel', () => {
     teamRunState.setWorkspaceLoading.mockClear()
     teamRunState.setWorkspaceLoaded.mockClear()
     teamRunState.setWorkspaceError.mockReset()
-    teamRunState.setWorkspaceError.mockImplementation((message: string) => {
+    teamRunState.setWorkspaceError.mockImplementation((message: string, address = '/') => {
       teamRunState.workspaceLoadingState.isLoading = false
       teamRunState.workspaceLoadingState.error = message
+      teamRunState.workspaceLoadingStates[address] = { isLoading: false, error: message, loadedPath: null }
     })
     teamRunState.clearConfig.mockReset()
     agentContextState.activeRun = null
@@ -333,8 +343,11 @@ describe('RunConfigPanel', () => {
     expect(form.props('readOnly')).toBe(true)
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
     await wrapper.find('.run-btn').trigger('click')
-    form.vm.$emit('select-existing', 'ws-other')
-    form.vm.$emit('workspace-input-change', { mode: 'new', pendingPath: '/tmp/other' })
+    form.vm.$emit('update:workspaceSelection', '/', {
+      mode: 'existing',
+      existingWorkspaceId: 'ws-other',
+      newWorkspacePath: '',
+    })
     form.vm.$emit('edit-config', { kind: 'set_model', llmModelIdentifier: 'other-model' })
     await wrapper.vm.$nextTick()
 
@@ -369,9 +382,10 @@ describe('RunConfigPanel', () => {
       },
     })
 
-    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('update:workspaceSelection', {
       mode: 'new',
-      pendingPath: '/home/autobyteus/workspace',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '/home/autobyteus/workspace',
     })
     await wrapper.find('.run-btn').trigger('click')
     await Promise.resolve()
@@ -417,9 +431,10 @@ describe('RunConfigPanel', () => {
       },
     })
 
-    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('update:workspaceSelection', {
       mode: 'new',
-      pendingPath: '/bad/path',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '/bad/path',
     })
     await wrapper.find('.run-btn').trigger('click')
     await Promise.resolve()
@@ -449,13 +464,48 @@ describe('RunConfigPanel', () => {
     })
 
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
-    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('update:workspaceSelection', {
       mode: 'new',
-      pendingPath: '/home/autobyteus/workspace',
+      existingWorkspaceId: null,
+      newWorkspacePath: '/home/autobyteus/workspace',
     })
     await wrapper.vm.$nextTick()
 
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+  })
+
+  it('preserves the controlled New workspace across mutable Agent buffer edits', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore() as any
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'model-x',
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: { workspaceRootPath: '/tmp/default' },
+      autoExecuteTools: false,
+      isLocked: false,
+    } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+    const form = wrapper.findComponent(AgentRunConfigForm)
+    const requestedSelection = {
+      mode: 'new',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '/workspace/agent-pending',
+    }
+    form.vm.$emit('update:workspaceSelection', requestedSelection)
+    await wrapper.vm.$nextTick()
+
+    agentStore.config.runtimeKind = 'codex_app_server'
+    agentStore.config.llmModelIdentifier = 'gpt-5.6-sol'
+    agentStore.config.autoExecuteTools = true
+    await wrapper.vm.$nextTick()
+
+    expect(form.props('workspaceSelection')).toEqual(requestedSelection)
   })
 
   it.each([
@@ -514,9 +564,10 @@ describe('RunConfigPanel', () => {
     })
 
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
-    wrapper.findComponent(TeamRunConfigForm).vm.$emit('workspace-input-change', address, {
+    wrapper.findComponent(TeamRunConfigForm).vm.$emit('update:workspaceSelection', address, {
       mode: 'new',
-      pendingPath: '/home/autobyteus/team-workspace',
+      existingWorkspaceId: rootHasWorkspace ? 'ws-root' : null,
+      newWorkspacePath: '/home/autobyteus/team-workspace',
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
@@ -540,6 +591,80 @@ describe('RunConfigPanel', () => {
     if (address === '/') expect(teamStore.selectedDraft.config.rootConfig.workspace.workspaceId).toBe('ws-created')
     else expect(teamStore.selectedDraft.config.teamOverrides[address].workspace.workspaceId).toBe('ws-created')
     expect(teamStore.clearConfig).not.toHaveBeenCalled()
+  })
+
+  it('preserves an address-qualified New workspace across immutable same-draft Team edits', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = editableTeamConfig({
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: { workspaceRootPath: '/tmp/default' },
+    }) as any
+    teamStore.selectedDraft = Object.freeze({
+      draftId: 'team-draft-stable-workspace',
+      config: Object.freeze({ ...teamStore.config }),
+      focusedMemberAddress: '/coordinator',
+      pendingInputsByMemberAddress: Object.freeze({}),
+    }) as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+    const form = wrapper.findComponent(TeamRunConfigForm)
+    const requestedSelection = {
+      mode: 'new',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '/home/autobyteus/workspace/autobyteus-workspace',
+    }
+
+    form.vm.$emit('update:workspaceSelection', '/', requestedSelection)
+    await wrapper.vm.$nextTick()
+    form.vm.$emit('edit-config', { kind: 'set_root_auto_execute_tools', autoExecuteTools: true })
+    await wrapper.vm.$nextTick()
+
+    expect(form.props('workspaceSelections')).toEqual({ '/': requestedSelection })
+
+    await wrapper.find('.run-btn').trigger('click')
+    await vi.waitFor(() => expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1))
+    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledTimes(1)
+    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({
+      root_path: requestedSelection.newWorkspacePath,
+    })
+    expect(teamStore.selectedDraft.config.rootConfig.workspace.workspaceId).toBe('ws-created')
+  })
+
+  it('keeps the address-qualified New workspace visible and blocks Team launch when registration fails', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = editableTeamConfig({ workspaceId: 'temp_ws_default' }) as any
+    teamStore.selectedDraft = Object.freeze({
+      draftId: 'team-draft-workspace-error',
+      config: Object.freeze({ ...teamStore.config }),
+      focusedMemberAddress: '/coordinator',
+      pendingInputsByMemberAddress: Object.freeze({}),
+    }) as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+    workspaceStoreMock.createWorkspace.mockRejectedValueOnce(new Error('Remote path is unavailable'))
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+    const form = wrapper.findComponent(TeamRunConfigForm)
+    const requestedSelection = {
+      mode: 'new',
+      existingWorkspaceId: 'temp_ws_default',
+      newWorkspacePath: '/bad/remote/path',
+    }
+
+    form.vm.$emit('update:workspaceSelection', '/', requestedSelection)
+    await wrapper.find('.run-btn').trigger('click')
+    await Promise.resolve()
+
+    expect(teamStore.setWorkspaceError).toHaveBeenCalledWith('Remote path is unavailable', '/')
+    expect(teamRunOwnerState.launchDraft).not.toHaveBeenCalled()
+    expect(form.props('workspaceSelections')).toEqual({ '/': requestedSelection })
+    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('temp_ws_default')
   })
 
   it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
@@ -598,6 +723,30 @@ describe('RunConfigPanel', () => {
     expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Workspace is required to run a team.')
   })
 
+  it('does not admit a missing Team workspace from an inactive New-path buffer in Existing mode', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = editableTeamConfig({ workspaceId: null, workspaceMetadata: null }) as any
+    teamStore.launchReadiness = {
+      canLaunch: false,
+      blockingIssues: [{ code: 'WORKSPACE_REQUIRED', message: 'Root workspace is required.', subjectAddress: '/' }],
+      unresolvedMembers: [],
+    } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+    })
+    wrapper.findComponent(TeamRunConfigForm).vm.$emit('update:workspaceSelection', '/', {
+      mode: 'existing',
+      existingWorkspaceId: null,
+      newWorkspacePath: '/inactive/new-buffer',
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Root workspace is required.')
+  })
+
   it('disables agent run when workspace is missing', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
     const agentStore = useAgentRunConfigStore() as any
@@ -639,7 +788,11 @@ describe('RunConfigPanel', () => {
     const form = wrapper.findComponent(AgentRunConfigForm)
     expect(form.props('readOnly')).toBe(false)
 
-    form.vm.$emit('select-existing', 'ws-draft-new')
+    form.vm.$emit('update:workspaceSelection', {
+      mode: 'existing',
+      existingWorkspaceId: 'ws-draft-new',
+      newWorkspacePath: '',
+    })
 
     expect(agentStore.updateAgentConfig).toHaveBeenCalledWith({
       workspaceId: 'ws-draft-new',
@@ -662,7 +815,11 @@ describe('RunConfigPanel', () => {
     const form = wrapper.findComponent(TeamRunConfigForm)
     expect(form.props('readOnly')).toBe(false)
 
-    form.vm.$emit('select-existing', '/', 'ws-draft-new')
+    form.vm.$emit('update:workspaceSelection', '/', {
+      mode: 'existing',
+      existingWorkspaceId: 'ws-draft-new',
+      newWorkspacePath: '',
+    })
 
     expect(teamStore.applyConfigEdit).toHaveBeenCalledWith({
       kind: 'set_root_workspace',
@@ -725,7 +882,11 @@ describe('RunConfigPanel', () => {
     const form = wrapper.findComponent(AgentRunConfigForm)
     expect(form.props('readOnly')).toBe(true)
 
-    form.vm.$emit('select-existing', 'ws-new')
+    form.vm.$emit('update:workspaceSelection', {
+      mode: 'existing',
+      existingWorkspaceId: 'ws-new',
+      newWorkspacePath: '',
+    })
     expect(contextStore.activeRun?.config.workspaceId).toBe('ws-original')
   })
 

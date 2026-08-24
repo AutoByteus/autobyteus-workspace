@@ -1,0 +1,53 @@
+Delivery integrated-state refresh
+Date: 2026-08-24
+Ticket: hierarchical-team-run-launch-config
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal
+
+1. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Post-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Result: Pass; tracked remote refs were current.
+
+2. Pre-integration ancestry
+   Reviewed historical base: 52b4be02ea793f2071fe5a63a94664ab25196433
+   Pre-checkpoint ticket HEAD: c915a065377f2982abfc2d7638830085c86b6cc1
+   Ticket/base divergence before checkpoint: 1 ahead / 18 behind
+   Merge base: 52b4be02ea793f2071fe5a63a94664ab25196433
+   Result: origin/personal advanced by 18 commits since the reviewed historical base.
+
+3. Reviewed-state protection
+   Transient untracked test output removed: autobyteus-application-devkit/.tmp-tests
+   Pre-checkpoint check: git diff --check -> Pass
+   Command: git add -A && git commit -m "chore(delivery): checkpoint reviewed hierarchical launch candidate"
+   Checkpoint: 393c27015a4380f77d33f7f55096077f0e1f6b29
+   Result: Pass; 290 reviewed/evidence paths were protected in a local delivery-safety commit.
+   Publication: None. The checkpoint was not pushed.
+
+4. Latest-base integration attempt
+   Command: git merge --no-edit origin/personal
+   Merge HEAD: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Result: Blocked; automatic merge stopped with six content conflicts.
+
+   Unmerged paths:
+   - autobyteus-web/components/workspace/config/RunConfigPanel.vue
+   - autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+   - autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+   - autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+   - autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+   - autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+   Base commits touching the conflict set:
+   - bfbeb0810 fix workspace selection state for team launches
+   - 2950019a3 preserve explicit workspace mode during discovery
+
+5. Post-integration verification
+   Executable check rerun: No.
+   Rationale: the integration did not complete and the worktree is intentionally retained in an unmerged state for implementation-owned conflict resolution. Running candidate tests or synchronizing durable docs would not establish an integrated result.
+
+6. Safety and holds
+   - The dated origin/codex/hierarchical-team-run-launch-config-recovery-20260824 branch was not merged or cherry-picked.
+   - No source conflict was resolved by delivery.
+   - No ticket archive, push, finalization-target update, release, deployment, tag, or cleanup occurred.
+   - Delivery result: Blocked / Local Fix to /implementation_engineer.

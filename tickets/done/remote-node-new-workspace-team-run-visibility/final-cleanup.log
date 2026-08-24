@@ -1,0 +1,31 @@
+Remote-node new-workspace Team-run visibility — post-finalization cleanup
+Recorded: 2026-08-24 (Europe/Berlin)
+
+Safety gates
+  ticket commit 0ac0f29411dc7094373afecfcf67313b90038c69 is an ancestor of personal: PASS
+  ticket commit is an ancestor of v1.4.57: PASS
+  dedicated ticket worktree was clean: PASS
+
+Cleanup actions
+  removed worktree:
+    /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility
+  git worktree prune: PASS
+  deleted local branch:
+    codex/remote-node-new-workspace-team-run-visibility
+  deleted remote branch:
+    origin/codex/remote-node-new-workspace-team-run-visibility
+
+Verification
+  worktree filesystem path absent: PASS
+  worktree registry entry absent: PASS
+  local ticket branch absent: PASS
+  remote ticket branch absent: PASS
+  personal/origin personal before this cleanup-record commit:
+    d2ab2ef2bac25614692fd901bb4fc58ed4219ae7
+  release tag remains:
+    v1.4.57 -> 389748b0b9f0dea051aaed18641de131cf0adbbb
+  unrelated shared-checkout `.article-work/`: retained and unmodified
+
+Result
+  PASS — ticket worktree and ticket branches were safely removed after the
+  finalized ticket commit was verified in both personal and the stable release.
