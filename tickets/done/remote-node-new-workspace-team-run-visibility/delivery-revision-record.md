@@ -9,6 +9,7 @@ The current integrated repository state, delivery artifacts, and latest complete
 | `DR-001` | `CRR-003 Not Applicable` over successful `API-REV-001`, after `CRR-002 Pass`, `IR-002`, `ARCH-REV-001`, and `SR-001` | N/A | Pass — latest base already current, documentation synchronized and validated, verification handoff ready; repository finalization intentionally held | `delivery-integrated-state-refresh.log`; `docs-sync-validation.log`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md` |
 | `DR-002` | User accepted the candidate and requested finalization plus a new release | `DR-001 Pass` with verification/finalization hold | Pass — explicit verification and release authorization received; finalization target refreshed unchanged; stable `v1.4.57` sequence authorized | `finalization-target-refresh.log`; `release-notes.md`; `handoff-summary.md`; `release-deployment-report.md` |
 | `DR-003` | Completion of authorized repository finalization and all `v1.4.57` tag-triggered workflows | `DR-002 Pass` with execution authorized | Pass — ticket archived/published, `personal` updated, stable release published, all five workflows succeeded, and public release/Docker readback passed; cleanup pending | `release-v1.4.57-verification.log`; `handoff-summary.md`; `release-deployment-report.md` |
+| `DR-004` | Post-finalization cleanup after DR-003 rollout and completion-record publication | `DR-003 Pass` with cleanup pending | Pass — dedicated worktree and local/remote ticket branches removed safely; final delivery complete | `final-cleanup.log`; `handoff-summary.md`; `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -50,3 +51,13 @@ The current integrated repository state, delivery artifacts, and latest complete
 - Docker readback: `autobyteus/autobyteus-server:1.4.57` and `:latest` both resolve to multi-arch digest `sha256:805b604ddd56064e6a056ab7a10204406056d49eca4037fa1317a091a5088ca7` for `linux/amd64` and `linux/arm64`. The standard tag-triggered release does not publish the separately manual `zh` variant.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-new-workspace-team-run-visibility/release-v1.4.57-verification.log`.
 - Current authoritative result at `DR-003`: `Pass — repository and release complete`. Only safe ticket worktree/branch cleanup and its completion record remain.
+
+### DR-004 — Ticket workspace and branch cleanup complete
+
+- Trigger: DR-003 completion record commit `d2ab2ef2bac25614692fd901bb4fc58ed4219ae7` was published to `origin/personal`, and all release/rollout verification was complete.
+- Safety proof: Ticket commit `0ac0f29411dc7094373afecfcf67313b90038c69` was verified as an ancestor of both current `personal` and release tag `v1.4.57`; the dedicated ticket worktree was clean.
+- Worktree result: Removed `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-new-workspace-team-run-visibility`; `git worktree prune` passed; filesystem path and registry entry are absent.
+- Branch result: Deleted local and remote `codex/remote-node-new-workspace-team-run-visibility`; both refs are verified absent.
+- Preserved unrelated state: The shared checkout's pre-existing untracked `.article-work/` remains unmodified.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-new-workspace-team-run-visibility/final-cleanup.log`.
+- Current authoritative result at `DR-004`: `Pass — complete`. Repository finalization, stable release, rollout verification, and cleanup are all complete; no ticket action remains.
