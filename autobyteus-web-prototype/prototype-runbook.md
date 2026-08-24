@@ -4,13 +4,13 @@
 
 - Package: `initial-prototype-baseline`
 - Revision: `RER-009` focused current-experience correction; baseline pin established under `RER-002`
-- Status: completed `PP-GAP-010` correction candidate pending Product Prototyper re-inspection; prior `PP-GAP-009` evidence preserved
+- Status: approved current-state baseline including the user-confirmed RER-009 correction (`PPA-002`)
 - Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Selected source repository: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
 - Prototype: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
 - Owning worktree: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline`
 - Owning branch: `codex/initial-prototype-baseline`
-- Current correction review URL: <http://127.0.0.1:3210>
+- Canonical review URL: <http://127.0.0.1:3210>
 
 The selected source worktree may be newer than the approved pin. Source-versus-prototype evidence must run from an exact export or detached worktree at `8ef282b...`; do not reset the selected source worktree and do not treat its current HEAD as correction authority.
 
@@ -178,6 +178,20 @@ corepack pnpm validate:gap-010
 ```
 
 Expected result: `JRN-050-A`–`JRN-050-E` all pass; `gap-010-summary.json` reports five passed checkpoints, no failures, zero source/prototype browser errors, and `journeyContractPassed: true`. The preserved `validate:gap-009` command remains available for the earlier four-checkpoint launch-only evidence.
+
+## Capture And Validate The Approved Final Package
+
+After explicit user confirmation and from the production-build review server:
+
+```bash
+cd /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+PROTOTYPE_BASE_URL=http://127.0.0.1:3210 corepack pnpm capture:final-references
+corepack pnpm validate:gap-009-package
+corepack pnpm validate:gap-010-package
+corepack pnpm validate:final-package
+```
+
+Expected result: `VIS-001`–`VIS-017` capture without browser errors or external resources; the first 15 approved hashes remain exact; `VIS-016` and `VIS-017` anchor launch-ready and launched-writer-focus states; correction package checks pass 20/20 and 25/25; terminal final-package checks pass 86/86.
 
 ## Process Isolation
 

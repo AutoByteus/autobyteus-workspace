@@ -1,7 +1,7 @@
 {
   "pinnedSourceCommit": "8ef282ba77705180d985e7000d801f0e0068cdc1",
-  "sourceRoot": "git:/home/autobyteus/workspace/autobyteus-workspace@8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web",
-  "prototypeRoot": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
+  "sourceRoot": "git:/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline@8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web",
+  "prototypeRoot": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype",
   "total": 369,
   "exactByteMatches": 369,
   "missingOrModified": [],

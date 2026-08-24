@@ -3,7 +3,7 @@
 Independently runnable, browser-only UI/UX baseline for pinned AutoByteus Web
 commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
-Status: **RER-009 `PP-GAP-010` correction candidate; pending Product Prototyper re-inspection.** Prior reviewed evidence is preserved, but terminal completeness is reopened until this focused journey is accepted. This package contains no future-state redesign.
+Status: **Approved current-state baseline, including the user-confirmed RER-009 `PP-GAP-009`/`PP-GAP-010` parity correction (`PPA-002`).** The package contains no future-state redesign.
 
 Current correction placement: ordinary tracked content at repository-root `autobyteus-web-prototype` inside worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on branch `codex/initial-prototype-baseline`. Historical owning-repository placement remains documented in [repository-placement-correction.md](repository-placement-correction.md); this correction does not edit or push `personal`.
 
@@ -42,7 +42,7 @@ distinct images in `final-reference-screenshots/` were captured after explicit
 user confirmation and are the normative current-state visual anchors defined
 by `ui-ux-spec.md`.
 
-## Current Correction Validation
+## Final And Correction Validation
 
 ```bash
 corepack pnpm typecheck
@@ -52,10 +52,12 @@ corepack pnpm validate:boundaries
 corepack pnpm build
 corepack pnpm validate:gap-009-package
 corepack pnpm validate:gap-010-package
+corepack pnpm capture:final-references
+corepack pnpm validate:final-package
 SOURCE_BASE_URL=http://127.0.0.1:3110 \
 PROTOTYPE_BASE_URL=http://127.0.0.1:3210 \
 MOCK_BASE_URL=http://127.0.0.1:4311 \
 corepack pnpm validate:gap-010
 ```
 
-`validate:gap-010` preserves `JRN-050-A`–`D` and terminally enforces the new `JRN-050-E` writer-focus checkpoint; all five checkpoints must pass. Historical final references and `ui-ux-spec.md` are Product Prototyper-owned and must not be recaptured or changed during this correction.
+`validate:gap-010` preserves `JRN-050-A`–`D` and terminally enforces `JRN-050-E`; all five source-versus-prototype checkpoints must pass. `validate:final-package` makes that journey evidence, `PPA-002`, both user-confirmation references, and `VIS-001`–`VIS-017` part of terminal completion.

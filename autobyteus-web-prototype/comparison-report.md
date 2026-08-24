@@ -2,7 +2,7 @@
 
 ## Result
 
-**Pass — RER-009 correction candidate.** The retained baseline plus focused `PP-GAP-009` launch correction and `PP-GAP-010` member-focus correction have no failed comparison row, failed journey checkpoint, prototype browser error, or known perceptible/behavioral discrepancy against pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
+**Pass — accepted and user-confirmed RER-009 current-state correction.** The retained baseline plus focused `PP-GAP-009` launch correction and `PP-GAP-010` member-focus correction have no failed comparison row, failed journey checkpoint, prototype browser error, or known perceptible/behavioral discrepancy against pinned source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
 ## Controlled Conditions
 
@@ -85,4 +85,4 @@ Browser Tool evidence includes the retained production-build reviews plus a new 
 
 ## Conclusion
 
-All exact-fidelity obligations for the retained baseline and requested RER-009 corrections pass. There is no accepted intentional delta and no remaining discrepancy inside `PP-GAP-009` or `PP-GAP-010`. Product Prototyper re-inspection is still required before the package can be called re-accepted or terminally complete.
+All exact-fidelity obligations for the retained baseline and requested RER-009 corrections pass. There is no accepted intentional delta and no remaining discrepancy inside `PP-GAP-009` or `PP-GAP-010`. Product Prototyper direct re-inspection accepted the correction under `PPA-002`; the user confirmed the reviewed journey on 2026-08-24. The current-state package is terminally complete with no remaining discrepancy.

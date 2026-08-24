@@ -4,12 +4,12 @@
 
 PASS Current correction root is canonical in bootstrap-owned docs
 PASS Source pin is stable across identity and evidence docs
-PASS Current correction status is RER-009 PP-GAP-010 pending re-inspection
+PASS Current correction status is RER-009 PP-GAP-010 accepted and user-confirmed
 PASS Stable correction IDs are inventoried
 PASS Inventory totals include member-focus correction
 PASS Comparison totals include the new exact rendered state
-PASS No renewed acceptance claim appears in current status lines
-PASS Historical Product artifacts are explicitly preserved
+PASS Renewed Product Prototyper acceptance is explicit
+PASS Final Product artifacts include the corrected journey
 PASS Prior PP-GAP-009 terminal evidence remains preserved
 PASS Gap summary is terminally passing
 PASS Gap summary has zero browser errors
@@ -25,7 +25,7 @@ PASS Correction is on the required branch
 PASS Approved source pin exists in the repository
 PASS Working tree is clean or changes are isolated to prototype root — 23 prototype path(s)
 PASS Selected source frontend has no correction diff
-PASS Product-owned spec and final references are unchanged
-PASS Absolute artifact and root paths resolve — 39 checked
+PASS Product-owned spec and final references are finalized for RER-009
+PASS Absolute artifact and root paths resolve — 42 checked
 
 25/25 PP-GAP-010 package-consistency checks pass.

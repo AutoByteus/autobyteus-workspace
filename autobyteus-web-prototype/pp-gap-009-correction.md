@@ -8,7 +8,7 @@
 - Source authority: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Prototype root: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
 - Branch: `codex/initial-prototype-baseline`
-- Result: **Completed correction candidate; PP-GAP-009 passes and awaits Product Prototyper inspection.**
+- Result: **Completed correction candidate at Bootstrapper return; subsequently accepted under `PPA-002` and user-confirmed on 2026-08-24.**
 - Unresolved IDs within the requested correction: **none**
 
 No whole-baseline refresh, future-state design, Electron/runtime implementation, production integration, or change to the approved source frontend was performed. Historical Product Prototyper artifacts and final reference screenshots were preserved and were not regenerated.
@@ -83,6 +83,12 @@ Direct replay state record: `/home/autobyteus/workspace/.codex/worktrees/initial
 
 Exact logs are indexed in `evidence-index.md`. The initial build attempt was intentionally rerun with `NUXT_IGNORE_LOCK=1` because the corrected prototype dev server was already running at `3210`; the final build log is successful.
 
-## Scope And Next Action
+## Scope And Product Prototyper Disposition
 
-The correction remains only in the specified task worktree on `codex/initial-prototype-baseline`. The selected source tree was not edited, reset, merged, or pushed, and `personal`/`origin/personal` were not modified. Product Prototyper must directly inspect and accept this corrected baseline before any renewed user review or terminal completion claim.
+The correction remains only in the specified task worktree on
+`codex/initial-prototype-baseline`. The selected source tree was not edited,
+reset, merged, or pushed, and `personal`/`origin/personal` were not modified.
+On `2026-08-24`, the Product Prototyper directly replayed and accepted this
+launch correction together with the `PP-GAP-010` member-focus completion under
+`PPA-002`; the user then confirmed the corrected journey. No future-state or
+production-runtime scope was authorized.

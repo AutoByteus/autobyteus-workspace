@@ -2,7 +2,7 @@
 
 - Package: `initial-prototype-baseline` / current requirements revision
   `RER-009` (baseline pin and original inventory established under `RER-002`)
-- Status: **Completed RER-009 `PP-GAP-010` correction candidate; pending Product Prototyper re-inspection**
+- Status: **Accepted user-approved current-state baseline, including RER-009 (`PPA-002`)**
 - Source commit: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Distinct rendered rows: **110** (60 preserved + 48 prior correction + `WKS-022` launch + `WKS-023` member-focus correction)
 - Locale/responsive matrix rows: **239** (123 route permutations + 116 correction permutations)
@@ -206,4 +206,4 @@ The [interaction discovery audit](evidence/interaction-discovery/interaction-dis
 
 ## Completion Rule
 
-All 110 distinct rendered rows, all 239 retained matrix rows, and all 50 journeys pass. `JRN-050-A`–`E` provide five exact controlled checkpoints with zero source/prototype browser errors; `JRN-050-E` is the new `PP-GAP-010` member-focus proof. The RER-009 correction is a Product Prototyper inspection candidate, not a renewed acceptance claim. Historical `ui-ux-spec.md` and `final-reference-screenshots/VIS-001`–`VIS-015` remain preserved Product Prototyper artifacts; they were not regenerated or used to substitute for this correction evidence.
+All 110 distinct rendered rows, all 239 retained matrix rows, and all 50 journeys pass. `JRN-050-A`–`E` provide five exact controlled checkpoints with zero source/prototype browser errors; `JRN-050-E` is the new `PP-GAP-010` member-focus proof. Product Prototyper direct inspection accepted the RER-009 correction under `PPA-002`, and the user confirmed the corrected journey on 2026-08-24. `ui-ux-spec.md` and post-confirmation `VIS-001`–`VIS-017` are the canonical current-state UI/UX supplement and normative visual anchors; the exact JRN-050 evidence remains the behavioral authority for the cross-surface lifecycle.

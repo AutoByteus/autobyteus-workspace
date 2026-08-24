@@ -5,7 +5,8 @@ import { resolve } from 'node:path'
 
 const root = resolve(new URL('../..', import.meta.url).pathname)
 const sourceCommit = '8ef282ba77705180d985e7000d801f0e0068cdc1'
-const expectedVisualIds = Array.from({ length: 15 }, (_, index) => `VIS-${String(index + 1).padStart(3, '0')}`)
+const currentRoot = '/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype'
+const expectedVisualIds = Array.from({ length: 17 }, (_, index) => `VIS-${String(index + 1).padStart(3, '0')}`)
 
 const read = path => readFile(resolve(root, path), 'utf8')
 const json = async path => JSON.parse(await read(path))
@@ -25,8 +26,10 @@ const boundaries = await read('mock-boundaries.md')
 const plugin = await read('plugins/00.prototype-state.client.ts')
 
 check(uiSpec.includes('- Status: **Approved**'), 'ui-ux-spec.md status is Approved')
-check(uiSpec.includes('user message **“approved”** on'), 'explicit user-confirmation reference is recorded')
+check(uiSpec.includes('**“done. i checked. thanks”** on `2026-08-24`'), 'explicit RER-009 user-confirmation reference is recorded')
 check(uiSpec.includes(sourceCommit), 'UI/UX specification records the pinned source commit')
+check(uiSpec.includes(currentRoot), 'UI/UX specification records the current ticket-worktree prototype root')
+check(uiSpec.includes('`PPA-002`'), 'UI/UX specification records the focused RER-009 Product Prototyper acceptance')
 check(review.includes('approved and finalized'), 'Product Prototyper final decision is recorded')
 check(inventory.includes('user-approved current-state baseline'), 'parity inventory reports accepted user-approved status')
 check(boundaries.includes('/public/prototype-assets/monaco/vs'), 'mock boundary records the local Monaco mirror')
@@ -54,9 +57,23 @@ const presentation = await json('evidence/presentation-code/presentation-code-pa
 check(presentation.pinnedSourceCommit === sourceCommit, 'presentation audit uses the pinned source commit')
 check(presentation.total === 369 && presentation.exactByteMatches === 369 && presentation.missingOrModified.length === 0, 'retained presentation audit is 369/369 exact')
 
+const gapSummary = await json('evidence/gap-010/gap-010-summary.json')
+check(gapSummary.inventoryId === 'JRN-050' && gapSummary.gapId === 'PP-GAP-010', 'terminal package identifies the complete corrected journey')
+check(gapSummary.total === 5 && gapSummary.passed === 5 && gapSummary.failed.length === 0 && gapSummary.journeyContractPassed, 'JRN-050-A through JRN-050-E are terminally enforced and passing')
+check(gapSummary.sourceBrowserErrors.length === 0 && gapSummary.prototypeBrowserErrors.length === 0, 'JRN-050 source and prototype evidence has zero browser errors')
+const gapResults = await json('evidence/gap-010/gap-010-results.json')
+const terminal = gapResults.checkpoints.at(-1)
+check(terminal?.checkpoint?.id === 'JRN-050-E' && ['source', 'prototype'].every(target => (
+  terminal[target]?.state?.selectedTeam?.focusedMemberAddress === '/writer'
+  && terminal[target]?.state?.selectedTeam?.focusedAgentRunId === 'team-member-writer-created'
+  && terminal[target]?.semantic?.selectedTeamMemberTestId === 'workspace-team-member-team-run-created-fixture-/writer'
+  && terminal[target]?.semantic?.teamWorkspaceHeader === 'writer'
+)), 'JRN-050-E terminal member-selection contract matches pinned source')
+
 const manifest = await json('final-reference-screenshots/manifest.json')
 check(manifest.sourceCommit === sourceCommit, 'final-reference manifest uses the pinned source commit')
-check(manifest.result === '15/15 captured without browser errors or external resources', 'final-reference manifest reports 15/15 clean captures')
+check(manifest.result === '17/17 captured without browser errors or external resources', 'final-reference manifest reports 17/17 clean captures')
+check(manifest.approvalReference.includes('done. i checked. thanks'), 'final-reference manifest records the RER-009 user confirmation')
 check(manifest.results.map(row => row.id).join(',') === expectedVisualIds.join(','), 'final visual IDs are complete and ordered')
 for (const row of manifest.results) {
   check(row.browserErrors.length === 0 && row.externalResources.length === 0, `${row.id} has no browser errors or external resources`)

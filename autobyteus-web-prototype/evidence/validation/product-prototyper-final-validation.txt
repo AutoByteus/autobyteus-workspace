@@ -1,34 +1,51 @@
-Product Prototyper final validation
-Started: 2026-08-22T16:48:47Z
-> corepack pnpm typecheck
+# Product Prototyper Final Validation — RER-009
+Date: 2026-08-24
+Root: /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+Branch: codex/initial-prototype-baseline
 
-> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
-> vue-tsc --noEmit -p tsconfig.prototype.json
+## typecheck
 
-> corepack pnpm lint
+> autobyteus-web-prototype@0.1.0 typecheck /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
+> nuxt prepare && vue-tsc --noEmit -p tsconfig.prototype.json
 
-> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+
+## lint
+
+> autobyteus-web-prototype@0.1.0 lint /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > eslint prototype/scripts prototype/shared prototype/source-observation plugins/00.prototype-state.client.ts plugins/10.prototype-host-bootstrap.client.ts prototype/tests
 
-> corepack pnpm test
 
-> autobyteus-web-prototype@0.1.0 test /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+## tests
+
+> autobyteus-web-prototype@0.1.0 test /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > vitest run
 
 
- RUN  v3.2.7 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+ RUN  v3.2.7 /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 
  ✓ prototype/tests/host-scenario.test.ts (3 tests) 6ms
- ✓ prototype/tests/fixture-contract.test.ts (4 tests) 6ms
+ ✓ prototype/tests/fixture-contract.test.ts (5 tests) 7ms
 
  Test Files  2 passed (2)
-      Tests  7 passed (7)
-   Start at  16:48:53
-   Duration  651ms (transform 121ms, setup 0ms, collect 157ms, tests 12ms, environment 0ms, prepare 311ms)
+      Tests  8 passed (8)
+   Start at  09:45:57
+   Duration  624ms (transform 177ms, setup 0ms, collect 217ms, tests 14ms, environment 0ms, prepare 293ms)
 
-> corepack pnpm validate:boundaries
 
-> autobyteus-web-prototype@0.1.0 validate:boundaries /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+## boundaries
+
+> autobyteus-web-prototype@0.1.0 validate:boundaries /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > node prototype/scripts/validate-boundaries.mjs
 
 PASS No Electron/native runtime dependency
@@ -44,15 +61,17 @@ PASS Scenario state is resettable
 PASS Source evidence contains no page-capture errors
 PASS Source evidence uses controlled loopback mock
 PASS Prototype has independently runnable Nuxt entry points
-> corepack pnpm audit:presentation
 
-> autobyteus-web-prototype@0.1.0 audit:presentation /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+## retained presentation audit
+
+> autobyteus-web-prototype@0.1.0 audit:presentation /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > node prototype/scripts/audit-presentation-parity.mjs
 
-369/369 retained presentation files are exact byte matches.
-> corepack pnpm build
+369/369 retained presentation files are exact byte matches against pinned Git content.
 
-> autobyteus-web-prototype@0.1.0 build /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
+## production build
+
+> autobyteus-web-prototype@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype
 > nuxt build
 
 ┌  Building Nuxt for production...
@@ -61,20 +80,20 @@ PASS Prototype has independently runnable Nuxt entry points
 │
 ●  Nitro preset: node-server
 
- WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
 
 
- WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
 
 
- WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
+ WARN  Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
 
 ℹ Building client...
 ℹ vite v7.3.6 building client environment for production...
 ℹ transforming...
-Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
-Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
-Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/messagingProviderFlowStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/stores/serverStore.ts" is used
 ℹ ✓ 3825 modules transformed.
 ℹ rendering chunks...
 ℹ computing gzip size...
@@ -253,7 +272,7 @@ Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteu
 ℹ .nuxt/dist/client/_nuxt/CxH8kN5F.js                                  503.65 kB │ gzip:   131.76 kB
 ℹ .nuxt/dist/client/_nuxt/BnN1t7dp.js                                  666.29 kB │ gzip:   178.08 kB
 ℹ .nuxt/dist/client/_nuxt/iuEYG6vb.js                                  687.72 kB │ gzip:   151.77 kB
-ℹ .nuxt/dist/client/_nuxt/Cc8GT-oA.js                                1,311.53 kB │ gzip:   279.50 kB
+ℹ .nuxt/dist/client/_nuxt/C9OlZIcp.js                                1,316.35 kB │ gzip:   280.93 kB
 ℹ .nuxt/dist/client/_nuxt/DD5943jE.js                                3,974.06 kB │ gzip: 1,247.99 kB
 
  WARN 
@@ -262,15 +281,15 @@ Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteu
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 
-ℹ ✓ built in 27.36s
-✔ Client built in 27369ms
+ℹ ✓ built in 29.11s
+✔ Client built in 29118ms
 ℹ Building server...
 ℹ vite v7.3.6 building ssr environment for production...
 ℹ transforming...
 ℹ ✓ 1 modules transformed.
 ℹ rendering chunks...
-ℹ ✓ built in 29ms
-✔ Server built in 83ms
+ℹ ✓ built in 28ms
+✔ Server built in 285ms
 [nitro] ✔ Generated public .output/public
 [nitro] ℹ Building Nuxt Nitro server (preset: node-server, compatibility date: 2024-07-22)
 [nitro] ✔ Nuxt Nitro server built
@@ -278,7 +297,7 @@ Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteu
   ├─ .output/server/chunks/_/error-500.mjs.map (322 B) (244 B gzip)
   ├─ .output/server/chunks/build/client.precomputed.mjs (309 kB) (15.2 kB gzip)
   ├─ .output/server/chunks/build/client.precomputed.mjs.map (191 kB) (4.67 kB gzip)
-  ├─ .output/server/chunks/nitro/nitro.mjs (233 kB) (54.1 kB gzip)
+  ├─ .output/server/chunks/nitro/nitro.mjs (233 kB) (54.2 kB gzip)
   ├─ .output/server/chunks/nitro/nitro.mjs.map (6.45 kB) (1.06 kB gzip)
   ├─ .output/server/chunks/routes/renderer.mjs (11.4 kB) (3.88 kB gzip)
   ├─ .output/server/chunks/routes/renderer.mjs.map (1.62 kB) (368 B gzip)
@@ -290,11 +309,11 @@ Duplicated imports "getters", the one from "/home/autobyteus/workspace/autobyteu
 [nitro] ✔ You can preview this build using node .output/server/index.mjs
 │
 └  ✨ Build complete!
-Completed: 2026-08-22T16:49:31Z
-> corepack pnpm audit:interactions (post-build completeness check)
 
-> autobyteus-web-prototype@0.1.0 audit:interactions /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype
-> node prototype/scripts/audit-interaction-discovery.mjs
-
-179 source test files and 925 cases classified into 17 stable groups.
-Interaction audit completed: 2026-08-22T16:56:44Z
+## post-confirmation final-reference and package validation
+- `capture:final-references`: 17/17 captured without browser errors or external resources; VIS-001–VIS-015 preserved exact; VIS-016 SHA-256 cba0f49224edcd1b9d96436fc99d24392247472cb0091b0c8cc97f7bf34a6a4f; VIS-017 SHA-256 b337371acbddb89fe3e14bbdc7122a9deed6e66a424e180ee09735dc7bf5c6eb.
+- `validate:gap-009-package`: 20/20 pass.
+- `validate:gap-010-package`: 25/25 pass.
+- `validate:final-package`: 86/86 pass, including terminal enforcement of JRN-050-A–JRN-050-E and screenshot hash verification.
+- Final production review URL: http://127.0.0.1:3210 (HTTP 200).
+- Fresh post-build Browser Tool replay: /workspace; exact source pin; drafts/inFlight=0/0; exactly one selected Team under /synthetic/prototype-workspace; researcher/writer present; writer focus and aria-current synchronized to the center header; 0 alerts; 0 captured browser errors.

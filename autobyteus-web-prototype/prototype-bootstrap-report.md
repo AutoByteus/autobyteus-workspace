@@ -2,14 +2,14 @@
 
 ## Status
 
-- Status: **Completed correction candidate — ready for Product Prototyper inspection**
+- Status: **Completed correction — accepted by Product Prototyper (`PPA-002`) and user-confirmed**
 - Request type: `Current-Experience Bootstrap Correction`
 - Package: `initial-prototype-baseline`
 - Current requirements revision: `RER-009` (baseline pin established under `RER-002`)
 - Source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Requested blocker: `PP-GAP-010` (prior `PP-GAP-009` correction preserved)
 - Failed, missing, unknown, or unsubstantiated IDs inside the requested correction: **none**
-- Acceptance state: prior approved evidence is preserved, but terminal completeness is reopened under RER-009; this correction still requires Product Prototyper inspection and user review.
+- Acceptance state: Product Prototyper direct inspection accepted `PP-GAP-009` and `PP-GAP-010`; the user confirmed the corrected journey on 2026-08-24.
 - Prohibited actions preserved: no whole-baseline refresh, source edit, Electron/runtime implementation, production integration, final-reference recapture, or `ui-ux-spec.md` change.
 
 ## Source And Prototype Identity
@@ -121,4 +121,4 @@ The initial build command detected the intentionally running prototype dev serve
 
 ## Quality-Gate Conclusion
 
-`PP-GAP-010` is corrected without expanding implementation scope: the real retained UI now completes the exact pinned-source catalog-to-workspace-to-left-tree-to-member-focus journey through deterministic synthetic state. All five controlled checkpoints and the independent Browser Tool replay pass with byte-identical source/prototype visuals and exact route/state/focus semantics. No requested correction ID remains failed, missing, unknown, or unsubstantiated. The package is ready for Product Prototyper inspection; it is not yet re-accepted or terminally user-approved under RER-009.
+`PP-GAP-010` is corrected without expanding implementation scope: the real retained UI now completes the exact pinned-source catalog-to-workspace-to-left-tree-to-member-focus journey through deterministic synthetic state. All five controlled checkpoints and the independent Browser Tool replay pass with byte-identical source/prototype visuals and exact route/state/focus semantics. No requested correction ID remains failed, missing, unknown, or unsubstantiated. The package was directly accepted by Product Prototyper under `PPA-002` and user-confirmed on 2026-08-24. No RER-009 correction ID remains open.

@@ -1,9 +1,9 @@
 # Final User-Confirmed Visual References
 
-- Approval reference: User message "approved" on 2026-08-22, immediately following the current-state baseline review request.
+- Approval reference: User message "approved" on 2026-08-22 for the complete baseline, plus user message "done. i checked. thanks" on 2026-08-24 immediately following the explicit RER-009 corrected-journey approval request.
 - Accepted source commit: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Deterministic capture clock: `2026-08-22T16:50:00.000Z`
-- Capture result: **15/15** without browser errors or external resources
+- Capture result: **17/17** without browser errors or external resources
 - These post-confirmation images are normative current-state references. Synthetic domain names, paths, timestamps, usage values and record content are illustrative fixtures; layout, hierarchy, styling, controls, labels, states and interactions are requirements-defining.
 
 | Visual ID | Surface / state | Viewport | Locale | Image |
@@ -23,5 +23,7 @@
 | VIS-013 | Paired mobile — permission denied and recovery guidance | 390×844 | en | [VIS-013-mobile-permission-denied-en.png](VIS-013-mobile-permission-denied-en.png) |
 | VIS-014 | Applications disabled — route recovery to Agents | 1440×900 | en | [VIS-014-applications-disabled-desktop-en.png](VIS-014-applications-disabled-desktop-en.png) |
 | VIS-015 | Agents — empty catalog | 1440×900 | en | [VIS-015-agents-empty-desktop-en.png](VIS-015-agents-empty-desktop-en.png) |
+| VIS-016 | Agent Team launch — chosen workspace and enabled Run Team action | 1440×900 | en | [VIS-016-team-launch-ready-desktop-en.png](VIS-016-team-launch-ready-desktop-en.png) |
+| VIS-017 | Launched Agent Team — writer selected under the chosen workspace | 1440×900 | en | [VIS-017-team-launched-writer-focused-desktop-en.png](VIS-017-team-launched-writer-focused-desktop-en.png) |
 
 Machine-readable capture metadata, hashes, routes, scenarios and browser-boundary results are in [manifest.json](manifest.json).

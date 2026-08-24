@@ -1,17 +1,22 @@
-# Repository Placement Correction
+# Repository Placement Correction — Historical RER-007 Record
 
 ## Status
 
 - Package: `initial-prototype-baseline`
-- Current requirements revision: `RER-007`
+- Recorded requirements revision: `RER-007`
 - Correction scope: repository-root placement, active path/provenance references,
   validation evidence, commit and push only
 - Observable UI/UX change: **none**
 - Approved baseline: `PPA-001` and the user's confirmation from `2026-08-22`
   remain authoritative
 - Source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
+- Active RER-009 root:
+  `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype`
+- Active RER-009 branch: `codex/initial-prototype-baseline`
+- Supersession: the ownership facts below describe the completed RER-007 stage;
+  they are retained as provenance and are not active RER-009 locators.
 
-## Canonical Ownership
+## Historical RER-007 Canonical Ownership
 
 - Owning repository: `/home/autobyteus/workspace/autobyteus-workspace`
 - Owning branch: `personal`
@@ -105,6 +110,7 @@ Durable RER-007 evidence:
 - `evidence/repository-placement/rer-007-repository-placement-validation.txt`
 - `evidence/repository-placement/rer-007-proof.json`
 
-Earlier RER-004 logs remain as explicitly historical evidence. The final owning
-commit, push, remote-equality and clean-status proof is returned to Requirements
-Engineering because a commit cannot authoritatively contain its own hash.
+Earlier RER-004 logs remain as explicitly historical evidence. The RER-007
+owning commit, push, remote-equality and clean-status proof was returned to
+Requirements Engineering because a commit cannot authoritatively contain its
+own hash.

@@ -2,7 +2,7 @@
 
 Package `initial-prototype-baseline`, current requirements revision `RER-009`
 (baseline pin established under `RER-002`; prior reviewed evidence preserved), pinned source
-`8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: completed `PP-GAP-010` correction candidate pending Product Prototyper re-inspection; prior `PP-GAP-009` evidence is preserved.
+`8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: accepted user-approved current-state baseline including the RER-009 `PP-GAP-009`/`PP-GAP-010` correction under `PPA-002`.
 
 ## Canonical Reports
 
@@ -16,10 +16,11 @@ Package `initial-prototype-baseline`, current requirements revision `RER-009`
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario/context catalog |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/prototype-runbook.md` | Install, run, select/reset and reproduce instructions |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/mock-boundaries.md` | Production-capability boundary and local simulation record |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Historical Product Prototyper review/acceptance record through PPA-001; terminal status later reopened by RER-009 |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md` | Preserved historical Product Prototyper-owned current-state supplement; not modified by RER-009 |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/README.md` | Post-confirmation normative visual inventory `VIS-001`–`VIS-015` |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Cumulative Product Prototyper acceptance and user-confirmation record through `PPA-002` |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved current-state supplement updated for `PPA-002` and `JRN-050` |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/README.md` | Post-confirmation normative visual inventory `VIS-001`–`VIS-017` |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final capture routes, scenarios, contexts, viewports, hashes and browser-boundary results |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/evidence/product-prototyper-review/rer-009-direct-review.txt` | Direct Product Prototyper replay, `PPA-002`, and user-confirmation record |
 | `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype/repository-placement-correction.md` | Cumulative RER-004/RER-007 owning-repository placement, integrity and provenance record |
 
 ## Rendered Parity Evidence
@@ -69,8 +70,9 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 | `evidence/validation/source-presentation-tests.txt` | pinned source suite: 177/179 files, 968/970 tests pass |
 | `evidence/validation/source-presentation-failing-tests-rerun.txt` | two pinned-source harness failures reproduced alone |
 | `evidence/validation/product-prototyper-final-validation.txt` | Post-confirmation typecheck, lint, unit, boundary, presentation and production-build checks pass |
-| `evidence/validation/final-reference-capture.txt` | `VIS-001`–`VIS-015` captured successfully |
-| `evidence/validation/product-prototyper-final-package-consistency.txt` | 73/73 final package, approval, evidence, local-asset and screenshot-hash checks pass |
+| `evidence/validation/final-reference-capture.txt` | `VIS-001`–`VIS-017` captured successfully |
+| `evidence/validation/product-prototyper-final-package-consistency.txt` | 86/86 final package, approval, JRN-050 evidence, local-asset and screenshot-hash checks pass |
+| `evidence/validation/rer-009-terminal-validation.txt` | Final lint, 20/20 and 25/25 correction-package checks, 86/86 final-package checks, and production HTTP 200 pass |
 | `evidence/validation/pp-gap-009-typecheck.txt` | RER-009 typecheck passes |
 | `evidence/validation/pp-gap-009-lint.txt` | RER-009 lint passes |
 | `evidence/validation/pp-gap-009-test.txt` | 2 files / 8 tests pass, including Team-launch fixture contract |
@@ -118,6 +120,7 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 ## Historical Review Evidence
 
 - `evidence/product-prototyper-review/direct-browser-probe.txt`
+- `evidence/product-prototyper-review/rer-009-direct-review.txt`
 - `evidence/product-prototyper-review/electron-internal-context-fallback-extensions.png`
 
 These two files substantiate the original rejected baseline and are not current evidence. The corrected `HOST-*` rows and manual Electron screenshot demonstrate that the fallback no longer occurs.

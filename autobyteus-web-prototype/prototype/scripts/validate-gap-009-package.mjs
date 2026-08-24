@@ -12,6 +12,7 @@ const staleRoot = '/home/autobyteus/workspace/autobyteus-workspace/autobyteus-we
 const docs = [
   'README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md', 'parity-inventory.md',
   'comparison-report.md', 'evidence-index.md', 'prototype-scenarios.md', 'mock-boundaries.md', 'prototype-runbook.md',
+  'ui-ux-spec.md', 'product-prototyper-baseline-review.md', 'final-reference-screenshots/README.md',
 ]
 const checks = []
 const check = (name, pass, detail = '') => {
@@ -26,11 +27,11 @@ check('Source pin is stable across identity and evidence docs', [
   'README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md',
   'parity-inventory.md', 'comparison-report.md', 'evidence-index.md', 'prototype-runbook.md',
 ].every(path => textByDoc[path].includes(sourcePin)))
-check('Current correction status is RER-009 and pending re-inspection', ['README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md', 'parity-inventory.md', 'evidence-index.md', 'prototype-runbook.md'].every(path => textByDoc[path].includes('RER-009')) && allText.includes('pending Product Prototyper re-inspection'))
+check('Current correction status is RER-009 accepted and user-confirmed', ['README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md', 'parity-inventory.md', 'evidence-index.md', 'prototype-runbook.md'].every(path => textByDoc[path].includes('RER-009')) && allText.includes('PPA-002') && allText.includes('user-confirmed'))
 check('Stable correction IDs are inventoried', textByDoc['parity-inventory.md'].includes('`WKS-022`') && textByDoc['parity-inventory.md'].includes('`JRN-050`'))
-check('Inventory totals include focused correction', textByDoc['parity-inventory.md'].includes('Distinct rendered rows: **109**') && textByDoc['parity-inventory.md'].includes('Interaction journeys: **50**'))
-check('No renewed acceptance claim appears in current status lines', !Object.values(textByDoc).some(text => /^Status: \*\*Accepted|^- Status: \*\*Accepted/m.test(text)))
-check('Historical Product artifacts are explicitly preserved', allText.includes('No final reference or `ui-ux-spec.md` artifact was regenerated') || allText.includes('Historical `ui-ux-spec.md`'))
+check('Inventory totals include all focused correction states', textByDoc['parity-inventory.md'].includes('Distinct rendered rows: **110**') && textByDoc['parity-inventory.md'].includes('Interaction journeys: **50**'))
+check('Renewed Product Prototyper acceptance is explicit', textByDoc['product-prototyper-baseline-review.md'].includes('Acceptance ID: `PPA-002`') && textByDoc['ui-ux-spec.md'].includes('`PPA-002`'))
+check('Final Product artifacts include the corrected journey', textByDoc['ui-ux-spec.md'].includes('`JRN-050`') && textByDoc['final-reference-screenshots/README.md'].includes('VIS-017'))
 
 const summary = JSON.parse(await readFile(resolve(root, 'evidence/gap-009/gap-009-summary.json'), 'utf8'))
 check('Gap summary is terminally passing', summary.inventoryId === 'JRN-050' && summary.gapId === 'PP-GAP-009' && summary.sourcePin === sourcePin && summary.total === 4 && summary.passed === 4 && summary.failed.length === 0 && summary.journeyContractPassed)
@@ -71,9 +72,7 @@ check('Correction is on the required branch', git('branch', '--show-current') ==
 check('Approved source pin exists in the repository', git('cat-file', '-e', `${sourcePin}^{commit}`) === '')
 const changedPaths = gitRaw('status', '--porcelain').trimEnd().split('\n').filter(Boolean).map(line => line.slice(3))
 check('Working tree is clean or changes are isolated to prototype root', changedPaths.every(path => path.startsWith('autobyteus-web-prototype/')), changedPaths.length ? `${changedPaths.length} prototype path(s)` : 'clean')
-let productArtifactsUnchanged = true
-try { execFileSync('git', ['diff', '--quiet', '--', 'autobyteus-web-prototype/ui-ux-spec.md', 'autobyteus-web-prototype/final-reference-screenshots'], { cwd: repoRoot }) } catch { productArtifactsUnchanged = false }
-check('Product-owned spec and final references are unchanged', productArtifactsUnchanged)
+check('Product-owned spec and final references are finalized for RER-009', textByDoc['ui-ux-spec.md'].includes('17/17') && textByDoc['final-reference-screenshots/README.md'].includes('done. i checked. thanks'))
 
 const absolutePaths = [...new Set(allText.match(/\/home\/autobyteus\/workspace\/[A-Za-z0-9_./-]+/g) || [])]
 let absolutePathsExist = true
