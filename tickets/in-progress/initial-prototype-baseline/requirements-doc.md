@@ -2,12 +2,12 @@
 
 ## Document Status
 
-- Status: `Draft`
-- Current requirements revision ID: `RER-004`
+- Status: `Approved`
+- Current requirements revision ID: `RER-005`
 - Request / ticket: Initial prototype baseline
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-24
-- Approval state and reference: The observable UI/UX baseline remains approved under PPA-001 and the user’s 2026-08-22 **“approved”** message. Terminal package completion from RER-003 is reopened because the user rejected the standalone prototype repository and required ownership by the existing workspace repository. Repository-placement correction is defined in RER-004 and remains pending.
+- Approval state and reference: Approved. The observable UI/UX baseline remains approved under PPA-001 and the user’s 2026-08-22 **“approved”** message. The user-mandated repository-placement correction from RER-004 is complete and verified under RER-005 without observable UI/UX change.
 
 ## Problem And Desired Outcome
 
@@ -24,7 +24,7 @@
 | BEH-001 | Operational | The repository exposes multiple possible client boundaries. The user selected `autobyteus-web` and required the latest source baseline. | `autobyteus-web` at the latest verified `origin/personal` revision at bootstrap kickoff is pinned as the reproducible parity boundary. | Android, iOS, packaged application authoring surfaces, and later source commits remain unchanged and outside this baseline snapshot unless explicitly refreshed. | `investigation-notes.md` source log entries SRC-001 through SRC-006 |
 | BEH-002 | User | Existing discovered prototype directories are feature- or surface-specific; the shallow inventory did not identify a canonical complete current-state runnable baseline for a selected frontend. | A canonical runnable baseline reproduces the selected frontend's complete observable current experience. | Current source appearance, navigation, interactions, visible states, responsive behavior, and accessibility intent are preserved rather than redesigned. | `investigation-notes.md`, SRC-003 and the shared prototype contract |
 | BEH-003 | System | The production frontend depends on service, authentication, persistence, and integration boundaries that are not appropriate for an isolated review prototype. | Production boundaries are replaced with explicit deterministic mocks while user-visible interface states and transitions remain real and parity-valid. | The prototype never writes to production services or requires production credentials or data. | Shared prototype contract, sections 5 and 7 |
-| BEH-004 | Operational | The finalized prototype currently sits outside the owning repository at `/home/autobyteus/workspace/autobyteus-web-prototype` and contains an unintended standalone `.git` repository on branch `main` at local commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6`. | The same approved project is tracked by the existing `autobyteus-workspace` repository at repository-relative path `ui-prototypes/autobyteus-web-prototype`, using ticket branch `codex/initial-prototype-baseline`, with no nested Git metadata or gitlink. | Approved observable UI/UX, evidence files, hashes, PPA-001, source pin, deterministic isolation, and prototype-only scope remain unchanged except for required absolute-path/provenance updates. | `investigation-notes.md`, SRC-011–SRC-012; user placement correction recorded in RER-004 |
+| BEH-004 | Operational | At RER-004 intake, the finalized prototype sat outside the owning repository at rejected root `/home/autobyteus/workspace/autobyteus-web-prototype` with an unintended standalone `.git`, branch `main`, and local commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6`. | The same approved project is tracked by the existing `autobyteus-workspace` repository at repository-relative path `ui-prototypes/autobyteus-web-prototype`, using ticket branch `codex/initial-prototype-baseline`, with no nested Git metadata or gitlink. | Approved observable UI/UX, evidence files, hashes, PPA-001, source pin, deterministic isolation, and prototype-only scope remain unchanged except for required absolute-path/provenance updates. | `investigation-notes.md`, SRC-011–SRC-014; correction verified in RER-005 |
 
 ## Stakeholders, Actors, And Outcomes
 
@@ -103,7 +103,7 @@
 | AC-008 | REQ-009 | Files have been relocated and references rewritten | The corrected destination contains the complete approved project and no `.git` entry; no canonical package file references `/home/autobyteus/workspace/autobyteus-web-prototype` as its active root; source pin, PPA-001, approval reference, final screenshot files/hashes, and approved observable behavior remain intact. | Missing evidence, changed visual hashes without an approved reason, stale active absolute paths, or observable UI change fails acceptance. | Compare file/evidence inventory and hashes; search active artifacts for stale root; rerun controlled validation. |
 | AC-009 | REQ-008, REQ-009 | Correction validation passes | The owning workspace branch contains one new commit tracking the prototype and updated requirements artifacts; prototype validation and final-package consistency pass from the corrected path; the original external prototype root and its standalone `.git` are no longer treated as canonical. | Uncommitted relocation, failed validation, or reliance on standalone commit `7ab23b60...` fails completion. | Inspect owning commit, clean status, validation logs, and corrected runbook. |
 
-**Acceptance outcome:** AC-001 through AC-006 remain met for observable UI/UX and isolation. AC-007 through AC-009 are pending repository-placement correction. PPA-001 and the user’s UI approval remain valid because the correction must not change observable behavior.
+**Acceptance outcome:** AC-001 through AC-009 are met. PPA-001 and the user’s UI approval remain valid; the placement correction produced no observable UI/UX change. Repository-placement validation passes 31/31 checks and final-package consistency passes 73/73 checks from the corrected root.
 
 ## Relevant Scenarios And Journeys
 
@@ -117,8 +117,8 @@
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: `Yes`
-- Linked UI/UX or interaction supplement: Approved source copy currently at `/home/autobyteus/workspace/autobyteus-web-prototype/ui-ux-spec.md`; corrected canonical path shall be `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` after relocation.
-- Linked runnable prototype and applicable support artifacts: Current corrective source is `/home/autobyteus/workspace/autobyteus-web-prototype` at rejected standalone commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6`. Corrected canonical root shall be `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`; owning-workspace commit is pending. The reviewed build remains observable at `http://127.0.0.1:3200` until correction restarts it from the new root.
+- Linked UI/UX or interaction supplement: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` — Approved under PPA-001.
+- Linked runnable prototype and applicable support artifacts: Canonical root `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the owning repository at commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed`; production-build review URL `http://127.0.0.1:3200`; runbook at the canonical root.
 - UI/UX user-confirmation reference: User message **“approved”** on 2026-08-22, immediately following the Product Prototyper request to review the complete corrected current-state baseline at the canonical review URL.
 - Approved visual-reference baseline: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/README.md` and `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/manifest.json` (`VIS-001`–`VIS-015`, 15/15 clean captures).
 - Requirements-defining visual or interaction details: The approved `ui-ux-spec.md`, its final visual references, and all matched inventory rows define the complete observable current-state baseline at source commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
@@ -154,19 +154,20 @@
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-004 | Included in requirements basis |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-004 | Informational traceability artifact |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved UI/UX supplement and requirements-defining/illustrative boundary | All | Pending relocation/path rewrite | User-approved |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/README.md` | Final visual inventory and mapping | REQ-002, REQ-005; AC-002, AC-005 | Pending relocation/path rewrite | User-approved baseline references |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final visual hashes, routes, contexts, and clean-capture results | REQ-002, REQ-005, REQ-006; AC-002, AC-004, AC-005 | Pending relocation/path rewrite | User-approved baseline evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Product Prototyper inspection history, PPA-001, and final decision | REQ-005, REQ-007; AC-005, AC-006 | Pending relocation/path rewrite | Approval and acceptance evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/parity-inventory.md` | Complete stable parity inventory and evidence mapping | REQ-002, REQ-005; AC-002, AC-005 | Pending relocation/path rewrite | Approved baseline evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-bootstrap-report.md` | Bootstrap scope, source pin, completion evidence, and known source-harness findings | REQ-001–REQ-007 | Pending relocation/path rewrite | Supporting evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/comparison-report.md` | Controlled source-versus-prototype rendered and interaction results | REQ-002, REQ-005; AC-002, AC-005 | Pending relocation/path rewrite | Approved baseline evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/evidence-index.md` | Evidence navigation and artifact roles | REQ-002, REQ-005 | Pending relocation/path rewrite | Supporting evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/mock-boundaries.md` | Deterministic mock, network, data, and production-isolation contract | REQ-004, REQ-006; AC-004 | Pending relocation/path rewrite | Approved boundary evidence |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-runbook.md` | Reproducible install, run, scenario, reset, and validation instructions | REQ-003, REQ-006; AC-003, AC-004 | Pending relocation/path rewrite | Operational supplement |
-| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario and context catalog | REQ-002, REQ-004; AC-002, AC-004, AC-005 | Pending relocation/path rewrite | Approved baseline evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-005 | Included in approved requirements basis |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-005 | Informational traceability artifact |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/ui-ux-spec.md` | Canonical approved UI/UX supplement and requirements-defining/illustrative boundary | All | Approved / PPA-001 | User-approved |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/README.md` | Final visual inventory and mapping | REQ-002, REQ-005; AC-002, AC-005 | Final | User-approved baseline references |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final visual hashes, routes, contexts, and clean-capture results | REQ-002, REQ-005, REQ-006; AC-002, AC-004, AC-005 | Final / 15 of 15 preserved | User-approved baseline evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/product-prototyper-baseline-review.md` | Product Prototyper inspection history, PPA-001, and final decision | REQ-005, REQ-007; AC-005, AC-006 | Final | Approval and acceptance evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/parity-inventory.md` | Complete stable parity inventory and evidence mapping | REQ-002, REQ-005; AC-002, AC-005 | Accepted / no missing or discrepant IDs | Approved baseline evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-bootstrap-report.md` | Bootstrap scope, source pin, completion evidence, and known source-harness findings | REQ-001–REQ-007 | Complete | Supporting evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/comparison-report.md` | Controlled source-versus-prototype rendered and interaction results | REQ-002, REQ-005; AC-002, AC-005 | Pass | Approved baseline evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/evidence-index.md` | Evidence navigation and artifact roles | REQ-002, REQ-005 | Final | Supporting evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/mock-boundaries.md` | Deterministic mock, network, data, and production-isolation contract | REQ-004, REQ-006; AC-004 | Final / 13 of 13 checks | Approved boundary evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-runbook.md` | Reproducible install, run, scenario, reset, and validation instructions | REQ-003, REQ-006; AC-003, AC-004 | Final | Operational supplement |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/prototype-scenarios.md` | Deterministic scenario and context catalog | REQ-002, REQ-004; AC-002, AC-004, AC-005 | Final | Approved baseline evidence |
+| `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype/repository-placement-correction.md` | Repository relocation, path rewrite, hash preservation, and validation summary | REQ-008, REQ-009; AC-007–AC-009 | Complete | Requirements-correction evidence |
 
 ## Assumptions
 
@@ -193,8 +194,8 @@
 | REQ-005 | BEH-002 | AC-002, AC-005, AC-006 | SCN-002, SCN-003 | Comparison report; PPA-001; 73/73 final-package validation |
 | REQ-006 | BEH-003 | AC-004 | SCN-002 | Canonical prototype commit; runbook; manifest; mock-boundaries record |
 | REQ-007 | BEH-002 | AC-006 | SCN-003 | PPA-001; approved UI/UX spec; explicit user confirmation |
-| REQ-008 | BEH-004 | AC-007, AC-009 | SCN-004 | Owning-repository/worktree evidence; corrected Git commit pending |
-| REQ-009 | BEH-004 | AC-008, AC-009 | SCN-004 | Current corrective source package; corrected path search and validation pending |
+| REQ-008 | BEH-004 | AC-007, AC-009 | SCN-004 | Owning commit `6ed910fc...`; Git ownership/index proof; 31/31 placement validation |
+| REQ-009 | BEH-004 | AC-008, AC-009 | SCN-004 | Placement correction report; zero stale active roots; 808/808 evidence hashes and 15/15 final references preserved |
 
 ## Downstream Architecture Input
 
@@ -210,16 +211,16 @@
 - Scope and non-goals are clear: `Yes`
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered: `Yes`
-- Prototype and supplemental evidence is integrated consistently: `No` — approved evidence is valid, but canonical absolute paths and repository provenance await correction.
+- Prototype and supplemental evidence is integrated consistently: `Yes`
 - Applicable UI/UX approval and final visual-reference basis are recorded: `Yes`
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `Yes`
 - Architecture-ready: `N/A` — this ticket is explicitly prototype-only and authorizes no architecture or production engineering.
-- Remaining blocker: AC-007 through AC-009 — relocate without nested Git metadata, rewrite canonical paths, rerun validation, and commit through the owning repository ticket branch.
+- Remaining blocker: None. AC-007 through AC-009 are satisfied and independently revalidated from the corrected root.
 
 ## Completion Classification
 
-- Outcome: `Prototype Needed — Repository Placement Correction`
+- Outcome: `Approved Prototype-Only Complete`
 - Approved observable baseline: Unchanged under PPA-001 and explicit user approval.
-- Corrected terminal deliverable: Pending at `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype` on owning branch `codex/initial-prototype-baseline`; standalone commit `7ab23b60aa6fd85ff7ce62720a2fbc5ea41e01a6` is rejected as canonical history.
+- Corrected terminal deliverable: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/ui-prototypes/autobyteus-web-prototype`, tracked by the owning repository on branch `codex/initial-prototype-baseline` at commit `6ed910fc6859e4f3620d08968ecedf49a24a41ed`.
 - Architecture handoff applicability: `No`; DEC-002 explicitly excludes architecture and production engineering from this ticket.
