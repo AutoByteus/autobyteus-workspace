@@ -10,7 +10,7 @@ import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-stor
 import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.js";
 import { compactSummary } from "./run-history-service-helpers.js";
 import { projectTeamRunHistoryIndexRow } from "./team-run-history-index-row-projector.js";
-import { TeamRunV1PackageCatalog } from "./team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
 
 type CatalogState = {
   initialized: boolean;
@@ -56,28 +56,28 @@ const normalizeRow = (row: TeamRunIndexRowRecord): TeamRunIndexRowRecord => ({
 
 export interface TeamCatalogMutationResultMessage { success: boolean; message: string }
 
-/** Catalog projection over the V1 execution tree; it owns no fourth Team state file. */
+/** Catalog projection over the current V2 execution tree; it owns no fourth Team state file. */
 export class TeamRunHistoryCatalogService {
   private readonly indexStore: TeamRunHistoryIndexStore;
   private readonly treeStore: TeamRunExecutionTreeStore;
   private readonly manager: TeamRunHistoryManager;
   private readonly layout: AgentMemoryLayout;
   private readonly state: CatalogState;
-  private readonly packageCatalog: TeamRunV1PackageCatalog;
+  private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly removePackage: (teamDirPath: string) => Promise<void>;
 
   constructor(private readonly memoryDir: string, dependencies: {
     indexStore?: TeamRunHistoryIndexStore;
     executionTreeStore?: TeamRunExecutionTreeStore;
     teamRunManager?: TeamRunHistoryManager;
-    packageCatalog?: TeamRunV1PackageCatalog;
+    packageCatalog?: TeamRunPackageCatalog;
     removePackage?: (teamDirPath: string) => Promise<void>;
   } = {}) {
     this.indexStore = dependencies.indexStore ?? new TeamRunHistoryIndexStore(memoryDir);
     this.treeStore = dependencies.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.manager = dependencies.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.layout = new AgentMemoryLayout(memoryDir);
-    this.packageCatalog = dependencies.packageCatalog ?? new TeamRunV1PackageCatalog(memoryDir);
+    this.packageCatalog = dependencies.packageCatalog ?? new TeamRunPackageCatalog(memoryDir);
     this.removePackage = dependencies.removePackage ?? ((teamDirPath) =>
       fs.rm(teamDirPath, { recursive: true, force: true }));
     this.state = stateFor(memoryDir);

@@ -13,6 +13,15 @@ import {
   type CollaborationHandoff,
 } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
+export type AgentLaunchConfiguration = Readonly<{
+  runtimeKind: RuntimeKind;
+  llmModelIdentifier: string;
+  llmConfig: Readonly<Record<string, unknown>> | null;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  workspaceRootPath: string | null;
+}>;
+
 export type TeamRunAgentNode = Readonly<{
   kind: "agent";
   address: AgentTeamAddress;
@@ -35,6 +44,7 @@ export type TeamRunAgentTeamNode = Readonly<{
   teamDefinitionId: string;
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
   role?: string | null;
   description?: string | null;
   children: readonly TeamRunNode[];
@@ -42,15 +52,13 @@ export type TeamRunAgentTeamNode = Readonly<{
 
 export type TeamRunNode = TeamRunAgentNode | TeamRunAgentTeamNode;
 
-export type TeamAgentLaunchSettings = Readonly<{
+export type TeamAgentLaunchSettings = AgentLaunchConfiguration & Readonly<{
   memberAddress: AgentTeamAddress;
   agentDefinitionId: string;
-  llmModelIdentifier: string;
-  autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
-  workspaceRootPath: string | null;
-  llmConfig: Readonly<Record<string, unknown>> | null;
-  runtimeKind: RuntimeKind;
+}>;
+
+export type TeamScopeLaunchSettings = AgentLaunchConfiguration & Readonly<{
+  teamAddress: AgentTeamAddress;
 }>;
 
 export type TeamRunApplicationBinding = Readonly<{
@@ -78,6 +86,18 @@ const freezeRecord = (
 ): Readonly<Record<string, unknown>> | null => value
   ? freezeObjectGraph(structuredClone(value))
   : null;
+
+export const cloneAgentLaunchConfiguration = (
+  value: AgentLaunchConfiguration,
+  label = "launchConfiguration",
+): AgentLaunchConfiguration => Object.freeze({
+  runtimeKind: value.runtimeKind,
+  llmModelIdentifier: required(value.llmModelIdentifier, `${label}.llmModelIdentifier`),
+  llmConfig: freezeRecord(value.llmConfig as Record<string, unknown> | null),
+  autoExecuteTools: Boolean(value.autoExecuteTools),
+  skillAccessMode: value.skillAccessMode,
+  workspaceRootPath: optional(value.workspaceRootPath),
+});
 
 export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
   const address = assertAgentTeamAddress(node.address);
@@ -131,6 +151,10 @@ export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
     teamDefinitionId: required(node.teamDefinitionId, `teamDefinitionId at '${address}'`),
     teamRunId: required(node.teamRunId, `teamRunId at '${address}'`),
     coordinatorAddress,
+    defaultLaunchConfiguration: cloneAgentLaunchConfiguration(
+      node.defaultLaunchConfiguration,
+      `defaultLaunchConfiguration at '${address}'`,
+    ),
     ...placement,
     children,
   });

@@ -1,224 +1,268 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
-import type { AgentTeamDefinition } from '../agentTeamDefinitionStore'
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 
-const mockTeamDef: AgentTeamDefinition = {
-  id: 'team-def-1',
-  name: 'Research Team',
-  description: 'Test Team',
-  instructions: 'Coordinate the research workflow.',
-  coordinatorMemberName: 'coord',
-  nodes: [],
-  defaultLaunchConfig: {
-    runtimeKind: 'codex_app_server',
-    llmModelIdentifier: 'gpt-5.4',
-    llmConfig: {
-      reasoning_effort: 'high',
-    },
-  },
-} as AgentTeamDefinition
-
-describe('teamRunConfigStore', () => {
-  beforeEach(() => {
-    setActivePinia(createPinia())
-  })
-
-  describe('setTemplate', () => {
-    it('sets team config from definition defaults', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-
-      expect(store.config?.teamDefinitionId).toBe('team-def-1')
-      expect(store.config?.teamDefinitionName).toBe('Research Team')
-      expect(store.config?.runtimeKind).toBe('codex_app_server')
-      expect(store.config?.llmModelIdentifier).toBe('gpt-5.4')
-      expect(store.config?.llmConfig).toEqual({ reasoning_effort: 'high' })
-      expect(store.config?.workspaceId).toBeNull()
-      expect(store.config?.autoExecuteTools).toBe(false)
-      expect(store.config?.memberOverrides).toEqual({})
-      expect(store.config?.isLocked).toBe(false)
-    })
-  })
-
-  describe('applyConfigEdit', () => {
-    it('applies closed typed edits through immutable replacement', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-
-      const initialConfig = store.config
-
-      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' })
-      store.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: true })
-
-      expect(store.config?.llmModelIdentifier).toBe('gpt-5.3-codex')
-      expect(store.config?.autoExecuteTools).toBe(true)
-      expect(store.config).not.toBe(initialConfig)
-      expect(Object.isFrozen(store.config)).toBe(true)
-    })
-  })
-
-  describe('hasConfig getter', () => {
-    it('returns false initially', () => {
-      const store = useTeamRunConfigStore()
-      expect(store.hasConfig).toBe(false)
-    })
-
-    it('returns true after setting template', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-      expect(store.hasConfig).toBe(true)
-    })
-  })
-
-  describe('launchReadiness getter', () => {
-    it('blocks launch when workspace is missing', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-      store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
-
-      expect(store.launchReadiness.canLaunch).toBe(false)
-      expect(store.launchReadiness.blockingIssues[0]?.code).toBe('WORKSPACE_REQUIRED')
-    })
-
-    it('blocks launch when a member runtime override breaks inherited default model availability', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-      store.applyConfigEdit({ kind: 'set_workspace', workspaceId: 'ws-1', workspaceMetadata: null })
-      store.applyConfigEdit({
-        kind: 'set_member_override',
-        memberAddress: '/Reviewer',
-        override: {
-          runtimeKind: 'claude_agent_sdk',
-        },
-      })
-      store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
-      store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
-
-      expect(store.launchReadiness.canLaunch).toBe(false)
-      expect(store.launchReadiness.unresolvedMembers).toEqual([
-        expect.objectContaining({ memberName: '/Reviewer', runtimeKind: 'claude_agent_sdk' }),
-      ])
-      expect(store.launchReadiness.blockingIssues[0]?.message).toContain(
-        'Global model gpt-5.4 is unavailable for Claude Agent SDK',
-      )
-    })
-
-    it('allows launch once the mixed-runtime row has a compatible explicit model', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-      store.applyConfigEdit({ kind: 'set_workspace', workspaceId: 'ws-1', workspaceMetadata: null })
-      store.applyConfigEdit({
-        kind: 'set_member_override',
-        memberAddress: '/Reviewer',
-        override: {
-          runtimeKind: 'claude_agent_sdk',
-          llmModelIdentifier: 'claude-sonnet',
-        },
-      })
-      store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
-      store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
-
-      expect(store.launchReadiness.canLaunch).toBe(true)
-      expect(store.launchReadiness.blockingIssues).toEqual([])
-    })
-  })
-
-  describe('inherited member LLM-config pruning', () => {
-    it('prunes only inherited member LLM config when the global model changes', () => {
-      const store = useTeamRunConfigStore()
-      store.setConfig({
-        ...storeTemplateConfig(),
+const definition = (
+  id: string,
+  coordinatorMemberName: string,
+  nodes: AgentTeamDefinition['nodes'],
+): AgentTeamDefinition => ({
+  id,
+  name: id,
+  description: '',
+  instructions: '',
+  coordinatorMemberName,
+  nodes,
+  defaultLaunchConfig: id === 'root-def'
+    ? {
         runtimeKind: 'codex_app_server',
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        memberOverrides: {
-          '/MemberA': {
-            llmConfig: { reasoning_effort: 'xhigh' },
-          },
-          '/MemberB': {
-            autoExecuteTools: true,
-            llmConfig: { reasoning_effort: 'medium' },
-          },
-          '/MemberC': {
-            llmModelIdentifier: 'member-model',
-            llmConfig: { reasoning_effort: 'low' },
-          },
-        },
-      })
-
-      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' })
-
-      expect(store.config?.memberOverrides).toEqual({
-        '/MemberB': {
-          autoExecuteTools: true,
-        },
-        '/MemberC': {
-          llmModelIdentifier: 'member-model',
-          llmConfig: { reasoning_effort: 'low' },
-        },
-      })
-    })
-
-    it('prunes only inherited member LLM config when the global runtime changes', () => {
-      const store = useTeamRunConfigStore()
-      store.setConfig({
-        ...storeTemplateConfig(),
-        runtimeKind: 'autobyteus',
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { thinking_level: 5 },
-        memberOverrides: {
-          '/MemberA': {
-            llmConfig: { thinking_level: 3 },
-          },
-          '/MemberB': {
-            llmModelIdentifier: 'gpt-5.4',
-            llmConfig: { thinking_level: 4 },
-          },
-          '/MemberC': {
-            runtimeKind: 'claude_agent_sdk',
-            llmConfig: { temperature: 0.2 },
-          },
-        },
-      })
-
-      store.applyConfigEdit({ kind: 'set_runtime', runtimeKind: 'codex_app_server' })
-
-      expect(store.config?.memberOverrides).toEqual({
-        '/MemberB': {
-          llmModelIdentifier: 'gpt-5.4',
-        },
-        '/MemberC': {
-          runtimeKind: 'claude_agent_sdk',
-          llmConfig: { temperature: 0.2 },
-        },
-      })
-    })
-  })
-
-  describe('clearConfig', () => {
-    it('resets all state', () => {
-      const store = useTeamRunConfigStore()
-      store.setTemplate(mockTeamDef)
-      store.applyConfigEdit({ kind: 'set_model', llmModelIdentifier: 'gpt-4' })
-
-      store.clearConfig()
-
-      expect(store.config).toBeNull()
-    })
-  })
+        llmModelIdentifier: 'gpt-5.6-luna',
+        llmConfig: { reasoning_effort: 'medium' },
+      }
+    : {
+        runtimeKind: 'claude_agent_sdk',
+        llmModelIdentifier: 'definition-default-must-not-activate',
+        llmConfig: { ignored: true },
+      },
 })
 
-const storeTemplateConfig = () => ({
-  teamDefinitionId: 'team-def-1',
-  teamDefinitionName: 'Research Team',
-  runtimeKind: 'autobyteus',
-  llmModelIdentifier: 'gpt-5.4',
-  llmConfig: null,
-  autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY' as const,
+const definitions = [
+  definition('root-def', 'teacher', [
+    { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+    { memberName: 'Research', ref: 'research-def', refType: 'AGENT_TEAM' },
+    { memberName: 'Sibling', ref: 'sibling-def', refType: 'AGENT_TEAM' },
+  ]),
+  definition('research-def', 'lead', [
+    { memberName: 'lead', ref: 'lead-def', refType: 'AGENT' },
+    { memberName: 'Study', ref: 'study-def', refType: 'AGENT_TEAM' },
+  ]),
+  definition('study-def', 'student', [
+    { memberName: 'student', ref: 'student-def', refType: 'AGENT' },
+  ]),
+  definition('sibling-def', 'worker', [
+    { memberName: 'worker', ref: 'worker-def', refType: 'AGENT' },
+  ]),
+]
+
+const workspace = {
+  workspaceId: 'ws-root',
+  workspaceMetadata: {
+    workspaceId: 'ws-root',
+    workspaceRootPath: '/workspace/root',
+    displayName: 'root',
+    kind: 'filesystem' as const,
+  },
+}
+
+const hierarchicalConfig = (): TeamRunConfig => ({
+  teamDefinitionId: 'root-def',
+  teamDefinitionName: 'root-def',
+  rootConfig: {
+    runtimeKind: 'codex_app_server',
+    workspace,
+    llmModelIdentifier: 'gpt-5.6-luna',
+    llmConfig: { reasoning_effort: 'medium' },
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+  },
+  teamOverrides: {
+    '/Research': {
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-sonnet',
+      llmConfig: { temperature: 0.1 },
+    },
+    '/Research/Study': {
+      llmModelIdentifier: 'claude-opus',
+      llmConfig: { temperature: 0.2 },
+    },
+  },
+  agentOverrides: {
+    '/Research/Study/student': {
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-opus-student',
+      llmConfig: { temperature: 0.3 },
+    },
+  },
   isLocked: false,
-  workspaceId: null,
-  workspaceMetadata: null,
-  memberOverrides: {},
+})
+
+describe('teamRunConfigStore hierarchical launch intent', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    useAgentTeamDefinitionStore().agentTeamDefinitions = definitions
+  })
+
+  it('seeds only the selected root definition and stores immutable root/Team/Agent intent', () => {
+    const store = useTeamRunConfigStore()
+    store.setTemplate(definitions[0]!)
+
+    expect(store.config).toEqual(expect.objectContaining({
+      teamDefinitionId: 'root-def',
+      rootConfig: expect.objectContaining({
+        runtimeKind: 'codex_app_server',
+        llmModelIdentifier: 'gpt-5.6-luna',
+        llmConfig: { reasoning_effort: 'medium' },
+      }),
+      teamOverrides: {},
+      agentOverrides: {},
+      isLocked: false,
+    }))
+    expect(Object.isFrozen(store.config)).toBe(true)
+    expect(Object.isFrozen(store.config?.rootConfig.llmConfig)).toBe(true)
+  })
+
+  it('applies root, Team, reset, and Agent edits through immutable replacement and rejects wrong-kind targets', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    const initial = store.config
+
+    store.applyConfigEdit({
+      kind: 'set_team_override',
+      teamAddress: '/Research',
+      override: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-haiku' },
+    })
+    expect(store.config?.teamOverrides['/Research']).toEqual({
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-haiku',
+    })
+    expect(store.config).not.toBe(initial)
+    expect(Object.isFrozen(store.config)).toBe(true)
+
+    store.applyConfigEdit({ kind: 'reset_team_override', teamAddress: '/Research' })
+    expect(store.config?.teamOverrides['/Research']).toBeUndefined()
+
+    store.applyConfigEdit({
+      kind: 'set_agent_override',
+      agentAddress: '/Research/lead',
+      override: { autoExecuteTools: true },
+    })
+    expect(store.config?.agentOverrides['/Research/lead']).toEqual({ autoExecuteTools: true })
+
+    expect(() => store.applyConfigEdit({
+      kind: 'set_team_override',
+      teamAddress: '/Research/lead',
+      override: { autoExecuteTools: true },
+    })).toThrow("Address '/Research/lead' is not an exact Team placement.")
+    expect(() => store.applyConfigEdit({
+      kind: 'set_agent_override',
+      agentAddress: '/Research',
+      override: { autoExecuteTools: true },
+    })).toThrow("Address '/Research' is not an exact Agent placement.")
+  })
+
+  it('prunes descendant llmConfig only where a parent Team edit changes effective runtime/model', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+
+    store.applyConfigEdit({
+      kind: 'set_team_override',
+      teamAddress: '/Research',
+      override: {
+        runtimeKind: 'claude_agent_sdk',
+        llmModelIdentifier: 'claude-haiku',
+        llmConfig: { stale: true },
+      },
+    })
+
+    expect(store.config?.teamOverrides['/Research']).toEqual({
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-haiku',
+    })
+    expect(store.config?.teamOverrides['/Research/Study']).toEqual({
+      llmModelIdentifier: 'claude-opus',
+      llmConfig: { temperature: 0.2 },
+    })
+    expect(store.config?.agentOverrides['/Research/Study/student']).toEqual({
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-opus-student',
+      llmConfig: { temperature: 0.3 },
+    })
+  })
+
+  it('reset recomputes descendants, removes newly incompatible configs, and preserves an independently pinned Agent', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+
+    store.applyConfigEdit({ kind: 'reset_team_override', teamAddress: '/Research' })
+
+    expect(store.config?.teamOverrides['/Research']).toBeUndefined()
+    expect(store.config?.teamOverrides['/Research/Study']).toEqual({
+      llmModelIdentifier: 'claude-opus',
+    })
+    expect(store.config?.agentOverrides['/Research/Study/student']).toEqual({
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-opus-student',
+      llmConfig: { temperature: 0.3 },
+    })
+  })
+
+  it('reconciles stale and kind-mismatched intent visibly and refuses mutation while admitted', () => {
+    const store = useTeamRunConfigStore()
+    const stale = hierarchicalConfig()
+    stale.teamOverrides['/removed'] = { llmModelIdentifier: 'old' }
+    stale.agentOverrides['/Research'] = { llmModelIdentifier: 'wrong-kind' }
+    store.setConfig(stale)
+
+    const result = store.reconcileSelectedDraftTopology(store.memberTree!)
+
+    expect(result).toEqual(expect.objectContaining({
+      repaired: true,
+      addresses: ['/Research', '/removed'],
+    }))
+    expect(store.repairNotice?.addresses).toEqual(['/Research', '/removed'])
+    expect(store.config?.teamOverrides['/removed']).toBeUndefined()
+    expect(store.config?.agentOverrides['/Research']).toBeUndefined()
+
+    const admitted = store.selectedDraft!
+    store.admitDraftLaunch(admitted)
+    expect(() => store.applyConfigEdit({
+      kind: 'set_root_model',
+      llmModelIdentifier: 'other',
+    })).toThrow(/in flight/)
+    expect(() => store.reconcileSelectedDraftTopology(store.memberTree!)).toThrow(/in flight/)
+    store.releaseDraftLaunch(admitted)
+  })
+
+  it('validates every effective runtime/model and address-scoped workspace state', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    store.setRuntimeModelCatalog('codex_app_server', ['gpt-5.6-luna'])
+    store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet', 'claude-opus', 'claude-opus-student'])
+
+    expect(store.launchReadiness).toEqual(expect.objectContaining({
+      canLaunch: true,
+      blockingIssues: [],
+    }))
+
+    store.setWorkspaceLoading(true, '/Research')
+    expect(store.workspaceLoadingStateFor('/Research')).toEqual(expect.objectContaining({
+      isLoading: true,
+      error: null,
+    }))
+    store.setWorkspaceError('workspace unavailable', '/Research')
+    expect(store.workspaceLoadingStateFor('/Research')).toEqual(expect.objectContaining({
+      isLoading: false,
+      error: 'workspace unavailable',
+    }))
+
+    store.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
+    expect(store.launchReadiness.canLaunch).toBe(false)
+    expect(store.launchReadiness.blockingIssues.map((issue) => issue.subjectAddress)).toEqual(
+      expect.arrayContaining(['/Research/Study', '/Research/Study/student']),
+    )
+  })
+
+  it('clears only the selected draft and API/E2E-owned transient state', () => {
+    const store = useTeamRunConfigStore()
+    store.setConfig(hierarchicalConfig())
+    store.setWorkspaceError('error', '/Research')
+    store.clearConfig()
+
+    expect(store.config).toBeNull()
+    expect(store.repairNotice).toBeNull()
+    expect(store.workspaceLoadingStates).toEqual({})
+  })
 })

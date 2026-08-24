@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
 import { CreateAgentTeamRun, RestoreAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
-import type { TeamMemberConfigInput } from '~/generated/graphql';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -16,9 +15,9 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
 import { buildTeamMemberDraftContextFileOwner, buildTeamMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner';
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
+import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
+import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   beginLocalUserSubmission,
@@ -30,7 +29,6 @@ import { buildClientInterruptCommandId, buildClientMessageId, showInterruptComma
 import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
 import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
@@ -38,12 +36,6 @@ import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecu
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
   `member_input:${rootTeamRunId}:${agentRunId}:${messageId}`;
-const mutableConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
-  ...config,
-  workspaceMetadata: config.workspaceMetadata ? { ...config.workspaceMetadata } : null,
-  memberOverrides: Object.fromEntries(Object.entries(config.memberOverrides).map(([address, override]) => [address, { ...override }])),
-});
-
 type CreatePayload = { createAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
 type RestorePayload = { restoreAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
 type TerminatePayload = { terminateAgentTeamRun?: { success?: boolean; message?: string } | null };
@@ -308,26 +300,29 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     },
     async launchDraft(draft: TeamLaunchDraft) {
       const drafts = useTeamRunConfigStore();
+      const definitions = useAgentTeamDefinitionStore();
+      const definition = definitions.getAgentTeamDefinitionById(draft.config.teamDefinitionId);
+      if (!definition) throw new Error(`Team definition '${draft.config.teamDefinitionId}' was not found.`);
+      const memberTree = buildTeamMemberTreeFromDefinition(definition, {
+        getTeamDefinitionById: (id) => definitions.getAgentTeamDefinitionById(id),
+      });
+      const reconciliation = drafts.reconcileSelectedDraftTopology(memberTree);
+      if (reconciliation.repaired) {
+        throw new Error(`Team topology changed. Removed stale launch settings for ${reconciliation.addresses.join(', ')}. Review the repaired configuration and retry.`);
+      }
       drafts.admitDraftLaunch(draft);
       try {
-        const definitions = useAgentTeamDefinitionStore();
-        const definition = definitions.getAgentTeamDefinitionById(draft.config.teamDefinitionId);
-        if (!definition) throw new Error(`Team definition '${draft.config.teamDefinitionId}' was not found.`);
-        const leafMembers = resolveLeafTeamMembers(definition, { getTeamDefinitionById: (id) => definitions.getAgentTeamDefinitionById(id) });
+        const leafMembers = flattenLeafAgentMemberNodes(memberTree);
         if (!leafMembers.some((member) => member.address === draft.focusedMemberAddress)) throw new Error(`Draft focus '${draft.focusedMemberAddress}' is stale.`);
         const leafAddresses = new Set(leafMembers.map((member) => member.address));
         const stalePendingAddress = Object.keys(draft.pendingInputsByMemberAddress).find((address) => !leafAddresses.has(address));
         if (stalePendingAddress) throw new Error(`Draft input target '${stalePendingAddress}' is stale.`);
-        const readiness = evaluateTeamRunLaunchReadiness(draft.config, drafts.runtimeModelCatalogs);
+        const readiness = evaluateTeamRunLaunchReadiness(draft.config, drafts.runtimeModelCatalogs, memberTree);
         if (!readiness.canLaunch) throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
-        const memberConfigs = buildTeamRunMemberConfigRecords({ config: mutableConfig(draft.config), leafMembers })
-          .map(({ workspaceMetadata: _workspaceMetadata, displayName: _displayName, ...config }) => ({
-            ...config,
-            skillAccessMode: config.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
-          }));
+        const { teamConfigs, memberConfigs } = projectTeamRunLaunchRecords(draft.config, memberTree);
         const { data, errors } = await getApolloClient().mutate<CreatePayload>({
           mutation: CreateAgentTeamRun,
-          variables: { input: { teamDefinitionId: draft.config.teamDefinitionId, memberConfigs } },
+          variables: { input: { teamDefinitionId: draft.config.teamDefinitionId, teamConfigs, memberConfigs } },
         });
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         const result = data?.createAgentTeamRun;

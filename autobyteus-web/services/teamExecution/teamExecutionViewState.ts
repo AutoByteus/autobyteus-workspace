@@ -8,7 +8,7 @@ import {
 } from '@autobyteus/team-stream-contracts';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
+import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution, settleTaskExecution } from './teamExecutionTreeMutations';
 import {
@@ -34,7 +34,7 @@ export interface TeamExecutionViewState {
   getRootTeamRunId(): string;
   getTeamDefinitionName(): string;
   getExecutionTree(): TeamRunExecutionTreeDto;
-  getConfigurationView(): Readonly<TeamRunConfig>;
+  getConfigurationView(): Readonly<TeamRunConfigurationView>;
   getChangeSequence(): number;
   needsStreamRecovery(): boolean;
   isRootTeamActive(): boolean;
@@ -62,7 +62,7 @@ export interface CreateTeamExecutionViewStateInput {
   executionTree: TeamRunExecutionTreeDto;
   tasks?: readonly TaskDelegationRecordDto[];
   messages?: readonly TeamCommunicationMessageDto[];
-  configuration: Readonly<TeamRunConfig>;
+  configuration: Readonly<TeamRunConfigurationView>;
   initialFocusedAgentRunId: string;
   agentContexts: readonly TeamAgentContextEntry[];
   createAgentContext: (agentRunId: string, address: AgentTeamAddress, tree: TeamRunExecutionTreeDto) => AgentContext | null;

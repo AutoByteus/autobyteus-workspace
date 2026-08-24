@@ -1,5 +1,5 @@
 import type {
-  ConfiguredMemberExecution,
+  ConfiguredExecutionNode,
   TaskExecution,
   TaskTeamMemberExecution,
   TeamRunExecutionTreeSnapshot,
@@ -48,7 +48,7 @@ const repairTree = (input: {
       members: member.members.map(repairTaskMember),
       taskExecutions: member.taskExecutions.map(repairTask).filter(notNull),
     };
-  const repairConfiguredMember = (member: ConfiguredMemberExecution): ConfiguredMemberExecution =>
+  const repairConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredExecutionNode =>
     "agentRunId" in member ? member : {
       ...member,
       members: member.members.map(repairConfiguredMember),

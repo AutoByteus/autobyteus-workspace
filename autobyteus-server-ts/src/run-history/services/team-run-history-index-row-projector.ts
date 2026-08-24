@@ -21,19 +21,8 @@ const safeRunId = (value: string): string => {
 };
 
 const workspaceFromTree = (tree: TeamRunExecutionTreeSnapshot): string | null => {
-  const visit = (members: TeamRunExecutionTreeSnapshot["rootTeam"]["members"]): string | null => {
-    for (const member of members) {
-      if ("agentRunId" in member) {
-        const workspace = member.launchConfiguration.workspaceRootPath;
-        if (workspace) return canonicalizeWorkspaceRootPath(workspace);
-      } else {
-        const nested = visit(member.members);
-        if (nested) return nested;
-      }
-    }
-    return null;
-  };
-  return visit(tree.rootTeam.members);
+  const workspace = tree.rootTeam.defaultLaunchConfiguration.workspaceRootPath;
+  return workspace ? canonicalizeWorkspaceRootPath(workspace) : null;
 };
 
 export type TeamRunHistoryIndexProjectionInput = Readonly<{

@@ -3,9 +3,9 @@ import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
-import type { ValidatedTeamRunStatePackage } from "../../run-history/services/team-run-state-package-validator.js";
-import { validateTeamRunStatePackage } from "../../run-history/services/team-run-state-package-validator.js";
-import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+import type { ValidatedTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
+import { validateTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
+import { TeamRunExecutionTreeV1Store } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-store.js";
 
 const METADATA_FILE = "team_run_metadata.json";
 const EXECUTION_TREE_FILE = "team_run_execution_tree.json";
@@ -180,7 +180,7 @@ export class TeamRunMigrationStateClassifier {
       }
       try {
         const [executionTree, taskRecords, communicationMessages] = await Promise.all([
-          new TeamRunExecutionTreeStore().read(rootDir, rootTeamRunId),
+          new TeamRunExecutionTreeV1Store().read(rootDir, rootTeamRunId),
           new TaskDelegationRecordsV1Store().read(rootDir, rootTeamRunId),
           new TeamCommunicationV1Store().read(rootDir, rootTeamRunId),
         ]);

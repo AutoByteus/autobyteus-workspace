@@ -9,11 +9,15 @@ import { getTeamRunHistoryCatalogService, type TeamRunHistoryCatalogService } fr
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { RootTeamRun } from "../domain/root-team-run.js";
-import type { TeamAgentLaunchSettings } from "../domain/team-run-config.js";
+import type { AgentLaunchConfiguration } from "../domain/team-run-config.js";
 import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
-import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
+import {
+  TeamDefinitionTopologyPlanner,
+  type TeamAgentLaunchInput,
+  type TeamScopeLaunchInput,
+} from "./team-definition-topology-planner.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 
 export interface TeamRunPresetInput {
@@ -34,8 +38,18 @@ export type TeamRunMemberConfigInput = {
   llmConfig?: Record<string, unknown> | null;
   runtimeKind?: RuntimeKind | string | null;
 };
+export type TeamRunTeamConfigInput = {
+  teamAddress: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  workspaceRootPath?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+  runtimeKind?: RuntimeKind | string | null;
+};
 export interface CreateTeamRunInput {
   teamDefinitionId: string;
+  teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
   teamRunId?: string | null;
   applicationBinding?: { applicationId: string; bindingId: string } | null;
@@ -73,54 +87,41 @@ export class TeamRunService {
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
   }
 
-  async buildMemberConfigsFromLaunchPreset(input: {
-    teamDefinitionId: string;
-    launchPreset: TeamRunPresetInput;
-  }): Promise<TeamRunMemberConfigInput[]> {
-    const preset = normalizePreset(input.launchPreset);
-    return this.planner.buildPresetAgentLaunchSettings({
-      teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),
-      launchPreset: {
-        runtimeKind: preset.runtimeKind,
-        llmModelIdentifier: preset.llmModelIdentifier,
-        llmConfig: preset.llmConfig ?? null,
-        autoExecuteTools: preset.autoExecuteTools,
-        skillAccessMode: preset.skillAccessMode,
-        workspaceRootPath: preset.workspaceRootPath,
-      },
-    });
-  }
-
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     const workspaces = new Map<string, Promise<string>>();
-    const memberConfigs = await Promise.all(input.memberConfigs.map(async (member) => {
-      const requested = member.workspaceRootPath?.trim() || null;
-      let workspaceRootPath: string | null = null;
-      if (requested) {
-        const canonical = canonicalizeWorkspaceRootPath(requested);
-        let activation = workspaces.get(canonical);
-        if (!activation) {
-          activation = this.workspaces.ensureWorkspaceByRootPath(canonical)
-            .then((workspace) => workspace.getBasePath?.() ?? canonical);
-          workspaces.set(canonical, activation);
-        }
-        workspaceRootPath = await activation;
+    const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
+      const requested = requestedPath?.trim() || null;
+      if (!requested) return null;
+      const canonical = canonicalizeWorkspaceRootPath(requested);
+      let activation = workspaces.get(canonical);
+      if (!activation) {
+        activation = this.workspaces.ensureWorkspaceByRootPath(canonical)
+          .then((workspace) => workspace.getBasePath?.() ?? canonical);
+        workspaces.set(canonical, activation);
       }
-      return {
-        ...member,
-        runtimeKind: resolveRuntimeKind(member.runtimeKind),
-        workspaceRootPath,
-        llmConfig: member.llmConfig ?? null,
-      };
-    }));
+      return activation;
+    };
+    const teamConfigs: TeamScopeLaunchInput[] = await Promise.all(input.teamConfigs.map(async (team) => ({
+      ...team,
+      runtimeKind: resolveRuntimeKind(team.runtimeKind),
+      workspaceRootPath: await activateWorkspace(team.workspaceRootPath),
+      llmConfig: team.llmConfig ?? null,
+    })));
+    const memberConfigs: TeamAgentLaunchInput[] = await Promise.all(input.memberConfigs.map(async (member) => ({
+      ...member,
+      runtimeKind: resolveRuntimeKind(member.runtimeKind),
+      workspaceRootPath: await activateWorkspace(member.workspaceRootPath),
+      llmConfig: member.llmConfig ?? null,
+    })));
     const teamRunId = input.teamRunId
       ? required(input.teamRunId, "teamRunId")
       : await this.allocateTeamRunId(input.teamDefinitionId);
     const plan = await this.planner.buildPlan({
       teamDefinitionId: input.teamDefinitionId,
       teamRunId,
-      memberConfigs: memberConfigs as Array<TeamAgentLaunchSettings & { memberAddress: string }>,
+      teamConfigs,
+      memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName });
@@ -131,6 +132,33 @@ export class TeamRunService {
       await this.safeTerminate(root.teamRunId);
       throw error;
     }
+  }
+
+  async createTeamRunFromRootConfig(input: {
+    teamDefinitionId: string;
+    rootConfig: TeamRunPresetInput;
+    memberConfigs?: TeamRunMemberConfigInput[] | null;
+    teamRunId?: string | null;
+    applicationBinding?: { applicationId: string; bindingId: string } | null;
+  }): Promise<RootTeamRun> {
+    const rootConfig = normalizePreset(input.rootConfig);
+    const expanded = await this.planner.buildRootLaunchInputs({
+      teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),
+      rootConfig,
+      memberConfigs: input.memberConfigs?.map((member) => ({
+        ...member,
+        runtimeKind: resolveRuntimeKind(member.runtimeKind),
+        workspaceRootPath: member.workspaceRootPath?.trim() || null,
+        llmConfig: member.llmConfig ?? null,
+      })),
+    });
+    return this.createTeamRun({
+      teamDefinitionId: input.teamDefinitionId,
+      teamRunId: input.teamRunId,
+      applicationBinding: input.applicationBinding,
+      teamConfigs: [...expanded.teamConfigs],
+      memberConfigs: [...expanded.memberConfigs],
+    });
   }
 
   async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
@@ -212,7 +240,7 @@ const resolveRuntimeKind = (value: RuntimeKind | string | null | undefined): Run
   if (!resolved) throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team member runtime kind '${value}'.`);
   return resolved;
 };
-const normalizePreset = (value: TeamRunPresetInput): TeamRunPresetInput => ({
+const normalizePreset = (value: TeamRunPresetInput): AgentLaunchConfiguration => ({
   workspaceRootPath: required(value.workspaceRootPath, "teamLaunchPreset.workspaceRootPath"),
   llmModelIdentifier: required(value.llmModelIdentifier, "teamLaunchPreset.llmModelIdentifier"),
   runtimeKind: value.runtimeKind,

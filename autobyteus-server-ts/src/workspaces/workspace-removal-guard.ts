@@ -1,6 +1,6 @@
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
-import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode } from "../agent-team-execution/domain/team-run-execution-tree.js";
 import { buildFilesystemWorkspaceId } from "./workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
 
@@ -92,12 +92,12 @@ const workspaceIdUsesRoot = (
 };
 
 const teamMemberTreeUsesWorkspace = (
-  members: readonly ConfiguredMemberExecution[],
+  members: readonly ConfiguredExecutionNode[],
   workspaceRootPath: string,
 ): boolean => members.some((member) => teamMemberUsesWorkspace(member, workspaceRootPath));
 
 const teamMemberUsesWorkspace = (
-  member: ConfiguredMemberExecution,
+  member: ConfiguredExecutionNode,
   workspaceRootPath: string,
 ): boolean => {
   if ("teamRunId" in member) {
@@ -107,7 +107,7 @@ const teamMemberUsesWorkspace = (
 };
 
 const agentMemberUsesWorkspace = (
-  member: ConfiguredAgentExecution,
+  member: ConfiguredAgentExecutionNode,
   workspaceRootPath: string,
 ): boolean => {
   const candidateRoot = member.launchConfiguration.workspaceRootPath?.trim();

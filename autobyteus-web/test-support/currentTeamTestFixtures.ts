@@ -1,4 +1,5 @@
 import type {
+  AgentLaunchConfigurationDto,
   ConfiguredMemberExecutionDto,
   TaskDelegationRecordDto,
   TaskExecutionDto,
@@ -30,7 +31,7 @@ export interface TestAgentNode {
   readonly agentDefinitionId: string;
   readonly agentRunId: string;
   readonly platformAgentRunId: string | null;
-  readonly runtimeKind: 'AUTOBYTEUS' | 'CODEX' | 'CLAUDE';
+  readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk';
   readonly llmModelIdentifier: string;
   readonly autoExecuteTools: boolean;
   readonly skillAccessMode: 'PRELOADED_ONLY' | 'NONE';
@@ -48,6 +49,7 @@ export interface TestSubTeamNode {
   readonly teamDefinitionId: string;
   readonly teamRunId: string;
   readonly coordinatorAddress: AgentTeamAddress;
+  readonly defaultLaunchConfiguration: AgentLaunchConfigurationDto;
   readonly children: readonly TestTeamNode[];
   readonly taskExecutions: readonly TaskExecutionDto[];
 }
@@ -66,7 +68,7 @@ export const testAgentNode = (
   agentDefinitionId: `${address.replace(/[^a-z0-9]+/gi, '-')}-definition`,
   agentRunId: `${address.replace(/[^a-z0-9]+/gi, '-')}-run`,
   platformAgentRunId: null,
-  runtimeKind: 'AUTOBYTEUS',
+  runtimeKind: 'autobyteus',
   llmModelIdentifier: 'test-model',
   autoExecuteTools: true,
   skillAccessMode: 'NONE',
@@ -76,23 +78,34 @@ export const testAgentNode = (
   ...overrides,
 });
 
+const configuredAgents = (nodes: readonly TestTeamNode[]): TestAgentNode[] => nodes.flatMap((node) =>
+  node.kind === 'agent' ? [node] : configuredAgents(node.children));
+
 export const testSubTeamNode = (
   address: AgentTeamAddress,
   children: readonly TestTeamNode[],
   overrides: Partial<TestSubTeamNode> = {},
-): TestSubTeamNode => Object.freeze({
-  kind: 'agent_team',
-  address,
-  displayName: address === '/' ? 'Test Team' : address.split('/').filter(Boolean).at(-1) ?? 'team',
-  role: null,
-  description: null,
-  teamDefinitionId: `${address.replace(/[^a-z0-9]+/gi, '-')}-definition`,
-  teamRunId: `${address.replace(/[^a-z0-9]+/gi, '-')}-run`,
-  coordinatorAddress: children.find((child) => child.kind === 'agent')?.address ?? address,
-  children: Object.freeze([...children]),
-  taskExecutions: Object.freeze([]),
-  ...overrides,
-});
+): TestSubTeamNode => {
+  const coordinatorAddress = overrides.coordinatorAddress
+    ?? children.find((child) => child.kind === 'agent')?.address
+    ?? address;
+  const coordinator = configuredAgents(children).find((agent) => agent.address === coordinatorAddress);
+  if (!coordinator) throw new Error(`Test Team '${address}' requires a direct configured coordinator.`);
+  return Object.freeze({
+    kind: 'agent_team',
+    address,
+    displayName: address === '/' ? 'Test Team' : address.split('/').filter(Boolean).at(-1) ?? 'team',
+    role: null,
+    description: null,
+    teamDefinitionId: `${address.replace(/[^a-z0-9]+/gi, '-')}-definition`,
+    teamRunId: `${address.replace(/[^a-z0-9]+/gi, '-')}-run`,
+    coordinatorAddress,
+    defaultLaunchConfiguration: launch(coordinator),
+    children: Object.freeze([...children]),
+    taskExecutions: Object.freeze([]),
+    ...overrides,
+  });
+};
 
 export const testAgentContext = (input: {
   runId: string;
@@ -129,14 +142,16 @@ export const testAgentContext = (input: {
   return context;
 };
 
-const launch = (node: TestAgentNode) => ({
+function launch(node: TestAgentNode): AgentLaunchConfigurationDto {
+  return {
   runtime_kind: node.runtimeKind,
   llm_model_identifier: node.llmModelIdentifier,
   llm_config: node.llmConfig,
   auto_execute_tools: node.autoExecuteTools,
   skill_access_mode: node.skillAccessMode,
   workspace_root_path: node.workspaceRootPath,
-});
+  };
+}
 
 const configuredMember = (node: TestTeamNode): ConfiguredMemberExecutionDto => node.kind === 'agent'
   ? {
@@ -149,6 +164,7 @@ const configuredMember = (node: TestTeamNode): ConfiguredMemberExecutionDto => n
       kind: 'configured_team', address: node.address,
       team_definition_id: node.teamDefinitionId, role: node.role, description: node.description,
       team_run_id: node.teamRunId, coordinator_address: node.coordinatorAddress,
+      default_launch_configuration: node.defaultLaunchConfiguration,
       members: node.children.map(configuredMember), task_executions: [...node.taskExecutions],
     };
 
@@ -242,13 +258,19 @@ export const buildTestTeamContext = (input: {
   const taskExecutions = input.taskExecutions
     ? [...input.taskExecutions]
     : tasks.map((task) => executionForTask(task, input.rootChildren));
+  const coordinator = configuredAgents(input.rootChildren)
+    .find((node) => node.address === coordinatorAddress);
+  if (!coordinator) throw new Error(`No configured coordinator exists at '${coordinatorAddress}'.`);
+  const rootLaunch = launch(coordinator);
   const tree: TeamRunExecutionTreeDto = {
-    schema_version: 1, created_at: NOW, archived_at: null,
+    schema_version: 2, created_at: NOW, archived_at: null,
     application_binding: null, handoffs: [],
     root_team: {
+      address: '/',
       team_definition_id: input.teamDefinitionId ?? 'test-team-definition',
       team_definition_name: input.teamDefinitionName ?? 'Test Team',
       team_run_id: teamRunId, coordinator_address: coordinatorAddress,
+      default_launch_configuration: rootLaunch,
       members: input.rootChildren.map(configuredMember), task_executions: taskExecutions,
     },
   };
@@ -256,17 +278,18 @@ export const buildTestTeamContext = (input: {
     workspaceId: 'test-workspace', workspaceRootPath: input.workspaceRootPath,
     displayName: 'test-workspace', kind: 'filesystem' as const,
   } : null;
-  const coordinator = input.rootChildren.flatMap((node): TestAgentNode[] => node.kind === 'agent'
-    ? [node]
-    : node.children.flatMap((child) => child.kind === 'agent' ? [child] : []))
-    .find((node) => node.address === coordinatorAddress);
   const configuration: TeamRunConfig = {
     teamDefinitionId: input.teamDefinitionId ?? 'test-team-definition',
     teamDefinitionName: input.teamDefinitionName ?? 'Test Team',
-    runtimeKind: 'autobyteus', workspaceId: workspaceMetadata?.workspaceId ?? null,
-    workspaceMetadata, llmModelIdentifier: coordinator?.llmModelIdentifier ?? 'test-model',
-    llmConfig: null, autoExecuteTools: true, skillAccessMode: 'NONE',
-    memberOverrides: {}, isLocked: true, ...input.configuration,
+    rootConfig: {
+      runtimeKind: rootLaunch.runtime_kind,
+      workspace: { workspaceId: workspaceMetadata?.workspaceId ?? null, workspaceMetadata },
+      llmModelIdentifier: rootLaunch.llm_model_identifier,
+      llmConfig: rootLaunch.llm_config as Record<string, unknown> | null,
+      autoExecuteTools: rootLaunch.auto_execute_tools,
+      skillAccessMode: rootLaunch.skill_access_mode as TeamRunConfig['rootConfig']['skillAccessMode'],
+    },
+    teamOverrides: {}, agentOverrides: {}, isLocked: true, ...input.configuration,
   };
   const contexts = collectExecutionAgents(tree).map((agent) => {
     const explicit = input.contexts?.find((entry) => entry.agentRunId === agent.agentRunId)?.context;

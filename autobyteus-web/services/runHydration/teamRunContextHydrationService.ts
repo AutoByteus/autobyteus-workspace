@@ -30,6 +30,8 @@ import {
   createTeamConfigurationView,
 } from '~/services/teamExecution/teamExecutionContextFactory';
 import {
+  collectConfiguredAgents,
+  collectConfiguredTeams,
   collectExecutionAgents,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
@@ -126,16 +128,35 @@ const resolveWorkspaces = async (input: {
   ensureWorkspaceByRootPath?: LoadTeamRunContextHydrationInput['ensureWorkspaceByRootPath'];
 }): Promise<ReadonlyMap<AgentTeamAddress, WorkspaceMetadata>> => {
   const result = new Map<AgentTeamAddress, WorkspaceMetadata>();
-  for (const agent of collectExecutionAgents(input.tree).filter((entry) => entry.configured)) {
-    const configured = findConfiguredAgentByAddress(input.tree, agent.address);
-    const rootPath = configured?.launch_configuration.workspace_root_path ?? null;
-    if (!rootPath || result.has(agent.address)) continue;
-    const workspaceId = input.isActive
-      ? await input.ensureWorkspaceByRootPath?.(rootPath) ?? null
-      : null;
-    const existing = await input.resolveWorkspaceMetadataByRootPath(rootPath);
-    const metadata = existing ?? (workspaceId ? createWorkspaceMetadata({ workspaceId, workspaceRootPath: rootPath }) : null);
-    if (metadata) result.set(agent.address, metadata);
+  const placements = [
+    ...collectConfiguredTeams(input.tree).map((team) => ({
+      address: team === input.tree.root_team ? '/' : team.address,
+      rootPath: team.default_launch_configuration.workspace_root_path,
+    })),
+    ...collectConfiguredAgents(input.tree).map((agent) => ({
+      address: agent.address,
+      rootPath: agent.launch_configuration.workspace_root_path,
+    })),
+  ];
+  const byRootPath = new Map<string, Promise<WorkspaceMetadata | null>>();
+  const resolvePath = (rootPath: string): Promise<WorkspaceMetadata | null> => {
+    const existingPromise = byRootPath.get(rootPath);
+    if (existingPromise) return existingPromise;
+    const promise = (async () => {
+      const workspaceId = input.isActive ? await input.ensureWorkspaceByRootPath?.(rootPath) ?? null : null;
+      const existing = await input.resolveWorkspaceMetadataByRootPath(rootPath);
+      return existing ?? (workspaceId ? createWorkspaceMetadata({ workspaceId, workspaceRootPath: rootPath }) : null);
+    })();
+    byRootPath.set(rootPath, promise);
+    return promise;
+  };
+  await Promise.all(placements.map(async ({ address, rootPath }) => {
+    if (!rootPath) return;
+    const metadata = await resolvePath(rootPath);
+    if (metadata) result.set(address, metadata);
+  }));
+  for (const { rootPath } of placements) {
+    if (rootPath && !byRootPath.has(rootPath)) throw new Error(`Workspace '${rootPath}' was not resolved.`);
   }
   return result;
 };

@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { ConfiguredAgentExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { MemoryAvailabilityBuildResult } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
@@ -7,7 +7,7 @@ import { AgentMemoryLocationService } from "./agent-memory-location-service.js";
 import { MemoryRunSummaryBuilder, hasMemoryAvailability } from "./memory-run-summary-builder.js";
 
 export type TeamMemoryMemberTargetRecord = {
-  member: ConfiguredAgentExecution;
+  member: ConfiguredAgentExecutionNode;
   memory: MemoryAvailabilityBuildResult;
 };
 

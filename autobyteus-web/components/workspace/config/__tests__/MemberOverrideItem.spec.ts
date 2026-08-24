@@ -5,9 +5,7 @@ import { nextTick } from 'vue'
 import MemberOverrideItem from '../MemberOverrideItem.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
-import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
-import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness'
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
+import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -158,13 +156,13 @@ describe('MemberOverrideItem', () => {
 
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: [],
+      providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
         llmStore.providersWithModels = rows
-        llmStore.providersWithModelsForSelection = rows
         return rows
       }),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
     }
 
     runtimeAvailabilityStore = {
@@ -237,7 +235,7 @@ describe('MemberOverrideItem', () => {
 
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('claude_agent_sdk')
     expect(wrapper.get('[data-testid="member-override-warning"]').text()).toContain(
-      'Global model gpt-5.4 is unavailable for Claude Agent SDK',
+      'Inherited model gpt-5.4 is unavailable for Claude Agent SDK',
     )
   })
 
@@ -311,6 +309,7 @@ describe('MemberOverrideItem', () => {
     await nextTick()
 
     await wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
+    await flushPromises()
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
@@ -338,6 +337,7 @@ describe('MemberOverrideItem', () => {
     await nextTick()
 
     await wrapper.get('#override-runtime--reviewer').setValue('')
+    await flushPromises()
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
@@ -375,157 +375,6 @@ describe('MemberOverrideItem', () => {
       '/reviewer',
       null,
     ])
-  })
-
-  it('feeds cleaned inherited-global fallback rows into readiness and materialization without stale config', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'codex_app_server',
-          llmModelIdentifier: 'gpt-5.3-codex',
-          llmConfig: { reasoning_effort: 'medium' },
-        },
-      },
-    })
-
-    await nextTick()
-    await nextTick()
-
-    await wrapper.get('#override-runtime--reviewer').setValue('')
-    await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    const cleanedOverride = (events.at(-1)?.[1] ?? null) as MemberConfigOverride | null
-    const memberOverrides: Record<string, MemberConfigOverride> = cleanedOverride
-      ? { '/reviewer': cleanedOverride }
-      : {}
-
-    const readiness = evaluateTeamRunLaunchReadiness(
-      {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'autobyteus',
-        workspaceId: 'ws-1',
-        workspaceMetadata: null,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { thinking_level: 5 },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides,
-        isLocked: false,
-      },
-      {
-        autobyteus: ['gpt-5.4'],
-      },
-    )
-
-    expect(readiness.canLaunch).toBe(true)
-    expect(readiness.blockingIssues).toEqual([])
-
-    expect(
-      buildTeamRunMemberConfigRecords({
-        config: {
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Research Team',
-          runtimeKind: 'autobyteus',
-          workspaceId: 'ws-1',
-          workspaceMetadata: null,
-          llmModelIdentifier: 'gpt-5.4',
-          llmConfig: { thinking_level: 5 },
-          autoExecuteTools: false,
-          skillAccessMode: 'PRELOADED_ONLY',
-          memberOverrides,
-          isLocked: false,
-        },
-        leafMembers: [
-          {
-            displayName: 'Reviewer',
-            address: '/reviewer',
-            agentDefinitionId: 'agent-reviewer',
-          },
-        ],
-      }),
-    ).toEqual([
-      {
-        displayName: 'Reviewer',
-        memberAddress: '/reviewer',
-        agentDefinitionId: 'agent-reviewer',
-        runtimeKind: 'autobyteus',
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { thinking_level: 5 },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        workspaceId: 'ws-1',
-        workspaceMetadata: null,
-        workspaceRootPath: undefined,
-      },
-    ])
-  })
-
-  it('serializes team workspace root path from workspace metadata for launch inputs', () => {
-    const workspaceMetadata = {
-      workspaceId: 'agent_ws_metadata',
-      workspaceRootPath: '/tmp/MetadataTeam',
-      displayName: 'MetadataTeam',
-      kind: 'filesystem' as const,
-    }
-
-    const records = buildTeamRunMemberConfigRecords({
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: workspaceMetadata.workspaceId,
-        workspaceMetadata,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-        isLocked: false,
-      },
-      leafMembers: [
-        {
-          displayName: 'Reviewer',
-          address: '/reviewer',
-          agentDefinitionId: 'agent-reviewer',
-        },
-      ],
-    })
-
-    expect(records[0]).toEqual(expect.objectContaining({
-      workspaceId: workspaceMetadata.workspaceId,
-      workspaceMetadata,
-      workspaceRootPath: '/tmp/MetadataTeam',
-    }))
-  })
-
-  it('blocks filesystem workspace metadata team launch readiness when the root path is missing', () => {
-    const readiness = evaluateTeamRunLaunchReadiness(
-      {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'agent_ws_metadata_only',
-        workspaceMetadata: null,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-        isLocked: false,
-      },
-      {
-        codex_app_server: ['gpt-5.4'],
-      },
-    )
-
-    expect(readiness.canLaunch).toBe(false)
-    expect(readiness.blockingIssues).toContainEqual(expect.objectContaining({
-      code: 'WORKSPACE_REQUIRED',
-      message: 'Workspace root path is required to run a filesystem workspace metadata team.',
-    }))
   })
 
   it('passes missing historical config state into member model config display', async () => {
@@ -640,7 +489,7 @@ describe('MemberOverrideItem', () => {
     wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await nextTick()
     await wrapper.setProps({
-      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+      override: wrapper.emitted('update:override')?.at(-1)?.[1] as AgentConfigOverride,
     })
     await flushPromises()
     await nextTick()
@@ -676,9 +525,10 @@ describe('MemberOverrideItem', () => {
     expect(advancedToggle.attributes('aria-expanded')).toBe('false')
 
     await wrapper.get('#override-runtime--reviewer').setValue('codex_app_server')
+    await flushPromises()
     await nextTick()
     await wrapper.setProps({
-      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+      override: wrapper.emitted('update:override')?.at(-1)?.[1] as AgentConfigOverride,
     })
     await flushPromises()
     await nextTick()

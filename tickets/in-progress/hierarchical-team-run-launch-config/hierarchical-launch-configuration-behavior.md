@@ -2,7 +2,7 @@
 
 ## Status And Authority
 
-`Draft` intended-behavior supplement. It requires approval with `requirements.md`.
+`Approved` intended-behavior supplement. Approved with `requirements.md` by the user on 2026-08-24. The user subsequently completed personal review of the design package and authorized architecture-review handoff.
 
 ## Configuration Subjects
 
@@ -32,6 +32,8 @@ Agent override
 ```
 
 The editable hierarchy stores only explicit intent. Runtime and persistence store complete effective snapshots.
+
+The complete TeamRun default contains runtime, model identifier, model-specific configuration, auto-execute behavior, workspace, and skill-access mode. The workspace hierarchy editor may override every one of those fields except skill-access mode; skill access remains root-authored and inherited because the current launch UI exposes no skill-access control.
 
 ## Example
 
@@ -79,6 +81,8 @@ Each nested-team group displays:
 - Controls display effective parent values.
 - The UI states that the values come from the parent TeamRun.
 - Editing a supported field creates or updates the nested-Team scope override.
+- Supported edits are runtime, model, model-specific configuration, auto-execute behavior, and workspace.
+- Skill-access mode is shown only when needed for read-only clarity; it remains inherited from the root in this ticket.
 
 ### Customized State
 
@@ -86,10 +90,26 @@ Each nested-team group displays:
 - Reset removes the Team-scope override and recomputes from the parent.
 - Agent overrides remain attached to their Agent addresses.
 
+### Loading, Error, And Locked States
+
+- Runtime/model catalog and workspace loading feedback is associated with the canonical Team address whose effective configuration depends on it.
+- Loading preserves stored intent, disables only controls that cannot be used safely, and keeps launch blocked until the effective scope is valid.
+- Catalog or workspace failure is visible at the affected Team scope and offers the normal recovery/retry action; it never substitutes a different value silently.
+- Read-only, locked, and in-flight drafts disable root, nested-Team, reset, and Agent override edits consistently while keeping effective summaries visible.
+- A root-only definition remains the intentional empty hierarchy state: no nested-scope disclosure or placeholder is added.
+
+### Responsive And Accessible Interaction
+
+- Each Team disclosure is keyboard-operable and exposes its expanded/collapsed state.
+- Team name, canonical address, hierarchy level, inherited/customized state, and validation feedback remain textually identifiable and are not communicated by color alone.
+- Validation feedback is associated with the affected Team address and controls.
+- At supported non-mobile widths, indentation or wrapping does not hide scope identity or the reset action. Mobile retains the separate compact root-only behavior described below.
+- This ticket introduces no new permission boundary or permission-specific UI state.
+
 ### Read-Only Historical State
 
-- Current-schema runs show the complete effective default stored for the selected TeamRun.
-- Older runs show that the TeamRun default is unavailable rather than displaying a fabricated inherited value.
+- New-format runs show the complete effective default stored for the selected TeamRun.
+- Migrated older runs show the TeamRun default reconstructed from that Team's persisted direct coordinator launch snapshot.
 - Known Agent launch snapshots remain visible.
 
 ## Topology Changes Before Launch
@@ -97,22 +117,50 @@ Each nested-team group displays:
 - Adding a nested team creates an inherited Team scope by default.
 - Removing a nested team invalidates its team-scope and descendant Agent overrides.
 - Moving/renaming a team changes canonical addresses; old overrides do not silently attach to a different placement.
-- The approved cleanup UX is pending, but launch must never accept unknown-scope overrides.
+- Stale Team/Agent override intent is pruned before launch and the UI displays which canonical addresses were repaired.
+- Launch never accepts an unknown or kind-mismatched scoped subject.
+
+## Nested Definition Defaults
+
+The approved rule is deliberately simple:
+
+- A definition's `defaultLaunchConfig` seeds a draft only when that definition is selected as the root TeamRun.
+- When the same definition is embedded under another Team, its placement inherits the parent TeamRun.
+- An embedded definition never silently replaces parent values and this ticket adds no separate “apply nested definition defaults” action.
+- A user-created nested-Team override is the only editable Team-scope intent below root.
 
 ## Launch Surfaces
 
 | Surface | Minimum Supported Intent | Required Meaning |
 | --- | --- | --- |
 | Workspace TeamRun form | Root + nested Team scopes + Agent overrides | Full hierarchical editing |
-| Application team launch profile | Root-only or full hierarchy, pending scope decision | Must use the same precedence rule |
+| Mobile Team setup | Root only | Nested teams inherit root; compact mobile setup gains no hierarchy editor |
+| Application team launch profile | Root + existing exact Agent runtime/model overrides | Nested teams inherit root; exact Agent overrides still win |
 | External channel team preset | Root-only | All nested teams inherit root |
 | Backend programmatic preset | Root-only | All nested teams inherit root |
 
-## Field-Participation Decision Pending
+All surfaces project through the same backend hierarchy contract so root-only authoring does not mean the runtime forgets Team defaults. Every new configured Team execution stores its complete effective default.
 
-Runtime, model identifier, model-specific config, and auto-execute behavior already support Agent-level variation and are strong candidates for Team-scope inheritance.
+## Field Participation
 
-Workspace and skill-access mode are currently root-wide in frontend authoring even though resolved Agent nodes contain their executable values. Requirements approval must decide whether a nested TeamRun is a complete launch unit for these fields too.
+| Field | Root Workspace Scope | Nested Workspace Scope | Exact Agent Override | Complete Team/Agent Snapshot |
+| --- | --- | --- | --- | --- |
+| Runtime kind | Editable | Inherited or editable | Preserved existing override | Required |
+| Model identifier | Editable | Inherited or editable | Preserved existing override | Required |
+| Model-specific config | Editable | Inherited or editable | Preserved existing override | Required; nullable configuration remains a complete value |
+| Auto-execute tools | Editable | Inherited or editable | Preserved existing override | Required |
+| Workspace | Editable | Inherited or editable | No new workspace-form Agent override | Required |
+| Skill-access mode | Existing root value | Inherited only | No new workspace-form Agent override | Required |
+
+## Historical Schema Transition
+
+- Existing V1 packages are durable user history and are not discarded.
+- A registered startup migration moves them to one new current schema before the TeamRun package catalog and normal readers operate.
+- The migration preserves every known ID, topology, handoff, application binding, task, and per-Agent launch snapshot.
+- For each historical root/configured Team node, it copies that Team's persisted direct coordinator launch snapshot into the reconstructed Team default. The existing schema invariant guarantees a direct coordinator Agent for every configured Team.
+- This is an explicitly accepted historical fallback: it is deterministic and normally matches the former global configuration, but it may reproduce a coordinator-specific override when one existed.
+- New runs write a complete non-missing Team default at every configured Team node.
+- Current runtime and history readers understand only the new schema; coordinator-based reconstruction remains isolated to the V1 migration and is not used for new launches.
 
 ## Dynamic AgentTeam Dependency
 

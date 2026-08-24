@@ -1,8 +1,8 @@
 import type {
-  ConfiguredAgentExecution,
-  ConfiguredMemberExecution,
-  ConfiguredTeamExecution,
-  RootConfiguredTeamExecution,
+  ConfiguredAgentExecutionNode,
+  ConfiguredExecutionNode,
+  ConfiguredTeamExecutionNode,
+  RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
   TaskExecution,
   TaskTeamAgentExecution,
@@ -16,18 +16,18 @@ import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-bin
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
 type TeamWithTasks =
-  | RootConfiguredTeamExecution
-  | ConfiguredTeamExecution
+  | RootConfiguredTeamExecutionNode
+  | ConfiguredTeamExecutionNode
   | TaskTeamNestedTeamExecution
   | Extract<TaskExecution, { teamRunId: string }>;
 
 const mapConfiguredMember = (
-  member: ConfiguredMemberExecution,
+  member: ConfiguredExecutionNode,
   targetTeamRunId: string,
   change: (team: TeamWithTasks) => TeamWithTasks,
-): ConfiguredMemberExecution => {
+): ConfiguredExecutionNode => {
   if (!("teamRunId" in member)) return member;
-  return mapTeam(member, targetTeamRunId, change) as ConfiguredTeamExecution;
+  return mapTeam(member, targetTeamRunId, change) as ConfiguredTeamExecutionNode;
 };
 
 const mapTaskTeamMember = (
@@ -56,7 +56,7 @@ const mapTeam = (
   if (team.teamRunId === targetTeamRunId) return change(team);
   const members = team.members.map((member) =>
     "agentDefinitionId" in member || "role" in member
-      ? mapConfiguredMember(member as ConfiguredMemberExecution, targetTeamRunId, change)
+      ? mapConfiguredMember(member as ConfiguredExecutionNode, targetTeamRunId, change)
       : mapTaskTeamMember(member as TaskTeamMemberExecution, targetTeamRunId, change));
   const taskExecutions = team.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change));
   return { ...team, members, taskExecutions } as TeamWithTasks;
@@ -117,7 +117,7 @@ export const settleTaskExecutionInTree = (input: {
       members: member.members.map(settleMember),
       taskExecutions: member.taskExecutions.map(settleTask),
     };
-  const mapConfigured = (member: ConfiguredMemberExecution): ConfiguredMemberExecution =>
+  const mapConfigured = (member: ConfiguredExecutionNode): ConfiguredExecutionNode =>
     "agentRunId" in member ? member : {
       ...member,
       members: member.members.map(mapConfigured),
@@ -135,7 +135,7 @@ export const settleTaskExecutionInTree = (input: {
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
 };
 
-type AgentExecutionNode = ConfiguredAgentExecution | TaskAgentExecution | TaskTeamAgentExecution;
+type AgentExecutionNode = ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
 
 export type TeamAgentPlatformBindingMutation = Readonly<{
   outcome: "adopted" | "unchanged";
@@ -186,7 +186,7 @@ export const adoptAgentPlatformBindingInTree = (input: {
       members: task.members.map(mapTaskMember),
       taskExecutions: task.taskExecutions.map(mapTask),
     } as TaskTeamExecution;
-  const mapConfigured = (member: ConfiguredMemberExecution): ConfiguredMemberExecution =>
+  const mapConfigured = (member: ConfiguredExecutionNode): ConfiguredExecutionNode =>
     "agentRunId" in member ? mapAgent(member) : {
       ...member,
       members: member.members.map(mapConfigured),

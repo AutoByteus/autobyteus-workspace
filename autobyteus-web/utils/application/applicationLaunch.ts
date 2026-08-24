@@ -18,7 +18,6 @@ import type {
 } from '~/stores/applicationStore'
 import type { useWorkspaceStore } from '~/stores/workspace'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
 
 export type PreparedAgentApplicationLaunch = {
   kind: 'AGENT'
@@ -97,13 +96,4 @@ export const buildPreparedTeamLaunch = (
       getTeamDefinitionById(teamDefinitionId) ?? null,
   }),
   config: cloneTeamConfig(buildTeamRunTemplate(teamDefinition)),
-})
-
-export const buildTeamMemberConfigs = (
-  preparedLaunch: PreparedTeamApplicationLaunch,
-  workspaceRootPath: string | null,
-) => buildTeamRunMemberConfigRecords({
-  config: preparedLaunch.config,
-  leafMembers: preparedLaunch.leafMembers,
-  workspaceRootPath,
 })

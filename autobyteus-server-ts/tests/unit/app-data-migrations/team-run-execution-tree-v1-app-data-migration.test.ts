@@ -6,9 +6,9 @@ import { TeamRunExecutionTreeV1AppDataMigration } from "../../../src/app-data-mi
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import {
-  resetTeamRunV1PackageCatalog,
-  TeamRunV1PackageCatalog,
-} from "../../../src/run-history/services/team-run-v1-package-catalog.js";
+  resetTeamRunPackageCatalog,
+  TeamRunPackageCatalog,
+} from "../../../src/run-history/services/team-run-package-catalog.js";
 
 const disposableDirectories: string[] = [];
 const scenarios = path.resolve(
@@ -41,25 +41,25 @@ const copyCurrentScenario = async (memoryDir: string, scenario: string): Promise
 };
 
 const tokenStore = (overrides: Record<string, unknown> = {}) => ({
-  inspectTeamRunV1Migration: vi.fn(async () => ({
+  inspectRuntimeSchemaAndEvidence: vi.fn(async () => ({
     rows: [],
     rowCount: 0,
     columns: new Set(["id", "usage_event_id", "run_id", "root_team_run_id", "observed_at"]),
     evidenceColumns: new Set<string>(),
     hasCurrentRootIndex: true,
   })),
-  applyTeamRunV1RootUpdates: vi.fn(async () => ({
+  applyResolvedRootUpdates: vi.fn(async () => ({
     kind: "APPLIED" as const,
     updatedRows: 0,
     alreadyCurrent: true,
   })),
-  disconnectTeamRunV1Migration: vi.fn(async () => undefined),
+  disconnect: vi.fn(async () => undefined),
   ...overrides,
 });
 
 afterEach(async () => {
   await Promise.all(disposableDirectories.splice(0).map(async (directory) => {
-    resetTeamRunV1PackageCatalog(path.join(directory, "memory"));
+    resetTeamRunPackageCatalog(path.join(directory, "memory"));
     await fs.rm(directory, { recursive: true, force: true });
   }));
 });
@@ -71,7 +71,7 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     expect(ids).not.toContain("20260801_team_canonical_identity");
   });
 
-  it("keeps unresolved predecessor bytes retryable while admitting an independent valid root", async () => {
+  it("keeps unresolved predecessor bytes retryable while leaving exact V1 roots for the V2 boundary", async () => {
     const { memoryDir, appDataDir } = await createEnvironment();
     const validRoot = await copyCurrentScenario(memoryDir, "case-001-persistent-only");
     const invalidRoot = "root-unresolved";
@@ -94,9 +94,10 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     await expect(fs.readFile(path.join(invalidDirectory, "team_run_metadata.json"), "utf8"))
       .resolves.toBe(predecessorBytes);
 
-    const catalog = new TeamRunV1PackageCatalog(memoryDir);
+    const catalog = new TeamRunPackageCatalog(memoryDir);
     await catalog.rebuild();
-    expect(catalog.listAdmittedRootIds()).toEqual([validRoot]);
+    expect(catalog.listAdmittedRootIds()).toEqual([]);
+    expect(catalog.getDiagnostics().get(validRoot)).toContain("schemaVersion");
     expect(catalog.getDiagnostics().get(invalidRoot)).toContain("pending migration");
   });
 
@@ -135,7 +136,7 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
       malformedHistory,
       "utf8",
     );
-    const applyTeamRunV1RootUpdates = vi.fn(async () => ({
+    const applyResolvedRootUpdates = vi.fn(async () => ({
       kind: "ROLLED_BACK_WARNING" as const,
       rollbackVerified: true,
       message: "Injected token transaction rolled back.",
@@ -144,7 +145,7 @@ describe("TeamRunExecutionTreeV1AppDataMigration", () => {
     const result = await new TeamRunExecutionTreeV1AppDataMigration(
       memoryDir,
       appDataDir,
-      tokenStore({ applyTeamRunV1RootUpdates }),
+      tokenStore({ applyResolvedRootUpdates }),
     ).execute();
 
     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
