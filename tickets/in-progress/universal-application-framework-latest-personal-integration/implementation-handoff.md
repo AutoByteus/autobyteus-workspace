@@ -42,6 +42,7 @@ IR-008 implements the architecture-approved SR-005–SR-007 refresh on the prote
 The integrated source retains Personal's immutable nested `TeamRunPhysicalScope`, history/memory migration, provider-granular dynamic discovery, split credential/catalog state, and snapshot-settled Studio catalog. It also retains the finalized application graph's injected run/session/memory owners, prepared activation, sparse launch semantics, and scoped cleanup. Application model readiness now uses provider-granular availability followed by a fresh exact model lookup for every leaf, and credential readiness is keyed by the adapter-resolved authority. Studio publishes immediate rows, settles background dynamic discovery, and re-reads rows/source status without replacing sparse inherited behavior.
 
 - Implementation cycle: `Rework / reviewed latest-Personal semantic refresh`
+- Implementation source merge commit: `9a9150bea90a94ff43e67c417e5a424fd9dc76ce` (parents: protected checkpoint, exact reviewed Personal)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
 - Current implementation revision ID: `IR-008`
 - Related solution revision IDs: `SR-001`–`SR-007`

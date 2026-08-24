@@ -163,7 +163,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Triggering finding IDs: `AR-004`, `AR-005`, resolved by SR-007; no implementation-local finding.
 - Classification: `Reviewed Semantic Refresh`.
 - Prior authoritative result: `ARCH-REV-007 — Pass` for `SR-007`; protected implementation checkpoint `a23849f165879050e2c9b676a2e9652d8a593c93`.
-- Current authoritative result: `Ready for source review`.
+- Current authoritative result: `Ready for source review` at implementation source merge `9a9150bea90a94ff43e67c417e5a424fd9dc76ce`.
 - Related solution revision IDs: `SR-001`–`SR-007`.
 - Related architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-007`.
 - Related code-review revision IDs: `CRR-001`–`CRR-008` retained as prior source/failure-origin history; no new source-review revision yet.
