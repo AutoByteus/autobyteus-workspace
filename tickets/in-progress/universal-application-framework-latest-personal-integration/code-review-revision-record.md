@@ -19,6 +19,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-006` | `Pass` | `Not Applicable` | None |
 | `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-007` | `Not Applicable` test review; source baseline `Pass / 93` | `Pass / 94` | None |
 | `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-007` | source `Pass / 94`; prior test review `Not Applicable` | `Pass` | None |
+| `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-008` | test review `Pass`; source baseline `Pass / 94` | `Pass / 95` | None |
 
 ## Revision Entries
 
@@ -374,3 +375,35 @@ No proportional test-review finding existed. `API-REV-007` has no current failur
 - Material score or classification changes: none; proportional test review has no implementation scorecard. Result is `Pass`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: delivery still owns the refreshed integrated-state, Electron, documentation, and repository-finalization gates. Mutable provider availability and historical broad-suite debt remain separately characterized rather than current findings.
+
+### CRR-014 — Nested physical-scope and provider-granular Personal integration source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `14`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-008`; no triggering code-review finding.
+- Relevant solution revision IDs: `SR-001`–`SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-007`; current authority `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-001`–`IR-008`
+- Relevant API/E2E revision IDs: retained history `API-REV-001`–`API-REV-007`; IR-008 current execution `N/A`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`
+- Prior authoritative result: immediately prior proportional result `CRR-013 — Pass`; latest implementation-source result `CRR-012 — Pass / 94`
+- Current authoritative result: `Pass / 95`
+- What changed in the review result and why: IR-008 is the exact reviewed two-parent merge of protected checkpoint `a23849f...` and Personal `c5b87df4...`. Independent reproduction confirms the approved five content conflicts and ten changed-both paths. The combined source preserves immutable nested TeamRun physical scope through the exact injected application memory/session/activation/cleanup family, registers the isolated whole-directory historical nested-memory migration in the shared startup runner, consumes Personal's provider-granular model availability with a fresh exact lookup for every leaf, keys credential reuse to resolved authority, and republishes Studio rows/source state after settled discovery. All named retired aggregate/cached owners remain absent, the 1,934-file prototype is exact and isolated, and no fallback, alias, duplicate catalog, global manager, runtime dual read, or package-specific branch was introduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-008` | Standalone lifecycle/tool-readiness ownership remains; AFB and production TypeScript pass. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-008` | Launch reads remain non-mutating and no request-time schema repair was added. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `IR-008` | Read-only event-journal recovery is unaffected and no eager journal write owner was restored. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-008` | Exact bound-member target identity remains; no address/ID alias or fallback was added. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-008` | Exclusive process run ownership remains; no duplicate manager/global passive lookup appears. |
+| `CR-006` | Resolved | Remains resolved | `IR-005`, `CRR-007`, `IR-008` | Canonical application runtime-directory preparation still precedes provider readiness. |
+| `CR-007` | Resolved | Remains resolved | `IR-006`, `CRR-009`, `IR-008` | Exact binding-owned `agentRunId` dispatch remains outside and unaffected by the integrated seam. |
+
+- New or remaining finding IDs: none.
+- Material score or classification changes: the complete IR-008 implementation scores `95/100`, every category is at least `9.0`, and the result is `Pass`. The one-point increase reflects explicit immutable physical scope, provider-granular ownership, and complete semantic cleanup; it does not imply current-head realistic execution.
+- Validation evidence: independent topology/conflict/overlap/prototype/retired-owner/size/diff audits pass; authoritative focused server selection passes 14 files / 89 tests with AFB 15/15 after its declared shared-contract prerequisite; AutoByteus provider/discovery passes 5/19; Studio store/composable/components pass 5/53; server production TypeScript no-emit passes. Generated prerequisite output was removed.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must execute the complete IR-008 current-head realistic matrix, including old-data nested memory migration/restart, two dynamic-provider leaves, current/stale source states, maintained dual-host business flows, route separation, dev loops, package parity, remount, and cleanup. Electron remains delivery-owned. Personal advanced after the exact reviewed merge to `52b4be02e`; delivery owns the final governed refresh and must reroute any new semantic conflict. Near-limit canonical Personal owner files remain monitored pressure rather than speculative refactoring findings.
