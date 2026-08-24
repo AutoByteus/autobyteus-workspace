@@ -2,6 +2,7 @@
 
 ## Status And Decision
 
+- Current status: **Implemented and verified in DR-007**. This file is retained as the historical v1.4.56 provider/physical-scope authority. The current unmerged v1.4.57 delta is governed by `latest-base-refresh-round-4-design-analysis.md` and must not reinterpret the decisions below.
 - Solution revision: `SR-007` (revises SR-006 after `ARCH-REV-006` AR-004/AR-005).
 - Protected ticket checkpoint: `a23849f165879050e2c9b676a2e9652d8a593c93`.
 - Integrated Personal base: `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`.

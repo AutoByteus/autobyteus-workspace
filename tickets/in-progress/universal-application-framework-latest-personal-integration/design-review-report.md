@@ -11,50 +11,58 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-3-design-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-attempt.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-conflict-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/branch-overlap-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-008-base-refresh-and-integration.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-merge-preview.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-conflict-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-overlap-inventory.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-path-inventory.txt`
-  - Previously passed implementation, source-review, API/E2E, proportional test-review, package-parity, and Electron evidence for checkpoint `a23849f165879050e2c9b676a2e9652d8a593c93`, used only as characterization evidence.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-merge-preview.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-conflict-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-overlap-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-path-inventory.txt`
+  - Previously passed implementation, source-review, API/E2E, proportional test-review, package-parity, and Electron evidence for checkpoint `95c63b5a982ba90ccbb8c6345af66a9485fa5a78`, used only as characterization evidence.
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-007`
+- Relevant Solution Revision IDs: `SR-001`–`SR-008`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-007`
-- Current Review Round: 7
-- Trigger: SR-007 corrects AR-004/AR-005 against current Personal and revalidates the still-unmerged target at `c5b87df4d6db15969ba70adee9dfd8394b1e7385`; the post-`3ab4946c7...` movement is isolated prototype/ticket content and does not reopen the production design.
-- Prior Review Round Reviewed: `ARCH-REV-006` / `Fail — Design Impact`
-- Latest Authoritative Round: `ARCH-REV-007`
-- Current-State Evidence Basis: protected checkpoint `a23849f165879050e2c9b676a2e9652d8a593c93`; integrated Personal base `7edfb162559ec5a6eb4c00c23a929920eabe3dc1`; freshly fetched `origin/personal@c5b87df4d6db15969ba70adee9dfd8394b1e7385`; direct reads of checkpoint application readiness/validator/composable code and current Personal `ModelAvailabilityService`, `ModelCatalogService`, provider service, Pinia catalog store, and model identity code; independent confirmation of five conflicts, ten changed-both paths, 2,194 prior-target-to-current paths, unchanged root workspace membership, no production import from the 1,934-file isolated prototype subtree, a clean index, and zero production-source diff.
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: 8
+- Trigger: delivery refresh `DR-008` found Personal v1.4.57's controlled workspace-selection change intersects the verified checkpoint in exactly two durable form tests; SR-008 defines the bounded semantic test resolution while accepting the clean production auto-merge.
+- Prior Review Round Reviewed: `ARCH-REV-007` / `Pass`
+- Latest Authoritative Round: `ARCH-REV-008`
+- Current-State Evidence Basis: protected checkpoint `95c63b5a982ba90ccbb8c6345af66a9485fa5a78`; integrated Personal base `52b4be02ea793f2071fe5a63a94664ab25196433`; freshly fetched `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb`; direct reads of Personal's `WorkspaceSelectionState`, `WorkspaceSelector`, Agent/Team forms and `RunConfigPanel`, the checkpoint provider form/composable fixtures, and the conflicted three-way test versions; independent confirmation of 95 Personal paths, two conflicts, two changed-both paths, a clean index, zero production-source diff, and the merge preview tree `84a9aa60ad8170282eb7613ae211a0e6cfb2b4c4`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: incorporate Personal v1.4.56 while preserving the verified dual-host graph, SR-005 physical-scope/migration contract, sparse application launch semantics, and Personal's process-owned provider/catalog/credential lifecycle.
-- Relevant existing behavior and evidence confirmed: the checkpoint owns application launch/readiness and graph-local execution; Personal owns provider descriptors, provider-granularity dynamic catalog lifecycle, exact post-discovery model membership, credential rows, GraphQL/Pinia snapshots, and settled per-provider discovery outcomes.
-- Scope guardrail confirmed: UC-001–UC-015, BEH-001–BEH-009, stated exclusions, the domain-specific persisted-data matrix, and the re-fetch/stop rule are explicit.
-- Approved change, preserved behavior, and outside scope understood: SR-007 adapts existing application policy/validator/credential-adapter/composable owners only. It may not add a catalog, endpoint-local lifecycle, eager all-provider startup discovery, compatibility API, prototype coupling, or second migration path.
-- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `N/A`; no new blocking finding remains. Prior AR-004/AR-005 were grounded in BEH-009, REQ-010, UC-014–UC-015, and AC-022–AC-024 and are resolved by SR-007.
+- Approved requirements / intended behavior understood: incorporate Personal v1.4.57 while preserving the verified dual-host graph and all SR-007 application, provider, physical-scope, migration, and cleanup behavior, and adopt Personal's controlled Studio workspace selection.
+- Relevant existing behavior and evidence confirmed: `RunConfigPanel` owns transient workspace intent and registration-before-launch; `WorkspaceSelector` and the Agent/Team forms are controlled relays; the provider store/composable independently owns callable provider rows, snapshots, and settled dynamic discovery.
+- Scope guardrail confirmed: UC-001–UC-016, BEH-001–BEH-010, REQ-001–REQ-011, AC-001–AC-029, stated exclusions, the domain-specific persisted-data matrix, and the re-fetch/stop rule are explicit.
+- Approved change, preserved behavior, and outside scope understood: SR-008 accepts Personal's clean production/type auto-merge and semantically combines exactly two form-test fixtures. It may not introduce a second workspace owner, workspace-to-provider coupling, a fallback launch, retired partial events, a compatibility path, or a migration for transient state.
+- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `N/A`; no new blocking finding remains. Prior AR-001–AR-005 remain resolved, and the v1.4.57 junction is completely specified by BEH-010, REQ-011, UC-016, AC-026–AC-029, and DS-017.
 - Remaining material ambiguity, if any: none at architecture-design level; integrated-source and environment proof remains downstream.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | Pass | Pass — exact checkpoint, v1.4.56 target, ancestry, divergence, preview, and clean-index evidence are present | Pass — one semantic refresh merge with a re-fetch/stop guard | Confirmed | Re-fetch immediately before implementation. |
-| BEH-002 | User | Pass | Pass — maintained application commands and verified same-package/two-host behavior remain the approved baseline | Pass — SR-005 does not change devkit or package ownership | Confirmed | Re-prove package parity on the refreshed commit. |
+| BEH-001 | Operational | Pass | Pass — exact checkpoint, integrated base, v1.4.57 target, divergence, preview, and clean-index evidence are present | Pass — one bounded refresh merge with a re-fetch/stop guard | Confirmed | Re-fetch immediately before implementation. |
+| BEH-002 | User | Pass | Pass — maintained application commands and verified same-package/two-host behavior remain the approved baseline | Pass — SR-008 changes no devkit, package, or host ownership | Confirmed | Re-prove package parity on the refreshed commit. |
 | BEH-003 | System | Pass | Pass — current activation, rooted identity, scoped sessions/publication, and cleanup are source-backed | Pass — the target preserves the exact recursively injected application family | Confirmed | Retain application dependency identity assertions. |
 | BEH-004 | User/Contract | Pass | Pass — package defaults, sparse Save/Reset, readiness, and direct-run validation were already integrated and verified | Pass — values/provenance remain immutable while the provider dependency contract evolves | Confirmed | Preserve sparse/no-rewrite behavior. |
-| BEH-005 | Operational | Pass | Pass — review-time merge-tree proof confirms five conflicts and ten changed-both paths | Pass — all ten have owner-based dispositions | Confirmed | Do not resolve by whole-file selection. |
-| BEH-006 | Contract | Pass | Pass — checkpoint and newest-Personal results characterize separate states, not their combination | Pass — focused physical-scope/migration/activation proof plus full dual-host/Electron proof is mandatory | Confirmed | Execute the complete matrix downstream. |
+| BEH-005 | Operational | Pass | Pass — review-time merge-tree proof confirms exactly two conflicts and two changed-both paths, both form tests | Pass — both require one owner-based combined resolution | Confirmed | Do not resolve either test by whole-file selection. |
+| BEH-006 | Contract | Pass | Pass — checkpoint and v1.4.57 results characterize separate states, not their combination | Pass — focused workspace/provider proof plus retained full dual-host/Electron proof is mandatory | Confirmed | Execute the complete matrix downstream. |
 | BEH-007 | User/Contract | Pass | Pass — current safe provider and closed application error contracts remain implemented at the checkpoint | Pass — the post-`3ab` prototype/ticket delta does not intersect those boundaries | Confirmed | Preserve current tests and contract shape. |
 | BEH-008 | System/Operational | Pass | Pass — supported nested configured/task execution, restore, host upgrade, current scope source, and migration source establish the path | Pass — containing-TeamRun scope and graph-local collaborators meet only at the leaf; historical layout stays inside shared migration | Confirmed | Implement DS-013/DS-014 and re-prove restart, cleanup, and migration. |
 | BEH-009 | User/Contract | Pass | Pass — package/saved/direct model selection and Studio runtime-scoped editing are supported; Personal source establishes provider-granularity ensure and snapshot-settled failure | Pass — selected-provider ensure, exact post-check, fresh per-leaf `ModelInfo`, credential-authority equivalence, and post-settlement Studio refresh are explicit | Confirmed | Execute AC-022–AC-025 on the integrated commit. |
+| BEH-010 | User/System | Pass | Pass — Studio Agent/Team drafts support explicit New workspace selection, unrelated edits, delayed discovery, registration, and launch failure | Pass — one panel-owned complete state relays through controlled children while provider rows/snapshots/settlement remain independent | Confirmed | Execute AC-026–AC-029 on the integrated commit. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -64,18 +72,19 @@
 | `integration-runtime-contracts.md` | Pass | Pass | Pass | Pass | Pass | Preserve exact application injection obligations. |
 | `latest-base-refresh-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | Retain as implemented SR-004 authority. |
 | `latest-base-refresh-round-2-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | Use as the normative SR-005 delta. |
-| `latest-base-refresh-round-3-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | Current SR-007 normative supplement; implement and prove exactly. |
+| `latest-base-refresh-round-3-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | Retain as implemented SR-007 authority. |
+| `latest-base-refresh-round-4-design-analysis.md` | Pass | Pass | Pass | Pass | Pass | Current SR-008 normative supplement; implement and prove exactly. |
 | Merge/overlap/path inventories and logs | Pass | Pass | Pass | Pass | Pass | Reconfirm target ref before merge. |
-| DR-004/DR-006 and round-3 evidence inventories | Pass | Pass | Pass | Pass | Pass | Preserve and re-confirm target before merge. |
+| DR-004/DR-006/DR-008 and round-3/round-4 evidence inventories | Pass | Pass | Pass | Pass | Pass | Preserve and re-confirm target before merge. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements classify SR-007 as a bounded provider/application integration over a large cumulative merge. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Evolved provider ownership and deleted aggregate APIs require adaptation at existing policy/adapter/composable seams. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | A bounded adaptation is required; a parallel application catalog and broad provider refactor are rejected. | None. |
-| Refactor decision is supported by concrete design or residual-risk rationale | Pass | Existing process provider owners remain authoritative; bounded application policy/validator/adapter/composable adaptations close the exact changed contracts without a parallel catalog or lifecycle. | None. |
+| Assessment is present for the current task posture | Pass | Requirements classify SR-008 as a bounded two-test integration over the verified SR-007 production architecture. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Two durable tests independently evolved at the controlled-workspace/provider-fixture junction; production ownership itself auto-merges coherently. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | No production refactor is justified; combine the two fixture contracts and retain existing owners. | None. |
+| Refactor decision is supported by concrete design or residual-risk rationale | Pass | Direct source and merge-tree evidence shows one panel owner, controlled relays, and a separate provider owner; adding a service or compatibility seam would duplicate authority. | None. |
 
 ## Spine Inventory Verdict
 
@@ -86,6 +95,7 @@
 | DS-014 | Both-host startup through migration classification, transformation/status, dependent migrations, and readiness | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-015 | Static/dynamic selection through process availability, exact model, credential readiness, and launch outcome | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-016 | Studio stored/inherited runtime through immediate snapshots and asynchronous dynamic settlement | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-017 | Controlled Studio workspace selection, registration-before-launch, failure preservation, and independent provider settlement | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
@@ -98,6 +108,8 @@
 | Personal model availability/catalog lifecycle | Pass | Pass | Pass | Pass | Canonical identifiers delegate to provider-granularity ensure and Personal retains the exact identifier/endpoint post-check. |
 | Application launch host validator | Pass | Pass | Pass | Pass | Deterministic leaves use policy/ensure -> fresh exact model read -> credential authority; `modelsByRuntime` is removed. |
 | Pinia provider snapshot store/composable | Pass | Pass | Pass | Pass | Normal provider failures remain store-owned `ERROR`/`STALE_ERROR`; the composable re-reads after settlement and keeps aggregate catch defensive. |
+| `RunConfigPanel` workspace owner | Pass | Pass | Pass | Pass | Owns the complete transient selection, context reset, registration-before-launch, canonical workspace handoff, and visible failure state. |
+| `WorkspaceSelector` and Agent/Team form relays | Pass | Pass | Pass | Pass | Controlled children receive and emit complete values; they neither copy workspace state nor own launch/provider policy. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -110,6 +122,8 @@
 | Application policy -> Personal model availability | Pass | Pass | Pass | Pass | Policy delegates only canonical dynamic selection to the provider-granularity process owner; no application lifecycle is introduced. |
 | Host validator -> model catalog/credential adapter | Pass | Pass | Pass | Pass | Each leaf receives a fresh exact `ModelInfo`; credential reuse is keyed only by adapter-resolved equivalent authority. |
 | Studio composable -> Pinia catalog store | Pass | Pass | Pass | Pass | Store snapshots remain authoritative and are re-read after settled provider attempts. |
+| `RunConfigPanel` -> forms -> controlled selector | Pass | Pass | Pass | Pass | Workspace state flows down and complete replacement events flow up; partial events and local copies are forbidden. |
+| Agent/Team forms -> runtime/model fields -> provider composable/store | Pass | Pass | Pass | Pass | Provider state remains a sibling concern; workspace edits cannot own or reset provider discovery. |
 
 ## Interface Boundary Verdict
 
@@ -123,6 +137,7 @@
 | `ModelAvailabilityService.ensureModelAvailable` | Pass | Pass | Pass | Medium | Pass |
 | `ApplicationCurrentModelSelectionPolicy.requireCurrentSelection` result | Pass | Pass | Pass | Low | Pass |
 | `ensureMissingDynamicProviders` / snapshot getter | Pass | Pass | Pass | Low | Pass |
+| `WorkspaceSelectionState` / `update:workspaceSelection` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -134,6 +149,7 @@
 | Nested product coverage | Pass | Pass | N/A | Pass | Reuse nested suites plus exact application-boundary proof; no test-only package. |
 | Dynamic model availability | Pass | Pass | N/A | Pass | Reuses Personal provider-granularity ensure plus exact registration/endpoint post-check. |
 | Studio provider discovery status | Pass | Pass | N/A | Pass | Reuses Pinia source status and settled aggregation; the composable owns only application runtime precedence and refresh. |
+| Studio workspace selection and registration | Pass | Pass | N/A | Pass | Reuses the existing panel, selector, forms, workspace store, and history projection; only one tight transient type is added. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -146,6 +162,7 @@
 | Run-history/web navigation | Pass | Pass | Pass | Pass | Personal changes remain under existing owners. |
 | Provider/model management | Pass | Pass | Pass | Pass | Personal remains the singular provider/catalog/credential authority. |
 | Application launch readiness | Pass | Pass | Pass | Pass | Existing policy/validator/adapter owners now have exact per-leaf handoff and equivalence semantics. |
+| Studio workspace configuration | Pass | Pass | Pass | Pass | Panel owns workspace intent/registration; controlled presentation and provider/model controls remain separate. |
 
 ## Reusable Owned Structures Verdict
 
@@ -155,6 +172,7 @@
 | Application graph-local collaborator family | Pass | N/A | Pass | Pass | Existing recursive construction remains; no generic container. |
 | Historical layout classification | Pass | Pass | Pass | Pass | Remains migration-local instead of entering runtime. |
 | Exact selected-model resolution | Pass | N/A | Pass | Pass | Existing validator owns the ordered fresh per-leaf lookup; no shared cache structure is extracted. |
+| Controlled workspace selection | Pass | Pass | Pass | Pass | One `WorkspaceSelectionState` is the justified shared value across panel/forms/selector; no generic form-state bag is introduced. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -165,6 +183,7 @@
 | Migration dispositions/status | Pass | Pass | Pass | Pass | Pass | Explicit outcomes preserve truth without runtime legacy fields. |
 | Provider source/status snapshot | Pass | Pass | Pass | Pass | Pass | Personal snapshot fields retain one meaning; application UI consumes rather than reproduces them. |
 | Application resolved model | Pass | Pass | Pass | Pass | Pass | One exact fresh `ModelInfo` is local to each leaf and is passed directly into credential-authority resolution. |
+| `WorkspaceSelectionState` | Pass | Pass | Pass | Pass | Pass | Mode, existing ID, and New path have one transient UI meaning; inactive buffers preserve deliberate user intent without becoming persistence. |
 
 ## File Responsibility Mapping Verdict
 
@@ -178,6 +197,9 @@
 | `application-current-model-selection-policy.ts` | Pass | Pass | Pass | Pass | Static/dynamic classification and safe selection outcomes only; provider lifecycle stays external. |
 | `application-launch-host-capability-validator.ts` | Pass | Pass | Pass | Pass | Ordered leaf validation, fresh exact lookup, issue mapping, and authority-key reuse are cohesive. |
 | `useRuntimeScopedModelSelection.ts` | Pass | Pass | Pass | Pass | Sparse runtime precedence and post-settlement refresh stay separate from provider lifecycle. |
+| `RunConfigPanel.vue` | Pass | Pass | Pass | Pass | Sole transient workspace owner and registration-before-launch coordinator. |
+| `WorkspaceSelector.vue` / Agent and Team form files | Pass | Pass | Pass | Pass | Controlled rendering and complete-state relay remain separate from workspace/provider ownership. |
+| Agent and Team form test conflicts | Pass | Pass | N/A | Pass | Target fixtures retain both controlled workspace props/events and callable provider rows/snapshots/settlement. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -190,6 +212,7 @@
 | `llm-management/services` process owners | Pass | Pass | Low | Pass | Existing placement is correct; contract descriptions need alignment. |
 | Application launch-configuration policy/validator files | Pass | Pass | Low | Pass | Current capability area owns selection/readiness adaptation. |
 | Shared Studio model-selection composable | Pass | Pass | Low | Pass | Application editor semantics stay at the UI adapter while Pinia owns provider state. |
+| `types/workspace/WorkspaceSelectionState.ts` and workspace configuration components | Pass | Pass | Low | Pass | Tight type placement and controlled UI placement match current owners. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -202,6 +225,7 @@
 | Maintained test-only nested package | Pass | N/A | Pass | Pass | Explicitly excluded as unsupported product scope. |
 | Deleted aggregate/cached provider owners | Pass | Pass | Pass | Pass | Personal's current process owners replace them; no alias is allowed. |
 | Application-local catalog/eager all-provider startup discovery | Pass | Pass | Pass | Pass | Explicitly rejected. |
+| Retired partial workspace props/events and local form copies | Pass | Pass | Pass | Pass | Replaced cleanly by the complete controlled value; no alias or dual path is retained. |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -211,6 +235,7 @@
 | Historical flat nested directories | No runtime compatibility | Pass | Pass | Historical knowledge exists only in migration. |
 | Application dependency defaults | No on application paths | Pass | Pass | Named process-only defaults remain outside application construction. |
 | Retired aggregate provider APIs | No | Pass | Pass | Deleted APIs stay deleted; findings do not require a compatibility facade. |
+| Retired partial workspace selector contract | No | Pass | Pass | `workspaceId`/`initialPath` and partial selector events remain absent from the replaced seam. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
@@ -222,18 +247,20 @@
 | Fresh/current nested, direct-root, standalone Agent memory | Not Affected | Pass | Pass | N/A | Pass | Canonical paths remain direct. |
 | Provider credential/custom-provider rows and saved model identifiers | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Personal changes service/catalog projections and process memory, not stored schema. |
 | Dynamic catalog/source status | Not Persisted / Not Affected | Pass | Pass | N/A | Pass | Reconstructed process state; no application persistence or seeding is justified. |
+| Workspace registry, saved Agent/Team configuration, and run history | Directly Usable — No Migration | Pass | Pass | N/A | Pass | `WorkspaceSelectionState` is transient; successful registration continues through existing stores and launch/history owners. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
 | Re-fetch and semantic merge | Pass | Pass | Pass | Pass |
-| Five conflict resolutions | Pass | Pass | Pass | Pass |
-| Five additional marker-free overlap audits | Pass | N/A | Pass | Pass |
+| Two form-test conflict resolutions | Pass | Pass | Pass | Pass |
+| Clean production/type auto-merge review | Pass | N/A | Pass | Pass |
 | Migration registration/current runtime transition | Pass | N/A | Pass | Pass |
 | Focused then complete verification/Electron rebuild | Pass | N/A | Pass | Pass |
 | Provider/application policy integration | Pass | Pass | Pass | Pass |
 | Studio snapshot/dynamic settlement integration | Pass | Pass | Pass | Pass |
+| Controlled workspace/provider fixture integration | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
@@ -246,6 +273,8 @@
 | Provider discovery scope | Yes | Pass | Pass | Pass | The provider-granularity examples name Ollama/LM Studio host enumeration, AutoByteus kind/host breadth, custom-provider scope, and exact post-check. |
 | Multi-leaf dynamic readiness | Yes | Pass | Pass | Pass | The A/B order is explicit: ensure A, fresh A, credential A, ensure B, fresh B, credential B. |
 | Studio discovery failure | Yes | Pass | Pass | Pass | Normal provider failure is shown as settled snapshot state; unexpected aggregate rejection is defensive only. |
+| Explicit New workspace across unrelated edits/delayed discovery | Yes | Pass | Pass | Pass | Complete state remains visible and unchanged while provider/workspace discovery settles. |
+| Workspace registration failure | Yes | Pass | Pass | Pass | The displayed New/path remains; no Agent/Team launch or stale Existing/Temp fallback occurs. |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -345,17 +374,41 @@
 - Reachability: `Reachable` for the provider failure; `Not Reachable` for that normal failure arriving through the proposed aggregate rejected-promise branch.
 - Review consequence / proportionate response: SR-007 refreshes after settlement, consumes/preserves Personal snapshot status/rows, and labels aggregate rejection handling defensive only; the premise is resolved.
 
+### MP-ARCH-008-001 — Supported Studio editing preserves an explicit New workspace across unrelated edits and delayed discovery
+
+- Related approved requirement or established contract: REQ-011; AC-027–AC-028.
+- Relevant behavior ID(s): BEH-010.
+- Initiating basis kind: `User` / `System`.
+- Independent product-supported initiating trigger or applicable governing contract: in the Studio Agent or Team launch form, a user selects New, enters a path, changes runtime/model/member fields, or waits while workspace/provider discovery settles.
+- Support evidence: the exposed Studio Run configuration surface, Personal v1.4.57 component behavior/tests, checkpoint provider-form behavior, and the two conflicted test versions.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Studio draft -> `RunConfigPanel.workspaceSelection` -> Agent/Team form -> controlled `WorkspaceSelector` -> complete replacement event -> panel state, while runtime/model fields independently invoke the provider composable/store.
+- Lifecycle preconditions and material consequence at the claimed point: the draft remains mounted for the same configuration context; split/local workspace state can reset the visible mode/path and cause launch to differ from what the user sees.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: retain one panel-owned complete state and thin controlled relays; no new service or cross-coupling to provider settlement is justified.
+
+### MP-ARCH-008-002 — Supported New-workspace launch failure must not fall back to stale workspace state
+
+- Related approved requirement or established contract: REQ-011; AC-028.
+- Relevant behavior ID(s): BEH-010.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger or applicable governing contract: a Studio user clicks Run with an invalid or unavailable New remote workspace path.
+- Support evidence: the existing Run configuration launch action, Personal v1.4.57 registration-before-launch implementation/tests, and the current workspace store contract.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Run -> panel resolves the visible New selection -> `workspaceStore` registration -> registration failure -> visible error with the same complete selection -> no Agent/Team launch call.
+- Lifecycle preconditions and material consequence at the claimed point: the explicit New selection is current and registration has not produced a canonical workspace; launching with an older Existing/Temp value would execute in an unintended location.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: preserve the displayed selection, emit the error, and launch nothing; a fallback or compatibility path is expressly unjustified.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| None | SR-007 is aligned with current Personal provider/snapshot behavior and closes fresh multi-leaf model resolution. | Proceed through implementation and integrated proof. | Closed |
+| None | SR-008 aligns the controlled workspace and provider fixture contracts without changing production ownership. | Proceed through the bounded integration and combined proof. | Closed |
 
 ## Review Decision
 
 `Pass`
 
-SR-007 is architecture-ready. It preserves the passed dual-host, graph-local execution, sparse override, physical-scope/migration, and current Personal provider ownership while making the integration contract source-truthful: provider-granularity ensure remains process-owned, every application leaf receives a fresh exact `ModelInfo`, credential reuse follows an adapter-owned authority identity, and Studio consumes settled Pinia source state. The isolated prototype remains outside the root workspace and production dependency graph.
+SR-008 is architecture-ready. It preserves the passed dual-host, graph-local execution, sparse override, physical-scope/migration, provider, and cleanup architecture while adopting Personal v1.4.57's one-owner controlled workspace flow. The exact two-test resolution retains both complete workspace relay and the current provider-granular callable fixture; no production refactor, compatibility path, fallback, or data migration is introduced.
 
 ## Findings
 
@@ -363,8 +416,8 @@ None.
 
 ### Prior Finding Resolution
 
-- **AR-004 — Resolved:** requirements, DS-015/DS-016, runtime contracts, the SR-007 supplement, file responsibilities, and proof now use identifier -> provider ID -> provider-granularity ensure -> exact identifier/endpoint post-check. Studio re-reads rows/source status after `Promise.allSettled`; normal failure is `ERROR`/`STALE_ERROR`, and aggregate catch is defensive only.
-- **AR-005 — Resolved:** `ApplicationLaunchHostCapabilityValidator` removes `modelsByRuntime` and enforces policy/ensure -> fresh exact model read -> adapter-resolved credential authority for every deterministic leaf. Credential reuse uses collision-safe typed authority keys, and two-leaf/two-provider plus pre-upsert/pre-allocation proof is mandatory.
+- **AR-001–AR-003 — Remain resolved:** SR-008 changes no required-tool readiness, activation/provisioning, graph-local dependency, or sparse persisted launch contract.
+- **AR-004–AR-005 — Remain resolved:** SR-008 changes no provider-granularity discovery, settled snapshot semantics, per-leaf exact model resolution, or credential-authority behavior.
 
 ## Classification
 
@@ -376,9 +429,9 @@ None.
 
 ## Residual Risks
 
-- `origin/personal` may advance again. Implementation must re-fetch immediately before merging and stop if it no longer equals `c5b87df4d6db15969ba70adee9dfd8394b1e7385`.
-- Checkpoint and Personal reports characterize separate states. Provider/catalog/credential/UI tests, five-conflict/ten-overlap proof, physical-scope/migration proof, application gates, real Studio/standalone journeys, package parity, recovery/cleanup, and a fresh Electron build remain mandatory on one integrated commit.
-- The 1,934-file prototype subtree is accepted only as byte-identical Personal-owned, non-workspace content. Root workspace membership and absence of production imports must be rechecked after the merge.
+- `origin/personal` may advance again. Implementation must re-fetch immediately before merging and stop if it no longer equals `389748b0b9f0dea051aaed18641de131cf0adbbb`.
+- Checkpoint and Personal reports characterize separate states. The two form fixtures, four focused workspace suites, provider/composable checks, real Studio workspace journey, retained architecture/dual-host/package-parity/recovery/cleanup checks, and a fresh Electron v1.4.57 build remain mandatory on one integrated commit.
+- The clean production/type auto-merge is reviewed design input, not integrated proof. Implementation must inspect the merged tree, resolve only the two named tests semantically, and reject merge markers, partial workspace contracts, or weakened provider fixtures.
 - Under the approved migration contract, a capability-scoped migration failure is reported and manually retryable rather than a new fatal process gate. Affected historical nested memory can remain unavailable until successful retry; downstream evidence must report this truthfully.
 - The approved Memory Sync v1 conflict case preserves both physical directories with a warning. Automatic merge/deletion and a current-runtime dual read remain out of scope.
 
@@ -386,4 +439,4 @@ None.
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `ARCH-REV-007` supersedes `ARCH-REV-006` for SR-007. AR-001–AR-005 are resolved; the SR-005 physical-scope/migration design remains accepted; implementation may proceed only against exact reviewed Personal ref `c5b87df4d6db15969ba70adee9dfd8394b1e7385` after the mandatory re-fetch guard.
+- Notes: `ARCH-REV-008` supersedes `ARCH-REV-007` for SR-008. AR-001–AR-005 remain resolved; the verified SR-007 production architecture remains accepted; implementation may proceed only against exact reviewed Personal ref `389748b0b9f0dea051aaed18641de131cf0adbbb` after the mandatory re-fetch guard.

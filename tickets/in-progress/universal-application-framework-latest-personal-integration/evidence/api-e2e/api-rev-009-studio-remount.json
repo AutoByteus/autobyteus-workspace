@@ -1,0 +1,15 @@
+{
+  "scenario": "API-REV-009-STUDIO-EXPLICIT-REMOUNT",
+  "at": "2026-08-24T11:27:25.504Z",
+  "action": "visible immersive menu Reload application",
+  "beforeDocumentTimeOrigin": 1787570841625.4,
+  "samples": [
+    {
+      "sec": 2,
+      "time": 1787570843490.3,
+      "state": true
+    }
+  ],
+  "documentRecreated": true,
+  "stateRetained": true
+}

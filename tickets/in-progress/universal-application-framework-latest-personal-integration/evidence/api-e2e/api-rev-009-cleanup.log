@@ -1,0 +1,56 @@
+utc=2026-08-24T11:32:41Z
+owned_ports:
+3049=free
+8049=free
+43301=free
+43302=free
+ordinary_29695=preserved
+owned_temp_remaining=0
+app_runtime_roots_remaining=0
+generated_untracked_status:
+api_owned_status:
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-adjacent-web.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-agent-package-import.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-brief-dev-standalone.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-brief-dev-studio.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-brief-standalone.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-brief-studio-real.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-brief-studio-real.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-cleanup.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-environment.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-focused-web.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-package-parity.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-postwatch-hashes.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-prewatch-hashes.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-retained-server.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-route-separation.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-secret-import.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-secret-scan.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-dev-standalone.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-dev-studio.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-standalone-real.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-standalone-real.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-standalone.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-studio-real.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-socratic-studio-real.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-standalone-both-hosts.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-standalone-restart-recovery.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-backend.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-init.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-remount.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-restart-recovery.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-restart.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-studio-web.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-system-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-topology.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-web-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-agent-projection.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-agent-real.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-agent-real.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-agent.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-agent.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-failure.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-failure.png
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-team-real.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-009-workspace-team-real.png

@@ -711,3 +711,92 @@ This section supersedes the round-four planning status above.
 - Final confidence: **98%**, with every category at least 96% and every critical current acceptance surface directly proven.
 - Broader validation: **Required; executed; Pass**.
 - Current failure IDs: **None**. Historical `APIE2E-REPO-005` remains separate/Unclear. Current Electron build/package validation and the later final-base refresh remain downstream delivery-owned.
+
+## API-REV-009 IR-009 Controlled-Workspace Investigation
+
+- Trigger: `/code_reviewer` `CRR-016` Pass / 95 for `IR-009`; reviewer HEAD `f389358e70054a9e249dd0f06623c1c154c130a5`, reviewed implementation artifact `8a7955e9455eadc1be689aa4802384381f2107d8`, semantic merge `53dd98b53490947ed96d4dda9fb45d9c80719740`.
+- Governing revisions: `SR-008`, `ARCH-REV-008`, `IR-009`, `CRR-016`, delivery re-entry `DR-008`.
+- Current-round rule: `API-REV-008` is protected-checkpoint characterization only. IR-009 changes Studio's supported Agent/Team workspace selection and launch path, so current-head browser and launch/history proof is mandatory even though application/server owners are otherwise retained.
+- Electron packaging remains downstream delivery-owned.
+
+### Changed Runtime Surfaces And Boundaries
+
+1. **Studio transient form ownership:** one panel-owned `WorkspaceSelectionState` must survive Agent/Team runtime, model, member and unrelated edits; forms relay complete replacements and `WorkspaceSelector` must not own a second state copy.
+2. **Delayed discovery:** an explicit `New` choice and raw path must survive late workspace catalog resolution.
+3. **Registration-before-launch:** accepted `New` launch trims and registers the path once on the bound node, replaces the draft with the canonical workspace, launches exactly once, and correlates into current run history.
+4. **Failure/no-fallback:** invalid or unavailable `New` registration must keep the same visible mode/path and error, invoke zero Agent/Team launch, and never fall back to dormant Existing/Temp state.
+5. **Provider/form composition:** runtime-keyed provider rows, snapshots and asynchronous dynamic-provider settlement stay callable and independent of workspace intent.
+6. **Retained system:** both maintained application hosts, real publication/handoff/projection, provider state, restart/remount, route separation, watcher/package parity and cleanup must remain coherent.
+7. **Persisted data:** `Directly Usable — No Migration`; existing workspace registry/run-history rows remain current, and the new selection object is frontend-transient only.
+
+### Authoritative Instructions And Environment
+
+- Root and `autobyteus-web/package.json` scripts remain authoritative. Focused web tests run with `NUXT_TEST=true`; Nuxt production build is `pnpm -C autobyteus-web build`.
+- Current maintained app instructions remain in `applications/brief-studio/README.md` and `applications/socratic-math-teacher/README.md`; use native `build`, `validate`, `dev` and `dev:studio` commands.
+- Real Studio validation will use installed Chrome, an isolated server/web pair, marked `/private/tmp/api-rev009-*` data/workspace roots, a supported bound local node/workspace registration path, and the existing authenticated Codex executable. The ordinary app/data will not be reused or stopped.
+- nuxi typecheck is already independently toolchain-blocked before project diagnostics by `vue-tsc` resolving TypeScript's non-exported `./lib/tsc` subpath. It is not treated as current source failure evidence; production build and direct test/build checks remain authoritative.
+
+### Durable Coverage Inventory And Validity
+
+| Durable path / group | Decision | Rationale / execution action |
+| --- | --- | --- |
+| `WorkspaceSelector.spec.ts` | **Still Valid; critical** | controlled complete-value rendering/emission, delayed discovery, Temp proposal, browse, disabled/error and no hidden preload |
+| `RunConfigPanel.spec.ts` | **Still Valid; critical** | explicit New persistence, register-before-launch, exact once launch, failure/no-fallback, selected-run read-only and reset behavior |
+| `AgentRunConfigForm.spec.ts` | **Still Valid** | thin complete-state relay plus callable provider-granular fixture |
+| `TeamRunConfigForm.spec.ts` | **Still Valid** | complete-state relay across runtime/model/member edits plus retained provider fixture |
+| `MemberOverrideItem.spec.ts`, runtime-model component/composable/store suites | **Still Valid** | parallel provider discovery/model composition must not replace workspace state |
+| workspace store / Agent and Team launch store/history tests | **Still Valid** | existing canonical workspace registration, launch and history owners remain the durable boundary |
+| prior API-REV-008 real dual-host scenarios | **Replace as current execution evidence, not durable code** | retained source is strong but current merge must be exercised proportionately |
+| full-web five failures and historical `APIE2E-REPO-005` | **Unclear / separate characterization** | blob-identical outside IR-009 supported path; neither Pass nor current attribution |
+
+### Coverage Gaps And Decisions
+
+- `APIE2E-WORKSPACE-AGENT-009`: explicit New survives runtime/model edits, registers once on the selected node, launches one Agent and appears in history. **Use real Studio browser plus API/history correlation**; repository coverage already owns deterministic state transitions.
+- `APIE2E-WORKSPACE-TEAM-009`: explicit New survives runtime/model/member edits, registers once, launches one Team and appears in history. **Use real Studio browser plus run-tree/history correlation**.
+- `APIE2E-WORKSPACE-FAILURE-009`: invalid/unavailable New path retains visible state and error with zero launch and no stale fallback. **Use real Studio browser and before/after launch/history counts**.
+- `APIE2E-DUAL-HOST-009`, `APIE2E-RECOVERY-009`, `APIE2E-ROUTES-009`, `APIE2E-PARITY-009`: **proportional real process/browser rerun required** because the current web merge participates in Studio forms and renderer state.
+- Repository-resident durable change before execution: **None planned**. Existing tests directly protect reusable state/ordering behavior; live node/filesystem permutations remain temporary executable evidence. Any failing assertion will be revalidated before test/source attribution.
+
+### Planned Execution Order
+
+1. exact merge ancestry/index/marker/retired-seam audit and initial ownership state;
+2. authoritative seven-file/100-test focused workspace/provider selection, then adjacent workspace store/launch/history coverage and production build;
+3. isolated Studio Agent explicit-New edit/discovery/register/one-launch/history journey;
+4. isolated Studio Team explicit-New runtime/model/member edit, register/one-launch/history journey;
+5. invalid/unavailable New registration failure with retained path, zero launch and zero fallback;
+6. proportional retained provider, Brief/Socratic Studio/standalone, publication/handoff, restart/remount and route evidence;
+7. repeated maintained watcher cycles, exact 73-path pre/post hashes, owned cleanup and secret scan;
+8. confidence reassessment, canonical report/revision update and outcome routing.
+
+### Pre-Execution Confidence And Broader-Validation Gate
+
+| Category | Confidence | Gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 76% | current real New-path success/failure and history not executed |
+| Changed-boundary execution directness | 92% | source review/focused tests strong; current API-owned execution pending |
+| Cross-boundary integration realism | 72% | real node registration/launch/history boundary pending |
+| Environment/configuration/identity fidelity | 80% | isolated bound-node/path and exact Agent/Team identities pending |
+| Failure/lifecycle/recovery evidence | 74% | invalid path/no fallback and current restart pending |
+| User/browser/desktop-equivalent confidence | 72% | controlled form and current Studio renderer journey pending |
+| Durable regression quality/relevance | 96% | direct tests exist; current execution/validity reconciliation pending |
+
+- Overall pre-execution confidence: **80%** (simple average, rounded).
+- Every critical current criterion directly proven: **No**.
+- Broader validation: **Required**. Repository tests alone cannot prove real bound-node registration, exactly-one launch, history correlation, browser state retention or no-fallback behavior.
+
+### API-REV-009 Post-Execution Coverage Resolution (Authoritative)
+
+- Executed identity: reviewer HEAD `f389358e70054a9e249dd0f06623c1c154c130a5`, implementation artifact `8a7955e9455eadc1be689aa4802384381f2107d8`, semantic merge `53dd98b53490947ed96d4dda9fb45d9c80719740`.
+- Focused durable coverage is **Still Valid**. The seven controlled-workspace/provider files passed `7 files / 100 tests`; retained server architecture, lifecycle, journal, imported Brief and standalone composition passed `5 files / 29 tests`. No repository-resident durable test was added, updated or removed by API-REV-009.
+- The adjacent web characterization passed `7 files / 102 tests` and exposed the same two unchanged `runHistoryStore.spec.ts` mock failures (`llmProviderConfigStore.models is not a function`) already contained in CRR-016's blob-identical five-test broad-web signature. They remain historical `APIE2E-REPO-005` **Unclear / separate**, not current Pass evidence and not IR-009 attribution.
+- `APIE2E-WORKSPACE-AGENT-009`: **Pass**. In installed Chrome, explicit New path `/private/tmp/api-rev009-agent-workspace-final` survived runtime and model changes, registered once, issued one `PrepareAgentRun` and zero duplicate `CreateAgentRun`, produced real Codex Luna run `codex_e3e3424599df4dbeb3dbd00b2611cc51`, returned `API-REV-009-AGENT-READY`, and correlated into workspace history.
+- `APIE2E-WORKSPACE-TEAM-009`: **Pass**. Explicit New path `/private/tmp/api-rev009-team-workspace-final` survived global runtime/model and member runtime/model changes; exactly one workspace registration and one team launch occurred. The real Classroom team used Professor Codex `gpt-5.6-luna` and Student AutoByteus `deepseek-v4-flash`; both used the exact workspace, wrote/read assignment artifacts, and exchanged two real recipient-name messages between `/professor` and `/student` with history/run-tree correlation.
+- `APIE2E-WORKSPACE-FAILURE-009`: **Pass**. A controlled real-browser GraphQL registration failure kept New mode and the exact raw path visible, displayed the error, invoked one registration and zero Agent/Team launch operations, and did not fall back to Existing/Temp. The deterministic repository cases remain the durable owner of this negative behavior.
+- Retained dual-host execution: **Pass**. Socratic ran real Codex Luna business turns in both standalone and Studio (`3 + 4 = 7`, `7 + 5 = 12`). Brief Studio completed a real package-owned Researcher -> `/writer` handoff, two `publish_artifacts` projections, one final artifact, and `in_review`. Standalone Brief rendered, created a durable record, restarted through its supported watcher, and recovered that record.
+- Lifecycle and separation: **Pass**. Visible Studio `Reload application` recreated the Brief iframe document and retained its projected record. Graceful same-data Studio restart recovered both maintained applications and their exact Brief/Socratic state with no browser console errors. Internal Agent Tools fake sessions returned `401`; Studio external gateway initialize returned `200`; standalone external gateway returned `404`.
+- Maintained command/parity: **Pass**. Both `dev` and `dev:studio` loops observed four source events per app (two edit/restore rounds), restarted/reloaded successfully, and exact maintained package/authoring bytes remained `73/73` SHA-256 identical. Server/web/application builds and package validation passed after canonical clean-source build prerequisites.
+- Environment fidelity: **Pass**. Installed Google Chrome and authenticated Codex were used; nine supported credentials were imported value-safely into the isolated Studio vault; `/Users/normy/autobyteus_org/autobyteus-agents` was already configured and loaded (`7` shared agents, `50` team-local agents, `12` teams), so duplicate import was correctly not performed.
+- Harness corrections were environmental only: generated Nuxt and frontend-SDK prerequisites were built before authoritative reruns; non-TTY secret import correctly required explicit confirmation before the TTY retry; an initial Studio initialization inherited a user `DATABASE_URL` but was stopped before business/package execution and the accepted run explicitly targeted the isolated SQLite file; hidden-menu remount attempts were replaced by the visible immersive-menu action. Standalone console-only `404` messages correlated to `/favicon.ico`; response-level follow-up observed no application HTTP error.
+- Cleanup/isolation: **Pass**. Ports `3049`, `8049`, `43301`, and `43302` are free; all marked `/private/tmp/api-rev009-*` roots, per-app `.autobyteus` roots and generated outputs were removed; the ordinary application on `29695` was preserved; zero of 12 secret-like source values appeared in 38 retained text evidence files.
+- Final result: **Pass / 98%**. Every current critical criterion has direct evidence; every confidence category is at least 96%; broader validation was **Required; executed; Pass**. Electron packaging remains downstream delivery-owned and historical `APIE2E-REPO-005` remains separate/Unclear.
+- Required route: `/code_reviewer` for workflow-required proportional test-code review, expected **Not Applicable** because API-REV-009 changed no durable coverage.

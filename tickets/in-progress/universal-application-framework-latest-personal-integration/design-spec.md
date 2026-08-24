@@ -2,20 +2,20 @@
 
 ## Current-State Read
 
-Two valid but divergent states must be combined.
+The verified v1.4.56 integration and one bounded Personal v1.4.57 change must now be combined.
 
-- **Previously integrated and verified checkpoint** (`a23849f...`) contains the completed dual-host feature plus Personal through `7edfb1625...`; it has passed architecture, source, API/E2E, provider, package, and Electron verification.
-- **Newest Personal** (`c5b87df4d...`, v1.4.56) is 22 commits beyond the integrated base. Production/runtime semantics after `3ab4946c7...` are unchanged: that source state owns nested `TeamRunPhysicalScope`/memory migration and the completed provider-catalog/API-key refactor—network-free static catalogs, provider-keyed dynamic lifecycle, exact post-discovery identifier/endpoint availability, split credential/catalog contracts, snapshot-settled GraphQL/Pinia UI, and current media factory ownership. The six later commits add only an isolated non-workspace UI prototype and ticket/delivery records.
+- **Current protected and verified checkpoint** (`95c63b5a...`, DR-007) contains the completed dual-host feature plus Personal through `52b4be02e...`; it has passed architecture, source, API/E2E, provider, package, Electron, physical-scope/migration, and v1.4.56 provider-catalog verification.
+- **Newest Personal** (`389748b0b...`, v1.4.57) is four commits beyond that integrated base. It replaces split workspace-selector state/events with one controlled `WorkspaceSelectionState`, preserves explicit New mode/path across unrelated Team edits and delayed discovery, adds the completed ticket evidence, and bumps the release.
 - **Finalized feature** (`a5ffd28...`) has 115 commits after the merge base and owns the proven Universal Application Dual-Host Foundation: one package in Studio and standalone, explicit host builders, one shared application platform boundary with four projections, standalone ingress, devkit workflow, package launch defaults/overrides/readiness, application-scoped Agent Tools publication, package-source cleanup, and real dual-host/Electron evidence.
 - Latest Personal does not contain the dual-host foundation. Conversely, the feature's execution construction targets older run/team owners and cannot replace Personal's current implementations wholesale.
-- The historical merge and first provider refresh are already resolved and verified. The latest non-mutating refresh preview produces five content conflicts and ten changed-both paths. The production conflict remains the leaf Agent physical-scope boundary; the new semantic integration also affects the application model/readiness adapter and shared Studio model picker because Personal deleted the aggregate provider API, discovers at provider granularity, and settles ordinary per-provider UI failures into snapshot state.
+- The historical physical-scope/provider merge is resolved and verified. The current non-mutating refresh preview produces exactly two content conflicts and two changed-both paths, both durable form tests. Personal's five workspace production/type paths and adjacent owner tests auto-merge cleanly.
 - The finalized required-tool loader has six server specs but labels them seven. The actual seventh source-backed unit is Core `registerTools()`, currently reached early through both provisioned Search and eager `defaultAgentFactory` construction; no independent Skills tool registrar exists.
 
-The current task pressure is a **bounded runtime/data/provider integration boundary problem**, not evidence that the passed application-platform architecture should be reopened. Existing team/migration owners absorb physical scope; existing application policy/validator/credential-adapter/composable owners consume Personal's provider/model authorities. SR-007 removes one stale runtime-model cache and corrects UI return semantics without adding a catalog, lifecycle owner, or broad refactor.
+The current task pressure is a **small bounded component-contract integration**, not evidence that the passed application-platform architecture should be reopened. `RunConfigPanel` owns workspace intent; the current provider store/composable owns model rows and source settlement. SR-008 composes their test fixtures and adds no production service, migration, catalog, or broad refactor.
 
 ## Intended Change
 
-Merge `origin/personal@c5b87df4d...` once into protected checkpoint `a23849f...`. Accept non-overlapping provider/catalog and nested-team/history/migration changes, preserve the isolated `ui-prototypes/autobyteus-web-prototype` subtree exactly without adding it to the root workspace, resolve five conflicts and audit all ten overlaps through current owners, use complete `TeamRunPhysicalScope` through the injected application memory service, adapt application model/credential readiness to Personal's exact process owners, combine Studio inherited runtime with current background dynamic discovery, and re-prove the combined state.
+Merge `origin/personal@389748b0b...` once into protected checkpoint `95c63b5a...`. Accept Personal's controlled workspace-selection production change, resolve the two Agent/Team form tests with both the complete workspace relay and current provider-granular callable store contract, and re-prove the combined state. Preserve the already-implemented physical-scope, migration, provider/model, Studio/standalone, package-parity, and cleanup behavior unchanged.
 
 No refresh production file is changed during solution design. Implementation and Electron rebuild begin only after architecture review.
 
@@ -27,11 +27,12 @@ No refresh production file is changed during solution design. Implementation and
 | BEH-002 | User | REQ-003; AC-003, AC-004 | Run application commands from maintained folder | Package/tree comparison | Preserve devkit native workflow and build-once package behavior | DS-002, DS-003 |
 | BEH-003 | System | REQ-004, REQ-005; AC-005–AC-008 | App launches agent/team and consumes return events | Personal current managers; feature final dual-host evidence | Use current Personal lifecycle/identity with exact application-scoped dependencies | DS-004–DS-006, DS-008 |
 | BEH-004 | User/Contract | REQ-005, REQ-008; AC-006, AC-009, AC-012 | Evaluate package default, saved sparse override, Save, or direct launch | Current launch owner/store plus newest AutoByteus membership behavior | Retain exact stored value/provenance, block stale AutoByteus selection, and preserve external-runtime ownership | DS-002, DS-003, DS-009, DS-011 |
-| BEH-005 | Operational | REQ-002, REQ-006, REQ-008; AC-002, AC-010, AC-014 | Resolve newest refresh | DR-004 conflict report plus 13-path changed-both audit | Resolve current source semantically; keep five retired/generated paths deleted | DS-010 |
-| BEH-006 | Contract | REQ-007, REQ-008; AC-011, AC-015 | Review/test refreshed candidate | Passed checkpoint and newest-Personal reports are separate baselines | Execute focused refresh proof plus complete retained dual-host/Electron proof | DS-007, DS-010–DS-012 |
+| BEH-005 | Operational | REQ-002, REQ-006, REQ-010–REQ-011; AC-002, AC-026–AC-029 | Resolve v1.4.57 refresh | DR-008 plus solution-owned two-conflict/two-overlap evidence | Accept governed workspace production auto-merge and combine both form test contracts without weakening either owner | DS-001, DS-017 |
+| BEH-006 | Contract | REQ-007–REQ-011; AC-011, AC-025–AC-029 | Review/test refreshed candidate | DR-007 and Personal v1.4.57 ticket evidence are separate baselines | Execute focused workspace/provider proof plus retained architecture/dual-host/package/Electron proof | DS-007, DS-017 |
 | BEH-007 | User/Contract | REQ-008; AC-013, AC-015 | Provider error reaches native and application consumers | Latest native error contract plus current v6 application stream | Native transport keeps safe metadata; application SDK carries only original safe message with exact identity | DS-012 |
 | BEH-008 | System/Operational | REQ-004–REQ-005, REQ-009; AC-005, AC-008, AC-016–AC-020 | Nested configured/task execution or host upgrade/restart | Passed application graph-local lifecycle plus newest Personal physical-scope/migration evidence | Use exact containing-TeamRun scope without losing injection/activation/cleanup; migrate old flat nested memory before readiness | DS-004–DS-006, DS-008, DS-013–DS-014 |
 | BEH-009 | System/User | REQ-005, REQ-008, REQ-010; AC-006, AC-009, AC-012, AC-021–AC-025 | Package/saved/Save/direct one-or-more-leaf AutoByteus selection or Studio model editing with provider failure | Current application configuration boundary plus Personal v1.4.56 provider/catalog/store owners and `ARCH-REV-006` evidence | Provider-granularity ensure plus fresh exact leaf model, adapter-owned credential equivalence, and settled snapshot/UI outcomes; no endpoint-local/eager/duplicate catalog | DS-002–DS-004, DS-009, DS-011, DS-015–DS-016 |
+| BEH-010 | User/System | REQ-007, REQ-010–REQ-011; AC-026–AC-029 | Studio Agent/Team draft selects New workspace, receives unrelated config/provider edits or delayed discovery, then launches | Personal v1.4.57 controlled workspace source/tests plus current provider-granular form/composable tests and round-4 merge evidence | One panel-owned workspace state survives, registers before launch, and relays through thin forms while provider rows/snapshots/settlement remain independent | DS-007, DS-017 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -40,8 +41,9 @@ No refresh production file is changed during solution design. Implementation and
 | `integration-strategy-analysis.md` | Strategy, authority, critical seam, resolution and verification details | All | Defines the implementation policy used below | Design-ready / approved by delegated direction |
 | `integration-runtime-contracts.md` | Exact host lifecycle, current activation/provisioning adaptation, construction obligations, file dispositions, launch store/direct-use proof, and verification delta | REQ-004–REQ-007; AC-005–AC-011 | Normative detail for DS-002–DS-006 and the persisted-data decision | Design-ready / approved preserved-behavior precision |
 | `latest-base-refresh-design-analysis.md` | Exact prior-base authority, current-model/error boundaries, conflict/overlap map, inventory, and verification delta | REQ-001–REQ-008; AC-001–AC-015 | Implemented/verified SR-004 authority for DS-010–DS-012 | Complete / passed historical baseline |
-| `latest-base-refresh-round-2-design-analysis.md` | Exact nested physical-scope, migration, conflict/overlap, inventory, and verification delta | REQ-001–REQ-009; AC-001–AC-020 | Normative SR-005 delta for DS-013–DS-014 and current DS-001/DS-007 | Design-ready / pending architecture review |
-| `latest-base-refresh-round-3-design-analysis.md` | Exact v1.4.56 provider/catalog/model/credential/UI and physical-scope integration | REQ-001–REQ-010; AC-001–AC-025 | Current normative SR-007 delta for DS-001, DS-007, DS-013–DS-016 | Design-ready / pending architecture re-review |
+| `latest-base-refresh-round-2-design-analysis.md` | Exact nested physical-scope, migration, conflict/overlap, inventory, and verification delta | REQ-001–REQ-009; AC-001–AC-020 | Implemented SR-005 authority for DS-013–DS-014 | Complete / verified historical baseline |
+| `latest-base-refresh-round-3-design-analysis.md` | Exact v1.4.56 provider/catalog/model/credential/UI and physical-scope integration | REQ-001–REQ-010; AC-001–AC-025 | Implemented SR-007 authority for DS-013–DS-016 | Complete / verified in DR-007 |
+| `latest-base-refresh-round-4-design-analysis.md` | Exact v1.4.57 controlled-workspace/provider-form integration | REQ-001–REQ-002, REQ-007, REQ-010–REQ-011; AC-001–AC-002, AC-026–AC-029 | Current normative SR-008 delta for DS-001, DS-007, DS-017 | Design-ready / pending architecture review |
 | `merge-attempt.log` | Raw trial merge evidence | REQ-002; AC-002 | Grounds conflict measurement | Complete / N/A |
 | `merge-conflict-inventory.txt` | Exact conflict classification | REQ-002, REQ-006 | Drives conflict resolution classes | Complete / N/A |
 | `branch-overlap-inventory.txt` | Exact changed-both inventory | REQ-002, REQ-006 | Defines marker-free audit set | Complete / N/A |
@@ -50,17 +52,19 @@ No refresh production file is changed during solution design. Implementation and
 | `evidence/delivery/dr-004-base-refresh-and-integration.log` | Delivery-owned raw fetch/path/preview evidence | REQ-001–REQ-002, REQ-006; AC-001–AC-002, AC-010 | Grounds the original 31-commit measurement extended by the current-ref revalidation | Complete / N/A |
 | `latest-base-refresh-round-2-conflict-report.md` | Delivery-owned DR-006 blocker | REQ-001–REQ-002, REQ-006–REQ-009; AC-001–AC-002, AC-016–AC-020 | Triggering evidence retained untouched | Complete / N/A |
 | `evidence/delivery/dr-006-base-refresh-and-integration.log` | Delivery-owned current fetch/path/migration/preview evidence | REQ-001–REQ-002, REQ-006, REQ-009; AC-001–AC-002, AC-016 | Grounds the five-commit, three-conflict measurement | Complete / N/A |
-| `evidence/solution/latest-base-refresh-round-3-{merge-preview.log,conflict-inventory.txt,overlap-inventory.txt,path-inventory.txt}` | Current exact refs/counts/merge/path evidence | REQ-001–REQ-002, REQ-006, REQ-010; AC-001–AC-002, AC-021–AC-025 | Grounds the five-conflict, ten-overlap, 2,194-path current target and the isolated post-`3ab` additions | Complete / N/A |
+| `evidence/solution/latest-base-refresh-round-3-{merge-preview.log,conflict-inventory.txt,overlap-inventory.txt,path-inventory.txt}` | Historical v1.4.56 refs/counts/merge/path evidence | REQ-001–REQ-002, REQ-006, REQ-010; AC-016, AC-021–AC-025 | Grounds the implemented five-conflict, ten-overlap, 2,194-path SR-007 target and isolated prototype additions | Complete / N/A |
+| `latest-base-refresh-round-4-conflict-report.md` and `evidence/delivery/dr-008-base-refresh-and-integration.log` | Delivery-owned v1.4.57 blocker and raw evidence | REQ-001–REQ-002, REQ-007, REQ-011; AC-001–AC-002, AC-026 | Triggering Design Impact evidence retained untouched | Complete / N/A |
+| `evidence/solution/latest-base-refresh-round-4-{merge-preview.log,conflict-inventory.txt,overlap-inventory.txt,path-inventory.txt}` | Current exact v1.4.57 refs/counts/merge/path evidence | REQ-001–REQ-002, REQ-007, REQ-011; AC-001–AC-002, AC-026–AC-029 | Grounds the four-commit, 95-path, two-conflict/two-overlap target | Complete / N/A |
 
 ## Task Design Health Assessment
 
 - Change posture: `Refactor` / integration of a completed larger requirement.
-- Current design issue found: `Yes`, bounded to the physical-scope/data-migration intersection and provider/model/credential/UI consumption seam; the previously approved production architecture remains passed.
-- Root cause classification: `Boundary Or Ownership Issue` plus `Persisted-Data Transition` and evolved dependency contract.
-- Refactor needed now: `No broad refactor`; combine the existing leaf owner, adopt current Personal provider owners, and adapt the existing application policy/adapter/composable.
-- Evidence: selecting either physical-scope side loses a proved invariant; retaining the ticket's static-only guard falsely rejects valid dynamic identifiers; retaining its aggregate credential call does not compile; runtime-only model caching can reject a later dynamically ensured leaf; and treating the settled Pinia action as normally rejecting contradicts Personal's store.
-- Design response: keep current execution/migration/application configuration owners. Consume provider-granularity `ModelAvailabilityService`, perform a fresh exact model lookup after every leaf ensure, derive credential cache identity from the credential adapter, and re-read Pinia rows/status after settled provider attempts. Introduce no parallel catalog, provider facade, or eager startup discovery.
-- Refactor rationale: the current owners already have the needed responsibilities; a new scope resolver, application migration coordinator, or compatibility read path would be empty/duplicated indirection.
+- Current design issue found: `Yes`, bounded to two durable test fixtures that sit at the controlled-workspace/provider-model presentation junction; the production architecture and both underlying owners remain passed.
+- Root cause classification: `Boundary Or Ownership Issue` in integration coverage, not production ownership.
+- Refactor needed now: `No production refactor`; accept Personal's controlled workspace source and combine the two tests exactly.
+- Evidence: whole-side selection either restores retired partial workspace events or removes callable provider selection/snapshot/settlement fixtures required by the current composable. The auto-merged production tree keeps the concerns separate.
+- Design response: retain one panel-owned workspace state and one provider-store/composable owner, update only the two conflict tests, and execute both adjacent owner suites plus the retained full matrix.
+- Refactor rationale: a new form coordinator, adapter, service, or migration would duplicate healthy owners and violate proportionality.
 - Intentional deferrals: no generalized runtime framework, no repository-wide execution rewrite, no public SDK expansion, and no application-owned external MCP provisioning. These are not needed for the integration.
 
 ## Terminology
@@ -75,6 +79,7 @@ No refresh production file is changed during solution design. Implementation and
 - **Current-model selection policy:** stateless application policy that normalizes runtime, classifies canonical static/dynamic AutoByteus identifiers, invokes Personal's selected-provider availability boundary, and produces safe typed blocking outcomes. It owns no catalog, store, cache, lifecycle, credential, or external-runtime namespace; the host validator performs the fresh exact post-policy model lookup.
 - **Catalog owner:** provider descriptor whose static or discovered source publishes a model snapshot; it is not necessarily the model creator in `model.provider_id`.
 - **Serving runtime credential owner:** credential identity derived from the resolved model runtime (`API`, custom OpenAI-compatible, AutoByteus gateway, Ollama, or LM Studio), not from display grouping alone.
+- **Workspace selection state:** the complete transient Studio choice `{mode, existingWorkspaceId, newWorkspacePath}` owned by `RunConfigPanel`; it is not a persisted workspace record or a form/selector-local copy.
 
 ## Design Reading Order
 
@@ -91,6 +96,7 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 
 - Launch overrides remain `Directly Usable — No Migration`: `ApplicationLaunchOverrideStore` and `ApplicationLaunchConfigurationService` retain the current sparse rooted contract, side-effect-free reads, and explicit Save/Reset-only mutation described in [integration-runtime-contracts.md](integration-runtime-contracts.md), section 3.
 - Provider credentials, custom-provider records, host settings, and saved model identifiers remain `Directly Usable — No Migration`. Personal changes their service/catalog projections and dynamic in-memory lifecycle, not their stored schemas. Dynamic source snapshots/status are reconstructed process state and are not copied into application storage.
+- Existing workspace registry rows, Agent/Team workspace IDs, and run history remain `Directly Usable — No Migration`. SR-008's `WorkspaceSelectionState` is transient frontend state; successful New registration continues through the existing `workspaceStore` and current launch owners.
 - Current TeamRun V1 metadata/index packages remain directly usable. `TeamExecutionIndex.getTeamRunPhysicalScope(containingTeamRunId)` derives ordered current scope without rewriting those packages.
 - Affected pre-refresh nested Team Agent memory is `Migration Required`: the old flat root-TeamRun location is not the current canonical path, cannot be rebuilt without losing user memory, and must not become a runtime fallback.
 - Migration owner: the existing process `AppDataMigrationRunner` and registered `TeamAgentMemoryLayoutAppDataMigration`; both Studio and standalone already invoke this runner before application lifecycle readiness.
@@ -99,7 +105,7 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 - Completion/recovery: fresh/unmaterialized/current/direct-root cases skip; both directories are preserved with an explicit warning; unsupported/failed locations record a failure; the existing migration ledger and `ANYTIME` policy own retry. Historical-schema knowledge does not escape the migration.
 - Required invariants: no launch-row rewrite, no memory loss, no partial per-file copy, no old/new runtime dual read, no package mutation, no second migration runner, no skipped prerequisite, and no application/global dependency fallback.
 - Normative transition matrix: [latest-base-refresh-round-2-design-analysis.md](latest-base-refresh-round-2-design-analysis.md), migration section.
-- Supports: REQ-004–REQ-010; AC-005–AC-009, AC-011–AC-025.
+- Supports: REQ-004–REQ-011; AC-005–AC-009, AC-011–AC-029.
 
 ## Data-Flow Spine Inventory
 
@@ -121,12 +127,13 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 | DS-014 | Primary Startup/Data Transition | BEH-008 | Studio/standalone starts on existing or fresh data root | Current memory layout or explicit migration status before readiness | existing `AppDataMigrationRunner` + Team Agent memory migration | Keeps historical layout knowledge isolated and prevents silent memory loss |
 | DS-015 | Primary + bounded defense | BEH-009 | Static/dynamic AutoByteus selection from package/saved/Save/direct launch | resolved exact model or distinct current-selection/model-unavailable issue | application current-model policy consuming Personal model availability | Preserves dynamic sources without eager/global discovery or stale-row repair |
 | DS-016 | Primary + return/update | BEH-009 | Studio model editor with explicit/inherited runtime | immediate model options, then same-runtime dynamic refresh | runtime-scoped composable consuming Personal Pinia catalog store | Preserves sparse overrides and responsive current selection |
+| DS-017 | Primary + return/update | BEH-010 | Studio Agent/Team draft selects or edits a workspace | canonical workspace launch or preserved visible error state | `RunConfigPanel` with controlled selector/form relays | Preserves launch-what-is-shown while remaining independent from provider settlement |
 
 ## Primary Execution Spine(s)
 
 ### DS-001 — Integration
 
-`latest Personal branch -> one no-ff merge of finalized feature -> classify path -> resolve canonical source by authority -> remove legacy/derived paths -> compile -> regenerate packages -> integrated commit`
+`protected verified v1.4.56 ticket branch -> re-fetch exact v1.4.57 Personal -> one history-preserving merge -> classify two conflicts/two overlaps -> accept governed production auto-merge -> combine both test contracts -> focused/full proof -> reviewed integrated commit`
 
 ### DS-002 — Studio
 
@@ -146,9 +153,11 @@ Follow the merge spine first, then the two host starts, then the shared run/retu
 
 Reads never write. Explicit Studio Save is the only upsert path; explicit Reset is the only delete path.
 
-### DS-010 — Newest Personal refresh
+### DS-010 — Historical v1.4.56 Personal refresh
 
-`protected checkpoint a23849f -> re-fetch/confirm c5b87df4d -> one merge -> accept non-overlapping Personal provider/catalog, nested-team/history/migration, and isolated prototype additions -> resolve five conflicts and audit ten overlaps -> bounded application seam adaptations -> compile/test -> reviewed refreshed commit`
+Historical SR-007 spine, now implemented and verified:
+
+`protected checkpoint a23849f -> merge c5b87df4d -> provider/catalog + nested-team/history/migration integration -> five conflict/ten overlap resolution -> bounded application seam adaptations -> reviewed/tested DR-007 checkpoint`
 
 ### DS-011 — Current-model selection
 
@@ -180,6 +189,12 @@ The host validator removes `modelsByRuntime`; no runtime-only model snapshot sur
 
 `stored runtime -> inherited runtime -> optional default -> no request if deliberately null -> fetch current runtime snapshot -> publish providersWithModelsForSelection(runtime) immediately -> background ensureMissingDynamicProviders(runtime) -> per-provider mutation writes READY/PARTIAL/ERROR/STALE_ERROR -> Promise.allSettled aggregate fulfills -> re-read same runtime rows and source statuses -> retain stale rows; unexpected aggregate rejection follows defensive log/re-read only`
 
+### DS-017 — Controlled Studio workspace selection beside provider settlement
+
+`RunConfigPanel authoritative WorkspaceSelectionState -> AgentRunConfigForm or TeamRunConfigForm thin relay -> controlled WorkspaceSelector -> complete replacement event -> same RunConfigPanel state`
+
+Unrelated runtime/model/member edits and provider or workspace discovery do not replace that state. On accepted launch, New mode follows `trim path -> workspaceStore.createWorkspace on bound node -> canonical workspace ID/config -> existing Agent/Team launch owner -> history`. Failure returns to the same visible New/path plus error and invokes no stale Existing/Temp launch. The form presentation also continues the independent DS-016 path through `RuntimeModelConfigFields`; neither spine owns the other.
+
 ## Spine Narratives
 
 | Spine | Narrative | Main Subjects | Governing Owner | Off-Spine Concerns |
@@ -197,6 +212,7 @@ The host validator removes `modelsByRuntime`; no runtime-only model snapshot sur
 | DS-014 | Existing process migration authority transforms only affected old flat nested memory before either host declares application readiness; normal runtime sees only the current layout. | TeamRun index, AgentRun directory, migration status | app-data migration runner + Team Agent memory migration | bounded diagnostics, ledger, filesystem rename |
 | DS-015 | Application policy delegates selected-provider availability; the validator performs a fresh exact model lookup per leaf and caches credentials only by adapter-resolved authority. | identifier, provider owner, fresh resolved model, credential authority, issue | application current-model policy/validator/credential adapter + Personal availability/catalog owners | safe diagnostics, endpoint identity |
 | DS-016 | Studio publishes current rows quickly, awaits settled provider attempts, then converges from snapshot rows/status while preserving sparse runtime inheritance. | effective runtime, provider snapshots/source states, model options | runtime-scoped composable + Personal Pinia store | loading/error presentation |
+| DS-017 | One panel-owned workspace value passes through thin forms and a controlled selector, then is resolved exactly once at launch; provider state remains in its existing sibling owner. | workspace mode, existing ID, New path, canonical registered workspace | `RunConfigPanel` | delayed discovery, registration error, history projection |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -475,6 +491,7 @@ Forbidden:
 | runtime projections | `application-platform-runtime-contracts.ts` | application platform | two hosts/registrars share exact boundary | Yes | Yes | service bag |
 | launch provenance/issues | launch-config owned types | launch config | Studio/standalone consume same semantics | Yes | Yes | UI policy duplicate |
 | bootstrap payload | SDK contract | frontend SDK/contracts | two providers normalize to same client | Yes | Yes | provider wire union in business code |
+| controlled workspace selection | `autobyteus-web/types/workspace/WorkspaceSelectionState.ts` | Studio workspace configuration | panel/forms/selector need the same exact transient value | Yes | Yes | persisted workspace model or generic form-state bag |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -485,10 +502,11 @@ Forbidden:
 | runtime projection contracts | Yes | Yes | Low | freeze four fields |
 | package baseline/host override/effective config | Yes | Yes | Medium | keep stages/provenance distinct |
 | agent/team run binding | Yes | Yes | Low | retain `agentRunId` vs `teamRunId` distinction |
+| workspace mode/existing ID/New path | Yes | Yes | Low | one complete value with `mode` as the active discriminator; no parallel local selector state |
 
 ## Final File Responsibility Mapping
 
-The cumulative target inventory is `integration-path-inventory.txt`; the exact current 2,194-path delta is `evidence/solution/latest-base-refresh-round-3-path-inventory.txt`. Raw Git evidence remains in the conflict/overlap artifacts; target dispositions remove rejected feature-only/deleted aggregate owners, preserve the isolated prototype unchanged, and name every application seam adaptation.
+The cumulative implemented inventory remains `integration-path-inventory.txt` plus the round-3 evidence. The exact current v1.4.57 delta is `evidence/solution/latest-base-refresh-round-4-path-inventory.txt`. Raw Git evidence remains in the round-4 conflict/overlap artifacts; the current target adds only the bounded workspace/test dispositions below while preserving all earlier implemented owners.
 
 | Disposition | Exact Files / Patterns | Target Responsibility |
 | --- | --- | --- |
@@ -512,6 +530,8 @@ The cumulative target inventory is `integration-path-inventory.txt`; the exact c
 | Keep removed | Personal-deleted aggregate/cached provider/media owners and old aggregate GraphQL/store APIs | clean-cut one provider/catalog architecture; no compatibility alias |
 | Modify semantically for SR-005 | `mixed-agent-member-handle.ts` plus the two conflicted memory/activation tests | exact scope through injected memory service; preserve graph-local MCP cleanup and atomic activation |
 | Retain audited auto-merges for SR-005 | execution-tree location service, MCP cleanup test, termination test | current physical-scope fixtures/lookup plus ticket stored-only and exact cleanup behavior |
+| Accept Personal for SR-008 | `WorkspaceSelectionState.ts`, `WorkspaceSelector.vue`, `AgentRunConfigForm.vue`, `TeamRunConfigForm.vue`, `RunConfigPanel.vue`, `WorkspaceSelector.spec.ts`, `RunConfigPanel.spec.ts` | controlled workspace state/relay, context reset, delayed-discovery preservation, register-before-launch, and failure/no-fallback behavior |
+| Modify two SR-008 conflicts | `AgentRunConfigForm.spec.ts`, `TeamRunConfigForm.spec.ts` | combine complete controlled workspace props/events/assertions with callable provider rows/snapshots/dynamic-settlement fixtures; remove neither concern's coverage |
 
 ## Applied Patterns
 
@@ -521,6 +541,7 @@ The cumulative target inventory is `integration-path-inventory.txt`; the exact c
 - **Scoped capability:** process MCP mechanics plus application-scoped session/publisher.
 - **Closed queue:** exact artifact/event delivery, not a generic event bus.
 - **Canonical source plus generated package:** one editable source of truth.
+- **Controlled input:** `RunConfigPanel` owns complete workspace state; selector/forms render and propose replacements only.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -535,6 +556,9 @@ The cumulative target inventory is `integration-path-inventory.txt`; the exact c
 | `.../llm-management/llm-providers/services/llm-provider-service.ts` | File | provider configuration | exact network-free credential setting and explicit commands | current provider owner | aggregate model rows in credential responses |
 | `autobyteus-web/stores/llmProviderConfig.ts` | File | Studio provider catalog state | runtime snapshots, exact provider ensure/reload, `Promise.allSettled` missing-provider convergence and safe source states | current Pinia owner | application override precedence |
 | `autobyteus-web/composables/useRuntimeScopedModelSelection.ts` | File | application setup UI adapter | sparse runtime precedence, immediate options, and post-settlement row/status re-read | shared application editor boundary | provider lifecycle, normal provider-error synthesis, or definition traversal |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | File | Studio workspace launch owner | own complete transient workspace state, context reset, registration-before-launch, and failure/no-fallback behavior | existing Run action/coordinator boundary | provider lifecycle or selector-local fallback policy |
+| `autobyteus-web/components/workspace/config/{AgentRunConfigForm,TeamRunConfigForm,WorkspaceSelector}.vue` | Files | thin workspace form relays and controlled input | render/relay complete `WorkspaceSelectionState` while composing existing runtime/model controls | existing workspace config capability | independent workspace state, launch sequencing, or provider-store ownership |
+| `autobyteus-web/types/workspace/WorkspaceSelectionState.ts` | File | workspace configuration contract | exact transient mode/existing-ID/New-path value shared by panel/forms/selector | current workspace type area | persistence behavior or generic form state |
 | `.../application-orchestration/stores/application-launch-override-store.ts` | File | launch persistence | safe parse and explicit row upsert/delete over existing table | physical store concern | baseline/readiness or read-time rewrite |
 | `.../agent-execution/runtime/` | Folder | live run state | activation registry and general supervisor | runtime state depth | application package logic |
 | `.../agent-execution/services/` | Folder | run control | current manager and run services | domain lifecycle | global fallback in app path |
@@ -583,6 +607,8 @@ The cumulative target inventory is `integration-path-inventory.txt`; the exact c
 | Restore aggregate/cached provider APIs | reduces v1.4.56 integration edits | Rejected | current Personal catalog, availability, credential setting and snapshots |
 | Discover all dynamic providers at host/application startup | makes old list behavior easy | Rejected | static network-free startup plus exact/on-demand discovery |
 | Application-local model catalog | isolates app code from Personal changes | Rejected | consume singular process provider capability through explicit policy/adapter |
+| Keep partial WorkspaceSelector props/events beside the controlled state | reduce two test edits | Rejected | update both form tests and remove the retired seam cleanly |
+| Let provider refresh or Team config replacement reset workspace state | simplifies watchers | Rejected | stable draft/context identity and panel-owned state preserve explicit New intent |
 
 ## Derived Layering
 
@@ -600,7 +626,9 @@ Application canonical source + SDK contracts
 
 Dependencies point inward. Return events flow outward through explicit publisher/delivery contracts, not reverse imports.
 
-## Change / Refactor Sequence
+## Historical Cumulative Change / Refactor Sequence — Completed Through DR-007
+
+The following sequence records how the current verified v1.4.56 checkpoint was built. It is retained for ownership context and must not be replayed for SR-008.
 
 1. Reconfirm/fetch exact `origin/personal@c5b87df4d...`; stop for renewed analysis if it moved, then reproduce one merge on the latest-Personal ticket branch.
 2. Capture parents/conflicts; classify every path using the retained inventories.
@@ -620,7 +648,7 @@ Dependencies point inward. Return events flow outward through explicit publisher
 16. Run implementation checks, source review, coverage investigation, full Personal provider + physical-scope + dual-host/API/E2E, durable-test review, docs/delivery, and Electron verification.
 17. At delivery, refresh Personal again. If it moved, repeat an evidence-backed semantic refresh rather than force the old merge.
 
-No temporary compatibility seam is retained after step 14.
+No temporary compatibility seam was retained after step 14.
 
 ## Key Tradeoffs
 
@@ -726,7 +754,7 @@ The policy/adapter consume Personal owners; they do not become catalog or creden
 
 ### Exact Conflict And Overlap Contract
 
-The current merge has five conflicts and ten changed-both paths. Their per-path semantic decisions are normative in `latest-base-refresh-round-3-design-analysis.md`. In summary:
+The implemented SR-007 merge had five conflicts and ten changed-both paths. Their historical per-path semantic decisions remain normative in `latest-base-refresh-round-3-design-analysis.md`. In summary:
 
 1. Preserve SR-005 physical scope plus graph-local injection/cleanup in the three member/memory conflicts.
 2. Move Qwen E2E to current credential/catalog GraphQL shapes while retaining current GLM identifier/value/context proof.
@@ -748,9 +776,50 @@ Provider credentials/settings/custom records/saved identifiers are directly usab
 
 Required proof covers Git 5/10 disposition, Personal provider-granularity discovery, exact endpoint post-check, snapshot-settled failure, application static/dynamic/credential outcomes, two leaves backed by distinct dynamic providers with fresh model reads and exact credential authorities, pre-upsert/pre-allocation failure ordering, Studio inherited/background selection, the entire SR-005 physical-scope/migration matrix, all application architecture gates, real Studio and standalone journeys, package parity/recovery/cleanup, and a new Electron build/smoke.
 
+## SR-008 Personal v1.4.57 Controlled-Workspace Delta
+
+### Current/Target Boundary
+
+The DR-007 checkpoint already implements and verifies SR-007. Personal v1.4.57 changes only the Studio workspace-selection boundary and its completed ticket package. Production auto-merges because the workspace and provider concerns already have separate owners:
+
+`RunConfigPanel -> WorkspaceSelectionState -> Agent/Team form -> WorkspaceSelector -> complete replacement -> RunConfigPanel`
+
+beside:
+
+`Agent/Team form -> RuntimeModelConfigFields -> useRuntimeScopedModelSelection -> callable provider rows/snapshots/settlement`
+
+The only conflicts are the two form tests where these fixture contracts meet.
+
+### Exact Current Change Inventory
+
+| Disposition | Paths | Contract |
+| --- | --- | --- |
+| Accept Personal production/type | `WorkspaceSelectionState.ts`, `WorkspaceSelector.vue`, `AgentRunConfigForm.vue`, `TeamRunConfigForm.vue`, `RunConfigPanel.vue` | one panel-owned state, controlled selector, thin complete-state relays, register-before-launch |
+| Accept Personal adjacent tests | `WorkspaceSelector.spec.ts`, `RunConfigPanel.spec.ts` | explicit New preservation, delayed discovery, Temp proposal, launch sequencing, failure/no-fallback, read-only behavior |
+| Resolve semantically | `AgentRunConfigForm.spec.ts`, `TeamRunConfigForm.spec.ts` | controlled workspace props/events/defaults/relay plus callable provider selection rows, `providerSnapshots`, and `ensureMissingDynamicProviders` |
+| Accept remaining non-overlap | other paths in `evidence/solution/latest-base-refresh-round-4-path-inventory.txt` | completed Personal ticket evidence/docs and v1.4.57 metadata; no application-platform ownership |
+| Remove/do not restore | partial `workspaceId`/`initialPath`, `select-existing`, and `workspace-input-change` test contracts | clean-cut controlled seam; no compatibility alias |
+
+### Current Implementation Sequence
+
+1. Re-fetch and require exact `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb`; stop before merge if it moved.
+2. Preserve protected `95c63b5a...` and all owner-specific evidence.
+3. Perform one history-preserving merge and record both parents.
+4. Review and accept the clean production/type auto-merge against DS-017; do not add a new owner.
+5. Resolve both conflicted tests exactly as specified in `latest-base-refresh-round-4-design-analysis.md`; never choose one whole side.
+6. Run the four focused workspace suites, provider store/composable/runtime-model suites, affected/full web checks, and Git integrity checks.
+7. Route source through code review, then API/E2E coverage investigation/execution and proportional durable-test review. Re-prove the real Studio New-workspace Team journey and retain the dual-host/package-parity/cleanup baseline.
+8. Delivery re-fetches Personal, proves ancestry, rebuilds Electron v1.4.57, and records the final integrated state.
+
+### Data And Verification
+
+Workspace registry, saved configuration, and run history are `Directly Usable — No Migration`; the new state is transient. Provider data/contracts and the already-registered nested-memory/token migrations remain unchanged. Exact proof is AC-026–AC-029 and the round-4 supplement verification matrix.
+
 ## Guidance For Implementation
 
-- Treat `latest-base-refresh-design-analysis.md` as the implemented SR-004 authority, preserve the SR-005 physical-scope decisions in `latest-base-refresh-round-2-design-analysis.md`, and use revised `latest-base-refresh-round-3-design-analysis.md` as the exact current SR-007 merge/application resolution map.
+- Treat the SR-004–SR-007 supplements as implemented historical authority preserved by the DR-007 checkpoint. Use `latest-base-refresh-round-4-design-analysis.md` as the exact current SR-008 merge/test resolution map.
+- Do not modify application-platform, provider, execution, package, or persistence production owners for SR-008 unless a concrete merged-source failure is rerouted. The approved production change is Personal's controlled workspace boundary.
+- In both conflicted tests, retain callable `providersWithModelsForSelection(runtimeKind)`, `providerSnapshots(runtimeKind)`, and `ensureMissingDynamicProviders(runtimeKind)` while replacing the retired workspace stub/events with `modelValue`/`update:modelValue`, complete `workspaceSelection`, and exact relay assertions.
 - Construct one explicit current-model policy and inject it into all three application validation boundaries; consume Personal selected-provider availability and do not duplicate provider lifecycle or add optional/global defaults. In the host validator, resolve a fresh exact `ModelInfo` after each leaf policy step and never cache a runtime model list across leaves.
 - Keep native provider metadata native and the application SDK message-only.
 - Preserve every delivery/review-owned file/evidence while implementing; do not stage or rewrite another owner's current dirty records.

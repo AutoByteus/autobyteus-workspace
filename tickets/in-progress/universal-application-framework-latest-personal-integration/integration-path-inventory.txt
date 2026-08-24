@@ -2,6 +2,11 @@ BASE acb8985930ccce49b632cdca22b92f5b237e35bf
 PERSONAL origin/personal
 FEATURE origin/codex/universal-application-framework-proposal-analysis
 
+# Historical cumulative inventory implemented through SR-007/DR-007.
+# The current SR-008 v1.4.57 delta is separately authoritative in
+# evidence/solution/latest-base-refresh-round-4-path-inventory.txt and
+# latest-base-refresh-round-4-design-analysis.md (two test conflicts only).
+
 # Counts below are target dispositions derived from the raw branch evidence.
 # Feature-only paths explicitly rejected by the target are omitted.
 

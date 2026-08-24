@@ -13,6 +13,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-005 | Round 5 / SR-005 nested physical-scope and memory-migration refresh | SR-001–SR-005 | Pass | Pass | None |
 | ARCH-REV-006 | Round 6 / SR-006 Personal v1.4.56 provider integration | SR-001–SR-006 | Pass | Fail — Design Impact | AR-004, AR-005 |
 | ARCH-REV-007 | Round 7 / SR-007 AR-004/AR-005 re-review and current-ref validation | SR-001–SR-007 | Fail — Design Impact | Pass | AR-004, AR-005 |
+| ARCH-REV-008 | Round 8 / SR-008 v1.4.57 controlled-workspace refresh | SR-001–SR-008 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -174,3 +175,28 @@ None.
 - Material classification changes: AR-004 and AR-005 are resolved; authoritative decision changes from `Fail — Design Impact` to `Pass`. The current-ref prototype movement is proven outside the root workspace and production dependency graph and does not add application-framework scope.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: implementation must immediately re-fetch and stop if Personal moved, merge only exact `c5b87df4d...`, preserve the isolated prototype byte-for-byte, resolve/audit all five conflicts and ten overlaps, and run the complete provider/catalog/credential/UI, physical-scope/migration, dual-host, package-parity, recovery/cleanup, and Electron matrix on one integrated commit. Prior checkpoint and Personal evidence remain characterization only.
+
+### ARCH-REV-008 — Controlled workspace and provider fixtures integrate without a production refactor
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 8; SR-008 review after delivery refresh `DR-008` found Personal v1.4.57 intersects protected checkpoint `95c63b5a982ba90ccbb8c6345af66a9485fa5a78` in exactly two durable form tests.
+- Triggering role, report path, and finding IDs: `/delivery_engineer` through `/solution_designer`; `latest-base-refresh-round-4-conflict-report.md`, `solution-revision-record.md` `SR-008`, and `latest-base-refresh-round-4-design-analysis.md`; no new architecture finding ID.
+- Relevant solution revision IDs: `SR-001`–`SR-008`
+- Prior authoritative decision: `Pass` (`ARCH-REV-007`, followed by passed implementation/source/API-E2E/proportional-test/Electron verification at the protected checkpoint)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-008 accepts Personal's single panel-owned `WorkspaceSelectionState`, controlled selector, thin Agent/Team relays, registration-before-launch, and failure/no-fallback behavior while retaining the checkpoint's callable provider rows, provider snapshots, and settled dynamic-provider fixture contract. Review-time fetch confirmed `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb`; a fresh merge preview confirmed 95 Personal paths, two conflicts, two changed-both paths, a clean index, and no production-source diff. The target is a bounded semantic resolution of two test fixtures, not a production application-framework refactor.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved in ARCH-REV-003 | Remains resolved | `SR-003`–`SR-008`; runtime contracts sections 1 and 4 | SR-008 changes no required-tool readiness owner, order, removal, or proof obligation. |
+| AR-002 | Resolved in ARCH-REV-002 | Remains resolved | `SR-002`–`SR-008`; runtime contracts sections 2 and 6 | Activation/provisioning, graph-local construction, physical scope, scoped cleanup, and migrations remain fixed. |
+| AR-003 | Resolved in ARCH-REV-002 | Remains resolved | `SR-002`–`SR-008`; runtime contracts sections 3, 5, and 7 | Sparse launch rows remain directly usable with explicit Save/Reset and no migration. |
+| AR-004 | Resolved in ARCH-REV-007 | Remains resolved | `SR-007`–`SR-008`; requirements REQ-010–REQ-011; DS-016–DS-017 | Provider-granularity discovery and settled Pinia status remain independently owned and callable from both combined fixtures. |
+| AR-005 | Resolved in ARCH-REV-007 | Remains resolved | `SR-007`–`SR-008`; requirements AC-022–AC-023, AC-029 | Fresh per-leaf model and credential-authority behavior are unchanged; SR-008 preserves the current provider fixture instead of weakening it. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none; the delivery Design Impact is resolved by an exact two-test semantic merge with no production owner, behavior, compatibility path, fallback, or data migration change.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: implementation must immediately re-fetch and stop if Personal moved, merge only exact `389748b0b9f0dea051aaed18641de131cf0adbbb`, inspect the clean production/type auto-merge, combine both form fixtures rather than select a side, and run focused workspace/provider, real Studio, retained dual-host/package/recovery/cleanup, and fresh Electron v1.4.57 proof on one integrated commit. Prior checkpoint and Personal evidence remain characterization only.

@@ -1,5 +1,7 @@
 # Electron Test Build Report — DR-007
 
+
+> **DR-008 newest-base rebuild blocked (2026-08-24).** The non-mutating merge preview against `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb` reports two semantic form-test conflicts. No 1.4.57 package was built. The DR-007 1.4.56 package below is historical and is not proof of the newest-base request.
 ## Current Result
 
 **Pass — Personal macOS ARM64 Electron 1.4.56 is rebuilt and verified from the latest integrated base.**

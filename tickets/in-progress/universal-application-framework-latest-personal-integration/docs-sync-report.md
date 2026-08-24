@@ -1,5 +1,7 @@
 # Docs Sync Report — DR-007
 
+
+> **DR-008 blocked before integrated-state docs sync (2026-08-24).** `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb` introduces the finalized controlled workspace-selection contract and produces two semantic durable-test conflicts with the ticket's provider-granular form fixtures. No merge or Electron build was started. DR-007 below is historical prior-base evidence. See `latest-base-refresh-round-4-conflict-report.md`.
 ## Result
 
 **Pass — the final integrated state is documented; no additional long-lived product-document edit is required.**

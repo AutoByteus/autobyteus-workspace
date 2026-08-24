@@ -216,3 +216,29 @@ None. API-REV-007 had no unresolved current implementation failure. Its Pass rem
 - New or remaining current failure IDs: **None**.
 - Recommended recipient: `/code_reviewer` for proportional test-code review, expected **Not Applicable** because API-REV-008 changed no durable test.
 - Remaining risk: historical `APIE2E-REPO-005` remains separate/Unclear; provider availability is externally mutable; current Electron packaging and the later final-base refresh remain downstream delivery-owned.
+
+### API-REV-009 — Controlled New-workspace integration passes current dual-host execution
+
+- Triggering role/report/round: `/code_reviewer`; `code-review-report.md` / `CRR-016`; round 9.
+- Triggering surface: `IR-009` controlled Agent/Team workspace selection, registration-before-launch, delayed discovery persistence and failure/no-fallback behavior on the current semantic merge.
+- Related revisions: `SR-008`, `ARCH-REV-008`, `IR-009`, `CRR-016`, delivery re-entry `DR-008`.
+- Executed identity: reviewer HEAD `f389358e70054a9e249dd0f06623c1c154c130a5`; implementation artifact `8a7955e9455eadc1be689aa4802384381f2107d8`; semantic merge `53dd98b53490947ed96d4dda9fb45d9c80719740`.
+- Why recorded: API-REV-008 was earlier-tree characterization only. API-REV-009 establishes direct current-head controlled-browser, API/history, real-provider, process/recovery and package-integrity evidence.
+- Durable coverage decision: all affected tests remain valid; **no repository-resident durable coverage was added, updated or removed** by API-REV-009.
+- Repository result: focused controlled-workspace/provider `7 files / 100 tests` Pass; retained server `5 files / 29 tests` Pass; SDK/Nuxt/server/application build and validation Pass. Adjacent web passed `7 files / 102 tests`; two unchanged `runHistoryStore` mock failures remain historical `APIE2E-REPO-005` Unclear/separate.
+- Changed-boundary result: Agent and Team explicit New paths survived required edits, each registered once and launched once with exact history correlation. Agent returned the exact Codex Luna response. The real Classroom team used Professor Codex Luna and Student AutoByteus DeepSeek v4 Flash, produced assignment/answer files and exchanged two recipient-name messages. Controlled registration failure retained New mode/path/error with zero launch and no fallback.
+- Retained real-system result: Socratic real business turns passed in standalone and Studio; Brief Studio completed real Researcher publication, `/writer` handoff, Writer publication and two-artifact projection. Brief standalone recovered a durable record after supported watch restart. Studio explicit iframe remount and same-data restart recovered both maintained application states. Route separation and exact `73/73` parity passed.
+- Environment: installed Chrome, authenticated Codex, isolated ports/data, nine supported vault credentials, and already-configured `/Users/normy/autobyteus_org/autobyteus-agents` (`7` shared agents, `50` team-local agents, `12` teams).
+- Cleanup: owned ports free; marked roots/per-app runtime data/generated outputs removed; ordinary `29695` listener preserved; zero of 12 secret-like values matched 38 retained text evidence files.
+
+#### Prior Failure Resolution
+
+None. API-REV-008 had no unresolved current implementation failure; it remains valid only for its recorded tree.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record and `evidence/api-e2e/api-rev-009-*`.
+- Prior result/confidence: **Pass / 98%** (`API-REV-008`).
+- Current result/confidence: **Pass / 98%**.
+- Broader validation: **Required; executed; Pass**.
+- New or remaining current failure IDs: **None**.
+- Recommended recipient: `/code_reviewer` for proportional test-code review, expected **Not Applicable** because API-REV-009 changed no durable test.
+- Remaining risk: historical `APIE2E-REPO-005` stays separate/Unclear; live provider/account state remains externally mutable; Electron packaging/shell execution remains downstream delivery-owned.

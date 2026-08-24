@@ -11,6 +11,7 @@
 | DR-005 | CRR-013 Pass returns the design-resolved newest-Personal package to delivery | DR-004 Blocked — Design Impact | Newest-base Electron 1.4.55 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-005-* |
 | DR-006 | User reports origin/personal advanced again and requests newest-base integration plus Electron rebuild | DR-005 ready for verification on 7edfb1625 | Blocked — Design Impact; nested physical-scope refresh produces 3 non-mechanical conflicts | latest-base-refresh-round-2-conflict-report.md, evidence/delivery/dr-006-base-refresh-and-integration.log |
 | DR-007 | CRR-015/API-REV-008 return the design-resolved newest-Personal candidate; user requests latest base and Electron rebuild | DR-006 Blocked — Design Impact | Latest-base integrated Electron 1.4.56 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-007-* |
+| DR-008 | User reports origin/personal advanced and requests latest integration plus Electron rebuild | DR-007 ready for verification on 52b4be02e | Blocked — Design Impact; v1.4.57 workspace-selection refresh conflicts with 2 provider-granular durable tests | latest-base-refresh-round-4-conflict-report.md, evidence/delivery/dr-008-base-refresh-and-integration.log |
 
 ## Revision Entries
 
@@ -134,3 +135,19 @@
 - User/finalization state: verification of this exact DR-007 package has not been received. Ticket remains in progress. No final delivery commit/push, Personal merge/push, tag, hosted release, deployment, archive, or cleanup occurred.
 - Next action: user tests the exact 1.4.56 DMG/hash and replies with explicit approval/completion or a concrete issue.
 - Remaining risks/hold: unsigned/unnotarized local package; ordinary manual launch uses `~/.autobyteus/server-data` and can execute pending standard migrations; provider availability is mutable; Electron artifacts do not travel with Git. Refresh origin/personal after verification and require renewed verification if the candidate materially changes. Finalization remains ticket-branch-only unless Personal integration is separately authorized.
+
+### DR-008 — Personal v1.4.57 workspace-selection refresh requires design-led integration
+
+- Round/trigger: Round 8; user reports `origin/personal` advanced and requests newest-base integration plus another Electron rebuild.
+- Prior result: DR-007 Electron 1.4.56 package ready for verification on Personal `52b4be02ea793f2071fe5a63a94664ab25196433`.
+- Current result: Blocked — Design Impact; Electron 1.4.57 rebuild not started.
+- Safety checkpoint: committed the cumulative DR-007 delivery package locally as `95c63b5a982ba90ccbb8c6345af66a9485fa5a78` before refresh.
+- Latest-base refresh: fetched `origin/personal@389748b0b9f0dea051aaed18641de131cf0adbbb` (`v1.4.57`), four commits beyond DR-007's base. Pre-integration divergence is 153 ahead / 4 behind.
+- New base scope: finalized controlled workspace-selection state for remote Team launches, explicit New mode/path preservation across unrelated form edits and delayed discovery, associated durable/browser/API evidence and docs, and the 1.4.57 version bump. This new feature is directly usable without migration.
+- Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with content conflicts in `AgentRunConfigForm.spec.ts` and `TeamRunConfigForm.spec.ts`. No actual merge was started; the worktree has zero unmerged paths.
+- Design impact: the two tests must combine the ticket's current provider-granular callable selection/snapshot/dynamic-ensure fixture with Personal's controlled `WorkspaceSelectionState` relay and replacement assertions. Whole-side selection would either restore stale provider mocks or drop current workspace behavior coverage.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-008-base-refresh-and-integration.log`.
+- Routing: Solution Designer must define the combined form/test contract and downstream validation before implementation merges the new base.
+- User/finalization state: DR-007 1.4.56 is superseded for the newest-base request. Ticket remains in progress. No merge, new build, final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
+- Resume condition: design-approved semantic integration, normal downstream gates, fresh delivery ref check, and Electron rebuild.

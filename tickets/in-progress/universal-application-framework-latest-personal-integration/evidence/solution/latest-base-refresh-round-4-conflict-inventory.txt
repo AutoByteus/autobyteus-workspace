@@ -1,0 +1,2 @@
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts

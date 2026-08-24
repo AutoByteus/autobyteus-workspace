@@ -1,15 +1,15 @@
 # Integration Strategy Analysis — Universal Application Framework on Latest Personal
 
-> Current status: the original integration and SR-004 refresh are implemented and verified. The unimplemented SR-005 physical-scope decisions remain required, but Personal moved again to v1.4.56. The current merge is governed by the SR-007-corrected addendum and `latest-base-refresh-round-3-design-analysis.md`; earlier sections remain historical authority for the one-merge strategy and established platform boundaries.
+> Current status: the original integration and SR-004–SR-007 refreshes are implemented and verified at DR-007. The current v1.4.57 merge is governed by `latest-base-refresh-round-4-design-analysis.md`; this file remains historical authority for the one-merge strategy and established platform boundaries.
 
 ## Status And Authority
 
-- Status: Design-ready through SR-007; the original merge strategy remains authoritative and the newest addendum governs `origin/personal@c5b87df4d...` (22 commits after the integrated base, five conflicts, ten changed-both paths).
+- Status: Historical strategy implemented through SR-007; still authoritative for the single history-preserving merge rule. SR-008 governs `origin/personal@389748b0b...` (four commits after integrated base, two conflicts, two changed-both paths).
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
-- Scope: REQ-001–REQ-010 and AC-001–AC-025.
+- Scope: REQ-001–REQ-011 and AC-001–AC-029.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
-- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-round-3-design-analysis.md](latest-base-refresh-round-3-design-analysis.md) governs the current provider/model/credential/UI plus physical-scope/conflict delta.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-round-3-design-analysis.md](latest-base-refresh-round-3-design-analysis.md) is the implemented v1.4.56 provider/physical-scope authority; [latest-base-refresh-round-4-design-analysis.md](latest-base-refresh-round-4-design-analysis.md) governs the current controlled-workspace/test delta.
 
 ## Executive Decision
 

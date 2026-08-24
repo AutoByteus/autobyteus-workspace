@@ -2,10 +2,10 @@
 
 ## Status And Authority
 
-- Status: Design-ready supplement preserved through `SR-007`. Sections 1–4 remain the passed runtime contract; section 5 is the implemented model/error baseline; section 6 preserves the pending nested physical-scope/migration integration; section 7 defines the corrected Personal v1.4.56 provider/model/credential integration after `ARCH-REV-006`.
+- Status: Implemented and verified runtime supplement through `SR-007`/DR-007. Sections 1–7 remain the passed runtime contract. SR-008 adds no runtime change; its controlled Studio workspace/test delta is defined in `latest-base-refresh-round-4-design-analysis.md`.
 - Purpose: Preserve the resolved lifecycle/activation/persistence/tool contracts and define the exact newest-Personal physical-scope plus provider-capability transitions without reopening those owners.
-- Related behavior and requirements: BEH-003–BEH-009; REQ-004–REQ-010; AC-005–AC-025.
-- Scope: Internal integration behavior only. SR-007 adds no host, route, compatibility path, provider persistence, or product workflow; it consumes current Personal provider owners and retains the existing app-data migration runner.
+- Related behavior and requirements: BEH-003–BEH-010; REQ-004–REQ-011; AC-005–AC-029.
+- Scope: Internal integration behavior only. SR-008 preserves these runtime contracts unchanged and adds no host, route, compatibility path, provider persistence, or migration.
 - Governing rule: latest Personal owns evolved process/data/provider/run/team semantics; the finalized feature owns the dual-host boundary, shared application lifecycle, scoped publication/session behavior, and launch baseline/override/readiness model.
 
 ## 1. Exact Process And Application Lifecycle Allocation

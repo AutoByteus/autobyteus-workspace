@@ -13,6 +13,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 | SR-005 | Delivery engineer / `latest-base-refresh-round-2-conflict-report.md` / `DR-006` | Nested physical-scope, graph-local member boundary, and Team Agent memory migration | Design Impact | Five-commit refresh mapped to exact existing owners with combined conflict/overlap, isolated migration, and verification contracts |
 | SR-006 | Implementation engineer / mandatory immediate re-fetch before SR-005 merge | Personal v1.4.56 provider/catalog/API-key architecture superseded reviewed target | Design Impact | Current five-conflict/ten-overlap merge and exact provider/model/credential/UI application adaptations designed; SR-005 physical-scope decisions preserved |
 | SR-007 | Architecture reviewer / `design-review-report.md` / `ARCH-REV-006` | AR-004, AR-005 | Design Impact | Provider-granularity and snapshot-settled contracts corrected; runtime model cache removed in favor of fresh exact per-leaf resolution and credential-authority equivalence |
+| SR-008 | Delivery engineer / `latest-base-refresh-round-4-conflict-report.md` / `DR-008` | Personal v1.4.57 controlled-workspace/provider-form test junction | Design Impact | Exact two-conflict/two-overlap controlled-workspace and provider-granular fixture contract defined; no production refactor or migration |
 
 ## Revision Entries
 
@@ -157,3 +158,27 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: implementation remains paused. On architecture Pass, implementation must re-fetch exact `c5b87df4d...`, stop if moved, perform the one semantic merge, preserve the isolated prototype exactly, implement the bounded SR-007 seam corrections with the already-approved conflict/migration decisions, and restart the complete source-review/API-E2E/durable-test/delivery chain.
 - Next recipient or routing: `/architecture_reviewer` with the full cumulative package, `ARCH-REV-006`, and current evidence.
 - Remaining gaps or risks: Personal may advance before implementation/delivery; real provider and Electron proof remains environment-dependent and must be reported truthfully.
+
+### SR-008 — Personal v1.4.57 controlled-workspace refresh
+
+- Triggering role, report path, and round: `/delivery_engineer`; `latest-base-refresh-round-4-conflict-report.md`; `DR-008` newest-base refresh after the verified DR-007 checkpoint.
+- Triggering finding IDs: delivery-classified Design Impact at the two form-test conflict junction; no architecture-review finding ID exists yet.
+- Prior authoritative result: SR-007 passed architecture, implementation/source/API-E2E/proportional-test/delivery gates and produced protected v1.4.56 checkpoint `95c63b5a...`. Personal then advanced four commits to `389748b0b...` (v1.4.57).
+- Current authoritative result: Design-ready SR-008 bounded correction prepared for architecture review; no v1.4.57 merge, production edit, or Electron rebuild is authorized yet.
+- Resolution:
+  - independently re-fetched and confirmed `origin/personal@389748b0b...`, divergence `153/4`, 95 Personal paths, exactly two changed-both paths, exactly two content conflicts, a clean index, and unchanged protected HEAD;
+  - accepted Personal's controlled `WorkspaceSelectionState`, panel-owned context/reset/register-before-launch policy, controlled selector, and thin Agent/Team form relays as the current production authority;
+  - proved the production workspace files auto-merge while the two durable tests alone combine two valid contracts;
+  - specified the exact Agent fixture: controlled selector prop/event and complete workspace prop/relay plus current callable provider-selection rows, `providerSnapshots`, and `ensureMissingDynamicProviders`;
+  - specified the exact Team fixture: runtime-keyed filtered callable provider rows, snapshots/settlement, wrapper default workspace state, and exact complete-value relay;
+  - preserved explicit New mode/path across unrelated edits and delayed discovery, register-before-launch, visible failure/no stale fallback, and current workspace/history semantics;
+  - selected `Directly Usable — No Migration` for this transient frontend change while preserving every already-integrated migration;
+  - defined focused workspace/provider suites, real Studio New-workspace proof, retained dual-host/package-parity/cleanup proof, and Electron v1.4.57 rebuild/smoke.
+- Approved behavior or requirement IDs affected: BEH-001, BEH-005–BEH-006, BEH-009–BEH-010; REQ-001–REQ-002, REQ-007, REQ-010–REQ-011; UC-001–UC-002, UC-007, UC-015–UC-016; AC-001–AC-002, AC-025–AC-029. No new host, provider owner, application-platform service, public SDK contract, authentication behavior, stored schema, or migration is introduced.
+- Canonical artifacts and sections updated: `requirements.md`; `investigation-notes.md`; `design-spec.md` DS-001/DS-007/DS-017, ownership/file/sequence/proof maps; this record.
+- Supplemental artifact added: `latest-base-refresh-round-4-design-analysis.md`.
+- Evidence added: `evidence/solution/latest-base-refresh-round-4-merge-preview.log`, `...conflict-inventory.txt`, `...overlap-inventory.txt`, and `...path-inventory.txt`. Delivery-owned DR-008 artifacts remain preserved and untouched.
+- Self-validation result: Passed. The design covers supported edit/discovery/registration/launch/return paths, keeps one owner per subject, removes retired partial events, adds no empty indirection or migration, and limits code resolution to two conflicted tests while retaining complete verification.
+- Downstream and architecture-review impact: implementation and delivery remain paused. On architecture Pass, implementation must re-fetch the exact reviewed Personal ref, merge once, accept the governed production auto-merge, resolve both tests exactly, and restart source-review/API-E2E/proportional-test/delivery gates.
+- Next recipient or routing: `/architecture_reviewer` with the complete cumulative package and DR-008/round-4 evidence.
+- Remaining gaps or risks: Personal may advance before implementation/delivery; actual merged-source tests, real Studio remote-workspace behavior, and Electron packaging remain downstream proof obligations.

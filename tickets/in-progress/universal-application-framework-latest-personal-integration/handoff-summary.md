@@ -1,5 +1,7 @@
 # Handoff Summary — Universal Application Framework Latest-Personal Integration
 
+
+> **DR-008 blocked — Design Impact.** Newest Personal adds controlled workspace-selection behavior and conflicts with two current provider-granular Agent/Team form tests. No actual merge or Electron rebuild was started. Route: `/solution_designer`; canonical report: `latest-base-refresh-round-4-conflict-report.md`.
 ## Status
 
 **DR-007 Pass — latest Personal is integrated and Electron 1.4.56 is ready for explicit user verification.**
