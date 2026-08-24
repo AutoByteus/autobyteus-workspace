@@ -148,6 +148,19 @@ provider creation remains unavailable until the filesystem issue is fixed and
 the server restarts. There is no manual v1 command, backup/quarantine copy,
 runtime v1 reader, partial migration, or automatic `.env` import.
 
+Required startup migration `20260823_repair_team_agent_memory_layout` repairs
+the released nested-Team writer regression. For each AgentRun admitted by a
+validated current V1 execution tree, it moves an affected flat nested-member
+directory as one same-filesystem directory into the canonical
+`root TeamRun -> ancestor TeamRun ids -> AgentRun` location. Current runtime
+readers and writers remain canonical-only; direct-root and already-canonical
+members are not relocated. An item-level move failure records `FAILED` without
+blocking unrelated application startup and remains available through the
+existing **Settings -> Server Migrations -> Retry** action. A real canonical
+target beside a preserved flat source records `SUCCEEDED_WITH_WARNINGS`; a
+missing or invalid canonical target is never treated as a warning. See the
+Memory Sync documentation for the approved v1 physical-retention consequence.
+
 ### Production migration practice
 
 - Follow the canonical
@@ -267,7 +280,9 @@ config responses. Source nodes store the plaintext token locally so background
 sync can resume after restart.
 
 See `docs/features/memory_sync.md` for API endpoints, storage files, token
-behavior, and current v1 limits.
+behavior, current v1 limits, and the documented case where replace-only sync may
+retain both a pre-upgrade flat nested-member path and its canonical replacement
+while semantic local/imported reads continue using only the canonical V1 path.
 
 ## Docker
 

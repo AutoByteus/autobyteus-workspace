@@ -1,0 +1,28 @@
+DR-001 docs sync and package checks
+recorded_utc=2026-08-23T12:19:24Z
+check=git diff --check
+result=PASS
+
+check=delivery markdown integrity
+PASS files=4
+
+check=required delivery artifacts and DR-001
+result=PASS
+
+check=durable doc contract markers
+result=PASS docs=6
+
+check=tracked repository artifact hygiene
+Repository artifact hygiene check passed.
+Tracked files scanned: 24131
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+
+check=untracked checkout-hostile path length
+PASS count=91 longest=87 path=api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-after-restore.png
+
+check=private fixture JSON and reviewed patch identity
+PASS fixture_patch_sha256=9d361fc90b626487785f637828c37ffca240cbb132db49f10ec9179e4b2cf015
+PASS durable_patch_sha256=e4d86b11bc4bf15358c9982d0f7eb8118aea8da2ec917476ba84fb3af7d241cb
+
+final_result=PASS

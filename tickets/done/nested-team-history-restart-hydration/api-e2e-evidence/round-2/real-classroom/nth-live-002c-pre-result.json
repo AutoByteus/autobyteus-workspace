@@ -1,0 +1,66 @@
+{
+  "scenario": "NTH-LIVE-002C",
+  "phase": "pre-restart",
+  "rootTeamRunId": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+  "teacherId": "test_teacher_af4c9a17d3a146788d17618fe72687bf",
+  "request": "NTH_LIVE_002C_TASK_PRE_20260823",
+  "token": "NTH_LIVE_002C_RESULT_PRE_20260823",
+  "autoExecuteTools": true,
+  "record": {
+    "taskId": "task_e9be1a9290fe40a5b51d395a1af00e31",
+    "delegatorAgentRunId": "test_teacher_af4c9a17d3a146788d17618fe72687bf",
+    "recipientAddress": "/StudentStudyGroup",
+    "taskExecution": {
+      "teamRunId": "team_local_team_nested_classroom_test_student_st_3df63a0af69049ca9447ccad153e1ad9"
+    },
+    "description": "This is a nested-team delegation test (marker NTH_LIVE_002C_TASK_PRE_20260823). As the task-team coordinator, complete this single bounded task: use submit_task_result to submit exactly the token NTH_LIVE_002C_RESULT_PRE_20260823 as your task result. Do not add commentary, extra tokens, or explanations in the submission; the submitted result must be exactly NTH_LIVE_002C_RESULT_PRE_20260823.",
+    "referenceFiles": [],
+    "status": "accepted",
+    "updates": [
+      {
+        "submissionId": "submission_dd926fa89f934037aad5e0f1d08e170d",
+        "message": "NTH_LIVE_002C_RESULT_PRE_20260823",
+        "referenceFiles": [],
+        "createdAt": "2026-08-23T11:40:02.243Z"
+      },
+      {
+        "reviewId": "review_de1a8ef73aac4aca9381dc4dd5179cee",
+        "reviewedSubmissionId": "submission_dd926fa89f934037aad5e0f1d08e170d",
+        "decision": "accept",
+        "comment": "Accepting the nested delegation test result for marker NTH_LIVE_002C_TASK_PRE_20260823.",
+        "referenceFiles": [],
+        "createdAt": "2026-08-23T11:40:06.084Z"
+      }
+    ],
+    "createdAt": "2026-08-23T11:40:00.852Z"
+  },
+  "taskTeamRunId": "team_local_team_nested_classroom_test_student_st_3df63a0af69049ca9447ccad153e1ad9",
+  "taskStudentAgentRunId": "student_one_79d53aa12c0b4eb991798634792c081e",
+  "exactDelegateArgs": {
+    "recipient_address": "/StudentStudyGroup",
+    "description": "This is a nested-team delegation test (marker NTH_LIVE_002C_TASK_PRE_20260823). As the task-team coordinator, complete this single bounded task: use submit_task_result to submit exactly the token NTH_LIVE_002C_RESULT_PRE_20260823 as your task result. Do not add commentary, extra tokens, or explanations in the submission; the submitted result must be exactly NTH_LIVE_002C_RESULT_PRE_20260823."
+  },
+  "exactReviewArgs": {
+    "task_id": "task_e9be1a9290fe40a5b51d395a1af00e31",
+    "decision": "accept",
+    "comment": "Accepting the nested delegation test result for marker NTH_LIVE_002C_TASK_PRE_20260823."
+  },
+  "ui": {
+    "teacherLifecycle": true,
+    "taskPanel": true,
+    "liveSettledTaskSubtreeExcluded": true
+  },
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre-accepted.png",
+  "terminateMutation": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

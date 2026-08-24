@@ -1,0 +1,24 @@
+{
+  "rootTeamRunId": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828",
+  "restored": {
+    "data": {
+      "restoreAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "nested_classroom_test_team_69376c51bd9d4173b1d4f6dc605eb828"
+      }
+    }
+  },
+  "liveSettledTaskRowCount": 0,
+  "rootRowText": "NTH_LIVE_002C_TASK_PRE_20260823. Test nested delegation. Use delegate_task exactly once with reci...\n4m",
+  "lastActivityRendered": true,
+  "screenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-after-restore.png",
+  "terminated": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  }
+}

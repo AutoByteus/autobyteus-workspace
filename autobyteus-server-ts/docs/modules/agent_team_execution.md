@@ -40,10 +40,20 @@ local AgentRun identity. For current Team execution trees,
 continuation uses the local AgentRun ID plus its persisted memory state, and new
 native nodes keep `platformAgentRunId: null`.
 
-Member memory is root-hierarchical. Persistent and task executions resolve their
-`memoryDir` through `AgentMemoryLocationService` from the root TeamRun, concrete
-task-Team chain, and real AgentRun identity. Consumers do not derive a fallback
-path from a logical address or provider ID.
+Member memory is root-hierarchical. `TeamRunPhysicalScope` is immutable execution
+context: the root starts with an empty ancestor chain and each concrete child
+TeamRun appends its own TeamRun ID exactly once. Every direct configured member,
+task Agent, task-Team member, and deeper nested member passes its containing
+TeamRun scope to `AgentMemoryLocationService`; the persisted V1 execution index
+derives the same scope for cold reads. Consumers do not derive a fallback path
+from a logical address or provider ID.
+
+Required startup migration `20260823_repair_team_agent_memory_layout` contains
+the only knowledge of the defective flat nested-member location. It moves each
+unambiguous whole directory admitted by a validated current V1 tree into the
+canonical scope, leaves direct-root/current/unrelated data alone, and uses the
+existing migration record/manual Retry path for failures or bounded warnings.
+Current Team runtime and history code remain canonical-only.
 
 ## Canonical Execution Address
 
