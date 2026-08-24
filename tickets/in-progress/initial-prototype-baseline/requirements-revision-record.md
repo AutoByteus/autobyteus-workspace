@@ -19,6 +19,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-011 | User authorizes direct integration on `personal`; remote has advanced | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007 | Preserve concurrent remote history by rebasing and revalidating the cumulative approved task package, then fast-forward and push `personal` directly with final ref equality. |
 | RER-012 | Safe personal integration returned and independently verified | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-006; REQ-014–REQ-015; AC-014–AC-015; SCN-006; RISK-007 | Late-fetch history preservation, exact evidence, validations, ordinary push and final ref equality pass; canonical package now lives at the repository root on synchronized `personal`. |
 | RER-013 | User requests independent prototype repository and monorepo removal | Approved / Prototype-Only Complete | Draft / Prototype Needed | BEH-007; REQ-016–REQ-018; AC-016–AC-018; SCN-007; RISK-008 | Target ownership moves to a sibling independent `personal` repository; verify/push the complete target before removing and reconciling the monorepo copy. |
+| RER-014 | Independent repository and monorepo removal returned and verified | Draft / Prototype Needed | Approved / Prototype-Only Complete | BEH-007; REQ-016–REQ-018; AC-016–AC-018; SCN-007; DEC-005; RISK-008 | Independent ownership, exact evidence, target-first sequencing, monorepo removal and dual clean remote synchronization pass; terminal prototype-only completion restored. |
 
 ## Revision Entries
 
@@ -216,3 +217,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: None. This is product-prototype repository migration, not architecture or production engineering.
 - Remaining gaps, assumptions, or blocked decisions: Materialize/commit/push/validate the independent repository; only then remove/reconcile/commit/push the monorepo copy; prove no duplicate/link/stale active locator and both repositories clean/equal.
 - Next action or recipient: Route `Prototype Needed` under dynamic handoff rules to Product Prototyper with the cumulative RER-013 package. Do not route to architecture.
+
+### RER-014 — Verify independent ownership and restore completion
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: Product Prototyper returned the completed RER-013 migration with independent commit `0b02b0e1...`, workspace removal commit `5e3c7a28...`, exact preservation/validation artifacts and dual clean remote equality. Requirements Engineering independently fetched both remotes and reran focused/final/independent validators plus HTTP.
+- Prior authoritative status (`N/A` for `RER-001`): Draft / Prototype Needed
+- Current authoritative status: Approved / Prototype-Only Complete
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-007; REQ-016–REQ-018; AC-016–AC-018; SCN-007; DEC-005; RISK-008.
+- Why this baseline or revision was recorded: Reconcile the Product Prototyper-owned migration package, establish the independent repository as the sole active prototype owner, close the sequencing/loss risk and remove superseded active monorepo locators while preserving historical evidence.
+- Canonical artifact sections changed: Document status/approval; BEH-007 current outcome; acceptance outcome; operability; active UI/prototype/supplement locators; DEC-005; traceability; readiness/completion; investigation meta/source/runtime/behavior/state/prototype/artifact/risk records.
+- Supplemental artifacts added, changed, or removed: Integrated `independent-repository-migration.md`, approved-tree inventory, migration proof/validation, workspace removal result/proof and independent canonical artifacts at `/home/autobyteus/workspace/autobyteus-web-prototype`.
+- Prototype evidence or product decisions incorporated: Independent `personal`/origin `0b02b0e1...`; one prototype-focused root commit; no workspace/source commit objects; 2,001/2,001 approved files present; 848/848 binaries exact; 22 authorized active path/provenance differences and five enumerated migration additions; 17/17 exact hashes/clean recaptures; 20/20, 25/25, 86/86, typecheck/lint/2 files-8 tests/13-13/369-369/build/HTTP and 54/54 pass. Workspace `personal`/origin `5e3c7a28...`; old path/index absent; no duplicate/link; unrelated siblings unchanged.
+- User approval impact: No renewed review is required because PPA-001/PPA-002, both confirmation references, source pin, journeys, browser results and normative hashes remain exact. Independent ownership was explicitly approved.
+- Downstream architecture impact: None. This is the terminal product-prototype outcome.
+- Remaining gaps, assumptions, or blocked decisions: None for the approved prototype boundary. RER-014 is a requirements-only workspace commit; after push, the task branch may be fast-forwarded for archival consistency without changing prototype ownership.
+- Next action or recipient: Commit/push RER-014 on workspace `personal`, optionally fast-forward the historical task branch, apply terminal handoff rules, and return completion to the user. Do not route to architecture.

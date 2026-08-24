@@ -2,12 +2,12 @@
 
 ## Document Status
 
-- Status: `Draft / Prototype Needed — Independent Repository Migration`
-- Current requirements revision ID: `RER-013`
+- Status: `Approved / Prototype-Only Complete`
+- Current requirements revision ID: `RER-014`
 - Request / ticket: Initial prototype baseline
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-24
-- Approval state and reference: Observable UI/UX remains approved under PPA-001/PPA-002 and both user confirmations. The user now explicitly reverses the monorepo-ownership decision: move the complete prototype to independent repository `https://github.com/AutoByteus/autobyteus-web-prototype.git` at sibling checkout `/home/autobyteus/workspace/autobyteus-web-prototype`, use/push its `personal` branch, then remove the project from `autobyteus-workspace` `personal`. RER-013 reopens only repository ownership/provenance and active locators.
+- Approval state and reference: Approved under cumulative PPA-001/PPA-002, both UI confirmation references, and the user’s explicit independent-repository ownership decision. RER-014 verifies that the independent `personal` repository is complete, clean and synchronized; the monorepo copy was removed only afterward; observable approval remains unchanged.
 
 ## Problem And Desired Outcome
 
@@ -27,7 +27,7 @@
 | BEH-004 | Operational | The approved project is ordinary tracked content at repository-root `autobyteus-web-prototype` in `autobyteus-workspace` on synchronized `personal`; `ui-prototypes` retains five unrelated sibling projects. | Keep this complete separate project at repository-root `autobyteus-web-prototype` with no nested Git metadata or gitlink and with direct owning-repository provenance. | Approved observable UI/UX, evidence files and hashes, PPA-001, source pin, deterministic isolation, and the five unrelated `ui-prototypes/*` projects remain unchanged. | `investigation-notes.md`, SRC-016–SRC-017; RER-007 proof and RER-008 verification |
 | BEH-005 | User / System | The approved source pin supports selecting **Run** on an Agent Team, preparing its team launch draft in `/workspace`, launching the configured team, registering/selecting its live context, and projecting the team under its workspace in the left tree. RER-009 initially reproduced a prototype exception and launch no-op; the accepted PPA-002 correction now matches the pinned source across `JRN-050-A`–`JRN-050-E`. | The complete source-supported launch journey runs deterministically: catalog **Run** opens a valid team draft; **Run Team** creates one synthetic team run without production access; the run appears immediately under the selected workspace in the left tree and remains selectable/expandable with its members. | Existing team-card/config/tree presentation, source pin, deterministic fixtures, isolation, other journeys, prior final references, repository-root project placement, and unrelated prototype projects remain unchanged; VIS-016 and VIS-017 add normative anchors only for the corrected journey. | `agent-team-run-parity-analysis.md`; SRC-018–SRC-023; PPA-002; `JRN-050-A`–`JRN-050-E`; VIS-016–VIS-017 |
 | BEH-006 | Operational | After RER-010, the task and remote histories diverged. Product Prototyper refetched twice, incorporated a final seven remote-only commits by rebasing all six task patches onto `8d6b06b8...`, validated the complete candidate, fast-forwarded local `personal`, and pushed normally. Task, local `personal`, and `origin/personal` now equal `0100f78d...`. | Preserve both histories by rebasing the cumulative task package onto the latest fetched `origin/personal`, rerun terminal prototype validation, fast-forward the clean local `personal` branch to the validated task head, and push `personal` directly to `origin/personal` as explicitly authorized. | PPA-001/PPA-002, source pin `8ef282ba...`, all prototype/evidence hashes and stable IDs, requirements history, remote-only source/release work, and unrelated paths remain unchanged. | SRC-024–SRC-027; `personal-integration-record.md`; preservation JSON; 49/49 integration checks |
-| BEH-007 | Operational | The approved prototype is currently a tracked root directory in `autobyteus-workspace` at commit `8a4c3868...`, with prototype tree `ca1d3f9e...`. The requested sibling checkout is absent, while the new GitHub repository is reachable and has no advertised branch refs. | Establish the complete prototype as an independent repository at `/home/autobyteus/workspace/autobyteus-web-prototype` on branch `personal`, push it to its own origin, verify it completely, then remove `autobyteus-web-prototype/` from `autobyteus-workspace` `personal` and push that removal. | Observable UI/UX, PPA-001/PPA-002, source pin, VIS-001–VIS-017 and hashes, deterministic mock boundaries, complete evidence, unrelated workspace content/history, and both repositories’ concurrent remote history remain unchanged. | SRC-028–SRC-029; user repository locator; Git remote/path/tree inspection |
+| BEH-007 | Operational | The complete approved prototype is now an independent one-commit repository at `/home/autobyteus/workspace/autobyteus-web-prototype`, `personal`/`origin/personal` `0b02b0e1...`; the monorepo removal/reconciliation is pushed at workspace `personal`/origin `5e3c7a28...`, and the old path is absent. | Establish the complete prototype as an independent repository at `/home/autobyteus/workspace/autobyteus-web-prototype` on branch `personal`, push it to its own origin, verify it completely, then remove `autobyteus-web-prototype/` from `autobyteus-workspace` `personal` and push that removal. | Observable UI/UX, PPA-001/PPA-002, source pin, VIS-001–VIS-017 and hashes, deterministic mock boundaries, complete evidence, unrelated workspace content/history, and both repositories’ concurrent remote history remain unchanged. | SRC-028–SRC-031; migration result; 54/54 ownership validation; dual Git proof |
 
 ## Stakeholders, Actors, And Outcomes
 
@@ -61,7 +61,7 @@
 - Any downstream software-engineering or architecture-design ticket; this request is fulfilled by an accepted product prototype baseline.
 - Proof that mocked integrations are production-ready.
 - Silent reconciliation to a source revision newer than the approved baseline revision.
-- Creating another repository, branch, submodule, or gitlink for the prototype outside the existing `autobyteus-workspace` repository.
+- Creating any repository beyond the explicitly selected independent prototype repository, or linking it to the workspace through a submodule/gitlink.
 - Changing the approved UI/UX during repository-placement correction.
 - Deleting, relocating, or modifying the five unrelated projects that remain under `ui-prototypes/`; removing that shared directory is not part of this correction.
 - Real backend allocation, production credentials/services/writes, or actual agent execution; the corrected launch outcome remains deterministic and synthetic.
@@ -135,7 +135,7 @@
 | AC-017 | REQ-017 | Independent candidate is ready before monorepo deletion | Approved files/evidence and VIS hashes are preserved; active files contain no old monorepo prototype root; required focused/final/quality/build/browser/ownership checks pass; new repository `personal` is pushed without force and equals its origin with clean status and HTTP 200. | Any missing/changed approved artifact, active stale root, validation failure, external/production dependency, unpushed commit or divergence blocks deletion of the old copy. | Compare inventories/hashes, run validators/build/browser probe, and inspect Git/ref/push evidence. |
 | AC-018 | REQ-018 | Independent remote has passed AC-016–AC-017 | Monorepo `personal` contains a focused commit removing the old root and updating only required workspace/requirements locators; push succeeds without force; old path is absent; no submodule/gitlink/duplicate remains; both repositories are clean and synchronized with their origins. | Removing first, leaving a duplicate/link/stale active locator, losing unrelated workspace work, dirty/divergent refs or force push fails completion. | Inspect operation order, diffs, paths/index modes, refs/status and both push results. |
 
-**Acceptance outcome:** AC-001 through AC-015 remain met. AC-016 through AC-018 are open for the explicitly requested independent-repository migration and block deleting the current monorepo copy or declaring the new ownership complete.
+**Acceptance outcome:** AC-001 through AC-018 are met. Independent `personal`/origin equal `0b02b0e1...` with one prototype-focused root commit, 2,001/2,001 approved files, 848/848 exact binaries, 17/17 exact references, required quality/package/build/HTTP checks and 54/54 ownership checks. The independently verified target preceded workspace removal; workspace `personal`/origin equal `5e3c7a28...`, the old path/index rows are absent, and no duplicate, nested Git, submodule or gitlink remains.
 
 ## Relevant Scenarios And Journeys
 
@@ -168,7 +168,7 @@
 | QR-001 | Accessibility | Keyboard, focus, semantic, and other accessibility intent observable in the source shall match for every inventoried item. | Selected frontend boundary and validated viewports | Controlled manual/automated parity evidence |
 | QR-002 | Reliability | Given the same fixture, role, configuration, and action sequence, the prototype shall produce the same visible result on repeated clean runs. | All mocked journeys and states | Repeat comparison scenarios |
 | QR-003 | Security / Privacy | Prototype execution shall require no production credential and access no production or customer data or service. | Build, run, and review flows | Configuration and network-boundary inspection |
-| QR-004 | Operability | The canonical prototype shall be ordinary versioned content at the owning repository root and reproducible from `personal` without standalone or nested Git metadata. | RER-007 repository placement correction | Git top-level, index-mode, commit/push, clean-status, path-reference, unrelated-directory preservation, and validation checks |
+| QR-004 | Operability | The canonical prototype shall be ordinary repository-root content in its independent Git repository, reproducible from synchronized `personal`, with no nested Git metadata, submodule or gitlink. | RER-013 independent ownership | Git top-level/remote/branch/history/index, commit/push, clean status, path/reference, hash and ownership validation checks |
 
 ## Data Continuity And Acceptable Loss
 
@@ -192,8 +192,8 @@
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-013 | Approved requirements basis |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-013 | Informational traceability artifact |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/investigation-notes.md` | Evidence base and decision record | All | Current through RER-014 | Approved requirements basis |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Chronological requirements-round index | All | Current through RER-014 | Informational traceability artifact |
 | `/home/autobyteus/workspace/autobyteus-web-prototype/ui-ux-spec.md` | Product Prototyper-owned UI/UX supplement and requirements-defining/illustrative boundary | All | Approved / PPA-001 and PPA-002 | User-approved cumulative current-state baseline |
 | `/home/autobyteus/workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` | Final visual inventory and mapping | REQ-002, REQ-005, REQ-010–REQ-012; AC-002, AC-005, AC-010–AC-012 | Final / VIS-001–VIS-017 | User-approved baseline references |
 | `/home/autobyteus/workspace/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Final visual hashes, routes, contexts, and clean-capture results | REQ-002, REQ-005, REQ-006, REQ-010–REQ-012 | Final / 17 of 17 clean | User-approved baseline evidence |
@@ -218,7 +218,7 @@
 | `/home/autobyteus/workspace/autobyteus-web-prototype` | Canonical independent prototype repository and complete approved package | REQ-016–REQ-018; AC-016–AC-018 | Pushed on `personal` at `0b02b0e1fbdbdefb78b91b1705bd497663694e0f`; clean/equal | PPA-001/PPA-002 carry unchanged; observable evidence remains exact |
 | `/home/autobyteus/workspace/autobyteus-web-prototype/independent-repository-migration.md` | Independent ownership, approved-tree provenance, path policy and validation record | REQ-016–REQ-018; AC-016–AC-018 | Complete | Non-observable RER-013 evidence |
 | `/home/autobyteus/workspace/autobyteus-web-prototype/evidence/repository-independence/rer-013-migration-proof.json` | Machine-readable approved-tree, hash, history and validation preservation proof | REQ-016–REQ-017; AC-016–AC-017 | Pass | No renewed UI review required |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/rer-013-product-prototyper-migration-result.md` | Product Prototyper terminal migration and dual-repository evidence summary | REQ-016–REQ-018; AC-016–AC-018 | Returned for Requirements Engineering reconciliation | Prototype-only completion evidence |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/rer-013-product-prototyper-migration-result.md` | Product Prototyper terminal migration and dual-repository evidence summary | REQ-016–REQ-018; AC-016–AC-018 | Integrated in RER-014 | Prototype-only completion evidence |
 
 ## Assumptions
 
@@ -237,6 +237,7 @@
 | DEC-002 | Does completion of this prototype-only ticket authorize downstream software architecture or production engineering? | It governs terminal scope and prevents an unnecessary architecture handoff. | No. The accepted prototype baseline fulfills this ticket; production implementation would require a separate user request. | User | Decided in RER-002 |
 | DEC-003 | Where and through which Git history shall the prototype be tracked? | The project is a standalone prototype project within the owning monorepo, while `ui-prototypes/` is a shared collection containing unrelated feature prototypes. | Repository-root `autobyteus-web-prototype`, absolute path `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`, committed and pushed directly on `personal`; retain the five unrelated `ui-prototypes/*` sibling projects and therefore retain the shared directory. | User selected root placement and direct `personal` workflow; Requirements Engineering excluded unrelated deletion | Revised and decided in RER-007 |
 | DEC-004 | Does this defect require a whole-baseline refresh to newer source, or a focused parity correction to the approved pin? | Refreshing to later source would expand scope and invalidate previously controlled evidence unnecessarily. | Focused correction to source pin `8ef282ba...`; the required behavior is present there, while RER-009 identifies prototype-only state/action and journey-coverage defects. | Requirements Engineering based on source/runtime evidence and the user's reported expected behavior | Decided in RER-009 |
+| DEC-005 | Which repository owns the canonical prototype after RER-013? | Ongoing versioning, checkout path, history, remote and workspace cleanup depend on one unambiguous owner. | Independent repository `https://github.com/AutoByteus/autobyteus-web-prototype.git`, sibling root `/home/autobyteus/workspace/autobyteus-web-prototype`, branch `personal`; no monorepo duplicate/submodule/gitlink. This supersedes DEC-003 as the active target. | User | Decided in RER-013; verified in RER-014 |
 
 ## Traceability
 
@@ -280,14 +281,15 @@
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `Yes` — PPA-001 references **“approved”** on 2026-08-22; PPA-002 references **“done. i checked. thanks”** on 2026-08-24 after direct review of the corrected journey.
 - Architecture-ready: `N/A` — this ticket is explicitly prototype-only and authorizes no architecture or production engineering.
-- Remaining blocker: AC-016–AC-018. The approved prototype must be established and verified in the independent remote before the monorepo copy can be removed and both repositories reconciled.
+- Remaining blocker: None. AC-016–AC-018 pass; both repositories and active locators reflect the approved independent ownership.
 
 ## Completion Classification
 
-- Outcome: `Draft / Prototype Needed — Independent Repository Migration`
+- Outcome: `Approved Prototype-Only Complete`
 - Approved observable baseline: Unchanged cumulative PPA-001/PPA-002 current-state baseline, including WKS-022–WKS-023, JRN-050, VIS-016–VIS-017 and the user's 2026-08-24 direct-review confirmation.
 - Historical protected migration source: workspace commit `8a4c3868c7c54a46991f45be22a68151076412b1`, tree `ca1d3f9ed58f0fc1f673ff013a351841bf78e575`; removed only after independent remote verification.
 - Target terminal deliverable: `/home/autobyteus/workspace/autobyteus-web-prototype` on synchronized independent `personal` at `0b02b0e1fbdbdefb78b91b1705bd497663694e0f`; the old monorepo directory was removed only after target validation.
+- Workspace removal result: `/home/autobyteus/workspace/autobyteus-workspace` `personal`/`origin/personal` at `5e3c7a2834a95d6f391ab1145dbc20ff256d41de` before this RER-014 requirements-only closure; the old path and index rows are absent, with no duplicate, submodule or gitlink.
 - Independent-repository proof: 2,001/2,001 approved files remain present,
   848/848 approved binaries and VIS-001–VIS-017 remain exact; no nested
   `.git`, `.gitmodules`, submodule, gitlink or imported workspace/source
@@ -295,4 +297,4 @@
   gates pass; independent local and remote `personal` equal
   `0b02b0e1fbdbdefb78b91b1705bd497663694e0f` with clean status.
 - Approved prototype source snapshot: Remains `8ef282ba77705180d985e7000d801f0e0068cdc1`. Refreshing observable parity to a newer source revision is a separate explicit prototype reconciliation, not an effect of Git rebase.
-- Architecture handoff applicability: `No`; repository ownership migration remains product-prototype work and introduces no architecture or production engineering.
+- Architecture handoff applicability: `No`; the approved independent prototype baseline is the terminal deliverable and introduces no architecture or production engineering.
