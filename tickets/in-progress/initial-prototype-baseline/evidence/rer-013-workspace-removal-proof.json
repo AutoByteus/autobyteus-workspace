@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "package": "initial-prototype-baseline",
+  "requirementsRevision": "RER-013",
+  "workspaceRepository": "/home/autobyteus/workspace/autobyteus-workspace",
+  "workspaceBranch": "personal",
+  "workspaceBase": "6b3dac50b7db7c6d7fd0f6fc3b422d8426ba298f",
+  "independentRepository": "/home/autobyteus/workspace/autobyteus-web-prototype",
+  "independentRemote": "https://github.com/AutoByteus/autobyteus-web-prototype.git",
+  "independentCommit": "0b02b0e1fbdbdefb78b91b1705bd497663694e0f",
+  "independentLocalPersonal": "0b02b0e1fbdbdefb78b91b1705bd497663694e0f",
+  "independentOriginPersonal": "0b02b0e1fbdbdefb78b91b1705bd497663694e0f",
+  "independentClean": true,
+  "independentCommitCount": 1,
+  "oldWorkspacePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
+  "oldWorkspacePathExists": false,
+  "oldWorkspaceTrackedRows": 0,
+  "gitlinksInCandidate": 0,
+  "gitmodulesPresent": false,
+  "changedPathRows": 2007,
+  "deletedPrototypeRows": 2001,
+  "unexpectedChangedPaths": [],
+  "unrelatedSiblingTrees": {
+    "memory-inspector-ux-redesign": {
+      "baseTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "headTree": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+      "candidateStatus": ""
+    },
+    "memory-sync-transparency": {
+      "baseTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "headTree": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+      "candidateStatus": ""
+    },
+    "mobile-pwa-navigation": {
+      "baseTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "headTree": "d3fc1d62e56db44b793e63665121106021543901",
+      "candidateStatus": ""
+    },
+    "taskagent-team-tab-active-tasks": {
+      "baseTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "headTree": "320c0eef410da34bf2402025583955c0f80a9786",
+      "candidateStatus": ""
+    },
+    "token-statistics-task-cost": {
+      "baseTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "headTree": "f39c4858737394968b8f889375d3f56f9c131207",
+      "candidateStatus": ""
+    }
+  },
+  "activeCanonicalRoot": "/home/autobyteus/workspace/autobyteus-web-prototype",
+  "historicalLocatorPolicy": "Prior monorepo and task-worktree locators retained in source logs, earlier REQ/AC/SCN/DEC rows and RER history are explicitly historical, not active locators.",
+  "workspaceFinalCommitPolicy": "The record does not embed the workspace commit that contains itself; terminal local/remote equality is returned live."
+}

@@ -1,0 +1,19 @@
+RER-013 workspace removal candidate proof
+workspace_branch=personal
+workspace_base=6b3dac50b7db7c6d7fd0f6fc3b422d8426ba298f
+workspace_origin=6b3dac50b7db7c6d7fd0f6fc3b422d8426ba298f
+old_path_exists=no
+old_tracked_rows=0
+gitlinks=0
+gitmodules=no
+independent_local=0b02b0e1fbdbdefb78b91b1705bd497663694e0f
+independent_remote=0b02b0e1fbdbdefb78b91b1705bd497663694e0f
+independent_status_rows=0
+unrelated sibling status:
+candidate paths outside deleted prototype:
+ M tickets/in-progress/initial-prototype-baseline/investigation-notes.md
+ M tickets/in-progress/initial-prototype-baseline/requirements-doc.md
+?? tickets/in-progress/initial-prototype-baseline/evidence/rer-013-independent-postpush-validation.txt
+?? tickets/in-progress/initial-prototype-baseline/evidence/rer-013-workspace-removal-candidate.txt
+?? tickets/in-progress/initial-prototype-baseline/evidence/rer-013-workspace-removal-proof.json
+?? tickets/in-progress/initial-prototype-baseline/rer-013-product-prototyper-migration-result.md
