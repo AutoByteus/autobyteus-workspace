@@ -46,6 +46,13 @@ import {
   createHostDefinitionServices,
   type HostDefinitionServices,
 } from "./host-definition-services.js";
+import { getWorkspaceManager } from "../workspaces/workspace-manager.js";
+import { getRuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import { getModelAvailabilityService } from "../llm-management/services/model-availability-service.js";
+import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
+import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -127,6 +134,14 @@ const createStudioApplicationServices = (input: {
     agentDefinitionService: input.definitions.agentDefinitionService,
     agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
     agentToolsSessionFactory: input.agentToolsMcpRuntime,
+    workspaceManager: getWorkspaceManager(),
+    runtimeAvailabilityService: getRuntimeAvailabilityService(),
+    modelCatalogService: getModelCatalogService(),
+    modelAvailabilityService: getModelAvailabilityService(),
+    llmProviderService: getLlmProviderService(),
+    codexClientManager: getCodexAppServerClientManager(),
+    requireCurrentModelIdentifier: (modelIdentifier) =>
+      LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
   });
   const catalogRefreshCoordinator = new ApplicationCatalogRefreshCoordinator({
     bundleService: input.packages.bundleService,

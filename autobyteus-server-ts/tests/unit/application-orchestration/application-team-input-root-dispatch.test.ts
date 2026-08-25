@@ -108,8 +108,15 @@ const buildHost = (
     runObserverService: {
       attachBinding: vi.fn(async () => true),
     } as never,
-    teamRunService: {
-      resolveActiveTeamRun,
+    teamExecution: {
+      postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+        const active = await resolveActiveTeamRun();
+        if (!active) return { kind: "NOT_AVAILABLE" };
+        const result = await active.postMessage(message, targetAgentRunId);
+        return result.accepted
+          ? { kind: "ACCEPTED" }
+          : { kind: "REJECTED", message: result.message ?? null };
+      }),
     } as never,
     agentTargetAuthorizationService: {
       authorizeTarget: vi.fn(async (_nextApplicationId, address) => ({

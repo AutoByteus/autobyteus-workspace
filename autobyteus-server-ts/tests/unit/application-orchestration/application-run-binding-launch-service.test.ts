@@ -94,19 +94,14 @@ const buildService = (input: {
   const teamRunService = {
     createTeamRun: vi.fn(async (input: { memberConfigs: Array<{ memberAddress: string }> }) => ({
       teamRunId: "team-run-1",
-      getExecutionTreeSnapshot: () => ({
-        rootTeam: {
-          address: "/",
-          members: input.memberConfigs.map((member) => ({
-            address: member.memberAddress,
-            agentRunId: `team-run-1::${member.memberAddress.slice(1)}`,
-          })),
-        },
-      }),
+      members: input.memberConfigs.map((member) => ({
+        memberAddress: member.memberAddress,
+        agentRunId: `team-run-1::${member.memberAddress.slice(1)}`,
+      })),
     })),
     createTeamRunFromRootConfig: vi.fn(async () => ({
       teamRunId: "team-run-1",
-      getExecutionTreeSnapshot: () => ({ rootTeam: { address: "/", members: [] } }),
+      members: [],
     })),
   };
   const agentDefinitionService = {
@@ -130,8 +125,8 @@ const buildService = (input: {
       executionResourceResolver: executionResourceResolver as never,
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
-      agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
+      agentExecution: agentRunService as never,
+      teamExecution: teamRunService as never,
       agentDefinitionService: agentDefinitionService as never,
       currentModelSelectionPolicy,
     }),

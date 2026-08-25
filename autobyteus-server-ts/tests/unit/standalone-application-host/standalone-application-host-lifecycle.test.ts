@@ -39,6 +39,12 @@ const mocks = vi.hoisted(() => {
     agentTeamDefinitionService: {},
     close: vi.fn(),
   };
+  const workspaceManager = {};
+  const runtimeAvailabilityService = {};
+  const modelCatalogService = {};
+  const modelAvailabilityService = {};
+  const llmProviderService = {};
+  const codexClientManager = {};
   return {
     app,
     appConfig,
@@ -46,6 +52,13 @@ const mocks = vi.hoisted(() => {
     mcpRuntime,
     generalProcessRunSupervisor,
     hostDefinitionServices,
+    workspaceManager,
+    runtimeAvailabilityService,
+    modelCatalogService,
+    modelAvailabilityService,
+    llmProviderService,
+    codexClientManager,
+    requireCurrentModelIdentifier: vi.fn(async () => undefined),
     materializeConfig: vi.fn(async () => undefined),
     validatePackage: vi.fn(async () => ({
       selection: { applicationId: "local-package::brief-studio" },
@@ -154,6 +167,29 @@ vi.mock("../../../src/services/published-artifacts/published-artifact-publicatio
 vi.mock("../../../src/agent-execution/runtime/general-process-run-supervisor.js", () => ({
   createGeneralProcessRunSupervisor: mocks.createGeneralProcessRunSupervisor,
 }));
+vi.mock("../../../src/workspaces/workspace-manager.js", () => ({
+  getWorkspaceManager: () => mocks.workspaceManager,
+}));
+vi.mock("../../../src/runtime-management/runtime-availability-service.js", () => ({
+  getRuntimeAvailabilityService: () => mocks.runtimeAvailabilityService,
+}));
+vi.mock("../../../src/llm-management/services/model-catalog-service.js", () => ({
+  getModelCatalogService: () => mocks.modelCatalogService,
+}));
+vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({
+  getModelAvailabilityService: () => mocks.modelAvailabilityService,
+}));
+vi.mock("../../../src/llm-management/llm-providers/services/llm-provider-service.js", () => ({
+  getLlmProviderService: () => mocks.llmProviderService,
+}));
+vi.mock("../../../src/runtime-management/codex/client/codex-app-server-client-manager.js", () => ({
+  getCodexAppServerClientManager: () => mocks.codexClientManager,
+}));
+vi.mock("autobyteus-ts/llm/llm-factory.js", () => ({
+  LLMFactory: {
+    requireCurrentModelIdentifier: mocks.requireCurrentModelIdentifier,
+  },
+}));
 vi.mock("../../../src/application-platform/runtime/build-application-platform-runtime.js", () => ({
   buildApplicationPlatformRuntime: mocks.buildApplicationPlatformRuntime,
 }));
@@ -238,7 +274,17 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+      workspaceManager: mocks.workspaceManager,
+      runtimeAvailabilityService: mocks.runtimeAvailabilityService,
+      modelCatalogService: mocks.modelCatalogService,
+      modelAvailabilityService: mocks.modelAvailabilityService,
+      llmProviderService: mocks.llmProviderService,
+      codexClientManager: mocks.codexClientManager,
+      requireCurrentModelIdentifier: expect.any(Function),
     }));
+    const platformInput = mocks.buildApplicationPlatformRuntime.mock.calls[0]![0];
+    await platformInput.requireCurrentModelIdentifier("model-1");
+    expect(mocks.requireCurrentModelIdentifier).toHaveBeenCalledWith("model-1");
     expect(mocks.applicationLifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
     expect(mocks.applicationLifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);

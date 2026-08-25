@@ -63,8 +63,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
-      bindingStore: bindingStore as any,
-      deliveryQueue: deliveryQueue as any,
+      bindingReader: bindingStore as any,
+      artifactDeliverySink: deliveryQueue as any,
     });
 
     service.attachToRun(run);
@@ -156,8 +156,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
-      bindingStore: bindingStore as any,
-      deliveryQueue: deliveryQueue as any,
+      bindingReader: bindingStore as any,
+      artifactDeliverySink: deliveryQueue as any,
     });
 
     await service.relayArtifactForExecutionContext({

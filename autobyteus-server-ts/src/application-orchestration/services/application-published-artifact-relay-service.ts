@@ -8,10 +8,23 @@ import {
   isAgentRunEvent,
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
-import { ApplicationPublishedArtifactDeliveryQueue } from "./application-published-artifact-delivery-queue.js";
+import {
+  ApplicationPublishedArtifactDeliveryQueue,
+  type ApplicationPublishedArtifactDeliveryCommand,
+} from "./application-published-artifact-delivery-queue.js";
 import type { ApplicationExecutionContext } from "../domain/models.js";
-import type { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import type { PublishedArtifactSummary } from "../../services/published-artifacts/published-artifact-types.js";
+
+export interface ApplicationPublishedArtifactBindingReader {
+  getBinding(
+    applicationId: string,
+    bindingId: string,
+  ): Promise<ApplicationAgentBindingRecord | null>;
+}
+
+export interface ApplicationPublishedArtifactDeliverySink {
+  accept(command: ApplicationPublishedArtifactDeliveryCommand): Promise<void>;
+}
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -35,17 +48,17 @@ const isPublishedArtifactSummary = (value: unknown): value is PublishedArtifactS
 export class ApplicationPublishedArtifactRelayService {
   constructor(
     private readonly dependencies: {
-      bindingStore: Pick<ApplicationRunBindingStore, "getBinding">;
-      deliveryQueue: ApplicationPublishedArtifactDeliveryQueue;
+      bindingReader: ApplicationPublishedArtifactBindingReader;
+      artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
     },
   ) {}
 
-  private get bindingStore(): Pick<ApplicationRunBindingStore, "getBinding"> {
-    return this.dependencies.bindingStore;
+  private get bindingReader(): ApplicationPublishedArtifactBindingReader {
+    return this.dependencies.bindingReader;
   }
 
-  private get deliveryQueue(): ApplicationPublishedArtifactDeliveryQueue {
-    return this.dependencies.deliveryQueue;
+  private get artifactDeliverySink(): ApplicationPublishedArtifactDeliverySink {
+    return this.dependencies.artifactDeliverySink;
   }
 
   attachToRun(run: AgentRun): () => void {
@@ -88,7 +101,7 @@ export class ApplicationPublishedArtifactRelayService {
     applicationExecutionContext: ApplicationExecutionContext;
     artifact: PublishedArtifactSummary;
   }): Promise<void> {
-    const binding = await this.bindingStore.getBinding(
+    const binding = await this.bindingReader.getBinding(
       input.applicationExecutionContext.applicationId,
       input.applicationExecutionContext.bindingId,
     );
@@ -105,7 +118,7 @@ export class ApplicationPublishedArtifactRelayService {
       input.artifact,
     );
 
-    await this.deliveryQueue.accept({
+    await this.artifactDeliverySink.accept({
       runId: input.runId,
       applicationId: binding.applicationId,
       bindingId: binding.bindingId,
@@ -138,9 +151,9 @@ export const createGeneralProcessPublishedArtifactRelayService =
   const deliveryQueue = new ApplicationPublishedArtifactDeliveryQueue();
   deliveryQueue.stopAccepting();
   return new ApplicationPublishedArtifactRelayService({
-    bindingStore: {
+    bindingReader: {
       getBinding: async () => null,
     },
-    deliveryQueue,
+    artifactDeliverySink: deliveryQueue,
   });
 };

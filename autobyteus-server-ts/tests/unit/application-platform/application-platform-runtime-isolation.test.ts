@@ -71,6 +71,15 @@ describe("application platform runtime isolation", () => {
         agentTeamDefinitionService: {} as never,
         agentToolsSessionFactory:
           agentToolsMcpRuntime,
+        workspaceManager: {
+          getOrCreateTempWorkspace: vi.fn(async () => ({ id: `workspace-${applicationId}` })),
+        } as never,
+        runtimeAvailabilityService: {} as never,
+        modelCatalogService: {} as never,
+        modelAvailabilityService: {} as never,
+        llmProviderService: {} as never,
+        codexClientManager: {} as never,
+        requireCurrentModelIdentifier: vi.fn(async () => undefined),
         selectedApplicationIds: new Set([applicationId]),
       });
     };

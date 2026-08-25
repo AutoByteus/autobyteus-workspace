@@ -449,12 +449,43 @@ describe("Application context capability integration", () => {
       resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
       terminateTeamRun: vi.fn(async () => undefined),
     };
+    const agentExecution = {
+      createAgentRun: agentRunService.createAgentRun,
+      postAgentInput: vi.fn(async (runId: string, message: unknown) => {
+        const run = await agentRunService.resolveAgentRun(runId);
+        if (!run) return { kind: "NOT_AVAILABLE" as const };
+        const result = await run.postUserMessage(message);
+        return result.accepted
+          ? { kind: "ACCEPTED" as const }
+          : { kind: "REJECTED" as const, message: result.message ?? null };
+      }),
+      terminateAgentRun: agentRunService.terminateAgentRun,
+    };
+    const teamExecution = {
+      createTeamRun: vi.fn(async (input: Parameters<typeof teamRunService.createTeamRun>[0]) => {
+        const run = await teamRunService.createTeamRun(input);
+        const members = run.getExecutionTreeSnapshot().rootTeam.members.map((member) => ({
+          memberAddress: member.address,
+          agentRunId: member.agentRunId,
+        }));
+        return { teamRunId: run.teamRunId, members };
+      }),
+      postTeamInput: vi.fn(async (runId: string, message: unknown, targetAgentRunId: string | null) => {
+        const run = await teamRunService.resolveActiveTeamRun(runId);
+        if (!run) return { kind: "NOT_AVAILABLE" as const };
+        const result = await run.postMessage(message, targetAgentRunId);
+        return result.accepted
+          ? { kind: "ACCEPTED" as const }
+          : { kind: "REJECTED" as const, message: result.message ?? null };
+      }),
+      terminateTeamRun: teamRunService.terminateTeamRun,
+    };
     const runBindingLaunchService = new ApplicationRunBindingLaunchService({
       executionResourceResolver: executionResourceResolver as never,
       bindingStore,
       lookupStore,
-      agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
+      agentExecution: agentExecution as never,
+      teamExecution: teamExecution as never,
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async (definitionId: string) => ({ id: definitionId, name: "Sample Agent" })),
       } as never,
@@ -555,13 +586,12 @@ describe("Application context capability integration", () => {
         }),
         detachBinding: vi.fn(async () => undefined),
       } as never,
-      agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
-      teamRunMetadataService: { readMetadata: vi.fn(async () => null) } as never,
+      agentExecution: agentExecution as never,
+      teamExecution: teamExecution as never,
       ingressService: ingressService as never,
-      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
-      memoryLocationService: {
-        resolveTeamMemberLocationFromMetadata: vi.fn(() => null),
+      artifacts: publishedArtifactProjectionService as never,
+      memory: {
+        resolveTeamMemberLocation: vi.fn(async () => null),
       } as never,
       agentTargetAuthorizationService,
       terminalTransitionService,

@@ -152,15 +152,23 @@ describe("Application agent communication WebSocket integration", () => {
       availabilityService: availabilityService as never,
       bindingStore: bindingStore as never,
       agentTargetAuthorizationService: authorization,
-      agentRunService: {
-        resolveAgentRun: vi.fn(async (runId: string) => runId === "agent-run"
-          ? { postUserMessage: agentPostUserMessage }
-          : null),
+      agentExecution: {
+        postAgentInput: vi.fn(async (runId: string, message: unknown) => {
+          if (runId !== "agent-run") return { kind: "NOT_AVAILABLE" as const };
+          const result = await agentPostUserMessage(message);
+          return result.accepted
+            ? { kind: "ACCEPTED" as const }
+            : { kind: "REJECTED" as const, message: result.message ?? null };
+        }),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run"
-          ? { postMessage: teamPostMessage }
-          : null),
+      teamExecution: {
+        postTeamInput: vi.fn(async (runId: string, message: unknown, targetAgentRunId: string | null) => {
+          if (runId !== "team-run") return { kind: "NOT_AVAILABLE" as const };
+          const result = await teamPostMessage(message, targetAgentRunId);
+          return result.accepted
+            ? { kind: "ACCEPTED" as const }
+            : { kind: "REJECTED" as const, message: result.message ?? null };
+        }),
       } as never,
     });
     const runtimeSource = new ApplicationAgentStreamRuntimeSource({

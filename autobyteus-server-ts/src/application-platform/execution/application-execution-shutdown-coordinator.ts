@@ -6,7 +6,7 @@ export type ApplicationAgentRunStopper = {
   stopAllAgentRuns(): Promise<void>;
 };
 
-export class ApplicationRunShutdownCoordinator {
+export class ApplicationExecutionShutdownCoordinator {
   private stopPromise: Promise<void> | null = null;
 
   constructor(
@@ -34,7 +34,7 @@ export class ApplicationRunShutdownCoordinator {
     if (errors.length > 0) {
       throw new AggregateError(
         errors,
-        "Application run shutdown failed.",
+        "Application execution shutdown failed.",
       );
     }
   }

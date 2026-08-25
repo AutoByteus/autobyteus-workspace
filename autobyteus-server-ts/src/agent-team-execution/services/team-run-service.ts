@@ -54,6 +54,13 @@ export interface CreateTeamRunInput {
   applicationBinding?: { applicationId: string; bindingId: string } | null;
 }
 
+export interface CreateTeamRunFromRootConfigInput {
+  teamDefinitionId: string;
+  rootConfig: TeamRunPresetInput;
+  memberConfigs?: TeamRunMemberConfigInput[] | null;
+  applicationBinding?: { applicationId: string; bindingId: string } | null;
+}
+
 /** Application-facing root TeamRun lifecycle service. */
 export class TeamRunService {
   private readonly definitions: AgentTeamDefinitionService;
@@ -138,12 +145,9 @@ export class TeamRunService {
     }
   }
 
-  async createTeamRunFromRootConfig(input: {
-    teamDefinitionId: string;
-    rootConfig: TeamRunPresetInput;
-    memberConfigs?: TeamRunMemberConfigInput[] | null;
-    applicationBinding?: { applicationId: string; bindingId: string } | null;
-  }): Promise<RootTeamRun> {
+  async createTeamRunFromRootConfig(
+    input: CreateTeamRunFromRootConfigInput,
+  ): Promise<RootTeamRun> {
     const rootConfig = normalizePreset(input.rootConfig);
     const expanded = await this.planner.buildRootLaunchInputs({
       teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),

@@ -13,8 +13,6 @@ import type {
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { requireApplicationAgentInputWithinLimits } from "../domain/application-agent-input-validator.js";
-import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import type { ApplicationOrchestrationStartupGate } from "./application-orchestration-startup-gate.js";
 import type { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
@@ -24,8 +22,12 @@ import type { ApplicationLaunchConfigurationService } from "../../application-pl
 import type { ApplicationRunObserverService } from "./application-run-observer-service.js";
 import type { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import type { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
-import type { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
-import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+import type {
+  ApplicationAgentExecution,
+  ApplicationExecutionMemoryLookup,
+  ApplicationPublishedArtifactAccess,
+  ApplicationTeamExecution,
+} from "../../application-platform/execution/application-execution-scope-contracts.js";
 import {
   ApplicationAgentTargetAuthorizationService,
   type ApplicationAgentTargetAuthorizationLease,
@@ -53,11 +55,11 @@ export class ApplicationOrchestrationHostService {
       bindingStore: ApplicationRunBindingStore;
       lookupStore: ApplicationRunLookupStore;
       runObserverService: ApplicationRunObserverService;
-      agentRunService: AgentRunService;
-      teamRunService: TeamRunService;
+      agentExecution: ApplicationAgentExecution;
+      teamExecution: ApplicationTeamExecution;
       ingressService: ApplicationExecutionEventIngressService;
-      publishedArtifactProjectionService: PublishedArtifactProjectionService;
-      memoryLocationService: AgentMemoryLocationService;
+      artifacts: ApplicationPublishedArtifactAccess;
+      memory: ApplicationExecutionMemoryLookup;
       agentTargetAuthorizationService: ApplicationAgentTargetAuthorizationService;
       terminalTransitionService: ApplicationRunBindingTerminalTransitionService;
     },
@@ -95,24 +97,24 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.runObserverService;
   }
 
-  private get agentRunService(): AgentRunService {
-    return this.dependencies.agentRunService;
+  private get agentExecution(): ApplicationAgentExecution {
+    return this.dependencies.agentExecution;
   }
 
-  private get teamRunService(): TeamRunService {
-    return this.dependencies.teamRunService;
+  private get teamExecution(): ApplicationTeamExecution {
+    return this.dependencies.teamExecution;
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
     return this.dependencies.ingressService;
   }
 
-  private get publishedArtifactProjectionService(): PublishedArtifactProjectionService {
-    return this.dependencies.publishedArtifactProjectionService;
+  private get artifacts(): ApplicationPublishedArtifactAccess {
+    return this.dependencies.artifacts;
   }
 
-  private get memoryLocationService(): AgentMemoryLocationService {
-    return this.dependencies.memoryLocationService;
+  private get memory(): ApplicationExecutionMemoryLookup {
+    return this.dependencies.memory;
   }
 
   private get agentTargetAuthorizationService(): ApplicationAgentTargetAuthorizationService {
@@ -276,9 +278,9 @@ export class ApplicationOrchestrationHostService {
     const binding = await this.requireBindingForRun(applicationId, runId);
     const memberMemoryDir = await this.resolveBoundMemberMemoryDir(binding, runId);
     if (memberMemoryDir) {
-      return this.publishedArtifactProjectionService.getPublishedArtifactsFromMemoryDir(memberMemoryDir);
+      return this.artifacts.getPublishedArtifactsFromMemoryDir(memberMemoryDir);
     }
-    return this.publishedArtifactProjectionService.getRunPublishedArtifacts(
+    return this.artifacts.getRunPublishedArtifacts(
       binding.runtime.members.some((member) => member.agentRunId === runId)
         ? runId
         : binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
@@ -294,12 +296,12 @@ export class ApplicationOrchestrationHostService {
     const binding = await this.requireBindingForRun(applicationId, input.runId);
     const memberMemoryDir = await this.resolveBoundMemberMemoryDir(binding, input.runId);
     if (memberMemoryDir) {
-      return this.publishedArtifactProjectionService.getPublishedArtifactRevisionTextFromMemoryDir({
+      return this.artifacts.getPublishedArtifactRevisionTextFromMemoryDir({
         memoryDir: memberMemoryDir,
         revisionId: input.revisionId,
       });
     }
-    return this.publishedArtifactProjectionService.getPublishedArtifactRevisionText(input);
+    return this.artifacts.getPublishedArtifactRevisionText(input);
   }
 
   async sendRunInput(
@@ -335,9 +337,9 @@ export class ApplicationOrchestrationHostService {
 
     await this.runObserverService.detachBinding(binding.bindingId);
     if (binding.runtime.subject === "AGENT_RUN") {
-      await this.agentRunService.terminateAgentRun(binding.runtime.agentRunId);
+      await this.agentExecution.terminateAgentRun(binding.runtime.agentRunId);
     } else {
-      await this.teamRunService.terminateTeamRun(binding.runtime.teamRunId);
+      await this.teamExecution.terminateTeamRun(binding.runtime.teamRunId);
     }
 
     const transitioned = await this.terminalTransitionService.transition({
@@ -394,7 +396,7 @@ export class ApplicationOrchestrationHostService {
       return null;
     }
 
-    const target = await this.memoryLocationService.resolveTeamMemberLocation({
+    const target = await this.memory.resolveTeamMemberLocation({
       teamRunId: binding.runtime.teamRunId,
       agentRunId: runId,
     });
@@ -412,12 +414,14 @@ export class ApplicationOrchestrationHostService {
     rejectUnsupportedApplicationRuntimeTargetName(input);
     const message = buildRuntimeInputMessage(input);
     if (binding.runtime.subject === "AGENT_RUN") {
-      const run = await this.agentRunService.resolveAgentRun(binding.runtime.agentRunId);
-      if (!run) {
+      const result = await this.agentExecution.postAgentInput(
+        binding.runtime.agentRunId,
+        message,
+      );
+      if (result.kind === "NOT_AVAILABLE") {
         throw new Error(`Application runtime '${binding.runtime.agentRunId}' is not available.`);
       }
-      const result = await run.postUserMessage(message);
-      if (!result.accepted) {
+      if (result.kind === "REJECTED") {
         throw new Error(result.message ?? "Application runtime rejected the input.");
       }
       return;
@@ -430,12 +434,15 @@ export class ApplicationOrchestrationHostService {
     if (targetMemberAddress && !targetAgentRunId) {
       throw new Error("Application runtime input target does not belong to the bound team runtime.");
     }
-    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
-    if (!run) {
+    const result = await this.teamExecution.postTeamInput(
+      binding.runtime.teamRunId,
+      message,
+      targetAgentRunId,
+    );
+    if (result.kind === "NOT_AVAILABLE") {
       throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
     }
-    const result = await run.postMessage(message, targetAgentRunId);
-    if (!result.accepted) {
+    if (result.kind === "REJECTED") {
       throw new Error(result.message ?? "Application runtime rejected the input.");
     }
   }
@@ -451,10 +458,9 @@ export class ApplicationOrchestrationHostService {
       if (address.target.kind !== "AGENT_RUN") {
         throw new Error("Application agent input target does not match the bound runtime.");
       }
-      const run = await this.agentRunService.resolveAgentRun(binding.runtime.agentRunId);
-      if (!run) throw new Error(`Application runtime '${binding.runtime.agentRunId}' is not available.`);
-      const result = await run.postUserMessage(message);
-      if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+      const result = await this.agentExecution.postAgentInput(binding.runtime.agentRunId, message);
+      if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${binding.runtime.agentRunId}' is not available.`);
+      if (result.kind === "REJECTED") throw new Error(result.message ?? "Application runtime rejected the input.");
       return;
     }
     if (address.target.kind === "AGENT_RUN") {
@@ -464,9 +470,8 @@ export class ApplicationOrchestrationHostService {
     if (targetAgentRunId && !binding.runtime.members.some((member) => member.agentRunId === targetAgentRunId)) {
       throw new Error("Application agent input target does not belong to the bound team runtime.");
     }
-    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
-    if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
-    const result = await run.postMessage(message, targetAgentRunId);
-    if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+    const result = await this.teamExecution.postTeamInput(binding.runtime.teamRunId, message, targetAgentRunId);
+    if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
+    if (result.kind === "REJECTED") throw new Error(result.message ?? "Application runtime rejected the input.");
   }
 }

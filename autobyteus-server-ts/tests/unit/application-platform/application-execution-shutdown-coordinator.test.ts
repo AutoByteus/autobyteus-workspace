@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  ApplicationRunShutdownCoordinator,
-} from "../../../src/application-platform/runtime/application-run-shutdown-coordinator.js";
+  ApplicationExecutionShutdownCoordinator,
+} from "../../../src/application-platform/execution/application-execution-shutdown-coordinator.js";
 
-describe("ApplicationRunShutdownCoordinator", () => {
+describe("ApplicationExecutionShutdownCoordinator", () => {
   it("stops team runs before remaining agent runs and is idempotent", async () => {
     const order: string[] = [];
     const stopAllTeamRuns = vi.fn(async () => {
@@ -12,7 +12,7 @@ describe("ApplicationRunShutdownCoordinator", () => {
     const stopAllAgentRuns = vi.fn(async () => {
       order.push("agents");
     });
-    const coordinator = new ApplicationRunShutdownCoordinator(
+    const coordinator = new ApplicationExecutionShutdownCoordinator(
       { stopAllTeamRuns },
       { stopAllAgentRuns },
     );
@@ -32,7 +32,7 @@ describe("ApplicationRunShutdownCoordinator", () => {
     const order: string[] = [];
     const teamFailure = new Error("team shutdown failed");
     const agentFailure = new Error("agent shutdown failed");
-    const coordinator = new ApplicationRunShutdownCoordinator(
+    const coordinator = new ApplicationExecutionShutdownCoordinator(
       {
         stopAllTeamRuns: vi.fn(async () => {
           order.push("teams");
@@ -50,7 +50,7 @@ describe("ApplicationRunShutdownCoordinator", () => {
     const stop = coordinator.stopAllRuns();
     await expect(stop).rejects.toMatchObject({
       name: "AggregateError",
-      message: "Application run shutdown failed.",
+      message: "Application execution shutdown failed.",
       errors: [teamFailure, agentFailure],
     });
     await expect(coordinator.stopAllRuns()).rejects.toBeInstanceOf(AggregateError);

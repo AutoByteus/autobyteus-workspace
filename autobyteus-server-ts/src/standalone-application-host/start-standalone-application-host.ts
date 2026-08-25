@@ -51,6 +51,13 @@ import {
   createHostDefinitionServices,
   type HostDefinitionServices,
 } from "../compositions/host-definition-services.js";
+import { getWorkspaceManager } from "../workspaces/workspace-manager.js";
+import { getRuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import { getModelAvailabilityService } from "../llm-management/services/model-availability-service.js";
+import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
+import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -244,6 +251,14 @@ export const startStandaloneApplicationHost = async (
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
       agentToolsSessionFactory:
         agentToolsMcpRuntime,
+      workspaceManager: getWorkspaceManager(),
+      runtimeAvailabilityService: getRuntimeAvailabilityService(),
+      modelCatalogService: getModelCatalogService(),
+      modelAvailabilityService: getModelAvailabilityService(),
+      llmProviderService: getLlmProviderService(),
+      codexClientManager: getCodexAppServerClientManager(),
+      requireCurrentModelIdentifier: (modelIdentifier) =>
+        LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
       selectedApplicationIds: new Set([selection.applicationId]),
     });
     app = await buildStandaloneApplicationServer({
