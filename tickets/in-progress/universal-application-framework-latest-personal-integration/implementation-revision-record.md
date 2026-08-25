@@ -16,6 +16,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-008 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-007` | `AR-004`, `AR-005` resolved in design | `Reviewed Semantic Refresh` | `SR-001`–`SR-007`, `ARCH-REV-003`–`ARCH-REV-007`, `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-003`, `DR-004`, `DR-006` | Ready for source review |
 | IR-009 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-008` | `N/A`; `AR-001`–`AR-005` remain resolved | `Reviewed Semantic Refresh` | `SR-001`–`SR-008`, `ARCH-REV-003`–`ARCH-REV-008`, `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-003`, `DR-004`, `DR-006`, `DR-008` | Ready for source review |
 | IR-010 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-010` | `AR-006` resolved; `AR-001`–`AR-005` remain resolved | `Reviewed Semantic Refresh` | `SR-001`–`SR-010`, `ARCH-REV-003`–`ARCH-REV-010`, `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-003`, `DR-004`, `DR-006`, `DR-008`, `DR-010` | Ready for source review |
+| IR-011 | `code_reviewer`; `code-review-report.md`; `CRR-018` | `CR-008`, `CR-009`, `CR-010` | `Local Fix` | `SR-001`–`SR-010`, `ARCH-REV-003`–`ARCH-REV-010`, `CRR-018`, `API-REV-001`–`API-REV-009`, `DR-004`, `DR-006`, `DR-008`, `DR-010` | Ready for source re-review |
 
 ## Revision Entries
 
@@ -218,3 +219,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: exact-ref/parent/unmerged/generated audits passed; shared contract and backend SDK builds passed; server build-config TypeScript and full production build/sanitized bootstrap passed; focused server selection passed `17` files / `117` tests; focused Studio selection passed `14` files / `103` tests without unhandled errors; backend SDK passed `2` files / `10` tests; devkit passed `21/21`; Brief and Socratic pack/validate passed; scoped changed-source diff check passed. Repository-wide diff whitespace remains confined to byte-preserved imported Personal prototype/archived evidence.
 - Next recipient or routing: `/code_reviewer` for complete implementation-source and structural review before API/E2E resumes.
 - Remaining limitations or risks: complete real Studio/standalone/provider/model/nested recovery/history/package parity/cleanup/browser and fresh Electron v1.4.58 verification remain downstream-owned. No API/E2E sign-off is claimed, and other owners' dirty solution/review/delivery artifacts and evidence remain preserved outside the implementation artifact commit.
+
+### IR-011 — Validate complete Team launch values before allocation and reconcile V2 fixtures
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`; `CRR-018` review of `IR-010`.
+- Triggering finding IDs: `CR-008`, `CR-009`, `CR-010`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-018 — Fail / Local Fix / 91` at reviewer artifact `67255c01717e31960db07a9d1d1b9cfa648fdff6`.
+- Current authoritative result: `Ready for affected source re-review` at implementation source commit `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`.
+- Related solution revision IDs: `SR-001`–`SR-010`.
+- Related architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-010`.
+- Related code-review revision IDs: `CRR-018`.
+- Related API/E2E revision IDs: `API-REV-001`–`API-REV-009` retained history; no current-head execution claimed.
+- Related delivery revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`.
+- Why this implementation revision is recorded: resolves the three bounded source/test findings from the complete IR-010 review without reopening the passed v1.4.58 semantic merge or broadening the platform architecture.
+- Approved behavior or requirement IDs affected: `BEH-008`, `BEH-011`; `REQ-012`; `AC-032`, `AC-033`; the implementation-source effective-line hard limit.
+- Implementation delta: simplified the existing launch-configuration coordinator to `498` effective non-empty lines while retaining ownership and behavior; corrected the native working-context fixture to assert and execute V1 -> nested-memory -> V2 -> external order; supplied recursive Team fixtures with the exact current V2 default launch configuration; reused `cloneAgentLaunchConfiguration` inside `TeamDefinitionTopologyPlanner` so every Team-scope and Agent-member required launch value is validated before root/nested Team or Agent identity allocation; added direct planner and TeamRunService proof for invalid Team and Agent models with zero allocation, manager creation, and persistence.
+- Changed files or areas: `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts`; `src/agent-team-execution/services/team-definition-topology-planner.ts`; focused planner, TeamRunService, native working-context, and external-runtime cleanup unit fixtures; current implementation handoff and this record.
+- Local validation and result: size audit passed at `498` effective lines for the launch service; the corrected focused matrix passed `10` files / `79` tests including all `15` AFB checks; shared/core/backend SDK prerequisites, server build-config TypeScript no-emit, full server production build, and sanitized built-in-agent bootstrap passed; generated `dist` outputs were removed; scoped diff checks passed. The full recursive cleanup fixture now reaches current V2 behavior and retains two blob-identical standalone diagnostic expectation failures already characterized as historical `APIE2E-REPO-005` / `Unclear`; they were not weakened or attributed to IR-011.
+- Frontend rendered-result check: `Not Applicable`; IR-011 has no frontend source or styling delta.
+- Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
+- Remaining limitations or risks: no current-head API/E2E sign-off is claimed. After source Pass, the complete v1.4.58 Studio/standalone/provider/model/nested Team/recovery/history/package-parity/cleanup/browser matrix and fresh Electron verification remain downstream-owned; other roles' dirty reports/evidence remain preserved outside the implementation commit.
