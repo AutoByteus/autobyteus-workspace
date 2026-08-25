@@ -241,10 +241,7 @@ export class ApplicationLaunchConfigurationService {
     return this.getApplicationLaunchConfigurationView(applicationId);
   }
 
-  async removeOverride(
-    applicationId: string,
-    slotKey: string,
-  ): Promise<ApplicationLaunchConfigurationView> {
+  async removeOverride(applicationId: string, slotKey: string): Promise<ApplicationLaunchConfigurationView> {
     const slot = await this.requireDeclaredSlot(applicationId, slotKey);
     await this.dependencies.overrideStore.removeOverride(applicationId, slot.slotKey);
     return this.getApplicationLaunchConfigurationView(applicationId);
@@ -312,10 +309,8 @@ export class ApplicationLaunchConfigurationService {
       const subjects = baseline.resourceKind === "AGENT_TEAM"
         ? [...baseline.teamScopes, ...baseline.leaves]
         : baseline.leaves;
-      const incomplete = subjects.find(
-        (subject) => !subject.runtimeKind?.trim() || !subject.llmModelIdentifier?.trim(),
-      );
-      if (incomplete) {
+      if (subjects.some(({ runtimeKind, llmModelIdentifier }) =>
+        !runtimeKind?.trim() || !llmModelIdentifier?.trim())) {
         throw new ApplicationLaunchResourceBaselineError(
           "PACKAGE_DEFAULT_INCOMPLETE",
           `Application slot '${slot.slotKey}' has an incomplete package launch default.`,

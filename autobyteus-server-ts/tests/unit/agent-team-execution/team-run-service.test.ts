@@ -337,4 +337,39 @@ describe("TeamRunService current root lifecycle", () => {
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).not.toHaveBeenCalled();
   });
+
+  it.each([
+    {
+      subject: "Team scope",
+      teamConfigs: [{ ...teamLaunchConfig(), llmModelIdentifier: " " }],
+      memberConfigs: [launchConfig("/Coordinator"), launchConfig("/Reviewer")],
+      expected: "defaultLaunchConfiguration at '/'.llmModelIdentifier is required",
+    },
+    {
+      subject: "Agent member",
+      teamConfigs: [teamLaunchConfig()],
+      memberConfigs: [
+        { ...launchConfig("/Coordinator"), llmModelIdentifier: " " },
+        launchConfig("/Reviewer"),
+      ],
+      expected: "launchConfiguration at '/Coordinator'.llmModelIdentifier is required",
+    },
+  ])("rejects invalid required $subject values before allocation, manager creation, or persistence", async ({
+    teamConfigs,
+    memberConfigs,
+    expected,
+  }) => {
+    const { service, mocks } = createSubject();
+
+    await expect(service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      teamConfigs,
+      memberConfigs,
+    })).rejects.toThrow(expected);
+
+    expect(mocks.teamRunIdentityAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(mocks.agentRunIdentityAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).not.toHaveBeenCalled();
+  });
 });

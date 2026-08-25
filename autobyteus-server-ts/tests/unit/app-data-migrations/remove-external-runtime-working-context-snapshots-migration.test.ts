@@ -83,17 +83,31 @@ const subTeamMember = (input: {
   memberRunId: string;
   memberPath: string[];
   teamRunId: string;
-  memberTree: unknown[];
-}) => ({
-  kind: "agent_team" as const,
-  address: `/${input.memberPath.join("/")}`,
-  teamDefinitionId: `team-def-${input.teamRunId}`,
-  teamRunId: input.teamRunId,
-  coordinatorAddress: (input.memberTree[0] as { address: string }).address,
-  children: input.memberTree,
-  role: null,
-  description: null,
-});
+  memberTree: TeamRunNode[];
+}) => {
+  const coordinator = input.memberTree.find(
+    (node): node is Extract<TeamRunNode, { kind: "agent" }> => node.kind === "agent",
+  );
+  if (!coordinator) throw new Error("Subteam fixture requires an Agent coordinator.");
+  return {
+    kind: "agent_team" as const,
+    address: `/${input.memberPath.join("/")}`,
+    teamDefinitionId: `team-def-${input.teamRunId}`,
+    teamRunId: input.teamRunId,
+    coordinatorAddress: coordinator.address,
+    defaultLaunchConfiguration: {
+      runtimeKind: coordinator.runtimeKind,
+      llmModelIdentifier: coordinator.llmModelIdentifier,
+      llmConfig: coordinator.llmConfig,
+      autoExecuteTools: coordinator.autoExecuteTools,
+      skillAccessMode: coordinator.skillAccessMode,
+      workspaceRootPath: coordinator.workspaceRootPath,
+    },
+    children: input.memberTree,
+    role: null,
+    description: null,
+  };
+};
 
 const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Promise<void> => {
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
