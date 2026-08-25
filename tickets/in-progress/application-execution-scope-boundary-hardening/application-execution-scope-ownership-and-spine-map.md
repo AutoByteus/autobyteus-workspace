@@ -37,15 +37,15 @@ The normative TypeScript signatures, exact build inputs, admission semantics, ge
 
 | Capability | Allowed operations | Intended consumers |
 | --- | --- | --- |
-| `ApplicationAgentExecution` | create, resolve, terminate, observe Agent lifecycle | binding launch, orchestration input/terminate, binding observer |
-| `ApplicationTeamExecution` | create preset/configured Team, resolve active Team, terminate, observe Team lifecycle | binding launch, orchestration input/terminate, binding observer |
+| `ApplicationAgentExecution` | create and return immutable run identity; post input through restore-aware internal resolution; terminate; observe lifecycle | binding launch, orchestration input/terminate, binding observer |
+| `ApplicationTeamExecution` | create preset/configured Team and return immutable root/member projection; post root/member input through restore-aware internal resolution; terminate; observe lifecycle | binding launch, orchestration input/terminate, binding observer |
 | `ApplicationExecutionStreaming` | attach to the authorized exact Agent/Team target | application streaming service |
 | `ApplicationPublishedArtifactAccess` | list projections and read revision text for a bound run/member | orchestration host |
 | `ApplicationExecutionMemoryLookup` | resolve a Team member's memory location | orchestration host |
 | `ApplicationExecutionToolReadiness` | expose the graph-local publication capability to tool readiness and assert scoped-session readiness | startup/tool readiness only |
 | `ApplicationExecutionLifecycle` | `quiesce()`, `close()` | platform lifecycle only |
 
-No capability exposes `AgentRunManager`, `AgentTeamRunManager`, activation/resource registries, or `ScopedAgentToolMcpSessionManager`.
+No capability exposes `AgentRunManager`, `AgentTeamRunManager`, `AgentRun`, `RootTeamRun`, activation/resource registries, or `ScopedAgentToolMcpSessionManager`. Agent/Team live aggregates are excluded from return values and remain private; input is expressed as commands and Team launch as a copied immutable root/member projection.
 
 ## Acyclic Construction Order
 
@@ -73,9 +73,9 @@ The same internal application execution boundary is used; only host setup and ex
 
 ### DS-003 — Application launch/input
 
-`application UI/worker capability -> engine context/orchestration host -> binding authorization + launch configuration -> ApplicationAgentExecution or ApplicationTeamExecution -> exact service/manager/backend or RootTeamRun -> binding/event consequence`
+`application UI/worker capability -> engine context/orchestration host -> binding authorization + launch configuration -> ApplicationAgentExecution or ApplicationTeamExecution command -> scope-private exact service/manager/backend or RootTeamRun -> immutable launch/input disposition -> binding/event consequence`
 
-The orchestration owner never receives a manager. The scope enforces admission and exact graph identity.
+The orchestration owner never receives a manager or live run aggregate. The scope enforces admission and exact graph identity, performs restore-aware input dispatch internally, and returns only `{runId}`, `{teamRunId,members}`, or the accepted/rejected/not-available disposition required by the use case.
 
 ### DS-004 — Streaming return
 
@@ -117,7 +117,7 @@ Construction creates no live run. No process-owned definition, MCP runtime, work
 
 1. Studio/standalone composition -> process infrastructure, `GeneralProcessRunSupervisor`, `ApplicationPlatformRuntime`.
 2. `ApplicationPlatformRuntime` -> `ApplicationExecutionScope`.
-3. Orchestration/streaming/lifecycle -> one exact scope capability, never raw internals.
+3. Orchestration/streaming/lifecycle -> one exact scope capability, never raw internals or live `AgentRun`/`RootTeamRun` return objects.
 4. `ApplicationExecutionScope` -> explicitly injected canonical definitions, workspace/MCP/process infrastructure, and platform-owned binding/artifact ports.
 5. Scope internals -> existing Agent/Team execution, memory, history, publication, and MCP implementations.
 6. `RootTeamRun` -> immutable root-local task capability -> member/session/native task tools.
@@ -126,7 +126,7 @@ Construction creates no live run. No process-owned definition, MCP runtime, work
 
 - Application paths -> `AgentRunManager.getInstance()`, `AgentTeamRunManager.getInstance()`, `getAgentRunService()`, or `getTeamRunService()`.
 - Application paths -> application-ID/run-ID manager/service locator.
-- An upstream consumer -> both a scope capability and a raw scope-owned manager/registry/session manager.
+- An upstream consumer -> both a scope capability and a raw scope-owned manager/registry/session manager, or any outward capability returning `AgentRun`/`RootTeamRun`.
 - Scope -> `GeneralProcessRunSupervisor` internals, or general execution -> scope internals.
 - Routes/controllers -> execution managers.
 - Scope -> package catalog, worker controller, availability, recovery/reentry, or public transport ownership.
@@ -142,10 +142,19 @@ Construction creates no live run. No process-owned definition, MCP runtime, work
 | stream source can fall back to process-global Agent manager | exact injected stream source inside scope | fail-closed graph identity |
 | application builders call process getters | composition passes named process dependencies | visible dependency direction |
 | run shutdown coordinator lives under platform-runtime assembly | renamed/moved inside application execution and retained as the real Team-before-Agent concern | file placement matches ownership |
+| Agent/Team capabilities return live `AgentRun`/`RootTeamRun` so callers perform input/snapshot mutations outside the owner | scope retains live aggregates; exposes exact input commands and frozen Agent/Team launch projections | authoritative boundary governs behavior, not only construction |
+
+## Immutable Command / Projection Boundary
+
+- Agent creation returns a frozen `{ runId }` projection.
+- Team creation returns a frozen `{ teamRunId, members: [{ memberAddress, agentRunId }] }` projection built recursively from configured nodes only; the binding owner still derives display names and public DTO fields.
+- Agent/Team input commands resolve or restore the live run inside the scope and return only `ACCEPTED`, `REJECTED(message)`, or `NOT_AVAILABLE`.
+- The orchestration host keeps target/binding authorization and exact public error wording. The scope keeps run resolution, `postUserMessage`/`postMessage`, and Team tree snapshot access.
+- Lifecycle observation and termination remain explicit commands. Root-local task operations remain inside `RootTeamRun` and are not projected through the application boundary.
 
 ## Verification Obligations
 
-- Architecture occurrence/import guards enforce the allowed/forbidden directions and exact named construction obligations.
+- Architecture occurrence/import guards enforce the allowed/forbidden directions, exact named construction obligations, zero live-run types in outward scope contracts, and zero direct run resolution/post/snapshot calls in orchestration consumers.
 - Construction tests prove one scope per platform runtime, no live run on construction, exact projection identity, and reverse failure unwind.
 - Lifecycle tests preserve the full outer shutdown order and prove scope quiesce/close idempotence.
 - Identity tests prove launch, stream, publication, memory, nested Team tasks, and cleanup reach one exact internal family; general/application identities remain non-identical.

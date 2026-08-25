@@ -3,7 +3,7 @@
 ## Status
 
 - Status: `Design-ready`
-- Authority: normative structural contract for SR-002; it refines REQ-001–REQ-010 without changing product behavior.
+- Authority: normative structural contract for SR-003; it refines REQ-001–REQ-010 without changing product behavior.
 - No optional execution dependency, index signature, `unknown` value, generic service lookup, or fallback is permitted in these shapes.
 
 ## Platform Build Input
@@ -90,12 +90,34 @@ Owner mapping:
 
 ## Capability Contracts
 
-The concrete `ApplicationExecutionScope` has seven frozen readonly properties with the following exact contracts. No raw implementation class appears in a consumer constructor. All seven capability contracts and the scope build input live in `application-execution-scope-contracts.ts`; the outer platform build input remains exported by `build-application-platform-runtime.ts`. The streaming signature uses type-only imports for the existing authorized descriptor and stream event, so it introduces no runtime dependency or second owner.
+The concrete `ApplicationExecutionScope` has seven frozen readonly properties with the following exact contracts. No raw implementation class appears in a consumer constructor. All seven capability contracts and the scope build input live in `application-execution-scope-contracts.ts`; the outer platform build input remains exported by `build-application-platform-runtime.ts`. The signatures use type-only imports for the existing authorized descriptor, stream event, Agent input message, Team address, creation inputs, lifecycle event, and read projections, so they introduce no runtime dependency or second owner. Live `AgentRun` and `RootTeamRun` types are deliberately absent.
 
 ```ts
+export type ApplicationAgentLaunchResult = Readonly<{
+  runId: string;
+}>;
+
+export type ApplicationTeamLaunchMember = Readonly<{
+  memberAddress: AgentTeamAddress;
+  agentRunId: string;
+}>;
+
+export type ApplicationTeamLaunchResult = Readonly<{
+  teamRunId: string;
+  members: readonly ApplicationTeamLaunchMember[];
+}>;
+
+export type ApplicationExecutionInputDisposition =
+  | Readonly<{ kind: "ACCEPTED" }>
+  | Readonly<{ kind: "REJECTED"; message: string | null }>
+  | Readonly<{ kind: "NOT_AVAILABLE" }>;
+
 export interface ApplicationAgentExecution {
-  createAgentRun(input: CreateAgentRunInput): Promise<CreateAgentRunResult>;
-  resolveAgentRun(runId: string): Promise<AgentRun | null>;
+  createAgentRun(input: CreateAgentRunInput): Promise<ApplicationAgentLaunchResult>;
+  postAgentInput(
+    runId: string,
+    message: AgentInputUserMessage,
+  ): Promise<ApplicationExecutionInputDisposition>;
   terminateAgentRun(runId: string): Promise<AgentRunTerminationResult>;
   observeAgentRunLifecycle(
     runId: string,
@@ -111,9 +133,15 @@ export interface CreateTeamRunFromRootConfigInput {
 }
 
 export interface ApplicationTeamExecution {
-  createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun>;
-  createTeamRunFromRootConfig(input: CreateTeamRunFromRootConfigInput): Promise<RootTeamRun>;
-  resolveActiveTeamRun(teamRunId: string): Promise<RootTeamRun | null>;
+  createTeamRun(input: CreateTeamRunInput): Promise<ApplicationTeamLaunchResult>;
+  createTeamRunFromRootConfig(
+    input: CreateTeamRunFromRootConfigInput,
+  ): Promise<ApplicationTeamLaunchResult>;
+  postTeamInput(
+    teamRunId: string,
+    message: AgentInputUserMessage,
+    targetAgentRunId: string | null,
+  ): Promise<ApplicationExecutionInputDisposition>;
   terminateTeamRun(teamRunId: string): Promise<boolean>;
   observeTeamRunLifecycle(
     teamRunId: string,
@@ -162,6 +190,16 @@ export interface ApplicationExecutionLifecycle {
 
 `CreateTeamRunFromRootConfigInput` becomes an exported named input in `team-run-service.ts`, replacing its inline structural input without changing the method or wire behavior.
 
+### Live aggregate containment and exact projection rules
+
+- `application-execution-scope-contracts.ts` imports neither `AgentRun` nor `RootTeamRun`; those live aggregates never appear in an outward capability parameter, result, property, callback, or generic argument.
+- `ApplicationExecutionScope` is the only application-boundary owner allowed to call `AgentRunService.resolveAgentRun`, `AgentRun.postUserMessage`, `TeamRunService.resolveActiveTeamRun`, `RootTeamRun.postMessage`, or `RootTeamRun.getExecutionTreeSnapshot`.
+- `createAgentRun` maps the existing service result to a frozen `{ runId }`; it does not return or retain a caller-visible reference to the service result.
+- Both Team creation commands call the existing service unchanged and immediately project the returned root inside the scope. The private projector recursively walks only `getExecutionTreeSnapshot().rootTeam.members`, flattens configured Agent nodes exactly as today's `configuredAgents` helper does, and produces a newly allocated, frozen `ApplicationTeamLaunchResult`. Task executions and the wider tree are not exposed. `ApplicationRunBindingLaunchService` continues deriving `displayName` with `getAgentTeamAddressBasename` and adding the unchanged public `runtimeKind` itself.
+- `postAgentInput` performs the current restore-aware `resolveAgentRun` inside the scope, then calls `postUserMessage`. `postTeamInput` performs the current restore-aware `resolveActiveTeamRun` inside the scope, then calls `postMessage` with the supplied exact member run ID or `null` for root/coordinator dispatch.
+- Resolution failure maps to frozen `{ kind: "NOT_AVAILABLE" }`; accepted input maps to frozen `{ kind: "ACCEPTED" }`; rejected input maps to frozen `{ kind: "REJECTED", message: result.message ?? null }`. Exceptions thrown by resolution normalization or posting are not caught or translated. The orchestration host preserves today's exact unavailable and rejection error strings; it remains the use-case policy owner.
+- No new cleanup is introduced around post-creation projection. Creation, restoration, validation, acceptance, error propagation, snapshots, binding persistence, public wire contracts, and runtime behavior remain identical; only the live-object ownership boundary moves inward.
+
 ## Concrete Scope Surface
 
 ```ts
@@ -187,10 +225,10 @@ The class contains no `get(name)`, manager/session getters, `services` property,
 
 | Current consumer | Target constructor field | Exact methods used |
 | --- | --- | --- |
-| `ApplicationRunBindingLaunchService` | `agentExecution` | `createAgentRun` |
-| `ApplicationRunBindingLaunchService` | `teamExecution` | `createTeamRun`, `createTeamRunFromRootConfig` |
-| `ApplicationOrchestrationHostService` | `agentExecution` | `resolveAgentRun`, `terminateAgentRun` |
-| `ApplicationOrchestrationHostService` | `teamExecution` | `resolveActiveTeamRun`, `terminateTeamRun` |
+| `ApplicationRunBindingLaunchService` | `agentExecution` | `createAgentRun`; consume immutable `runId` only |
+| `ApplicationRunBindingLaunchService` | `teamExecution` | `createTeamRun`, `createTeamRunFromRootConfig`; consume immutable `teamRunId` plus configured-member address/run-ID projection only |
+| `ApplicationOrchestrationHostService` | `agentExecution` | `postAgentInput`, `terminateAgentRun` |
+| `ApplicationOrchestrationHostService` | `teamExecution` | `postTeamInput`, `terminateTeamRun` |
 | `ApplicationOrchestrationHostService` | `artifacts` | all four artifact methods above |
 | `ApplicationOrchestrationHostService` | `memory` | `resolveTeamMemberLocation` |
 | `ApplicationBoundRunLifecycleGateway` | `agentExecution` | `observeAgentRunLifecycle` |
@@ -203,9 +241,9 @@ The class contains no `get(name)`, manager/session getters, `services` property,
 ## Admission And Lifecycle Semantics
 
 - Scope states are owner-local: `OPEN`, `QUIESCED`, `CLOSED`.
-- Both create methods check `OPEN` immediately before delegating. Otherwise they reject with `Application execution is not accepting new runs.`
+- All three top-level create commands (`createAgentRun` and both Team variants) check `OPEN` immediately before delegating. Otherwise they reject with `Application execution is not accepting new runs.`
 - `quiesce()` is synchronous and idempotent. It transitions `OPEN -> QUIESCED` and calls the private scoped session manager's `blockNewSessions()` exactly once.
-- Resolve, input-to-existing-run, observe, terminate, artifact read, and memory read remain available while `QUIESCED`; this allows the outer lifecycle to drain and clean up existing work.
+- Input-to-existing-run (including restore-aware resolution inside the scope), observe, terminate, artifact read, and memory read remain available while `QUIESCED`; this allows the outer lifecycle to drain and clean up existing work.
 - `close()` memoizes one promise, calls `quiesce()`, stops all Team runs, then all Agent runs, then closes the scoped session manager. Each independent step is attempted; failures are aggregated. It finally marks `CLOSED`.
 - The platform lifecycle calls `quiesce()` as its first stop action, drains outer services/workers, then calls `close()` at the current run shutdown/session close position. Streaming subscriptions stop afterward, preserving current order.
 - `abortConstruction()` is valid only before the concrete scope is published. The construction invariant forbids live runs. It synchronously closes the session manager if created, otherwise the raw session scope, and marks `CLOSED`; repeat calls do nothing.

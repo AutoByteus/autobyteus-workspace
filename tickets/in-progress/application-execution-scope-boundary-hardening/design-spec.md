@@ -4,13 +4,13 @@
 
 The current implementation is behaviorally healthy and already has correct host multiplicity: Studio and standalone each construct canonical process infrastructure, a separate `GeneralProcessRunSupervisor`, and one `ApplicationPlatformRuntime`. The public runtime exposes only lifecycle, REST, realtime, and host-management projections.
 
-Inside that healthy outer boundary, application execution ownership remains procedural. `createApplicationRunServices()` builds one exact graph-local Agent/Team family but returns ten mutable pieces at mixed abstraction levels. `createApplicationOrchestrationServices()` distributes those pieces across launch, host, streaming, lifecycle, and readiness code and returns fifteen outer/internal services. Lifecycle enumerates the scoped MCP session manager and run shutdown coordinator separately. Application assembly also rediscovers process owners through getters, and the stream source retains a redundant process-global Agent manager fallback despite mandatory injection.
+Inside that healthy outer boundary, application execution ownership remains procedural. `createApplicationRunServices()` builds one exact graph-local Agent/Team family but returns ten mutable pieces at mixed abstraction levels. `createApplicationOrchestrationServices()` distributes those pieces across launch, host, streaming, lifecycle, and readiness code and returns fifteen outer/internal services. Lifecycle enumerates the scoped MCP session manager and run shutdown coordinator separately. Application assembly also rediscovers process owners through getters, and the stream source retains a redundant process-global Agent manager fallback despite mandatory injection. Normal Team launch reads the execution tree from a returned live `RootTeamRun`; normal Agent/Team input resolves a live aggregate and posts to it in orchestration. Therefore the boundary must own live run access as well as construction/lifecycle.
 
 The corrected identity relationships must not change: one application family per platform-runtime lifetime, canonical definitions explicitly shared, general execution non-identical, scope-local publication/session/resource identity, and RootTeamRun-local task resolution. See BEH-001–BEH-004 and the investigation source log.
 
 ## Intended Change
 
-Introduce one concrete `ApplicationExecutionScope` per existing `ApplicationPlatformRuntime` lifetime. It constructs and privately owns the graph-local mutable execution kernel, enforces admission and exact instance identity, unwinds construction failure, and owns idempotent Team-before-Agent/session shutdown. It exposes frozen, subject-specific capabilities to orchestration, streaming, readiness, artifact access, memory lookup, and lifecycle. It is not a generic container and callers cannot receive both the boundary and raw internals.
+Introduce one concrete `ApplicationExecutionScope` per existing `ApplicationPlatformRuntime` lifetime. It constructs and privately owns the graph-local mutable execution kernel, enforces admission and exact instance identity, unwinds construction failure, and owns idempotent Team-before-Agent/session shutdown. It exposes frozen, subject-specific capabilities to orchestration, streaming, readiness, artifact access, memory lookup, and lifecycle. Agent/Team capabilities are command boundaries: live `AgentRun`/`RootTeamRun` aggregates stay private, while callers receive only immutable launch projections or input dispositions. It is not a generic container and callers cannot receive both the boundary and raw internals.
 
 Keep `ApplicationPlatformRuntime` as the outer platform owner and `GeneralProcessRunSupervisor` as the distinct general-execution owner. Pass intentionally process-owned dependencies into platform construction by explicit named input. Cleanly remove the broad run-services factory, leaf-level lifecycle bypass, ambient application execution fallback, and obsolete file placement.
 
@@ -38,7 +38,7 @@ Keep `ApplicationPlatformRuntime` as the outer platform owner and `GeneralProces
 - Current design issue found: `Yes`
 - Root cause classification: `Boundary Or Ownership Issue` plus `File Placement Or Responsibility Drift`
 - Refactor needed now: `Yes`
-- Evidence: one identity/lifecycle family is returned as ten mixed-level pieces, redistributed by a fifteen-member assembly object, separately enumerated by lifecycle, and partly rediscovered through global process accessors; one stream path retains a redundant global manager fallback.
+- Evidence: one identity/lifecycle family is returned as ten mixed-level pieces, redistributed by a fifteen-member assembly object, separately enumerated by lifecycle, and partly rediscovered through global process accessors; one stream path retains a redundant global manager fallback; launch/input consumers currently operate on returned live `RootTeamRun`/`AgentRun` objects.
 - Design response: represent the existing real owner as `ApplicationExecutionScope`, hide its internals, expose exact capabilities, inject named process dependencies, and remove old bags/fallbacks.
 - Refactor rationale: this boundary owns mutable state, construction identity, scoped session lifetime, admission, and ordered cleanup. It therefore removes actual ambiguity instead of adding forwarding indirection.
 - Intentional deferrals and residual risk: logical `memberAddress`/runtimeKind simplification is a separate public contract ticket. Latest-base changes may add named dependencies but must not weaken this boundary.
@@ -47,7 +47,7 @@ Keep `ApplicationPlatformRuntime` as the outer platform owner and `GeneralProces
 
 - **Application execution scope**: the concrete mutable owner of the graph-local Agent/Team execution kernel for one platform-runtime lifetime.
 - **Process infrastructure**: canonical definitions, workspace/provider/model/runtime readiness, configuration, and MCP route/catalog infrastructure intentionally shared by composition.
-- **Execution capability**: a frozen subject-specific interface exported by the scope; it is not a raw service or generic lookup.
+- **Execution capability**: a frozen subject-specific command/read interface exported by the scope; it is not a raw service or generic lookup and cannot return live execution aggregates.
 - **Quiesce**: idempotently stop accepting new top-level application execution/session work while existing outer work drains.
 
 ## Design Reading Order
@@ -89,7 +89,7 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 
 - DS-001: `server runtime -> buildStudioServer -> HostDefinitionServices + AgentToolsMcpRuntime -> GeneralProcessRunSupervisor -> buildApplicationPlatformRuntime -> ApplicationExecutionScope -> HTTP/WS registration -> prepare/recover`
 - DS-002: `standalone start -> process/migrations/package validation -> HostDefinitionServices + AgentToolsMcpRuntime -> GeneralProcessRunSupervisor -> selected ApplicationPlatformRuntime -> ApplicationExecutionScope -> listen/recover`
-- DS-003: `application caller -> engine context/orchestration host -> binding authorization/configuration -> Agent or Team execution capability -> exact service/manager/backend/RootTeamRun -> binding/event`
+- DS-003: `application caller -> engine context/orchestration host -> binding authorization/configuration -> Agent or Team execution command -> scope-private exact service/manager/backend/RootTeamRun -> immutable launch/input disposition -> binding/event`
 - DS-006: `host close/ingress stop -> platform quiesce -> outer queues/gateways/observers/workers drain -> scope Team stop -> Agent stop -> scoped session/resource close -> streaming stop -> process close`
 - DS-007: `reload route -> reentry -> worker stop/reload -> binding recovery -> pending event resume -> same scope`
 
@@ -99,7 +99,7 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 | --- | --- | --- | --- | --- |
 | DS-001 | Studio creates shared process owners, distinct general execution, then one platform/scope before routes and recovery. | host, general execution, platform, execution scope | Studio composition | definitions, MCP route/catalog, readiness |
 | DS-002 | Standalone performs its host validation but uses the same platform/scope boundary for selected application behavior. | host, platform, execution scope | standalone composition | migrations, selected package validation |
-| DS-003 | Binding orchestration validates/configures; the scope capability owns actual graph mutation and exact run identity. | binding, execution capability, run/root | orchestration + scope | stores, definitions, model readiness |
+| DS-003 | Binding orchestration validates/configures; the scope command owns graph mutation, restore-aware input dispatch, Team snapshot projection, and exact run identity without returning live aggregates. | binding, execution command, immutable projection/disposition, private run/root | orchestration + scope | stores, definitions, model readiness |
 | DS-004 | Authorized target enters scope stream capability and exact run events return through provider-neutral mapping/queues. | authorized target, run source, application event | scope streaming | authorization lease, limits |
 | DS-005 | Process MCP transport reaches a scope-specific session/provider whose publication uses the same activation/run family, then outer delivery reaches the worker. | session, publication, run, delivery | scope publication + platform delivery | capability token, snapshot/projection stores |
 | DS-006 | Platform blocks admission and drains outer concerns before asking scope to close its internal runs/sessions. | platform lifecycle, scope lifecycle | platform lifecycle | error aggregation, exact-once close |
@@ -113,7 +113,7 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 - Application platform runtime/lifecycle: owns platform-wide sequencing and outer services.
 - Application execution scope: owns mutable execution identity/lifecycle.
 - Application orchestration: owns binding use cases and authorization.
-- Agent/Team execution capability: owns subject-specific mutation/lookup contract.
+- Agent/Team execution capability: owns subject-specific create/input/terminate/observe commands and immutable result projection.
 - Agent run / RootTeamRun: owns runtime execution and events.
 - Streaming/publication/delivery owners: own return transformations and transport across their boundary.
 
@@ -136,7 +136,7 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 | --- | --- | --- | --- |
 | runtime REST projection | orchestration/backend/package owners | exact route-facing methods | stores/managers |
 | runtime realtime projection | streaming/communication/backend owners | transport registration | execution lookup |
-| scope capability object | concrete scope | give one consumer the exact operations it needs | new state separate from scope or generic lookup |
+| scope capability object | concrete scope | give one consumer exact commands/read operations and immutable results | new state separate from scope, generic lookup, or live run return |
 
 ## Removal / Decommission Plan
 
@@ -147,7 +147,7 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 | `AgentRunManager.getInstance()` stream fallback | exact manager is mandatory | private injected stream source | In This Change | delete import/branch |
 | app assembly process getters | hide dependencies | named platform build inputs | In This Change | roots resolve once |
 | lifecycle session-manager/shutdown leaves | bypass scope lifecycle | `ApplicationExecutionLifecycle` | In This Change | no alias |
-| raw manager/service fields in orchestration return | mixed levels | narrow scope capabilities + outer owners only | In This Change | tighten return |
+| raw manager/service fields and live run aggregate returns | mixed levels | narrow scope commands/immutable projections + outer owners only | In This Change | tighten input/result boundary |
 
 ## Return Or Event Spine(s)
 
@@ -174,13 +174,13 @@ Read BEH-001–BEH-004, the DS-001–DS-009 spine inventory, then the scope owne
 
 ## Ownership Boundaries
 
-The platform builds the scope but does not reach inside it. Orchestration authorizes application bindings and passes exact domain inputs to a capability; it does not resolve a manager. The scope consumes shared definitions/readiness inputs but cannot own or rediscover them. Process MCP owns route/catalog/registry; the scope owns only its application session scope and graph-sensitive capabilities. General execution and application execution share inputs, never mutable execution owners.
+The platform builds the scope but does not reach inside it. Orchestration authorizes application bindings and passes exact domain inputs to a capability; it does not resolve a manager or receive a live `AgentRun`/`RootTeamRun`. The scope consumes shared definitions/readiness inputs but cannot own or rediscover them. Process MCP owns route/catalog/registry; the scope owns only its application session scope and graph-sensitive capabilities. General execution and application execution share inputs, never mutable execution owners.
 
 ## Boundary Encapsulation Map
 
 | Authoritative Boundary | Encapsulates | Required callers | Forbidden bypass | If too thin |
 | --- | --- | --- | --- | --- |
-| `ApplicationExecutionScope` capabilities | managers, services, registries, sessions, memory, publication, stream source | orchestration, streaming, readiness, lifecycle | capability plus raw manager | add exact semantic method to appropriate capability |
+| `ApplicationExecutionScope` capabilities | managers, live runs, services, registries, sessions, memory, publication, stream source | orchestration, streaming, readiness, lifecycle | capability plus raw manager or live run return | add exact command/read method and immutable projection to the appropriate capability |
 | `ApplicationPlatformRuntime` projections | platform stores/queues/workers/gateways/scope | route registrars/host | runtime plus internal service | strengthen subject projection |
 | `GeneralProcessRunSupervisor` | general managers/sessions | Studio public run services/lifecycle | singleton getters or app scope | add general-specific method |
 | binding authorization | binding/member ownership | input/stream surface | scope manager lookup by app ID | strengthen authorization descriptor |
@@ -191,14 +191,14 @@ The platform builds the scope but does not reach inside it. Orchestration author
 Allowed:
 - compositions -> named process owners + general supervisor + platform builder;
 - platform builder -> scope + outer platform owners;
-- orchestration/streaming/readiness/lifecycle -> exact scope capability;
+- orchestration/streaming/readiness/lifecycle -> exact scope capability with immutable command/read results;
 - scope -> injected canonical definitions/workspace/MCP factory/binding and delivery ports;
 - scope internals -> current Agent/Team/history/memory/publication implementations.
 
 Forbidden:
 - application source -> Agent/Team singleton/service getters or execution locators;
 - routes/controllers -> raw execution managers;
-- one consumer -> scope and internal manager/registry/session manager;
+- one consumer -> scope and internal manager/registry/session manager, or any outward contract that returns `AgentRun`/`RootTeamRun`;
 - scope <-> general supervisor internals;
 - scope -> worker/package/availability/reentry ownership;
 - per-application scope registry; generic DI/container/event bus; `buildServer(mode)`.
@@ -209,13 +209,15 @@ The exact normative TypeScript signatures, eight-field scope input, twelve-requi
 
 | Interface | Subject | Responsibility | Identity shape | Notes |
 | --- | --- | --- | --- | --- |
-| `ApplicationAgentExecution` | Agent execution | create/resolve/terminate/observe | exact agent definition/run IDs and current launch types | create checks scope admission |
-| `ApplicationTeamExecution` | Team execution | preset/configured create, resolve/terminate/observe | exact Team definition/run/root config | create checks admission |
+| `ApplicationAgentExecution` | Agent execution | create, restore-aware input command, terminate, observe | exact Agent inputs/run ID; immutable `{runId}` and input disposition | create checks scope admission; no live run result |
+| `ApplicationTeamExecution` | Team execution | preset/configured create, restore-aware root/member input command, terminate, observe | exact Team inputs/run IDs; immutable root/member launch projection and input disposition | create checks admission; no live root result |
 | `ApplicationExecutionStreaming` | authorized runtime event source | attach listener | existing authorized target descriptor | no public-address resolution |
 | `ApplicationPublishedArtifactAccess` | published artifacts | list/read projection/revision | run/member memory identity | read-only |
 | `ApplicationExecutionMemoryLookup` | Team member memory | resolve member location | teamRunId + agentRunId | narrow lookup |
 | `ApplicationExecutionToolReadiness` | tool/session readiness | publisher input + assert ready | scope identity implicit | no session manager exposure |
 | `ApplicationExecutionLifecycle` | scope lifetime | quiesce/close | none | idempotent; normal lifecycle projection only |
+
+The Agent create result is a frozen `{ runId }`. Both Team create methods return a frozen `{ teamRunId, members: readonly [{ memberAddress, agentRunId }] }` projected recursively from configured Team nodes inside the scope. Agent/Team input returns the exact frozen discriminated disposition `ACCEPTED | REJECTED(message) | NOT_AVAILABLE`; the host retains current public error wording. The contracts file imports neither `AgentRun` nor `RootTeamRun`, and only the scope implementation may resolve/restore, post to, or snapshot those aggregates for application orchestration.
 
 The concrete scope additionally has an assembly-only `abortConstruction()` method. It is callable only by `buildApplicationPlatformRuntime` before the runtime is published, is synchronous because the construction invariant forbids live runs, closes the created session manager/scope exactly once, and is not part of any consumer capability.
 
@@ -223,8 +225,8 @@ The concrete scope additionally has an assembly-only `abortConstruction()` metho
 
 | Interface | Singular? | Explicit identity? | Ambiguous selector risk | Corrective action |
 | --- | --- | --- | --- | --- |
-| Agent execution | Yes | Yes | Low | keep separate from Team |
-| Team execution | Yes | Yes | Low | keep preset/configured methods explicit |
+| Agent execution | Yes | Yes | Low | retain live Agent resolution/posting inside scope and expose commands only |
+| Team execution | Yes | Yes | Low | keep preset/configured methods explicit and expose only configured-member projection |
 | Streaming | Yes | Yes | Low | accept only authorized descriptor |
 | Artifact/memory | Yes | Yes | Low | remain read-only/subject-specific |
 | Lifecycle | Yes | N/A | Low | do not add service lookup |
@@ -277,7 +279,7 @@ The concrete scope additionally has an assembly-only `abortConstruction()` metho
 
 | Structure | Clear fields? | Redundant removed? | Parallel risk | Action |
 | --- | --- | --- | --- | --- |
-| capability interfaces | Yes | Yes | Low | no optional catch-all methods |
+| capability interfaces | Yes | Yes | Low | no optional catch-all methods or live run return types |
 | platform build input | Yes | Yes | Low | named required fields, no generic container |
 | existing public SDK DTOs | unchanged | N/A | existing adjacent redundancy | defer whole contract cleanly |
 
@@ -286,7 +288,7 @@ The concrete scope additionally has an assembly-only `abortConstruction()` metho
 | File | Area | Owner | Concrete concern | Why one file | Reuses structure? |
 | --- | --- | --- | --- | --- | --- |
 | `src/application-platform/execution/application-execution-scope.ts` | execution | scope | build/private-own kernel; frozen projections; admission/unwind/close | exact real owner | contracts |
-| `.../application-execution-scope-contracts.ts` | execution | boundary | required input + seven capability contracts | semantic contract authority | N/A |
+| `.../application-execution-scope-contracts.ts` | execution | boundary | required input, seven capability contracts, immutable Agent/Team launch and input result types | semantic contract authority | N/A |
 | `.../application-execution-shutdown-coordinator.ts` | execution | shutdown | idempotent Team-before-Agent aggregation | bounded local owner | N/A |
 | `src/application-platform/runtime/build-application-platform-runtime.ts` | platform | runtime assembly | construct scope/outer services and four projections | assembly root | scope contracts |
 | `.../create-application-orchestration-services.ts` | orchestration | assembly | build outer binding/recovery/stream/delivery owners using capabilities | coherent outer assembly | scope contracts |
@@ -308,7 +310,7 @@ The exact Add/Modify/Rename/Remove and durable-test path set is normative in `ap
 | --- | --- | --- | --- | --- | --- |
 | `src/application-platform/execution/` | Folder | application execution | scope, contracts, internal shutdown | makes deeper owned runtime visible | routes/stores/packages/workers |
 | `.../application-execution-scope.ts` | Add | scope | concrete construction/lifecycle | main owner | public transport or generic lookup |
-| `.../application-execution-scope-contracts.ts` | Add | capability boundary | exact 8-field scope input and all seven capability contracts using type-only domain imports; outer platform build input remains exported by its builder | prevents type dependence on managers | optional service fields or concrete outer stores |
+| `.../application-execution-scope-contracts.ts` | Add | capability boundary | exact 8-field scope input, seven capability contracts, and immutable launch/input projections using type-only non-aggregate domain imports; outer platform build input remains exported by its builder | prevents type dependence on managers/live runs | optional service fields, concrete outer stores, `AgentRun`, or `RootTeamRun` |
 | `.../application-execution-shutdown-coordinator.ts` | Rename/Move | scope internal | Team-before-Agent stop | ownership aligned | platform-wide cleanup |
 | `runtime/create-application-run-services.ts` | Remove | obsolete | old bag factory | replaced | N/A |
 | `runtime/create-application-orchestration-services.ts` | Modify | orchestration | accept already-created orchestration stores and scope capabilities; return sibling outer assembly handles only; named readiness input | existing assembly | raw managers/sessions or an exported authoritative bag |
@@ -316,7 +318,7 @@ The exact Add/Modify/Rename/Remove and durable-test path set is normative in `ap
 | lifecycle contract/implementation | Modify | platform lifecycle | use readiness/lifecycle capability | exact outer order | scope leaves |
 | stream runtime source | Modify | streaming | remove singleton fallback | exact identity | global manager import |
 | Studio/standalone roots | Modify | composition | pass named Workspace/readiness owners | explicit dependency | execution internals |
-| launch/host/lifecycle gateway service files | Modify | orchestration | depend on Agent/Team/artifact/memory capabilities | no raw service types | managers |
+| launch/host/lifecycle gateway service files | Modify | orchestration | depend on Agent/Team/artifact/memory capabilities; consume immutable Team launch projection and input disposition | no raw service/live run types | managers, `AgentRun`, `RootTeamRun`, direct post/snapshot calls |
 
 Test inventory:
 - Rename/replace `tests/unit/application-platform/application-run-services.test.ts` with `application-execution-scope.test.ts`.
@@ -324,7 +326,7 @@ Test inventory:
 - Modify architecture boundaries, platform runtime isolation, lifecycle, stream source, orchestration launch/host, Studio composition, and standalone integration tests.
 - Preserve existing real dual-host application tests as characterization; API/E2E owns final coverage investigation.
 
-Normative AFB-004 transition: move all 22 existing nested-construction obligations and sole-occurrence authority to `application-execution-scope.ts`; tighten workspace requirements on publication/Claude session construction; add three defaulting-owner obligations for memory location, run-file change, and Agent history catalog (25 nested obligations total); add complete/omitted/null/undefined/spread checks for all eight `ApplicationExecutionScope.create` fields and all twelve required `buildApplicationPlatformRuntime` fields; require the two exact host call sites and standalone-only `selectedApplicationIds`; forbid the seven assembly-level ambient process selectors below host roots; enforce consumer contract imports, exact lifecycle fields, exact 12-field orchestration result, and old/new path absence/presence. Provider-owned process defaults remain only in the explicitly listed existing backend helper positions. See the contract and transition supplements for exact dispositions.
+Normative AFB-004 transition: forbid `AgentRun`/`RootTeamRun` imports and outward return references in scope contracts; forbid direct `resolveAgentRun`, `resolveActiveTeamRun`, `postUserMessage`, `postMessage`, and `getExecutionTreeSnapshot` calls in application orchestration consumers; require those calls plus immutable projection/disposition mapping in the sole scope implementation. Move all 22 existing nested-construction obligations and sole-occurrence authority to `application-execution-scope.ts`; tighten workspace requirements on publication/Claude session construction; add three defaulting-owner obligations for memory location, run-file change, and Agent history catalog (25 nested obligations total); add complete/omitted/null/undefined/spread checks for all eight `ApplicationExecutionScope.create` fields and all twelve required `buildApplicationPlatformRuntime` fields; require the two exact host call sites and standalone-only `selectedApplicationIds`; forbid the seven assembly-level ambient process selectors below host roots; enforce consumer contract imports, exact lifecycle fields, exact 12-field orchestration result, and old/new path absence/presence. Provider-owned process defaults remain only in the explicitly listed existing backend helper positions. See the contract and transition supplements for exact dispositions.
 
 ## Folder Boundary Check
 
@@ -366,7 +368,7 @@ Orchestration is a peer use-case owner under the platform and may call scope cap
 1. Add scope contracts and internal shutdown coordinator at the target ownership path; move/update coordinator tests.
 2. Implement scope construction by moving the exact current graph from `createApplicationRunServices`; add staged reverse unwind, frozen capabilities, admission state, and idempotent close.
 3. Add focused scope identity/construction/unwind tests before changing outer callers, including the assembly-only pre-publication abort.
-4. Change launch, lifecycle gateway, orchestration host, and streaming dependencies to exact capability interfaces; remove the stream fallback.
+4. Change launch, lifecycle gateway, orchestration host, and streaming dependencies to exact capability interfaces; move restore-aware Agent/Team input and Team tree projection behind scope commands; remove live aggregate returns and the stream fallback.
 5. Move construction of orchestration stores to the explicit platform assembly root; change orchestration assembly to accept those stores, scope capabilities, and named readiness owners, and remove raw execution leaves from its return.
 6. Change platform builder to accept named process dependencies, follow the exact outer-stores -> scope -> orchestration order, abort the scope if later pre-publication assembly fails, wire readiness/lifecycle, and preserve the four outward projections.
 7. Update Studio/standalone roots to resolve/pass named process owners, preserving construction/unwind order.
@@ -385,7 +387,7 @@ No temporary compatibility seam survives a commit intended for review.
 
 ## Risks
 
-- A naive implementation could merely expose service getters; architecture guards and capability-only consumer types must prevent this.
+- A naive implementation could expose service getters or return live `AgentRun`/`RootTeamRun` objects; architecture guards, command-only contracts, and immutable projection tests must prevent both.
 - Construction movement may accidentally change backend factory arguments/defaults; exact current graph construction and AFB occurrence obligations must be preserved.
 - Shutdown folding may accidentally shift streaming/session order; retain the outer sequence and test every step.
 - Latest-base changes could add an ambient accessor; refresh and extend named input/guard inventories before implementation finalization.
@@ -393,7 +395,7 @@ No temporary compatibility seam survives a commit intended for review.
 ## Guidance For Implementation
 
 - Use type-only imports and domain-specific contracts; do not solve cycles with `unknown`, optional fields, or a generic container.
-- Keep all scope internals `private`; expose frozen capability objects and lifecycle/readiness projections only.
+- Keep all scope internals and live run aggregates `private`; expose frozen capability objects plus newly allocated immutable launch/input projections only.
 - Gate top-level create/session admission after `quiesce`; do not invent a generic state framework.
 - Staged construction must close the session manager when created, otherwise its raw scope, and must never close shared process infrastructure.
 - Preserve every explicit backend factory argument and graph-local injection from current `createApplicationRunServices`.

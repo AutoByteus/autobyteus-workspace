@@ -2,7 +2,7 @@
 
 ## Status
 
-`Design-ready` normative implementation and proof inventory for SR-002. Paths are relative to repository root.
+`Design-ready` normative implementation and proof inventory for SR-003. Paths are relative to repository root.
 
 ## Production Source Inventory
 
@@ -10,8 +10,8 @@
 
 | Path | Target responsibility / proof |
 | --- | --- |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | exact 8-field scope build input and seven capability contracts from the normative contract supplement; the outer platform build type remains with its builder |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts` | one concrete graph-local execution owner; exact current graph construction, frozen capabilities, admission, staged unwind, assembly abort, idempotent close |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | exact 8-field scope build input, seven capability contracts, and immutable Agent/Team launch/input result types; imports/references no live run aggregate; outer platform build type remains with its builder |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts` | one concrete graph-local execution owner; exact current graph construction; sole application-boundary live run resolution/input/Team-snapshot projection; frozen capabilities/results; admission, staged unwind, assembly abort, idempotent close |
 
 ### Rename / Move
 
@@ -25,8 +25,8 @@
 | --- | --- |
 | `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts` | export named `CreateTeamRunFromRootConfigInput`; use it on the unchanged method |
 | `autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-relay-service.ts` | export exact binding-reader and delivery-sink ports; constructor consumes those ports; behavior unchanged |
-| `autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts` | replace `AgentRunService`/`TeamRunService` constructor fields with exact Agent/Team capability contracts; same create calls |
-| `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | replace Agent/Team/projection/memory concrete dependencies with four exact capabilities; retain binding authorization and current dispatch |
+| `autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts` | replace `AgentRunService`/`TeamRunService` with exact capabilities; consume frozen Agent identity/Team member projection; remove `ConfiguredExecutionNode` imports and local recursive `configuredAgents`; retain display-name/public binding mapping |
+| `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | replace Agent/Team/projection/memory concrete dependencies with four exact capabilities; call `postAgentInput`/`postTeamInput`; map immutable dispositions to the exact existing unavailable/rejection messages; retain authorization and target-member selection |
 | `autobyteus-server-ts/src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts` | replace Agent/Team service types with capabilities; retain subject dispatch |
 | `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts` | implement exact streaming contract; require injected managers; delete Agent singleton import/fallback |
 | `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-streaming-service.ts` | depend on the streaming contract, not concrete runtime source |
@@ -60,7 +60,7 @@
 
 | Current path | Target path | Exact proof |
 | --- | --- | --- |
-| `autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts` | `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts` | no live run on construction; exact manager/session/activation identity reaches all seven capabilities; capability objects frozen; no raw internals; admission; scope-stage and post-scope assembly unwind; process owners remain open |
+| `autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts` | `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts` | no live run on construction; exact manager/session/activation identity reaches all capabilities; Agent/Team create returns deeply frozen copied projections; nested configured-Team flattening excludes task nodes; restore-aware Agent/Team input maps accepted/rejected/not-available and preserves thrown errors; root/member Team target reaches the private `RootTeamRun`; no live aggregate escapes; admission; unwind; process owners remain open |
 | `autobyteus-server-ts/tests/unit/application-platform/application-run-shutdown-coordinator.test.ts` | `autobyteus-server-ts/tests/unit/application-platform/application-execution-shutdown-coordinator.test.ts` | exact Team-before-Agent order, continuation, aggregation, idempotence under new path/name |
 
 ### Modify
@@ -72,9 +72,9 @@
 | `autobyteus-server-ts/tests/unit/application-platform/application-platform-lifecycle.test.ts` | replace session/shutdown leaves with readiness/lifecycle doubles; prove quiesce first, close at exact position, idempotence/error aggregation |
 | `autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts` | required exact managers only; prove no fallback path and Agent/Team attachment behavior |
 | `autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts` | type fixture against streaming capability; behavior assertions unchanged |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts` | provide exact Agent/Team capability doubles and retain Agent/preset/configured Team projections |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts` | provide four capability doubles; retain input/terminate/artifact/memory outcomes |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts` | provide Agent/Team capability doubles; retain root/member dispatch |
+| `autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts` | provide immutable Agent/Team launch projections (no `RootTeamRun` fixture); retain Agent/preset/configured binding IDs, recursive member addresses, display names, and public runtimeKind fields |
+| `autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts` | provide four capability doubles; assert accepted/rejected/not-available disposition maps to unchanged exact errors; retain terminate/artifact/memory outcomes |
+| `autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts` | replace direct `RootTeamRun` fixture with Team capability double; prove host selects exact member run ID or `null` for root/coordinator and validates unknown members before the capability call; private root dispatch itself is proved in the scope test |
 | `autobyteus-server-ts/tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts` | update lifecycle construction to readiness/lifecycle projections; retain recovery ordering |
 | `autobyteus-server-ts/tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts` | use narrow accept-only delivery sink fixture; retain relay command assertions |
 | `autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts` | mock/provide all named process inputs; preserve definition/MCP/general/platform/listen/recover/close order |
@@ -100,19 +100,25 @@ No separate persistent architecture fixture files exist: AFB synthetic positive/
 5. Synthetic fixtures for every new required property cover complete positive shape plus omitted, explicit `null`, explicit `undefined`, and opaque spread rejection.
 6. Add process-selector rules for workspace/model/runtime/provider/Codex getters and `LLMFactory.requireCurrentModelIdentifier`: zero assembly-level occurrences/imports below the two host roots; exact one named resolution path in each host call site as applicable. Reusable backend-local deliberately process-scoped defaults remain exempt only in their existing provider-owned files; application construction must supply every graph-sensitive input listed above.
 7. Add current-tree import/shape rules:
-   - the three orchestration consumers import scope contracts, not Agent/Team services/managers, projection service, or memory service;
+   - the three orchestration consumers import scope contracts, not Agent/Team services/managers, projection service, memory service, `AgentRun`, or `RootTeamRun`;
+   - `application-execution-scope-contracts.ts` has zero imports/references of the live aggregate identifiers `AgentRun` and `RootTeamRun` in any outward signature; names such as `CreateAgentRunInput` are explicitly not a match;
+   - `application-run-binding-launch-service.ts` has no configured-tree node imports or local `configuredAgents` helper and consumes only the immutable Team launch projection;
+   - governed application orchestration source has zero calls to `resolveAgentRun`, `resolveActiveTeamRun`, `postUserMessage`, `postMessage`, or `getExecutionTreeSnapshot`;
+   - `application-execution-scope.ts` is the sole application-boundary implementation and has exactly one source occurrence/call path for each of those five operations; both Team create commands share that one private projector;
+   - scope contract/implementation/consumer shapes contain `postAgentInput`, `postTeamInput`, `ApplicationAgentLaunchResult`, `ApplicationTeamLaunchResult`, and `ApplicationExecutionInputDisposition` with the exact normative fields/discriminants;
    - streaming service/subscription import the streaming contract, not the concrete runtime source;
    - lifecycle contracts contain `executionReadiness` and `executionLifecycle`, not `agentToolsSessionManager`/`runShutdownCoordinator`;
    - orchestration assembly result has the exact 12 fields and none of the removed execution leaves;
    - old run-services and old shutdown paths do not exist; target paths do.
-8. Preserve the two named general-process exemptions and all AFB-001/002/003/005 behavior.
+8. Add synthetic type/AST fixtures that fail when either outward Agent/Team capability returns `AgentRun`/`RootTeamRun`, when a consumer imports those aggregates, or when a consumer calls a forbidden live-run method; aligned positive fixtures use only the immutable command/result shapes.
+9. Preserve the two named general-process exemptions and all AFB-001/002/003/005 behavior.
 
 ## Verification Matrix
 
 | Level | Exact tests/scenarios | Required result |
 | --- | --- | --- |
 | Source/architecture | architecture boundary test plus `git diff --check`, typecheck | all exact inputs/occurrences/import directions/removals pass |
-| Focused unit | all renamed/modified unit files above | contracts, identity, admission, unwind, lifecycle, existing consumer behavior pass |
+| Focused unit | all renamed/modified unit files above | contracts, identity, immutable projections/dispositions, no live aggregate escape, restore-aware input, root/member dispatch, admission, unwind, lifecycle, and existing consumer behavior pass |
 | Focused integration | four modified integration files above plus `standalone-application-server.integration.test.ts` | worker/WS/launch/artifact and standalone behavior pass |
 | Maintained package characterization | `brief-package-team-prompt.integration.test.ts`, `brief-studio-team-config.integration.test.ts`, `standalone-package-portable-defaults.integration.test.ts` | package prompt/config/default behavior unchanged |
 | Realistic API/E2E Studio | real Agent and nested Team launch/input, streaming, task delegation, publication/projection, multi-app isolation, reentry, close | same exact scope identity and no cross-app leakage |
