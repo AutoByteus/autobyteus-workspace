@@ -1,0 +1,49 @@
+# IR-012 static audit
+Source commit: 003413b05
+
+## Singular text-control losslessness predicate
+16:  kind: 'historical_residual'
+29:const canTextInputRepresentExactly = (value: string): boolean =>
+38:  if (schema.type === 'string') {
+39:    return typeof value === 'string' && canTextInputRepresentExactly(value)
+42:  return typeof value === 'string' && canTextInputRepresentExactly(value)
+77:      kind: 'historical_residual' as const,
+86:      kind: 'historical_residual' as const,
+PASS: CR-013 classification remains in the singular historical representability policy; LF/CR strings cannot enter the text control.
+
+## Exact residual rendering
+17:        <dd class="min-w-0 whitespace-pre-wrap break-words font-mono text-gray-700">{{ entry.value }}</dd>
+PASS: exact residual string whitespace is preserved visually; no classification policy was added to the component.
+
+## Focused regression boundary
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:75:      ordinary_prompt: Object.freeze({ type: 'string' }),
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:76:      line_feed_prompt: Object.freeze({ type: 'string' }),
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:77:      carriage_return_prompt: Object.freeze({ type: 'string' }),
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:81:      ordinary_prompt: 'line one line two',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:82:      line_feed_prompt: 'line one\nline two',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:83:      carriage_return_prompt: 'line one\rline two',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:87:        key: 'ordinary_prompt',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:93:        key: 'line_feed_prompt',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:99:        key: 'carriage_return_prompt',
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:15:  ordinary_prompt: 'line one line two',
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:16:  multiline_prompt: 'line one\nline two',
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:66:            ordinary_prompt: { type: 'string', title: 'Ordinary Prompt' },
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:67:            multiline_prompt: { type: 'string', title: 'Multiline Prompt' },
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:101:    const ordinaryPrompt = wrapper.get(`input#team-scope-${isRoot ? 'root' : 'Research'}-ordinary_prompt`)
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:105:    expect(wrapper.findAll('[data-historical-key="multiline_prompt"]')).toHaveLength(1)
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:108:    const multilinePrompt = wrapper.get('[data-historical-key="multiline_prompt"] dd')
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:110:    expect(multilinePrompt.classes()).toContain('whitespace-pre-wrap')
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:113:    expect(wrapper.find(`input#team-scope-${isRoot ? 'root' : 'Research'}-multiline_prompt`).exists()).toBe(false)
+PASS: direct classifier covers ordinary/LF/CR strings; mounted root and nested-Team consumers cover normal control versus exact residual, no duplicate input, preserved whitespace, and zero mutation.
+
+## Stored authoring boundary preserved
+PASS: stored type/projector still contain no authoring imports or fabricated authoring sentinels.
+
+## Changed production source effective non-empty lines
+  82 autobyteus-web/utils/historicalModelConfigFields.ts
+  41 autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+PASS: changed production sources remain below 500 effective non-empty lines.
+
+## Source commit whitespace
+003413b05 fix(web): preserve multiline stored config values
+PASS: source commit diff check.

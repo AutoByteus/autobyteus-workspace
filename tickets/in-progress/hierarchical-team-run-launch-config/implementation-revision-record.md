@@ -17,6 +17,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-009 | `architecture_reviewer`; `design-review-report.md`; ARCH-REV-003 / SR-011 presentation round | `USER-UX-001`, `USER-UX-002` | `Design-Approved Rework` | `SR-011`, `ARCH-REV-003`, `CRR-014`, `API-REV-007`, `DR-003` | Original personal root form presentation restored and nested Team editor added minimally; prepared for complete source review |
 | IR-010 | `architecture_reviewer`; `design-review-report.md`; ARCH-REV-004 / SR-012 stored-settings parity round | `USER-UX-003` | `Design-Approved Rework` | `SR-012`, `ARCH-REV-004`, `CRR-015–CRR-016`, `API-REV-008`, `DR-004` | Existing TeamRun Settings now reuses the shared form with immutable ordered stored truth, locked controls, and field-local historical fallbacks; prepared for complete source review |
 | IR-011 | `architecture_reviewer`; `design-review-report.md`; ARCH-REV-005 / SR-013 correction round | `CR-011`, `CR-012`, `MP-CR-009` | `Design-Approved Rework` | `SR-013`, `ARCH-REV-005`, `CRR-017`; `API-REV/DR: N/A` | Stored capabilities are separate from editable authoring, and exact partial-schema history renders once without normalization; prepared for complete source review |
+| IR-012 | `code_reviewer`; `code-review-report.md`; CRR-018 complete source review | `CR-013`, `MP-CR-010` | `Local Fix` | `SR-013`, `ARCH-REV-005`, `CRR-018`; `API-REV/DR: N/A` | Text-control-changing historical strings become exact residuals while ordinary strings remain disabled controls; prepared for repeat complete source review |
 
 ## Revision Entries
 
@@ -239,3 +240,23 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: focused web cohort passed 11 files/112 tests; production Nuxt build passed with 3,732 modules/15 routes; web/localization guards and static/source audits passed; actual stored `hello` TeamRun Settings journey passed at desktop and 1050px narrow widths with operable disclosures, disabled exact values, no Run/Reset, and no layout defect. Direct `vue-tsc` binary is not installed, so no standalone typecheck pass is claimed.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: complete source review must pass before API/E2E resumes. The live user snapshot has representable current schema values, so partial-drift visuals are covered through mounted real root/nested-Team/Agent components rather than data mutation. No API/E2E execution, delivery re-entry, push, archival, release, deployment, tag, or cleanup is claimed.
+
+### IR-012 — Preserve multiline historical strings outside the text control
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`; `CRR-018`, complete SR-013 / IR-011 source review
+- Triggering finding IDs: `CR-013`; material premise `MP-CR-010`
+- Classification: `Local Fix`
+- Prior authoritative result: `CRR-018` failed IR-011 because the singular classifier treated every schema-valid string as text-input-representable even though the browser text input strips CR/LF and changed a reachable persisted multiline value
+- Current authoritative result: source commit `003413b05` rejects CR/LF strings from the current text control, renders them once through the exact historical residual with whitespace preservation, retains ordinary single-line strings in normal disabled controls, and is ready for repeat complete source review
+- Related solution revision IDs: `SR-013` (preserving SR-012/SR-011/SR-008 where not superseded)
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-018`; CR-011 and CR-012 remain resolved
+- Related API/E2E revision IDs: `N/A` for this delta; preserved historical reports remain in the cumulative package
+- Related delivery revision IDs: `N/A` for this delta; preserved historical reports remain in the cumulative package
+- Why this implementation revision is recorded: MP-CR-010 proved the actual HTML text control removes line breaks from a supported GraphQLJSON/V2 historical string, contradicting R-044 / AC-038's exact-value requirement even though the broader SR-013 classifier design was correct
+- Approved behavior or requirement IDs affected: `BEH-010`; `R-044`; `AC-038`; `DS-006`; `MP-CR-010`
+- Implementation delta: added one text-control capability predicate in `historicalModelConfigFields.ts` that requires schema-valid text strings to contain no CR/LF before choosing `current_control`; enum/boolean/number handling is unchanged. Added whitespace-preserving residual presentation. Extended the direct classifier regression for ordinary, LF, and CR strings and mounted root/nested-Team consumers for an ordinary disabled input versus an exact multiline residual, absence of a duplicate multiline input, and zero mutation. No component-local classification, authoring, store, launch, backend, V2, or migration owner changed.
+- Changed files or areas: `autobyteus-web/utils/historicalModelConfigFields.ts`; `components/workspace/config/HistoricalModelConfigFallback.vue`; `utils/__tests__/historicalModelConfigFields.spec.ts`; `components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts`; IR-012 handoff and evidence artifacts
+- Local validation and result: focused web cohort passed 11 files/113 tests; production Nuxt build passed with 3,732 modules/15 routes; web/localization guards and static/source audits passed; actual stored `hello` TeamRun Settings journey passed at desktop and 1050px narrow widths; mounted root/nested-Team consumers preserved the exact multiline text and visual whitespace with no mutation. Standalone `vue-tsc` remains unavailable, so no pass is claimed.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: repeat complete source review must pass before API/E2E resumes. The actual user snapshot lacks a multiline current-schema value, so that exact state was rendered in mounted real consumers rather than by mutating user history. No API/E2E execution, delivery re-entry, push, archival, release, deployment, tag, or cleanup is claimed.
