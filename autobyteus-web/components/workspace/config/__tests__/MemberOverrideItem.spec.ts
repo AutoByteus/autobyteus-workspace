@@ -277,19 +277,30 @@ describe('MemberOverrideItem', () => {
   })
 
   it('uses the same residual algorithm when the whole stored model schema is absent', async () => {
+    const exactConfig = Object.freeze({
+      reasoning_effort: 'ultra',
+      service_tier: 'fast',
+    })
     const node = storedNode({
       runtimeKind: 'removed-runtime',
       llmModelIdentifier: 'removed-agent-model',
-      llmConfig: { zeta: 2, alpha: 'persisted' },
+      llmConfig: exactConfig,
       workspaceRootPath: '/history/reviewer',
     })
+    const before = JSON.stringify(node)
     const wrapper = mountItem(node, true)
     await ready()
     expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('removed-runtime')
     expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
     expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
+    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
-      .map((row) => row.attributes('data-historical-key'))).toEqual(['alpha', 'zeta'])
+      .map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
+    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(JSON.stringify(node)).toBe(before)
     expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 })
