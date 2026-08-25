@@ -67,7 +67,7 @@ The actual artifact/output files remain where the runtime wrote them.
   `/rest/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename`.
   The team-member route requires one encoded canonical rooted address and
   resolves the exact memory location from active runtime context or persisted
-  schema-v3 Team metadata; there is no suffix or route-key fallback.
+  V2 Team execution tree; there is no suffix or route-key fallback.
 - The finalize request accepts `attachments[{ storedFilename, displayName }]` so the user-visible filename survives any storage-safe `storedFilename` normalization.
 - Artifacts-tab previews do not require copied media URLs; they stream current bytes from `/runs/:runId/file-change-content?path=...` using run-scoped indexed path resolution.
 

@@ -1,6 +1,6 @@
 # Hierarchical TeamRun Launch Configuration — Solution Revision Record
 
-The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hierarchical-launch-configuration-behavior.md`, and `team-execution-tree-v2-contract.md` remain authoritative. This record is only the round/rationale index.
+The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `ui-ux-spec.md`, `hierarchical-launch-configuration-behavior.md`, and `team-execution-tree-v2-contract.md` remain authoritative. This record is only the round/rationale index.
 
 ## Revision Index
 
@@ -14,6 +14,9 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hier
 | SR-006 | User approval / solution round 6 | USER-APPROVAL-001 | Approval | Concrete contract approved and user-review hold released for architecture review |
 | SR-007 | User-directed failed-disk recovery / solution round 7 | REC-001 | Unclear / Recovery | Verified recoverable state restored; missing V2 contract reconstructed; architecture review must be re-established |
 | SR-008 | Code reviewer CRR-010 / solution round 8 | CR-008, CR-009; MP-CR-006, MP-CR-007 | Design Impact | Integrated workspace lifecycle and configured-root identity boundaries redesigned; architecture re-review required |
+| SR-009 | User Electron UX review / solution round 9 | USER-UX-001 | Requirement Refinement / Design Impact | Redundant root chrome and expanded summaries removed from the intended editable form; architecture re-review required |
+| SR-010 | User-directed original-personal UI investigation / solution round 10 | USER-UX-002 | Requirement Refinement / Supplemental Artifact | Dedicated UI/UX contract created; original root preserved; collapsed-summary proposal removed; user approval required |
+| SR-011 | User approval / solution round 11 | USER-APPROVAL-002 | Approval | Minimal-addition UI/UX contract approved; architecture re-review authorized |
 
 ## Revision Entries
 
@@ -189,3 +192,71 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hier
 - Downstream and architecture-review impact: architecture reviewer must review SR-008 before implementation. If passed, route the cumulative package to implementation engineering for IR-007 or the next revision; then complete source review. Do not resume API/E2E-014 or delivery until those gates pass.
 - Next recipient or routing: `/architecture_reviewer`.
 - Remaining gaps or risks: architecture review is pending; exact API-E2E-014 remains pending after corrected source review; a topology change after an external workspace registration has already begun may leave an unused registered workspace, but token/final reconciliation forbids stale config attachment or TeamRun launch and no unapproved rollback/delete policy is introduced.
+
+### SR-009 — Simplify Root And Expanded Team Configuration Presentation
+
+- Date: 2026-08-25
+- Triggering role, report path, and round: user hands-on review of the DR-003 Electron build; supplied screenshot `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_f52e9abb9087479e94dd677300ebc829/solution_designer_c1cf88985b7f4756866d21a1165599c0/context_files/ctx_96307e1728d3__image.png`; solution round 9
+- Triggering finding IDs: `USER-UX-001`
+- Prior authoritative result: SR-008 passed ARCH-REV-002, IR-008, complete source CRR-012, API-REV-007 at 98%, proportional CRR-014, and DR-003 local Electron packaging; delivery awaited explicit user verification.
+- Current authoritative result: the functional hierarchy remains accepted, but the editable-form presentation is refined. The root proceeds directly from Team Definition to its controls without a “Root Team defaults” heading/badge, rendered `/`, divider, or duplicate effective summary. A nested effective summary appears only while its disclosure is collapsed. The revised package is ready for architecture re-review, not delivery finalization.
+- Why this revision entry is recorded: the original reusable editor design incorrectly treated shared field behavior as a reason to share all root/nested chrome. In the always-expanded root, the parent Team Definition and visible fields already provide the same context and values, making the extra output user-confirmed noise.
+- Resolution:
+  - preserve every root/nested runtime, model, model-specific configuration, workspace, auto-execute, inheritance, reset, loading/error, readiness, launch, persistence, and migration behavior;
+  - remove the root-only title, duplicate badge, visible internal `/`, scope divider, and effective summary;
+  - retain nested Team identity, inherited/customized state, reset, keyboard disclosure, and address-scoped feedback;
+  - show the compact nested effective summary only while controls are collapsed; hide it while expanded;
+  - reuse control composition and typed events without forcing identical outer presentation;
+  - constrain implementation to component rendering/localization and focused presentation coverage; do not reopen store, resolver, launch, backend, V2, or migration owners.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `BEH-009`; `R-004`, `R-041`; `AC-002`, `AC-004`. All other approved behavior is unchanged.
+- Canonical artifacts and sections updated: `requirements.md` status/behavior/requirements/acceptance/approval; `investigation-notes.md` current state, source evidence, behavior map, design health, file mapping, findings, risks, and reviewer notes; `design-spec.md` current state, intended UI delta, behavior map, file responsibilities, sequence, tests, and implementation guidance; this `solution-revision-record.md`.
+- Supplemental artifacts updated, added, or removed: `hierarchical-launch-configuration-behavior.md` refined for root and collapsed/expanded presentation. `team-execution-tree-v2-contract.md` and recovery evidence are unchanged.
+- Downstream and architecture-review impact: `/architecture_reviewer` must review the SR-009 presentation delta. If passed, implementation engineering should make the narrow frontend change and route through source review plus proportionate coverage before delivery re-entry. The DR-003 candidate must not be finalized as accepted.
+- Next recipient or routing: `/architecture_reviewer`.
+- Remaining gaps or risks: no product ambiguity remains. The only material risk is accidentally removing nested identity/state or control labels together with the redundant root output; focused render/accessibility assertions must prevent that regression.
+
+### SR-010 — Anchor The Hierarchical Editor To The Original Personal UI
+
+- Date: 2026-08-25
+- Triggering role, report path, and round: user-directed UI/UX investigation after SR-009; original-personal live render plus `ui-ux-spec.md`; solution round 10
+- Triggering finding IDs: `USER-UX-002`
+- Prior authoritative result: SR-009 correctly removed redundant root chrome but proposed retaining an effective summary while a nested Team disclosure was collapsed and did not materialize a dedicated UI/UX specification.
+- Current authoritative result: the original personal-branch form is the visual baseline, not merely inspiration. The root remains visually equivalent to that form; each existing nested-Team group gains a default-collapsed global editor; no effective or customized-fields summary is rendered at root or nested scope. `ui-ux-spec.md` is Requirements-ready and awaits explicit user approval before architecture review or implementation.
+- Why this baseline or revision entry is recorded: the user requested an evidence-based comparison with the original personal UI and explained that the hierarchy feature should add only the missing nested-Team global configuration, not redesign the otherwise-simple launch form or introduce duplicate resolved-value output.
+- Resolution:
+  - inspected the original `origin/personal` root and nested-Team source paths;
+  - rendered the available personal checkout against the live local backend and verified that relevant UI paths have no material divergence from current `origin/personal`;
+  - captured durable root and nested-group screenshots in `solution-evidence/` and closed the temporary browser/dev-server session without modifying personal-worktree source;
+  - created `ui-ux-spec.md` with journeys, component inventory, state transitions, wireframes, loading/error/disabled/responsive/accessibility rules, exact content guidance, dependencies, and approval points;
+  - preserved the root sequence `Team Definition -> Runtime -> model/config -> Workspace Directory -> Auto approve tools -> Team Members Override -> Run Team` without hierarchy-specific wrapper/title/badge/address/divider/summary output;
+  - extended the existing nested Team name/TEAM marker/address/indentation treatment with a one-click, default-collapsed global editor, whole-scope `Inherited`/`Customized`, and conditional Reset;
+  - removed the SR-009 collapsed-summary proposal; no effective summary appears in either disclosure state;
+  - retained all integrated configuration, workspace lifecycle, readiness, launch, backend, V2, migration, and allocation behavior unchanged.
+- Approved behavior or requirement IDs affected: pending approval for the presentation refinement to BEH-001, BEH-002, and BEH-009; R-001–R-010 and R-038–R-041; AC-001–AC-008 and AC-031–AC-034. Functional hierarchy semantics approved on 2026-08-24 remain unchanged.
+- Canonical artifacts and sections updated: `requirements.md` status/behavior/requirements/acceptance/approval; `investigation-notes.md` status, supplement inventory, source log, behavior map, design health, file map, runtime evidence, findings, risks, and reviewer note; `design-spec.md` current state, intended presentation, behavior map, file responsibilities, test guidance, and supplement inventory; this `solution-revision-record.md`.
+- Supplemental artifacts updated, added, or removed: added `ui-ux-spec.md`; refined `hierarchical-launch-configuration-behavior.md`; added `solution-evidence/origin-personal-root-launch-form-20260825.png`, `solution-evidence/origin-personal-nested-team-group-20260825.png`, and `solution-evidence/dr003-root-presentation-user-review-20260825.png`. `team-execution-tree-v2-contract.md` and recovery/integrated evidence are unchanged.
+- Downstream and architecture-review impact: do not route to architecture review or implementation yet. After explicit user approval, architecture review should assess only the bounded SR-010 UI/UX delta before implementation engineering changes component presentation and focused tests.
+- Next recipient or routing: user approval.
+- Remaining gaps or risks: approval is pending for the exact visual baseline, default-collapsed nested editor, absence of every effective summary, and retention of the original nested placement address for disambiguation. No functional hierarchy or backend ambiguity is open.
+
+### SR-011 — Approve The Minimal-Addition UI/UX Contract
+
+- Date: 2026-08-25
+- Triggering role, report path, and round: user approval of `ui-ux-spec.md`; solution round 11
+- Triggering finding IDs: `USER-APPROVAL-002`
+- Prior authoritative result: SR-010 established the original personal-branch form as the evidence-backed visual baseline and held the new UI/UX supplement for explicit user approval.
+- Current authoritative result: the user approved the UI/UX direction and released the package for architecture re-review. The form remains almost identical to the original: root controls directly show configured values; only nested-Team global configuration is added; canonical-root slash and effective-summary noise are absent.
+- Why this baseline or revision entry is recorded: `ui-ux-spec.md` governs visible behavior and could not become authoritative or proceed downstream without explicit user approval.
+- Resolution:
+  - approve the original personal-branch root structure and information density as the target;
+  - approve global runtime/model/model-configuration/workspace/auto-approve controls for every nested Team inside the existing hierarchy;
+  - approve default-collapsed nested editors with actionable `Inherited`/`Customized` and conditional Reset;
+  - approve omission of root hierarchy chrome, canonical root `/`, and every root/nested effective or customized-fields summary;
+  - preserve actual configured values in the form controls themselves, together with their labels, help, loading/error/disabled state, and accessibility;
+  - release the UI/UX approval hold and request architecture re-review before implementation.
+- Approved behavior or requirement IDs affected: BEH-001, BEH-002, and BEH-009; R-001–R-010 and R-038–R-041; AC-001–AC-008 and AC-031–AC-034. All functional hierarchy/backend requirements remain approved and unchanged.
+- Canonical artifacts and sections updated: approval/status in `requirements.md`, `investigation-notes.md`, `design-spec.md`, `hierarchical-launch-configuration-behavior.md`, and `ui-ux-spec.md`; this SR-011 entry.
+- Supplemental artifacts updated, added, or removed: `ui-ux-spec.md` marked user-approved. Existing baseline/rejected-state screenshots in `solution-evidence/` remain the visual evidence package.
+- Downstream and architecture-review impact: architecture reviewer should assess the bounded presentation delta against the approved UI/UX spec and confirm that the implementation plan preserves existing functional owners. Do not send directly to implementation until architecture review passes.
+- Next recipient or routing: `/architecture_reviewer`.
+- Remaining gaps or risks: no product decision is open. Implementation must avoid turning reusable root/nested field composition into shared redundant chrome, and focused render/accessibility coverage must prevent that regression.

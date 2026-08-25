@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-`Design-ready` — approved by the user on 2026-08-24. The approval includes the nested-Team inheritance model, scoped fields, root-inherited `skillAccessMode`, coordinator-derived V1 reconstruction, preserved root-only auxiliary launch surfaces, visible stale-address repair, and the concrete V2 execution-tree contract. `ARCH-REV-001` confirmed the reconstructed contract's semantic equivalence. `CRR-010` returned only design impacts traceable to the existing UC-007/R-017/R-022/AC-015/AC-017 basis; SR-008 does not change product scope or require renewed user approval.
+`Refined — approved for architecture review` — the functional basis was approved by the user on 2026-08-24. During hands-on Electron verification on 2026-08-25, the user required the desktop hierarchy to remain visually anchored to the existing `origin/personal` Team form and approved the resulting dedicated UI/UX specification. The root keeps that original appearance: no hierarchy wrapper card, “Root Team defaults” heading/badge, rendered `/`, divider, or effective summary. Nested Teams extend the existing member-group appearance with a collapsible global editor and only actionable `Inherited`/`Customized` plus conditional Reset state. No effective summary is shown in either collapsed or expanded state. SR-011 releases the UI/UX approval hold for architecture re-review.
 
 ## Goal / Problem Statement
 
@@ -14,8 +14,8 @@ The completed launch configuration must be preserved by the backend so that ever
 
 | Behavior ID | Current Behavior | Desired Behavior | Preserved / Unchanged Behavior | Related Requirement / Acceptance-Criteria IDs |
 | --- | --- | --- | --- | --- |
-| BEH-001 | The workspace TeamRun form exposes one root global runtime/model/workspace/tool configuration. | The root remains the first configuration scope, and every nested team has its own visible global configuration area. | Root-only teams retain the current simple launch journey. | R-001–R-004, AC-001–AC-003 |
-| BEH-002 | A nested team is rendered only as a visual group inside `MemberOverrideTree`; only leaf Agents can be configured. | A nested team is a configurable scope that inherits its parent by default and can define scoped overrides. | Canonical hierarchical team and Agent addresses remain the scope identities. | R-005–R-010, AC-004–AC-008 |
+| BEH-001 | The `origin/personal` workspace TeamRun form exposes one visually simple root runtime/model/workspace/tool configuration directly after Team Definition. | Preserve that root appearance exactly enough that hierarchy adds no new root chrome; every nested team gains its own global configuration area inside the existing member hierarchy. | Root-only teams retain the current simple launch journey. | R-001–R-004, AC-001–AC-003 |
+| BEH-002 | A nested team is rendered only as a visual group inside `MemberOverrideTree`; only leaf Agents can be configured. | Extend that existing group with a default-collapsed global editor, scope-level inherited/customized state, and conditional Reset; do not add an effective summary. | Canonical hierarchical team and Agent addresses remain the configuration identities, and the existing hierarchy visual language remains the baseline. | R-005–R-010, AC-004–AC-008 |
 | BEH-003 | All leaf Agents resolve from the root globals unless an exact Agent override exists. | Resolution follows `Agent override > nearest containing team effective configuration > ancestor team configurations > root configuration`. | Exact Agent overrides remain supported. | R-011–R-015, AC-009–AC-012 |
 | BEH-004 | Frontend launch state stores one root config and a flat per-Agent override map. | Frontend launch state represents root configuration, nested-team scoped overrides, and per-Agent overrides without duplicating resolved values as editable intent. | Launch drafts remain immutable snapshots edited through explicit store operations. | R-016–R-020, AC-013–AC-015 |
 | BEH-005 | The frontend sends complete per-leaf Agent records; the backend compiles them into Agent nodes. Team nodes do not retain a launch default. | The launch contract also carries sufficient team-scope configuration, and each configured TeamRun persists its complete effective default while every Agent persists its complete resolved configuration. | Backend runtime construction continues to receive complete executable Agent settings. | R-021–R-026, AC-016–AC-019 |
@@ -42,7 +42,8 @@ The completed launch configuration must be preserved by the backend so that ever
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `hierarchical-launch-configuration-behavior.md` | Intended-behavior supplement with hierarchy, UI states, and resolution examples | R-001–R-041 | AC-001–AC-034 | Approved with this requirements basis on 2026-08-24 | Clarifies the configuration hierarchy and user experience without replacing this document. |
+| `ui-ux-spec.md` | Dedicated visual baseline, user journeys, interaction states, wireframes, responsive/accessibility behavior, and explicit removed-output list | R-001–R-010, R-038–R-041 | AC-001–AC-008, AC-031–AC-034 | Approved by the user on 2026-08-25 | Makes the origin-personal-preserving additive UI contract reviewable before implementation. |
+| `hierarchical-launch-configuration-behavior.md` | Intended-behavior supplement with hierarchy, UI states, and resolution examples | R-001–R-041 | AC-001–AC-034 | Functional behavior approved on 2026-08-24; UI presentation approved on 2026-08-25 | Clarifies the configuration hierarchy and user experience without replacing this document. |
 | `team-execution-tree-v2-contract.md` | Concrete TypeScript and materialized JSON contract for the V2 execution tree | R-021–R-031, R-035, R-037 | AC-016–AC-023, AC-030 | User-approved semantics; reconstructed after disk recovery; semantic equivalence confirmed by `ARCH-REV-001` | Makes the approved persistence outcome implementation-specific without changing requirements. |
 | `recovery-audit.md` | Durable archive/base/hash audit and missing-path inventory | N/A | N/A | Evidence only / approval N/A | Records recovery provenance and the earliest trustworthy downstream stage; it does not define behavior. |
 
@@ -120,11 +121,11 @@ The change affects reusable launch types, configuration stores, recursive UI, de
 - `R-001` The TeamRun launch UI shall continue to show a required global configuration for the root TeamRun at address `/`.
 - `R-002` A root-only team shall retain the existing configuration flow without additional nested-scope controls.
 - `R-003` The root configuration shall provide the complete set of launch settings required by all descendants unless overridden at a supported lower scope.
-- `R-004` The UI shall clearly identify the root settings as the root TeamRun defaults rather than implying they are unconditionally global to all nested teams.
+- `R-004` The root form shall preserve the current `origin/personal` visual sequence and quiet control treatment. Team Definition shall flow directly to the root controls; the hierarchy feature shall not add a root wrapper card, “Root Team defaults” heading/badge, internal `/`, divider, effective summary, or replacement root-only visual language.
 - `R-005` Every nested AgentTeam placement shall be represented as a configuration scope identified by its canonical team address.
 - `R-006` A nested-team scope shall inherit its parent TeamRun's effective configuration by default.
 - `R-007` The workspace user shall be able to customize runtime, model identifier, model-specific configuration, auto-execute behavior, and workspace for a nested-team scope.
-- `R-008` The UI shall show whether a nested-team setting is inherited or explicitly customized.
+- `R-008` The nested-Team header shall show the actionable whole-scope state `Inherited` or `Customized`; Reset shall appear only for a customized scope. The UI shall not add an effective or customized-fields summary.
 - `R-009` The user shall be able to reset the complete nested-team scope to parent inheritance.
 - `R-010` Resetting a parent scope shall recompute descendant effective values without deleting descendant overrides that remain semantically valid.
 - `R-011` Each TeamRun's effective configuration shall be the result of its parent's effective configuration plus its own explicit scoped override; the root has no parent.
@@ -157,14 +158,14 @@ The change affects reusable launch types, configuration stores, recursive UI, de
 - `R-038` While a runtime/model catalog or workspace selection needed by a Team scope is loading, the UI shall identify the affected scope, preserve the draft's stored intent, disable only controls that cannot be used safely, and block launch until the scope can be validated.
 - `R-039` A catalog or workspace error shall be shown at the affected Team scope with its canonical address and a recoverable retry path; the UI shall not silently substitute a different runtime, model, or workspace.
 - `R-040` Read-only, locked, or in-flight launch state shall disable root, nested-Team, reset, and Agent override edits consistently while continuing to show the effective configuration and the reason editing is unavailable.
-- `R-041` Hierarchy level, canonical address, inherited/customized state, validation state, and expand/collapse state shall be exposed through text and accessible control semantics rather than color alone; the nested editor shall remain keyboard-operable and usable without obscuring scope identity at supported non-mobile widths.
+- `R-041` Nested hierarchy level and scope identity, inherited/customized state, validation state, and expand/collapse state shall be exposed through text and accessible control semantics rather than color alone; the nested editor shall remain keyboard-operable and usable without obscuring scope identity at supported non-mobile widths. This does not require the internal root address `/` to appear in the ordinary editable form.
 
 ## Acceptance Criteria
 
 - `AC-001` A root-only TeamRun config form renders and launches with the same required interactions as today.
-- `AC-002` The root scope is labeled and addressable as `/` in the configuration model.
+- `AC-002` The root scope remains addressable as `/` in the configuration model, while the editable UI proceeds directly from the selected Team definition to the root launch controls without a root-scope heading/badge, rendered `/`, or duplicate effective summary.
 - `AC-003` Root validation prevents launch when its required effective settings are incomplete.
-- `AC-004` A nested-team group displays an inherited TeamRun configuration summary before any customization.
+- `AC-004` A nested-Team group preserves the existing Team identity treatment, defaults collapsed, and exposes its global controls in one expansion. Its header shows `Inherited` or `Customized`, but no runtime/model/workspace effective summary is rendered in either state.
 - `AC-005` Customizing `/research` changes the effective configuration of Agents under `/research` but not sibling or root Agents.
 - `AC-006` A nested team without overrides immediately reflects valid changes to its parent draft configuration.
 - `AC-007` Resetting `/research` restores full parent inheritance and removes its explicit scoped override intent.
@@ -253,8 +254,8 @@ Cross-cutting UI state and accessibility requirements R-038–R-041 apply to UC-
 
 | Acceptance Criteria | Scenario Intent |
 | --- | --- |
-| AC-001–AC-003 | Root-only preservation and root-scope validation |
-| AC-004–AC-008 | Nested-scope inheritance, customization, reset, and identity validation |
+| AC-001–AC-003 | Root-only preservation, simplified root presentation, and root-scope validation |
+| AC-004–AC-008 | Nested-scope disclosure without summary, inheritance, customization, reset, and identity validation |
 | AC-009–AC-012 | Multi-level precedence, Agent overrides, and coherent inherited config |
 | AC-013–AC-015 | Draft integrity, readiness/catalog coverage, and topology edits |
 | AC-016–AC-020 | API, backend planning, per-TeamRun persistence, restore, and nested defaults |
@@ -265,8 +266,9 @@ Cross-cutting UI state and accessibility requirements R-038–R-041 apply to UC-
 ## Approval Status
 
 - Approved by the user on 2026-08-24 after clarification of nested-Team global configuration, parent inheritance, workspace behavior, root-inherited `skillAccessMode`, and V1 migration.
-- The approved behavior basis is unchanged by recovery. The unavailable V2 contract file was reconstructed from the approved core artifacts and recovered implementation; `ARCH-REV-001` confirmed semantic equivalence. `CRR-010` identified design impacts within the already-approved basis, so SR-008 requires architecture re-review but no renewed product approval.
+- The user refined the editable desktop presentation during DR-003 Electron verification on 2026-08-25: preserve the original personal-branch root appearance, add global controls only inside nested-Team groups, and remove the root title/badge, wrapper, rendered `/`, divider, and all effective summaries. This is recorded in SR-009/SR-010 and materialized in `ui-ux-spec.md`.
+- The approved behavior basis survived recovery; `ARCH-REV-001` confirmed the reconstructed V2 contract's semantic equivalence, and SR-008 later passed `ARCH-REV-002`, IR-008, CRR-012, API-REV-007, CRR-014, and DR-003. SR-009/SR-010 preserve those functional/architectural results.
 - Migration shall reconstruct each historical TeamRun default from that Team's direct coordinator launch configuration; the user explicitly accepts the edge case where a historical coordinator-specific override becomes the reconstructed Team default.
 - The approved behavior supplement is `hierarchical-launch-configuration-behavior.md`.
 - The user-requested concrete V2 shape in `team-execution-tree-v2-contract.md` was approved after personal design review; it does not reopen or change the approved behavior basis.
-- The user completed personal review and explicitly authorized submission of the cumulative solution package to `architecture_reviewer`.
+- On 2026-08-25, the user explicitly confirmed the `ui-ux-spec.md` direction: retain only necessary output, keep the launch form almost identical to the original, add global configuration for each nested Team, and omit canonical-root/summary noise because the controls already display configured values. SR-011 authorizes architecture re-review of this bounded presentation delta; implementation remains gated on that review result.

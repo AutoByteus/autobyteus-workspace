@@ -1,0 +1,28 @@
+Delivery documentation validation
+Date: 2026-08-25
+Integrated HEAD: 1f1fb12160c809b41bd4b716dc2fa4f920631f6d
+Tracked base: origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18
+
+1. git diff --check (delivery long-lived docs)
+Result: Pass
+
+2. Markdown fence and relative-link validation
+Pass: 13 Markdown files have balanced fences and resolvable relative links.
+
+3. Current-contract stale-name audit
+Result: Pass (no stale current-contract matches)
+
+4. Updated implementation reference existence
+Present: autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+Present: autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+Present: autobyteus-web/components/workspace/config/StoredTeamRunConfigForm.vue
+Present: autobyteus-web/components/workspace/config/StoredTeamRunConfigTree.vue
+Present: autobyteus-web/types/agent/TeamLaunchDraft.ts
+Present: autobyteus-web/utils/teamRunLaunchHierarchy.ts
+Present: autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts
+Present: autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts
+Present: autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts
+Present: autobyteus-server-ts/src/run-history/services/team-run-package-catalog.ts
+Present: autobyteus-server-ts/src/run-history/services/team-run-state-package-loader.ts
+Present: autobyteus-server-ts/src/run-history/store/team-run-execution-tree-store.ts
+Result: Pass

@@ -177,7 +177,9 @@ distinguish the trigger type.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` moves an
 affected flat nested AgentRun directory into the canonical physical hierarchy
-derived from the current V1 Team execution tree. The migration and Memory Sync
+derived from the validated migration-owned V1 intermediate Team execution tree.
+The following `20260824_team_run_execution_tree_v2` migration establishes the
+current runtime/history schema. The migrations and Memory Sync
 remain separate owners: the migration does not filter the scanner, emit a
 delete, gate sync, or clean a hub import.
 
@@ -190,7 +192,7 @@ retention cases are possible:
 
 This may retain duplicate bytes on a trusted hub. It does not create two
 semantic Team members: both local and imported Memory Explorer resolve the
-exact member directory from `rootTeamRunId`, its V1 ancestor TeamRun chain, and
+exact member directory from `rootTeamRunId`, its V2 ancestor TeamRun chain, and
 `agentRunId`, and never fall back to the flat residue. A migration result with a
 real canonical target plus this approved residue is
 `SUCCEEDED_WITH_WARNINGS`. If the canonical target is missing or invalid, the
@@ -246,7 +248,7 @@ Durable coverage includes both API-boundary and process-boundary checks:
   and source through HTTP GraphQL, validates saved-mode connection testing, runs
   source-to-hub sync over HTTP, asserts imported files on the hub filesystem,
   covers both-path replacement eligibility plus no-delete retention, and proves
-  the imported semantic member still resolves only through the canonical V1
+  the imported semantic member still resolves only through the canonical V2
   target.
 - Frontend focused tests cover Memory Explorer source selection/store variables,
   the Nodes page Memory Sync tab entry, form-preserving source status refresh,

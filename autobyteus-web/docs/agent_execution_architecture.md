@@ -233,9 +233,9 @@ through the same execution model and exact serialized address.
 Delegated task visibility is intentionally split across two surfaces. The
 global Workspaces/run-history tree owns live execution identity and hierarchy:
 it composes stable history rows with pure renderer-only transient display rows
-from `AgentTeamContext.memberTree`, keeps durable members visually solid, and
-renders task-agent, task-team root, and task-team child executions inline with
-explicit transient row kinds. A transient row has a light ghost background and
+from the V2 execution view in `AgentTeamContext.view`, keeps durable members
+visually solid, and renders task-agent, task-team root, and task-team child
+executions inline with explicit transient row kinds. A transient row has a light ghost background and
 exactly one visible transient marker in the leading status-dot slot: an
 explicit eight-dot SVG ring (`h-2.5 w-2.5`) whose eight `currentColor` circles
 preserve status color semantics. It must not use the superseded CSS dotted-border
@@ -243,9 +243,9 @@ or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
 add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member focus path. A team-member row is current only when its owning
-`teamRunId` is the authoritative selected team run and its route key matches
-that team's roster/history focus; a route key alone must not select same-named
-members in another historical team run. Stable and transient current rows
+`teamRunId` is the authoritative selected TeamRun and its exact member address
+matches that Team's roster/history focus; an address alone must not select the
+same placement in another historical TeamRun. Stable and transient current rows
 expose the single `aria-current="true"` navigation state, while focus, hover,
 status, and transient presentation remain separate visual states. The right-
 side Team tab owns task detail/content through its Tasks section; it is not the
@@ -635,18 +635,17 @@ For team-run member rows, selection state uses roster/history visual focus, not
 active-execution command focus. The current-row predicate is scoped to the
 authoritative selected team run plus that run's focused member route; clearing
 the team selection or having no valid target leaves no member row current. The
-Workspace history tree renders recursive
-`memberTree` structure when available, with `team.members` only as the flat
-fallback. Nested `agent_team` member rows appear as subteam rows with a Team
-badge and their own disclosure control; they are collapsed by default, expand
-children recursively with indentation, and disclosure-bearing subteam row-body
+Workspace history tree renders recursive `team.rootTeam.members` structure
+from the V2 history projection. Nested configured-Team member rows appear as
+subteam rows with a Team badge and their own disclosure control; they are
+collapsed by default, expand children recursively with indentation, and disclosure-bearing subteam row-body
 activation toggles children while preserving row selection/focus. The explicit
 disclosure control remains visible and toggles children without selecting the
 row or bubbling into the row-body handler. Leaf member rows without children
-remain select-only. Clicking a member or subteam row whose route key exists in
-the team's `memberTree` should keep that route key selected in the history tree
-and Focus display even when the member is offline or has no active runtime
-context. Live/hydrated team-context merges must preserve the persisted history
+remain select-only. Clicking a member or subteam row whose canonical address
+exists in the Team's V2 tree should keep that exact address selected in the
+history tree and Focus display even when the member is offline or has no active
+runtime context. Live/hydrated team-context merges must preserve the persisted history
 row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
 

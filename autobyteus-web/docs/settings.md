@@ -413,9 +413,9 @@ through the same execution model and exact serialized address.
 Delegated task visibility is intentionally split across two surfaces. The
 global Workspaces/run-history tree owns live execution identity and hierarchy:
 it composes stable history rows with pure renderer-only transient display rows
-from `AgentTeamContext.memberTree`, keeps durable members visually solid, and
-renders task-agent, task-team root, and task-team child executions inline with
-explicit transient row kinds. A transient row has a light ghost background and
+from the V2 execution view in `AgentTeamContext.view`, keeps durable members
+visually solid, and renders task-agent, task-team root, and task-team child
+executions inline with explicit transient row kinds. A transient row has a light ghost background and
 exactly one visible transient marker in the leading status-dot slot: an
 explicit eight-dot SVG ring (`h-2.5 w-2.5`) whose eight `currentColor` circles
 preserve status color semantics. It must not use the superseded CSS dotted-border
@@ -423,9 +423,9 @@ or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
 add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member focus path. A team-member row is current only when its owning
-`teamRunId` is the authoritative selected team run and its route key matches
-that team's roster/history focus; a route key alone must not select same-named
-members in another historical team run. Stable and transient current rows
+`teamRunId` is the authoritative selected TeamRun and its exact member address
+matches that Team's roster/history focus; an address alone must not select the
+same placement in another historical TeamRun. Stable and transient current rows
 expose the single `aria-current="true"` navigation state, while focus, hover,
 status, and transient presentation remain separate visual states. The right-
 side Team tab owns task detail/content through its Tasks section; it is not the
@@ -777,18 +777,17 @@ For team-run member rows, selection state uses roster/history visual focus, not
 active-execution command focus. The current-row predicate is scoped to the
 authoritative selected team run plus that run's focused member route; clearing
 the team selection or having no valid target leaves no member row current. The
-Workspace history tree renders recursive
-`memberTree` structure when available, with `team.members` only as the flat
-fallback. Nested `agent_team` member rows appear as subteam rows with a Team
-badge and their own disclosure control; they are collapsed by default, expand
-children recursively with indentation, and disclosure-bearing subteam row-body
+Workspace history tree renders recursive `team.rootTeam.members` structure
+from the V2 history projection. Nested configured-Team member rows appear as
+subteam rows with a Team badge and their own disclosure control; they are
+collapsed by default, expand children recursively with indentation, and disclosure-bearing subteam row-body
 activation toggles children while preserving row selection/focus. The explicit
 disclosure control remains visible and toggles children without selecting the
 row or bubbling into the row-body handler. Leaf member rows without children
-remain select-only. Clicking a member or subteam row whose route key exists in
-the team's `memberTree` should keep that route key selected in the history tree
-and Focus display even when the member is offline or has no active runtime
-context. Live/hydrated team-context merges must preserve the persisted history
+remain select-only. Clicking a member or subteam row whose canonical address
+exists in the Team's V2 tree should keep that exact address selected in the
+history tree and Focus display even when the member is offline or has no active
+runtime context. Live/hydrated team-context merges must preserve the persisted history
 row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
 
@@ -848,17 +847,23 @@ inferred file type is an image or another supported viewer family.
 
 ### Editable Run Workspace Selection
 
-For editable single-agent and team launches,
 `components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
-not a separate workspace-loading step. `RunConfigPanel.vue` owns one complete
-transient `WorkspaceSelectionState` (`mode`, `existingWorkspaceId`, and
-`newWorkspacePath`) that governs both the rendered controls and launch
-preparation. `WorkspaceSelector.vue` is controlled by that value and emits
-complete replacement values; `AgentRunConfigForm.vue` and
-`TeamRunConfigForm.vue` only relay the contract. The selector must not keep a
-second authoritative mode or path. `mode` is the active-choice discriminator,
-while the inactive Existing id and New path may remain buffered so switching
-tabs does not discard the other value.
+not a separate workspace-loading step. It is controlled by one complete
+`WorkspaceSelectionState` (`mode`, `existingWorkspaceId`, and
+`newWorkspacePath`) and emits complete replacement values. The selector must
+not keep a second authoritative mode or path. `mode` is the active-choice
+discriminator, while the inactive Existing id and New path may remain buffered
+so switching tabs does not discard the other value.
+
+Standalone Agent launches and Team launches have different state owners:
+
+- `RunConfigPanel.vue` owns the standalone Agent selection and registration
+  boundary.
+- `teamRunConfigStore` owns one selection/operation state for every configured
+  Team address in the selected immutable `TeamLaunchDraft`. The root and each
+  customized nested Team can therefore choose distinct Existing or New
+  workspaces. Agents inherit their containing Team workspace and do not own a
+  workspace selector.
 
 Existing mode applies the selected visible workspace id to the active launch
 config immediately. New mode keeps the entered absolute path transient until
@@ -869,58 +874,64 @@ Temp/Existing initialization is only a proposal for an untouched run-config
 context. Once the user explicitly changes the mode, Existing value, path, or
 folder selection, delayed workspace discovery must not overwrite that choice.
 
-The controlled state is derived again only when the active run-config context
-really changes: a selected Agent/Team run identity (including its initial
-hydration-ready transition), a Team draft id, or the standalone Agent launch
-buffer identity. Immutable edits within the same Team draft—runtime, model,
-thinking options, auto-approve, or member overrides—are value changes, not
-context changes, and therefore preserve the visible and launch workspace state.
-The Agent and Team form instances use the same stable identity so selector-local
-initialization/interaction guards reset for a genuine context transition rather
-than for an unrelated config replacement.
+Controlled state is derived again only when its owning context really changes:
+a selected Agent run, the standalone Agent launch buffer, a Team draft id, or
+an exact Team address entering/leaving the current topology. Immutable edits
+within the same Team draft—runtime, model, thinking options, auto-approve, or
+scope overrides—preserve every valid address-scoped selection, including the
+inactive New-path buffer. A topology repair prunes stale Team/Agent
+configuration and workspace state once, reports the affected addresses, and
+stops that launch attempt before registration.
 
-`RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
-with a non-empty pending path, **Run Agent** / **Run Team** first calls the
-workspace creation/registration path, updates the active launch config with the
-canonical registered workspace id and metadata, transitions the controlled
-selection to that canonical Existing identity, and only then creates the local
-standalone or team run. The active New path takes precedence over any dormant
-previously selected workspace. If registration fails or the New path is blank,
-New mode and the entered path are preserved, no run is created, and the
-workspace error is shown in the config panel; there is no hidden fallback to
-Temp/Existing. While this submit-time load is in progress, duplicate run clicks
-are blocked; the Run button is otherwise allowed to be enabled before any
-explicit preload when the pending path and the rest of the launch config are
-valid. The bound server remains authoritative for interpreting and
-canonicalizing the supplied absolute path.
+For a standalone Agent, `RunConfigPanel.vue` registers the active New path,
+updates the launch config to the canonical Existing identity, and only then
+creates the local run. For a Team, `RunConfigPanel.vue` delegates submission to
+`agentTeamRunStore.launchDraft()`. That method reconciles topology, obtains an
+authorization-bound preparation plan from `teamRunConfigStore`, groups equal
+New paths, reauthorizes immediately before every asynchronous registration,
+writes canonical workspace metadata back to the exact Team scopes, evaluates
+full hierarchy readiness, and then calls `createAgentTeamRun` with complete
+`teamConfigs[]` and `memberConfigs[]`.
+
+The active New path takes precedence over a dormant Existing selection. Blank
+paths and registration failures preserve New mode and the entered path, create
+no run, and surface the error at the owning scope; there is no hidden fallback.
+Duplicate launch/preparation is blocked. The bound server remains authoritative
+for interpreting and canonicalizing an absolute path.
 
 ### Existing Run Configuration Inspection
 
 `components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
 editable new-run launch configuration and inspect-only configuration for an
 already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the agent/team configuration forms instead of treating
-the selected run's config as a launch buffer.
+passes read-only mode to the Agent form or renders the stored Team snapshot
+instead of treating the selected run's config as a launch buffer.
 
-Selected existing single-agent and team run configuration is intentionally
-inspect-only:
+Selected existing single-Agent and Team run configuration is intentionally
+inspect-only. Agent runs continue to use the read-only Agent form. Team runs use
+`StoredTeamRunConfigForm.vue` and `StoredTeamRunConfigTree.vue` over the exact
+`STORED_SNAPSHOT` from the V2 execution tree:
 
-- runtime, model, workspace, auto-approve, and team-member override controls
-  render disabled;
-- form update handlers and shared runtime/model normalization emissions no-op in
-  read-only mode so historical context is not locally mutated;
+- the root and every nested Team display their complete persisted
+  `defaultLaunchConfiguration`;
+- every configured Agent displays its complete persisted
+  `launchConfiguration`;
+- no Team controls or editable override disclosures are rendered, because
+  historical complete snapshots are not partial authoring intent;
+- Agent form update handlers and shared runtime/model normalization emissions
+  no-op in read-only mode so historical context is not locally mutated;
 - the launch/run button is absent while an existing run is selected;
 - localized read-only notices explain that the selected run can be inspected but
   not edited; and
-- advanced model/thinking controls remain visible or expandable so persisted
-  values such as backend-provided `reasoning_effort: "xhigh"` can be inspected.
+- complete model configuration, including explicit `null`, remains visible as
+  persisted rather than inferred from current catalogs.
 
 The frontend consumes historical model configuration exactly as provided by the
-backend. If the backend-provided `llmConfig` is missing/null, the model config UI
-may show a localized `Not recorded for this historical run` state, but it must
-not infer a current default, recover a runtime value, or materialize metadata.
-Backend/runtime/history recovery or persistence semantics belong to a separate
-backend ticket, not this frontend inspection boundary.
+backend. In a V2 Team snapshot, `llmConfig: null` is a complete recorded value.
+For standalone historical formats where model configuration is genuinely absent,
+the Agent form may show a localized `Not recorded for this historical run` state,
+but it must not infer a current default, recover a runtime value, or materialize
+metadata.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -962,21 +973,17 @@ Desktop run-configuration forms use quieter light-blue filled-field controls on
 dense Agent and Team launch surfaces while keeping the shared select components'
 default bordered styling available for callers that do not opt in. The
 light-blue treatment is presentation-only and preserves hover plus
-keyboard-focus affordance. Team launch configuration keeps the global **Auto
-approve tools** switch beside other global
-setup fields, directly after workspace selection, before the member-specific
-override disclosure. The **Team Members Override** disclosure defaults
-collapsed, shows the label followed by a visible chevron plus member/override
-counts, and remains openable in read-only inspection mode; when expanded,
-member rows render as a connected list with stronger shared separators to avoid
-overwhelming large teams. They still display inherited/effective defaults when
-expanded, and explicit member-local runtime or model selections that resolve to
-an effective-ON model can open only that member's **Advanced** controls.
-Display-only inherited or schema-default values must not create member
-overrides. Non-thinking runtime/model parameters render through the same
-advanced schema component; for Codex, a fast-capable model can therefore expose
-`service_tier` with the user-facing label **Fast mode** beside reasoning
-settings.
+keyboard-focus affordance. Team launch configuration presents the complete root
+scope first, then recursively renders nested Team scopes and Agent placements.
+Each Team scope exposes its canonical address, effective summary,
+**Inherited**/**Customized** state, and scope reset. Editing a nested Team field
+creates exact-address partial intent; resetting it removes only that scope's
+intent, so descendants resolve through the nearest remaining ancestor. Agent
+rows retain exact placement overrides. Display-only inherited or schema-default
+values must not create overrides. Non-thinking runtime/model parameters render
+through the same advanced schema component; for Codex, a fast-capable model can
+therefore expose `service_tier` with the user-facing label **Fast mode** beside
+reasoning settings.
 
 
 ### Skill Improvement Manual Composer Action

@@ -7,7 +7,8 @@
 ## Responsibilities
 
 - Persist standalone agent run resume metadata and the V2 standalone history catalog index.
-- Persist team run metadata and the V2 team history catalog index.
+- Persist the current V2 TeamRun state package and the V2 team history catalog
+  index.
 - Keep standalone index mutation behind `AgentRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `run_history_index.json` directly.
 - Keep team index mutation behind `TeamRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `team_run_history_index.json` directly.
 - Keep legacy/partial standalone and team index repair explicit and bounded to startup app-data migrations, plus the standalone manual migration script; normal history listing must not perform metadata-directory repair scans.
@@ -58,11 +59,11 @@ Archive is a non-destructive visibility action:
   catalog row in `memory/run_history_index.json` through
   `AgentRunHistoryCatalogService`; it does not add standalone archive state to
   `memory/agents/<runId>/run_metadata.json`.
-- `archiveStoredTeamRun(teamRunId)` writes `archivedAt` on the V2 team catalog
-  row in `memory/team_run_history_index.json` through
-  `TeamRunHistoryCatalogService`; it does not add new archive state to
-  `memory/agent_teams/<teamRunId>/team_run_metadata.json`.
-- Archive keeps the run/team metadata, raw traces, projections, member
+- `archiveStoredTeamRun(teamRunId)` first writes `archivedAt` into the V2
+  `team_run_execution_tree.json`, then projects that fact into
+  `memory/team_run_history_index.json` through
+  `TeamRunHistoryCatalogService`.
+- Archive keeps the run metadata/Team package, raw traces, projections, member
   directories, and catalog/index rows on disk.
 - Archive rejects active runs/teams and invalid or path-unsafe ids before
   catalog or metadata read/write.
@@ -77,7 +78,7 @@ remains retained on disk for future recovery tooling.
 
 ## Workspace Registry Interaction
 
-Run history is retained independently of workspace-list visibility. Removing a workspace from Workspaces deletes the workspace registry entry only; it does not delete `memory/run_history_index.json`, `memory/team_run_history_index.json`, run/team metadata directories, raw traces, artifacts, or generated files.
+Run history is retained independently of workspace-list visibility. Removing a workspace from Workspaces deletes the workspace registry entry only; it does not delete `memory/run_history_index.json`, `memory/team_run_history_index.json`, standalone metadata or Team package directories, raw traces, artifacts, or generated files.
 
 Top-level desktop workspace rows should come from the visible workspace list via
 the `workspaces()` query. Historical run/team records for an unregistered or
@@ -128,39 +129,35 @@ projection, the list response reports `status=offline` and
 
 ## Team Live Projection And V2 Catalog Rows
 
-Team workspace history rows also separate durable catalog facts from live
-runtime projection. The team GraphQL history item exposes these catalog facts
-from `memory/team_run_history_index.json`:
+Team workspace history rows separate durable package/catalog facts from live
+runtime projection. The team GraphQL history item exposes catalog facts from
+`memory/team_run_history_index.json`:
 
-- `teamRunId`
-- `teamDefinitionId`
-- `teamDefinitionName`
-- `workspaceRootPath`
-- `summary`
-- `createdAt`
-- `archivedAt`
-- `terminatedAt`
+- `teamRunId`, `teamDefinitionId`, and `teamDefinitionName`;
+- root `workspaceRootPath`;
+- `summary`, `createdAt`, `archivedAt`, and `terminatedAt`.
 
-It also exposes list-time projection fields:
+It also exposes:
 
-- `isActive`: the manager-owned binary fact that the root team currently has an
-  active runtime.
-- `members`: flat leaf-agent member status snapshots derived from current
-  runtime state and metadata.
-- `memberTree`: the persisted recursive topology used for reopening and nested
-  team display.
+- `isActive`: the manager-owned binary fact for the root TeamRun;
+- `members`: flat configured-Agent status snapshots derived from the V2 tree and
+  current runtime state; and
+- `rootTeam`: the recursive V2 execution-tree projection used for nested display
+  and reopen.
 
-Team history rows no longer expose or persist catalog `lastKnownStatus`,
-`lastActivityAt`, `deleteLifecycle`, or a file-level `version` wrapper. Team
-metadata no longer persists `updatedAt`; stable metadata facts are
-`teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
-`coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-`memberTree`, plus the launch-time effective `handoffs` snapshot.
-`TeamRunLiveProjectionService` derives root `isActive` and exact leaf-member
-status snapshots from the active team runtime manager at list time. If a team
-row has no active runtime, `isActive` is false and its leaf members default to
-`offline`; no root status is calculated. The catalog remains a durable history
-list, not a lifecycle or status log.
+`TeamRunHistoryService` starts from admitted catalog rows, reads the matching V2
+execution tree, and skips rows whose tree is missing or invalid. It does not read
+`team_run_metadata.json` or reconstruct a tree from flat members. The tree owns
+coordinator identity, complete Team defaults, complete Agent launch snapshots,
+application binding, handoffs, and task execution topology. The index owns the
+list-oriented summary and `terminatedAt` while projecting identity, creation,
+root workspace, and archive facts from the tree.
+
+`TeamRunLiveProjectionService` derives root `isActive` and exact configured-Agent
+status snapshots from the active manager at list time. If a Team has no active
+runtime, `isActive` is false and its Agents default to `offline`; no five-state
+root status is calculated or persisted. Catalog rows do not persist
+`lastKnownStatus`, `lastActivityAt`, or `deleteLifecycle`.
 
 Prepared-new run identities are explicit metadata facts, not inferred from a
 missing `platformAgentRunId` and not represented by a persisted
@@ -204,17 +201,18 @@ Team persisted files:
   containing only `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
   `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, and
   `terminatedAt`
-- team metadata: `memory/agent_teams/<teamRunId>/team_run_metadata.json`,
-  containing resume/config/topology and stable lifecycle facts:
-  `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
-  `coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-  recursive `memberTree` plus effective `handoffs`; agent-member entries must not carry
-  `skillImprovementEffective` launch snapshots after the Skill Improvement metadata
-  cleanup migration
+- current V2 execution tree:
+  `memory/agent_teams/<rootTeamRunId>/team_run_execution_tree.json`, containing
+  `schemaVersion: 2`, creation/archive facts, application binding, handoffs, and
+  the complete recursive configured/task execution tree. The root and every
+  configured Team carry a complete `defaultLaunchConfiguration`; every
+  configured Agent carries a complete `launchConfiguration`.
 - member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<agentRunId>/...`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<agentRunId>/...`, with deeper child TeamRun IDs appended in physical `ancestorTeamRunIds` order. Every supported runtime can persist `raw_traces_active.jsonl`; only native AutoByteus continuation owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical Team/Agent directory, for example `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
-- team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
-- task delegation records projection: `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
+- versioned team communication projection:
+  `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
+- versioned task delegation records projection:
+  `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
 
 Important identity/storage rules:
 
@@ -231,28 +229,26 @@ Important identity/storage rules:
   archive/unarchive, terminate, delete/cancel, and catalog flush
 - ordinary message activity and live status transitions must not rewrite
   `memory/run_history_index.json` or `memory/team_run_history_index.json`
-- normal history listing reads the V2 index/in-memory catalog and applies live
-  status projection; it does not scan every `memory/agents/*/run_metadata.json`
-  or `memory/agent_teams/*/team_run_metadata.json` to repair missing rows
-- normal team history listing starts from indexed team catalog rows and reads
-  `team_run_metadata.json` only for those indexed team-run ids to project
-  topology/members; that row-scoped metadata read is not a repair scan
-- required startup app-data migration
-  `TeamRunMetadataMemberTreeMigration` is the prerequisite that canonicalizes
-  legacy flat team metadata into recursive `memberTree`
-- required startup app-data migration
-  `TeamRunHistoryIndexV2AppDataMigration` is the primary team
-  legacy/partial-index repair boundary; it runs after member-tree metadata
-  migration, scans team metadata once under the app-data migration runner,
-  writes a plain V2 row-array index, creates a backup of the previous index,
-  records success/warnings/failures/retry state in `app_data_migration_records`,
-  and resets in-process team catalog state after writing
-- required startup app-data migration
-  `RunHistoryIndexV2AppDataMigration` is the primary legacy/partial-index
-  repair boundary; it scans metadata once under the app-data migration runner,
-  writes a plain V2 row-array index, creates a backup of the previous index,
-  records success/warnings/failures/retry state in `app_data_migration_records`,
-  and resets in-process catalog state after writing
+- normal standalone history listing reads the V2 index/in-memory catalog; it
+  does not scan every `memory/agents/*/run_metadata.json` to repair missing rows
+- normal Team history listing starts from admitted index rows and reads each
+  row's exact V2 `team_run_execution_tree.json`; it does not read predecessor
+  `team_run_metadata.json`, reconstruct topology from flat members, or admit an
+  incomplete package
+- `TeamRunPackageCatalog` performs bounded startup admission of complete V2
+  execution-tree/task/communication packages and excludes predecessor,
+  incomplete, malformed, or unsupported roots from runtime/history
+- `TeamRunMetadataMemberTreeMigration` and
+  `TeamRunHistoryIndexV2AppDataMigration` remain legacy migration boundaries;
+  current runtime code does not depend on schema-v3 Team metadata
+- `20260814_team_run_execution_tree_v1` owns predecessor interpretation and
+  promotion to a complete migration-owned V1 package
+- `20260823_repair_team_agent_memory_layout` uses that V1 intermediate to repair
+  unambiguous nested-member directory layout
+- `20260824_team_run_execution_tree_v2` is the required current-schema cutover:
+  it preserves the existing execution facts, adds `/` at the root, maps runtime
+  labels, and materializes every Team default from its unique direct coordinator
+  launch snapshot before current readers operate
 - required startup app-data migration
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
   `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
@@ -292,53 +288,43 @@ Important identity/storage rules:
   `rootTeamRunId + agentRunId`, nested members use `rootTeamRunId +
   ancestorTeamRunIds + agentRunId`, and task Agents use that same physical Team
   scope plus their generated `taskAgentRunId`
-- `AgentMemoryLocationService` is the shared read/write/projection owner for
-  `rootTeamRunId`, physical `ancestorTeamRunIds`, logical `memberAddress`, real
-  Agent/task run identity, exact task execution address, and resolved
-  `memoryDir`; `TeamRunMemoryTopologyReader` can load root metadata from a root
-  or nested TeamRun ID
-- these persisted execution/history coordinates are not the Agent collaboration
-  tool context. The live message/task collaboration boundary carries only
-  `{rootTeamRunId,memberAddress}` and derives its immediate Team and address
-  segments from the canonical logical address. History stores the rooted address
-  in schema-v3 topology; physical memory ancestry remains a distinct array of
-  ancestor TeamRun IDs
-- team metadata lookup services and topology readers must bind to the current
-  configured app memory root; restore, context-file resolution, and memory
-  readback must not reuse a default-root singleton after tests or deployments
-  select a different memory directory
-- Codex and Claude standalone/team-member/task-agent runs write raw-trace-only local memory through the same resolved memory directories as native AutoByteus-owned runs; they do not load or persist WorkingContext snapshots, and native AutoByteus memory contents remain owned by the native `autobyteus-ts` memory manager
+- `AgentMemoryLocationService` and `TeamRunExecutionTreeLocationService` are the
+  shared read/write/projection owners for `rootTeamRunId`, physical
+  `ancestorTeamRunIds`, logical `memberAddress`, concrete Agent/task identity,
+  exact task execution address, and resolved `memoryDir`
+- persisted execution/history coordinates are not the Agent collaboration tool
+  context. The live message/task collaboration boundary carries
+  `{rootTeamRunId, memberAddress}` and derives its immediate Team and address
+  segments from the canonical logical address. The V2 tree stores the rooted
+  logical address; physical memory ancestry remains a distinct ordered array of
+  TeamRun IDs
+- Team execution-tree/location services must bind to the configured application
+  memory root; restore, context-file resolution, and memory readback must not
+  reuse a default-root singleton after a test or deployment selects another
+  memory directory
+- Codex and Claude standalone/team-member/task-Agent runs write raw-trace-only
+  local memory through the same resolved directories as native AutoByteus runs;
+  they do not load or persist WorkingContext snapshots
 - runtime-native identifiers remain separate from domain identifiers:
-  - AutoByteus native agent id
+  - AutoByteus native Agent identity
   - Codex thread id
   - Claude session id
-- current Team metadata uses `platformAgentRunId` only for an exact external
-  Codex/Claude provider binding; native Team nodes keep it null and restore from
-  local AgentRun identity plus native memory state
+- V2 `platformAgentRunId` is non-null only for an exact external Codex/Claude
+  provider binding. Native Team Agents keep it null and restore from local
+  AgentRun identity plus native memory state.
 
-Current Team metadata is schema v3 and stores one recursive `rootTeam` instead
-of a flat member list. Each node has `kind`:
+The V2 execution tree is the restore and projection topology authority. It
+stores a root Team at address `/`, recursively nested configured Team/Agent
+nodes, complete launch/default configurations, concrete TeamRun/AgentRun IDs,
+application binding, handoffs, and task execution snapshots. Flat configured-
+Agent lists are derived for history/status projection only and are not an
+alternative restore contract.
 
-- `agent` nodes hold canonical address, Agent definition/run/provider identity,
-  workspace/model/config data, and application execution context.
-- `agent_team` nodes hold canonical Team address, Team definition/run identity,
-  exact coordinator Agent address, and recursive `children`.
-
-Flat leaf-agent views are derived through `team-run-metadata-flattener.ts` for
-projection/search consumers. The derived flat view is not authoritative for
-restore topology.
-
-Nested child team runs are not independent workspace-history rows. Their child
-`teamRunId` is retained on the parent subteam metadata node for restore and
-projection, while default workspace history lists the parent team run and its
-recursive member tree.
-
-Current-format TeamRun metadata also stores `handoffs`, the immutable effective
-root-addressed handoff snapshot compiled when the run launched. Restore reads
-this stored snapshot and does not recompile current AgentTeam definitions, so a
-later definition edit cannot change historical run guidance. Current-format
-metadata created before this field existed remains directly usable: a missing
-field normalizes to `[]`, and no bulk migration or file rewrite is required.
+Nested child TeamRuns are not independent workspace-history rows. Their
+`teamRunId` remains in the parent V2 tree for restore, exact execution addressing,
+and physical ancestry, while default history lists the root TeamRun and its
+recursive `rootTeam` projection. Restore uses the stored handoff snapshot and
+never recompiles current definition files.
 
 ## Projection Model
 
@@ -566,36 +552,40 @@ startup-cleanup concern rather than a retention window.
 
 ## Team Restore / Projection Contract
 
-For team runs:
+For Team runs:
 
-1. Recursive schema-v3 `rootTeam` metadata is the source of truth for Agent
-   address, topology, concrete run identity, and runtime kind.
-2. Canonical `memberAddress` selects a persistent Agent within the Team tree.
-3. `agentRunId` identifies the persisted Agent run/storage subtree; it is opaque
-   and not a logical address.
-4. `platformAgentRunId` identifies the exact external Codex thread or Claude
-   session when that runtime requires one. It is never a local AgentRun ID or a
-   native AutoByteus restoration signal; current native Team nodes keep it
-   null.
-5. `agent_team` nodes record their canonical address, child `teamRunId`, exact
-   coordinator address, and child tree used to restore nested handles. Child
-   TeamRun IDs form the physical `ancestorTeamRunIds` chain used for nested
-   memory directories.
+1. The exact V2 `team_run_execution_tree.json` is the source of truth for
+   configured Team/Agent topology, canonical addresses, concrete run identity,
+   provider binding, task execution snapshots, and complete launch/default
+   configuration.
+2. `getTeamRunResumeConfig(teamRunId)` returns `{ teamRunId, isActive,
+   executionTree }`; GraphQL projects that V2 tree without rebuilding it from
+   current definitions or history-index rows.
+3. Canonical `memberAddress` selects a logical configured placement, while
+   `agentRunId` identifies its opaque persisted AgentRun/storage subtree.
+4. `platformAgentRunId` identifies only the exact external Codex thread or Claude
+   session. It is never a local AgentRun ID or a native AutoByteus restoration
+   signal; native nodes keep it null.
+5. Nested configured Team nodes retain their child `teamRunId`, coordinator
+   address, complete default, and members. Child TeamRun IDs form the physical
+   `ancestorTeamRunIds` chain for nested memory while logical routing remains
+   address-based.
 6. The stored effective `handoffs` array is the collaboration-guidance source;
    restore must not recompile handoffs from the current definition graph.
-7. Team-member projection resolves the member from recursive team metadata first,
-   then delegates metadata, including the resolved root-hierarchical
-   team-member memory directory, to `AgentRunViewProjectionService` for the local
-   replay display path.
-8. Codex and Claude team-member projection use the same local member memory
-   directory path as AutoByteus; they do not preload, merge, or fallback to
-   runtime-native provider projection.
-9. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
+7. `TeamRunStatePackageLoader` reads the execution tree together with task and
+   communication records. Restart repair interrupts nonterminal delegated tasks
+   and aligns their execution snapshots; it does not recreate in-flight work.
+8. Team-member projection resolves the exact Agent from the V2 tree, resolves
+   the root-hierarchical memory directory, and delegates to
+   `AgentRunViewProjectionService` for the same local replay bundle used by
+   standalone runs. Codex and Claude do not preload, merge, or fall back to
+   provider-native display history.
 
-This keeps create, restore, and projection aligned on the same persisted team/member contract instead of inferring storage or identity later.
+Predecessor schema-v3 metadata and exact V1 packages are migration inputs only.
+If required startup conversion cannot produce and validate a complete V2
+package, the root remains excluded and restore fails clearly instead of guessing
+identity or path ownership.
 
-Unsupported historical flat team metadata is not migrated or inferred into a
-nested topology during restore. If the tree was not recorded, restore fails
-clearly instead of guessing path ownership.
-
-Team termination should update run-history activity state only after the backend confirms termination. The frontend then marks the team resume config inactive and refreshes the workspace history tree; failed backend termination should leave the local team runtime and active/inactive cache untouched.
+Team termination updates catalog activity only after backend termination
+succeeds. The frontend then marks the Team inactive and refreshes history; a
+failed termination leaves local runtime and active/inactive cache untouched.

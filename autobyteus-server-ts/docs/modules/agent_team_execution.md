@@ -25,12 +25,15 @@ projection through one server-owned boundary.
 
 ## Launch-Time Identity
 
-`TeamRunService` allocates the root TeamRun ID before runtime creation. Public
-launch input contains definition/configuration, not caller-chosen concrete
-member or child-run identities. `TeamDefinitionTopologyPlanner` allocates each
-persistent AgentRun ID and persistent nested TeamRun ID, binds the exact rooted
-member address, and projects any application execution producer to that exact
-execution address.
+Public launch input contains `teamDefinitionId`, one complete configuration for
+every exact Team address, and one complete configuration for every exact Agent
+address; callers do not choose concrete run identities. `TeamRunService`
+canonicalizes and activates all requested Team/Agent workspace roots, then
+`TeamDefinitionTopologyPlanner` resolves the complete definition graph and
+validates exact Team/Agent coverage, subject kinds, definition bindings, and
+root-inherited skill access. No run identity is allocated until that validation
+passes. The planner then allocates the root/nested TeamRun IDs and AgentRun IDs,
+binds their canonical addresses, and produces one immutable `TeamRunConfig`.
 
 IDs are opaque runtime/storage identities. Names/slugs can improve readability
 but must never be parsed for routing, task ownership, restore, or UI identity.
@@ -44,13 +47,14 @@ Member memory is root-hierarchical. `TeamRunPhysicalScope` is immutable executio
 context: the root starts with an empty ancestor chain and each concrete child
 TeamRun appends its own TeamRun ID exactly once. Every direct configured member,
 task Agent, task-Team member, and deeper nested member passes its containing
-TeamRun scope to `AgentMemoryLocationService`; the persisted V1 execution index
+TeamRun scope to `AgentMemoryLocationService`; the persisted V2 execution tree
 derives the same scope for cold reads. Consumers do not derive a fallback path
 from a logical address or provider ID.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` contains
 the only knowledge of the defective flat nested-member location. It moves each
-unambiguous whole directory admitted by a validated current V1 tree into the
+unambiguous whole directory admitted by a validated migration-owned V1
+intermediate tree into the
 canonical scope, leaves direct-root/current/unrelated data alone, and uses the
 existing migration record/manual Retry path for failures or bounded warnings.
 Current Team runtime and history code remain canonical-only.
@@ -209,7 +213,7 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
 2. Stop targets the exact root TeamRun ID, closes new materialization admission,
    joins work already admitted, freezes one recursive scope, interrupts active
    turns before quiescence, and terminates every materialized configured,
-   delegated, and nested descendant. Stop retains the V1 package, catalog row,
+   delegated, and nested descendant. Stop retains the V2 package, catalog row,
    task/communication history, context, and resume identity.
 3. The root remains managed and the lifecycle/history projection remains
    `isActive: true` until that whole scope reaches accepted terminal completion
@@ -355,7 +359,10 @@ pipeline passes, or projection writes.
 
 ## Restore And Persistence
 
-- `TeamRunMetadata.rootTeam` is the canonical immutable runtime tree.
+- `team_run_execution_tree.json` is the canonical immutable V2 runtime tree.
+  The root and every configured nested Team store a complete
+  `defaultLaunchConfiguration`; every configured Agent stores a complete
+  `launchConfiguration`.
 - Stored handoffs are the immutable launch-time compiled snapshot. Restore does
   not recompile current definition files.
 - Stored concrete AgentRun/TeamRun IDs and provider resume IDs are data; public
@@ -380,87 +387,65 @@ pipeline passes, or projection writes.
 
 ### Startup Transition To The Current TeamRun Package
 
-Current runtime readers consume one validated V1 package per root TeamRun:
-`team_run_execution_tree.json`, `task_delegation_records.json`, and
-`team_communication_messages.json`. Released predecessor interpretation stays
-inside required startup app-data migration
-`20260814_team_run_execution_tree_v1`. It is the single registered final Team
-cutover: the unpublished canonical-identity migration and its converters are
-not prerequisites or runtime compatibility paths, and external-channel state is
-outside this transition.
+Current runtime, storage, history, GraphQL, and stream readers consume one
+validated V2 package per root TeamRun:
 
-The migration classifier uses positive authority evidence; missing
-`team_run_metadata.json` alone is not an error or a reason to skip blindly:
+- `team_run_execution_tree.json` with `schemaVersion: 2`;
+- versioned `task_delegation_records.json`; and
+- versioned `team_communication_messages.json`.
 
-- a regular `team_run_metadata.json` is an authoritative `PREDECESSOR`, including
-  an interrupted promotion where V1 targets already exist;
-- all three current files plus full cross-file validation are `CURRENT_V1`;
-- with neither predecessor nor current authority, a structurally valid
-  `team_run_manifest.json` matching the directory is `HISTORICAL_RESIDUE` and is
-  skipped without mutation; and
-- partial, malformed, or unrecognized roots are `INVALID`, preserve their bytes,
-  and are excluded with a warning. Empty shells, content-bearing roots without
-  recognized authority, unsafe paths, and read/classification errors receive
-  the same isolated preserve/exclude treatment.
+`TeamRunPackageCatalog` admits only complete, cross-file-valid V2 packages. A
+root that still contains predecessor `team_run_metadata.json`, lacks any required
+package file, or has invalid/unsupported content is excluded from normal runtime
+and history instead of entering a compatibility path. `TeamRunStatePackageLoader`
+loads the complete package for restore and repairs nonterminal task records to an
+interrupted state after restart; it does not pretend that in-flight task
+executions resumed.
 
-Each root is planned and validated before mutation. Released metadata is
-converted directly to the current recursive execution tree; a non-empty nested
-`teamRunId` is authoritative, while an absent or blank value may use the
-released `memberRunId` evidence. The predecessor-only execution-address
-normalizer accepts the exact four-field form or the released ordered `segments`
-form, folds nested member/task-Team ancestry in order, and rejects contradictory
-or incomplete identity rather than guessing. Address-bearing and older
-run-ID-based Team communication projections are resolved against the same
-planned tree. Normal restore and API paths do not implement a
-predecessor/current dual reader.
+The required startup sequence has three distinct Team package stages:
 
-For a valid predecessor root, the migration creates a protected backup, stages
-and validates the complete three-file package, then promotes it with
-same-filesystem operations. Roots are independent; one invalid root does not
-prevent another root from being promoted. If a promotion operation reports an
-error after the predecessor marker disappears, read-only validation decides
-whether the complete current package can still be admitted. Otherwise the root
-is excluded without a false preservation claim. Existing valid V1 packages are
-admitted as no-ops, and a terminal clean or warning-completed migration does not
-repeat work on relaunch.
+1. `20260814_team_run_execution_tree_v1` classifies predecessor roots, converts
+   released metadata/communication/task projections into a complete
+   migration-owned V1 package, reconciles eligible history/token evidence, and
+   leaves valid existing V1 packages unchanged. This stage owns all predecessor
+   schema interpretation.
+2. `20260823_repair_team_agent_memory_layout` uses that validated V1 intermediate
+   to move unambiguous nested-Agent memory directories into the canonical
+   root/ancestor-TeamRun/AgentRun layout.
+3. `20260824_team_run_execution_tree_v2` transforms exact V1 trees to exact V2.
+   It maps legacy runtime labels to current runtime values, sets the root address
+   to `/`, preserves IDs, topology, Agent snapshots, tasks, handoffs, application
+   binding, and timestamps, and materializes each Team's complete default from
+   its unique persisted direct coordinator Agent snapshot.
 
-The same final coordinator validates released token identity only at the
-migration boundary, updates eligible `root_team_run_id` values transactionally,
-and retains predecessor-only database columns as inert evidence. Unsupported
-token rows remain unchanged with warnings. Current Token Usage readers group by
-root TeamRun and concrete AgentRun IDs; they do not own Team execution topology.
+The V2 migration is required on startup, has `ANYTIME` policy, and depends on the
+memory-layout migration. Exact V2 files are idempotently skipped. Missing,
+invalid, unsupported, or non-regular entries are reported with per-item
+outcomes; current readers do not accept V1 as fallback. Each V1 candidate is
+validated before transformation, the V2 candidate is validated before write,
+and the canonical file is reread and accepted only as exact V2 after the shared
+atomic writer returns. A post-rename finalization warning is isolated as a
+warning only when the reread target is already valid V2; otherwise the item
+fails and remains retry-visible.
 
-After root processing, the migration reconciles `team_run_history_index.json`
-from independently admitted trees. Every admitted root produces exactly one
-Team history row; historical residue, invalid roots, and stale index-only roots
-are absent. The execution tree owns Team identity, definition, workspace,
-creation, and archive facts. Existing index rows may contribute only their
-summary and termination fields; if no summary exists, coordinator trace
-evidence may supply a best-effort title.
+The V1-to-V2 coordinator-derived Team default is a historical migration rule
+only. New launches must provide complete `teamConfigs[]` and `memberConfigs[]`,
+and every new V2 node is built from those resolved values rather than inferred
+from a coordinator. The dated configured-recovery branch is not a migration or
+runtime input.
 
-The history store owns strict index parsing and the canonical index path. A
-missing index is treated as empty. If a valid existing index must change, the
-reconciler creates a protected timestamped backup before the atomic replacement
-and validates the persisted projection. Exact equivalence creates no write and
-no backup. A history read/write/validation problem is a warning and does not
-block startup; the strict catalog is still rebuilt from admitted current
-packages. Normal catalog, GraphQL, and sidebar paths consume only the current
-index; they do not scan `memory/agent_teams`, and Team members do not become
-standalone Agent history rows.
-
-Conversion, promotion, token, and history problems produce item diagnostics and
-a terminal `SUCCEEDED_WITH_WARNINGS`, never migration-owned startup fatality.
-The server logs the result, rebuilds the strict catalog, and continues to
-listen; `/rest/health` is the embedded application's only readiness authority.
-Only an independently established database/runtime/bootstrap condition that
-makes the current application inoperable can use the separate fixed
-platform-fatal path.
+The execution tree owns Team identity, definition, creation/archive facts,
+application binding, handoffs, complete configured topology, task execution
+snapshots, and launch configuration. The Team history index owns list-oriented
+summary and termination facts. Normal catalogs do not scan predecessor metadata
+or manufacture missing packages.
 
 ## TS Source
 
 - `src/agent-team-execution/domain/team-member-execution-identity.ts`
 - `src/agent-team-execution/domain/team-agent-execution-binding.ts`
 - `src/agent-team-execution/domain/team-run-config.ts`
+- `src/agent-team-execution/domain/team-run-execution-tree.ts`
 - `src/agent-team-execution/domain/team-run.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`
@@ -482,6 +467,8 @@ platform-fatal path.
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
 - `src/app-data-migrations/migrations/team-run-migration-state-classifier.ts`
+- `src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-metadata-converter.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.ts`
@@ -494,5 +481,8 @@ platform-fatal path.
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts`
 - `src/token-usage/repositories/sql/token-usage-team-run-v1-migration-repository.ts`
 - `src/run-history/services/team-run-history-index-row-projector.ts`
+- `src/run-history/services/team-run-package-catalog.ts`
+- `src/run-history/services/team-run-state-package-loader.ts`
+- `src/run-history/store/team-run-execution-tree-store.ts`
 - `src/run-history/store/team-run-history-index-store.ts`
 - `@autobyteus/team-stream-contracts`

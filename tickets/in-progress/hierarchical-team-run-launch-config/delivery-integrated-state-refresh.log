@@ -51,3 +51,69 @@ Recorded bootstrap/finalization target: origin/personal
    - No source conflict was resolved by delivery.
    - No ticket archive, push, finalization-target update, release, deployment, tag, or cleanup occurred.
    - Delivery result: Blocked / Local Fix to /implementation_engineer.
+
+================================================================================
+DR-002 delivery re-entry integrated-state refresh
+Date: 2026-08-25
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal -> personal
+
+1. Reviewed re-entry state
+   Reviewed repository HEAD: 426bdf81ae5efcaf7e97e041c36a94d7349e610b
+   Additional reviewed working-tree package: 52 durable-test/report/evidence paths
+   Authoritative gates: SR-008; ARCH-REV-002; IR-008; CRR-012 Pass (9.4/10); API-REV-007 Pass (98%); CRR-014 Pass
+   Corrected capability-test SHA-256: 00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700
+   Prior delivery status: DR-001 historical Blocked; upstream rework/review cycle completed before this re-entry.
+
+2. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Post-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Reviewed-head/base divergence after fetch: 12 ahead / 3 behind
+   Merge base: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Incoming commits:
+   - dfe8922e4 docs(requirements): return prototype ownership to workspace
+   - bf8ab9349 prototype: return web baseline to workspace ownership
+   - 87b1b5845 docs(requirements): close workspace prototype return
+   Incoming scope: autobyteus-web-prototype/** and tickets/in-progress/initial-prototype-baseline/** only.
+   Reviewed source/test overlap: None.
+
+3. Reviewed-state protection
+   Targeted durable-test/report diff check: Pass.
+   Note: captured API/E2E evidence logs retain their observed trailing whitespace/EOF formatting; no production source, durable test, or Markdown report failed the targeted check.
+   Command: git add <exact 52-path reviewed package> && git commit -m "chore(delivery): checkpoint API-REV-007 handoff"
+   Checkpoint: a50cb6e4187f74a55c7349d8a352848f5fab09e7
+   Result: Pass; the reviewed handoff was protected in an allowed local checkpoint.
+   Publication: None. The checkpoint was not pushed.
+
+4. Latest-base integration
+   Command: git merge --no-edit origin/personal
+   Result: Pass; no conflicts.
+   Integrated HEAD: 1f1fb12160c809b41bd4b716dc2fa4f920631f6d
+   First parent: a50cb6e4187f74a55c7349d8a352848f5fab09e7
+   Second parent: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Integrated merge base with origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Final divergence: 14 ahead / 0 behind
+
+5. Post-integration executable verification
+   Working directory: autobyteus-server-ts
+   Command: pnpm exec vitest run tests/integration/application-backend/application-context-capabilities.integration.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts --no-watch
+   Result: Pass; 2 files / 5 tests; duration 6.22s.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-post-integration-api-rev-007.txt
+
+6. Docs-sync validation
+   Long-lived docs updated: 13.
+   Checks: targeted git diff --check; Markdown fence balance; relative link resolution; stale current-contract name scan; updated implementation-reference existence.
+   Result: Pass.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-docs-validation.txt
+
+7. Final remote confirmation
+   Command: git fetch --prune origin
+   Pre/post origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Result: Pass; tracked base remained unchanged and is the integrated merge base.
+
+8. Safety and holds
+   - The dated configured-recovery branch was not merged or cherry-picked.
+   - No reviewed production source or durable test was changed during delivery.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Delivery result: Pass / ready for explicit user verification.

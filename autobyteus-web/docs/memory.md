@@ -38,7 +38,7 @@ Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A tea
 
 Agent detail pages use the selected agent name as the run-list card heading without a separate subject summary card. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
 
-Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from schema-v3 recursive Team metadata and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened or address-derived directory.
+Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from the current V2 Team execution tree and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened or address-derived directory.
 
 Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or selected team's team runs/member targets. Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
 
@@ -116,7 +116,9 @@ Storage is server-owned and identity-opaque:
 
 Required server startup migration `20260823_repair_team_agent_memory_layout`
 relocates affected flat nested-member directories into this canonical hierarchy
-using the validated current V1 execution tree. Normal local and imported
+using the validated migration-owned V1 intermediate execution tree. It runs
+after predecessor package conversion and before the V1-to-V2 transition; normal
+runtime/history readers see only V2. Normal local and imported
 readers remain canonical-only; there is no flat-path compatibility lookup. A
 failed required move is reported by Server Migrations and is manually retryable
 without making unrelated application startup unavailable.
@@ -196,7 +198,7 @@ deletes, deltas, analytics indexes, or runnable restore state. Consequently, a
 hub may retain a pre-upgrade flat nested-member path beside the later canonical
 path, or receive both paths from a preserved local conflict. This is a physical
 storage limitation only: imported Team-member selection still derives one exact
-canonical target from the V1 Team execution tree. The UI does not merge, choose,
+canonical target from the synced V2 Team execution tree. The UI does not merge, choose,
 delete, or present the flat residue as a second current member.
 
 ## Archive / Boundary Notes

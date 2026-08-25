@@ -1,74 +1,55 @@
 # Delivery Integration Blocker
 
-## Classification
+## Current Status
 
-- Delivery revision: `DR-001`
-- Result: `Blocked`
-- Classification: `Local Fix`
-- Recommended recipient: `/implementation_engineer`
+- Delivery revision: `DR-002`
+- Result: `Resolved upstream; no current integration blocker`
+- Current owner: `/delivery_engineer`
 - Ticket branch: `codex/hierarchical-team-run-launch-config`
-- Protected reviewed checkpoint: `393c27015a4380f77d33f7f55096077f0e1f6b29`
-- Latest tracked base: `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`
-- Merge state: active, with `MERGE_HEAD` equal to the latest tracked base
+- Integrated HEAD: `1f1fb12160c809b41bd4b716dc2fa4f920631f6d`
+- Latest tracked base: `origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18`
+- Current hold: explicit user verification before repository finalization
 
-## What Blocked Delivery
+## Historical DR-001 Blocker
 
-The recorded reviewed base was
-`52b4be02ea793f2071fe5a63a94664ab25196433`. Delivery fetched the current
-tracked base and found `origin/personal` 18 commits ahead. The reviewed and
-API/E2E-passed candidate was first protected in the allowed local checkpoint
-above. The required default merge of current `origin/personal` then stopped
-with six content conflicts:
+`DR-001` stopped at six workspace-configuration source/test conflicts while
+merging `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`.
+That result was correctly classified `Local Fix` and routed to
+`/implementation_engineer`. Delivery did not resolve those conflicts.
 
-1. `autobyteus-web/components/workspace/config/RunConfigPanel.vue`
-2. `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
-3. `autobyteus-web/components/workspace/config/WorkspaceSelector.vue`
-4. `autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts`
-5. `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`
-6. `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
+The upstream cycle subsequently completed the integrated redesign and rework
+through `SR-008`, `ARCH-REV-002`, `IR-008`, implementation-source
+`CRR-012 Pass`, `API-REV-007 Pass`, and proportional durable-test
+`CRR-014 Pass`. `TR-003` is closed and no source, execution, or durable-test
+finding remains.
 
-Only two incoming base commits touch this conflict set:
+## DR-002 Resolution Evidence
 
-- `bfbeb0810` — `fix workspace selection state for team launches`
-- `2950019a3` — `preserve explicit workspace mode during discovery`
+Delivery re-entered from reviewed HEAD
+`426bdf81ae5efcaf7e97e041c36a94d7349e610b` plus the reviewed 52-path
+API/E2E package, protected it at local checkpoint
+`a50cb6e4187f74a55c7349d8a352848f5fab09e7`, and fetched the current tracked
+base. `origin/personal` advanced by three commits to
+`87b1b584592be95b1c8ee076f1d0ab3986a13f18`; those commits affected only
+`autobyteus-web-prototype/**` and
+`tickets/in-progress/initial-prototype-baseline/**`.
 
-The conflicts therefore combine the reviewed hierarchical Team/Agent launch
-configuration implementation with newer authoritative workspace-selection
-state semantics. Choosing either side wholesale would risk silently dropping
-one of those behaviors. Delivery did not resolve source/test conflicts or claim
-an integrated validation result.
+`git merge --no-edit origin/personal` completed without conflict at
+`1f1fb12160c809b41bd4b716dc2fa4f920631f6d`. The post-integration application
+cohort passed 2 files / 5 tests. A final fetch confirmed the same tracked base
+and 14-ahead / 0-behind ancestry. Detailed commands are in
+`delivery-integrated-state-refresh.log`.
 
-## Required Rework Outcome
+## Remaining Delivery Hold
 
-`/implementation_engineer` should continue from the existing active merge and:
+This file records no current source or integration blocker. The only remaining
+hold is procedural and intentional:
 
-1. resolve all six conflicts while preserving both the reviewed hierarchical
-   Team/Agent configuration behavior and the incoming explicit workspace-mode
-   and discovery-state behavior;
-2. inspect the automatically merged adjacent incoming changes, especially
-   `AgentRunConfigForm.vue`, `WorkspaceSelector.spec.ts`, and
-   `types/workspace/WorkspaceSelectionState.ts`, for contract consistency;
-3. keep the independent-prototype migration/removal from current
-   `origin/personal`; do not restore the removed `autobyteus-web-prototype`
-   tree as part of this ticket;
-4. do not merge or cherry-pick
-   `origin/codex/hierarchical-team-run-launch-config-recovery-20260824`;
-5. run focused implementation checks for the affected workspace configuration
-   components and the production web build, then update the implementation
-   handoff/revision record with the integrated merge commit and evidence;
-6. route the integrated source and durable-test delta through full source review,
-   API/E2E coverage investigation/execution, and proportional test review as
-   required before delivery re-entry.
+- the user has not yet explicitly verified/accepted the integrated handoff;
+- the ticket therefore remains under `tickets/in-progress/`;
+- delivery-owned docs/evidence remain uncommitted;
+- no push, merge into `personal`, version/tag/release/deployment action, or
+  worktree/branch cleanup is authorized.
 
-## Delivery Holds
-
-- Docs sync: blocked; no durable documentation claim is final until the source
-  conflicts are resolved and the integrated behavior passes review/testing.
-- User verification: not requested; no verified integrated candidate exists.
-- Repository finalization: prohibited pending explicit user verification after
-  delivery re-entry.
-- Push, target merge, ticket archival, release, deployment, tag, and cleanup:
-  not performed and not authorized.
-
-Detailed command evidence is recorded in
-`delivery-integrated-state-refresh.log` in this ticket folder.
+The dated configured-recovery branch remains comparison-only and was not merged
+or cherry-picked.

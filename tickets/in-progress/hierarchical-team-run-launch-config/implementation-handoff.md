@@ -2,290 +2,153 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-spec.md`
-- Supplemental task artifacts:
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/requirements.md`
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/investigation-notes.md`
+- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-spec.md`
+- UI/UX contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/ui-ux-spec.md`
+- Supplemental contracts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/hierarchical-launch-configuration-behavior.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/team-execution-tree-v2-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/recovery-audit.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/remote-recovery-branch-comparison.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md`
-- Triggering recovery evidence: the recovery audit above; `ARCH-REV-001` passed the reconstructed `SR-007` basis, and fresh `ARCH-REV-002` passed the current `SR-008` frontend-workspace and backend-allocation correction with no findings.
-- Triggering rework report and revision record:
+- Solution revisions: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
+- Architecture decision and history:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md`
+- Prior source/API/delivery records:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-003-migration-binding-failure.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-005-team-registration-continuation-failure.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-failure-origin-crr-009.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-architecture-static-crr-010.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-topology-workspace-probe-crr-010.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-root-identity-order-probe-crr-010.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-011.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-server-planner-focused-crr-011.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stale-empty-topology-crr-011.txt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integrated-state-refresh.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md`
+- Approved presentation references:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/origin-personal-root-launch-form-20260825.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/origin-personal-nested-team-group-20260825.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/dr003-root-presentation-user-review-20260825.png`
 
 ## Current Implementation Summary
 
-The recovered cross-package implementation has been completed and locally validated. The four archive-declared missing frontend files were reconstructed as current source: the recursive Team/Agent configuration tree, the Team-scope editor, the single hierarchy-resolution authority, and its focused unit suite. The complete change now carries partial authoring intent through exact-address hierarchy resolution into complete Team and Agent snapshots, centralizes root-only expansion behind `TeamRunService`, persists/restores V2 execution trees, migrates exact V1 packages only inside the app-data migration boundary, and returns stored Team defaults through stream/web hydration without coordinator inference.
+IR-009 implements the narrow SR-011 / ARCH-REV-003 presentation delta for `USER-UX-001` and `USER-UX-002`. It preserves the integrated functional baseline that already passed IR-008, CRR-012, API-REV-007 (98%), CRR-014, and DR-003. No store, readiness, workspace-preparation, launch, backend, GraphQL, V2, migration, identity-allocation, mobile, application, or external-channel owner changed in IR-009.
 
-Implementation validation found and corrected two additional implementation defects: external-channel Team input now resolves a logical member address to the exact live AgentRun ID before `RootTeamRun.postMessage`, and nested `WorkspaceSelector` instances no longer auto-create a workspace override during initial rendering. Recovered stale unit fixtures were moved to the current V2/address contracts where required by implementation-scoped suites.
+The root Team form again follows the original personal-branch sequence and quiet information density: Team Definition, runtime/model/model configuration, Workspace Directory, Auto approve tools, Team Members Override, then Run Team. Root fields render directly; no hierarchy wrapper/card, Root Team defaults title or badge, root `/`, hierarchy divider, effective summary, or customized-fields summary is emitted.
 
-IR-002 resolves CRR-001's four Local Fix findings. The full-hierarchy GraphQL/service contract now requires and strictly validates every Team/Agent `runtimeKind` before workspace activation; the regenerated web types expose both fields as required. Workspace readiness is owned by root or explicit Team workspace selections, so inherited Teams/Agents do not emit duplicate blockers and a pending New Team path can enable the action that creates it. Launch-field normalization now belongs to the lower-level `teamRunConfigUtils.ts` module with one-way composable dependencies. The four current-path V1 labels were corrected to current/V2 terminology.
+Nested Team configuration remains an extension of the existing member group. Each group keeps its Team name, localized TEAM marker, canonical address, and indentation; starts collapsed; exposes actionable Inherited or Customized state plus conditional Reset; and renders the actual inherited/customized controls only when expanded. Effective/customized-fields summaries are absent in both states. Address-scoped loading/error/retry, repair notices, locks, disabled/read-only state, typed events, focus order, and disclosure/reset accessibility remain intact.
 
-IR-003 resolves CRR-004 finding CR-005 / API-E2E-F-001. Predecessor application-binding extraction now runs over the validated migration-owned Team/Agent hierarchy, recursively visiting every nested Team's Agent children. It retains `null` when no Agent has a binding, collapses repeated identical pairs, rejects more than one distinct application/binding pair, and supplies the resolved value to V1 construction so the existing V2 transformer preserves it. Focused unit coverage exercises consistent nested, absent, and contradictory binding cohorts. API-REV-003's two strengthened durable E2E files and their assertions were left unchanged for the required downstream rerun after source review passes.
-
-IR-004 resolves DR-001's latest-base integration blocker. The reviewed checkpoint was merged with `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4` while retaining both sides' current behavior: the hierarchical form remains address-qualified for root and nested Team scopes, and every Agent/Team workspace selector now uses the incoming complete controlled `WorkspaceSelectionState`. `RunConfigPanel` owns standalone Agent selection plus an exact-address Team selection map, so an explicit `New` path survives immutable same-draft Team edits, late workspace discovery cannot overwrite explicit mode, and launch preparation resolves only active `New` selections. Inactive path buffers in `Existing` mode cannot suppress workspace blockers. The current-base independent-prototype removal remains intact.
-
-IR-005 resolves CRR-007 finding CR-006. Team launch-readiness reconciliation now treats every exact-address active `New` selection with an empty trimmed path as a scoped `WORKSPACE_REQUIRED` blocker even while the immutable draft retains a valid Existing/Temp workspace. It prepends the approved `Enter a workspace path to run this team.` message, keeps active non-empty New paths admissible, and neither suppresses nor creates a blocker from an inactive New buffer in `Existing` mode. Parameterized root and nested Team coverage proves the shared address-qualified policy at the `RunConfigPanel` boundary.
-
-IR-006 resolves CRR-009 finding CR-007 / API-E2E-F-002. Required full-renderer instrumentation established that each workspace-only immutable draft replacement retriggered `useTeamRunRuntimeCatalogSync` because its watch source returned a fresh runtime array. `setRuntimeModelCatalogLoading` then removed the still-applicable ready catalog, and `RunConfigPanel`'s duplicated post-preparation readiness gate returned before the launch owner. Runtime catalog sync now watches a stable sorted runtime-kind-set signature, retaining ready catalogs when only workspace/config fields change. After successful preparation, the panel passes the exact current draft directly and once to `agentTeamRunStore.launchDraft`, which remains the single admission/readiness/create and in-flight duplicate-protection owner. Deterministic coverage registers two active New Team scopes and proves one launch-owner call without manually refreshing readiness; separate real-Pinia composable coverage proves workspace-only replacement does not reload catalogs while an actual runtime-set change does. API-REV-005's strengthened durable test delta is preserved.
-
-IR-007 implements the architecture-approved SR-008 correction for CR-008 and CR-009. `TeamLaunchDraft` and `teamRunConfigStore` are now the sole per-draft exact-Team workspace authority: typed commands preserve active and inactive New buffers, operation state, context isolation, reset, and topology repair; the launch owner performs token-checked reconciliation, path deduplication, registration, canonical config replacement, readiness, exact admission, and one GraphQL create. `RunConfigPanel` no longer owns a parallel Team map, registration loop, cleanup watcher, second readiness gate, or Team loading state. On the backend, `TeamDefinitionTopologyPlanner` validates the complete resolved graph, address/kind/coverage/definition and root skill contract before allocating any configured Team or Agent identity, allocates root and nested Team identities itself, and returns the root used by common service/application creation. Invalid full and root-only/application inputs now prove zero Team/Agent allocator, manager, and persistence calls.
-
-IR-008 resolves CRR-011 finding CR-010 inside the approved SR-008 ownership boundary. Derived Team workspace readiness now applies active-New path policy only to Team addresses present in the current member topology: a valid current Team with New/empty remains blocked, while a removed or kind-changed Team's retained authoring state no longer prevents the first activation from reaching the launch owner's atomic reconciliation. That activation prunes stale config/authoring state, emits the already-sorted repair notice, performs zero workspace registration and zero GraphQL create, and stops through a typed repair-required outcome. `RunConfigPanel` contains only that presentation outcome so the repaired form and notice remain visible; unrelated launch errors still propagate. No watcher, panel map/filter, second readiness gate, or parallel authority was restored.
-
-- Integrated merge commit: `bd4e2403fd6630622e7789967e2f2815cc6f37f5`
-- Merge parents: reviewed checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29`; latest tracked base `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`
-- IR-005 implementation commit: `be6c9182b477d0c0d265cbe007c30d466c566a93`
-- IR-006 implementation commit: `2a70ea474b733739c132e1ae01fd2506137fb6f9`
-- IR-007 implementation commit: `ebea1289bccdbdd669e49fd1f5fa992b0f6fe0b8`
-- IR-008 implementation commit: `d621b229caf9944dfcac02c23658a81e3a07f4db`
-
-- Implementation cycle: `Rework`
+- Source commit: `84c94496f` (`fix(web): preserve team launch presentation baseline`)
+- Implementation cycle: `Design-Approved Rework`
+- Current implementation revision: `IR-009`
+- Current solution basis: `SR-011` (with SR-009/SR-010 refinement history)
+- Current architecture review: `ARCH-REV-003 / Pass`
+- Preserved downstream functional baseline: `CRR-014`, `API-REV-007 / Pass 98%`, `DR-003`
+- Triggering findings: `USER-UX-001`, `USER-UX-002`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
-- Current implementation revision ID: `IR-008`
-- Related solution revision IDs: `SR-002–SR-008` (current basis `SR-008`)
-- Related architecture-review revision IDs: `ARCH-REV-001–ARCH-REV-002` (current `ARCH-REV-002` Pass)
-- Related code-review revision IDs: `CRR-001–CRR-011` (`CRR-011` confirmed CR-008/CR-009 resolved and returned bounded CR-010 as a Local Fix)
-- Related API/E2E revision IDs: `API-REV-001–API-REV-005` (`API-REV-005` failed on API-E2E-F-002; its durable delta is preserved for rerun only after source Pass)
-- Related delivery revision IDs: `DR-001`
-- Triggering finding IDs: `CR-010` from `CRR-011`
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
-| --- | --- | --- | --- |
-| BEH-001 | Keep one complete root scope and expose nested Team scopes without complicating root-only teams. | `TeamRunConfigForm.vue` -> `TeamMemberConfigTree.vue` -> `TeamScopeConfigEditor.vue`; `teamRunLaunchReadiness.ts`; `RunConfigPanel.vue`. | Root stays first; nested scopes appear recursively only when present. Workspace readiness is reported only at the root or an explicit nested Team workspace owner. IR-004 carries the complete controlled workspace state by exact Team address, allowing pending New-path recovery without inherited Agent blockers or same-draft state loss. IR-005 adds the scoped active-New empty-path blocker without disturbing other addresses. IR-006 preserves both canonical root/nested registrations and continues the same accepted activation to the exact current launch draft. |
-| BEH-002 | Make each nested Team an inherited/customizable canonical-address scope. | `TeamMemberConfigTree.vue`, `TeamScopeConfigEditor.vue`, `teamRunConfigStore.ts`. | Team cards expose inherited/customized state, effective summary, disclosure, exact-address editing, and reset. |
-| BEH-003 | Resolve `Agent > nearest Team > ancestors > root` with complete coherent settings. | `teamRunLaunchHierarchy.ts`, `teamRunLaunchReadiness.ts`, `teamRunConfigStore.ts`; backend `team-definition-topology-planner.ts`. | One recursive frontend authority produces complete Team/Agent projections; null model/config semantics and workspace/skill inheritance are retained. |
-| BEH-004 | Store partial Team/Agent intent, reconcile topology, and admit immutable complete snapshots. | `TeamLaunchDraft.ts`, `TeamRunConfig.ts`, `teamRunConfigStore.ts`, `teamWorkspaceLaunchPreparation.ts`, `agentTeamRunStore.ts`, `teamRunLaunchHierarchy.ts`; presentation-only `RunConfigPanel.vue`. | The draft/store owns exact-Team authoring and operation state. Launch-owner planning reconciles config plus transient state before registration, deduplicates paths, token-checks current topology before/after asynchronous work, visibly repairs stale addresses, and admits only the exact final snapshot. Runtime catalogs invalidate only when the runtime-kind set changes. IR-008 excludes stale Team addresses only from derived pre-activation workspace blockers so the same launch-owned reconciliation can atomically prune them and stop with visible repair. |
-| BEH-005 | Validate and retain complete Team defaults and Agent settings through create, runtime, persistence, restore, and return projection. | GraphQL `agent-team-run.ts`; `team-run-service.ts`; `team-definition-topology-planner.ts`; `team-run-identity-allocator.ts`; builder/mutator/index; V2 schema/store/catalog/loader; `team-execution-view-projector.ts`; generated web types and hydration/context factory. | Full-create Team/Agent runtime fields are non-null and reject missing, blank, or unsupported values. The planner validates the complete graph/coverage/kind/definition/skill contract before all configured Team/Agent identity allocation, manager creation, or persistence. Current runtime and normal persistence remain V2-only with complete snapshots. |
-| BEH-006 | Seed defaults only from the root-selected definition. | `teamRunConfigUtils.ts` -> `useDefinitionLaunchDefaults.ts`, draft/template construction, hierarchy reconciliation. | Embedded Team definitions inherit their containing Team; field normalization has one lower-level owner and root seeding depends on it in one direction. |
-| BEH-007 | Migrate durable V1 packages to exact V2 and display stored hierarchical truth. | `predecessor-team-metadata-converter.ts` -> `predecessor-team-run-planner.ts` -> migration-owned V1 builder/promoter -> `team-run-execution-tree-v2-app-data-migration.ts`; registry/runtime gate; current package catalog; stored configuration components. | Direct coordinator snapshots reconstruct Team defaults. Validated nested Agent application contexts now produce one preserved V1/V2 application binding, remain null when absent, and reject contradictory pairs. Exact V1 knowledge stays migration-only; normal runtime accepts V2 only. |
-| BEH-008 | Preserve root-only mobile/application/external surfaces and exact application Agent overrides. | `TeamRunService.createTeamRunFromRootConfig`; planner-owned identity allocation; application binding launch service and SDK contracts; channel binding/facade; mobile coordinators; Brief Studio and Socratic package builds. | Root policy expands centrally to complete topology; callers no longer preallocate a root identity, and the successful common creation result supplies the application-bound root. Exact Agent targets continue to use canonical address/live AgentRun identity at their boundaries. |
-| BEH-009 | Preserve loading/error/retry/locked/accessibility/responsive behavior for nested Team controls. | Per-draft address-scoped store/readiness state; `WorkspaceSelectionState.ts`; `TeamScopeConfigEditor.vue`; `WorkspaceSelector.vue`; `RunConfigPanel.vue`; localized EN/ZH labels. | Canonical-address feedback, accessible disclosure, disabled/read-only state, retry/reset controls, responsive layouts, failure retention, context isolation, active/inactive New-buffer stability, and visible topology repair remain store-owned and were exercised through real Pinia/component coverage plus the rendered root/nested surface. IR-008 keeps valid current New/empty blocked but allows stale New/empty state to reach repair on the first activation, with the visible sorted notice retained. |
+| Behavior | IR-009 implementation | Result |
+| --- | --- | --- |
+| BEH-001 | `TeamRunConfigForm.vue` and the root branch of `TeamScopeConfigEditor.vue` render the root definition and controls in the original personal sequence without hierarchy chrome. | Root is quiet, direct, and root-first; hierarchy appears only under the existing member disclosure. |
+| BEH-002 | `TeamMemberConfigTree.vue` retains established recursive grouping; `TeamScopeConfigEditor.vue` adds only nested Team identity, state, disclosure, conditional Reset, and the actual expanded controls. | Nested Teams default collapsed, edit by exact canonical address, and show no effective/customized summaries. |
+| BEH-003–BEH-008 | No functional source owner changed. Existing hierarchy resolution, immutable draft admission, V2 persistence/migration, topology validation/allocation, and non-web launch surfaces remain the IR-008 downstream-passed baseline. | Preserved; not reopened by this presentation delta. |
+| BEH-009 | Existing field components and typed events are reused. Disclosure `aria-expanded`/`aria-controls`, accessible Reset naming, address-scoped loading/error/retry, repair notice, disabled/read-only state, and narrow layout are covered at rendered/component boundaries. | Passed focused tests and real renderer inspection. |
 
 ## Key Files Or Areas
 
-- Reconstructed frontend owners:
-  - `autobyteus-web/utils/teamRunLaunchHierarchy.ts`
-  - `autobyteus-web/utils/__tests__/teamRunLaunchHierarchy.spec.ts`
-  - `autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue`
-  - `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue`
-- Frontend intent/admission: `autobyteus-web/types/agent/`, `stores/teamRunConfigStore.ts`, `utils/teamRunLaunchReadiness.ts`, `composables/useDefinitionLaunchDefaults.ts`, `components/workspace/config/RunConfigPanel.vue`.
-- IR-002 contract/readiness/ownership correction: server `team-run-service.ts`, GraphQL `agent-team-run.ts`, generated `autobyteus-web/generated/graphql.ts`, web `teamRunLaunchReadiness.ts`, `teamRunConfigUtils.ts`, `useDefinitionLaunchDefaults.ts`, and focused service/schema/store/component tests.
-- IR-003 predecessor-binding correction: `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts` and `autobyteus-server-ts/tests/unit/app-data-migrations/predecessor-team-run-planner.test.ts`; API-REV-003's strengthened durable tests remain the unchanged downstream regression boundary.
-- IR-004 latest-base integration: `WorkspaceSelectionState.ts`, `WorkspaceSelector.vue`, `AgentRunConfigForm.vue`, `TeamScopeConfigEditor.vue`, `TeamMemberConfigTree.vue`, `TeamRunConfigForm.vue`, `RunConfigPanel.vue`, and their four affected workspace-config suites. Current-base documentation and the independent-prototype removal were retained.
-- IR-005 readiness correction: `teamRunLaunchReadiness.ts` owns active pending Team-workspace issue reconciliation; `RunConfigPanel.vue` consumes that owner; `RunConfigPanel.spec.ts` covers valid Existing/Temp -> active New/empty for root and nested Team addresses while preserving inactive-buffer coverage.
-- IR-006 same-activation correction: `useTeamRunRuntimeCatalogSync.ts` watches runtime-set semantics instead of immutable config identity; `RunConfigPanel.vue` delegates the exact prepared draft without a mixed-level readiness gate; `RunConfigPanel.spec.ts` and `useTeamRunRuntimeCatalogSync.spec.ts` cover two-scope registration/one-owner-call and catalog retention/reload boundaries.
-- IR-007 frontend ownership correction: `TeamLaunchDraft.ts`, `teamRunConfigStore.ts`, and `teamWorkspaceLaunchPreparation.ts` own per-draft exact-Team selection/operation state, topology fingerprinting, deduplicated plans, repair, and exact admission; `agentTeamRunStore.ts` sequences workspace registration and one create; Team form/tree/scope components consume derived views, while `RunConfigPanel.vue` only relays a typed command and exact launch request.
-- IR-007 backend allocation correction: `team-definition-topology-planner.ts` validates the complete resolved subject/coverage/skill contract before invoking `team-run-identity-allocator.ts` or the existing Agent allocator; `team-run-service.ts` and `application-run-binding-launch-service.ts` no longer accept or preallocate configured root IDs.
-- IR-008 stale-readiness correction: `teamRunLaunchReadiness.ts` intersects Team workspace authoring with current topology; `TeamLaunchDraft.ts` declares the typed repair-required launch outcome; `agentTeamRunStore.ts` emits it from every repair stop; presentation-only `RunConfigPanel.vue` contains only that outcome so `TeamRunConfigForm.vue` can render the store-owned repair notice. Real-Pinia/store and mounted-panel coverage spans current-blocked -> stale-admissible -> atomic repair.
-- Runtime planning: `autobyteus-server-ts/src/agent-team-execution/domain/` and `services/team-definition-topology-planner.ts`, `team-run-service.ts`, builder/mutator/index.
-- Persistence/migration: current V2 run-history schema/store/catalog/loader plus migration-owned V1 files and `team-run-execution-tree-v2-app-data-migration.ts`.
-- Transport/return view: GraphQL types/generated client, `autobyteus-team-stream-contracts`, server projector, web hydration/context construction.
-- Root-only callers/contracts: application orchestration, external channels, mobile launch, application SDK/contracts/devkit, and both bundled applications.
-- Removed superseded paths: `teamRunMemberConfigBuilder.ts`, `MemberOverrideTree.vue`, V1-named current package catalog and its old test.
+### IR-009 production
+
+- `autobyteus-web/components/workspace/config/AutoApproveSwitch.vue` — reusable switch behavior without forcing shared outer chrome.
+- `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue` — specialized quiet root branch and nested Team disclosure/state/control presentation.
+- `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue` — original form order, definition styling, and collapsed Team Members Override disclosure.
+- `autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue` — existing group/card/divider/indentation treatment.
+- `autobyteus-web/locales/en/workspace.ts`, `autobyteus-web/locales/zh/workspace.ts` — presentation-boundary labels only.
+
+### IR-009 focused coverage
+
+- `autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts`
+- `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
+
+### Preserved functional owners
+
+- `autobyteus-web/stores/teamRunConfigStore.ts`
+- `autobyteus-web/stores/agentTeamRunStore.ts`
+- `autobyteus-web/utils/teamRunLaunchReadiness.ts`
+- `autobyteus-web/utils/teamRunLaunchHierarchy.ts`
+- All server GraphQL/service/planner/persistence/migration owners.
 
 ## Important Assumptions
 
-- Canonical rooted Team/Agent addresses from the selected definition topology are the authoring identities; runtime AgentRun IDs are resolved only at runtime boundaries that require them.
-- An embedded Team definition never activates its own definition default; only the root-selected definition seeds a new launch draft.
-- Skill access remains root-authored/inherited; workspace participates in Team scopes.
-- Every historical configured Team has exactly one direct coordinator Agent whose persisted launch snapshot is the approved reconstruction source.
-- Live topology mutation and Dynamic AgentTeam consumption remain intentionally deferred, as approved.
+- SR-011 and `ui-ux-spec.md` are authoritative for this presentation delta; ARCH-REV-003 explicitly preserves ARCH-REV-001/002 functional and V2 decisions.
+- The nested Team editor may reuse field composition and typed events, but common outer chrome is not shared with the root.
+- Stored/read-only historical presentation paths are not part of this editable-form delta unless their behavior is supplied by the reused controls.
 
 ## Known Risks
 
-- IR-001's repository-wide server-unit comparison was non-green on both the ticket and clean detached historical bases: the ticket run recorded 2,478/2,628 passing, 149 failing, and 1 skipped across 456 files, with all 49 ticket failing files inside the baseline's 209 failing-file set and zero ticket-only failing files. That broad comparison was not rerun after later focused test additions; IR-003's affected migration suites pass. This history is retained rather than represented as a current green repository-wide result.
-- Standalone server `pnpm typecheck` is blocked by the repository TypeScript configuration including tests outside configured `rootDir`; `build:full` passes the production source/build path.
-- Web `pnpm exec nuxi typecheck` stops before source diagnostics because the installed `vue-tsc`/TypeScript combination raises `ERR_PACKAGE_PATH_NOT_EXPORTED`; the production web build and full web unit suite pass.
-- DR-001 performed the required fetch and started the merge from protected checkpoint `393c27015a4380f77d33f7f55096077f0e1f6b29` to latest tracked base `origin/personal@6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`. IR-004 resolves that exact active merge. Delivery must still re-enter only after the integrated source/API/E2E/proportional review chain passes; no push, target merge, archival, release, deployment, tag, or cleanup is claimed.
-- CRR-005, API-REV-004, and CRR-006 passed the protected pre-integration candidate, including 4/4 predecessor production-upgrade coverage. Those results remain valid historical evidence but do not certify the integrated frontend state. CRR-008 passed IR-005, but API-REV-005 then exposed API-E2E-F-002 and CRR-009 classified it as CR-007 / implementation-owned Local Fix. IR-006 corrects that boundary; repeat source review must pass before `/api_e2e_engineer` reruns the exact one-click path.
-- CRR-010 identified CR-008/CR-009 as design impacts. SR-008 and ARCH-REV-002 resolved those ownership contracts, IR-007 implemented them, and CRR-011 confirmed both resolved. CRR-011 returned only bounded CR-010: stale active-New/empty state blocked its own store-owned repair activation. IR-008 corrects that derived-readiness omission and visible stop; it now requires repeat source review before fresh API/E2E execution.
-- The two touched application-backend integration files execute 2/5 tests successfully and fail 3/5 before the revised identity-creation fake is reached: one checked-in capability bundle exports contract v5 while the current host requires v6, and two checked-in Brief Studio flows select a model the current server rejects as unsupported. Focused planner/service/application unit and TeamRun integration coverage plus both production builds pass. This is reported as an environment/fixture limitation, not a green application-integration result.
+- IR-009 has implementation validation only and requires complete source review. No fresh API/E2E or delivery approval is claimed.
+- Functional API/E2E behavior was intentionally not reopened; the last independent functional result remains API-REV-007 at 98%.
+- The standalone Nuxt typecheck remains historically toolchain-blocked by the repository's `vue-tsc`/TypeScript export mismatch; production build and focused tests are green.
+- No push, release, deployment, archival, or cleanup was performed.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Behavior Change` plus prerequisite `Feature`
-- Reviewed root-cause classification: `Shared Structure Looseness` and `Boundary Or Ownership Issue`; IR-008 is the reviewer-confirmed bounded `Local Implementation Defect` inside the corrected store/pure-policy boundary
-- Reviewed refactor decision: `Refactor Needed Now` for SR-008, completed by IR-007; `No Refactor Needed` for CR-010
-- Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `Yes` — CRR-010 returned CR-008/CR-009 through SR-008 and ARCH-REV-002 before this implementation round.
-- Evidence / notes: authoring intent, resolution, runtime planning, persistence, and return projection now have explicit owners. IR-002 restores one-way ownership from `useDefinitionLaunchDefaults.ts` to lower-level field semantics in `teamRunConfigUtils.ts`. CRR-004 classified CR-005 as a bounded local implementation defect inside the already-approved migration owner; IR-003 fixes that owner without changing the design or adding a normal-runtime legacy path. CRR-011 likewise confirmed CR-010 is a derived-readiness omission inside the now-correct SR-008 ownership boundary; IR-008 updates that policy and the typed presentation stop without reintroducing coordination. Root-only member construction and coordinator-derived normal-runtime projection were removed rather than wrapped. IR-007 completes the reviewed boundary correction: the draft store alone owns Team workspace lifecycle state, the web launch owner alone sequences reconciliation/preparation/admission/create, presentation no longer bypasses either owner, and the topology planner validates every configured subject before allocating any root/nested Team or Agent identity.
+- **Post-implementation design health:** Healthy for the approved SR-011 delta.
+- **Redundancy assessment:** The root and nested wrappers are deliberately specialized because their presentation contracts differ; field behavior and typed events remain shared. No parallel functional authority was added.
+- **Complexity assessment:** The delta is bounded to components, localization, and focused component tests. `TeamScopeConfigEditor.vue` is 276 effective lines, and all changed production components remain below the 500-line hard limit.
+- **Implementation match:** Yes. The source and rendered result match the approved root sequence, absent root output, nested default collapse/state/Reset behavior, scoped recovery states, and disclosure accessibility.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight: `Yes`
-- Canonical shared design guidance was reapplied during implementation: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`
-- Notes: normal runtime is V2-only. IR-002 removes the full-create missing-runtime fallback, retains no compatibility branch, and corrects current-path V1 labels while preserving legitimate migration-owned V1 language. Exact V1 types/validation/building remain solely in the approved migration-owned folder. IR-004 removes the obsolete split `select-existing` / `workspace-input-change` production contract rather than retaining an adapter, and keeps current base's independent `autobyteus-web-prototype` removal. IR-007 removes the panel Team map/registration loop/manual cleanup/broad Team watcher/second gate, global Team loading authority, and public configured-root preallocation contract rather than wrapping them. No authored implementation source exceeds 500 effective non-empty lines; after IR-008, `teamRunConfigStore.ts` is 499, `RunConfigPanel.vue` is 414, `agentTeamRunStore.ts` is 401, `teamRunLaunchReadiness.ts` is 113, and `TeamLaunchDraft.ts` is 88. The large store delta is the architecture-approved authority consolidation and is supported by extracted preparation semantics plus focused store coverage.
+- Obsolete editable-form labels and output for Root Team defaults, effective summaries, and customized-fields summaries were removed from the live presentation/localization boundary.
+- No compatibility adapter or deprecated functional path was introduced.
+- The stored-form localization key remains where the separate stored/read-only surface still uses it.
 
 ## Persisted Data Transition Check
 
-- Approved decision: `Migration Required`
-- Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision” and migration ID `20260824_team_run_execution_tree_v2`
-- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Migration implementation and focused checks: exact predecessor/V1 classification, validation, and runtime-label conversion live under the migration owner. Predecessor binding extraction now traverses the validated Agent hierarchy, preserves one consistent pair or null, and rejects contradictory pairs before V1 promotion; V2 continues to copy that V1 value. The V2 transform also copies each direct coordinator launch configuration to its containing Team default, validates before/after atomic commit, rereads indeterminate finalization, skips exact V2, reports bounded dispositions, and is registered after prerequisites. Focused predecessor/V1/V2 migration tests pass.
-- Deviation from the reviewed transition decision: `None`
+- Not applicable to IR-009. There is no schema, payload, GraphQL, persistence, migration, or generated-contract change.
+- The existing V2 runtime/persistence and migration-only V1 boundary remains authoritative and unchanged.
 
 ## Environment Or Dependency Notes
 
-- `pnpm install --offline --frozen-lockfile` completed successfully.
-- The rendered checks used the normal Nuxt browser development surface at `http://127.0.0.1:3001/workspace` against a locally available backend and the real `Nested Classroom Test Team`; the temporary web server was stopped after inspection. IR-002 additionally injected a rejected workspace inventory fetch while the configuration remained mounted and exercised the pending root New-path recovery state.
-- IR-003 is backend migration-only and required no new frontend runtime or rendering environment.
-- IR-004 used the same normal Nuxt browser surface against `http://127.0.0.1:8006` and the real `Northstar Operating Company` definition (6 nested Teams / 47 displayed Team-and-Agent entries). The temporary server was stopped. The attempted standalone Nuxt typecheck remained toolchain-blocked before source diagnostics by the recorded `vue-tsc`/TypeScript export mismatch; focused tests and the production build pass.
-- IR-005 reused that normal Nuxt/backend surface, starting from the root Existing/Temp selection and switching to root New with an empty path at desktop and narrow viewports; the temporary web server was stopped after inspection.
-- IR-006 instrumented the full Nuxt/Pinia/workspace-store sequence against the same port-8006 backend to isolate unchanged-runtime catalog invalidation, then removed all diagnostic source. Post-fix rendering selected root and `/engineering_org` active New/non-empty paths and confirmed enabled Run with both exact paths retained. The temporary web server and browser tab were stopped/closed.
-- IR-007 used an isolated Nuxt renderer on port 3001 against the available port-8006 server and the real `Northstar Operating Company` definition. Root `/` and nested `/engineering_org` active New paths, inactive-buffer preservation, same-draft edit stability, readiness, and the visible action state were inspected. Run was intentionally not activated; the browser tab and temporary renderer were closed/stopped.
-- IR-008 reused the isolated Nuxt renderer/backend and real `Northstar Operating Company`. The rendered `/engineering_org` New/empty state first proved valid-current blocking, then the supported live topology-change timing proved stale-state admission. One Run activation repaired the draft and kept the localized notice visible without navigating to Nuxt's error surface. The tab and renderer were closed/stopped.
-- Sample application builds regenerated checked-in vendor/dist outputs consistently with the revised SDK contracts.
+- No dependency or environment configuration changed.
+- Render validation used the normal Nuxt workspace route at `http://127.0.0.1:3001/workspace` against the supported local backend at `http://127.0.0.1:8006`, then closed the browser tab and stopped the temporary renderer.
+- The real `Northstar Operating Company` definition exercised root and six nested Team groups, including `/engineering_org` customization/reset.
 
 ## Local Implementation Checks Run
 
 | Check | Result |
 | --- | --- |
-| IR-008 focused web workspace/hierarchy suites | Pass: 6 files / 103 tests. Covers valid current nested Team New/empty blocking, the same stale address becoming activation-admissible, sorted atomic repair, zero workspace registration/create, one launch-owner call, post-dispatch containment, and retained workspace/form behavior. Evidence: `implementation-evidence/web-workspace-focused-ir-008.txt`. |
-| IR-008 `autobyteus-web: pnpm build` | Pass: 3,731 client modules and 15 prerendered routes; only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-008.txt`. |
-| IR-008 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-008.txt`. |
-| IR-008 static/source audit | Pass: `git diff --check`, no unmerged/conflict markers, and all changed production source within the 500-line guardrail (`teamRunConfigStore.ts` 499). Evidence: `implementation-evidence/static-audit-ir-008.txt`. |
-| IR-007 focused web workspace/hierarchy suites | Pass: 6 files / 102 tests. Covers per-draft isolation/reset, active and inactive buffers, rename/move/kind-change pruning, pre-dispatch zero-registration repair, post-dispatch stale-result containment, path deduplication/failure retention, exact in-flight locking, and two registrations followed by one mutation. Evidence: `implementation-evidence/web-workspace-focused-ir-007.txt`. |
-| IR-007 focused server planner/service/application suites | Pass: 4 files / 41 tests. Invalid full and root-only/application records prove zero Team/Agent allocator, manager creation, and persistence calls; valid hierarchy construction retains root/nested allocation. Evidence: `implementation-evidence/server-planner-focused-ir-007.txt`. |
-| IR-007 `autobyteus-server-ts: pnpm build` | Pass, including shared packages, Prisma generation, TypeScript production build, asset copy, and sanitized built-in-agent bootstrap. Evidence: `implementation-evidence/server-build-ir-007.txt`. |
-| IR-007 `autobyteus-web: pnpm build` | Pass: 3,731 client modules and 15 prerendered routes; only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-007.txt`. |
-| IR-007 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-007.txt`. |
-| IR-007 application-backend integration fixtures touched for the service API change | Executed, non-green: 2/5 pass and 3/5 fail before the revised service fake due checked-in contract-v5 and unsupported-model fixtures. No pass is claimed. Evidence: `implementation-evidence/server-application-integration-ir-007.txt`. |
-| IR-007 static/source audit | Pass: `git diff --check`, no unmerged/conflict markers, obsolete Team workspace/preallocation symbols absent, and every changed production source at or below 500 effective non-empty lines. Evidence: `implementation-evidence/static-audit-ir-007.txt`. |
-| `autobyteus-server-ts: pnpm run build:full` | Pass, including generated client/build and sanitized built-in-agent bootstrap. Evidence: `implementation-evidence/server-build-ir-002.txt`. |
-| IR-003 `autobyteus-server-ts: pnpm run build:full` | Pass, including TypeScript production build and sanitized built-in-agent bootstrap. Evidence: `implementation-evidence/server-build-ir-003.txt`. |
-| IR-003 focused predecessor/V1/V2 migration unit suites | Pass: 4 files / 13 tests; includes consistent nested binding, no binding, and contradictory bindings. Evidence: `implementation-evidence/server-migration-focused-ir-003.txt`. |
-| IR-003 static/source guardrails and API-REV-003 durable-test preservation audit | Pass: extraction/call path and three focused cases present; both strengthened E2E boundaries retained; source is 138 effective non-empty lines with 90 changed lines; `git diff --check` passed. Evidence: `implementation-evidence/static-audit-ir-003.txt`. |
-| IR-002 focused server suites: planner, TeamRunService strict runtime validation, GraphQL input nullability, V2 migration, and current package catalog | Pass: 5 files / 26 tests. Evidence: `implementation-evidence/server-focused-ir-002.txt`. |
-| Focused server Vitest suites covering planner/service/mutator, V1/V2 migration, persistence/history/catalog, GraphQL/runtime gate, application orchestration, and channel Team facade | Pass: 19 files / 90 tests. |
-| `autobyteus-server-ts: pnpm exec vitest run tests/unit --no-watch` | Executed; non-green baseline limitation described under Known Risks. No current-only failing files versus the detached recorded baseline. |
-| `autobyteus-web: pnpm build` | Pass; only existing Browserslist-age and chunk-size warnings. |
-| IR-006 full renderer/workspace-store instrumentation | Pass for diagnosis: two exact workspace registrations retained one draft ID, then unchanged-runtime catalog reloads produced `MODEL_CATALOG_PENDING` before the panel's old duplicate gate; no generic nextTick premise was used, and all diagnostic source was removed. Evidence: `implementation-evidence/renderer-workspace-instrumentation-ir-006.txt`. |
-| IR-006 focused workspace/config/catalog suites | Pass: 7 files / 106 tests. Includes two active New Team scopes -> two registrations -> one exact-draft launch-owner call without forced readiness refresh, and real-Pinia catalog retention across workspace-only immutable replacement plus reload on runtime-set change. Evidence: `implementation-evidence/web-workspace-focused-ir-006.txt`. |
-| IR-006 `autobyteus-web: pnpm build` | Pass; 3,730 client modules transformed and 15 routes prerendered, with only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-006.txt`. |
-| IR-006 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-006.txt`. |
-| IR-006 static/source audit | Pass: no unmerged entries, conflict markers, or diagnostic symbols; API-REV-005 test anchors retained; `RunConfigPanel.vue` is 488 effective lines and catalog sync is 33; source commit diff checks pass. Evidence: `implementation-evidence/static-audit-ir-006.txt`. |
-| IR-005 focused workspace configuration suites | Pass: 6 files / 93 tests; parameterized root/nested valid Existing/Temp -> active New/empty coverage asserts disabled Run and the exact approved message, with the inactive-buffer regression retained. Evidence: `implementation-evidence/web-workspace-focused-ir-005.txt`. |
-| IR-005 `autobyteus-web: pnpm build` | Pass; 3,730 client modules transformed and 15 routes prerendered, with only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-005.txt`. |
-| IR-005 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-005.txt`. |
-| IR-005 static/source audit | Pass: no unmerged entries or conflict markers; readiness owner and exact approved message present; `RunConfigPanel.vue` is 497 effective non-empty lines; source/test delta is bounded; `git diff --check` passed. Evidence: `implementation-evidence/static-audit-ir-005.txt`. |
-| IR-004 focused workspace configuration suites | Pass: 6 files / 91 tests, covering complete controlled Agent/Team selection, explicit mode during delayed discovery, address-qualified root/nested preparation, immutable same-draft preservation, failure retention, inactive-buffer admission, and adjacent model/config behavior. Evidence: `implementation-evidence/web-workspace-focused-ir-004.txt`. |
-| IR-004 `autobyteus-web: pnpm build` | Pass; 3,730 client modules transformed and 15 routes prerendered, with only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-004.txt`. |
-| IR-004 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-004.txt`. |
-| IR-004 standalone `pnpm exec nuxi typecheck` | Toolchain-blocked before source diagnostics by `ERR_PACKAGE_PATH_NOT_EXPORTED` for `vue-tsc` resolving TypeScript `./lib/tsc`; no source failure is claimed. Evidence: `implementation-evidence/web-typecheck-ir-004.txt`. |
-| IR-004 merge/static audit | Pass: no unmerged entries or conflict markers; obsolete split workspace events absent from production config; controlled contract present; independent-prototype removal retained; worktree/index diff checks passed. Evidence: `implementation-evidence/static-audit-ir-004.txt`. |
-| `autobyteus-web: pnpm exec cross-env NUXT_TEST=true vitest --run` | Pass after IR-002: 426 files; 2,297 passed / 2 skipped / 0 failed. Evidence: `implementation-evidence/web-unit-full-ir-002.txt`. |
-| IR-002 focused hierarchy/config/store/readiness/defaults/hydration web suites | Pass: 8 files / 72 tests, including real-readiness root and nested pending-workspace recovery. Evidence: `implementation-evidence/web-focused-ir-002.txt`. |
-| `autobyteus-web: pnpm codegen` against the built current schema | Pass; generated Team/Agent `runtimeKind` inputs are required. Evidence: `implementation-evidence/web-codegen-ir-002.txt`. |
-| `autobyteus-application-sdk-contracts: pnpm test` | Pass: 6 tests. |
-| `autobyteus-application-backend-sdk: pnpm test` | Pass: 9 tests. |
-| `autobyteus-application-devkit: pnpm test` | Pass: 17 tests. |
-| `autobyteus-team-stream-contracts: pnpm test` | Pass: 2 tests. |
-| Brief Studio `pnpm typecheck:backend && pnpm build` | Pass. |
-| Socratic Math Teacher `pnpm typecheck:backend && pnpm build` | Pass. |
-| `git diff --check`, dependency-direction scan, stale-label scan, and IR-002 authored-source size check | Pass. Evidence: `implementation-evidence/static-audit-ir-002.txt`. |
-| Authored changed-source size/delta audit | Pass with assessed cohesive deltas; no authored implementation file over 500 effective lines. |
-| Current-source legacy scan | Pass: V1 execution-tree imports are confined to migration-owned code/tests; obsolete production paths are absent. |
+| IR-009 focused web presentation/workspace/hierarchy suites | Pass: 10 files / 145 tests. Covers exact root order and absent output; nested identity, default collapse, actual effective values, state/Reset, exact-address events, catalog loading/error/retry, workspace state, locks/read-only, outer disclosure, and preserved functional-store boundaries. Evidence: `implementation-evidence/web-presentation-focused-ir-009.txt`. |
+| IR-009 `autobyteus-web: pnpm build` | Pass: 3,733 modules and 15 prerendered routes; only existing Browserslist-age and chunk-size warnings. Evidence: `implementation-evidence/web-build-ir-009.txt`. |
+| IR-009 web/localization guards | Pass: web boundary, localization boundary, and localization literal audit with zero unresolved literals. Evidence: `implementation-evidence/web-guards-ir-009.txt`. |
+| IR-009 static/source audit | Pass: source commit and cumulative artifact diff checks, no unmerged files, no functional-owner changes, prohibited editable output absent, and changed production files within size rules. Evidence: `implementation-evidence/static-audit-ir-009.txt`. |
+| Prior integrated functional baseline | Passed through IR-008, CRR-012, API-REV-007 (98%), CRR-014, and DR-003. Historical command evidence remains in this ticket's implementation/API/delivery evidence directories. |
 
 ## Frontend Rendered-Result Check
 
-- IR-008 applicability: `Applicable` — CR-010 affects whether the first visible Run activation can reach store-owned topology repair and whether the repaired form/notice remains visible.
-- IR-008 rendered interaction: on the actual Nuxt `/workspace` surface with `Northstar Operating Company`, selected AutoByteus/deepseek-v4-flash, set nested `/engineering_org` to active New/empty, and confirmed disabled Run plus `Enter a workspace path to run this team.`. After the supported live definition change removed `/engineering_org`, the retained stale entry no longer supplied a blocker and Run became enabled. One activation pruned that exact state, stayed on `/workspace`, and rendered the sorted `/engineering_org` repair notice rather than a Nuxt error page.
-- IR-008 visual result: `Pass` at 2084x1476. The amber status is prominent above Root Team defaults, readable without scrolling, aligned with the established form language, and does not overlap the enabled sticky action.
-- IR-008 evidence: `implementation-evidence/render-check-ir-008.txt` and `implementation-evidence/hierarchical-team-stale-empty-repair-ir-008.png`.
-
-- IR-007 applicability: `Applicable` — SR-008 moves the visible root/nested Team workspace authoring and operation lifecycle into the draft/store owner while retaining the existing rendered controls.
-- IR-007 rendered interaction: in the actual Nuxt `/workspace` surface with `Northstar Operating Company`, selected AutoByteus/deepseek-v4-flash, root active New `/tmp/ir007-root`, and nested `/engineering_org` active New `/tmp/ir007-engineering`. The live draft-owned map contained both exact addresses while the canonical config retained Temp until preparation; readiness had zero blockers and Run Team was enabled. Switching nested to Existing preserved its inactive New buffer and created no blocker; switching back restored the same path. A same-draft root auto-approve edit preserved both entries.
-- IR-007 visual result: `Pass` at 1042x738. The established defaults card, exact workspace controls, hierarchy scroll area, and sticky action retained readable hierarchy, spacing, and control alignment with no observed overflow or disabled-state contradiction. Run Team was intentionally not activated before source review.
-- IR-007 evidence: `implementation-evidence/render-check-ir-007.txt` and `implementation-evidence/hierarchical-team-draft-owned-workspaces-ir-007.png`.
-
-- IR-006 applicability: `Applicable` — CR-007 affects one-click continuation after visible root/nested active New workspace preparation.
-- IR-006 required instrumentation: the real Nuxt/Pinia/workspace-store sequence proved both exact registrations completed on the same stable draft, but workspace-only immutable replacements retriggered the fresh-array runtime watcher, removed the ready catalog, and caused the panel's old duplicate gate to return with `MODEL_CATALOG_PENDING`. This established the mechanism without a generic timing assumption.
-- IR-006 post-fix rendered interaction: on actual `/workspace`, selected Northstar, AutoByteus/deepseek-v4-flash, root active New `/tmp/ir006-post-root`, and nested `/engineering_org` active New `/tmp/ir006-post-engineering`; both remained selected/visible, Run Team was enabled, and no blocker rendered. The production activation itself was intentionally not invoked because CRR-009 requires source Pass before the exact API/E2E rerun.
-- IR-006 visual result: `Pass` at the available 1008x738 renderer viewport; established root/nested hierarchy, control alignment, path visibility, and footer action remained readable without clipping in the inspected states.
-- IR-006 evidence: `implementation-evidence/render-check-ir-006.txt`, `renderer-workspace-instrumentation-ir-006.txt`, `hierarchical-team-two-new-workspaces-ir-006.png`, and `hierarchical-team-two-new-workspaces-nested-ir-006.png`.
-
-- IR-005 applicability: `Applicable` — CR-006 changes the visible Run Team disabled state and blocking message for active New/empty.
-- IR-005 rendered interaction: on the actual Nuxt `/workspace` route, selected `Northstar Operating Company`, confirmed the root began on Existing/Temp, switched root to New without entering a path, and observed `aria-selected=true`, an empty path input, disabled Run Team, the exact `Enter a workspace path to run this team.` blocker, and zero page errors.
-- IR-005 visual result: `Pass` at 1440x1100 and 900x1000; the established card, tab, input, footer, disabled button, and visible amber message remain aligned/readable without clipping.
-- IR-005 evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/render-check-ir-005.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-empty-new-desktop.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-empty-new-narrow.png`
-
-- IR-004 applicability: `Applicable` — the resolved merge changes workspace selection ownership and relay contracts across the rendered Agent/root-Team/nested-Team configuration path.
-- Current integrated surface: actual Nuxt `/workspace` route at 1440x1100 and 900x1000 with the real `Northstar Operating Company` definition (6 nested Teams, 47 displayed Team/Agent entries).
-- Current integrated interaction: selected root `New`, entered `/home/autobyteus/workspace/ir-004-integration`, toggled root auto-approve (an immutable Team config edit), and confirmed the exact path and `New` `aria-selected=true` remained authoritative. Confirmed `/engineering_org` remained inherited and captured zero browser page errors.
-- Current integrated visual result: `Pass`; desktop and narrow screenshots show the established card/control system, readable path input, stable switch/disclosure hierarchy, and no clipping at the checked viewports.
-- IR-004 evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/render-check-ir-004.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-config-integrated-desktop.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-config-integrated-narrow.png`
-
-- IR-003 applicability was `Not Applicable` because it changed only startup predecessor migration extraction and focused server unit coverage. The prior IR-001/IR-002 rendered-result evidence remains historical evidence for those revisions.
-
-- Affected surfaces / journeys: workspace TeamRun configuration for a root plus nested Team; inherited summary, nested customization, disclosure, reset, launch-readiness isolation, and responsive layout.
-- Approved references: `requirements.md` BEH-001–BEH-004/BEH-009, `hierarchical-launch-configuration-behavior.md`, and `design-spec.md` DS-001/DS-002.
-- Existing design system / adjacent surfaces reviewed: current config cards/forms, `WorkspaceSelector`, runtime/model controls, root Agent override presentation, workspace shell, and localization conventions.
-- Rendered surface: actual Nuxt workspace route with `Nested Classroom Test Team` at 1440x1100 and 900x1000.
-- Inspected interactions: initial nested inheritance without store mutation; `aria-expanded` true -> false -> true; exact `/StudentStudyGroup` `autoExecuteTools` customization; root isolation; reset back to inheritance; desktop and narrow layouts; browser page-error capture. IR-002 additionally exercised a rejected workspace inventory fetch, confirmed exactly one root Team workspace blocker for the inherited hierarchy, observed Run disabled before a path, entered a pending root New path, and observed Run enabled with zero browser page errors.
-- Issues found and corrected: nested workspace auto-selection was silently creating a Team override, so `WorkspaceSelector` received an opt-out and nested Team scopes disable default auto-selection. Exact channel member identity was also corrected during interaction-path validation. IR-002 corrected duplicate inherited Agent/Team workspace blockers that otherwise disabled the recovery action despite a valid pending Team path.
-- Evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/render-check.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-config-desktop.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-config-narrow.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/render-check-ir-002.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-workspace-recovery.png`
-- Remaining limitation: this is implementation self-validation, not independent API/E2E sign-off.
+- **Applicability:** Applicable; IR-009 is a presentation correction.
+- **Result:** Pass against all three approved reference images.
+- **Root:** The actual `/workspace` route displayed Team Definition -> runtime/model/model configuration -> Workspace Directory -> Auto approve tools -> Team Members Override (41) -> Run Team with quiet density and no prohibited hierarchy chrome or summaries.
+- **Nested:** Team Members Override started collapsed. Opening it showed six existing nested Team groups, all collapsed with identity/address/state. Expanding `/engineering_org` rendered actual inherited controls; changing Auto approve tools exposed Customized and an accessible Reset; Reset restored Inherited while retaining expansion.
+- **Accessibility/responsive:** Disclosure `aria-expanded`/`aria-controls`, accessible Reset name, focus order, disabled/read-only behavior, and narrow-container header layout were inspected or covered by focused tests.
+- **Evidence log:** `implementation-evidence/render-check-ir-009.txt`
+- **Captured results:**
+  - `implementation-evidence/hierarchical-team-presentation-root-ir-009.png`
+  - `implementation-evidence/hierarchical-team-presentation-root-members-ir-009.png`
+  - `implementation-evidence/hierarchical-team-presentation-nested-collapsed-ir-009.png`
+  - `implementation-evidence/hierarchical-team-presentation-nested-expanded-ir-009.png`
+- This is implementation self-validation, not independent source/API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- First rerun CR-010's real-browser stale-New/empty topology-change journey: a valid current Team must remain blocked; after removal or kind change, the first activation must reach atomic repair, show sorted addresses, perform zero workspace registration and zero GraphQL create, and remain on the configuration surface.
-- Re-run the real-browser root-plus-nested New-workspace journey against the draft-owned authority: one accepted activation must perform canonical path deduplication/registration, preserve exact address identities, and produce exactly one TeamRun. Verify registration failure retains the active mode/path and scoped error for retry.
-- Exercise a supported definition topology change before the first registration dispatch and after one registration is already pending/completed. The first case must perform zero registration and show sorted exact-address repair; the second may leave an unused registered workspace but must reject its stale result, prune stale/kind-mismatched state, and create no TeamRun.
-- Independently submit invalid full and root-only/application configurations with unknown, duplicate, kind-mismatched, missing-coverage, wrong-definition, and divergent-skill records. Confirm zero root/nested Team allocation, zero Agent allocation, zero manager creation, and zero persistence; then confirm a valid request persists the root identity returned by common creation.
-- Rerun API-E2E-014's exact real-browser one-click path: active non-empty New at `/` and `/StudentStudyGroup`, two registration/canonicalization operations, then exactly one TeamRun mutation/history record from that same activation. Confirm the second click is neither required nor capable of duplicating an in-flight launch. Preserve the API-REV-005 durable assertions.
-- Recheck the integrated controlled workspace contract for standalone Agent, root Team, and explicit nested Team addresses: active `New` with an empty/whitespace-only path must disable Run with the approved path message; explicit `New` plus path must survive runtime/model/config/auto-approve edits and late workspace discovery; `Existing` must use only its active ID and never an inactive New-path buffer.
-- Recheck root and nested pending workspace registration success/failure against real hierarchy readiness, including no hidden Temp fallback, one registration for repeated normalized paths, exact-address canonical config updates, and no launch after registration failure.
-- Recheck context changes between Team draft IDs and selected/read-only Agent/Team runs so pending selection does not leak across identities. Preserve current-base delayed-fetch coverage and the hierarchical stored-Team read-only projection.
-- Investigate existing coverage validity before edits, especially fixtures asserting flat root-plus-Agent payloads or V1 normal-runtime reads.
-- Exercise new workspace launch with root, nested-Team, and exact-Agent edits; verify payload resolution, persisted V2 Team defaults, restored configuration view, and no redundant Team override on initial render.
-- Cover stale exact-address reconciliation/visible repair after topology changes, including wrong-subject Team-vs-Agent keys.
-- Cover V1 -> V2 startup migration with nested teams/tasks/handoffs, idempotent V2 skip, pre-rename failure, indeterminate finalization reread, invalid-root exclusion, and Settings Retry.
-- Cover root-only mobile, application, external-channel, and backend preset launches; retain application exact-Agent overrides and verify logical-address -> live-AgentRun targeting.
-- Cover runtime/model changes that clear or retain `llmConfig` correctly, explicit null model inheritance/override, workspace inheritance, and root skill-access propagation.
-- Independently verify GraphQL rejection of missing Team/Agent `runtimeKind` and backend rejection of missing/blank/unsupported values without workspace activation or run creation.
-- Independently exercise the governed workspace-inventory failure path for both root and explicit nested Team workspace ownership, including creation and launch after a pending New path.
-- Independently inspect loading/error/retry/read-only/keyboard/accessibility states and responsive nested-card layout.
-- After repeat source review passes, rerun API-REV-003's full 4/4 predecessor production-upgrade suite without weakening its application-binding, direct-coordinator, task, handoff, or Agent-snapshot assertions; then return the unchanged/strengthened durable-test delta for repeat proportional source review.
+- Source-review the complete SR-011 presentation contract, not only the component diff: exact root order and absence, nested default collapse/state/Reset, exact-address events, scoped recovery states, disabled/read-only behavior, ARIA, focus order, localization, and narrow layout.
+- Confirm IR-009 changed no functional store, readiness, launch, server, GraphQL, V2, migration, allocation, application, mobile, or external-channel owner.
+- Preserve the already-reviewed durable API/E2E suite and API-REV-007 functional baseline; any follow-on executable scope should be decided only after source review passes.
+- If API/E2E later adds, changes, or removes repository-resident durable coverage, route the cumulative package back through code review before delivery.
 
-## API / E2E / Executable Coverage Investigation And Execution Still Required
+## API / E2E / Executable Coverage Status
 
-The mandatory pre-integration investigation/execution chain completed at API-REV-004 Pass / 99%, and CRR-006 passed its proportional durable-test review. DR-001 then integrated the latest tracked base. CRR-008 passed IR-005, API-REV-005 exposed the same-activation failure, CRR-009 routed CR-007 locally, and CRR-010 returned CR-008/CR-009 for SR-008 / ARCH-REV-002 design correction. CRR-011 confirmed those two findings resolved but returned bounded CR-010. IR-008 now corrects it. This complete source state must pass repeat code review before `/api_e2e_engineer` performs fresh integrated coverage investigation/execution, including the exact one-click journey, stale-New/empty topology-change repair timing, post-dispatch containment, and allocation-side-effect boundaries. If repository-resident durable coverage is added, updated, or removed, the cumulative package must return through code review before delivery re-entry.
+The integrated functional baseline previously completed API-REV-007 at 98%, proportional review CRR-014, and delivery review DR-003. IR-009 is a design-approved presentation-only correction and must go to complete source review first. It is not being routed directly to API/E2E or delivery, and this handoff makes no claim about whether fresh downstream execution is proportionate after source review.

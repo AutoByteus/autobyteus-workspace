@@ -2,7 +2,7 @@
 
 ## Status And Authority
 
-`Approved` intended-behavior supplement. Approved with `requirements.md` by the user on 2026-08-24. The user subsequently completed personal review of the design package and authorized architecture-review handoff. SR-008 clarifies the already-governing UC-007/R-017/AC-015 topology-repair behavior and the integrated controlled-workspace contract; it introduces no new product behavior.
+`Refined — approved` intended-behavior supplement. Functional behavior was approved with `requirements.md` on 2026-08-24. The 2026-08-25 Electron feedback and current `origin/personal` baseline are materialized in the user-approved `ui-ux-spec.md`: keep the original root appearance, extend existing nested-Team groups with collapsible global controls, and render no effective summary. Configuration identity, inheritance, persistence, and launch behavior are unchanged. SR-011 releases the package for architecture re-review.
 
 ## Configuration Subjects
 
@@ -64,15 +64,17 @@ Changing the root model affects `/delivery` immediately in the editable draft bu
 
 - Display the complete root configuration first.
 - Keep the current root-only flow compact when no nested teams exist.
+- Preserve the current `origin/personal` root form as the visual baseline: Team Definition proceeds directly to runtime/model/model-configuration/workspace/auto-execute controls and the existing member-override disclosure.
+- Do not render a hierarchy wrapper card, separate “Root Team defaults” heading/badge, internal canonical address `/`, scope divider, effective summary, or replacement root-only visual language.
 
 ### Nested TeamRun
 
 Each nested-team group displays:
 
-1. Team name and canonical address.
-2. State: **Inherited** or **Customized**.
-3. Effective configuration summary.
-4. An expandable global configuration area.
+1. The existing Team name, Team marker, canonical placement address, and hierarchy indentation.
+2. Actionable state: **Inherited** or **Customized**.
+3. A default-collapsed global configuration area containing the actual effective controls.
+4. No runtime/model/workspace effective summary in either collapsed or expanded state.
 5. A reset-to-parent action when customized.
 6. Nested Teams and Agent overrides below it.
 
@@ -86,7 +88,7 @@ Each nested-team group displays:
 
 ### Customized State
 
-- Explicit fields are distinguishable from inherited fields.
+- Whole-scope `Customized` state is distinguishable from `Inherited` without a separate customized-fields summary.
 - Reset removes the Team-scope override and recomputes from the parent.
 - Agent overrides remain attached to their Agent addresses.
 
@@ -95,13 +97,13 @@ Each nested-team group displays:
 - Runtime/model catalog and workspace loading feedback is associated with the canonical Team address whose effective configuration depends on it and with the launch draft that owns that address-qualified intent.
 - Loading preserves the draft's stored intent and inactive New-path buffer, disables only controls that cannot be used safely, and keeps launch blocked until the effective scope is valid.
 - Catalog or workspace failure is visible at the affected Team scope and offers the normal recovery/retry action; it never substitutes a different value silently or leaks into another draft/context.
-- Read-only, locked, and in-flight drafts disable root, nested-Team, reset, and Agent override edits consistently while keeping effective summaries visible.
+- Read-only, locked, and in-flight drafts disable root, nested-Team, reset, and Agent override edits consistently. Expanded root/nested controls remain the direct source of visible effective values; collapsed nested headers show identity and state only.
 - A root-only definition remains the intentional empty hierarchy state: no nested-scope disclosure or placeholder is added.
 
 ### Responsive And Accessible Interaction
 
 - Each Team disclosure is keyboard-operable and exposes its expanded/collapsed state.
-- Team name, canonical address, hierarchy level, inherited/customized state, and validation feedback remain textually identifiable and are not communicated by color alone.
+- Nested Team name, canonical address, hierarchy level, inherited/customized state, and validation feedback remain textually identifiable and are not communicated by color alone. The internal root address `/` is not ordinary user-facing chrome.
 - Validation feedback is associated with the affected Team address and controls.
 - At supported non-mobile widths, indentation or wrapping does not hide scope identity or the reset action. Mobile retains the separate compact root-only behavior described below.
 - This ticket introduces no new permission boundary or permission-specific UI state.
