@@ -1,0 +1,104 @@
+{
+  "scenario": "APIE2E-SCOPE-IDENTITY-001",
+  "root_team_run_id": "nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1",
+  "team_definition": "Nested Classroom Test Team",
+  "root_runtime_model": "gpt-5.6-luna",
+  "root_members": [
+    {
+      "address": "/Teacher",
+      "kind": "agent",
+      "runtime_model": "gpt-5.6-luna"
+    },
+    {
+      "address": "/StudentStudyGroup",
+      "kind": "team",
+      "runtime_model": "gpt-5.6-luna"
+    }
+  ],
+  "nested_members": [
+    "/StudentStudyGroup/student_one",
+    "/StudentStudyGroup/student_two"
+  ],
+  "task_execution_count": 1,
+  "task_id": "task_8d2170f37a1e4078a4f832d1bdbfa93f",
+  "task_recipient": "/StudentStudyGroup",
+  "task_status": "accepted",
+  "task_submission_marker_ok": true,
+  "task_accept_decision": "accept",
+  "ordinary_messages_present": true,
+  "teacher_final_marker_present": true,
+  "tool_events": [
+    {
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "recipient_address": "/StudentStudyGroup",
+      "decision": null,
+      "result_code": null,
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "recipient_address": null,
+      "decision": null,
+      "result_code": "DELIVERED",
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "recipient_address": "/StudentStudyGroup/student_one",
+      "decision": null,
+      "result_code": null,
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "recipient_address": null,
+      "decision": null,
+      "result_code": "DELIVERED",
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "delegate_task",
+      "recipient_address": "/StudentStudyGroup",
+      "decision": null,
+      "result_code": null,
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "delegate_task",
+      "recipient_address": null,
+      "decision": null,
+      "result_code": null,
+      "result_status": "active"
+    },
+    {
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "review_task_result",
+      "recipient_address": null,
+      "decision": "accept",
+      "result_code": null,
+      "result_status": null
+    },
+    {
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "review_task_result",
+      "recipient_address": null,
+      "decision": null,
+      "result_code": null,
+      "result_status": "accepted"
+    }
+  ]
+}

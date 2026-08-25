@@ -1,0 +1,23 @@
+utc=2026-08-25T22:34:30Z
+head=49bbd9a8120c6086559a5c877d5d0ed4434e36c7
+base=306de420ca8830478529b40bd6dfda6694b742a9
+v22.23.1
+10.28.2
+## codex/application-execution-scope-boundary-hardening...origin/personal [ahead 5]
+ M tickets/in-progress/application-execution-scope-boundary-hardening/architecture-review-revision-record.md
+ M tickets/in-progress/application-execution-scope-boundary-hardening/design-review-report.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-report.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/evidence/
+PRESENT autobyteus-ts/dist
+ABSENT autobyteus-application-sdk-contracts/dist
+ABSENT autobyteus-application-backend-sdk/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-server-ts/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-web/.nuxt
+BROWSER /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+node_modules=PRESENT

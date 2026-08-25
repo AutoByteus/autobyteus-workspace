@@ -1,0 +1,37 @@
+{
+  "scenario": "APIE2E-PUBLICATION-001",
+  "root_team_run_id": "brief_studio_team_cd4756fda586465bbd2e8cd0900f1ba0",
+  "successful_tool_results": [
+    {
+      "agent_run_id": "brief_studio_researcher_a6b001d49b174a988d21913075c305e0",
+      "tool_name": "publish_artifacts",
+      "recipient_address": null,
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "result_code": null,
+      "published_revision_id": null
+    },
+    {
+      "agent_run_id": "brief_studio_researcher_a6b001d49b174a988d21913075c305e0",
+      "tool_name": "send_message_to",
+      "recipient_address": "/writer",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "result_code": "DELIVERED",
+      "published_revision_id": null
+    },
+    {
+      "agent_run_id": "brief_studio_writer_67e6263018834469a564dfbf26ca1d6f",
+      "tool_name": "publish_artifacts",
+      "recipient_address": null,
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "result_code": null,
+      "published_revision_id": null
+    }
+  ],
+  "projected_files": [
+    "applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime/brief-studio/final-brief.md",
+    "applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime/brief-studio/research.md"
+  ],
+  "research_published": true,
+  "writer_published": true,
+  "named_writer_delivery": true
+}

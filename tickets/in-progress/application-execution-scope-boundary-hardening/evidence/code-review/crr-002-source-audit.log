@@ -1,0 +1,6 @@
+HEAD=49bbd9a8120c6086559a5c877d5d0ed4434e36c7
+== production delta from reviewed IR-001 ==
+== IR-002 diff check ==
+== exact new tests ==
++  it("closes manager ownership once and aggregates cleanup when later scope construction fails", () => {
++  it("aborts a completed scope when later platform assembly fails without closing process owners", async () => {

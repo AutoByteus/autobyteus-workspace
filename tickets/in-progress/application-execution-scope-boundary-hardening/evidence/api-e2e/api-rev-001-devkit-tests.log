@@ -1,0 +1,174 @@
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# AgentFactory (Singleton) initialized.
+# (node:74717) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 12.033125
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.297Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 42.758333
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.327Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.327Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+# [2026-08-25T23:12:04.328Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.358Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.358Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+# [2026-08-25T23:12:04.358Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+# Subtest: standalone pack requires complete Team-scope defaults in addition to Agent leaves
+ok 3 - standalone pack requires complete Team-scope defaults in addition to Agent leaves
+  ---
+  duration_ms: 60.374417
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.398Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: atomic development pack keeps generated package metadata canonical after staging rename
+ok 4 - atomic development pack keeps generated package metadata canonical after staging rename
+  ---
+  duration_ms: 47.888333
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.444Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 37.143917
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.471Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 27.104417
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.491Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 20.125542
+      type: 'test'
+      ...
+    1..3
+ok 5 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 84.845417
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.510Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 6 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 18.769875
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.531Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 7 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 20.488083
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 5.114042
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 4.707
+      type: 'test'
+      ...
+    1..2
+ok 8 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 10.180209
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 9 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 4.319584
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 4.860375
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 4.7955
+      type: 'test'
+      ...
+    1..2
+ok 10 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 9.867833
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-25T23:12:04.580Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 11 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 24.507459
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 12 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 165.452042
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 13 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 350.730417
+  type: 'test'
+  ...
+# Subtest: Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+ok 14 - Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+  ---
+  duration_ms: 7.059583
+  type: 'test'
+  ...
+1..14
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2228.023208
