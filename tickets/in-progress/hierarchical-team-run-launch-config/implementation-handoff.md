@@ -11,13 +11,13 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/team-execution-tree-v2-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/recovery-audit.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/remote-recovery-branch-comparison.md`
-- Solution revisions: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
-- Architecture decision and history:
+- Revision/review authority:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md`
-- Prior source/API/delivery records:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
+- Preserved API/E2E and delivery history:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`
@@ -26,142 +26,137 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md`
-- SR-012 presentation references:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/integrated-stored-team-config-live-20260825.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/user-existing-team-run-settings-entry-20260825.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/user-stored-team-config-cards-20260825.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/stored-team-settings-origin-personal-source-audit-20260825.txt`
+- Triggering CRR-017 evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-017.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-017.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-017.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stored-schema-drift-crr-017.txt`
 
 ## Current Implementation Summary
 
-IR-010 implements the bounded SR-012 / ARCH-REV-004 stored-settings parity delta for `USER-UX-003`. The selected existing TeamRun Settings journey now uses the same `TeamRunConfigForm`, `TeamMemberConfigTree`, `TeamScopeConfigEditor`, `MemberOverrideItem`, runtime/model fields, and workspace selector used during editable configuration. Stored values are displayed through disabled shared controls while Team Members, nested-Team, and model Advanced disclosures remain operable. The read-only explanation remains visible; Reset, Run, and all editable mutations are absent or defensively rejected.
+IR-011 implements the bounded SR-013 / ARCH-REV-005 correction for CR-011 and CR-012. It preserves the user-approved SR-012 shared stored TeamRun form and all previously passed functional owners while correcting the model/capability boundary and historical schema-drift behavior.
 
-The data boundary remains distinct. `TeamRunConfigurationView` now discriminates editable intent from an immutable `STORED_SNAPSHOT`; the V2 projection carries one ordered mixed Team/Agent member-node sequence and exact complete per-scope snapshots. A pure stored adapter derives the visual model only from that view. It does not consult the current AgentTeam definition, build a `TeamRunConfig` or `TeamLaunchDraft`, reconstruct Agents from overrides, or read draft workspace authoring state. The editable adapter remains separate and projects existing definition/draft owners without moving lifecycle authority into presentation.
+Neutral address/name/effective-value/customized fields are now separate from parallel editable and stored Team/Agent capabilities. Editable-only types own overrides, workspace selection/operation state, runtime catalog operation state, configuration, repair addresses, locks, and commands. Stored-only types own immutable exact stored values and stored workspace display. The stored model and projector import no authoring state and fabricate no null/idle selection, override, operation, or catalog sentinels. `TeamRunConfigForm`, its recursive tree, Team scope editor, Agent item, and workspace control accept discriminated subjects and narrow before accessing mode-specific fields.
 
-Exact stored runtime, model, model configuration, workspace, auto-approve, and inherited/customized state remain truthful. Missing historical runtime/model/workspace/schema values stay visible in their normal disabled field region with compact unavailability feedback; no value substitution or alternate full-screen/card fallback occurs. The rejected `StoredTeamRunConfigForm.vue`, `StoredTeamRunConfigTree.vue`, and `StoredLaunchConfigurationCard.vue` plus their localization keys were deleted.
+`projectHistoricalModelConfigFields(storedConfig, currentSchema)` is the single pure representability policy. Current-schema fields retain schema order. Explicit values that the current disabled field can reproduce exactly render in that normal control. Stale enum/type/control values render once as exact residual rows and omit the misleading current control. Removed keys append in stable key order. Whole-schema absence uses the same residual path. Explicit history never passes through editable sanitization/default materialization or emits mutation.
 
-- Source commit: `9d176e5bb` (`feat(web): unify stored team settings form`)
+- Source commit: `ab7d8eedf` (`fix(web): preserve exact stored model config history`)
 - Implementation cycle: `Design-Approved Rework`
-- Current implementation revision: `IR-010`
-- Current solution basis: `SR-012`
-- Current architecture review: `ARCH-REV-004 / Pass`
-- Preserved downstream baseline: `IR-009`, `CRR-015 / Pass`, `API-REV-008 / Pass 98%`, `CRR-016`, `DR-004`
-- Triggering finding: `USER-UX-003`
-- Current disposition: ready for complete source review; not routed directly to API/E2E or delivery
+- Current implementation revision: `IR-011`
+- Current solution basis: `SR-013`
+- Current architecture review: `ARCH-REV-005 / Pass`
+- Triggering review/findings: `CRR-017`; `CR-011`, `CR-012`; material premise `MP-CR-009`
+- Preserved appearance/functional basis: `SR-012`, `SR-011`, `SR-008`; `IR-010`
+- Current disposition: ready for complete source review; API/E2E and delivery remain blocked until source Pass
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior | IR-010 implementation | Result |
+| Behavior / requirement | IR-011 implementation | Result |
 | --- | --- | --- |
-| BEH-010 / R-042 / AC-035 | `RunConfigPanel` selects one discriminated form model and always renders `TeamRunConfigForm`; stored-only form/tree/card components and labels are removed. | Existing TeamRun Settings visually matches authoring while controls are locked and rejected stored cards/root `/` labels are absent. |
-| R-043 / AC-037 | `createTeamConfigurationView` preserves ordered V2 mixed member nodes; `projectStoredTeamRunFormModel` accepts only `StoredTeamRunConfigurationView` and returns a deeply immutable stored model with no config, commands, or workspace authoring. | Historical topology/order and exact values remain independent of current definitions and editable draft state. |
-| R-044 / AC-036 | Shared scope/member fields receive exact stored effective configurations and hydrated stored workspaces; discriminated handlers reject stored-mode edit/workspace/reset/retry events; Run is not rendered. | Root, nested Team, and Agent values remain inspectable with operable disclosures and zero mutation authority. |
-| R-044 / AC-038 | Runtime/model selectors preserve unlisted stored identifiers; workspace selector injects the exact stored option or shows its path; missing model schema renders compact field-local saved config. | Missing historical catalog/schema values remain truthful without substitution or a parallel inspector. |
-| BEH-001–BEH-009 | No draft/store/readiness/workspace preparation/launch/backend/GraphQL/V2 schema/migration/allocation/mobile/application/external owner changed. | The SR-011 editable and previously passed functional baseline is preserved. |
+| BEH-010 / R-042–R-043 / AC-035–AC-037 | `TeamRunFormDisplay.ts` contains neutral display vocabulary; `EditableTeamRunFormModel.ts` and `StoredTeamRunFormModel.ts` contain parallel capabilities; recursive components preserve mode discrimination. | One shared visual form remains while immutable stored history no longer carries editable intent or fabricated authoring sentinels. |
+| R-044 / AC-036 | Stored Team and Agent fields read exact V2-derived effective values and stored workspace display only; stored controls and mutation handlers remain disabled/guarded. | Root, nested Team, and Agent Settings remain exact, read-only, and disclosure-operable with no Run/Reset. |
+| R-044 / AC-038 / MP-CR-009 | `historicalModelConfigFields.ts` classifies each persisted key/value against the current schema/control; `ModelConfigSection` renders exact representable controls plus one residual row per stale/removed key. | `temperature=0.2` stays in a normal disabled field; `reasoning_effort=ultra` and `removed_parameter=persisted-value` remain exact residuals; whole-schema absence is stable and lossless. |
+| BEH-001–BEH-009 | No draft/store/readiness/workspace preparation/launch/backend/GraphQL/V2/migration/allocation/mobile/application/external owner changed. | The prior functional and editable-presentation baseline remains unopened. |
 
 ## Key Files Or Areas
 
-### Production and types
+### Type and projection boundaries
 
-- `autobyteus-web/types/agent/TeamRunConfig.ts` — discriminated immutable configuration view and ordered stored member-node contract.
-- `autobyteus-web/types/agent/TeamRunFormModel.ts` — discriminated editable/stored visual model; stored branch has no config or commands.
-- `autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts` — V2-derived ordered mixed-node projection alongside exact Team/Agent maps.
-- `autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts` — pure stored-view adapter.
-- `autobyteus-web/utils/editableTeamRunFormModel.ts` — separate editable projection using existing draft/definition owners.
-- `autobyteus-web/utils/teamRunConfigUtils.ts` — lower-level complete launch-field equality semantics shared by stored projection/adaptation.
-- `autobyteus-web/components/workspace/config/RunConfigPanel.vue` — selects the discriminated model and one shared form; retains presentation-only ownership.
+- `autobyteus-web/types/agent/TeamRunFormDisplay.ts`
+- `autobyteus-web/types/agent/EditableTeamRunFormModel.ts`
+- `autobyteus-web/types/agent/StoredTeamRunFormModel.ts`
+- `autobyteus-web/types/agent/TeamRunFormModel.ts`
+- `autobyteus-web/utils/editableTeamRunFormModel.ts`
+- `autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts`
+
+### Historical representability
+
+- `autobyteus-web/utils/historicalModelConfigFields.ts`
+- `autobyteus-web/utils/llmConfigSchema.ts`
+- `autobyteus-web/components/workspace/config/ModelConfigSection.vue`
+- `autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue`
+- `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue`
+
+### Discriminated shared renderers
+
 - `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
 - `autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue`
 - `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue`
 - `autobyteus-web/components/workspace/config/MemberOverrideItem.vue`
 - `autobyteus-web/components/workspace/config/WorkspaceSelector.vue`
-- `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue`
-- `autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue`
-- EN/ZH workspace localization catalogs.
-
-### Removed
-
-- `autobyteus-web/components/workspace/config/StoredTeamRunConfigForm.vue`
-- `autobyteus-web/components/workspace/config/StoredTeamRunConfigTree.vue`
-- `autobyteus-web/components/workspace/config/StoredLaunchConfigurationCard.vue`
-- Their stored-card-only localization keys and parallel presentation path.
 
 ### Focused coverage
 
-- `autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts`
-- `autobyteus-web/services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts`
-- `autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts`
+- `autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts`
+- `autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts`
 - `autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts`
-- Preserved adjacent Agent form and launch-store regressions.
+- `autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts`
+- Updated shared form, scope, workspace, panel, standalone Agent, stored projector, and launch-store regression suites.
 
 ## Important Assumptions
 
-- SR-012, `ui-ux-spec.md`, and ARCH-REV-004 are authoritative for this delta.
-- Current catalogs may be consulted only to render normal controls and truthful field-local availability; they are not historical topology/value authority.
-- `workspaceRootPath` is the persisted V2 workspace truth; hydrated metadata supplies the current workspace ID/display name when available without replacing the persisted path.
-- Skill access remains complete in the stored snapshot but has no current Team launch form control, consistent with the approved existing UI boundary.
+- SR-013, `ui-ux-spec.md`, and ARCH-REV-005 are authoritative for this correction.
+- Current catalogs/schemas are neutral presentation references only; they never replace stored topology or explicit values.
+- Current defaults may appear only for current-schema keys with no explicit stored key. They never replace an explicit unrepresentable stored value.
+- The stored V2 topology/order and exact effective configurations remain authoritative and unchanged.
 
 ## Known Risks And Limitations
 
-- IR-010 has implementation validation only and requires complete source review. No fresh API/E2E or delivery result is claimed.
-- Standalone `nuxi typecheck` remains environment/toolchain-blocked before project checking by the existing npx-cached `vue-tsc` / TypeScript `./lib/tsc` export mismatch. Focused TypeScript/Vue transforms and the production Nuxt build pass.
-- Durable project docs last synchronized in DR-004 describe the then-current SR-011 state. They were intentionally not edited in this frontend/type/test implementation round; delivery owns any post-review SR-012 documentation sync.
+- IR-011 has implementation validation only and requires complete source review. No fresh API/E2E or delivery approval is claimed.
+- The package has no directly installed `vue-tsc` executable (`pnpm exec vue-tsc` reports command not found), so no standalone typecheck pass is claimed. Vue/TypeScript transforms and the production Nuxt build pass.
+- The live stored TeamRun inspected has currently representable schema values, so partial-schema residual rows were exercised in mounted root/nested-Team/Agent component coverage rather than by mutating user data.
 - Existing Browserslist-age and chunk-size build warnings remain unchanged.
-- No push, release, deployment, archival, tag, or cleanup was performed.
+- No API/E2E environment setup, durable API/E2E execution, push, release, deployment, archival, tag, or cleanup was performed.
 
 ## Task Design Health Assessment Implementation Check
 
-- **Post-implementation design health:** Healthy for SR-012.
-- **Authority separation:** Historical topology/values come only from immutable V2-derived view state; editable intent and lifecycle owners remain separate.
-- **Redundancy:** One form/tree/control presentation replaces three stored-only components. A pure mode adapter is the only intentional data-shape seam.
-- **Field semantics:** Complete configuration equality remains in the lower-level `teamRunConfigUtils` direction and is shared by projection and adapter code.
-- **Complexity:** All touched production files remain below 500 effective nonblank/non-comment lines; the largest is `MemberOverrideItem.vue` at 472.
-- **Implementation match:** Yes. Shared read-only form, persisted order, exact stored values, current-definition independence, mutation exclusion, operable disclosures, and historical fallbacks are implemented and covered.
+- **Post-implementation design health:** Healthy for SR-013.
+- **Authority separation:** Stored types/projector have no authoring imports or sentinels; current schema participates only in pure presentation classification.
+- **Shared structures:** Neutral display composition is small; editable and stored Team/Agent capabilities are parallel and closed.
+- **Recursive discrimination:** Form, tree, Team editor, Agent item, and workspace selector narrow by mode before capability access.
+- **Historical truth:** Every explicit stored key is represented exactly once without mutation or editable default normalization.
+- **Complexity:** All changed production files remain below 500 effective non-empty lines; `MemberOverrideItem.vue` was reduced from 472 to 312 effective lines. Its >220-line rewrite is the approved CR-011 capability split rather than added responsibility.
 
 ## Legacy / Compatibility Removal Check
 
-- Rejected stored form/tree/card implementations were deleted, not retained as aliases or fallbacks.
-- Stored-card-only localization keys and production references are absent outside delivery-owned historical docs.
-- No compatibility adapter converting stored history back to editable `TeamRunConfig`/`TeamLaunchDraft` was introduced.
+- No compatibility wrapper or dual stored/editable model path was added.
+- Stored projection no longer fabricates `override: null`, editable workspace selection, idle workspace operation, idle runtime catalog, repair addresses, or lock sentinels.
+- The rejected `StoredTeamRunConfigForm.vue`, `StoredTeamRunConfigTree.vue`, and `StoredLaunchConfigurationCard.vue` remain absent.
 
 ## Persisted Data Transition Check
 
-- Not applicable to IR-010. No backend schema, GraphQL, generated package, persistence, V2 contract, or migration behavior changed.
-- The existing runtime-V2 / migration-only-V1 boundary remains authoritative.
+Not applicable to IR-011. No persistence, GraphQL, generated contract, V2 schema, migration, runtime, backend, or identity-allocation behavior changed.
 
 ## Local Implementation Checks Run
 
 | Check | Result |
 | --- | --- |
-| Focused stored/shared-form cohort | Pass: 10 files / 115 tests. Includes exact V2 mixed order, deep immutability, root/nested/Agent exact values, disabled shared controls, mutation rejection, no Run/Reset, operable disclosures, stored workspace values, missing historical runtime/model/config/workspace fallbacks, and preserved adjacent launch-store behavior. Evidence: `implementation-evidence/web-stored-settings-focused-ir-010.txt`. |
-| `autobyteus-web: pnpm build` | Pass: 3,731 modules and 15 prerendered routes. Evidence: `implementation-evidence/web-build-ir-010.txt`. |
-| Web/localization guards | Pass: web boundary, localization boundary, and localization literal audit with zero unresolved findings. Evidence: `implementation-evidence/web-guards-ir-010.txt`. |
-| Static/source audit | Pass: diff check, no unmerged files, rejected stored components/keys absent outside docs, intended boundary symbols present, and all touched production files below 500 effective lines. Evidence: `implementation-evidence/static-audit-ir-010.txt`. |
-| Standalone Nuxt typecheck | Environment-blocked before project checking by `ERR_PACKAGE_PATH_NOT_EXPORTED` from npx-cached `vue-tsc` resolving TypeScript `./lib/tsc`; no green result claimed. Evidence: `implementation-evidence/web-typecheck-ir-010.txt`. |
+| Focused stored/shared form cohort | Pass: 11 files / 112 tests. Includes pure classification, root/nested-Team/Agent partial-schema rendering, whole-schema absence, stable ordering, no duplication, immutable input, exact stored values, discriminated controls, and preserved launch-store behavior. Evidence: `implementation-evidence/web-stored-settings-focused-ir-011.txt`. |
+| `autobyteus-web: pnpm build` | Pass: 3,732 modules and 15 prerendered routes. Evidence: `implementation-evidence/web-build-ir-011.txt`. |
+| Web/localization guards | Pass: web boundary, localization boundary, and localization literal audit with zero unresolved findings. Evidence: `implementation-evidence/web-guards-ir-011.txt`. |
+| Static/source audit | Pass: forbidden stored-authoring imports/sentinels absent, rejected Stored components absent, projector wiring present, source files under 500 effective lines, and source diff whitespace clean. Evidence: `implementation-evidence/static-audit-ir-011.txt`. |
+| Standalone `vue-tsc` | Not available: `pnpm exec vue-tsc --noEmit --pretty false` reports command not found; no green result claimed. Evidence: `implementation-evidence/web-typecheck-ir-011.txt`. |
 
 ## Frontend Rendered-Result Check
 
-- **Applicability:** Required; IR-010 changes selected existing TeamRun Settings presentation.
-- **Journey:** Normal `/workspace` route against the user-running local AutoByteus backend: Temp Workspace -> Nested Classroom Test Team -> existing run `hello` -> Teacher -> Edit Config / Settings.
-- **Result:** Pass. Root exact stored fields use disabled shared controls with the read-only explanation and no Run. Team Members expands to the persisted mixed order. `/StudentStudyGroup` defaults collapsed with TEAM/address/Customized state, expands to exact stored Team values, then displays exact Agent values; nested and model disclosures remain operable; no Reset appears.
-- **Evidence log:** `implementation-evidence/render-check-ir-010.txt`
-- **Captured results:**
-  - `implementation-evidence/stored-team-settings-root-ir-010.png`
-  - `implementation-evidence/stored-team-settings-members-ir-010.png`
-  - `implementation-evidence/stored-team-settings-nested-ir-010.png`
-- This is implementation self-validation, not independent API/E2E or user sign-off.
+- **Journey:** Browser-rendered Nuxt `/workspace` -> Temp Workspace -> Nested Classroom Test Team -> stored run `hello` -> stored member Teacher -> header `Edit Config` -> Team Members Override -> `/StudentStudyGroup`.
+- **Desktop result:** Exact stored root controls remained disabled, read-only explanation visible, no Run/Reset, model/member disclosures operable, and saved hierarchy/order visible.
+- **Nested result:** TEAM marker/address/Customized state stayed visible; nested disclosure changed `aria-expanded` false -> true; Team and Agent controls remained disabled and exact; no mutation command appeared.
+- **Narrow result:** At 1050x900, header, address, state, fields, and nested Agent rows remained readable with no overlap/horizontal overflow.
+- **Historical drift result:** Mounted real root/nested-Team/Agent renderers showed `temperature=0.2` once in a disabled normal field and exact `reasoning_effort=ultra` / `removed_parameter=persisted-value` residuals once each with zero mutation.
+- **Evidence:**
+  - `implementation-evidence/render-check-ir-011.txt`
+  - `implementation-evidence/stored-team-settings-ir-011-root.png`
+  - `implementation-evidence/stored-team-settings-ir-011-desktop.png`
+  - `implementation-evidence/stored-team-settings-ir-011-narrow.png`
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Complete source-review the SR-012 discriminated boundary, ordered V2 projection, current-definition independence, stored mutation exclusion, exact values, field-local fallbacks, removal set, accessibility, and source-size constraints.
-- Confirm IR-010 does not reopen draft/store/workspace/readiness/launch/server/GraphQL/V2/migration/allocation/mobile/application/external owners.
-- After source Pass, API/E2E should decide proportional coverage and repeat the actual existing-TeamRun -> member -> Settings journey at desktop and narrow widths, including disclosure keyboard semantics and a historical missing-catalog fixture if feasible.
-- If API/E2E changes repository-resident durable coverage, route that state back through proportional code review before delivery.
+- Complete source-review the capability/type split, forbidden-import/sentinel boundary, recursive narrowing, pure classifier, exact residual rendering, stable ordering, no duplication/mutation, and source-size constraints.
+- Confirm this bounded delta does not reopen editable draft/store/workspace/readiness/launch/backend/GraphQL/V2/migration/allocation/mobile/application/external owners.
+- Only after source Pass, API/E2E should refresh its coverage investigation and decide proportional execution of the actual existing-TeamRun -> member -> Settings journey and a historical partial-schema fixture if feasible.
+- Repository-resident durable coverage changes made during API/E2E must return through proportional code review before delivery.
 
 ## API / E2E / Executable Coverage Status
 
-The preserved pre-IR-010 state passed CRR-015, API-REV-008 at 98%, CRR-016, and DR-004. IR-010 is a new user-visible presentation/type/test delta and therefore returns to complete source review first. It is not routed directly to API/E2E or delivery, and no downstream approval is implied.
+The preserved pre-IR-011 state had progressed through IR-010 and CRR-017 identified the two source/design findings now corrected. IR-011 returns to complete source review under SR-013 / ARCH-REV-005. It is not routed directly to API/E2E or delivery, and no downstream approval is implied.

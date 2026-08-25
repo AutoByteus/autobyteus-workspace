@@ -1,0 +1,53 @@
+# IR-011 static audit
+Source commit: ab7d8eedf
+
+## Forbidden stored-authoring imports/sentinels
+PASS: stored type/projector contain no authoring imports or fabricated authoring sentinels.
+
+## Neutral/shared model import boundary
+PASS: neutral/shared form vocabulary contains no authoring-state import.
+
+## Deleted rejected Stored card components
+PASS: all three rejected Stored card component files remain absent.
+
+## Historical projector use
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:37:      :historical-model-config-title="historicalModelConfigTitle"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:178:        :historical-model-config-title="historicalModelConfigTitle"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:275:const historicalModelConfigTitle = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration'))
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:65:      :historical="historicalModelConfig"
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:67:      :historical-model-config-title="historicalModelConfigTitle"
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:109:  historicalModelConfigTitle?: string
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:110:  historicalModelConfig?: boolean
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:134:const historicalModelConfigTitle = computed(() => props.historicalModelConfigTitle ?? 'Saved model configuration')
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:69:      :title="historicalModelConfigTitle"
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:80:  projectHistoricalModelConfigFields,
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:82:} from '~/utils/historicalModelConfigFields';
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:108:  historicalModelConfigTitle?: string;
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:130:  ? projectHistoricalModelConfigFields(props.modelConfig, props.schema)
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:154:const historicalModelConfigTitle = computed(() =>
+autobyteus-web/components/workspace/config/ModelConfigSection.vue:155:  props.historicalModelConfigTitle ?? 'Saved model configuration',
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:111:      :historical="Boolean(storedNode)"
+autobyteus-web/utils/historicalModelConfigFields.ts:39:export const projectHistoricalModelConfigFields = (
+
+## Changed production source effective non-empty line counts (IR-010..IR-011)
+ 236 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+ 137 autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+  41 autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+ 312 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+ 281 autobyteus-web/components/workspace/config/ModelConfigSection.vue
+  70 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+ 124 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+ 306 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ 353 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+  77 autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+  45 autobyteus-web/types/agent/EditableTeamRunFormModel.ts
+  30 autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+  16 autobyteus-web/types/agent/TeamRunFormDisplay.ts
+  16 autobyteus-web/types/agent/TeamRunFormModel.ts
+  93 autobyteus-web/utils/editableTeamRunFormModel.ts
+  77 autobyteus-web/utils/historicalModelConfigFields.ts
+ 187 autobyteus-web/utils/llmConfigSchema.ts
+PASS: changed production source files are within 500 effective non-empty lines.
+
+## Source commit whitespace
+PASS: source commit diff check.
