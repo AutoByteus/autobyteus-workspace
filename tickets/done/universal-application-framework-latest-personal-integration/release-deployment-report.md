@@ -43,7 +43,7 @@ DR-014 adds no migration. The product retains the reviewed registered v1.4.58 mi
 
 ## Cleanup
 
-Build-only generated SDK directories were removed after packaging. The requested Electron artifacts and canonical delivery evidence are retained. The unrelated pre-existing `.article-work/` directory was not changed.
+Build-only generated SDK directories were removed after packaging. The finalized ticket worktree and merged local ticket branch were removed in DR-015. The remote ticket branch remains published for traceability, while the requested main-repository Electron artifacts and canonical delivery evidence are retained. The unrelated pre-existing `.article-work/` directory was not changed.
 
 ## Result
 

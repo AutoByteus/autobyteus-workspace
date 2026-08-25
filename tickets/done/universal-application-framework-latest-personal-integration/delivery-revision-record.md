@@ -18,6 +18,7 @@
 | DR-012 | CRR-023 returns API-REV-012 private nested-Classroom supplement | DR-011 Electron ready; supplemental probe in progress | Supplemental Pass; Electron 1.4.58 remains exact; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-012-* |
 | DR-013 | User explicitly verifies Electron 1.4.58 and authorizes finalization; no new release version requested | DR-012 ready for explicit user verification | Finalization preflight Pass; ticket ready for archive, ticket-branch push, Personal integration, and main-repository Electron rebuild | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-013-finalization-preflight.log |
 | DR-014 | DR-013 user-authorized finalization plus main-repository Personal Electron build | DR-013 finalization preflight Pass | Complete — ticket archived/pushed, Personal merged/pushed, same-version main-repository Electron 1.4.58 build verified | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-014-* |
+| DR-015 | Post-finalization local ticket-worktree cleanup | DR-014 repository/build Complete | Complete — finalized ticket worktree and local ticket branch removed; remote ticket branch retained | delivery-revision-record.md, release-deployment-report.md, handoff-summary.md, evidence/delivery/dr-015-worktree-cleanup.log |
 
 ## Revision Entries
 
@@ -257,3 +258,14 @@
 - Release/deployment disposition: no version bump, tag, hosted release, notarization, deployment, or rollout was performed, exactly as requested.
 - Cleanup: generated SDK build directories created only as packaging prerequisites were removed; the main-repository Electron artifacts were retained. Pre-existing unrelated `.article-work/` was preserved.
 - Evidence: `evidence/delivery/dr-014-main-personal-electron-macos-arm64-build.log`, `evidence/delivery/dr-014-main-personal-electron-macos-arm64-verification.log`, and `evidence/delivery/dr-014-repository-finalization-and-main-personal-build.log`.
+
+### DR-015 — Finalized ticket worktree cleanup completes
+
+- Round/trigger: Round 15; confirmation of post-finalization worktree cleanup.
+- Prior result: DR-014 repository finalization and main-repository Electron build Complete.
+- Current result: Complete.
+- Safety basis: ticket commit `025e26d84c05671e9195edade786143bc4f2162f` is merged into published Personal and remains available as `origin/codex/universal-application-framework-latest-personal-integration`.
+- Cleanup: removed `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration` from disk and the Git worktree registry, then deleted the merged local ticket branch.
+- Retention: kept the remote ticket branch at `025e26d84c05671e9195edade786143bc4f2162f` for traceability. Kept the main-repository Electron 1.4.58 artifacts.
+- Unrelated state: preserved the pre-existing main-repository `.article-work/` directory unchanged.
+- Evidence: `evidence/delivery/dr-015-worktree-cleanup.log`.
