@@ -543,4 +543,54 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
+  it('shows exact stored Agent controls and compact historical fallbacks without accepting edits', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        mode: 'stored',
+        disabled: true,
+        storedCustomized: true,
+        effectiveConfig: {
+          runtimeKind: 'removed-runtime',
+          llmModelIdentifier: 'removed-agent-model',
+          llmConfig: { temperature: 0.2, nested: { enabled: true } },
+          autoExecuteTools: true,
+          skillAccessMode: 'NONE',
+          workspaceId: null,
+          workspaceMetadata: null,
+          workspaceRootPath: '/history/reviewer',
+        },
+        storedWorkspace: {
+          workspaceId: null,
+          displayName: '/history/reviewer',
+          rootPath: '/history/reviewer',
+          availability: 'historical-only',
+        },
+      },
+    })
+
+    await flushPromises()
+    await nextTick()
+
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value)
+      .toBe('removed-runtime')
+    expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text())
+      .toContain('removed-agent-model')
+    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value)
+      .toBe('/history/reviewer')
+    expect(wrapper.get('[data-test="stored-workspace-unavailable"]').exists()).toBe(true)
+    expect(wrapper.get('[data-test="historical-model-config-fallback"]').text())
+      .toContain('temperature')
+    expect(wrapper.get('[data-test="historical-model-config-fallback"]').text())
+      .toContain('0.2')
+    expect(wrapper.text()).toContain('Overridden')
+    expect(wrapper.text()).not.toContain('Global default')
+
+    await wrapper.get('#override-runtime--reviewer').setValue('autobyteus')
+    wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.4')
+    await wrapper.get('#override-auto--reviewer').trigger('change')
+    await nextTick()
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
+
 })

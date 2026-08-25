@@ -516,4 +516,68 @@ describe('WorkspaceSelector', () => {
 
     expect(wrapper.text()).toContain('Workspace path is invalid');
   });
+
+  it('shows an exact stored Existing workspace without consulting current inventory', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+        modelValue: {
+          mode: 'existing',
+          existingWorkspaceId: 'historical-workspace-id',
+          newWorkspacePath: '/history/root',
+        },
+        storedWorkspace: {
+          workspaceId: 'historical-workspace-id',
+          displayName: 'Saved Root Workspace',
+          rootPath: '/history/root',
+          availability: 'available',
+        },
+      },
+    });
+    await flushPromises();
+
+    const storedControl = wrapper.findComponent({ name: 'SearchableSelect' });
+    expect(wrapper.get('[data-test="stored-workspace-value"]').exists()).toBe(true);
+    expect(storedControl.props('modelValue')).toBe('historical-workspace-id');
+    expect(storedControl.props('disabled')).toBe(true);
+    expect(storedControl.props('options')).toContainEqual({
+      id: 'historical-workspace-id',
+      name: 'Saved Root Workspace',
+      description: '/history/root',
+    });
+    expect(wrapper.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false);
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('keeps a historical-only stored path visible in the disabled normal field region', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+        modelValue: {
+          mode: 'new',
+          existingWorkspaceId: null,
+          newWorkspacePath: '/history/removed-workspace',
+        },
+        storedWorkspace: {
+          workspaceId: null,
+          displayName: '/history/removed-workspace',
+          rootPath: '/history/removed-workspace',
+          availability: 'historical-only',
+        },
+        historicalValueUnavailableMessage: 'Saved value is no longer available.',
+      },
+    });
+    await flushPromises();
+
+    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value)
+      .toBe('/history/removed-workspace');
+    expect(wrapper.get('input[type="text"]').attributes('disabled')).toBeDefined();
+    expect(wrapper.get('[data-test="stored-workspace-unavailable"]').text())
+      .toBe('Saved value is no longer available.');
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
 });

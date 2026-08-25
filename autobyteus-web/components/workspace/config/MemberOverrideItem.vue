@@ -24,12 +24,12 @@
       <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
       <select
         :id="`override-runtime-${inputIdSuffix}`"
-        :value="storedRuntimeOverrideValue"
+        :value="runtimeSelectionValue"
         :disabled="disabled"
         class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="handleRuntimeChange(($event.target as HTMLSelectElement).value)"
       >
-        <option value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
+        <option v-if="mode === 'editable'" value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
         <option
           v-for="option in runtimeOptions"
           :key="option.value"
@@ -68,7 +68,7 @@
     <div class="mb-3">
       <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
       <SearchableGroupedSelect
-        :model-value="explicitModelIdentifier"
+        :model-value="selectedModelIdentifier"
         @update:modelValue="handleModelChange"
         :options="groupedModelOptions"
         :disabled="disabled"
@@ -77,7 +77,23 @@
         variant="quiet"
         class="w-full"
       />
+      <p v-if="storedModelUnavailable" class="mt-1 text-xs text-amber-600" data-test="historical-agent-model-unavailable">
+        {{ historicalUnavailableMessage }}
+      </p>
     </div>
+
+    <WorkspaceSelector
+      v-if="isStored"
+      class="mb-3"
+      :model-value="storedWorkspaceSelection"
+      :is-loading="false"
+      :error="null"
+      :disabled="true"
+      :stored-workspace="storedWorkspace"
+      :historical-value-unavailable-message="historicalUnavailableMessage"
+      :auto-select-default="false"
+      control-variant="quiet"
+    />
 
     <div class="mb-3">
       <div class="mb-1 text-xs text-gray-500">
@@ -86,8 +102,8 @@
       <input
         :id="`override-auto-${inputIdSuffix}`"
         type="checkbox"
-        :checked="override?.autoExecuteTools === true"
-        :indeterminate="override?.autoExecuteTools === undefined"
+        :checked="autoExecuteValue === true"
+        :indeterminate="mode === 'editable' && override?.autoExecuteTools === undefined"
         @change="handleAutoExecuteChange"
         :disabled="disabled"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
@@ -110,15 +126,23 @@
       control-variant="quiet"
       @update:config="emitOverrideWithConfig"
     />
+    <HistoricalModelConfigFallback
+      v-if="showHistoricalConfigFallback"
+      :config="effectiveModelConfig!"
+      :title="t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration')"
+      :unavailable-message="historicalUnavailableMessage"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef, watch } from 'vue'
-import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
+import { computed, ref, watch } from 'vue'
+import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
 import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
+import HistoricalModelConfigFallback from './HistoricalModelConfigFallback.vue'
+import WorkspaceSelector from './WorkspaceSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import {
   loadRuntimeProviderGroupsForSelection,
@@ -136,8 +160,10 @@ import {
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
 import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
+import type { StoredWorkspaceDisplay } from '~/types/agent/TeamRunFormModel'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+  mode?: 'editable' | 'stored'
   memberName: string
   memberAddress: string
   memberBreadcrumb?: string
@@ -150,13 +176,26 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
   runtimeCatalogState?: RuntimeModelCatalogState
-}>()
+  effectiveConfig?: Readonly<ResolvedTeamRunLaunchConfig>
+  storedWorkspace?: StoredWorkspaceDisplay | null
+  storedCustomized?: boolean
+}>(), { mode: 'editable' })
 
 const emit = defineEmits<{
   (e: 'update:override', memberAddress: string, override: AgentConfigOverride | null): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 const { t } = useLocalization()
+const mode = computed(() => props.mode)
+const isStored = computed(() => props.mode === 'stored')
+const historicalUnavailableMessage = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable'))
+const storedWorkspaceSelection = computed(() => {
+  const workspaceId = props.storedWorkspace?.workspaceId ?? props.effectiveConfig?.workspaceId ?? null
+  const rootPath = props.storedWorkspace?.rootPath ?? props.effectiveConfig?.workspaceRootPath ?? ''
+  return workspaceId
+    ? { mode: 'existing' as const, existingWorkspaceId: workspaceId, newWorkspacePath: rootPath }
+    : { mode: 'new' as const, existingWorkspaceId: null, newWorkspacePath: rootPath }
+})
 
 const {
   effectiveRuntimeKind,
@@ -166,14 +205,21 @@ const {
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({
-  runtimeKind: computed(() => resolveEffectiveMemberRuntimeKind(props.override, props.globalRuntimeKind)),
+  runtimeKind: computed(() => isStored.value
+    ? props.effectiveConfig?.runtimeKind
+    : resolveEffectiveMemberRuntimeKind(props.override, props.globalRuntimeKind)),
 })
 
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
+const runtimeSelectionValue = computed(() => isStored.value
+  ? (props.effectiveConfig?.runtimeKind || '')
+  : storedRuntimeOverrideValue.value)
 const inputIdSuffix = computed(() => props.memberAddress.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
 const memberAdvancedExplicitlyExpanded = ref(false)
-const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
+const hasOverride = computed(() => isStored.value
+  ? props.storedCustomized === true
+  : hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
 const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(props.override))
 const inheritedGlobalModelAvailable = computed(() => {
@@ -201,6 +247,7 @@ const unresolvedInheritedModelMessage = computed(() =>
 )
 
 const effectiveModelIdentifier = computed(() => {
+  if (isStored.value) return props.effectiveConfig?.llmModelIdentifier || ''
   if (hasExplicitModelOverride.value) {
     return explicitModelIdentifier.value
   }
@@ -211,6 +258,7 @@ const effectiveModelIdentifier = computed(() => {
 })
 
 const effectiveModelConfig = computed(() => {
+  if (isStored.value) return props.effectiveConfig?.llmConfig ?? null
   if (isUnresolvedInheritedModel.value) {
     return null
   }
@@ -220,6 +268,18 @@ const effectiveModelConfig = computed(() => {
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(effectiveModelIdentifier.value),
 )
+const selectedModelIdentifier = computed(() => isStored.value
+  ? effectiveModelIdentifier.value
+  : explicitModelIdentifier.value)
+const storedModelUnavailable = computed(() => Boolean(
+  isStored.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
+))
+const showHistoricalConfigFallback = computed(() => Boolean(
+  isStored.value &&
+  effectiveModelConfig.value &&
+  Object.keys(effectiveModelConfig.value).length > 0 &&
+  !modelConfigSchema.value,
+))
 const effectiveAdvancedInitiallyExpanded = computed(() =>
   props.advancedInitiallyExpanded === true || memberAdvancedExplicitlyExpanded.value,
 )
@@ -265,12 +325,19 @@ const maybeOpenMemberAdvancedForSchema = (
 }
 
 const modelPlaceholder = computed(() =>
-  isUnresolvedInheritedModel.value
-    ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
-    : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
+  isStored.value
+    ? selectedModelIdentifier.value
+    : isUnresolvedInheritedModel.value
+      ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
+      : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
 )
 
 const autoExecuteStateLabel = computed(() => {
+  if (isStored.value) {
+    return props.effectiveConfig?.autoExecuteTools
+      ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
+      : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
+  }
   if (props.override?.autoExecuteTools === undefined) {
     return t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global')
   }
@@ -278,6 +345,9 @@ const autoExecuteStateLabel = computed(() => {
     ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
     : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
 })
+const autoExecuteValue = computed(() => isStored.value
+  ? props.effectiveConfig?.autoExecuteTools === true
+  : props.override?.autoExecuteTools)
 
 const buildOverride = (input: {
   runtimeKind?: string

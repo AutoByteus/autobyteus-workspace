@@ -74,11 +74,42 @@ export interface ResolvedAgentLaunchView {
   effectiveConfig: Readonly<ResolvedTeamRunLaunchConfig>
 }
 
-export interface TeamRunConfigurationView {
-  source: 'EDITABLE_INTENT' | 'STORED_SNAPSHOT'
-  teamDefinitionId: string
-  teamDefinitionName: string
-  root: ResolvedTeamScopeView
-  teamsByAddress: Readonly<Record<AgentTeamAddress, ResolvedTeamScopeView>>
-  agentsByAddress: Readonly<Record<AgentTeamAddress, ResolvedAgentLaunchView>>
+interface TeamRunConfigurationViewBase {
+  readonly teamDefinitionId: string
+  readonly teamDefinitionName: string
+  readonly root: ResolvedTeamScopeView
+  readonly teamsByAddress: Readonly<Record<AgentTeamAddress, ResolvedTeamScopeView>>
+  readonly agentsByAddress: Readonly<Record<AgentTeamAddress, ResolvedAgentLaunchView>>
 }
+
+export interface StoredTeamRunAgentNode {
+  readonly kind: 'agent'
+  readonly address: AgentTeamAddress
+  readonly displayName: string
+  readonly agentDefinitionId: string
+}
+
+export interface StoredTeamRunTeamNode {
+  readonly kind: 'agent_team'
+  readonly address: AgentTeamAddress
+  readonly displayName: string
+  readonly teamDefinitionId: string
+  readonly coordinatorAddress: AgentTeamAddress
+  readonly children: readonly StoredTeamRunMemberNode[]
+}
+
+export type StoredTeamRunMemberNode = StoredTeamRunAgentNode | StoredTeamRunTeamNode
+
+export type EditableTeamRunConfigurationView = TeamRunConfigurationViewBase & Readonly<{
+  source: 'EDITABLE_INTENT'
+}>
+
+export type StoredTeamRunConfigurationView = TeamRunConfigurationViewBase & Readonly<{
+  source: 'STORED_SNAPSHOT'
+  coordinatorAddress: AgentTeamAddress
+  memberNodes: readonly StoredTeamRunMemberNode[]
+}>
+
+export type TeamRunConfigurationView =
+  | EditableTeamRunConfigurationView
+  | StoredTeamRunConfigurationView

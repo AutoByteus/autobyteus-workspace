@@ -42,6 +42,13 @@
         :variant="controlVariant"
       />
       <p v-if="modelHelpText" class="mt-1 text-xs text-gray-500">{{ modelHelpText }}</p>
+      <p
+        v-if="selectedModelUnavailable"
+        class="mt-1 text-xs text-amber-600"
+        data-test="historical-model-unavailable"
+      >
+        {{ historicalValueUnavailableMessage }}
+      </p>
     </div>
 
     <ModelConfigSection
@@ -58,6 +65,12 @@
       :control-variant="controlVariant"
       @update:config="updateModelConfig"
     />
+    <HistoricalModelConfigFallback
+      v-if="showHistoricalConfigFallback"
+      :config="llmConfig!"
+      :title="historicalModelConfigTitle"
+      :unavailable-message="historicalValueUnavailableMessage"
+    />
   </div>
 </template>
 
@@ -65,6 +78,7 @@
 import { computed, toRef, watch } from 'vue'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
+import HistoricalModelConfigFallback from '~/components/workspace/config/HistoricalModelConfigFallback.vue'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRuntimeKind,
@@ -95,6 +109,8 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
   controlVariant?: 'default' | 'quiet'
+  historicalValueUnavailableMessage?: string
+  historicalModelConfigTitle?: string
 }>()
 
 const emit = defineEmits<{
@@ -117,6 +133,8 @@ const blankRuntimeLabelText = computed(
 const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a model')
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
 const controlVariant = computed(() => props.controlVariant ?? 'default')
+const historicalValueUnavailableMessage = computed(() => props.historicalValueUnavailableMessage ?? 'Saved value is unavailable in current options.')
+const historicalModelConfigTitle = computed(() => props.historicalModelConfigTitle ?? 'Saved model configuration')
 const nativeSelectClass = computed(() => [
   'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
   controlVariant.value === 'quiet'
@@ -130,6 +148,7 @@ const {
   ensureModelsForRuntime,
   groupedModelOptions,
   hasModelIdentifier,
+  isLoadingModels,
   modelConfigSchemaByIdentifier,
   normalizedStoredRuntimeKind,
   runtimeOptions,
@@ -205,6 +224,18 @@ watch(
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(props.llmModelIdentifier),
 )
+const selectedModelUnavailable = computed(() => Boolean(
+  readOnlyComputed.value &&
+  props.llmModelIdentifier?.trim() &&
+  !isLoadingModels.value &&
+  !hasModelIdentifier(props.llmModelIdentifier),
+))
+const showHistoricalConfigFallback = computed(() => Boolean(
+  readOnlyComputed.value &&
+  props.llmConfig &&
+  Object.keys(props.llmConfig).length > 0 &&
+  !modelConfigSchema.value,
+))
 
 const updateRuntimeKind = (value: string) => {
   if (readOnlyComputed.value) return

@@ -45,7 +45,11 @@
     </div>
 
     <!-- Existing Workspace Dropdown -->
-    <div v-if="mode === 'existing'" class="transition-all duration-200">
+    <div
+      v-if="mode === 'existing'"
+      class="transition-all duration-200"
+      :data-test="isInteractionDisabled && storedWorkspace ? 'stored-workspace-value' : undefined"
+    >
       <SearchableSelect
         :model-value="modelValue.existingWorkspaceId"
         @update:model-value="handleExistingSelect"
@@ -85,6 +89,14 @@
         </button>
       </div>
     </div>
+
+    <p
+      v-if="isInteractionDisabled && storedWorkspace?.availability === 'historical-only'"
+      class="mt-1 text-xs text-amber-600"
+      data-test="stored-workspace-unavailable"
+    >
+      {{ historicalValueUnavailableMessage }}
+    </p>
     
     <!-- Helper Text Area -->
     <div v-if="showHelperTextArea" class="mt-2.5">
@@ -125,6 +137,7 @@ import type {
   WorkspaceSelectionMode,
   WorkspaceSelectionState,
 } from '~/types/workspace/WorkspaceSelectionState';
+import type { StoredWorkspaceDisplay } from '~/types/agent/TeamRunFormModel';
 
 const props = withDefaults(defineProps<{
   modelValue: WorkspaceSelectionState;
@@ -135,8 +148,12 @@ const props = withDefaults(defineProps<{
   workspaceLockedMessage?: string;
   controlVariant?: 'default' | 'quiet';
   autoSelectDefault?: boolean;
+  storedWorkspace?: StoredWorkspaceDisplay | null;
+  historicalValueUnavailableMessage?: string;
 }>(), {
   autoSelectDefault: true,
+  storedWorkspace: null,
+  historicalValueUnavailableMessage: 'Saved value is unavailable in current options.',
 });
 
 const emit = defineEmits<{
@@ -182,18 +199,25 @@ const workspaceOptions = computed(() => {
     }));
   
   // Put temp workspace at top with special styling
-  if (workspaceStore.tempWorkspace) {
-    return [
+  const inventoryOptions = workspaceStore.tempWorkspace
+    ? [
       {
         id: tempId!,
         name: '📁 Temp Workspace (Default)',
         description: 'Default temporary workspace'
       },
       ...regularWorkspaces
-    ];
+    ]
+    : regularWorkspaces;
+  const stored = props.storedWorkspace;
+  if (stored?.workspaceId && !inventoryOptions.some((option) => option.id === stored.workspaceId)) {
+    inventoryOptions.push({
+      id: stored.workspaceId,
+      name: stored.displayName,
+      description: stored.rootPath,
+    });
   }
-  
-  return regularWorkspaces;
+  return inventoryOptions;
 });
 
 const existingDisabled = computed(() => workspaceOptions.value.length === 0);

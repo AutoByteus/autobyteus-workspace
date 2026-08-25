@@ -136,6 +136,10 @@ vi.mock('~/composables/useRightSideTabs', () => ({
   useRightSideTabs: () => ({ setActiveTab: vi.fn() }),
 }))
 
+vi.mock('~/composables/useTeamRunRuntimeCatalogSync', () => ({
+  useTeamRunRuntimeCatalogSync: () => ({ reloadRuntimeKind: vi.fn() }),
+}))
+
 vi.mock('~/stores/agentTeamDefinitionStore', async () => {
   const { ref } = await import('vue')
   const revision = ref(0)
@@ -716,7 +720,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     const launchDraft = vi.spyOn(runStore, 'launchDraft')
     const wrapper = mount(RunConfigPanel, {
       global: {
-        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true, StoredTeamRunConfigForm: true },
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
       },
     })
 
@@ -730,7 +734,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockMutate).not.toHaveBeenCalled()
     expect(configStore.selectedDraft!.teamWorkspaceAuthoringByTeamAddress['/BuildSquad']).toBeUndefined()
     expect(configStore.repairNotice?.addresses).toContain('/BuildSquad')
-    expect(wrapper.findComponent(TeamRunConfigForm).props('repairAddresses')).toContain('/BuildSquad')
+    expect(wrapper.findComponent(TeamRunConfigForm).props('model').repairAddresses).toContain('/BuildSquad')
     expect(launchDraft).toHaveBeenCalledOnce()
   })
 

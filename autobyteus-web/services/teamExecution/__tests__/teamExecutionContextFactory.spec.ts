@@ -111,6 +111,17 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
     })
 
     expect(view.source).toBe('STORED_SNAPSHOT')
+    if (view.source !== 'STORED_SNAPSHOT') throw new Error('Expected stored Team configuration view.')
+    expect(view.coordinatorAddress).toBe('/teacher')
+    expect(view.memberNodes.map((member) => [member.kind, member.address])).toEqual([
+      ['agent', '/teacher'],
+      ['agent_team', '/StudentStudyGroup'],
+    ])
+    expect(view.memberNodes[1]).toEqual(expect.objectContaining({
+      kind: 'agent_team',
+      coordinatorAddress: '/StudentStudyGroup/student_one',
+      children: [expect.objectContaining({ address: '/StudentStudyGroup/student_one' })],
+    }))
     expect(view.root.effectiveConfig).toEqual(expect.objectContaining({
       runtimeKind: 'codex_app_server',
       workspaceRootPath: '/workspace/root',
@@ -133,6 +144,8 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
       llmConfig: { temperature: 0.2 },
     }))
     expect(Object.isFrozen(view)).toBe(true)
+    expect(Object.isFrozen(view.memberNodes)).toBe(true)
+    expect(Object.isFrozen(view.memberNodes[1])).toBe(true)
     expect(Object.isFrozen(view.teamsByAddress)).toBe(true)
     expect(Object.isFrozen(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig)).toBe(true)
     expect(source).toEqual(original)

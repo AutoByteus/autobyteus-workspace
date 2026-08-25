@@ -3,17 +3,18 @@
     <template v-for="node in memberNodes" :key="node.address">
       <TeamScopeConfigEditor
         v-if="node.kind === 'agent_team'"
-        :address="node.address"
-        :display-name="node.displayName"
-        :effective-config="teamView(node.address).effectiveConfig"
-        :workspace-selection="workspaceSelectionFor(node.address)"
-        :inherited-config="parentTeamView(node.address).effectiveConfig"
-        :override="teamView(node.address).override"
-        :is-customized="teamView(node.address).isCustomized"
+        :address="node.scope.address"
+        :display-name="node.scope.displayName"
+        :effective-config="node.scope.effectiveConfig"
+        :workspace-selection="node.scope.workspaceSelection"
+        :stored-workspace="node.scope.storedWorkspace"
+        :inherited-config="node.scope.inheritedConfig"
+        :override="node.scope.override"
+        :is-customized="node.scope.isCustomized"
         :disabled="disabled"
         :read-only="readOnlyMode"
-        :workspace-operation="workspaceStateFor(node.address)"
-        :runtime-catalog-state="catalogStateFor(teamView(node.address).effectiveConfig.runtimeKind)"
+        :workspace-operation="node.scope.workspaceOperation"
+        :runtime-catalog-state="node.scope.runtimeCatalogState"
         @update-override="emit('update-team', node.address, $event)"
         @reset="emit('reset-team', node.address)"
         @update:workspace-selection="forwardWorkspaceSelection"
@@ -22,14 +23,8 @@
         <div v-if="node.children.length" class="mt-3">
           <TeamMemberConfigTree
             :member-nodes="node.children"
-            :config="config"
-            :view="view"
-            :coordinator-address="node.coordinatorAddress"
             :disabled="disabled"
             :read-only-mode="readOnlyMode"
-            :workspace-state-for="workspaceStateFor"
-            :workspace-selection-for="workspaceSelectionFor"
-            :catalog-state-for="catalogStateFor"
             :nested="true"
             @update-team="forwardTeamUpdate"
             @reset-team="forwardTeamReset"
@@ -42,18 +37,21 @@
 
       <MemberOverrideItem
         v-else
+        :mode="node.mode"
         :member-name="node.displayName"
         :member-address="node.address"
         :member-breadcrumb="breadcrumb(node.address)"
-        :override="config.agentOverrides[node.address]"
-        :global-runtime-kind="agentBaseline(node.address).runtimeKind"
-        :global-llm-model="agentBaseline(node.address).llmModelIdentifier"
-        :global-llm-config="agentBaseline(node.address).llmConfig"
-        :is-coordinator="node.address === coordinatorAddress"
+        :override="node.mode === 'editable' ? node.override : undefined"
+        :effective-config="node.mode === 'stored' ? node.effectiveConfig : undefined"
+        :stored-workspace="node.mode === 'stored' ? node.storedWorkspace : undefined"
+        :global-runtime-kind="node.mode === 'editable' ? node.baselineConfig.runtimeKind : node.effectiveConfig.runtimeKind"
+        :global-llm-model="node.mode === 'editable' ? node.baselineConfig.llmModelIdentifier : node.effectiveConfig.llmModelIdentifier"
+        :global-llm-config="node.mode === 'editable' ? node.baselineConfig.llmConfig : node.effectiveConfig.llmConfig"
+        :stored-customized="node.mode === 'stored' ? node.isCustomized : undefined"
+        :is-coordinator="node.isCoordinator"
         :disabled="disabled"
         :advanced-initially-expanded="readOnlyMode"
-        :missing-historical-config="readOnlyMode && agentView(node.address).effectiveConfig.llmConfig == null"
-        :runtime-catalog-state="catalogStateFor(agentView(node.address).effectiveConfig.runtimeKind)"
+        :runtime-catalog-state="node.runtimeCatalogState"
         @update:override="forwardAgentUpdate"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
       />
@@ -64,33 +62,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import type {
-  AgentConfigOverride,
-  ResolvedAgentLaunchView,
-  ResolvedTeamRunLaunchConfig,
-  ResolvedTeamScopeView,
-  TeamRunConfig,
-  TeamRunConfigurationView,
-  TeamScopeConfigOverride,
-} from '~/types/agent/TeamRunConfig'
-import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
-import type { TeamWorkspaceOperationState } from '~/types/agent/TeamLaunchDraft'
+import type { AgentConfigOverride, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { TeamRunFormMemberNode } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import MemberOverrideItem from './MemberOverrideItem.vue'
 import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
 
 const props = withDefaults(defineProps<{
-  memberNodes: readonly TeamDefinitionMemberNode[]
-  config: Readonly<TeamRunConfig>
-  view: Readonly<TeamRunConfigurationView>
-  coordinatorAddress: AgentTeamAddress
+  memberNodes: readonly TeamRunFormMemberNode[]
   disabled: boolean
   readOnlyMode?: boolean
   nested?: boolean
-  workspaceStateFor: (address: AgentTeamAddress) => TeamWorkspaceOperationState
-  workspaceSelectionFor: (address: AgentTeamAddress) => Readonly<WorkspaceSelectionState>
-  catalogStateFor: (runtimeKind: string) => RuntimeModelCatalogState
 }>(), { readOnlyMode: false, nested: false })
 const emit = defineEmits<{
   (e: 'update-team', address: AgentTeamAddress, override: TeamScopeConfigOverride | null): void
@@ -106,23 +88,6 @@ const treeClass = computed(() => [
     ? 'border-l border-slate-300 pl-3'
     : 'overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm',
 ])
-const teamView = (address: AgentTeamAddress): ResolvedTeamScopeView => {
-  const team = props.view.teamsByAddress[address]
-  if (!team) throw new Error(`Team launch view is missing '${address}'.`)
-  return team
-}
-const parentTeamView = (address: AgentTeamAddress): ResolvedTeamScopeView => {
-  const parentAddress = teamView(address).parentAddress
-  if (!parentAddress) throw new Error(`Nested Team '${address}' has no parent Team scope.`)
-  return teamView(parentAddress)
-}
-const agentView = (address: AgentTeamAddress): ResolvedAgentLaunchView => {
-  const agent = props.view.agentsByAddress[address]
-  if (!agent) throw new Error(`Team launch view is missing Agent '${address}'.`)
-  return agent
-}
-const agentBaseline = (address: AgentTeamAddress): Readonly<ResolvedTeamRunLaunchConfig> =>
-  teamView(agentView(address).containingTeamAddress).effectiveConfig
 const breadcrumb = (address: AgentTeamAddress): string => address.split('/').filter(Boolean).join(' / ')
 const forwardTeamUpdate = (address: AgentTeamAddress, override: TeamScopeConfigOverride | null) => emit('update-team', address, override)
 const forwardTeamReset = (address: AgentTeamAddress) => emit('reset-team', address)

@@ -270,7 +270,7 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(workspace.props('isLoading')).toBe(true)
   })
 
-  it('keeps disclosure access while disabling nested edits, Reset, and Retry', async () => {
+  it('keeps disclosure access while disabling nested edits and omitting stored Reset', async () => {
     const wrapper = mountEditor({
       disabled: true,
       readOnly: true,
@@ -283,7 +283,7 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(disclosure.attributes('disabled')).toBeUndefined()
     await disclosure.trigger('click')
     expect(disclosure.attributes('aria-expanded')).toBe('true')
-    expect(wrapper.get('[data-test="reset-team-scope"]').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
     expect(wrapper.get('[data-test="team-runtime-catalog-error"] button').attributes('disabled')).toBeDefined()
     expect(wrapper.getComponent(RuntimeModelConfigFieldsStub).props()).toEqual(expect.objectContaining({
       disabled: true,

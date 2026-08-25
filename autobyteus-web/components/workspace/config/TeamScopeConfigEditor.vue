@@ -32,6 +32,8 @@
       :model-help-text="t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
       :id-prefix="inputIdPrefix"
       :advanced-initially-expanded="readOnly"
+      :historical-value-unavailable-message="historicalUnavailableMessage"
+      :historical-model-config-title="historicalModelConfigTitle"
       control-variant="quiet"
       @update:runtime-kind="updateField('runtime', $event)"
       @update:llm-model-identifier="updateField('model', $event)"
@@ -44,6 +46,8 @@
         :is-loading="workspaceOperation.status === 'loading'"
         :error="workspaceOperation.error"
         :disabled="disabled"
+        :stored-workspace="storedWorkspace"
+        :historical-value-unavailable-message="historicalUnavailableMessage"
         :auto-select-default="true"
         control-variant="quiet"
         @update:model-value="updateWorkspaceSelection"
@@ -113,7 +117,7 @@
         </svg>
       </button>
       <button
-        v-if="isCustomized"
+        v-if="isCustomized && !readOnly"
         type="button"
         class="rounded px-2 py-0.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
         :aria-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria', { name: displayName, address })"
@@ -159,6 +163,8 @@
         :model-help-text="t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
         :id-prefix="inputIdPrefix"
         :advanced-initially-expanded="readOnly"
+        :historical-value-unavailable-message="historicalUnavailableMessage"
+        :historical-model-config-title="historicalModelConfigTitle"
         control-variant="quiet"
         @update:runtime-kind="updateField('runtime', $event)"
         @update:llm-model-identifier="updateField('model', $event)"
@@ -171,6 +177,8 @@
           :is-loading="workspaceOperation.status === 'loading'"
           :error="workspaceOperation.error"
           :disabled="disabled"
+          :stored-workspace="storedWorkspace"
+          :historical-value-unavailable-message="historicalUnavailableMessage"
           :auto-select-default="isRoot"
           control-variant="quiet"
           @update:model-value="updateWorkspaceSelection"
@@ -208,6 +216,7 @@ import type { ResolvedTeamRunLaunchConfig, TeamScopeConfigOverride } from '~/typ
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import type { TeamWorkspaceOperationState } from '~/types/agent/TeamLaunchDraft'
 import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
+import type { StoredWorkspaceDisplay } from '~/types/agent/TeamRunFormModel'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 
@@ -224,6 +233,7 @@ const props = withDefaults(defineProps<{
   readOnly?: boolean
   workspaceOperation?: TeamWorkspaceOperationState
   runtimeCatalogState?: RuntimeModelCatalogState
+  storedWorkspace?: StoredWorkspaceDisplay | null
 }>(), {
   inheritedConfig: null,
   override: null,
@@ -233,6 +243,7 @@ const props = withDefaults(defineProps<{
   readOnly: false,
   workspaceOperation: () => ({ status: 'idle', error: null }),
   runtimeCatalogState: () => ({ status: 'idle', error: null }),
+  storedWorkspace: null,
 })
 const emit = defineEmits<{
   (e: 'update-root', field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: unknown): void
@@ -252,6 +263,8 @@ const inputIdPrefix = computed(() => `team-scope-${domKey.value}`)
 const autoExecuteId = computed(() => `${inputIdPrefix.value}-auto-execute`)
 const stateLabel = computed(() => t(`workspace.components.workspace.config.TeamScopeConfigEditor.${props.isCustomized ? 'customized' : 'inherited'}`))
 const stateBadgeClass = computed(() => props.isCustomized ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600')
+const historicalUnavailableMessage = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable'))
+const historicalModelConfigTitle = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration'))
 
 const normalizeOverride = (value: TeamScopeConfigOverride): TeamScopeConfigOverride | null => {
   const inherited = props.inheritedConfig

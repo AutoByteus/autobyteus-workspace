@@ -18,7 +18,7 @@
     </div>
 
     <div class="flex-1 overflow-y-auto px-4 py-4">
-      <div v-if="!effectiveAgentConfig && !effectiveTeamConfig && !storedTeamConfiguration" class="flex h-full flex-col items-center justify-center text-center text-gray-500">
+      <div v-if="!effectiveAgentConfig && !teamRunFormModel" class="flex h-full flex-col items-center justify-center text-center text-gray-500">
         <span class="i-heroicons-cursor-arrow-rays-20-solid mb-2 h-12 w-12 text-gray-300"></span>
         <p>{{ $t('workspace.components.workspace.config.RunConfigPanel.select_an_agent_or_team_to') }}</p>
       </div>
@@ -36,20 +36,13 @@
         @update:workspace-selection="handleWorkspaceSelectionChange"
       />
 
-      <StoredTeamRunConfigForm
-        v-else-if="storedTeamConfiguration"
-        :view="storedTeamConfiguration"
-      />
-
       <TeamRunConfigForm
-        v-else-if="effectiveTeamConfig && activeTeamDefinition"
+        v-else-if="teamRunFormModel"
         :key="activeRunConfigContextRenderKey"
-        :config="effectiveTeamConfig"
-        :team-definition="activeTeamDefinition"
-        :repair-addresses="teamRunConfigStore.repairNotice?.addresses || []"
-        :read-only="isSelectionMode || isRunPreparationPending || isTeamLaunchPending"
+        :model="teamRunFormModel"
         @update:workspace-selection="handleTeamWorkspaceSelectionChange"
         @edit-config="handleTeamConfigEdit"
+        @retry-runtime-catalog="retryTeamRuntimeCatalog"
       />
 
       <div v-else class="mt-4 text-center text-red-500">{{ $t('workspace.components.workspace.config.RunConfigPanel.error_definition_not_found') }}</div>
@@ -92,12 +85,15 @@ import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
-import StoredTeamRunConfigForm from './StoredTeamRunConfigForm.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
-import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
+import type { StoredTeamRunConfigurationView, TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
 import { isTeamLaunchRepairRequiredError, type TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
+import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -134,9 +130,10 @@ const effectiveTeamConfig = computed((): TeamRunConfig | null => {
   }
   return null
 })
-const storedTeamConfiguration = computed((): Readonly<TeamRunConfigurationView> | null => {
+const storedTeamConfiguration = computed((): Readonly<StoredTeamRunConfigurationView> | null => {
   if (!selectionStore.isTeamSelected || !selectionStore.selectedRunId) return null
-  return teamContextsStore.activeTeamContext?.view.getConfigurationView() ?? null
+  const view = teamContextsStore.activeTeamContext?.view.getConfigurationView() ?? null
+  return view?.source === 'STORED_SNAPSHOT' ? view : null
 })
 
 const isTeamActive = computed(() => !!effectiveTeamConfig.value)
@@ -151,6 +148,7 @@ const activeTeamDefinition = computed(() => {
   if (!effectiveTeamConfig.value?.teamDefinitionId) return null
   return teamDefinitionStore.getAgentTeamDefinitionById(effectiveTeamConfig.value.teamDefinitionId) || null
 })
+const { reloadRuntimeKind: retryTeamRuntimeCatalog } = useTeamRunRuntimeCatalogSync(effectiveTeamConfig)
 
 const isWorkspaceLockedForSelectedAgentRun = computed(() => {
   if (!selectionStore.isAgentSelected || !selectionStore.selectedRunId) {
@@ -250,6 +248,26 @@ const handleTeamWorkspaceSelectionChange = (address: AgentTeamAddress, selection
   })
   if (selection.mode === 'existing' && selection.existingWorkspaceId) setActiveTab('files')
 }
+
+const teamRunFormModel = computed((): Readonly<TeamRunFormModel> | null => {
+  if (storedTeamConfiguration.value) {
+    return projectStoredTeamRunFormModel(storedTeamConfiguration.value)
+  }
+  const config = effectiveTeamConfig.value
+  const definition = activeTeamDefinition.value
+  if (!config || !definition) return null
+  return projectEditableTeamRunFormModel({
+    config,
+    teamDefinition: definition,
+    getTeamDefinitionById: teamDefinitionStore.getAgentTeamDefinitionById,
+    repairAddresses: teamRunConfigStore.repairNotice?.addresses || [],
+    workspaceOperationFor: (address) => teamRunConfigStore.teamWorkspaceAuthoringViewFor(address).operation,
+    workspaceSelectionFor: (address) => teamRunConfigStore.teamWorkspaceAuthoringViewFor(address).selection,
+    runtimeCatalogStateFor: (runtimeKind) => teamRunConfigStore.runtimeModelCatalogStates[runtimeKind]
+      ?? { status: 'idle', error: null },
+    forceReadOnly: isRunPreparationPending.value || isTeamLaunchPending.value,
+  })
+})
 
 const currentPendingNewPath = computed(() =>
   workspaceSelection.value.mode === 'new'
@@ -419,7 +437,7 @@ const selectedRunContextIdentity = computed(() => {
     return `agent-run:${subject.runId}:${effectiveAgentConfig.value ? 'ready' : 'pending'}`
   }
   if (subject?.kind === 'team_run') {
-    return `team-run:${subject.rootTeamRunId}:${effectiveTeamConfig.value ? 'ready' : 'pending'}`
+    return `team-run:${subject.rootTeamRunId}:${storedTeamConfiguration.value ? 'ready' : 'pending'}`
   }
   return null
 })

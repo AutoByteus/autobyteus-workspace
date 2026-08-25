@@ -5,7 +5,6 @@ import { reactive } from 'vue'
 import RunConfigPanel from '../RunConfigPanel.vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
-import StoredTeamRunConfigForm from '../StoredTeamRunConfigForm.vue'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 
@@ -40,6 +39,8 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
     config: null,
     selectedDraft: null,
     teamWorkspaceAuthoringByTeamAddress: {} as Record<string, any>,
+    runtimeModelCatalogStates: {} as Record<string, any>,
+    repairNotice: null as any,
     launchReadiness: { canLaunch: false, blockingIssues: [], unresolvedMembers: [] },
     applyConfigEdit: vi.fn((edit: any) => {
       const config = structuredClone(teamRunState.config || {}) as any
@@ -65,6 +66,21 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
           ...teamRunState.selectedDraft,
           config: Object.freeze({ ...config }),
         }) as any
+      }
+    }),
+    teamWorkspaceAuthoringViewFor: vi.fn((teamAddress: string) => {
+      const state = teamRunState.teamWorkspaceAuthoringByTeamAddress[teamAddress]
+      const config = teamRunState.config as any
+      const workspace = teamAddress === '/'
+        ? config?.rootConfig?.workspace
+        : config?.teamOverrides?.[teamAddress]?.workspace
+      return {
+        selection: {
+          mode: state?.selectionMode ?? 'existing',
+          existingWorkspaceId: workspace?.workspaceId ?? null,
+          newWorkspacePath: state?.newWorkspacePath ?? workspace?.workspaceMetadata?.workspaceRootPath ?? '',
+        },
+        operation: state?.operation ?? { status: 'idle', error: null },
       }
     }),
     applyTeamWorkspaceAuthoringCommand: vi.fn(),
@@ -197,6 +213,10 @@ vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => workspaceStoreMock,
 }))
 
+vi.mock('~/composables/useTeamRunRuntimeCatalogSync', () => ({
+  useTeamRunRuntimeCatalogSync: () => ({ reloadRuntimeKind: vi.fn() }),
+}))
+
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({
     getAgentDefinitionById: (id: string) => ({ id, name: 'Agent ' + id }),
@@ -223,6 +243,8 @@ describe('RunConfigPanel', () => {
     teamRunState.config = null
     teamRunState.selectedDraft = null
     teamRunState.teamWorkspaceAuthoringByTeamAddress = {}
+    teamRunState.runtimeModelCatalogStates = {}
+    teamRunState.repairNotice = null
     teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
     agentRunState.updateAgentConfig.mockClear()
     agentRunState.setWorkspaceLoading.mockClear()
@@ -235,6 +257,7 @@ describe('RunConfigPanel', () => {
     agentRunState.clearConfig.mockReset()
     teamRunState.applyConfigEdit.mockClear()
     teamRunState.applyTeamWorkspaceAuthoringCommand.mockClear()
+    teamRunState.teamWorkspaceAuthoringViewFor.mockClear()
     teamRunState.clearConfig.mockReset()
     agentContextState.activeRun = null
     agentContextState.createRunFromTemplate.mockReset()
@@ -292,7 +315,7 @@ describe('RunConfigPanel', () => {
   it('renders Team Form when Team Template set', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const store = useTeamRunConfigStore() as any
-    store.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
+    store.config = editableTeamConfig() as any
     store.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] } as any
 
     const selectionStore = useAgentSelectionStore()
@@ -310,13 +333,10 @@ describe('RunConfigPanel', () => {
   it('triggers team run on button click when launch readiness passes', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
-    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
-    teamStore.selectedDraft = Object.freeze({
-      draftId: 'team-draft-1',
-      config: Object.freeze({ ...teamStore.config }),
-      focusedMemberAddress: '/coordinator',
-      pendingInputsByMemberAddress: Object.freeze({}),
-    }) as any
+    selectEditableTeamDraft(teamStore, editableTeamConfig({
+      workspaceId: 'ws-1',
+      workspaceMetadata: { workspaceRootPath: '/workspace/one' },
+    }), 'team-draft-1')
     teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
 
     const wrapper = mount(RunConfigPanel, {
@@ -335,13 +355,10 @@ describe('RunConfigPanel', () => {
   it('renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
-    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
-    teamStore.selectedDraft = Object.freeze({
-      draftId: 'team-draft-pending',
-      config: Object.freeze({ ...teamStore.config }),
-      focusedMemberAddress: '/coordinator',
-      pendingInputsByMemberAddress: Object.freeze({}),
-    }) as any
+    selectEditableTeamDraft(teamStore, editableTeamConfig({
+      workspaceId: 'ws-1',
+      workspaceMetadata: { workspaceRootPath: '/workspace/one' },
+    }), 'team-draft-pending')
     teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
     teamRunOwnerState.isDraftLaunchPending.mockImplementation(
       (draftId: string | null) => draftId === 'team-draft-pending',
@@ -355,7 +372,7 @@ describe('RunConfigPanel', () => {
     const form = wrapper.findComponent(TeamRunConfigForm)
 
     expect(teamRunOwnerState.isDraftLaunchPending).toHaveBeenCalledWith('team-draft-pending')
-    expect(form.props('readOnly')).toBe(true)
+    expect(form.props('model')).toEqual(expect.objectContaining({ mode: 'editable', isLocked: true }))
     expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
     await wrapper.find('.run-btn').trigger('click')
     form.vm.$emit('update:workspaceSelection', '/', {
@@ -368,8 +385,8 @@ describe('RunConfigPanel', () => {
 
     expect(teamRunOwnerState.launchDraft).not.toHaveBeenCalled()
     expect(teamStore.applyConfigEdit).not.toHaveBeenCalled()
-    expect(teamStore.config.workspaceId).toBe('ws-1')
-    expect(teamStore.config.llmModelIdentifier).toBeUndefined()
+    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('ws-1')
+    expect(teamStore.config.rootConfig.llmModelIdentifier).toBe('model-x')
   })
 
   it('loads a pending New workspace path before creating an agent run', async () => {
@@ -791,7 +808,10 @@ describe('RunConfigPanel', () => {
   it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
-    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
+    teamStore.config = editableTeamConfig({
+      workspaceId: 'ws-1',
+      workspaceMetadata: { workspaceRootPath: '/workspace/one' },
+    }) as any
     teamStore.launchReadiness = {
       canLaunch: false,
       blockingIssues: [
@@ -827,7 +847,7 @@ describe('RunConfigPanel', () => {
   it('disables team run when workspace is missing', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
-    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
+    teamStore.config = editableTeamConfig() as any
     teamStore.launchReadiness = {
       canLaunch: false,
       blockingIssues: [{ code: 'WORKSPACE_REQUIRED', message: 'Workspace is required to run a team.' }],
@@ -988,7 +1008,7 @@ describe('RunConfigPanel', () => {
     })
 
     const form = wrapper.findComponent(TeamRunConfigForm)
-    expect(form.props('readOnly')).toBe(false)
+    expect(form.props('model')).toEqual(expect.objectContaining({ mode: 'editable', isLocked: false }))
 
     form.vm.$emit('update:workspaceSelection', '/', {
       mode: 'existing',
@@ -1098,16 +1118,34 @@ describe('RunConfigPanel', () => {
 
     const wrapper = mount(RunConfigPanel, {
       global: {
-        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true, StoredTeamRunConfigForm: true },
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
       },
     })
 
-    const form = wrapper.findComponent(StoredTeamRunConfigForm)
-    expect(form.props('view')).toBe(topologyConfiguration)
+    const form = wrapper.findComponent(TeamRunConfigForm)
+    expect(form.props('model')).toEqual(expect.objectContaining({
+      mode: 'stored',
+      definitionLabel: 'Team team-def-1',
+      isLocked: true,
+      root: expect.objectContaining({
+        effectiveConfig: expect.objectContaining({
+          workspaceId: 'ws-original',
+          llmModelIdentifier: 'test-model',
+        }),
+      }),
+    }))
     expect(contextStore.activeTeamContext).toBe(activeContext)
     expect(contextStore.activeTeamContext.view.getConfigurationView()).toBe(topologyConfiguration)
     expect(topologyConfiguration.root.effectiveConfig.workspaceId).toBe('ws-original')
     expect(topologyConfiguration.root.effectiveConfig.llmModelIdentifier).toBe('test-model')
+    expect(wrapper.find('.run-btn').exists()).toBe(false)
+
+    form.vm.$emit('update:workspaceSelection', '/', {
+      mode: 'existing', existingWorkspaceId: 'ws-other', newWorkspacePath: '/other',
+    })
+    form.vm.$emit('edit-config', { kind: 'set_root_model', llmModelIdentifier: 'other-model' })
+    await wrapper.vm.$nextTick()
     expect(teamRunState.applyConfigEdit).not.toHaveBeenCalled()
+    expect(teamRunState.applyTeamWorkspaceAuthoringCommand).not.toHaveBeenCalled()
   })
 })
