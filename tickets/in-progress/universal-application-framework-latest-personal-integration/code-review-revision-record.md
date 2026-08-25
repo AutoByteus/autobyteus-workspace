@@ -530,3 +530,37 @@ No prior proportional test-review finding existed. `CRR-015` remains valid for A
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-planner-completeness-probe.log`
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: API/E2E must not start until CR-008–CR-010 receive affected source re-review Pass. Current-head real Studio/standalone migration, nested Team, provider/model, business, publication/handoff/projection, restart/remount, parity/cleanup, and durable-test checks remain downstream; Electron v1.4.58 and final-base integration remain delivery-owned. Historical `APIE2E-REPO-005` stays separately `Unclear`.
+
+### CRR-019 — IR-011 validation-before-allocation and V2 fixture re-review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `19`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-011`; `CR-008`, `CR-009`, `CR-010`.
+- Relevant solution revision IDs: `SR-001`–`SR-010`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-010`; current authority `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-001`–`IR-011`
+- Relevant API/E2E revision IDs: retained history `API-REV-001`–`API-REV-009`; IR-011 current execution `N/A`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`
+- Prior authoritative result: `CRR-018 — Fail — Local Fix / 91`
+- Current authoritative result: **Pass / 95**
+- What changed in the review result and why: IR-011 changes only the two affected production owners, four directly affected unit fixtures, and the implementation artifacts. The launch-configuration owner is now below the mandatory source limit without changing its public boundary or precedence. Migration fixtures now represent exact current V2 shape and V1 -> nested-memory -> V2 -> external order. The planner reuses the current launch-configuration validator for every Team scope and Agent member before root compilation can call either allocator; direct planner and TeamRunService regressions prove invalid Team/Agent models reach no allocator, manager, or catalog persistence call. No fallback, alias, caller-only guard, duplicate validator, migration-production edit, UI edit, or generated source was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-007` | Resolved | Remain resolved | `IR-002`–`IR-006`, `CRR-002`–`CRR-009`, `IR-011` | IR-011 does not alter their lifecycle, read-only, identity, manager-ownership, runtime-directory, or application dispatch owners. |
+| `CR-008` | Open — Medium / Local Fix | **Resolved** | `CRR-018`, `IR-011`, `CRR-019` | `application-launch-configuration-service.ts` is 518 physical / 498 effective non-empty lines; equivalent local simplification retains the one public owner and behavior. |
+| `CR-009` | Open — Medium / Local Fix | **Resolved** | `CRR-018`, `IR-011`, `CRR-019`; `BEH-008`, `AC-033` | The corrected 10-file matrix passes 79/79 with exact V1 -> memory -> V2 -> external ordering; recursive Team fixtures include V2 defaults and execute without V2 parsing rejection. |
+| `CR-010` | Open — High / Local Fix | **Resolved** | `CRR-018`, `IR-011`, `CRR-019`; `BEH-011`, `REQ-012`, `AC-032` | Planner validates/normalizes every Team/member launch value before allocation; direct tests prove zero Team/Agent allocation, manager creation, and persistence for invalid Team and Agent models. |
+
+- New or remaining finding IDs: none.
+- Material score or classification changes: the result improves from `Fail — Local Fix / 91` to `Pass / 95`. Data-Flow Spine rises to `9.6`, Separation/File Placement to `9.3`, API/E2E Readiness to `9.4`, Runtime Correctness to `9.6`, and Cleanup Completeness to `9.4`; every mandatory category is at least `9.0`.
+- Validation evidence: affected 10-file server matrix `79/79` including AFB `15/15`; server build-config TypeScript no-emit; full server production build and sanitized built-in-agent bootstrap; exact source size, scoped diff, marker/unmerged, and generated-output cleanup audits. The complete recursive cleanup file is separately characterized at `2 pass / 2 fail`: current V2 fixture parsing/execution succeeds, while two unchanged standalone diagnostic expectations remain historical `APIE2E-REPO-005 / Unclear` and are neither current attribution nor Pass evidence.
+- Reviewer evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-source-audit.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-affected-validation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-recursive-cleanup-characterization.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-build-validation.log`
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: current-head real Studio/standalone provider/model, nested Team execution, V1/V2 migration/recovery/history, Brief/Socratic publication/handoff/projection, restart/remount, package parity, cleanup, browser, and durable-test checks remain API/E2E-owned. Electron v1.4.58 and final-base integration remain delivery-owned. Historical `APIE2E-REPO-005` remains separately `Unclear`.
