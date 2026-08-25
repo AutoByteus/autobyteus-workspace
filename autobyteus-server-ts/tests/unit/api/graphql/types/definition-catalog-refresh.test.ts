@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildGraphqlSchema } from "../../../../../src/api/graphql/schema.js";
 import { configureStudioApplicationApiServices } from "../../../../../src/api/graphql/studio-application-api-services.js";
 import { AgentDefinitionResolver } from "../../../../../src/api/graphql/types/agent-definition.js";
@@ -10,6 +10,7 @@ import type { ApplicationBundleService } from "../../../../../src/application-bu
 import type { ApplicationPackageRegistryService } from "../../../../../src/application-packages/services/application-package-registry-service.js";
 
 describe("definition catalog refresh GraphQL boundary", () => {
+  let closeConfiguredServices: (() => void) | null = null;
   const refreshAgentCache = vi.fn<AgentDefinitionService["refreshCache"]>();
   const refreshTeamCache = vi.fn<AgentTeamDefinitionService["refreshCache"]>();
   const agentDefinitionService = {
@@ -20,13 +21,20 @@ describe("definition catalog refresh GraphQL boundary", () => {
   } as unknown as AgentTeamDefinitionService;
 
   beforeAll(() => {
-    configureStudioApplicationApiServices({
+    const handle = configureStudioApplicationApiServices({
       agentDefinitionService,
       agentTeamDefinitionService,
+      agentRunService: {} as never,
+      teamRunService: {} as never,
       bundleService: {} as ApplicationBundleService,
-      packageRegistryService: {} as ApplicationPackageRegistryService,
+      capabilityService: {} as never,
+      packageQueries: {} as ApplicationPackageRegistryService,
+      packageCommands: {} as never,
     });
+    closeConfiguredServices = handle.close;
   });
+
+  afterAll(() => closeConfiguredServices?.());
 
   beforeEach(() => {
     refreshAgentCache.mockReset();

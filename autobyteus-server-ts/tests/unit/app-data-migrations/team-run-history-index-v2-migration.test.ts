@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunHistoryIndexV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-history-index-v2-migration.js";
 import type { TeamRunMetadata } from "../../../src/app-data-migrations/legacy/team-run-metadata-types.js";
+import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 
 let memoryDir: string;
 
@@ -56,6 +57,7 @@ describe("TeamRunHistoryIndexV2AppDataMigration", () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
@@ -147,5 +149,31 @@ describe("TeamRunHistoryIndexV2AppDataMigration", () => {
     await expect(readIndex()).resolves.toEqual([
       expect.objectContaining({ teamRunId: "team-good" }),
     ]);
+  });
+
+  it("keeps optional persistence label fallback local without claiming the process service", async () => {
+    const getProcessDefinitionService = vi.spyOn(AgentTeamDefinitionService, "getInstance");
+    const migration = new TeamRunHistoryIndexV2AppDataMigration(memoryDir);
+    const resolveName = migration as unknown as {
+      resolveTeamDefinitionName(
+        teamDefinitionId: string,
+        metadata: TeamRunMetadata,
+        existingRow?: Record<string, unknown>,
+      ): Promise<{ value: string; warning: boolean }>;
+    };
+
+    const result = await resolveName.resolveTeamDefinitionName(
+      "missing-team-definition",
+      {
+        ...buildMetadata("team-persistence-label"),
+        teamDefinitionName: " ",
+      },
+    );
+
+    expect(result).toEqual({
+      value: "missing-team-definition",
+      warning: true,
+    });
+    expect(getProcessDefinitionService).not.toHaveBeenCalled();
   });
 });

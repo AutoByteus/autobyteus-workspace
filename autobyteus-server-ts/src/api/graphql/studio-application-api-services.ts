@@ -4,10 +4,14 @@ import type { ApplicationBundleService } from "../../application-bundles/service
 import type { ApplicationCapabilityService } from "../../application-capability/services/application-capability-service.js";
 import type { ApplicationPackageCommandService } from "../../application-packages/services/application-package-command-service.js";
 import type { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
+import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
+import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
+  agentRunService: AgentRunService;
+  teamRunService: TeamRunService;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -18,11 +22,34 @@ let configuredServices: StudioApplicationApiServices | null = null;
 
 export const configureStudioApplicationApiServices = (
   services: StudioApplicationApiServices,
-): void => {
+): Readonly<{ close(): void }> => {
+  if (
+    !services?.agentDefinitionService
+    || !services.agentTeamDefinitionService
+    || !services.agentRunService
+    || !services.teamRunService
+    || !services.bundleService
+    || !services.capabilityService
+    || !services.packageQueries
+    || !services.packageCommands
+  ) {
+    throw new Error("Complete Studio application API services are required.");
+  }
   if (configuredServices) {
     throw new Error("Studio application API services are already configured.");
   }
-  configuredServices = Object.freeze(services);
+  const boundServices = Object.freeze(services);
+  configuredServices = boundServices;
+  let closed = false;
+  return Object.freeze({
+    close: () => {
+      if (closed) return;
+      closed = true;
+      if (configuredServices === boundServices) {
+        configuredServices = null;
+      }
+    },
+  });
 };
 
 const requireConfiguredServices = (): StudioApplicationApiServices => {
@@ -43,6 +70,12 @@ export const getStudioAgentDefinitionService = (): AgentDefinitionService =>
 
 export const getStudioAgentTeamDefinitionService = (): AgentTeamDefinitionService =>
   requireConfiguredServices().agentTeamDefinitionService;
+
+export const getStudioAgentRunService = (): AgentRunService =>
+  requireConfiguredServices().agentRunService;
+
+export const getStudioTeamRunService = (): TeamRunService =>
+  requireConfiguredServices().teamRunService;
 
 export const getStudioApplicationPackageQueries =
   (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;

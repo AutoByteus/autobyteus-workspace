@@ -2419,6 +2419,185 @@ describe("application framework architecture boundaries", () => {
     }
   });
 
+  it("guards the exact SR-011 host definition and public/general run authority", () => {
+    const serverSourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
+    const readServerSource = (relativePath: string): string =>
+      readFileSync(join(serverSourceRoot, relativePath), "utf8");
+
+    expect(existsSync(join(
+      serverSourceRoot,
+      "application-platform/runtime/create-application-definition-services.ts",
+    ))).toBe(false);
+    expect(existsSync(join(
+      serverSourceRoot,
+      "application-platform/definitions/create-bundle-backed-definition-services.ts",
+    ))).toBe(true);
+
+    const bundleFactoryCallers = walkSourceFiles(serverSourceRoot)
+      .filter((file) => !file.endsWith("create-bundle-backed-definition-services.ts"))
+      .filter((file) => readFileSync(file, "utf8").includes("createBundleBackedDefinitionServices("))
+      .map((file) => normalizePath(relative(REPOSITORY_ROOT, file)))
+      .sort();
+    expect(bundleFactoryCallers).toEqual([
+      "autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts",
+      "autobyteus-server-ts/src/compositions/host-definition-services.ts",
+    ]);
+
+    for (const relativePath of [
+      "compositions/build-studio-server.ts",
+      "standalone-application-host/start-standalone-application-host.ts",
+    ]) {
+      const source = readServerSource(relativePath);
+      const hostDefinitions = source.indexOf("createHostDefinitionServices({");
+      const agentTools = source.indexOf("createAgentToolsMcpRuntime({", hostDefinitions);
+      const generalRuns = source.indexOf("createGeneralProcessRunSupervisor({", agentTools);
+      const applicationAssembly = relativePath.startsWith("compositions/")
+        ? source.indexOf("createStudioApplicationServices({", generalRuns)
+        : source.indexOf("buildApplicationPlatformRuntime({", generalRuns);
+      expect(hostDefinitions, relativePath).toBeGreaterThanOrEqual(0);
+      expect(agentTools, relativePath).toBeGreaterThan(hostDefinitions);
+      expect(generalRuns, relativePath).toBeGreaterThan(agentTools);
+      expect(applicationAssembly, relativePath).toBeGreaterThan(generalRuns);
+      const supervisorInput = source.slice(generalRuns, applicationAssembly);
+      expect(supervisorInput).toContain("appConfig:");
+      expect(supervisorInput).toContain("agentDefinitionService:");
+      expect(supervisorInput).toContain("agentTeamDefinitionService:");
+      expect(supervisorInput).toContain("agentToolsSessionManager:");
+    }
+    const studioComposition = readServerSource("compositions/build-studio-server.ts");
+    const studioApplicationAssembly = studioComposition.slice(
+      studioComposition.indexOf("const createStudioApplicationServices"),
+      studioComposition.indexOf("export const buildStudioServer"),
+    );
+    expect(studioApplicationAssembly).toContain("buildApplicationPlatformRuntime({");
+    expect(studioApplicationAssembly).toContain(
+      "agentDefinitionService: input.definitions.agentDefinitionService",
+    );
+    expect(studioApplicationAssembly).toContain(
+      "agentTeamDefinitionService: input.definitions.agentTeamDefinitionService",
+    );
+    const generalSupervisor = readServerSource(
+      "agent-execution/runtime/general-process-run-supervisor.ts",
+    );
+    for (const requiredConstruction of [
+      "agentDefinitionService: input.agentDefinitionService",
+      "new MemberTeamContextBuilder(\n        input.agentTeamDefinitionService",
+      "teamDefinitionService: input.agentTeamDefinitionService",
+      "agentRunIdentityAllocator,",
+      "agentToolMcpSessionManager: input.agentToolsSessionManager",
+      "taskRootResolver: callbacks.taskRootResolver",
+      "bindProcessAgentRunService(agentRunService)",
+      "bindProcessTeamRunService(teamRunService)",
+    ]) {
+      expect(generalSupervisor).toContain(requiredConstruction);
+    }
+    expect(generalSupervisor).toMatch(
+      /new CodexThreadBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
+    );
+    expect(generalSupervisor).toMatch(
+      /new ClaudeSessionManager\([\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
+    );
+    expect(generalSupervisor).toMatch(
+      /new ClaudeSessionBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?\)/,
+    );
+
+    const publicAgentRun = readServerSource("api/graphql/types/agent-run.ts");
+    const publicTeamRun = readServerSource("api/graphql/types/agent-team-run.ts");
+    expect(publicAgentRun).toContain("getStudioAgentRunService");
+    expect(publicAgentRun).not.toMatch(/\bgetAgentRunService\b/);
+    expect(publicAgentRun).not.toContain("AgentRunManager");
+    expect(publicTeamRun).toContain("getStudioTeamRunService");
+    expect(publicTeamRun).not.toMatch(/\bgetTeamRunService\b/);
+
+    for (const migration of [
+      "app-data-migrations/migrations/run-history-index-v2-migration.ts",
+      "app-data-migrations/migrations/team-run-history-index-v2-migration.ts",
+    ]) {
+      const source = readServerSource(migration);
+      expect(source, migration).toContain("DefinitionPersistenceProvider");
+      expect(source, migration).not.toMatch(/DefinitionService\.getInstance\s*\(/);
+    }
+    const cachePreloader = readServerSource("startup/cache-preloader.ts");
+    expect(cachePreloader).not.toContain("AgentDefinitionService");
+    expect(cachePreloader).not.toContain("AgentTeamDefinitionService");
+
+    const definitionGetterOccurrences = walkSourceFiles(serverSourceRoot).flatMap((file) => {
+      const source = readFileSync(file, "utf8");
+      const count = [...source.matchAll(/\b(?:AgentDefinitionService|AgentTeamDefinitionService)\.getInstance\s*\(/g)].length;
+      return Array.from(
+        { length: count },
+        () => normalizePath(relative(REPOSITORY_ROOT, file)),
+      );
+    }).sort();
+    expect(definitionGetterOccurrences).toEqual([
+      "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts",
+      "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
+      "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
+      "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
+      "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+      "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-management/create-agent-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-management/delete-agent-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-management/get-agent-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-management/list-agent-definitions.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-management/update-agent-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-team-management/create-agent-team-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-team-management/delete-agent-team-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts",
+      "autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts",
+      "autobyteus-server-ts/src/api/graphql/types/external-channel-setup/resolver.ts",
+      "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
+      "autobyteus-server-ts/src/external-channel/services/channel-binding-team-definition-options-service.ts",
+      "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+      "autobyteus-server-ts/src/skill-improvement/services/retrospective-skill-improver-agent-settings-resolver.ts",
+      "autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-context-resolver.ts",
+    ].sort());
+
+    const ambientRunServiceImports = walkSourceFiles(serverSourceRoot).flatMap((file) => {
+      const sourceFile = ts.createSourceFile(
+        file,
+        readFileSync(file, "utf8"),
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+      );
+      const imported: string[] = [];
+      for (const statement of sourceFile.statements) {
+        if (!ts.isImportDeclaration(statement)
+          || !ts.isStringLiteral(statement.moduleSpecifier)
+          || !/(?:agent-run-service|team-run-service)\.js$/.test(statement.moduleSpecifier.text)) continue;
+        const bindings = statement.importClause?.namedBindings;
+        if (!bindings || !ts.isNamedImports(bindings)) continue;
+        for (const binding of bindings.elements) {
+          const exported = binding.propertyName?.text ?? binding.name.text;
+          if (exported === "getAgentRunService" || exported === "getTeamRunService") {
+            imported.push(`${normalizePath(relative(REPOSITORY_ROOT, file))}:${exported}`);
+          }
+        }
+      }
+      return imported;
+    }).sort();
+    expect(ambientRunServiceImports).toEqual([
+      "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts:getAgentRunService",
+      "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
+      "autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts:getAgentRunService",
+      "autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts:getTeamRunService",
+      "autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:getAgentRunService",
+      "autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:getTeamRunService",
+      "autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:getTeamRunService",
+      "autobyteus-server-ts/src/external-channel/services/channel-binding-service.ts:getTeamRunService",
+      "autobyteus-server-ts/src/external-channel/services/channel-turn-reply-recovery-service.ts:getTeamRunService",
+      "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
+      "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
+      "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts:getAgentRunService",
+    ].sort());
+  });
+
   it("guards the exact SR-013 root-bound task construction inventory", () => {
     const managerOccurrences = sr013NewOccurrences("MixedTeamManager");
     expect(sr013OccurrencePaths(managerOccurrences)).toEqual([

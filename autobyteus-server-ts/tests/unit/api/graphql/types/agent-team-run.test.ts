@@ -9,9 +9,9 @@ const mockTeamRunService = vi.hoisted(() => ({
 }));
 
 vi.mock(
-  "../../../../../src/agent-team-execution/services/team-run-service.js",
+  "../../../../../src/api/graphql/studio-application-api-services.js",
   () => ({
-    getTeamRunService: () => mockTeamRunService,
+    getStudioTeamRunService: () => mockTeamRunService,
   }),
 );
 

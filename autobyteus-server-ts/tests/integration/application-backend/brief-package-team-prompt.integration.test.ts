@@ -12,7 +12,7 @@ import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/c
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { ApplicationExecutionResourceResolver } from "../../../src/application-orchestration/services/application-execution-resource-resolver.js";
-import { createApplicationDefinitionServices } from "../../../src/application-platform/runtime/create-application-definition-services.js";
+import { createBundleBackedDefinitionServices } from "../../../src/application-platform/definitions/create-bundle-backed-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberTaskRootResolver } from "../../fixtures/current-team-run-fixtures.js";
@@ -26,7 +26,7 @@ describe("Brief package team prompt authority", () => {
       packageRoot,
       localApplicationId: "brief-studio",
     });
-    const definitions = createApplicationDefinitionServices({
+    const definitions = createBundleBackedDefinitionServices({
       appConfig: {
         getAgentsDir: () => path.join(packageRoot, ".test-only", "agents"),
         getAgentTeamsDir: () => path.join(packageRoot, ".test-only", "agent-teams"),

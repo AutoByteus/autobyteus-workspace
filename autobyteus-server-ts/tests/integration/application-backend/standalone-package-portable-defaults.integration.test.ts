@@ -1,7 +1,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
+import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 
 const sourcePackageRoot = path.resolve(
@@ -21,6 +23,7 @@ describe("standalone package portable launch defaults", () => {
   const tempRoots: string[] = [];
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await Promise.all(
       tempRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })),
     );
@@ -51,6 +54,8 @@ describe("standalone package portable launch defaults", () => {
   };
 
   it("validates the real Brief package with exact token tuning and typed pricing", async () => {
+    const getAgentDefinitions = vi.spyOn(AgentDefinitionService, "getInstance");
+    const getTeamDefinitions = vi.spyOn(AgentTeamDefinitionService, "getInstance");
     const { packageRoot, agentConfigPath } = await copyBriefPackage();
     await updateResearcherLlmConfig(agentConfigPath, {
       max_tokens: 8_192,
@@ -84,6 +89,8 @@ describe("standalone package portable launch defaults", () => {
 
     expect(result.selection.localApplicationId).toBe("brief-studio");
     expect(result.selection.applicationRoot).toContain(packageRoot);
+    expect(getAgentDefinitions).not.toHaveBeenCalled();
+    expect(getTeamDefinitions).not.toHaveBeenCalled();
   });
 
   it.each([

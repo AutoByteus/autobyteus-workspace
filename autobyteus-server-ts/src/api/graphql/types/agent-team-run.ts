@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
+import { getStudioTeamRunService } from "../studio-application-api-services.js";
 
 registerEnumType(SkillAccessMode, {
   name: "SkillAccessModeEnum",
@@ -119,7 +119,7 @@ export class CreateAgentTeamRunInput {
 
 @Resolver()
 export class AgentTeamRunResolver {
-  private readonly teamRunService = getTeamRunService();
+  private readonly teamRunService = getStudioTeamRunService();
 
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(

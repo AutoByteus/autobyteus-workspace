@@ -29,7 +29,6 @@ import {
   type StandaloneApplicationHostConfigInput,
 } from "./config/standalone-application-host-config.js";
 import { materializeStandaloneHostConfig } from "./config/standalone-host-config-materializer.js";
-import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../application-platform/launch-configuration/application-standalone-package-validator.js";
 import {
   createAgentToolsMcpRuntime,
@@ -48,6 +47,10 @@ import {
   configureTokenUsageMigrationReadiness,
 } from "../token-usage/providers/token-usage-migration-readiness.js";
 import { TeamRunPackageCatalog } from "../run-history/services/team-run-package-catalog.js";
+import {
+  createHostDefinitionServices,
+  type HostDefinitionServices,
+} from "../compositions/host-definition-services.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -213,11 +216,12 @@ export const startStandaloneApplicationHost = async (
     AgentToolsMcpRuntime | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
+  let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
     await resetDefaultAgentRunEventPipeline();
     const { selection, bundleService } = validatedPackage;
-    const definitionServices = createApplicationDefinitionServices({
+    hostDefinitionServices = createHostDefinitionServices({
       appConfig: processResources.appConfig,
       bundleService,
     });
@@ -227,13 +231,17 @@ export const startStandaloneApplicationHost = async (
           getGeneralProcessPublishedArtifactPublisher(),
       });
     generalProcessRunSupervisor =
-      createGeneralProcessRunSupervisor(
-        agentToolsMcpRuntime.generalProcessSessionManager,
-      );
+      createGeneralProcessRunSupervisor({
+        appConfig: processResources.appConfig,
+        agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+        agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+        agentToolsSessionManager: agentToolsMcpRuntime.generalProcessSessionManager,
+      });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       bundleService,
-      ...definitionServices,
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
       agentToolsSessionFactory:
         agentToolsMcpRuntime,
       selectedApplicationIds: new Set([selection.applicationId]),
@@ -268,7 +276,11 @@ export const startStandaloneApplicationHost = async (
               try {
                 await stopDefaultAgentRunEventPipeline();
               } finally {
-                await processResources!.close();
+                try {
+                  hostDefinitionServices!.close();
+                } finally {
+                  await processResources!.close();
+                }
               }
             }
           }
@@ -298,7 +310,11 @@ export const startStandaloneApplicationHost = async (
             try {
               await stopDefaultAgentRunEventPipeline();
             } finally {
-              await processResources.close();
+              try {
+                hostDefinitionServices?.close();
+              } finally {
+                await processResources.close();
+              }
             }
           }
         }

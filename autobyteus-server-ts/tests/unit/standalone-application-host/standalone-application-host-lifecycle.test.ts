@@ -34,12 +34,18 @@ const mocks = vi.hoisted(() => {
     close: vi.fn(),
   };
   const generalProcessRunSupervisor = { close: vi.fn(async () => undefined) };
+  const hostDefinitionServices = {
+    agentDefinitionService: {},
+    agentTeamDefinitionService: {},
+    close: vi.fn(),
+  };
   return {
     app,
     appConfig,
     applicationLifecycle,
     mcpRuntime,
     generalProcessRunSupervisor,
+    hostDefinitionServices,
     materializeConfig: vi.fn(async () => undefined),
     validatePackage: vi.fn(async () => ({
       selection: { applicationId: "local-package::brief-studio" },
@@ -56,7 +62,7 @@ const mocks = vi.hoisted(() => {
     rebuildTeamRunCatalog: vi.fn(async () => undefined),
     resetEventPipeline: vi.fn(async () => undefined),
     stopEventPipeline: vi.fn(async () => undefined),
-    createDefinitionServices: vi.fn(() => ({})),
+    createHostDefinitionServices: vi.fn(() => hostDefinitionServices),
     createMcpRuntime: vi.fn(() => mcpRuntime),
     createGeneralProcessRunSupervisor: vi.fn(() => generalProcessRunSupervisor),
     buildApplicationPlatformRuntime: vi.fn(() => ({ lifecycle: applicationLifecycle })),
@@ -115,14 +121,14 @@ vi.mock("../../../src/secret-management/secret-vault-runtime.js", () => ({
 vi.mock("../../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
 }));
-vi.mock("../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js", () => ({
-  TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID: "team-run-v1",
+vi.mock("../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js", () => ({
+  TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID: "team-run-v1",
 }));
 vi.mock("../../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
   CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "readable-provider-v1",
 }));
-vi.mock("../../../src/run-history/services/team-run-v1-package-catalog.js", () => ({
-  TeamRunV1PackageCatalog: class {
+vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => ({
+  TeamRunPackageCatalog: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
 }));
@@ -136,8 +142,8 @@ vi.mock("../../../src/standalone-application-host/config/standalone-host-config-
 vi.mock("../../../src/application-platform/launch-configuration/application-standalone-package-validator.js", () => ({
   validateStandaloneApplicationPackage: mocks.validatePackage,
 }));
-vi.mock("../../../src/application-platform/runtime/create-application-definition-services.js", () => ({
-  createApplicationDefinitionServices: mocks.createDefinitionServices,
+vi.mock("../../../src/compositions/host-definition-services.js", () => ({
+  createHostDefinitionServices: mocks.createHostDefinitionServices,
 }));
 vi.mock("../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js", () => ({
   createAgentToolsMcpRuntime: mocks.createMcpRuntime,
@@ -212,12 +218,37 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.resetEventPipeline.mock.invocationCallOrder[0]!);
     expect(mocks.resetEventPipeline.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.createHostDefinitionServices.mock.invocationCallOrder[0]!);
+    expect(mocks.createHostDefinitionServices.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.createMcpRuntime.mock.invocationCallOrder[0]!);
+    expect(mocks.createMcpRuntime.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0]!);
+    expect(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.buildApplicationPlatformRuntime.mock.invocationCallOrder[0]!);
+    expect(mocks.createHostDefinitionServices).toHaveBeenCalledWith({
+      appConfig: mocks.appConfig,
+      bundleService: {},
+    });
+    expect(mocks.createGeneralProcessRunSupervisor).toHaveBeenCalledWith({
+      appConfig: mocks.appConfig,
+      agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
+      agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+      agentToolsSessionManager: mocks.mcpRuntime.generalProcessSessionManager,
+    });
+    expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
+      agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
+      agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+    }));
     expect(mocks.applicationLifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
     expect(mocks.applicationLifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
 
     await handle.close();
+    expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
+    expect(mocks.hostDefinitionServices.close.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.closeSecretVault.mock.invocationCallOrder[0]!);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
   });
@@ -311,6 +342,38 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
 
     expect(mocks.resetEventPipeline).not.toHaveBeenCalled();
     expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
+    expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
+    expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
+  });
+
+  it("unwinds the bound definition and Agent Tools owners when general run assembly fails", async () => {
+    mocks.createGeneralProcessRunSupervisor.mockImplementationOnce(() => {
+      throw new Error("general run assembly failed");
+    });
+
+    await expect(startStandaloneApplicationHost(input))
+      .rejects.toThrow("general run assembly failed");
+
+    expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
+    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
+    expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
+    expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
+    expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
+  });
+
+  it("unwinds general, Agent Tools, and definition owners when application assembly fails", async () => {
+    mocks.buildApplicationPlatformRuntime.mockImplementationOnce(() => {
+      throw new Error("application assembly failed");
+    });
+
+    await expect(startStandaloneApplicationHost(input))
+      .rejects.toThrow("application assembly failed");
+
+    expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
+    expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
   });

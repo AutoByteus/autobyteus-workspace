@@ -284,6 +284,22 @@ const normalizeRequiredRunId = (runId: string): string => {
 
 let cachedAgentRunService: AgentRunService | null = null;
 
+export const bindProcessAgentRunService = (service: AgentRunService): void => {
+  if (!service) {
+    throw new Error("A process AgentRunService instance is required.");
+  }
+  if (cachedAgentRunService) {
+    throw new Error("The process AgentRunService is already initialized.");
+  }
+  cachedAgentRunService = service;
+};
+
+export const releaseProcessAgentRunService = (service: AgentRunService): void => {
+  if (cachedAgentRunService === service) {
+    cachedAgentRunService = null;
+  }
+};
+
 export const getAgentRunService = (): AgentRunService => {
   if (!cachedAgentRunService) {
     cachedAgentRunService = new AgentRunService(

@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { AppConfig } from "../../config/app-config.js";
-import { createApplicationDefinitionServices } from "../runtime/create-application-definition-services.js";
+import { createBundleBackedDefinitionServices } from "../definitions/create-bundle-backed-definition-services.js";
 import { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
 import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import {
@@ -73,7 +73,7 @@ export const validateStandaloneApplicationPackage = async (input: {
     (filePath) => validatePortableDefaultConfigFile(filePath, portableConfigPolicy),
   );
 
-  const definitionServices = createApplicationDefinitionServices({
+  const definitionServices = createBundleBackedDefinitionServices({
     appConfig: createReadOnlyDefinitionConfig(packageRoot),
     bundleService: selectionResult.bundleService,
   });

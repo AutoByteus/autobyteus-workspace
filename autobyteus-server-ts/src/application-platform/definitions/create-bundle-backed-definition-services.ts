@@ -7,13 +7,15 @@ import { FileAgentTeamDefinitionProvider } from "../../agent-team-definition/pro
 import { AgentTeamDefinitionPersistenceProvider } from "../../agent-team-definition/providers/agent-team-definition-persistence-provider.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
-export const createApplicationDefinitionServices = (input: {
-  appConfig: AppConfig;
-  bundleService: ApplicationBundleService;
-}): {
+export type BundleBackedDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-} => {
+}>;
+
+export const createBundleBackedDefinitionServices = (input: {
+  appConfig: AppConfig;
+  bundleService: ApplicationBundleService;
+}): BundleBackedDefinitionServices => {
   const agentPersistenceProvider = new AgentDefinitionPersistenceProvider(
     new FileAgentDefinitionProvider({
       appConfig: input.appConfig,
@@ -33,5 +35,5 @@ export const createApplicationDefinitionServices = (input: {
     persistenceProvider: teamPersistenceProvider,
     agentDefinitionService,
   });
-  return { agentDefinitionService, agentTeamDefinitionService };
+  return Object.freeze({ agentDefinitionService, agentTeamDefinitionService });
 };

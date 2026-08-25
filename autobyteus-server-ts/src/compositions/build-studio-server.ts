@@ -26,7 +26,6 @@ import { ApplicationBundleService } from "../application-bundles/services/applic
 import { ApplicationCapabilityService } from "../application-capability/services/application-capability-service.js";
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
-import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
 import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
 import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
 import { stopChannelRunOutputDeliveryRuntime } from "../external-channel/runtime/channel-run-output-runtime-singleton.js";
@@ -38,13 +37,15 @@ import {
   createAgentToolsMcpRuntime,
   type AgentToolsMcpRuntime,
 } from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
-import {
-  getGeneralProcessPublishedArtifactPublisher,
-} from "../services/published-artifacts/published-artifact-publication-service.js";
+import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
   createGeneralProcessRunSupervisor,
   type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
+import {
+  createHostDefinitionServices,
+  type HostDefinitionServices,
+} from "./host-definition-services.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -52,33 +53,45 @@ export type StudioServer = Readonly<{
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
 
+type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
+
 const closeStudioProcessResources = async (input: {
-  agentToolsMcpRuntime: AgentToolsMcpRuntime;
-  generalProcessRunSupervisor: GeneralProcessRunSupervisor;
+  hostDefinitionServices: HostDefinitionServices;
+  agentToolsMcpRuntime: AgentToolsMcpRuntime | null;
+  generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
+  studioApiHandle: StudioApiHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
   try {
-    await input.generalProcessRunSupervisor.close();
+    await input.generalProcessRunSupervisor?.close();
   } finally {
     try {
-      input.agentToolsMcpRuntime.close();
+      input.agentToolsMcpRuntime?.close();
     } finally {
       try {
-        await stopChannelRunOutputDeliveryRuntime();
+        input.studioApiHandle?.close();
       } finally {
         try {
-          await stopGatewayCallbackDeliveryRuntime();
+          await stopChannelRunOutputDeliveryRuntime();
         } finally {
           try {
-            await getManagedMessagingGatewayService().close();
+            await stopGatewayCallbackDeliveryRuntime();
           } finally {
             try {
-              await stopDefaultAgentRunEventPipeline();
+              await getManagedMessagingGatewayService().close();
             } finally {
               try {
-                await getSecretVaultRuntime().close();
+                await stopDefaultAgentRunEventPipeline();
               } finally {
-                await shutdownPrisma();
+                try {
+                  input.hostDefinitionServices.close();
+                } finally {
+                  try {
+                    await getSecretVaultRuntime().close();
+                  } finally {
+                    await shutdownPrisma();
+                  }
+                }
               }
             }
           }
@@ -88,10 +101,7 @@ const closeStudioProcessResources = async (input: {
   }
 };
 
-const createStudioApplicationServices = (
-  appConfig: AppConfig,
-  agentToolsMcpRuntime: AgentToolsMcpRuntime,
-) => {
+const createStudioPackageServices = (appConfig: AppConfig) => {
   const packageRegistryService = new ApplicationPackageRegistryService({
     rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
     registryStore: new ApplicationPackageRegistryStore(appConfig),
@@ -102,137 +112,146 @@ const createStudioApplicationServices = (
     provider: bundleProvider,
     packageRegistryService,
   });
-  const definitionServices = createApplicationDefinitionServices({
-    appConfig,
-    bundleService,
-  });
+  return { packageRegistryService, bundleProvider, bundleService };
+};
+
+const createStudioApplicationServices = (input: {
+  appConfig: AppConfig;
+  packages: ReturnType<typeof createStudioPackageServices>;
+  definitions: HostDefinitionServices;
+  agentToolsMcpRuntime: AgentToolsMcpRuntime;
+}) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
-    appConfig,
-    bundleService,
-    ...definitionServices,
-    agentToolsSessionFactory: agentToolsMcpRuntime,
+    appConfig: input.appConfig,
+    bundleService: input.packages.bundleService,
+    agentDefinitionService: input.definitions.agentDefinitionService,
+    agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
+    agentToolsSessionFactory: input.agentToolsMcpRuntime,
   });
   const catalogRefreshCoordinator = new ApplicationCatalogRefreshCoordinator({
-    bundleService,
-    catalogReconciliation:
-      applicationRuntime.hostManagement.catalogReconciliation,
-    agentDefinitionService: definitionServices.agentDefinitionService,
-    agentTeamDefinitionService: definitionServices.agentTeamDefinitionService,
+    bundleService: input.packages.bundleService,
+    catalogReconciliation: applicationRuntime.hostManagement.catalogReconciliation,
+    agentDefinitionService: input.definitions.agentDefinitionService,
+    agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
   });
   const packageCommandService = new ApplicationPackageCommandService({
-    registry: packageRegistryService,
-    provider: bundleProvider,
+    registry: input.packages.packageRegistryService,
+    provider: input.packages.bundleProvider,
     refreshCoordinator: catalogRefreshCoordinator,
   });
-  return {
-    packageRegistryService,
-    packageCommandService,
-    bundleService,
-    applicationRuntime,
-    ...definitionServices,
-  };
+  return { applicationRuntime, packageCommandService };
 };
 
 export const buildStudioServer = async (input: {
   appConfig: AppConfig;
   loggingConfig: LoggingConfig;
 }): Promise<StudioServer> => {
-  const agentToolsMcpRuntime =
-    createAgentToolsMcpRuntime({
-      generalProcessPublisher:
-        getGeneralProcessPublishedArtifactPublisher(),
-    });
-  const generalProcessRunSupervisor =
-    createGeneralProcessRunSupervisor(
-      agentToolsMcpRuntime.generalProcessSessionManager,
-    );
-  let studioServices:
-    ReturnType<typeof createStudioApplicationServices>;
-  try {
-    studioServices = createStudioApplicationServices(
-      input.appConfig,
-      agentToolsMcpRuntime,
-    );
-  } catch (error) {
+  const packages = createStudioPackageServices(input.appConfig);
+  const hostDefinitionServices = createHostDefinitionServices({
+    appConfig: input.appConfig,
+    bundleService: packages.bundleService,
+  });
+  let agentToolsMcpRuntime: AgentToolsMcpRuntime | null = null;
+  let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
+  let studioApiHandle: StudioApiHandle | null = null;
+  let applicationRuntime: ApplicationPlatformRuntime | null = null;
+  let processResourcesClosed = false;
+  const closeProcessResources = async (): Promise<void> => {
+    if (processResourcesClosed) return;
+    processResourcesClosed = true;
     await closeStudioProcessResources({
+      hostDefinitionServices,
       agentToolsMcpRuntime,
       generalProcessRunSupervisor,
+      studioApiHandle,
     });
-    throw error;
-  }
-  const {
-    packageRegistryService,
-    packageCommandService,
-    bundleService,
-    applicationRuntime,
-    agentDefinitionService,
-    agentTeamDefinitionService,
-  } = studioServices;
-  configureStudioApplicationApiServices({
-    bundleService,
-    capabilityService: new ApplicationCapabilityService({
-      applicationBundleService: bundleService,
-    }),
-    packageQueries: packageRegistryService,
-    packageCommands: packageCommandService,
-    agentDefinitionService,
-    agentTeamDefinitionService,
-  });
+  };
 
-  const app = fastify({
-    logger: getFastifyLoggerOptions(input.loggingConfig),
-    disableRequestLogging: true,
-    maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
-  });
-  app.addHook("onClose", async () => {
-    try {
-      await applicationRuntime.lifecycle.stop();
-    } finally {
-      await closeStudioProcessResources({
-        agentToolsMcpRuntime,
-        generalProcessRunSupervisor,
-      });
-    }
-  });
   try {
-    registerHttpAccessLogPolicy(app, {
-      mode: input.loggingConfig.httpAccessLogMode,
-      includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
+    agentToolsMcpRuntime = createAgentToolsMcpRuntime({
+      generalProcessPublisher: getGeneralProcessPublishedArtifactPublisher(),
     });
-    await registerAgentToolsMcpRoutes(
-      app,
-      agentToolsMcpRuntime.routeDependencies,
-    );
-    await registerMcpGatewayRoutes(app);
-    await app.register(cors, {
-      origin: true,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
+      appConfig: input.appConfig,
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+      agentToolsSessionManager: agentToolsMcpRuntime.generalProcessSessionManager,
     });
-    await app.register(multipart, {
-      limits: { fileSize: 25 * 1024 * 1024 },
+    const applicationServices = createStudioApplicationServices({
+      appConfig: input.appConfig,
+      packages,
+      definitions: hostDefinitionServices,
+      agentToolsMcpRuntime,
     });
-    await app.register(websocket);
-    await registerRemoteAccessPolicyPlugin(app);
-    await registerMobileWebStaticRoutes(app);
-    await app.register(
-      async (restApp) => registerRestRoutes(restApp, {
-        lifecycleReadiness: applicationRuntime.lifecycle,
-        application: applicationRuntime.rest,
+    const currentApplicationRuntime = applicationServices.applicationRuntime;
+    applicationRuntime = currentApplicationRuntime;
+    studioApiHandle = configureStudioApplicationApiServices({
+      bundleService: packages.bundleService,
+      capabilityService: new ApplicationCapabilityService({
+        applicationBundleService: packages.bundleService,
       }),
-      { prefix: "/rest" },
-    );
-    await registerWebsocketRoutes(app, {
-      lifecycleReadiness: applicationRuntime.lifecycle,
-      application: applicationRuntime.realtime,
+      packageQueries: packages.packageRegistryService,
+      packageCommands: applicationServices.packageCommandService,
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+      agentRunService: generalProcessRunSupervisor.agentRunService,
+      teamRunService: generalProcessRunSupervisor.teamRunService,
     });
-    await registerGraphql(app);
-    return Object.freeze({
-      fastify: app,
-      applicationRuntime,
-      packageRegistryService,
+
+    const app = fastify({
+      logger: getFastifyLoggerOptions(input.loggingConfig),
+      disableRequestLogging: true,
+      maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
     });
+    app.addHook("onClose", async () => {
+      try {
+        await currentApplicationRuntime.lifecycle.stop();
+      } finally {
+        await closeProcessResources();
+      }
+    });
+    try {
+      registerHttpAccessLogPolicy(app, {
+        mode: input.loggingConfig.httpAccessLogMode,
+        includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
+      });
+      await registerAgentToolsMcpRoutes(app, agentToolsMcpRuntime.routeDependencies);
+      await registerMcpGatewayRoutes(app);
+      await app.register(cors, {
+        origin: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      });
+      await app.register(multipart, { limits: { fileSize: 25 * 1024 * 1024 } });
+      await app.register(websocket);
+      await registerRemoteAccessPolicyPlugin(app);
+      await registerMobileWebStaticRoutes(app);
+      await app.register(
+        async (restApp) => registerRestRoutes(restApp, {
+          lifecycleReadiness: currentApplicationRuntime.lifecycle,
+          application: currentApplicationRuntime.rest,
+        }),
+        { prefix: "/rest" },
+      );
+      await registerWebsocketRoutes(app, {
+        lifecycleReadiness: currentApplicationRuntime.lifecycle,
+        application: currentApplicationRuntime.realtime,
+      });
+      await registerGraphql(app);
+      return Object.freeze({
+        fastify: app,
+        applicationRuntime: currentApplicationRuntime,
+        packageRegistryService: packages.packageRegistryService,
+      });
+    } catch (error) {
+      await app.close();
+      throw error;
+    }
   } catch (error) {
-    await app.close();
+    try {
+      await applicationRuntime?.lifecycle.stop();
+    } finally {
+      await closeProcessResources();
+    }
     throw error;
   }
 };
