@@ -34,6 +34,12 @@ const editability = (revision = 'revision-1') => ({
   configurationRevision: revision,
 })
 
+const activeEditability = (revision = 'revision-1') => ({
+  editable: false,
+  reason: 'RUN_ACTIVE',
+  configurationRevision: revision,
+})
+
 const agentPayload = (revision = 'revision-1', llmConfig = { effort: 'low' }) => ({
   runId: 'run-1',
   isActive: false,
@@ -58,10 +64,14 @@ const launch = (model: string, effort: string) => ({
   workspace_root_path: '/workspace',
 })
 
-const teamPayload = () => ({
+const teamPayload = (
+  revision = 'revision-1',
+  rootEffort = 'low',
+  memberEffort = 'medium',
+) => ({
   teamRunId: 'team-1',
   isActive: false,
-  modelConfigEditability: editability(),
+  modelConfigEditability: editability(revision),
   executionTree: {
     schema_version: 2,
     created_at: '2026-08-25T00:00:00.000Z',
@@ -74,7 +84,7 @@ const teamPayload = () => ({
       team_definition_name: 'Team',
       team_run_id: 'team-1',
       coordinator_address: '/member',
-      default_launch_configuration: launch('root-model', 'low'),
+      default_launch_configuration: launch('root-model', rootEffort),
       task_executions: [],
       members: [{
         kind: 'configured_agent',
@@ -84,7 +94,7 @@ const teamPayload = () => ({
         description: null,
         agent_run_id: 'member-run',
         platform_agent_run_id: null,
-        launch_configuration: launch('different-model', 'medium'),
+        launch_configuration: launch('different-model', memberEffort),
       }],
     },
   },
@@ -161,5 +171,170 @@ describe('existingRunModelConfigStore', () => {
 
     store.setSchemaState('/member', { status: 'ready', message: null })
     expect(store.canSave).toBe(true)
+  })
+
+  it('replaces an Agent draft after unchanged-revision RUN_ACTIVE when the stopped canonical refresh arrives', async () => {
+    const store = useExistingRunModelConfigStore()
+    store.syncAgentCanonical(agentPayload())
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.updateAgentModelConfig({ effort: 'high' })
+    mocks.updateAgent.mockResolvedValue({
+      success: false,
+      outcome: 'RUN_ACTIVE',
+      message: 'This run resumed before settings were saved.',
+      isActive: true,
+      editability: activeEditability(),
+      canonicalLlmConfig: { effort: 'low' },
+      fieldErrors: [],
+    })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(store.draft).toMatchObject({
+      kind: 'agent',
+      canonicalLlmConfig: { effort: 'low' },
+      draftLlmConfig: { effort: 'high' },
+    })
+    expect(store.reconciliationRequired).toBe(true)
+
+    store.syncAgentCanonical(agentPayload())
+    expect(store.draft).toMatchObject({
+      kind: 'agent',
+      canonicalLlmConfig: { effort: 'low' },
+      draftLlmConfig: { effort: 'low' },
+    })
+    expect(store.dirty).toBe(false)
+    expect(store.reconciliationRequired).toBe(false)
+  })
+
+  it('does not let an Agent draft rejected at RUN_ACTIVE save under another writer revision', async () => {
+    const store = useExistingRunModelConfigStore()
+    store.syncAgentCanonical(agentPayload())
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.updateAgentModelConfig({ effort: 'high' })
+    mocks.updateAgent.mockResolvedValueOnce({
+      success: false,
+      outcome: 'RUN_ACTIVE',
+      message: 'This run resumed before settings were saved.',
+      isActive: true,
+      editability: activeEditability('revision-2'),
+      canonicalLlmConfig: { effort: 'medium' },
+      fieldErrors: [],
+    })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(store.draft).toMatchObject({
+      kind: 'agent',
+      canonicalLlmConfig: { effort: 'medium' },
+      draftLlmConfig: { effort: 'medium' },
+      editability: { configurationRevision: 'revision-2' },
+    })
+    store.syncAgentCanonical(agentPayload('revision-2', { effort: 'medium' }))
+    expect(store.dirty).toBe(false)
+    await expect(store.save()).resolves.toBe(false)
+    expect(mocks.updateAgent).toHaveBeenCalledTimes(1)
+
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.updateAgentModelConfig({ effort: 'max' })
+    mocks.updateAgent.mockResolvedValueOnce({
+      success: true,
+      outcome: 'UPDATED',
+      message: 'Saved.',
+      isActive: false,
+      editability: editability('revision-3'),
+      canonicalLlmConfig: { effort: 'max' },
+      fieldErrors: [],
+    })
+    await expect(store.save()).resolves.toBe(true)
+    expect(mocks.updateAgent).toHaveBeenLastCalledWith({
+      agentRunId: 'run-1',
+      expectedConfigurationRevision: 'revision-2',
+      llmConfig: { effort: 'max' },
+    })
+  })
+
+  it('replaces a Team planner after unchanged-revision RUN_ACTIVE when the stopped canonical refresh arrives', async () => {
+    const store = useExistingRunModelConfigStore()
+    const canonical = teamPayload()
+    store.syncTeamCanonical(canonical as never)
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.setSchemaState('/member', { status: 'ready', message: null })
+    store.updateTeamScopeModelConfig('/', { effort: 'high' })
+    mocks.updateTeam.mockResolvedValue({
+      success: false,
+      outcome: 'RUN_ACTIVE',
+      message: 'This team resumed before settings were saved.',
+      isActive: true,
+      editability: activeEditability(),
+      canonicalExecutionTree: canonical.executionTree,
+      fieldErrors: [],
+    })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(store.patches).toEqual([{
+      scopeKind: 'CONFIGURED_TEAM',
+      scopeAddress: '/',
+      llmConfig: { effort: 'high' },
+    }])
+    expect(store.reconciliationRequired).toBe(true)
+
+    store.syncTeamCanonical(canonical as never)
+    expect(store.patches).toEqual([])
+    expect(store.reconciliationRequired).toBe(false)
+  })
+
+  it('does not let Team patches rejected at RUN_ACTIVE save under another writer revision', async () => {
+    const store = useExistingRunModelConfigStore()
+    store.syncTeamCanonical(teamPayload() as never)
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.setSchemaState('/member', { status: 'ready', message: null })
+    store.updateTeamScopeModelConfig('/', { effort: 'high' })
+    const advancedCanonical = teamPayload('revision-2', 'medium')
+    mocks.updateTeam.mockResolvedValueOnce({
+      success: false,
+      outcome: 'RUN_ACTIVE',
+      message: 'This team resumed before settings were saved.',
+      isActive: true,
+      editability: activeEditability('revision-2'),
+      canonicalExecutionTree: advancedCanonical.executionTree,
+      fieldErrors: [],
+    })
+
+    await expect(store.save()).resolves.toBe(false)
+    expect(store.draft).toMatchObject({
+      kind: 'team',
+      editability: { configurationRevision: 'revision-2' },
+      planner: { scopesByAddress: { '/': {
+        originalLlmConfig: { effort: 'medium' },
+        draftLlmConfig: { effort: 'medium' },
+      } } },
+    })
+    store.syncTeamCanonical(advancedCanonical as never)
+    expect(store.patches).toEqual([])
+    await expect(store.save()).resolves.toBe(false)
+    expect(mocks.updateTeam).toHaveBeenCalledTimes(1)
+
+    store.setSchemaState('/', { status: 'ready', message: null })
+    store.setSchemaState('/member', { status: 'ready', message: null })
+    store.updateTeamScopeModelConfig('/', { effort: 'max' })
+    const savedCanonical = teamPayload('revision-3', 'max')
+    mocks.updateTeam.mockResolvedValueOnce({
+      success: true,
+      outcome: 'UPDATED',
+      message: 'Saved.',
+      isActive: false,
+      editability: editability('revision-3'),
+      canonicalExecutionTree: savedCanonical.executionTree,
+      fieldErrors: [],
+    })
+    await expect(store.save()).resolves.toBe(true)
+    expect(mocks.updateTeam).toHaveBeenLastCalledWith({
+      teamRunId: 'team-1',
+      expectedConfigurationRevision: 'revision-2',
+      patches: [{
+        scopeKind: 'CONFIGURED_TEAM',
+        scopeAddress: '/',
+        llmConfig: { effort: 'max' },
+      }],
+    })
   })
 })

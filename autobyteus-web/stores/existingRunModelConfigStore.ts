@@ -16,12 +16,15 @@ import {
 import {
   createExistingTeamModelConfigDraft,
   planExistingTeamModelConfigPatches,
+  rebaseExistingTeamModelConfigDraft,
   updateExistingTeamScopeModelConfig,
 } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import {
   updateStoppedAgentModelConfig,
   updateStoppedTeamModelConfigs,
+  type AgentModelConfigMutationResult,
   type ExistingRunModelConfigMutationResult,
+  type TeamModelConfigMutationResult,
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
@@ -39,6 +42,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
     saving: false,
     reconciling: false,
     reconciliationRequired: false,
+    forceBaselineOnNextStoppedSync: false,
     feedback: null as { kind: 'success' | 'error'; message: string } | null,
     fieldErrors: [] as ExistingRunModelConfigFieldError[],
   }),
@@ -74,13 +78,15 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.saving = false
       this.reconciling = false
       this.reconciliationRequired = false
+      this.forceBaselineOnNextStoppedSync = false
       this.feedback = null
       this.fieldErrors = []
     },
     syncAgentCanonical(payload: RunResumeConfigPayload, forceBaseline = false): void {
       const revision = payload.modelConfigEditability.configurationRevision
       const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
-      if (!forceBaseline && sameSubject
+      const mustReplaceBaseline = forceBaseline || (this.forceBaselineOnNextStoppedSync && !payload.isActive)
+      if (!mustReplaceBaseline && sameSubject
         && this.draft.editability.configurationRevision === revision) {
         this.draft = {
           ...this.draft,
@@ -102,12 +108,14 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.schemaStateByAddress = { '/': loadingSchemaState() }
       this.fieldErrors = []
       this.reconciliationRequired = false
+      this.forceBaselineOnNextStoppedSync = false
       if (!sameSubject) this.feedback = null
     },
     syncTeamCanonical(payload: TeamRunResumeConfigPayload, forceBaseline = false): void {
       const revision = payload.modelConfigEditability.configurationRevision
       const sameSubject = this.draft?.kind === 'team' && this.draft.teamRunId === payload.teamRunId
-      if (!forceBaseline && sameSubject
+      const mustReplaceBaseline = forceBaseline || (this.forceBaselineOnNextStoppedSync && !payload.isActive)
+      if (!mustReplaceBaseline && sameSubject
         && this.draft.editability.configurationRevision === revision) {
         this.draft = {
           ...this.draft,
@@ -129,6 +137,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       )
       this.fieldErrors = []
       this.reconciliationRequired = false
+      this.forceBaselineOnNextStoppedSync = false
       if (!sameSubject) this.feedback = null
     },
     updateAgentModelConfig(llmConfig: Record<string, unknown> | null): void {
@@ -181,9 +190,9 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         expectedConfigurationRevision: draft.editability.configurationRevision,
         llmConfig: cloneExistingRunModelConfig(draft.draftLlmConfig),
       })
-      this.applyResultState(result)
       const history = useRunHistoryStore()
       if (result.success) {
+        this.applyResultState(result)
         const payload: RunResumeConfigPayload = {
           runId: draft.runId,
           isActive: result.isActive,
@@ -197,7 +206,12 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         this.reconciliationRequired = false
         return true
       }
-      this.draft = { ...draft, isActive: result.isActive, editability: result.editability }
+      this.applyAgentFailureCanonical(draft, result)
+      this.applyResultState(result)
+      if (result.outcome === 'RUN_ACTIVE') {
+        this.reconciliationRequired = true
+        this.forceBaselineOnNextStoppedSync = true
+      }
       await this.reconcileAgentFailure(result.outcome, draft.runId)
       return false
     },
@@ -207,9 +221,9 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         expectedConfigurationRevision: draft.editability.configurationRevision,
         patches: planExistingTeamModelConfigPatches(draft.planner),
       })
-      this.applyResultState(result)
       const history = useRunHistoryStore()
       if (result.success) {
+        this.applyResultState(result)
         const tree = teamRunExecutionTreeDtoSchema.parse(result.canonicalExecutionTree)
         const payload: TeamRunResumeConfigPayload = {
           teamRunId: draft.teamRunId,
@@ -223,9 +237,84 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         this.reconciliationRequired = false
         return true
       }
-      this.draft = { ...draft, isActive: result.isActive, editability: result.editability }
+      this.applyTeamFailureCanonical(draft, result)
+      this.applyResultState(result)
+      if (result.outcome === 'RUN_ACTIVE') {
+        this.reconciliationRequired = true
+        this.forceBaselineOnNextStoppedSync = true
+      }
       await this.reconcileTeamFailure(result.outcome, draft.teamRunId)
       return false
+    },
+    applyAgentFailureCanonical(
+      draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent' }>,
+      result: AgentModelConfigMutationResult,
+    ): void {
+      if (!Object.prototype.hasOwnProperty.call(result, 'canonicalLlmConfig')) {
+        this.draft = {
+          ...draft,
+          isActive: result.isActive,
+          editability: {
+            ...result.editability,
+            configurationRevision: draft.editability.configurationRevision,
+          },
+        }
+        return
+      }
+      const canonical = cloneExistingRunModelConfig(result.canonicalLlmConfig)
+      const payload: RunResumeConfigPayload = {
+        runId: draft.runId,
+        isActive: result.isActive,
+        metadataConfig: { ...draft.metadata, llmConfig: canonical },
+        modelConfigEditability: result.editability,
+      }
+      useRunHistoryStore().resumeConfigByRunId[draft.runId] = payload
+      if (result.editability.configurationRevision !== draft.editability.configurationRevision) {
+        this.syncAgentCanonical(payload, true)
+        return
+      }
+      this.draft = {
+        ...draft,
+        isActive: result.isActive,
+        editability: { ...result.editability },
+        metadata: cloneExistingRunJsonValue(payload.metadataConfig),
+        canonicalLlmConfig: canonical,
+      }
+    },
+    applyTeamFailureCanonical(
+      draft: Extract<ExistingRunModelConfigDraft, { kind: 'team' }>,
+      result: TeamModelConfigMutationResult,
+    ): void {
+      const parsedTree = teamRunExecutionTreeDtoSchema.safeParse(result.canonicalExecutionTree)
+      if (!parsedTree.success) {
+        this.draft = {
+          ...draft,
+          isActive: result.isActive,
+          editability: {
+            ...result.editability,
+            configurationRevision: draft.editability.configurationRevision,
+          },
+        }
+        return
+      }
+      const payload: TeamRunResumeConfigPayload = {
+        teamRunId: draft.teamRunId,
+        isActive: result.isActive,
+        executionTree: parsedTree.data,
+        modelConfigEditability: result.editability,
+      }
+      useRunHistoryStore().teamResumeConfigByTeamRunId[draft.teamRunId] = payload
+      if (result.editability.configurationRevision !== draft.editability.configurationRevision) {
+        this.syncTeamCanonical(payload, true)
+        return
+      }
+      this.draft = {
+        ...draft,
+        isActive: result.isActive,
+        editability: { ...result.editability },
+        executionTree: cloneExistingRunJsonValue(parsedTree.data),
+        planner: rebaseExistingTeamModelConfigDraft(draft.planner, parsedTree.data),
+      }
     },
     applyResultState(result: ExistingRunModelConfigMutationResult): void {
       this.feedback = { kind: result.success ? 'success' : 'error', message: result.message }
