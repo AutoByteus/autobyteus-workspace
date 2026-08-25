@@ -1,0 +1,17 @@
+# IR-014 static audit
+Source/test commit: 4b36f7c5b58ed3ea3fe3cc94ea5d71228913949e
+
+## CR-014 whole-schema Agent fixture
+PASS: `MemberOverrideItem.spec.ts` whole-schema-absence coverage now uses exact `reasoning_effort=ultra` and removed optional `service_tier=fast` values.
+PASS: the fixture retains the absent runtime/model schema trigger while asserting one occurrence per key, exact values, stable `reasoning_effort` then `service_tier` order, no emitted mutation, and byte-equivalent input state after render.
+
+## Complete retained historical fixture vocabulary
+PASS: the direct classifier, root/nested-Team mounted consumer, and Agent partial/whole-schema coverage contain `reasoning_effort` and `service_tier`.
+PASS: those three paths contain none of the rejected or invented fixture vocabulary: `zeta`, `alpha: 'persisted'`, `'persisted'`, `removed_parameter`, `legacy_shape`, `ordinary_prompt`, `multiline_prompt`, `line_feed_prompt`, `carriage_return_prompt`.
+
+## Scope and whitespace
+PASS: IR-014 changes one test file only; no production source, classifier, residual renderer, capability type, adapter, provider branch, or compatibility path changed.
+PASS: `git diff --check 7b82ebed0..HEAD` for `MemberOverrideItem.spec.ts`.
+
+## Historical evidence correction
+PASS: `static-audit-ir-013.txt` now records CRR-022's factual correction instead of continuing to claim that the missed whole-schema Agent fixture was already producer-backed.
