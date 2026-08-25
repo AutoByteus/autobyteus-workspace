@@ -1,0 +1,3025 @@
+=== SDK CONTRACT: AGENT VS TEAM DISCRIMINATED SHAPES ===
+     1	import type { ApplicationExecutionResourceSlotDeclaration } from "./manifests.js";
+     2
+     3	export type ApplicationExecutionResourceKind = "AGENT" | "AGENT_TEAM";
+     4	export type ApplicationExecutionResourceSource = "bundle" | "shared";
+     5
+     6	export type ApplicationExecutionResourceRef =
+     7	  | { source: "bundle"; kind: "AGENT"; localId: string }
+     8	  | { source: "bundle"; kind: "AGENT_TEAM"; localId: string }
+     9	  | { source: "shared"; kind: "AGENT"; definitionId: string }
+    10	  | { source: "shared"; kind: "AGENT_TEAM"; definitionId: string };
+    11
+    12	export type ApplicationExecutionResourceSummary = {
+    13	  source: ApplicationExecutionResourceSource;
+    14	  kind: ApplicationExecutionResourceKind;
+    15	  localId: string | null;
+    16	  definitionId: string;
+    17	  name: string;
+    18	  applicationId: string | null;
+    19	};
+    20
+    21	export type ApplicationAgentLaunchOverride = {
+    22	  kind: "AGENT";
+    23	  llmModelIdentifier?: string | null;
+    24	  runtimeKind?: string | null;
+    25	  llmConfig?: Record<string, unknown> | null;
+    26	  workspaceRootPath?: string | null;
+    27	};
+    28
+    29	export type ApplicationTeamLaunchOverrideDefaults = {
+    30	  llmModelIdentifier?: string | null;
+    31	  runtimeKind?: string | null;
+    32	  llmConfig?: Record<string, unknown> | null;
+    33	  workspaceRootPath?: string | null;
+    34	};
+    35
+    36	export type ApplicationTeamMemberLaunchOverride = {
+    37	  memberAddress: string;
+    38	  displayName: string;
+    39	  agentDefinitionId: string;
+    40	  llmModelIdentifier?: string | null;
+    41	  runtimeKind?: string | null;
+    42	  llmConfig?: Record<string, unknown> | null;
+    43	};
+    44
+    45	export type ApplicationTeamLaunchOverride = {
+    46	  kind: "AGENT_TEAM";
+    47	  defaults: ApplicationTeamLaunchOverrideDefaults | null;
+    48	  memberProfiles: ApplicationTeamMemberLaunchOverride[];
+    49	};
+    50
+    51	export type ApplicationLaunchOverride =
+    52	  | ApplicationAgentLaunchOverride
+    53	  | ApplicationTeamLaunchOverride;
+    54
+    55	export type ApplicationExecutionResourceOverride = {
+    56	  slotKey: string;
+    57	  executionResourceRef: ApplicationExecutionResourceRef;
+    58	  launchOverride: ApplicationLaunchOverride | null;
+    59	};
+    60
+    61	export type ApplicationLaunchDefinitionValueSource =
+    62	  | { kind: "PACKAGE_TEAM_DEFAULT"; teamDefinitionId: string }
+    63	  | { kind: "PACKAGE_AGENT_DEFAULT"; agentDefinitionId: string }
+    64	  | { kind: "SELECTED_RESOURCE_TEAM_DEFAULT"; teamDefinitionId: string }
+    65	  | { kind: "SELECTED_RESOURCE_AGENT_DEFAULT"; agentDefinitionId: string };
+    66
+    67	export type ApplicationLaunchValueSource =
+    68	  | ApplicationLaunchDefinitionValueSource
+    69	  | { kind: "HOST_MEMBER_OVERRIDE"; memberAddress: string }
+    70	  | { kind: "HOST_SLOT_OVERRIDE" };
+    71
+    72	export type ApplicationResolvedLaunchBaselineLeaf = {
+    73	  memberAddress: string | null;
+    74	  displayName: string;
+    75	  agentDefinitionId: string;
+    76	  runtimeKind: string | null;
+    77	  llmModelIdentifier: string | null;
+    78	  llmConfig: Record<string, unknown> | null;
+    79	  provenance: {
+    80	    runtimeKind: ApplicationLaunchDefinitionValueSource | null;
+    81	    llmModelIdentifier: ApplicationLaunchDefinitionValueSource | null;
+    82	    llmConfig: ApplicationLaunchDefinitionValueSource | null;
+    83	  };
+    84	};
+    85
+    86	export type ApplicationResolvedTeamLaunchBaselineScope = Readonly<{
+    87	  teamAddress: string;
+    88	  displayName: string;
+    89	  teamDefinitionId: string;
+    90	  runtimeKind: string | null;
+    91	  llmModelIdentifier: string | null;
+    92	  llmConfig: Record<string, unknown> | null;
+    93	  provenance: Readonly<{
+    94	    runtimeKind: ApplicationLaunchDefinitionValueSource | null;
+    95	    llmModelIdentifier: ApplicationLaunchDefinitionValueSource | null;
+    96	    llmConfig: ApplicationLaunchDefinitionValueSource | null;
+    97	  }>;
+    98	}>;
+    99
+   100	type ApplicationResolvedResourceLaunchBaselineFields = {
+   101	  slotKey: string;
+   102	  executionResourceRef: ApplicationExecutionResourceRef;
+   103	  resourceDefinitionId: string;
+   104	  leaves: ApplicationResolvedLaunchBaselineLeaf[];
+   105	};
+   106
+   107	export type ApplicationResolvedResourceLaunchBaseline =
+   108	  | (ApplicationResolvedResourceLaunchBaselineFields & {
+   109	      resourceKind: "AGENT";
+   110	    })
+   111	  | (ApplicationResolvedResourceLaunchBaselineFields & {
+   112	      resourceKind: "AGENT_TEAM";
+   113	      teamScopes: ApplicationResolvedTeamLaunchBaselineScope[];
+   114	    });
+   115
+   116	export type ApplicationEffectiveLeafLaunchProfile = {
+   117	  memberAddress: string | null;
+   118	  displayName: string;
+   119	  agentDefinitionId: string;
+   120	  runtimeKind: string;
+   121	  llmModelIdentifier: string;
+   122	  llmConfig: Record<string, unknown> | null;
+   123	  workspaceRootPath: string;
+   124	  provenance: {
+   125	    runtimeKind: ApplicationLaunchValueSource;
+   126	    llmModelIdentifier: ApplicationLaunchValueSource;
+   127	    llmConfig: ApplicationLaunchValueSource | null;
+   128	    workspaceRootPath: "HOST_OVERRIDE" | "APPLICATION_RUNTIME";
+   129	  };
+   130	};
+   131
+   132	export type ApplicationEffectiveTeamLaunchProfile = Readonly<{
+   133	  teamAddress: string;
+   134	  displayName: string;
+   135	  teamDefinitionId: string;
+   136	  runtimeKind: string;
+   137	  llmModelIdentifier: string;
+   138	  llmConfig: Record<string, unknown> | null;
+   139	  workspaceRootPath: string;
+   140	  provenance: Readonly<{
+   141	    runtimeKind: ApplicationLaunchValueSource;
+   142	    llmModelIdentifier: ApplicationLaunchValueSource;
+   143	    llmConfig: ApplicationLaunchValueSource | null;
+   144	    workspaceRootPath: "HOST_OVERRIDE" | "APPLICATION_RUNTIME";
+   145	  }>;
+   146	}>;
+   147
+   148	type ApplicationEffectiveLaunchConfigurationFields = {
+   149	  slotKey: string;
+   150	  executionResourceRef: ApplicationExecutionResourceRef;
+   151	  resourceDefinitionId: string;
+   152	  leaves: ApplicationEffectiveLeafLaunchProfile[];
+   153	};
+   154
+   155	export type ApplicationEffectiveLaunchConfiguration =
+   156	  | (ApplicationEffectiveLaunchConfigurationFields & {
+   157	      resourceKind: "AGENT";
+   158	    })
+   159	  | (ApplicationEffectiveLaunchConfigurationFields & {
+   160	      resourceKind: "AGENT_TEAM";
+   161	      teamScopes: ApplicationEffectiveTeamLaunchProfile[];
+   162	    });
+   163
+   164	export type ApplicationLaunchIssueScope =
+   165	  | "PACKAGE"
+   166	  | "HOST_OVERRIDE"
+   167	  | "HOST_CAPABILITY";
+   168
+   169	export type ApplicationLaunchIssueCode =
+   170	  | "PACKAGE_DEFAULT_MISSING"
+   171	  | "PACKAGE_RESOURCE_UNAVAILABLE"
+   172	  | "PACKAGE_RESOURCE_NOT_ALLOWED"
+   173	  | "PACKAGE_DEFAULT_INCOMPLETE"
+   174	  | "PACKAGE_TEAM_TOPOLOGY_INVALID"
+   175	  | "PACKAGE_FORBIDDEN_HOST_FIELD"
+   176	  | "SAVED_RESOURCE_UNAVAILABLE"
+   177	  | "SAVED_RESOURCE_NOT_ALLOWED"
+   178	  | "SAVED_OVERRIDE_MALFORMED"
+   179	  | "SAVED_MEMBER_TOPOLOGY_STALE"
+   180	  | "RUNTIME_UNAVAILABLE"
+   181	  | "MODEL_UNAVAILABLE"
+   182	  | "CURRENT_MODEL_SELECTION_REQUIRED"
+   183	  | "RUNTIME_AUTHENTICATION_UNAVAILABLE";
+   184
+   185	export type ApplicationLaunchIssue = {
+   186	  severity: "blocking";
+   187	  scope: ApplicationLaunchIssueScope;
+   188	  code: ApplicationLaunchIssueCode;
+   189	  slotKey: string;
+   190	  message: string;
+   191	  memberAddress?: string | null;
+   192	  staleMembers?: Array<{
+   193	    memberAddress: string;
+   194	    displayName: string;
+   195	    agentDefinitionId: string;
+   196	    reason: "MISSING_FROM_TEAM" | "AGENT_CHANGED";
+   197	    currentAgentDefinitionId?: string | null;
+   198	  }> | null;
+   199	};
+   200
+   201	export type ApplicationLaunchSelectionIssue = {
+   202	  scope: "SELECTION";
+   203	  code:
+   204	    | "SELECTION_UNAVAILABLE"
+   205	    | "SELECTION_NOT_ALLOWED"
+   206	    | "SELECTION_TOPOLOGY_INVALID";
+   207	  applicationId: string;
+   208	  slotKey: string;
+   209	  executionResourceRef: ApplicationExecutionResourceRef;
+   210	  message: string;
+   211	};
+   212
+   213	export type ApplicationLaunchSelectionPreview =
+   214	  | {
+   215	      status: "RESOLVED";
+   216	      applicationId: string;
+   217	      slotKey: string;
+   218	      executionResourceRef: ApplicationExecutionResourceRef;
+   219	      selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline;
+   220	      issues: [];
+   221	    }
+   222	  | {
+   223	      status: "INVALID_SELECTION";
+   224	      applicationId: string;
+   225	      slotKey: string;
+   226	      executionResourceRef: ApplicationExecutionResourceRef;
+   227	      selectedResourceBaseline: null;
+   228	      issues: ApplicationLaunchSelectionIssue[];
+   229	    };
+   230
+   231	export type ApplicationLaunchReadiness =
+   232	  | { status: "RUNNABLE"; issues: [] }
+   233	  | { status: "INVALID_PACKAGE"; issues: ApplicationLaunchIssue[] }
+   234	  | { status: "HOST_REQUIREMENT_MISSING"; issues: ApplicationLaunchIssue[] };
+   235
+   236	export type ApplicationHostOverrideState =
+   237	  | "ABSENT"
+   238	  | "VALID"
+   239	  | "INVALID"
+   240	  | "NOT_EVALUATED";
+   241
+   242	export type ApplicationLaunchSlotView = {
+   243	  slot: ApplicationExecutionResourceSlotDeclaration;
+   244	  packageBaseline: ApplicationResolvedResourceLaunchBaseline | null;
+   245	  selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null;
+   246	  savedOverride: ApplicationExecutionResourceOverride | null;
+   247	  savedOverrideState: ApplicationHostOverrideState;
+   248	  effectiveConfiguration: ApplicationEffectiveLaunchConfiguration | null;
+   249	  issues: ApplicationLaunchIssue[];
+   250	  canResetToPackageDefaults: boolean;
+   251	  updatedAt: string | null;
+   252	};
+   253
+   254	export type ApplicationLaunchConfigurationView = {
+   255	  applicationId: string;
+   256	  slots: ApplicationLaunchSlotView[];
+   257	  readiness: ApplicationLaunchReadiness;
+   258	};
+
+=== BACKEND SDK EXACT TEAM SCOPE/LEAF MAPPING ===
+     1	import type {
+     2	  ApplicationAgentRunLaunch,
+     3	  ApplicationEffectiveLaunchConfiguration,
+     4	  ApplicationSkillAccessMode,
+     5	  ApplicationTeamRunLaunch,
+     6	} from "@autobyteus/application-sdk-contracts";
+     7
+     8	export const APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE =
+     9	  "PRELOADED_ONLY" as const satisfies ApplicationSkillAccessMode;
+    10
+    11	const normalizeSkillAccessMode = (
+    12	  value: ApplicationSkillAccessMode | null | undefined,
+    13	): ApplicationSkillAccessMode => value ?? APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+    14
+    15	const requireWorkspaceRootPath = (
+    16	  value: string | null,
+    17	  label: string,
+    18	): string => {
+    19	  const normalized = value?.trim() ?? "";
+    20	  if (!normalized) throw new Error(`workspaceRootPath is required for ${label}.`);
+    21	  return normalized;
+    22	};
+    23
+    24	const requireMemberAddress = (value: string | null): string => {
+    25	  const normalized = value?.trim() ?? "";
+    26	  if (!normalized) throw new Error("memberAddress is required for an effective team leaf.");
+    27	  return normalized;
+    28	};
+    29
+    30	export const buildEffectiveAgentRunLaunch = (input: {
+    31	  configuration: ApplicationEffectiveLaunchConfiguration;
+    32	  skillAccessMode?: ApplicationSkillAccessMode | null;
+    33	}): ApplicationAgentRunLaunch => {
+    34	  if (input.configuration.resourceKind !== "AGENT" || input.configuration.leaves.length !== 1) {
+    35	    throw new Error("Runnable AGENT configuration must contain exactly one effective leaf.");
+    36	  }
+    37	  const leaf = input.configuration.leaves[0]!;
+    38	  return {
+    39	    kind: "AGENT",
+    40	    workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.agentDefinitionId),
+    41	    llmModelIdentifier: leaf.llmModelIdentifier,
+    42	    autoExecuteTools: true,
+    43	    skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
+    44	    runtimeKind: leaf.runtimeKind,
+    45	    ...(leaf.llmConfig === null ? {} : { llmConfig: structuredClone(leaf.llmConfig) }),
+    46	  };
+    47	};
+    48
+    49	export const buildEffectiveTeamRunLaunch = (input: {
+    50	  configuration: ApplicationEffectiveLaunchConfiguration;
+    51	  skillAccessMode?: ApplicationSkillAccessMode | null;
+    52	}): ApplicationTeamRunLaunch => {
+    53	  if (input.configuration.resourceKind !== "AGENT_TEAM") {
+    54	    throw new Error("Runnable AGENT_TEAM configuration is required.");
+    55	  }
+    56	  const skillAccessMode = normalizeSkillAccessMode(input.skillAccessMode);
+    57	  return {
+    58	    kind: "AGENT_TEAM",
+    59	    mode: "memberConfigs",
+    60	    teamConfigs: input.configuration.teamScopes.map((scope) => ({
+    61	      teamAddress: scope.teamAddress,
+    62	      workspaceRootPath: requireWorkspaceRootPath(scope.workspaceRootPath, scope.displayName),
+    63	      llmModelIdentifier: scope.llmModelIdentifier,
+    64	      autoExecuteTools: true,
+    65	      skillAccessMode,
+    66	      runtimeKind: scope.runtimeKind,
+    67	      ...(scope.llmConfig === null ? {} : { llmConfig: structuredClone(scope.llmConfig) }),
+    68	    })),
+    69	    memberConfigs: input.configuration.leaves.map((leaf) => ({
+    70	      memberAddress: requireMemberAddress(leaf.memberAddress),
+    71	      displayName: leaf.displayName,
+    72	      agentDefinitionId: leaf.agentDefinitionId,
+    73	      workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.displayName),
+    74	      llmModelIdentifier: leaf.llmModelIdentifier,
+    75	      autoExecuteTools: true,
+    76	      skillAccessMode,
+    77	      runtimeKind: leaf.runtimeKind,
+    78	      ...(leaf.llmConfig === null ? {} : { llmConfig: structuredClone(leaf.llmConfig) }),
+    79	    })),
+    80	  };
+    81	};
+
+=== BASELINE PRECEDENCE AND COMPLETE TOPOLOGY ===
+     1	import type {
+     2	  ApplicationLaunchDefinitionValueSource,
+     3	  ApplicationResolvedLaunchBaselineLeaf,
+     4	  ApplicationResolvedResourceLaunchBaseline,
+     5	  ApplicationResolvedTeamLaunchBaselineScope,
+     6	  ApplicationExecutionResourceRef,
+     7	  ApplicationExecutionResourceSlotDeclaration,
+     8	} from "@autobyteus/application-sdk-contracts";
+     9	import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+    10	import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+    11	import {
+    12	  buildScopedMemberResolutionContext,
+    13	  resolveScopedAgentMemberRef,
+    14	  resolveScopedTeamMemberRef,
+    15	} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
+    16	import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+    17	import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+    18	import type { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
+    19
+    20	type LaunchLayer = {
+    21	  config: DefaultLaunchConfig | null;
+    22	  source: ApplicationLaunchDefinitionValueSource;
+    23	};
+    24
+    25	const definitionValueSource = (input: {
+    26	  provenance: "PACKAGE" | "SELECTED_RESOURCE";
+    27	  definitionKind: "AGENT" | "AGENT_TEAM";
+    28	  definitionId: string;
+    29	}): ApplicationLaunchDefinitionValueSource => {
+    30	  if (input.provenance === "PACKAGE") {
+    31	    return input.definitionKind === "AGENT"
+    32	      ? { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: input.definitionId }
+    33	      : { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: input.definitionId };
+    34	  }
+    35	  return input.definitionKind === "AGENT"
+    36	    ? { kind: "SELECTED_RESOURCE_AGENT_DEFAULT", agentDefinitionId: input.definitionId }
+    37	    : { kind: "SELECTED_RESOURCE_TEAM_DEFAULT", teamDefinitionId: input.definitionId };
+    38	};
+    39
+    40	export class ApplicationLaunchResourceBaselineError extends Error {
+    41	  constructor(
+    42	    readonly code:
+    43	      | "PACKAGE_DEFAULT_MISSING"
+    44	      | "PACKAGE_RESOURCE_UNAVAILABLE"
+    45	      | "PACKAGE_RESOURCE_NOT_ALLOWED"
+    46	      | "PACKAGE_DEFAULT_INCOMPLETE"
+    47	      | "PACKAGE_TEAM_TOPOLOGY_INVALID",
+    48	    message: string,
+    49	  ) {
+    50	    super(message);
+    51	    this.name = "ApplicationLaunchResourceBaselineError";
+    52	  }
+    53	}
+    54
+    55	const cloneConfig = (
+    56	  value: Record<string, unknown> | null,
+    57	): Record<string, unknown> | null => value ? structuredClone(value) : null;
+    58
+    59	const resolveStringValue = (
+    60	  layers: LaunchLayer[],
+    61	  field: "runtimeKind" | "llmModelIdentifier",
+    62	): { value: string; source: ApplicationLaunchDefinitionValueSource } | null => {
+    63	  for (const layer of layers) {
+    64	    const value = layer.config?.[field]?.trim();
+    65	    if (value) return { value, source: structuredClone(layer.source) };
+    66	  }
+    67	  return null;
+    68	};
+    69
+    70	const resolveAtomicLlmConfig = (input: {
+    71	  layers: LaunchLayer[];
+    72	  runtimeKind: string;
+    73	  llmModelIdentifier: string;
+    74	}): { value: Record<string, unknown> | null; source: ApplicationLaunchDefinitionValueSource | null } => {
+    75	  const layer = input.layers.find((candidate) => candidate.config?.llmConfig != null) ?? null;
+    76	  if (!layer?.config?.llmConfig) return { value: null, source: null };
+    77	  const configuredRuntime = layer.config.runtimeKind?.trim() || null;
+    78	  const configuredModel = layer.config.llmModelIdentifier?.trim() || null;
+    79	  if (
+    80	    (configuredRuntime && configuredRuntime !== input.runtimeKind)
+    81	    || (configuredModel && configuredModel !== input.llmModelIdentifier)
+    82	  ) {
+    83	    return { value: null, source: null };
+    84	  }
+    85	  return {
+    86	    value: cloneConfig(layer.config.llmConfig),
+    87	    source: structuredClone(layer.source),
+    88	  };
+    89	};
+    90
+    91	const buildBaselineLeaf = (input: {
+    92	  memberAddress: string | null;
+    93	  displayName: string;
+    94	  agentDefinitionId: string;
+    95	  layers: LaunchLayer[];
+    96	}): ApplicationResolvedLaunchBaselineLeaf => {
+    97	  const runtime = resolveStringValue(input.layers, "runtimeKind");
+    98	  const model = resolveStringValue(input.layers, "llmModelIdentifier");
+    99	  const llmConfig = runtime && model
+   100	    ? resolveAtomicLlmConfig({
+   101	        layers: input.layers,
+   102	        runtimeKind: runtime.value,
+   103	        llmModelIdentifier: model.value,
+   104	      })
+   105	    : { value: null, source: null };
+   106	  return {
+   107	    memberAddress: input.memberAddress,
+   108	    displayName: input.displayName,
+   109	    agentDefinitionId: input.agentDefinitionId,
+   110	    runtimeKind: runtime?.value ?? null,
+   111	    llmModelIdentifier: model?.value ?? null,
+   112	    llmConfig: llmConfig.value,
+   113	    provenance: {
+   114	      runtimeKind: runtime?.source ?? null,
+   115	      llmModelIdentifier: model?.source ?? null,
+   116	      llmConfig: llmConfig.source,
+   117	    },
+   118	  };
+   119	};
+   120
+   121	const buildBaselineTeamScope = (input: {
+   122	  teamAddress: string;
+   123	  displayName: string;
+   124	  teamDefinitionId: string;
+   125	  layers: LaunchLayer[];
+   126	}): ApplicationResolvedTeamLaunchBaselineScope => {
+   127	  const runtime = resolveStringValue(input.layers, "runtimeKind");
+   128	  const model = resolveStringValue(input.layers, "llmModelIdentifier");
+   129	  const llmConfig = runtime && model
+   130	    ? resolveAtomicLlmConfig({
+   131	        layers: input.layers,
+   132	        runtimeKind: runtime.value,
+   133	        llmModelIdentifier: model.value,
+   134	      })
+   135	    : { value: null, source: null };
+   136	  return {
+   137	    teamAddress: input.teamAddress,
+   138	    displayName: input.displayName,
+   139	    teamDefinitionId: input.teamDefinitionId,
+   140	    runtimeKind: runtime?.value ?? null,
+   141	    llmModelIdentifier: model?.value ?? null,
+   142	    llmConfig: llmConfig.value,
+   143	    provenance: {
+   144	      runtimeKind: runtime?.source ?? null,
+   145	      llmModelIdentifier: model?.source ?? null,
+   146	      llmConfig: llmConfig.source,
+   147	    },
+   148	  };
+   149	};
+   150
+   151	type TeamBaselineTopology = {
+   152	  teamScopes: ApplicationResolvedTeamLaunchBaselineScope[];
+   153	  leaves: ApplicationResolvedLaunchBaselineLeaf[];
+   154	};
+   155
+   156	export class ApplicationLaunchResourceBaselineBuilder {
+   157	  constructor(private readonly dependencies: {
+   158	    executionResourceResolver: ApplicationExecutionResourceResolver;
+   159	    agentDefinitionService: AgentDefinitionService;
+   160	    agentTeamDefinitionService: AgentTeamDefinitionService;
+   161	  }) {}
+   162
+   163	  async build(input: {
+   164	    applicationId: string;
+   165	    slot: ApplicationExecutionResourceSlotDeclaration;
+   166	    executionResourceRef: ApplicationExecutionResourceRef;
+   167	    provenance: "PACKAGE" | "SELECTED_RESOURCE";
+   168	  }): Promise<ApplicationResolvedResourceLaunchBaseline> {
+   169	    this.assertSelectionAllowed(input.slot, input.executionResourceRef);
+   170	    let resource;
+   171	    try {
+   172	      resource = await this.dependencies.executionResourceResolver.resolveExecutionResource(
+   173	        input.applicationId,
+   174	        input.executionResourceRef,
+   175	      );
+   176	    } catch (error) {
+   177	      throw new ApplicationLaunchResourceBaselineError(
+   178	        "PACKAGE_RESOURCE_UNAVAILABLE",
+   179	        error instanceof Error ? error.message : String(error),
+   180	      );
+   181	    }
+   182	    if (resource.kind === "AGENT") {
+   183	      const leaves = [await this.buildAgentLeaf({
+   184	          agentDefinitionId: resource.definitionId,
+   185	          memberAddress: null,
+   186	          displayName: resource.name,
+   187	          parentLayers: [],
+   188	          provenance: input.provenance,
+   189	        })];
+   190	      return {
+   191	        slotKey: input.slot.slotKey,
+   192	        executionResourceRef: structuredClone(input.executionResourceRef),
+   193	        resourceDefinitionId: resource.definitionId,
+   194	        resourceKind: "AGENT",
+   195	        leaves,
+   196	      };
+   197	    }
+   198	    const topology = await this.buildTeamTopology({
+   199	      teamDefinitionId: resource.definitionId,
+   200	      memberPath: [],
+   201	      displayName: resource.name,
+   202	      parentLayers: [],
+   203	      provenance: input.provenance,
+   204	      visited: new Set(),
+   205	    });
+   206	    if (topology.leaves.length === 0) {
+   207	      throw new ApplicationLaunchResourceBaselineError(
+   208	        "PACKAGE_TEAM_TOPOLOGY_INVALID",
+   209	        `Application slot '${input.slot.slotKey}' selected team has no leaf agents.`,
+   210	      );
+   211	    }
+   212	    return {
+   213	      slotKey: input.slot.slotKey,
+   214	      executionResourceRef: structuredClone(input.executionResourceRef),
+   215	      resourceDefinitionId: resource.definitionId,
+   216	      resourceKind: "AGENT_TEAM",
+   217	      teamScopes: topology.teamScopes.sort((left, right) =>
+   218	        left.teamAddress.localeCompare(right.teamAddress)),
+   219	      leaves: topology.leaves.sort((left, right) =>
+   220	        (left.memberAddress ?? "").localeCompare(right.memberAddress ?? "")),
+   221	    };
+   222	  }
+   223
+   224	  private assertSelectionAllowed(
+   225	    slot: ApplicationExecutionResourceSlotDeclaration,
+   226	    ref: ApplicationExecutionResourceRef,
+   227	  ): void {
+   228	    if (!slot.allowedExecutionResourceKinds.includes(ref.kind)) {
+   229	      throw new ApplicationLaunchResourceBaselineError(
+   230	        "PACKAGE_RESOURCE_NOT_ALLOWED",
+   231	        `Application slot '${slot.slotKey}' does not allow resource kind '${ref.kind}'.`,
+   232	      );
+   233	    }
+   234	    const allowedSources = slot.allowedExecutionResourceSources ?? ["bundle", "shared"];
+   235	    if (!allowedSources.includes(ref.source)) {
+   236	      throw new ApplicationLaunchResourceBaselineError(
+   237	        "PACKAGE_RESOURCE_NOT_ALLOWED",
+   238	        `Application slot '${slot.slotKey}' does not allow resource source '${ref.source}'.`,
+   239	      );
+   240	    }
+   241	  }
+   242
+   243	  private async buildAgentLeaf(input: {
+   244	    agentDefinitionId: string;
+   245	    memberAddress: string | null;
+   246	    displayName: string;
+   247	    parentLayers: LaunchLayer[];
+   248	    provenance: "PACKAGE" | "SELECTED_RESOURCE";
+   249	  }): Promise<ApplicationResolvedLaunchBaselineLeaf> {
+   250	    const definition = await this.dependencies.agentDefinitionService
+   251	      .getAgentDefinitionById(input.agentDefinitionId);
+   252	    if (!definition) {
+   253	      throw new ApplicationLaunchResourceBaselineError(
+   254	        "PACKAGE_TEAM_TOPOLOGY_INVALID",
+   255	        `Agent definition '${input.agentDefinitionId}' was not found.`,
+   256	      );
+   257	    }
+   258	    return buildBaselineLeaf({
+   259	      ...input,
+   260	      displayName: input.displayName || definition.name,
+   261	      layers: [
+   262	        ...input.parentLayers,
+   263	        {
+   264	          config: definition.defaultLaunchConfig,
+   265	          source: definitionValueSource({
+   266	            provenance: input.provenance,
+   267	            definitionKind: "AGENT",
+   268	            definitionId: input.agentDefinitionId,
+   269	          }),
+   270	        },
+   271	      ],
+   272	    });
+   273	  }
+   274
+   275	  private async buildTeamTopology(input: {
+   276	    teamDefinitionId: string;
+   277	    memberPath: string[];
+   278	    displayName: string;
+   279	    parentLayers: LaunchLayer[];
+   280	    provenance: "PACKAGE" | "SELECTED_RESOURCE";
+   281	    visited: Set<string>;
+   282	  }): Promise<TeamBaselineTopology> {
+   283	    if (input.visited.has(input.teamDefinitionId)) {
+   284	      throw new ApplicationLaunchResourceBaselineError(
+   285	        "PACKAGE_TEAM_TOPOLOGY_INVALID",
+   286	        `Circular team topology includes '${input.teamDefinitionId}'.`,
+   287	      );
+   288	    }
+   289	    const visited = new Set(input.visited).add(input.teamDefinitionId);
+   290	    const team = await this.dependencies.agentTeamDefinitionService
+   291	      .getDefinitionById(input.teamDefinitionId);
+   292	    if (!team) {
+   293	      throw new ApplicationLaunchResourceBaselineError(
+   294	        "PACKAGE_TEAM_TOPOLOGY_INVALID",
+   295	        `Team definition '${input.teamDefinitionId}' was not found.`,
+   296	      );
+   297	    }
+   298	    const teamLayers: LaunchLayer[] = [
+   299	      {
+   300	        config: team.defaultLaunchConfig,
+   301	        source: definitionValueSource({
+   302	          provenance: input.provenance,
+   303	          definitionKind: "AGENT_TEAM",
+   304	          definitionId: input.teamDefinitionId,
+   305	        }),
+   306	      },
+   307	      ...input.parentLayers,
+   308	    ];
+   309	    const resolutionContext = buildScopedMemberResolutionContext(team, input.teamDefinitionId);
+   310	    const teamScopes: ApplicationResolvedTeamLaunchBaselineScope[] = [buildBaselineTeamScope({
+   311	      teamAddress: createAgentTeamAddress(input.memberPath),
+   312	      displayName: input.displayName || team.name,
+   313	      teamDefinitionId: input.teamDefinitionId,
+   314	      layers: teamLayers,
+   315	    })];
+   316	    const leaves: ApplicationResolvedLaunchBaselineLeaf[] = [];
+   317	    for (const member of team.nodes) {
+   318	      const memberPath = [...input.memberPath, member.memberName.trim()];
+   319	      if (member.refType === "agent") {
+   320	        leaves.push(await this.buildAgentLeaf({
+   321	          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, member),
+   322	          memberAddress: createAgentTeamAddress(memberPath),
+   323	          displayName: member.memberName.trim(),
+   324	          parentLayers: teamLayers,
+   325	          provenance: input.provenance,
+   326	        }));
+   327	      } else {
+   328	        const nested = await this.buildTeamTopology({
+   329	          teamDefinitionId: resolveScopedTeamMemberRef(resolutionContext, member),
+   330	          memberPath,
+   331	          displayName: member.memberName.trim(),
+   332	          parentLayers: teamLayers,
+   333	          provenance: input.provenance,
+   334	          visited,
+   335	        });
+   336	        teamScopes.push(...nested.teamScopes);
+   337	        leaves.push(...nested.leaves);
+   338	      }
+   339	    }
+   340	    return { teamScopes, leaves };
+   341	  }
+   342	}
+
+=== OVERLAY SCOPE/LEAF POLICY ===
+     1	import type {
+     2	  ApplicationEffectiveLaunchConfiguration,
+     3	  ApplicationEffectiveLeafLaunchProfile,
+     4	  ApplicationEffectiveTeamLaunchProfile,
+     5	  ApplicationLaunchOverride,
+     6	  ApplicationLaunchValueSource,
+     7	  ApplicationResolvedLaunchBaselineLeaf,
+     8	  ApplicationResolvedResourceLaunchBaseline,
+     9	  ApplicationResolvedTeamLaunchBaselineScope,
+    10	  ApplicationTeamLaunchOverrideDefaults,
+    11	  ApplicationTeamMemberLaunchOverride,
+    12	} from "@autobyteus/application-sdk-contracts";
+    13
+    14	const hasOwn = (record: object | null | undefined, key: string): boolean =>
+    15	  Boolean(record) && Object.prototype.hasOwnProperty.call(record, key);
+    16
+    17	const cloneConfig = (
+    18	  value: Record<string, unknown> | null | undefined,
+    19	): Record<string, unknown> | null => value ? structuredClone(value) : null;
+    20
+    21	const memberSource = (memberAddress: string): ApplicationLaunchValueSource => ({
+    22	  kind: "HOST_MEMBER_OVERRIDE",
+    23	  memberAddress,
+    24	});
+    25	const slotSource = (): ApplicationLaunchValueSource => ({ kind: "HOST_SLOT_OVERRIDE" });
+    26
+    27	export class ApplicationLaunchOverrideResolutionError extends Error {
+    28	  constructor(message: string) {
+    29	    super(message);
+    30	    this.name = "ApplicationLaunchOverrideResolutionError";
+    31	  }
+    32	}
+    33
+    34	const requireValue = (
+    35	  value: string | null,
+    36	  source: ApplicationLaunchValueSource | null,
+    37	  label: string,
+    38	): { value: string; source: ApplicationLaunchValueSource } => {
+    39	  if (!value?.trim() || !source) {
+    40	    throw new ApplicationLaunchOverrideResolutionError(`${label} is not configured.`);
+    41	  }
+    42	  return { value: value.trim(), source: structuredClone(source) };
+    43	};
+    44
+    45	const applyAgentOverride = (input: {
+    46	  leaf: ApplicationResolvedLaunchBaselineLeaf;
+    47	  override: Extract<ApplicationLaunchOverride, { kind: "AGENT" }> | null;
+    48	  workspaceRootPath: string;
+    49	}): ApplicationEffectiveLeafLaunchProfile => {
+    50	  const { leaf, override } = input;
+    51	  const changesRuntime = Boolean(override?.runtimeKind?.trim());
+    52	  const changesModel = Boolean(override?.llmModelIdentifier?.trim());
+    53	  const llmConfigExplicit = hasOwn(override, "llmConfig");
+    54	  const runtime = requireValue(
+    55	    override?.runtimeKind?.trim() || leaf.runtimeKind,
+    56	    changesRuntime ? slotSource() : leaf.provenance.runtimeKind,
+    57	    `Agent '${leaf.agentDefinitionId}' runtimeKind`,
+    58	  );
+    59	  const model = requireValue(
+    60	    override?.llmModelIdentifier?.trim() || leaf.llmModelIdentifier,
+    61	    changesModel ? slotSource() : leaf.provenance.llmModelIdentifier,
+    62	    `Agent '${leaf.agentDefinitionId}' llmModelIdentifier`,
+    63	  );
+    64	  return {
+    65	    memberAddress: leaf.memberAddress,
+    66	    displayName: leaf.displayName,
+    67	    agentDefinitionId: leaf.agentDefinitionId,
+    68	    runtimeKind: runtime.value,
+    69	    llmModelIdentifier: model.value,
+    70	    llmConfig: llmConfigExplicit
+    71	      ? cloneConfig(override?.llmConfig)
+    72	      : changesRuntime || changesModel
+    73	        ? null
+    74	        : cloneConfig(leaf.llmConfig),
+    75	    workspaceRootPath: override?.workspaceRootPath?.trim() || input.workspaceRootPath,
+    76	    provenance: {
+    77	      runtimeKind: runtime.source,
+    78	      llmModelIdentifier: model.source,
+    79	      llmConfig: llmConfigExplicit
+    80	        ? slotSource()
+    81	        : changesRuntime || changesModel
+    82	          ? null
+    83	          : structuredClone(leaf.provenance.llmConfig),
+    84	      workspaceRootPath: override?.workspaceRootPath?.trim()
+    85	        ? "HOST_OVERRIDE"
+    86	        : "APPLICATION_RUNTIME",
+    87	    },
+    88	  };
+    89	};
+    90
+    91	const applyTeamLeafOverride = (input: {
+    92	  leaf: ApplicationResolvedLaunchBaselineLeaf;
+    93	  defaults: ApplicationTeamLaunchOverrideDefaults | null;
+    94	  member: ApplicationTeamMemberLaunchOverride | null;
+    95	  workspaceRootPath: string;
+    96	}): ApplicationEffectiveLeafLaunchProfile => {
+    97	  const { leaf, defaults, member } = input;
+    98	  const memberRuntime = member?.runtimeKind?.trim() || null;
+    99	  const defaultRuntime = defaults?.runtimeKind?.trim() || null;
+   100	  const memberModel = member?.llmModelIdentifier?.trim() || null;
+   101	  const defaultModel = defaults?.llmModelIdentifier?.trim() || null;
+   102	  const changesRuntime = Boolean(memberRuntime || defaultRuntime);
+   103	  const changesModel = Boolean(memberModel || defaultModel);
+   104	  const memberLlmConfigExplicit = hasOwn(member, "llmConfig");
+   105	  const defaultLlmConfigExplicit = hasOwn(defaults, "llmConfig");
+   106	  const memberOverridesLowerConfig = Boolean(memberRuntime || memberModel);
+   107	  const memberAddress = leaf.memberAddress ?? member?.memberAddress ?? "";
+   108	  const runtime = requireValue(
+   109	    memberRuntime || defaultRuntime || leaf.runtimeKind,
+   110	    memberRuntime
+   111	      ? memberSource(memberAddress)
+   112	      : defaultRuntime
+   113	        ? slotSource()
+   114	        : leaf.provenance.runtimeKind,
+   115	    `Team member '${memberAddress}' runtimeKind`,
+   116	  );
+   117	  const model = requireValue(
+   118	    memberModel || defaultModel || leaf.llmModelIdentifier,
+   119	    memberModel
+   120	      ? memberSource(memberAddress)
+   121	      : defaultModel
+   122	        ? slotSource()
+   123	        : leaf.provenance.llmModelIdentifier,
+   124	    `Team member '${memberAddress}' llmModelIdentifier`,
+   125	  );
+   126
+   127	  let llmConfig = cloneConfig(leaf.llmConfig);
+   128	  let llmConfigSource = structuredClone(leaf.provenance.llmConfig) as ApplicationLaunchValueSource | null;
+   129	  if (memberLlmConfigExplicit) {
+   130	    llmConfig = cloneConfig(member?.llmConfig);
+   131	    llmConfigSource = memberSource(memberAddress);
+   132	  } else if (defaultLlmConfigExplicit && !memberOverridesLowerConfig) {
+   133	    llmConfig = cloneConfig(defaults?.llmConfig);
+   134	    llmConfigSource = slotSource();
+   135	  } else if (changesRuntime || changesModel) {
+   136	    llmConfig = null;
+   137	    llmConfigSource = null;
+   138	  }
+   139
+   140	  return {
+   141	    memberAddress: leaf.memberAddress,
+   142	    displayName: leaf.displayName,
+   143	    agentDefinitionId: leaf.agentDefinitionId,
+   144	    runtimeKind: runtime.value,
+   145	    llmModelIdentifier: model.value,
+   146	    llmConfig,
+   147	    workspaceRootPath: defaults?.workspaceRootPath?.trim() || input.workspaceRootPath,
+   148	    provenance: {
+   149	      runtimeKind: runtime.source,
+   150	      llmModelIdentifier: model.source,
+   151	      llmConfig: llmConfigSource,
+   152	      workspaceRootPath: defaults?.workspaceRootPath?.trim()
+   153	        ? "HOST_OVERRIDE"
+   154	        : "APPLICATION_RUNTIME",
+   155	    },
+   156	  };
+   157	};
+   158
+   159	const applyTeamScopeOverride = (input: {
+   160	  scope: ApplicationResolvedTeamLaunchBaselineScope;
+   161	  defaults: ApplicationTeamLaunchOverrideDefaults | null;
+   162	  workspaceRootPath: string;
+   163	}): ApplicationEffectiveTeamLaunchProfile => {
+   164	  const { scope, defaults } = input;
+   165	  const defaultRuntime = defaults?.runtimeKind?.trim() || null;
+   166	  const defaultModel = defaults?.llmModelIdentifier?.trim() || null;
+   167	  const changesRuntime = Boolean(defaultRuntime);
+   168	  const changesModel = Boolean(defaultModel);
+   169	  const llmConfigExplicit = hasOwn(defaults, "llmConfig");
+   170	  const runtime = requireValue(
+   171	    defaultRuntime || scope.runtimeKind,
+   172	    defaultRuntime ? slotSource() : scope.provenance.runtimeKind,
+   173	    `Team '${scope.teamAddress}' runtimeKind`,
+   174	  );
+   175	  const model = requireValue(
+   176	    defaultModel || scope.llmModelIdentifier,
+   177	    defaultModel ? slotSource() : scope.provenance.llmModelIdentifier,
+   178	    `Team '${scope.teamAddress}' llmModelIdentifier`,
+   179	  );
+   180	  return {
+   181	    teamAddress: scope.teamAddress,
+   182	    displayName: scope.displayName,
+   183	    teamDefinitionId: scope.teamDefinitionId,
+   184	    runtimeKind: runtime.value,
+   185	    llmModelIdentifier: model.value,
+   186	    llmConfig: llmConfigExplicit
+   187	      ? cloneConfig(defaults?.llmConfig)
+   188	      : changesRuntime || changesModel
+   189	        ? null
+   190	        : cloneConfig(scope.llmConfig),
+   191	    workspaceRootPath: defaults?.workspaceRootPath?.trim() || input.workspaceRootPath,
+   192	    provenance: {
+   193	      runtimeKind: runtime.source,
+   194	      llmModelIdentifier: model.source,
+   195	      llmConfig: llmConfigExplicit
+   196	        ? slotSource()
+   197	        : changesRuntime || changesModel
+   198	          ? null
+   199	          : structuredClone(scope.provenance.llmConfig),
+   200	      workspaceRootPath: defaults?.workspaceRootPath?.trim()
+   201	        ? "HOST_OVERRIDE"
+   202	        : "APPLICATION_RUNTIME",
+   203	    },
+   204	  };
+   205	};
+   206
+   207	export const applyApplicationLaunchOverride = (input: {
+   208	  baseline: ApplicationResolvedResourceLaunchBaseline;
+   209	  launchOverride: ApplicationLaunchOverride | null;
+   210	  workspaceRootPath: string;
+   211	}): ApplicationEffectiveLaunchConfiguration => {
+   212	  if (input.baseline.resourceKind === "AGENT") {
+   213	    if (input.launchOverride?.kind === "AGENT_TEAM" || input.baseline.leaves.length !== 1) {
+   214	      throw new ApplicationLaunchOverrideResolutionError(
+   215	        "Agent launch override does not match its selected resource.",
+   216	      );
+   217	    }
+   218	    return {
+   219	      ...structuredClone(input.baseline),
+   220	      leaves: [applyAgentOverride({
+   221	        leaf: input.baseline.leaves[0]!,
+   222	        override: input.launchOverride,
+   223	        workspaceRootPath: input.workspaceRootPath,
+   224	      })],
+   225	    };
+   226	  }
+   227	  if (input.launchOverride?.kind === "AGENT") {
+   228	    throw new ApplicationLaunchOverrideResolutionError(
+   229	      "Team launch override does not match its selected resource.",
+   230	    );
+   231	  }
+   232	  const defaults = input.launchOverride?.defaults ?? null;
+   233	  const memberByAddress = new Map(
+   234	    (input.launchOverride?.memberProfiles ?? []).map((member) => [member.memberAddress, member]),
+   235	  );
+   236	  return {
+   237	    ...structuredClone(input.baseline),
+   238	    teamScopes: input.baseline.teamScopes.map((scope) => applyTeamScopeOverride({
+   239	      scope,
+   240	      defaults,
+   241	      workspaceRootPath: input.workspaceRootPath,
+   242	    })),
+   243	    leaves: input.baseline.leaves.map((leaf) => applyTeamLeafOverride({
+   244	      leaf,
+   245	      defaults,
+   246	      member: memberByAddress.get(leaf.memberAddress ?? "") ?? null,
+   247	      workspaceRootPath: input.workspaceRootPath,
+   248	    })),
+   249	  };
+   250	};
+
+=== APPLICATION RUN BINDING VALIDATION AND DELEGATION ===
+     1	import { randomUUID } from "node:crypto";
+     2	import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+     3	import type {
+     4	  ApplicationAgentRunLaunch,
+     5	  ApplicationAgentTeamBindingMember,
+     6	  ApplicationExecutionResourceRef,
+     7	  ApplicationStartAgentInput,
+     8	  ApplicationStartAgentTeamInput,
+     9	  ApplicationTeamMemberLaunchConfig,
+    10	  ApplicationTeamRunLaunch,
+    11	  ApplicationTeamRunPreset,
+    12	  ApplicationTeamScopeLaunchConfig,
+    13	} from "@autobyteus/application-sdk-contracts";
+    14	import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
+    15	import type {
+    16	  ConfiguredAgentExecutionNode,
+    17	  ConfiguredExecutionNode,
+    18	} from "../../agent-team-execution/domain/team-run-execution-tree.js";
+    19	import type {
+    20	  TeamRunMemberConfigInput,
+    21	  TeamRunService,
+    22	  TeamRunTeamConfigInput,
+    23	} from "../../agent-team-execution/services/team-run-service.js";
+    24	import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+    25	import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
+    26	import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+    27	import type {
+    28	  ApplicationCurrentModelSelectionPolicy,
+    29	} from "../../application-platform/launch-configuration/application-current-model-selection-policy.js";
+    30	import type { ApplicationAgentBindingRecord } from "../domain/models.js";
+    31	import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
+    32	import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+    33	import {
+    34	  ApplicationExecutionResourceResolver,
+    35	  type ResolvedApplicationExecutionResource,
+    36	} from "./application-execution-resource-resolver.js";
+    37
+    38	const required = (value: string, field: string): string => {
+    39	  const result = value.trim();
+    40	  if (!result) throw new Error(`${field} is required.`);
+    41	  return result;
+    42	};
+    43	const skillMode = (value: SkillAccessMode | string | null | undefined): SkillAccessMode => {
+    44	  if (value == null || value === SkillAccessMode.PRELOADED_ONLY) return SkillAccessMode.PRELOADED_ONLY;
+    45	  if (value === SkillAccessMode.NONE) return SkillAccessMode.NONE;
+    46	  throw new Error(`Unsupported skillAccessMode '${value}'.`);
+    47	};
+    48	const collectRunIds = (binding: ApplicationAgentBindingRecord): string[] => binding.runtime.subject === "AGENT_RUN"
+    49	  ? [binding.runtime.agentRunId]
+    50	  : [binding.runtime.teamRunId, ...binding.runtime.members.map((member) => member.agentRunId)];
+    51	const configuredAgents = (members: readonly ConfiguredExecutionNode[]): ConfiguredAgentExecutionNode[] => {
+    52	  const result: ConfiguredAgentExecutionNode[] = [];
+    53	  for (const member of members) {
+    54	    if ("agentRunId" in member) result.push(member);
+    55	    else result.push(...configuredAgents(member.members));
+    56	  }
+    57	  return result;
+    58	};
+    59
+    60	type BindingSeed = {
+    61	  applicationId: string;
+    62	  bindingId: string;
+    63	  launchRequestId: string;
+    64	};
+    65
+    66	export class ApplicationRunBindingLaunchService {
+    67	  constructor(private readonly dependencies: {
+    68	    executionResourceResolver: ApplicationExecutionResourceResolver;
+    69	    bindingStore: ApplicationRunBindingStore;
+    70	    lookupStore: ApplicationRunLookupStore;
+    71	    agentRunService: AgentRunService;
+    72	    teamRunService: TeamRunService;
+    73	    agentDefinitionService: AgentDefinitionService;
+    74	    currentModelSelectionPolicy: ApplicationCurrentModelSelectionPolicy;
+    75	  }) {}
+    76	  private get resolver() { return this.dependencies.executionResourceResolver; }
+    77	  private get bindings() { return this.dependencies.bindingStore; }
+    78	  private get lookups() { return this.dependencies.lookupStore; }
+    79	  private get agents() { return this.dependencies.agentRunService; }
+    80	  private get teams() { return this.dependencies.teamRunService; }
+    81	  private get definitions() { return this.dependencies.agentDefinitionService; }
+    82	  private get currentModels() { return this.dependencies.currentModelSelectionPolicy; }
+    83
+    84	  async startAgentRunBinding(
+    85	    applicationId: string,
+    86	    input: ApplicationStartAgentInput,
+    87	  ): Promise<ApplicationAgentBindingRecord> {
+    88	    if (input.launch.kind !== "AGENT") throw new Error("startAgent requires launch.kind 'AGENT'.");
+    89	    const resource = await this.resolver.resolveExecutionResource(applicationId, input.executionResourceRef);
+    90	    if (resource.kind !== "AGENT") throw new Error("startAgent requires an 'AGENT' execution resource.");
+    91	    const seed = {
+    92	      applicationId,
+    93	      bindingId: randomUUID(),
+    94	      launchRequestId: required(input.launchRequestId, "launchRequestId"),
+    95	    };
+    96	    return this.startAgent(seed, input.executionResourceRef, resource, input.launch);
+    97	  }
+    98
+    99	  async startAgentTeamRunBinding(
+   100	    applicationId: string,
+   101	    input: ApplicationStartAgentTeamInput,
+   102	  ): Promise<ApplicationAgentBindingRecord> {
+   103	    if (input.launch.kind !== "AGENT_TEAM") throw new Error("startAgentTeam requires launch.kind 'AGENT_TEAM'.");
+   104	    const resource = await this.resolver.resolveExecutionResource(applicationId, input.executionResourceRef);
+   105	    if (resource.kind !== "AGENT_TEAM") throw new Error("startAgentTeam requires an 'AGENT_TEAM' execution resource.");
+   106	    const seed = {
+   107	      applicationId,
+   108	      bindingId: randomUUID(),
+   109	      launchRequestId: required(input.launchRequestId, "launchRequestId"),
+   110	    };
+   111	    return this.startTeam(seed, input.executionResourceRef, resource, input.launch);
+   112	  }
+   113
+   114	  private async startAgent(
+   115	    seed: BindingSeed,
+   116	    ref: ApplicationExecutionResourceRef,
+   117	    resource: ResolvedApplicationExecutionResource,
+   118	    launch: ApplicationAgentRunLaunch,
+   119	  ): Promise<ApplicationAgentBindingRecord> {
+   120	    const runtimeKind = await this.currentModels.requireCurrentSelection({
+   121	      runtimeKind: launch.runtimeKind,
+   122	      llmModelIdentifier: launch.llmModelIdentifier,
+   123	    });
+   124	    const definition = await this.definitions.getAgentDefinitionById(resource.definitionId);
+   125	    const displayName = definition?.name?.trim() || resource.name;
+   126	    const run = await this.agents.createAgentRun({
+   127	      agentDefinitionId: resource.definitionId,
+   128	      workspaceRootPath: launch.workspaceRootPath,
+   129	      workspaceId: launch.workspaceId ?? null,
+   130	      llmModelIdentifier: launch.llmModelIdentifier,
+   131	      autoExecuteTools: Boolean(launch.autoExecuteTools),
+   132	      llmConfig: launch.llmConfig ?? null,
+   133	      skillAccessMode: skillMode(launch.skillAccessMode),
+   134	      runtimeKind,
+   135	      applicationBinding: {
+   136	        applicationId: seed.applicationId,
+   137	        bindingId: seed.bindingId,
+   138	        displayName,
+   139	        runtimeKind: "AGENT",
+   140	      },
+   141	    });
+   142	    const now = new Date().toISOString();
+   143	    return this.persist({
+   144	      ...seed,
+   145	      status: "ATTACHED",
+   146	      executionResourceRef: structuredClone(ref),
+   147	      runtime: {
+   148	        subject: "AGENT_RUN",
+   149	        agentRunId: run.runId,
+   150	        definitionId: resource.definitionId,
+   151	        members: [],
+   152	      },
+   153	      createdAt: now,
+   154	      updatedAt: now,
+   155	      terminatedAt: null,
+   156	      lastErrorMessage: null,
+   157	    });
+   158	  }
+   159
+   160	  private async startTeam(
+   161	    seed: BindingSeed,
+   162	    ref: ApplicationExecutionResourceRef,
+   163	    resource: ResolvedApplicationExecutionResource,
+   164	    launch: ApplicationTeamRunLaunch,
+   165	  ): Promise<ApplicationAgentBindingRecord> {
+   166	    const applicationBinding = {
+   167	      applicationId: seed.applicationId,
+   168	      bindingId: seed.bindingId,
+   169	    };
+   170	    const teamRun = launch.mode === "preset"
+   171	      ? await this.startPresetTeam(resource.definitionId, launch.launchPreset, applicationBinding)
+   172	      : await this.startConfiguredTeam(
+   173	          resource.definitionId,
+   174	          launch.teamConfigs,
+   175	          launch.memberConfigs,
+   176	          applicationBinding,
+   177	        );
+   178	    const members: ApplicationAgentTeamBindingMember[] = configuredAgents(
+   179	      teamRun.getExecutionTreeSnapshot().rootTeam.members,
+   180	    ).map((node) => ({
+   181	      memberAddress: node.address,
+   182	      displayName: getAgentTeamAddressBasename(node.address) ?? node.address,
+   183	      agentRunId: node.agentRunId,
+   184	      runtimeKind: "AGENT_TEAM_MEMBER",
+   185	    }));
+   186	    const now = new Date().toISOString();
+   187	    return this.persist({
+   188	      ...seed,
+   189	      status: "ATTACHED",
+   190	      executionResourceRef: structuredClone(ref),
+   191	      runtime: {
+   192	        subject: "TEAM_RUN",
+   193	        teamRunId: teamRun.teamRunId,
+   194	        definitionId: resource.definitionId,
+   195	        members,
+   196	      },
+   197	      createdAt: now,
+   198	      updatedAt: now,
+   199	      terminatedAt: null,
+   200	      lastErrorMessage: null,
+   201	    });
+   202	  }
+   203
+   204	  private async startPresetTeam(
+   205	    teamDefinitionId: string,
+   206	    preset: ApplicationTeamRunPreset,
+   207	    applicationBinding: { applicationId: string; bindingId: string },
+   208	  ) {
+   209	    const rootConfig = this.explicitRootConfig(preset);
+   210	    await this.requireCurrentSelection(rootConfig);
+   211	    return this.teams.createTeamRunFromRootConfig({
+   212	      teamDefinitionId,
+   213	      rootConfig,
+   214	      applicationBinding,
+   215	    });
+   216	  }
+   217
+   218	  private async startConfiguredTeam(
+   219	    teamDefinitionId: string,
+   220	    teamConfigsInput: readonly ApplicationTeamScopeLaunchConfig[],
+   221	    memberConfigsInput: readonly ApplicationTeamMemberLaunchConfig[],
+   222	    applicationBinding: { applicationId: string; bindingId: string },
+   223	  ) {
+   224	    const teamConfigs = teamConfigsInput.map((config) => this.explicitTeamConfig(config));
+   225	    const memberConfigs = memberConfigsInput.map((config) => this.explicitMemberConfig(config));
+   226	    for (const config of [...teamConfigs, ...memberConfigs]) {
+   227	      await this.requireCurrentSelection(config);
+   228	    }
+   229	    return this.teams.createTeamRun({
+   230	      teamDefinitionId,
+   231	      teamConfigs,
+   232	      memberConfigs,
+   233	      applicationBinding,
+   234	    });
+   235	  }
+   236
+   237	  private explicitRootConfig(input: ApplicationTeamRunPreset) {
+   238	    return {
+   239	      workspaceRootPath: required(input.workspaceRootPath, "launchPreset.workspaceRootPath"),
+   240	      llmModelIdentifier: required(input.llmModelIdentifier, "launchPreset.llmModelIdentifier"),
+   241	      autoExecuteTools: Boolean(input.autoExecuteTools),
+   242	      skillAccessMode: skillMode(input.skillAccessMode),
+   243	      runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
+   244	      llmConfig: input.llmConfig ?? null,
+   245	    };
+   246	  }
+   247
+   248	  private explicitTeamConfig(input: ApplicationTeamScopeLaunchConfig): TeamRunTeamConfigInput {
+   249	    return {
+   250	      teamAddress: required(input.teamAddress, "teamConfig.teamAddress"),
+   251	      llmModelIdentifier: required(input.llmModelIdentifier, "teamConfig.llmModelIdentifier"),
+   252	      autoExecuteTools: Boolean(input.autoExecuteTools),
+   253	      skillAccessMode: skillMode(input.skillAccessMode),
+   254	      workspaceRootPath: required(input.workspaceRootPath, "teamConfig.workspaceRootPath"),
+   255	      llmConfig: input.llmConfig ?? null,
+   256	      runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
+   257	    };
+   258	  }
+   259
+   260	  private explicitMemberConfig(input: ApplicationTeamMemberLaunchConfig): TeamRunMemberConfigInput {
+   261	    return {
+   262	      memberAddress: required(input.memberAddress, "memberConfig.memberAddress"),
+   263	      agentDefinitionId: required(input.agentDefinitionId, "memberConfig.agentDefinitionId"),
+   264	      llmModelIdentifier: required(input.llmModelIdentifier, "memberConfig.llmModelIdentifier"),
+   265	      autoExecuteTools: Boolean(input.autoExecuteTools),
+   266	      skillAccessMode: skillMode(input.skillAccessMode),
+   267	      workspaceRootPath: required(input.workspaceRootPath, "memberConfig.workspaceRootPath"),
+   268	      llmConfig: input.llmConfig ?? null,
+   269	      runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
+   270	    };
+   271	  }
+   272
+   273	  private requireNormalizedRuntimeKind(value: unknown): RuntimeKind {
+   274	    const runtimeKind = this.currentModels.normalizeRuntimeKind(value);
+   275	    if (!runtimeKind) {
+   276	      throw new Error(`Unsupported application runtimeKind '${String(value)}'.`);
+   277	    }
+   278	    return runtimeKind;
+   279	  }
+   280
+   281	  private async requireCurrentSelection(input: {
+   282	    runtimeKind: unknown;
+   283	    llmModelIdentifier: string;
+   284	  }): Promise<void> {
+   285	    await this.currentModels.requireCurrentSelection({
+   286	      runtimeKind: input.runtimeKind,
+   287	      llmModelIdentifier: input.llmModelIdentifier,
+   288	    });
+   289	  }
+   290
+   291	  private async persist(
+   292	    binding: ApplicationAgentBindingRecord,
+   293	  ): Promise<ApplicationAgentBindingRecord> {
+   294	    await this.bindings.persistBinding(binding);
+   295	    this.lookups.replaceBindingLookups(
+   296	      binding.applicationId,
+   297	      binding.bindingId,
+   298	      collectRunIds(binding),
+   299	    );
+   300	    return binding;
+   301	  }
+   302	}
+
+=== TEAM RUN PLANNER VALIDATION BEFORE ID ALLOCATION ===
+     1	import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+     2	import {
+     3	  TeamDefinitionGraphResolver,
+     4	  type ResolvedTeamDefinitionGraph,
+     5	  type ResolvedTeamDefinitionMember,
+     6	} from "../../agent-team-definition/services/team-definition-graph-resolver.js";
+     7	import { TeamHandoffCompiler } from "../../agent-team-definition/services/team-handoff-compiler.js";
+     8	import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+     9	import {
+    10	  assertAgentTeamAddress,
+    11	  createAgentTeamAddress,
+    12	  type AgentTeamAddress,
+    13	} from "../../agent-collaboration/domain/agent-team-address.js";
+    14	import { TeamBackendKind } from "../domain/team-backend-kind.js";
+    15	import type { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
+    16	import {
+    17	  projectAgentLaunchSettings,
+    18	  TeamRunConfig,
+    19	  type AgentLaunchConfiguration,
+    20	  type TeamAgentLaunchSettings,
+    21	  type TeamRunAgentTeamNode,
+    22	  type TeamRunApplicationBinding,
+    23	  type TeamRunNode,
+    24	  type TeamScopeLaunchSettings,
+    25	} from "../domain/team-run-config.js";
+    26
+    27	export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress" | "agentDefinitionId"> & {
+    28	  memberAddress: string;
+    29	  agentDefinitionId?: string | null;
+    30	};
+    31
+    32	export type TeamScopeLaunchInput = Omit<TeamScopeLaunchSettings, "teamAddress"> & {
+    33	  teamAddress: string;
+    34	};
+    35
+    36	export type TeamDefinitionTopologyPlan = Readonly<{
+    37	  teamDefinitionName: string;
+    38	  hasSubTeams: boolean;
+    39	  config: TeamRunConfig;
+    40	  agentLaunchSettings: readonly TeamAgentLaunchSettings[];
+    41	}>;
+    42
+    43	type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
+    44	type AgentIdAllocator = Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    45	type TeamIdAllocator = Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
+    46	type AgentGraphMember = Extract<ResolvedTeamDefinitionMember, { kind: "agent" }>;
+    47	type GraphIndex = Readonly<{
+    48	  teams: ReadonlyMap<AgentTeamAddress, ResolvedTeamDefinitionGraph>;
+    49	  agents: ReadonlyMap<AgentTeamAddress, AgentGraphMember>;
+    50	}>;
+    51
+    52	const required = (value: string, fieldName: string): string => {
+    53	  const normalized = value.trim();
+    54	  if (!normalized) throw new Error(`${fieldName} is required.`);
+    55	  return normalized;
+    56	};
+    57
+    58	const launchValue = (value: AgentLaunchConfiguration): AgentLaunchConfiguration => ({
+    59	  runtimeKind: value.runtimeKind,
+    60	  llmModelIdentifier: value.llmModelIdentifier,
+    61	  llmConfig: value.llmConfig,
+    62	  autoExecuteTools: value.autoExecuteTools,
+    63	  skillAccessMode: value.skillAccessMode,
+    64	  workspaceRootPath: value.workspaceRootPath,
+    65	});
+    66
+    67	export class TeamDefinitionTopologyPlanner {
+    68	  constructor(
+    69	    private readonly teamDefinitionService: TeamDefinitionLookup,
+    70	    private readonly teamRunIdentityAllocator: TeamIdAllocator,
+    71	    private readonly agentRunIdentityAllocator: AgentIdAllocator,
+    72	  ) {}
+    73
+    74	  async buildPlan(input: {
+    75	    teamDefinitionId: string;
+    76	    teamConfigs: readonly TeamScopeLaunchInput[];
+    77	    memberConfigs: readonly TeamAgentLaunchInput[];
+    78	    applicationBinding?: TeamRunApplicationBinding | null;
+    79	  }): Promise<TeamDefinitionTopologyPlan> {
+    80	    const { definition, graph } = await this.resolveGraph(input.teamDefinitionId);
+    81	    const index = this.indexGraph(graph);
+    82	    const teamConfigs = this.validateTeamConfigs(input.teamConfigs, index);
+    83	    const memberConfigs = this.validateMemberConfigs(input.memberConfigs, index);
+    84	    this.validateRootInheritedSkillAccess(teamConfigs, memberConfigs);
+    85
+    86	    // Exact subject and coverage validation finishes before any run identity allocation.
+    87	    const rootTeam = await this.compileTeamNode(
+    88	      graph,
+    89	      createAgentTeamAddress([]),
+    90	      this.teamRunIdentityAllocator.allocateForTeamDefinitionName(definition.name),
+    91	      teamConfigs,
+    92	      memberConfigs,
+    93	    );
+    94	    const config = new TeamRunConfig({
+    95	      teamBackendKind: TeamBackendKind.MIXED,
+    96	      rootTeam,
+    97	      handoffs: new TeamHandoffCompiler().compile(graph),
+    98	      applicationBinding: input.applicationBinding ?? null,
+    99	    });
+   100	    return Object.freeze({
+   101	      teamDefinitionName: definition.name,
+   102	      hasSubTeams: [...index.teams.keys()].some((address) => address !== "/"),
+   103	      config,
+   104	      agentLaunchSettings: Object.freeze(projectAgentLaunchSettings(config.rootTeam)),
+   105	    });
+   106	  }
+   107
+   108	  async buildRootLaunchInputs(input: {
+   109	    teamDefinitionId: string;
+   110	    rootConfig: AgentLaunchConfiguration;
+   111	    memberConfigs?: readonly TeamAgentLaunchInput[] | null;
+   112	  }): Promise<Readonly<{
+   113	    teamConfigs: readonly TeamScopeLaunchInput[];
+   114	    memberConfigs: readonly TeamAgentLaunchInput[];
+   115	  }>> {
+   116	    const { graph } = await this.resolveGraph(input.teamDefinitionId);
+   117	    const index = this.indexGraph(graph);
+   118	    const teamConfigs = Object.freeze([...index.teams.keys()].map((teamAddress) => Object.freeze({
+   119	      teamAddress,
+   120	      ...launchValue(input.rootConfig),
+   121	    })));
+   122	    const memberConfigs = input.memberConfigs
+   123	      ? Object.freeze(input.memberConfigs.map((value) => Object.freeze({ ...value })))
+   124	      : Object.freeze([...index.agents.entries()].map(([memberAddress, member]) => Object.freeze({
+   125	          memberAddress,
+   126	          agentDefinitionId: member.agentDefinitionId,
+   127	          ...launchValue(input.rootConfig),
+   128	        })));
+   129	    return Object.freeze({ teamConfigs, memberConfigs });
+   130	  }
+   131
+   132	  private async resolveGraph(teamDefinitionIdInput: string) {
+   133	    const teamDefinitionId = required(teamDefinitionIdInput, "teamDefinitionId");
+   134	    const definition = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
+   135	    if (!definition) throw new Error(`AgentTeamDefinition with ID ${teamDefinitionId} not found.`);
+   136	    const graph = await new TeamDefinitionGraphResolver().resolve({
+   137	      rootDefinition: definition,
+   138	      rootDefinitionId: teamDefinitionId,
+   139	      lookup: { getTeamById: (id) => this.teamDefinitionService.getDefinitionById(id) },
+   140	    });
+   141	    return { definition, graph };
+   142	  }
+   143
+   144	  private indexGraph(root: ResolvedTeamDefinitionGraph): GraphIndex {
+   145	    const teams = new Map<AgentTeamAddress, ResolvedTeamDefinitionGraph>();
+   146	    const agents = new Map<AgentTeamAddress, AgentGraphMember>();
+   147	    const visit = (team: ResolvedTeamDefinitionGraph, address: AgentTeamAddress): void => {
+   148	      teams.set(address, team);
+   149	      for (const member of team.members) {
+   150	        const memberAddress = createAgentTeamAddress(member.absolutePath);
+   151	        if (member.kind === "agent") agents.set(memberAddress, member);
+   152	        else visit(member.team, memberAddress);
+   153	      }
+   154	    };
+   155	    visit(root, createAgentTeamAddress([]));
+   156	    return Object.freeze({ teams, agents });
+   157	  }
+   158
+   159	  private validateTeamConfigs(
+   160	    values: readonly TeamScopeLaunchInput[],
+   161	    index: GraphIndex,
+   162	  ): ReadonlyMap<AgentTeamAddress, TeamScopeLaunchInput> {
+   163	    const result = new Map<AgentTeamAddress, TeamScopeLaunchInput>();
+   164	    for (const value of values) {
+   165	      const address = assertAgentTeamAddress(value.teamAddress);
+   166	      if (result.has(address)) throw new Error(`Duplicate Team launch settings for '${address}'.`);
+   167	      if (index.agents.has(address)) throw new Error(`Team launch settings reference Agent placement '${address}'.`);
+   168	      if (!index.teams.has(address)) throw new Error(`Team launch settings reference unknown Team '${address}'.`);
+   169	      result.set(address, value);
+   170	    }
+   171	    const missing = [...index.teams.keys()].find((address) => !result.has(address));
+   172	    if (missing) throw new Error(`Launch settings for Team '${missing}' were not provided.`);
+   173	    return result;
+   174	  }
+   175
+   176	  private validateMemberConfigs(
+   177	    values: readonly TeamAgentLaunchInput[],
+   178	    index: GraphIndex,
+   179	  ): ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput> {
+   180	    const result = new Map<AgentTeamAddress, TeamAgentLaunchInput>();
+   181	    for (const value of values) {
+   182	      const address = assertAgentTeamAddress(value.memberAddress);
+   183	      if (address === "/") throw new Error("Agent launch settings cannot reference root Team '/'.");
+   184	      if (result.has(address)) throw new Error(`Duplicate Agent launch settings for '${address}'.`);
+   185	      if (index.teams.has(address)) throw new Error(`Agent launch settings reference Team placement '${address}'.`);
+   186	      const member = index.agents.get(address);
+   187	      if (!member) throw new Error(`Agent launch settings reference unknown Team member '${address}'.`);
+   188	      if (value.agentDefinitionId && value.agentDefinitionId !== member.agentDefinitionId) {
+   189	        throw new Error(`Launch settings for '${address}' reference the wrong Agent definition.`);
+   190	      }
+   191	      result.set(address, value);
+   192	    }
+   193	    const missing = [...index.agents.keys()].find((address) => !result.has(address));
+   194	    if (missing) throw new Error(`Launch settings for Team member '${missing}' were not provided.`);
+   195	    return result;
+   196	  }
+   197
+   198	  private validateRootInheritedSkillAccess(
+   199	    teamConfigs: ReadonlyMap<AgentTeamAddress, TeamScopeLaunchInput>,
+   200	    memberConfigs: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
+   201	  ): void {
+   202	    const rootMode = teamConfigs.get("/" as AgentTeamAddress)!.skillAccessMode;
+   203	    const divergentTeam = [...teamConfigs.entries()].find(([, config]) => config.skillAccessMode !== rootMode);
+   204	    if (divergentTeam) throw new Error(`Team '${divergentTeam[0]}' cannot override root skillAccessMode.`);
+   205	    const divergentAgent = [...memberConfigs.entries()].find(([, config]) => config.skillAccessMode !== rootMode);
+   206	    if (divergentAgent) throw new Error(`Agent '${divergentAgent[0]}' cannot override root skillAccessMode.`);
+   207	  }
+   208
+   209	  private async compileTeamNode(
+   210	    graph: ResolvedTeamDefinitionGraph,
+   211	    address: AgentTeamAddress,
+   212	    teamRunId: string,
+   213	    teamConfigs: ReadonlyMap<AgentTeamAddress, TeamScopeLaunchInput>,
+   214	    memberConfigs: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
+   215	  ): Promise<TeamRunAgentTeamNode> {
+   216	    const placement = address === "/" ? {} : { role: null, description: null };
+   217	    return {
+   218	      kind: "agent_team",
+   219	      address,
+   220	      teamDefinitionId: graph.definitionId,
+   221	      teamRunId,
+   222	      coordinatorAddress: createAgentTeamAddress(graph.coordinator.absolutePath),
+   223	      defaultLaunchConfiguration: launchValue(teamConfigs.get(address)!),
+   224	      ...placement,
+   225	      children: await Promise.all(graph.members.map((member) =>
+   226	        this.compileMember(member, teamConfigs, memberConfigs))),
+   227	    };
+   228	  }
+   229
+   230	  private async compileMember(
+   231	    member: ResolvedTeamDefinitionMember,
+   232	    teamConfigs: ReadonlyMap<AgentTeamAddress, TeamScopeLaunchInput>,
+   233	    memberConfigs: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
+   234	  ): Promise<TeamRunNode> {
+   235	    const address = createAgentTeamAddress(member.absolutePath);
+   236	    if (member.kind === "agent_team") {
+   237	      return this.compileTeamNode(
+   238	        member.team,
+   239	        address,
+   240	        this.teamRunIdentityAllocator.allocateForTeamDefinitionName(member.team.definition.name),
+   241	        teamConfigs,
+   242	        memberConfigs,
+   243	      );
+   244	    }
+   245	    const launch = memberConfigs.get(address)!;
+   246	    const agentRunId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(member.agentDefinitionId);
+   247	    return {
+   248	      kind: "agent",
+   249	      address,
+   250	      agentDefinitionId: member.agentDefinitionId,
+   251	      agentRunId,
+   252	      platformAgentRunId: null,
+   253	      role: null,
+   254	      description: null,
+   255	      ...launchValue(launch),
+   256	    };
+   257	  }
+   258	}
+
+=== TEAM RUN SERVICE SEQUENCING ===
+     1	import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+     2	import { AgentMemoryLocationService, getAgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+     3	import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+     4	import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+     5	import { appConfigProvider } from "../../config/app-config-provider.js";
+     6	import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
+     7	import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
+     8	import { getTeamRunHistoryCatalogService, type TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
+     9	import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
+    10	import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
+    11	import type { RootTeamRun } from "../domain/root-team-run.js";
+    12	import type { AgentLaunchConfiguration } from "../domain/team-run-config.js";
+    13	import { TeamRunEventSourceType } from "../domain/team-run-event.js";
+    14	import { AgentTeamRunManager } from "./agent-team-run-manager.js";
+    15	import { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
+    16	import {
+    17	  TeamDefinitionTopologyPlanner,
+    18	  type TeamAgentLaunchInput,
+    19	  type TeamScopeLaunchInput,
+    20	} from "./team-definition-topology-planner.js";
+    21	import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+    22
+    23	export interface TeamRunPresetInput {
+    24	  workspaceRootPath: string;
+    25	  llmModelIdentifier: string;
+    26	  autoExecuteTools: boolean;
+    27	  skillAccessMode: SkillAccessMode;
+    28	  runtimeKind: RuntimeKind;
+    29	  llmConfig?: Record<string, unknown> | null;
+    30	}
+    31	export type TeamRunMemberConfigInput = {
+    32	  memberAddress: string;
+    33	  agentDefinitionId?: string | null;
+    34	  llmModelIdentifier: string;
+    35	  autoExecuteTools: boolean;
+    36	  skillAccessMode: SkillAccessMode;
+    37	  workspaceRootPath?: string | null;
+    38	  llmConfig?: Record<string, unknown> | null;
+    39	  runtimeKind: RuntimeKind | string;
+    40	};
+    41	export type TeamRunTeamConfigInput = {
+    42	  teamAddress: string;
+    43	  llmModelIdentifier: string;
+    44	  autoExecuteTools: boolean;
+    45	  skillAccessMode: SkillAccessMode;
+    46	  workspaceRootPath?: string | null;
+    47	  llmConfig?: Record<string, unknown> | null;
+    48	  runtimeKind: RuntimeKind | string;
+    49	};
+    50	export interface CreateTeamRunInput {
+    51	  teamDefinitionId: string;
+    52	  teamConfigs: TeamRunTeamConfigInput[];
+    53	  memberConfigs: TeamRunMemberConfigInput[];
+    54	  applicationBinding?: { applicationId: string; bindingId: string } | null;
+    55	}
+    56
+    57	/** Application-facing root TeamRun lifecycle service. */
+    58	export class TeamRunService {
+    59	  private readonly definitions: AgentTeamDefinitionService;
+    60	  private readonly manager: AgentTeamRunManager;
+    61	  private readonly catalog: TeamRunHistoryCatalogService;
+    62	  private readonly workspaces: WorkspaceManager;
+    63	  private readonly agentIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    64	  private readonly teamIdentityAllocator: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
+    65	  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+    66	    "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+    67
+    68	  constructor(options: {
+    69	    agentTeamRunManager?: AgentTeamRunManager;
+    70	    teamDefinitionService?: AgentTeamDefinitionService;
+    71	    teamRunHistoryCatalogService?: TeamRunHistoryCatalogService;
+    72	    workspaceManager?: WorkspaceManager;
+    73	    memoryDir?: string;
+    74	    memoryLocationService?: AgentMemoryLocationService;
+    75	    agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    76	    teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
+    77	    tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+    78	      "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+    79	  } = {}) {
+    80	    this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
+    81	    this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+    82	    this.catalog = options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
+    83	    this.workspaces = options.workspaceManager ?? getWorkspaceManager();
+    84	    void (options.memoryLocationService ?? (options.memoryDir ? new AgentMemoryLocationService({ memoryDir: options.memoryDir }) : getAgentMemoryLocationService()));
+    85	    this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+    86	      memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    87	    });
+    88	    this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
+    89	    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    90	  }
+    91
+    92	  async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
+    93	    this.tokenUsageReadiness.assertCurrentSchemaReady();
+    94	    const workspaces = new Map<string, Promise<string>>();
+    95	    const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
+    96	      const requested = requestedPath?.trim() || null;
+    97	      if (!requested) return null;
+    98	      const canonical = canonicalizeWorkspaceRootPath(requested);
+    99	      let activation = workspaces.get(canonical);
+   100	      if (!activation) {
+   101	        activation = this.workspaces.ensureWorkspaceByRootPath(canonical)
+   102	          .then((workspace) => workspace.getBasePath?.() ?? canonical);
+   103	        workspaces.set(canonical, activation);
+   104	      }
+   105	      return activation;
+   106	    };
+   107	    const normalizedTeamConfigs = input.teamConfigs.map((team, index) => ({
+   108	      ...team,
+   109	      runtimeKind: resolveRequiredRuntimeKind(team.runtimeKind, `teamConfigs[${index}].runtimeKind`),
+   110	      llmConfig: team.llmConfig ?? null,
+   111	    }));
+   112	    const normalizedMemberConfigs = input.memberConfigs.map((member, index) => ({
+   113	      ...member,
+   114	      runtimeKind: resolveRequiredRuntimeKind(member.runtimeKind, `memberConfigs[${index}].runtimeKind`),
+   115	      llmConfig: member.llmConfig ?? null,
+   116	    }));
+   117	    const teamConfigs: TeamScopeLaunchInput[] = await Promise.all(normalizedTeamConfigs.map(async (team) => ({
+   118	      ...team,
+   119	      workspaceRootPath: await activateWorkspace(team.workspaceRootPath),
+   120	    })));
+   121	    const memberConfigs: TeamAgentLaunchInput[] = await Promise.all(normalizedMemberConfigs.map(async (member) => ({
+   122	      ...member,
+   123	      workspaceRootPath: await activateWorkspace(member.workspaceRootPath),
+   124	    })));
+   125	    const plan = await this.planner.buildPlan({
+   126	      teamDefinitionId: input.teamDefinitionId,
+   127	      teamConfigs,
+   128	      memberConfigs,
+   129	      applicationBinding: input.applicationBinding ?? null,
+   130	    });
+   131	    const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName });
+   132	    try {
+   133	      await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
+   134	      return root;
+   135	    } catch (error) {
+   136	      await this.safeTerminate(root.teamRunId);
+   137	      throw error;
+   138	    }
+   139	  }
+   140
+   141	  async createTeamRunFromRootConfig(input: {
+   142	    teamDefinitionId: string;
+   143	    rootConfig: TeamRunPresetInput;
+   144	    memberConfigs?: TeamRunMemberConfigInput[] | null;
+   145	    applicationBinding?: { applicationId: string; bindingId: string } | null;
+   146	  }): Promise<RootTeamRun> {
+   147	    const rootConfig = normalizePreset(input.rootConfig);
+   148	    const expanded = await this.planner.buildRootLaunchInputs({
+   149	      teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),
+   150	      rootConfig,
+   151	      memberConfigs: input.memberConfigs?.map((member) => ({
+   152	        ...member,
+   153	        runtimeKind: resolveRequiredRuntimeKind(member.runtimeKind, "memberConfigs.runtimeKind"),
+   154	        workspaceRootPath: member.workspaceRootPath?.trim() || null,
+   155	        llmConfig: member.llmConfig ?? null,
+   156	      })),
+   157	    });
+   158	    return this.createTeamRun({
+   159	      teamDefinitionId: input.teamDefinitionId,
+   160	      applicationBinding: input.applicationBinding,
+   161	      teamConfigs: [...expanded.teamConfigs],
+   162	      memberConfigs: [...expanded.memberConfigs],
+   163	    });
+   164	  }
+   165
+   166	  async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
+   167	    const normalized = required(teamRunId, "teamRunId");
+   168	    if (this.manager.hasManagedTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already managed and cannot be restored.`);
+   169	    this.tokenUsageReadiness.assertExistingRunRestoreReady();
+   170	    const root = await this.manager.restoreTeamRun(normalized);
+   171	    try {
+   172	      await this.catalog.recordTeamRunRestored({ tree: root.getExecutionTreeSnapshot() });
+   173	      return root;
+   174	    } catch (error) {
+   175	      await this.safeTerminate(normalized);
+   176	      throw error;
+   177	    }
+   178	  }
+   179
+   180	  getActiveTeamRun(teamRunId: string): RootTeamRun | null {
+   181	    return this.manager.getActiveTeamRun(required(teamRunId, "teamRunId"));
+   182	  }
+   183	  getManagedTeamRun(teamRunId: string): RootTeamRun | null {
+   184	    return this.manager.getManagedTeamRun(required(teamRunId, "teamRunId"));
+   185	  }
+   186	  async resolveActiveTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
+   187	    const normalized = required(teamRunId, "teamRunId");
+   188	    const active = this.getActiveTeamRun(normalized);
+   189	    if (active || this.manager.hasManagedTeamRun(normalized)) return active;
+   190	    return this.restoreTeamRun(normalized).catch(() => null);
+   191	  }
+   192	  async resolveManagedTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
+   193	    const normalized = required(teamRunId, "teamRunId");
+   194	    return this.getManagedTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
+   195	  }
+   196	  recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
+   197	    return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });
+   198	  }
+   199	  async terminateTeamRun(teamRunId: string): Promise<boolean> {
+   200	    const success = await this.manager.terminateTeamRun(teamRunId);
+   201	    if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
+   202	    return success;
+   203	  }
+   204	  async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
+   205	    const root = await this.resolveActiveTeamRun(teamRunId);
+   206	    if (!root) return null;
+   207	    listener({ runtimeSubject: "TEAM_RUN", runId: root.teamRunId, phase: "ATTACHED", occurredAt: new Date().toISOString() });
+   208	    const offLifecycle = this.manager.subscribeToLifecycle(root.teamRunId, (snapshot) => {
+   209	      if (!snapshot.isActive) listener({ runtimeSubject: "TEAM_RUN", runId: root.teamRunId, phase: "TERMINATED", occurredAt: new Date().toISOString() });
+   210	    });
+   211	    const offEvents = root.subscribeToEvents(({ event }) => {
+   212	      if (event.eventSourceType === TeamRunEventSourceType.AGENT && event.payload.eventType === "ERROR") {
+   213	        listener({ runtimeSubject: "TEAM_RUN", runId: root.teamRunId, phase: "FAILED", occurredAt: new Date().toISOString(), errorMessage: event.payload.details.message });
+   214	      }
+   215	    });
+   216	    return () => { offEvents(); offLifecycle(); };
+   217	  }
+   218
+   219	  private safeTerminate(teamRunId: string): Promise<void> {
+   220	    return this.manager.terminateTeamRun(teamRunId).then(() => undefined).catch(() => undefined);
+   221	  }
+   222	  private get planner(): TeamDefinitionTopologyPlanner {
+   223	    return new TeamDefinitionTopologyPlanner(
+   224	      this.definitions,
+   225	      this.teamIdentityAllocator,
+   226	      this.agentIdentityAllocator,
+   227	    );
+   228	  }
+   229	}
+   230
+   231	let cached: TeamRunService | null = null;
+   232	export const getTeamRunService = (): TeamRunService => cached ??= new TeamRunService();
+   233	const required = (value: string, field: string): string => {
+   234	  const normalized = value.trim();
+   235	  if (!normalized) throw new Error(`${field} is required.`);
+   236	  return normalized;
+   237	};
+   238	const resolveRequiredRuntimeKind = (value: unknown, field: string): RuntimeKind => {
+   239	  if (typeof value !== "string" || !value.trim()) throw new Error(`${field} is required.`);
+   240	  const resolved = runtimeKindFromString(value, null);
+   241	  if (!resolved) throw new Error(`[INVALID_RUNTIME_KIND] Unsupported ${field} '${value}'.`);
+   242	  return resolved;
+   243	};
+   244	const normalizePreset = (value: TeamRunPresetInput): AgentLaunchConfiguration => ({
+   245	  workspaceRootPath: required(value.workspaceRootPath, "teamLaunchPreset.workspaceRootPath"),
+   246	  llmModelIdentifier: required(value.llmModelIdentifier, "teamLaunchPreset.llmModelIdentifier"),
+   247	  runtimeKind: resolveRequiredRuntimeKind(value.runtimeKind, "teamLaunchPreset.runtimeKind"),
+   248	  autoExecuteTools: Boolean(value.autoExecuteTools),
+   249	  skillAccessMode: value.skillAccessMode,
+   250	  llmConfig: value.llmConfig ?? null,
+   251	});
+
+=== GRAPH-LOCAL ALLOCATOR INJECTION ===
+     1	import type { AppConfig } from "../../config/app-config.js";
+     2	import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+     3	import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+     4	import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+     5	import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+     6	import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+     7	import { AutoByteusAgentRunBackendFactory } from "../../agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+     8	import { CodexAgentRunBackendFactory } from "../../agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
+     9	import { CodexThreadBootstrapper } from "../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+    10	import { ClaudeAgentRunBackendFactory } from "../../agent-execution/backends/claude/backend/claude-agent-run-backend-factory.js";
+    11	import { ClaudeSessionBootstrapper } from "../../agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
+    12	import { ClaudeSessionManager } from "../../agent-execution/backends/claude/session/claude-session-manager.js";
+    13	import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-run-activation-registry.js";
+    14	import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+    15	import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+    16	import { AgentRunProvisioningService } from "../../agent-execution/services/agent-run-provisioning-service.js";
+    17	import { AgentRunResourceManager } from "../../agent-execution/services/agent-run-resource-manager.js";
+    18	import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
+    19	import { StandaloneAgentRunActivationService } from "../../agent-execution/services/standalone-agent-run-activation-service.js";
+    20	import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+    21	import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
+    22	import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+    23	import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
+    24	import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+    25	import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
+    26	import { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
+    27	import type { ApplicationPublishedArtifactDeliveryQueue } from "../../application-orchestration/services/application-published-artifact-delivery-queue.js";
+    28	import type { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
+    29	import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
+    30	import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
+    31	import { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
+    32	import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
+    33	import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+    34	import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+    35	import { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
+    36	import { PublishedArtifactProjectionStore } from "../../services/published-artifacts/published-artifact-projection-store.js";
+    37	import { PublishedArtifactSnapshotStore } from "../../services/published-artifacts/published-artifact-snapshot-store.js";
+    38	import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
+    39	import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+    40	import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
+    41	import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+    42	import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+    43	import type { ApplicationAgentToolMcpSessionScope } from "../../agent-tools/mcp/application-agent-tool-mcp-session-scope.js";
+    44	import type { ApplicationAgentToolsSessionFactory } from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
+    45	import { ApplicationRunShutdownCoordinator } from "./application-run-shutdown-coordinator.js";
+    46
+    47	export const createApplicationRunServices = (input: {
+    48	  appConfig: AppConfig;
+    49	  bindingStore: ApplicationRunBindingStore;
+    50	  artifactDeliveryQueue: ApplicationPublishedArtifactDeliveryQueue;
+    51	  agentDefinitionService: AgentDefinitionService;
+    52	  agentTeamDefinitionService: AgentTeamDefinitionService;
+    53	  sessionScope: ApplicationAgentToolMcpSessionScope;
+    54	  agentToolsSessionFactory: ApplicationAgentToolsSessionFactory;
+    55	}) => {
+    56	  const memoryDir = input.appConfig.getMemoryDir();
+    57	  const workspaceManager = getWorkspaceManager();
+    58	  const memoryLocationService = new AgentMemoryLocationService({ memoryDir });
+    59	  const runFileChangeService = new RunFileChangeService({ memoryDir, workspaceManager });
+    60	  const artifactRelay = new ApplicationPublishedArtifactRelayService({
+    61	    bindingStore: input.bindingStore,
+    62	    deliveryQueue: input.artifactDeliveryQueue,
+    63	  });
+    64	  const memoryRecorder = new AgentRunMemoryRecorder();
+    65	  const resourceManager = new AgentRunResourceManager({
+    66	    sessionScope: input.sessionScope,
+    67	    runFileChangeService,
+    68	    publishedArtifactRelayService: artifactRelay,
+    69	    memoryRecorder,
+    70	  });
+    71	  const activationRegistry = new AgentRunActivationRegistry(resourceManager);
+    72	  const projectionStore = new PublishedArtifactProjectionStore();
+    73	  const snapshotStore = new PublishedArtifactSnapshotStore();
+    74	  const publicationService = new PublishedArtifactPublicationService({
+    75	    activeRunReader: activationRegistry,
+    76	    workspaceManager,
+    77	    publishedArtifactRelayService: artifactRelay,
+    78	    projectionStore,
+    79	    snapshotStore,
+    80	  });
+    81	  const agentToolsSessionManager = input.agentToolsSessionFactory
+    82	    .createApplicationSessionManager({
+    83	      scope: input.sessionScope,
+    84	      executionCapabilities: {
+    85	        publishedArtifactPublisher: publicationService,
+    86	      },
+    87	      assertExecutionCapabilitiesReady: () => undefined,
+    88	    });
+    89
+    90	  const codexThreadBootstrapper = new CodexThreadBootstrapper(
+    91	    undefined,
+    92	    undefined,
+    93	    input.agentDefinitionService,
+    94	    undefined,
+    95	    undefined,
+    96	    agentToolsSessionManager,
+    97	  );
+    98	  const claudeSessionManager = new ClaudeSessionManager(
+    99	    undefined,
+   100	    undefined,
+   101	    agentToolsSessionManager,
+   102	  );
+   103	  const claudeSessionBootstrapper = new ClaudeSessionBootstrapper(
+   104	    undefined,
+   105	    undefined,
+   106	    input.agentDefinitionService,
+   107	  );
+   108	  const agentRunManager = new AgentRunManager({
+   109	    autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
+   110	      agentDefinitionService: input.agentDefinitionService,
+   111	    }),
+   112	    codexBackendFactory: new CodexAgentRunBackendFactory(
+   113	      undefined,
+   114	      codexThreadBootstrapper,
+   115	    ),
+   116	    claudeBackendFactory: new ClaudeAgentRunBackendFactory(
+   117	      claudeSessionManager,
+   118	      claudeSessionBootstrapper,
+   119	    ),
+   120	    activationRegistry,
+   121	    memoryRecorder,
+   122	  });
+   123
+   124	  const memberTeamContextBuilder = new MemberTeamContextBuilder(
+   125	    input.agentTeamDefinitionService,
+   126	  );
+   127	  const activityInspector = new AgentConversationActivityInspector();
+   128	  const agentTeamRunManager = new AgentTeamRunManager({
+   129	    memoryDir,
+   130	    mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+   131	      createTeamManager: (context, subTeamRunFactory, callbacks) =>
+   132	        new MixedTeamManager(context, {
+   133	          subTeamRunFactory,
+   134	          agentRunManager,
+   135	          agentToolMcpSessionManager: agentToolsSessionManager,
+   136	          memoryLocationService,
+   137	          activityInspector,
+   138	          memberTeamContextBuilder,
+   139	          workspaceManager,
+   140	          publish: callbacks.publish,
+   141	          deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
+   142	          acceptPlatformBinding: callbacks.acceptPlatformBinding,
+   143	        }),
+   144	    }),
+   145	    executionTreeStore: new TeamRunExecutionTreeStore(),
+   146	    taskRecordsStore: new TaskDelegationRecordsV1Store(),
+   147	    communicationStore: new TeamCommunicationV1Store(),
+   148	  });
+   149
+   150	  const agentRunMetadataService = new AgentRunMetadataService(memoryDir);
+   151	  const agentRunHistoryCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
+   152	    agentDefinitionService: input.agentDefinitionService,
+   153	    agentRunManager,
+   154	  });
+   155	  const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
+   156	    agentDefinitionService: input.agentDefinitionService,
+   157	    agentRunManager,
+   158	    agentRunMetadataService,
+   159	    teamRunExecutionTreeLocationService: new TeamRunExecutionTreeLocationService({ memoryDir }),
+   160	    memoryDir,
+   161	  });
+   162	  const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+   163	  const provisioningService = new AgentRunProvisioningService(memoryDir, {
+   164	    agentRunManager,
+   165	    metadataService: agentRunMetadataService,
+   166	    historyCatalogService: agentRunHistoryCatalogService,
+   167	    workspaceManager,
+   168	    agentRunIdentityAllocator,
+   169	  });
+   170	  const activationService = new StandaloneAgentRunActivationService(memoryDir, {
+   171	    agentRunManager,
+   172	    metadataService: agentRunMetadataService,
+   173	    historyCatalogService: agentRunHistoryCatalogService,
+   174	    workspaceManager,
+   175	    tokenUsageReadiness,
+   176	  });
+   177	  const agentRunService = new AgentRunService(memoryDir, {
+   178	    agentRunManager,
+   179	    metadataService: agentRunMetadataService,
+   180	    historyCatalogService: agentRunHistoryCatalogService,
+   181	    workspaceManager,
+   182	    agentRunIdentityAllocator,
+   183	    provisioningService,
+   184	    activationService,
+   185	  });
+   186	  const teamRunService = new TeamRunService({
+   187	    agentTeamRunManager,
+   188	    teamDefinitionService: input.agentTeamDefinitionService,
+   189	    agentRunIdentityAllocator,
+   190	    teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
+   191	    teamRunHistoryCatalogService: new TeamRunHistoryCatalogService(memoryDir, {
+   192	      teamRunManager: agentTeamRunManager,
+   193	    }),
+   194	    workspaceManager,
+   195	    memoryDir,
+   196	    memoryLocationService,
+   197	    tokenUsageReadiness,
+   198	  });
+   199
+   200	  return {
+   201	    agentRunService,
+   202	    teamRunService,
+   203	    runShutdownCoordinator: new ApplicationRunShutdownCoordinator(
+   204	      agentTeamRunManager,
+   205	      agentRunManager,
+   206	    ),
+   207	    publicationService,
+   208	    publishedArtifactProjectionService: new PublishedArtifactProjectionService({
+   209	      activeRunReader: activationRegistry,
+   210	      metadataService: agentRunMetadataService,
+   211	      projectionStore,
+   212	      snapshotStore,
+   213	    }),
+   214	    memoryLocationService,
+   215	    agentToolsSessionManager,
+   216	    activationRegistry,
+   217	    agentRunManager,
+   218	    agentTeamRunManager,
+   219	  };
+   220	};
+
+=== MIGRATION REGISTRY AND V2 PREREQUISITE ===
+     1	import { appConfigProvider } from "../config/app-config-provider.js";
+     2	import type { AppDataMigrationDefinition } from "./domain/app-data-migration-types.js";
+     3	import { RunHistoryIndexV2AppDataMigration } from "./migrations/run-history-index-v2-migration.js";
+     4	import { RawTraceRotationLayoutMigration } from "./migrations/raw-trace-rotation-layout-migration.js";
+     5	import { RawTraceActiveFileNameMigration } from "./migrations/raw-trace-active-file-name-migration.js";
+     6	import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-history-index-v2-migration.js";
+     7	import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree-migration.js";
+     8	import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-self-evolution-run-metadata-migration.js";
+     9	import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
+    10	import { TokenUsageCustomProviderModelValueBackfillMigration } from "./migrations/token-usage-custom-provider-model-value-backfill-migration.js";
+    11	import { TokenUsageProviderNameSnapshotBackfillMigration } from "./migrations/token-usage-provider-name-snapshot-backfill-migration.js";
+    12	import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
+    13	import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
+    14	import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
+    15	import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
+    16	import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
+    17	import { TeamRunExecutionTreeV1AppDataMigration } from "./migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js";
+    18	import { TokenUsageRunRecordsV1AppDataMigration } from "./migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
+    19	import { TeamAgentMemoryLayoutAppDataMigration } from "./migrations/team-agent-memory-layout-app-data-migration.js";
+    20	import { TeamRunExecutionTreeV2AppDataMigration } from "./migrations/team-run-execution-tree-v2-app-data-migration.js";
+    21
+    22	export class AppDataMigrationRegistry {
+    23	  private readonly definitions: AppDataMigrationDefinition[];
+    24
+    25	  constructor(definitions?: AppDataMigrationDefinition[]) {
+    26	    this.definitions = definitions ?? [
+    27	      new CustomProviderV1AppDataMigration(),
+    28	      new RemoveGlobalSkillDiscoveryModeMigration(
+    29	        appConfigProvider.config.getMemoryDir(),
+    30	        appConfigProvider.config.getAppDataDir(),
+    31	      ),
+    32	      new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+    33	      new TeamRunExecutionTreeV1AppDataMigration(
+    34	        appConfigProvider.config.getMemoryDir(),
+    35	        appConfigProvider.config.getAppDataDir(),
+    36	      ),
+    37	      new TeamAgentMemoryLayoutAppDataMigration(
+    38	        appConfigProvider.config.getMemoryDir(),
+    39	      ),
+    40	      new TeamRunExecutionTreeV2AppDataMigration(
+    41	        appConfigProvider.config.getMemoryDir(),
+    42	      ),
+    43	      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+    44	        appConfigProvider.config.getMemoryDir(),
+    45	      ),
+    46	      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+    47	      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+    48	      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+    49	      new MigrateNativeWorkingContextSnapshotsV5Migration(
+    50	        appConfigProvider.config.getMemoryDir(),
+    51	      ),
+    52	      new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
+    53	      new TokenUsageCustomProviderModelValueBackfillMigration(),
+    54	      new TokenUsageProviderNameSnapshotBackfillMigration(),
+    55	      new TokenUsageRunRecordsV1AppDataMigration(),
+    56	      new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
+    57	      new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+    58	      new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+    59	      new CustomProviderReadableIdAppDataMigration(),
+    60	    ];
+    61	    this.validateDefinitions();
+    62	  }
+    63
+    64	  listDefinitions(): AppDataMigrationDefinition[] {
+    65	    return [...this.definitions];
+    66	  }
+    67
+    68	  getDefinition(migrationId: string): AppDataMigrationDefinition | null {
+    69	    const normalized = migrationId.trim();
+    70	    return this.definitions.find((definition) => definition.id === normalized) ?? null;
+    71	  }
+    72
+    73	  private validateDefinitions(): void {
+    74	    const seen = new Set<string>();
+    75	    for (const definition of this.definitions) {
+    76	      if (!definition.id.trim()) {
+    77	        throw new Error("App data migration ID is required.");
+    78	      }
+    79	      if (seen.has(definition.id)) {
+    80	        throw new Error(`Duplicate app data migration ID '${definition.id}'.`);
+    81	      }
+    82	      const uniquePrerequisites = new Set<string>();
+    83	      for (const prerequisiteId of definition.prerequisiteMigrationIds ?? []) {
+    84	        if (!prerequisiteId.trim()) {
+    85	          throw new Error(`App data migration '${definition.id}' has an empty prerequisite ID.`);
+    86	        }
+    87	        if (uniquePrerequisites.has(prerequisiteId)) {
+    88	          throw new Error(
+    89	            `App data migration '${definition.id}' repeats prerequisite '${prerequisiteId}'.`,
+    90	          );
+    91	        }
+    92	        if (!seen.has(prerequisiteId)) {
+    93	          throw new Error(
+    94	            `App data migration '${definition.id}' prerequisite '${prerequisiteId}' must be registered earlier.`,
+    95	          );
+    96	        }
+    97	        uniquePrerequisites.add(prerequisiteId);
+    98	      }
+    99	      seen.add(definition.id);
+   100	    }
+   101	  }
+   102	}
+   103
+   104	let cachedAppDataMigrationRegistry: AppDataMigrationRegistry | null = null;
+   105
+   106	export const getAppDataMigrationRegistry = (): AppDataMigrationRegistry => {
+   107	  if (!cachedAppDataMigrationRegistry) {
+   108	    cachedAppDataMigrationRegistry = new AppDataMigrationRegistry();
+   109	  }
+   110	  return cachedAppDataMigrationRegistry;
+   130	export const transformTeamRunExecutionTreeV1ToV2 = (
+   131	  tree: TeamRunExecutionTreeFileV1,
+   132	): TeamRunExecutionTreeFileV2 => {
+   133	  const root: RootConfiguredTeamExecutionNode = {
+   134	    address: "/",
+   135	    teamDefinitionId: tree.rootTeam.teamDefinitionId,
+   136	    teamDefinitionName: tree.rootTeam.teamDefinitionName,
+   137	    teamRunId: tree.rootTeam.teamRunId,
+   138	    coordinatorAddress: tree.rootTeam.coordinatorAddress,
+   139	    defaultLaunchConfiguration: launchConfiguration(directCoordinator(tree.rootTeam).launchConfiguration),
+   140	    members: tree.rootTeam.members.map(configuredNode),
+   141	    taskExecutions: structuredClone(tree.rootTeam.taskExecutions),
+   142	  };
+   143	  return validateTeamRunExecutionTreePayload({
+   144	    schemaVersion: 2,
+   145	    createdAt: tree.createdAt,
+   146	    archivedAt: tree.archivedAt,
+   147	    applicationBinding: tree.applicationBinding ? structuredClone(tree.applicationBinding) : null,
+   148	    handoffs: structuredClone(tree.handoffs),
+   149	    rootTeam: root,
+   150	  }, tree.rootTeam.teamRunId);
+   151	};
+   152
+   153	export class TeamRunExecutionTreeV2AppDataMigration implements AppDataMigrationDefinition {
+   154	  readonly id = TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID;
+   155	  readonly displayName = "Upgrade TeamRun execution trees to V2";
+   156	  readonly description = "Materializes a complete effective launch default on every configured TeamRun.";
+   157	  readonly requiredOnStartup = true;
+   158	  readonly executionPolicy = "ANYTIME" as const;
+   159	  readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
+   160
+   161	  private readonly layout: AgentMemoryLayout;
+   162	  private readonly dispositions = new Map<Disposition, DispositionRecord>();
+   163	  private scannedCount = 0;
+   164
+   165	  constructor(
+   166	    private readonly memoryDir: string,
+   167	    private readonly writer: TeamRunFileCommitWriter = getTeamRunFileCommitWriter(),
+   168	  ) {
+   169	    this.layout = new AgentMemoryLayout(memoryDir);
+   170	  }
+   171
+   172	  async execute(): Promise<AppDataMigrationExecutionResult> {
+   173	    this.dispositions.clear();
+   174	    this.scannedCount = 0;
+   175	    let entries: import("node:fs").Dirent[];
+   176	    try {
+   177	      entries = await fs.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true });
+   178	    } catch (error) {
+   179	      if ((error as NodeJS.ErrnoException).code === "ENOENT") return this.result();
+   180	      throw error;
+   181	    }
+   182	    for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+   183	      this.scannedCount += 1;
+   184	      const rootPath = path.join(this.layout.getTeamRootDirPath(), entry.name);
+   185	      if (!entry.isDirectory()) {
+   186	        this.record("FAILED_UNSUPPORTED_ENTRY", rootPath);
+   187	        continue;
+   188	      }
+   189	      await this.migrateRoot(entry.name, rootPath);
+   190	    }
+   191	    return this.result();
+   192	  }
+   193
+   194	  private async migrateRoot(rootTeamRunId: string, rootPath: string): Promise<void> {
+   195	    const filePath = getTeamRunExecutionTreePath(rootPath);
+   196	    let raw: unknown;
+   197	    try {
+   198	      const stat = await fs.lstat(filePath);
+   199	      if (!stat.isFile()) {
+   200	        this.record("FAILED_UNSUPPORTED_ENTRY", filePath);
+   201	        return;
+   202	      }
+   203	      raw = JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
+   204	    } catch (error) {
+   205	      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+   206	        this.record("SKIPPED_MISSING", filePath);
+   207	        return;
+   208	      }
+   209	      this.record("FAILED_INVALID_OR_UNSUPPORTED_PAYLOAD", filePath);
+   210	      return;
+   211	    }
+   212
+   213	    try {
+   214	      validateTeamRunExecutionTreePayload(raw, rootTeamRunId);
+   215	      this.record("SKIPPED_ALREADY_CURRENT", filePath);
+   216	      return;
+   217	    } catch {
+   218	      // Exact V1 classification is attempted next inside the migration boundary.
+   219	    }
+   220
+   221	    let target: TeamRunExecutionTreeFileV2;
+   222	    try {
+   223	      target = transformTeamRunExecutionTreeV1ToV2(validateV1(raw, rootTeamRunId));
+   224	    } catch (error) {
+   225	      const schemaVersion = raw && typeof raw === "object"
+   226	        ? (raw as Record<string, unknown>).schemaVersion
+   227	        : null;
+   228	      this.record(
+   229	        schemaVersion === 1 ? "FAILED_TRANSFORMATION" : "FAILED_INVALID_OR_UNSUPPORTED_PAYLOAD",
+   230	        filePath,
+   231	      );
+   232	      return;
+   233	    }
+   234
+   235	    const write = await this.writer.write({ file: "execution_tree", filePath, payload: target });
+   236	    if (write.outcome === "not_renamed") {
+   237	      this.record("FAILED_CURRENT_VALIDATION", filePath);
+   238	      return;
+   239	    }
+   240	    try {
+   241	      const reread = JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
+   242	      validateTeamRunExecutionTreePayload(reread, rootTeamRunId);
+   243	      this.record(
+   244	        write.outcome === "committed" ? "MIGRATED" : "MIGRATED_WITH_FINALIZATION_WARNING",
+   245	        filePath,
+   246	      );
+   247	    } catch {
+   248	      this.record("FAILED_CURRENT_VALIDATION", filePath);
+   249	    }
+   250	  }
+   251
+   252	  private record(disposition: Disposition, examplePath: string): void {
+   253	    const current = this.dispositions.get(disposition) ?? { count: 0, examples: [] };
+   254	    current.count += 1;
+   255	    current.examples.push(path.relative(this.memoryDir, examplePath).split(path.sep).join("/") || ".");
+   256	    current.examples.sort();
+   257	    current.examples.splice(5);
+   258	    this.dispositions.set(disposition, current);
+   259	  }
+   260
+   261	  private result(): AppDataMigrationExecutionResult {
+   262	    let migratedCount = 0;
+   263	    let skippedCount = 0;
+   264	    let failedCount = 0;
+   265	    const details: AppDataMigrationItemDetail[] = [];
+   266	    for (const [disposition, value] of [...this.dispositions.entries()]
+   267	      .sort(([left], [right]) => left.localeCompare(right))) {
+   268	      const status = statusFor(disposition);
+   269	      if (status === "MIGRATED") migratedCount += value.count;
+   270	      else if (status === "FAILED") failedCount += value.count;
+
+=== CURRENT V2 SCHEMA / STORED ONLY LOCATION ===
+     1	import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+     2	import {
+     3	  assertAgentTeamAddress,
+     4	  getParentAgentTeamAddress,
+     5	  type AgentTeamAddress,
+     6	} from "../../agent-collaboration/domain/agent-team-address.js";
+     7	import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
+     8	import type {
+     9	  ConfiguredAgentExecutionNode,
+    10	  ConfiguredExecutionNode,
+    11	  ConfiguredTeamExecutionNode,
+    12	  RootConfiguredTeamExecutionNode,
+    13	  TaskExecution,
+    14	  TaskTeamMemberExecution,
+    15	  TeamRunExecutionTreeFileV2,
+    16	} from "../../agent-team-execution/domain/team-run-execution-tree.js";
+    17
+    18	const record = (value: unknown, label: string): Record<string, unknown> => {
+    19	  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    20	    throw new Error(`${label} must be an object.`);
+    21	  }
+    22	  return value as Record<string, unknown>;
+    23	};
+    24
+    25	const exactKeys = (
+    26	  value: Record<string, unknown>,
+    27	  expected: readonly string[],
+    28	  label: string,
+    29	): void => {
+    30	  const actual = Object.keys(value).sort();
+    31	  const target = [...expected].sort();
+    32	  if (actual.length !== target.length || actual.some((key, index) => key !== target[index])) {
+    33	    throw new Error(`${label} has unsupported or missing field(s).`);
+    34	  }
+    35	};
+    36
+    37	const required = (value: unknown, label: string): string => {
+    38	  if (typeof value !== "string" || value.length === 0 || value !== value.trim()) {
+    39	    throw new Error(`${label} must be a non-empty trimmed string.`);
+    40	  }
+    41	  return value;
+    42	};
+    43
+    44	const nullableString = (value: unknown, label: string): string | null => {
+    45	  if (value === null) return null;
+    46	  return required(value, label);
+    47	};
+    48
+    49	const timestamp = (value: unknown, label: string): string => {
+    50	  const normalized = required(value, label);
+    51	  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(normalized) ||
+    52	      Number.isNaN(Date.parse(normalized))) {
+    53	    throw new Error(`${label} must be an ISO-8601 UTC timestamp.`);
+    54	  }
+    55	  return normalized;
+    56	};
+    57
+    58	const canonicalAddress = (value: unknown, label: string): AgentTeamAddress => {
+    59	  const address = assertAgentTeamAddress(required(value, label));
+    60	  if (address === "/") throw new Error(`${label} must be a non-root address.`);
+    61	  return address;
+    62	};
+    63
+    64	const array = (value: unknown, label: string): unknown[] => {
+    65	  if (!Array.isArray(value)) throw new Error(`${label} must be an array.`);
+    66	  return value;
+    67	};
+    68
+    69	const validateLaunchConfiguration = (value: unknown, label: string): void => {
+    70	  const launch = record(value, label);
+    71	  exactKeys(launch, [
+    72	    "runtimeKind",
+    73	    "llmModelIdentifier",
+    74	    "llmConfig",
+    75	    "autoExecuteTools",
+    76	    "skillAccessMode",
+    77	    "workspaceRootPath",
+    78	  ], label);
+    79	  if (!["autobyteus", "claude_agent_sdk", "codex_app_server"].includes(String(launch.runtimeKind))) {
+    80	    throw new Error(`${label}.runtimeKind is unsupported.`);
+    81	  }
+    82	  required(launch.llmModelIdentifier, `${label}.llmModelIdentifier`);
+    83	  if (launch.llmConfig !== null &&
+    84	      (!launch.llmConfig || typeof launch.llmConfig !== "object" || Array.isArray(launch.llmConfig))) {
+    85	    throw new Error(`${label}.llmConfig must be an object or null.`);
+    86	  }
+    87	  if (typeof launch.autoExecuteTools !== "boolean") {
+    88	    throw new Error(`${label}.autoExecuteTools must be boolean.`);
+    89	  }
+    90	  if (!Object.values(SkillAccessMode).includes(launch.skillAccessMode as SkillAccessMode)) {
+    91	    throw new Error(`${label}.skillAccessMode is unsupported.`);
+    92	  }
+    93	  if (launch.workspaceRootPath !== null) {
+    94	    required(launch.workspaceRootPath, `${label}.workspaceRootPath`);
+    95	  }
+    96	};
+    97
+    98	const validateConfiguredMember = (value: unknown, label: string): void => {
+    99	  const member = record(value, label);
+   100	  if ("agentRunId" in member) {
+   101	    exactKeys(member, [
+   102	      "address", "agentDefinitionId", "role", "description", "agentRunId",
+   103	      "platformAgentRunId", "launchConfiguration",
+   104	    ], label);
+   105	    canonicalAddress(member.address, `${label}.address`);
+   106	    required(member.agentDefinitionId, `${label}.agentDefinitionId`);
+   107	    nullableString(member.role, `${label}.role`);
+   108	    nullableString(member.description, `${label}.description`);
+   109	    required(member.agentRunId, `${label}.agentRunId`);
+   110	    nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`);
+   111	    validateLaunchConfiguration(member.launchConfiguration, `${label}.launchConfiguration`);
+   112	    return;
+   113	  }
+   114	  exactKeys(member, [
+   115	    "address", "teamDefinitionId", "role", "description", "teamRunId",
+   116	    "coordinatorAddress", "defaultLaunchConfiguration", "members", "taskExecutions",
+   117	  ], label);
+   118	  canonicalAddress(member.address, `${label}.address`);
+   119	  required(member.teamDefinitionId, `${label}.teamDefinitionId`);
+   120	  nullableString(member.role, `${label}.role`);
+   121	  nullableString(member.description, `${label}.description`);
+   122	  required(member.teamRunId, `${label}.teamRunId`);
+   123	  canonicalAddress(member.coordinatorAddress, `${label}.coordinatorAddress`);
+   124	  validateLaunchConfiguration(member.defaultLaunchConfiguration, `${label}.defaultLaunchConfiguration`);
+   125	  array(member.members, `${label}.members`).forEach((child, index) =>
+   126	    validateConfiguredMember(child, `${label}.members[${index}]`));
+   127	  array(member.taskExecutions, `${label}.taskExecutions`).forEach((task, index) =>
+   128	    validateTaskExecution(task, `${label}.taskExecutions[${index}]`));
+   129	};
+   130
+   131	const validateTaskTeamMember = (value: unknown, label: string): void => {
+   132	  const member = record(value, label);
+   133	  if ("agentRunId" in member) {
+   134	    exactKeys(member, ["address", "agentRunId", "platformAgentRunId"], label);
+   135	    canonicalAddress(member.address, `${label}.address`);
+   136	    required(member.agentRunId, `${label}.agentRunId`);
+   137	    nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`);
+   138	    return;
+   139	  }
+   140	  exactKeys(member, ["address", "teamRunId", "members", "taskExecutions"], label);
+   141	  canonicalAddress(member.address, `${label}.address`);
+   142	  required(member.teamRunId, `${label}.teamRunId`);
+   143	  array(member.members, `${label}.members`).forEach((child, index) =>
+   144	    validateTaskTeamMember(child, `${label}.members[${index}]`));
+   145	  array(member.taskExecutions, `${label}.taskExecutions`).forEach((task, index) =>
+   146	    validateTaskExecution(task, `${label}.taskExecutions[${index}]`));
+   147	};
+   148
+   149	const validateTaskExecution = (value: unknown, label: string): void => {
+   150	  const execution = record(value, label);
+   151	  if ("agentRunId" in execution) {
+   152	    exactKeys(execution, [
+   153	      "address", "agentRunId", "platformAgentRunId", "startedAt", "settledAt",
+   154	    ], label);
+   155	    canonicalAddress(execution.address, `${label}.address`);
+   156	    required(execution.agentRunId, `${label}.agentRunId`);
+   157	    nullableString(execution.platformAgentRunId, `${label}.platformAgentRunId`);
+   158	  } else {
+   159	    exactKeys(execution, [
+   160	      "address", "teamRunId", "members", "taskExecutions", "startedAt", "settledAt",
+   161	    ], label);
+   162	    canonicalAddress(execution.address, `${label}.address`);
+   163	    required(execution.teamRunId, `${label}.teamRunId`);
+   164	    array(execution.members, `${label}.members`).forEach((member, index) =>
+   165	      validateTaskTeamMember(member, `${label}.members[${index}]`));
+   166	    array(execution.taskExecutions, `${label}.taskExecutions`).forEach((task, index) =>
+   167	      validateTaskExecution(task, `${label}.taskExecutions[${index}]`));
+   168	  }
+   169	  const startedAt = timestamp(execution.startedAt, `${label}.startedAt`);
+   170	  if (execution.settledAt !== null) {
+   171	    const settledAt = timestamp(execution.settledAt, `${label}.settledAt`);
+   172	    if (settledAt < startedAt) throw new Error(`${label}.settledAt precedes startedAt.`);
+   173	  }
+   174	};
+   175
+   176	const validateRootTeam = (value: unknown): void => {
+   177	  const root = record(value, "rootTeam");
+   178	  exactKeys(root, [
+   179	    "address", "teamDefinitionId", "teamDefinitionName", "teamRunId", "coordinatorAddress",
+   180	    "defaultLaunchConfiguration", "members", "taskExecutions",
+   181	  ], "rootTeam");
+   182	  if (root.address !== "/") throw new Error("rootTeam.address must be '/'.");
+   183	  required(root.teamDefinitionId, "rootTeam.teamDefinitionId");
+   184	  required(root.teamDefinitionName, "rootTeam.teamDefinitionName");
+   185	  required(root.teamRunId, "rootTeam.teamRunId");
+   186	  canonicalAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
+   187	  validateLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration");
+   188	  array(root.members, "rootTeam.members").forEach((member, index) =>
+   189	    validateConfiguredMember(member, `rootTeam.members[${index}]`));
+   190	  array(root.taskExecutions, "rootTeam.taskExecutions").forEach((task, index) =>
+   191	    validateTaskExecution(task, `rootTeam.taskExecutions[${index}]`));
+   192	};
+   193
+   194	type ConfiguredPlacement = ConfiguredExecutionNode;
+   195
+   196	const validateTreeInvariants = (tree: TeamRunExecutionTreeFileV2): void => {
+   197	  const configured = new Map<AgentTeamAddress, ConfiguredPlacement>();
+   198	  const agentRuns = new Set<string>();
+   199	  const teamRuns = new Set<string>();
+   200
+   201	  const addAgentRun = (runId: string): void => {
+   202	    if (agentRuns.has(runId)) throw new Error(`Duplicate AgentRun ID '${runId}'.`);
+   203	    agentRuns.add(runId);
+   204	  };
+   205	  const addTeamRun = (runId: string): void => {
+   206	    if (teamRuns.has(runId)) throw new Error(`Duplicate TeamRun ID '${runId}'.`);
+   207	    teamRuns.add(runId);
+   208	  };
+   209
+   210	  const visitConfigured = (
+   211	    member: ConfiguredExecutionNode,
+   212	    parentAddress: AgentTeamAddress | "/",
+   213	  ): void => {
+   214	    if (getParentAgentTeamAddress(member.address) !== parentAddress) {
+   215	      throw new Error(`Configured placement '${member.address}' is not a direct child of '${parentAddress}'.`);
+   216	    }
+   217	    if (configured.has(member.address)) throw new Error(`Duplicate configured address '${member.address}'.`);
+   218	    configured.set(member.address, member);
+   219	    if ("agentRunId" in member) {
+   220	      addAgentRun(member.agentRunId);
+   221	      return;
+   222	    }
+   223	    addTeamRun(member.teamRunId);
+   224	    const coordinator = member.members.find((child) =>
+   225	      "agentRunId" in child && child.address === member.coordinatorAddress);
+   226	    if (!coordinator) throw new Error(`Configured Team '${member.address}' has no direct coordinator Agent.`);
+   227	    member.members.forEach((child) => visitConfigured(child, member.address));
+   228	  };
+   229
+   230	  addTeamRun(tree.rootTeam.teamRunId);
+   231	  tree.rootTeam.members.forEach((member) => visitConfigured(member, "/"));
+   232	  const rootCoordinator = tree.rootTeam.members.find((member) =>
+   233	    "agentRunId" in member && member.address === tree.rootTeam.coordinatorAddress);
+   234	  if (!rootCoordinator) throw new Error("rootTeam has no direct coordinator Agent.");
+   235
+   236	  const visitTaskTeamMember = (
+   237	    member: TaskTeamMemberExecution,
+   238	    sourceTeam: ConfiguredTeamExecutionNode | RootConfiguredTeamExecutionNode,
+   239	  ): void => {
+   240	    const source = sourceTeam.members.find((candidate) => candidate.address === member.address);
+   241	    if (!source || ("agentRunId" in source) !== ("agentRunId" in member)) {
+   242	      throw new Error(`Task-Team member '${member.address}' does not match a direct configured member.`);
+   243	    }
+   244	    if ("agentRunId" in member) {
+   245	      addAgentRun(member.agentRunId);
+   246	      return;
+   247	    }
+   248	    addTeamRun(member.teamRunId);
+   249	    const configuredTeam = source as ConfiguredTeamExecutionNode;
+   250	    member.members.forEach((child) => visitTaskTeamMember(child, configuredTeam));
+   251	    member.taskExecutions.forEach((task) => visitTask(task, member.teamRunId));
+   252	  };
+   253
+   254	  const visitTask = (task: TaskExecution, ownerTeamRunId: string): void => {
+   255	    void ownerTeamRunId;
+   256	    const source = configured.get(task.address);
+   257	    if (!source || ("agentRunId" in source) !== ("agentRunId" in task)) {
+   258	      throw new Error(`Task execution '${task.address}' does not match a configured placement.`);
+   259	    }
+   260	    if ("agentRunId" in task) {
+   261	      addAgentRun(task.agentRunId);
+   262	      return;
+   263	    }
+   264	    addTeamRun(task.teamRunId);
+   265	    const configuredTeam = source as ConfiguredTeamExecutionNode;
+   266	    task.members.forEach((member) => visitTaskTeamMember(member, configuredTeam));
+   267	    task.taskExecutions.forEach((child) => visitTask(child, task.teamRunId));
+   268	  };
+   269
+   270	  const visitOwnedTasks = (team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode): void => {
+   271	    team.taskExecutions.forEach((task) => visitTask(task, team.teamRunId));
+   272	    team.members.forEach((member) => {
+   273	      if ("teamRunId" in member) visitOwnedTasks(member);
+   274	    });
+   275	  };
+   276	  visitOwnedTasks(tree.rootTeam);
+   277
+   278	  for (const handoff of tree.handoffs) {
+   279	    const from = assertAgentTeamAddress(handoff.from);
+   280	    const to = assertAgentTeamAddress(handoff.to);
+   281	    if (!(configured.get(from) && "agentRunId" in configured.get(from)!)) {
+   282	      throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
+   283	    }
+   284	    if (!configured.has(to)) throw new Error(`Handoff recipient '${to}' is not configured.`);
+   285	  }
+   286	};
+   287
+   288	const deepFreeze = <T>(value: T): T => {
+   289	  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+   290	    Object.freeze(value);
+   291	    Object.values(value as Record<string, unknown>).forEach(deepFreeze);
+   292	  }
+   293	  return value;
+   294	};
+   295
+   296	export const validateTeamRunExecutionTreePayload = (
+   297	  value: unknown,
+   298	  expectedRootTeamRunId?: string,
+   299	): TeamRunExecutionTreeFileV2 => {
+   300	  const payload = record(value, "TeamRun execution tree");
+   301	  exactKeys(payload, [
+   302	    "schemaVersion", "createdAt", "archivedAt", "applicationBinding", "handoffs", "rootTeam",
+   303	  ], "TeamRun execution tree");
+   304	  if (payload.schemaVersion !== 2) throw new Error("TeamRun execution tree schemaVersion must be 2.");
+   305	  timestamp(payload.createdAt, "createdAt");
+   306	  if (payload.archivedAt !== null) timestamp(payload.archivedAt, "archivedAt");
+   307	  if (payload.applicationBinding !== null) {
+   308	    const binding = record(payload.applicationBinding, "applicationBinding");
+   309	    exactKeys(binding, ["applicationId", "bindingId"], "applicationBinding");
+   310	    required(binding.applicationId, "applicationBinding.applicationId");
+   311	    required(binding.bindingId, "applicationBinding.bindingId");
+   312	  }
+   313	  const handoffs = normalizeCollaborationHandoffs(payload.handoffs);
+   314	  validateRootTeam(payload.rootTeam);
+   315	  const cloned = structuredClone({ ...payload, handoffs }) as unknown as TeamRunExecutionTreeFileV2;
+   316	  if (expectedRootTeamRunId && cloned.rootTeam.teamRunId !== expectedRootTeamRunId) {
+   317	    throw new Error(`Execution tree root '${cloned.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
+   318	  }
+   319	  validateTreeInvariants(cloned);
+   320	  return deepFreeze(cloned);
+   321	};
+     1	import fs from "node:fs";
+     2	import fsPromises from "node:fs/promises";
+     3	import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+     4	import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+     5	import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+     6	import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+     7	import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
+     8	import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+     9	import { appConfigProvider } from "../../config/app-config-provider.js";
+    10	import { getTeamRunExecutionTreePath } from "../store/team-run-execution-tree-path.js";
+    11	import { validateTeamRunExecutionTreePayload } from "../store/team-run-execution-tree-schema.js";
+    12	import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
+    13	import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
+    14
+    15	export type LocatedTeamAgentExecution = Readonly<{
+    16	  rootTeamRunId: string;
+    17	  containingTeamRunId: string;
+    18	  ancestorTeamRunIds: readonly string[];
+    19	  agentRunId: string;
+    20	  memberAddress: AgentTeamAddress;
+    21	  configuredPlacement: ConfiguredAgentExecutionNode | null;
+    22	  memoryDir: string;
+    23	  tree: TeamRunExecutionTreeSnapshot;
+    24	  isActive: boolean;
+    25	}>;
+    26
+    27	type Manager = Pick<AgentTeamRunManager, "getManagedTeamRun" | "listManagedTeamRunIds">;
+    28
+    29	const STORED_TEAM_RUNS_ONLY: Manager = Object.freeze({
+    30	  getManagedTeamRun: () => null,
+    31	  listManagedTeamRunIds: () => [],
+    32	});
+    33
+    34	/** Derives physical/history context from the exact current V2 tree without another identity model. */
+    35	export class TeamRunExecutionTreeLocationService {
+    36	  private readonly memoryDir: string;
+    37	  private readonly layout: AgentMemoryLayout;
+    38	  private readonly manager: Manager;
+    39	  private readonly store: TeamRunExecutionTreeStore;
+    40	  private readonly packageCatalog: TeamRunPackageCatalog;
+    41
+    42	  constructor(input: {
+    43	    memoryDir?: string;
+    44	    manager?: Manager;
+    45	    store?: TeamRunExecutionTreeStore;
+    46	  } = {}) {
+    47	    this.memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    48	    this.layout = new AgentMemoryLayout(this.memoryDir);
+    49	    this.manager = input.manager ?? DefaultManager.getInstance();
+    50	    this.store = input.store ?? new TeamRunExecutionTreeStore();
+    51	    this.packageCatalog = new TeamRunPackageCatalog(this.memoryDir);
+    52	  }
+    53
+    54	  async findAgent(input: {
+    55	    agentRunId?: string | null;
+    56	    memberAddress?: string | null;
+    57	    containingTeamRunId?: string | null;
+    58	  }): Promise<LocatedTeamAgentExecution | null> {
+    59	    const active = this.findInActive(input);
+    60	    if (active) return active;
+    61	    for (const rootTeamRunId of await this.listStoredRootIds()) {
+    62	      const tree = await this.readStoredTree(rootTeamRunId);
+    63	      const located = tree ? this.findInTree(tree, input, false) : null;
+    64	      if (located) return located;
+    65	    }
+    66	    return null;
+    67	  }
+    68
+    69	  async listAgents(input: {
+    70	    rootTeamRunId?: string | null;
+    71	    containingTeamRunId?: string | null;
+    72	    configuredOnly?: boolean;
+    73	  } = {}): Promise<LocatedTeamAgentExecution[]> {
+    74	    const requestedRootId = input.rootTeamRunId?.trim() || null;
+    75	    const rootIds = requestedRootId ? [requestedRootId] : await this.listRootTeamRunIds();
+    76	    const output: LocatedTeamAgentExecution[] = [];
+    77	    for (const rootTeamRunId of rootIds) {
+    78	      const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
+    79	      const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
+    80	      if (!tree) continue;
+    81	      output.push(...this.listInTree(tree, Boolean(activeRoot)).filter((item) =>
+    82	        (!input.containingTeamRunId || item.containingTeamRunId === input.containingTeamRunId) &&
+    83	        (!input.configuredOnly || item.configuredPlacement !== null)));
+    84	    }
+    85	    return output;
+    86	  }
+    87
+    88	  async containsRunId(runId: string): Promise<boolean> {
+    89	    const normalized = runId.trim();
+    90	    if (!normalized) throw new Error("runId is required.");
+    91	    for (const rootTeamRunId of await this.listRootTeamRunIds()) {
+    92	      const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
+    93	      const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
+    94	      if (!tree) continue;
+    95	      const index = new TeamExecutionIndex(tree);
+    96	      if (index.getTeam(normalized) || index.getAgent(normalized)) return true;
+    97	    }
+    98	    return false;
+    99	  }
+   100
+   101	  async listRootTeamRunIds(): Promise<string[]> {
+   102	    return [...new Set([...this.manager.listManagedTeamRunIds(), ...await this.listStoredRootIds()])].sort();
+   103	  }
+   104
+   105	  findAgentSync(input: {
+   106	    agentRunId?: string | null;
+   107	    memberAddress?: string | null;
+   108	    containingTeamRunId?: string | null;
+   109	  }): LocatedTeamAgentExecution | null {
+   110	    const active = this.findInActive(input);
+   111	    if (active) return active;
+   112	    for (const rootTeamRunId of this.listStoredRootIdsSync()) {
+   113	      const tree = this.readStoredTreeSync(rootTeamRunId);
+   114	      const located = tree ? this.findInTree(tree, input, false) : null;
+   115	      if (located) return located;
+   116	    }
+   117	    return null;
+   118	  }
+   119
+   120	  async readStoredTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
+   121	    const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
+   122	    return this.store.read(rootDir, rootTeamRunId);
+   123	  }
+   124
+   125	  async readTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
+   126	    const normalized = rootTeamRunId.trim();
+   127	    if (!normalized) throw new Error("rootTeamRunId is required.");
+   128	    return this.manager.getManagedTeamRun(normalized)?.getExecutionTreeSnapshot() ?? this.readStoredTree(normalized);
+   129	  }
+   130
+   131	  private findInActive(input: {
+   132	    agentRunId?: string | null;
+   133	    memberAddress?: string | null;
+   134	    containingTeamRunId?: string | null;
+   135	  }): LocatedTeamAgentExecution | null {
+   136	    for (const rootTeamRunId of this.manager.listManagedTeamRunIds()) {
+   137	      const root = this.manager.getManagedTeamRun(rootTeamRunId);
+   138	      if (!root) continue;
+   139	      const located = this.findInTree(root.getExecutionTreeSnapshot(), input, true);
+   140	      if (located) return located;
+   141	    }
+   142	    return null;
+   143	  }
+   144
+   145	  private findInTree(
+   146	    tree: TeamRunExecutionTreeSnapshot,
+   147	    input: { agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null },
+   148	    isActive: boolean,
+   149	  ): LocatedTeamAgentExecution | null {
+   150	    const index = new TeamExecutionIndex(tree);
+   151	    const agentRunId = input.agentRunId?.trim() || null;
+   152	    const memberAddress = input.memberAddress?.trim() || null;
+   153	    const containing = input.containingTeamRunId?.trim() || null;
+   154	    if (containing && !index.getTeam(containing)) return null;
+   155	    const candidates = index.listAgentExecutions().filter((agent) =>
+   156	      (!agentRunId || agent.agentRunId === agentRunId) &&
+   157	      (!memberAddress || agent.address === memberAddress) &&
+   158	      (!containing || agent.containingTeamRunId === containing));
+   159	    if (candidates.length !== 1) return null;
+   160	    return this.toLocation(tree, index, candidates[0]!, isActive);
+   161	  }
+   162
+   163	  private listInTree(
+   164	    tree: TeamRunExecutionTreeSnapshot,
+   165	    isActive: boolean,
+   166	  ): LocatedTeamAgentExecution[] {
+   167	    const index = new TeamExecutionIndex(tree);
+   168	    return index.listAgentExecutions().map((agent) => this.toLocation(tree, index, agent, isActive));
+   169	  }
+   170
+   171	  private toLocation(
+   172	    tree: TeamRunExecutionTreeSnapshot,
+   173	    index: TeamExecutionIndex,
+   174	    agent: ReturnType<TeamExecutionIndex["listAgentExecutions"]>[number],
+   175	    isActive: boolean,
+   176	  ): LocatedTeamAgentExecution {
+   177	    const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
+   178	    const configured = index.getConfiguredPlacement(agent.address);
+   179	    const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
+   180	    return Object.freeze({
+   181	      rootTeamRunId: scope.rootTeamRunId,
+   182	      containingTeamRunId: agent.containingTeamRunId,
+   183	      ancestorTeamRunIds: scope.ancestorTeamRunIds,
+   184	      agentRunId: agent.agentRunId,
+   185	      memberAddress: agent.address,
+   186	      configuredPlacement,
+   187	      memoryDir: this.layout.getTeamAgentRunDirPath(scope, agent.agentRunId),
+   188	      tree,
+   189	      isActive,
+   190	    });
+   191	  }
+   192
+   193	  private async listStoredRootIds(): Promise<string[]> {
+   194	    try {
+   195	      const discovered = (await fsPromises.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true }))
+   196	        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+   197	      return this.packageCatalog.isInitialized()
+   198	        ? discovered.filter((rootTeamRunId) => this.packageCatalog.isAdmitted(rootTeamRunId))
+   199	        : discovered;
+   200	    } catch (error) {
+   201	      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+   202	      throw error;
+   203	    }
+   204	  }
+   205
+   206	  private listStoredRootIdsSync(): string[] {
+   207	    try {
+   208	      const discovered = fs.readdirSync(this.layout.getTeamRootDirPath(), { withFileTypes: true })
+   209	        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+   210	      return this.packageCatalog.isInitialized()
+   211	        ? discovered.filter((rootTeamRunId) => this.packageCatalog.isAdmitted(rootTeamRunId))
+   212	        : discovered;
+   213	    } catch (error) {
+   214	      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+   215	      throw error;
+   216	    }
+   217	  }
+   218
+   219	  private readStoredTreeSync(rootTeamRunId: string): TeamRunExecutionTreeSnapshot | null {
+   220	    const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
+   221	    try {
+   222	      const raw = JSON.parse(fs.readFileSync(getTeamRunExecutionTreePath(rootDir), "utf8")) as unknown;
+   223	      return validateTeamRunExecutionTreePayload(raw, rootTeamRunId);
+   224	    } catch (error) {
+   225	      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+   226	      throw error;
+   227	    }
+   228	  }
+   229	}
+   230
+   231	export const createStoredTeamRunExecutionTreeLocationService = (
+   232	  memoryDir?: string,
+   233	): TeamRunExecutionTreeLocationService =>
+   234	  new TeamRunExecutionTreeLocationService({
+   235	    memoryDir,
+   236	    manager: STORED_TEAM_RUNS_ONLY,
+   237	  });
+     1	import fs from "node:fs/promises";
+     2	import path from "node:path";
+     3	import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+     4	import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
+     5	import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
+     6	import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+     7	import {
+     8	  runtimeKindFromString,
+     9	  type RuntimeKind,
+    10	} from "../../runtime-management/runtime-kind-enum.js";
+    11	import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
+    12	import { AgentMemoryLocationService } from "./agent-memory-location-service.js";
+    13
+    14	export type RuntimeMemoryLocation = {
+    15	  itemId: string;
+    16	  memoryDir: string;
+    17	  workingContextSnapshotPath: string;
+    18	  runtimeKind: RuntimeKind | null;
+    19	  snapshotAgentId: string;
+    20	  subject:
+    21	    | { kind: "standalone"; runId: string }
+    22	    | {
+    23	        kind: "team_member";
+    24	        rootTeamRunId: string;
+    25	        memberAddress: string;
+    26	        agentRunId: string;
+    27	      };
+    28	};
+    29
+    30	export type RuntimeMemoryLocationDiagnostic = {
+    31	  itemId: string;
+    32	  filePath: string;
+    33	  status: "SKIPPED" | "FAILED";
+    34	  message: string;
+    35	  reasonCode:
+    36	    | "directory_not_traversed"
+    37	    | "directory_inspection_failed"
+    38	    | "metadata_missing"
+    39	    | "metadata_invalid"
+    40	    | "location_conflict";
+    41	  workingContextSnapshotPath?: string;
+    42	};
+    43
+    44	export type RuntimeMemoryLocationClassification = {
+    45	  locations: RuntimeMemoryLocation[];
+    46	  diagnostics: RuntimeMemoryLocationDiagnostic[];
+    47	};
+    48
+    49	const isNotFound = (error: unknown): boolean =>
+    50	  (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
+    51
+    52	const messageFromError = (error: unknown): string =>
+    53	  error instanceof Error ? error.message : String(error);
+    54
+    55	const itemIdFor = (memoryDir: string, filePath: string): string =>
+    56	  path.relative(memoryDir, filePath).split(path.sep).join("/") || ".";
+    57
+    58	const pathExists = async (filePath: string): Promise<boolean> => {
+    59	  try {
+    60	    await fs.access(filePath);
+    61	    return true;
+    62	  } catch (error) {
+    63	    if (isNotFound(error)) return false;
+    64	    throw error;
+    65	  }
+    66	};
+    67
+    68	export class RuntimeMemoryLocationClassifier {
+    69	  private readonly layout: AgentMemoryLayout;
+    70	  private readonly runMetadataStore: AgentRunMetadataStore;
+    71	  private readonly locationService: AgentMemoryLocationService;
+    72
+    73	  constructor(private readonly memoryDir: string) {
+    74	    this.layout = new AgentMemoryLayout(memoryDir);
+    75	    this.runMetadataStore = new AgentRunMetadataStore(memoryDir);
+    76	    this.locationService = new AgentMemoryLocationService({
+    77	      memoryDir,
+    78	      locationService: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+    79	    });
+    80	  }
+    81
+    82	  async classify(): Promise<RuntimeMemoryLocationClassification> {
+    83	    const diagnostics: RuntimeMemoryLocationDiagnostic[] = [];
+    84	    const locations = new Map<string, RuntimeMemoryLocation>();
+    85	    const blockedPaths = new Set<string>();
+    86	    await this.classifyStandalone(locations, blockedPaths, diagnostics);
+    87	    await this.classifyTeamMembers(locations, blockedPaths, diagnostics);
+    88	    return {
+    89	      locations: [...locations.values()].sort((left, right) => left.itemId.localeCompare(right.itemId)),
+    90	      diagnostics,
+    91	    };
+    92	  }
+    93
+    94	  private async classifyStandalone(
+    95	    locations: Map<string, RuntimeMemoryLocation>,
+    96	    blockedPaths: Set<string>,
+    97	    diagnostics: RuntimeMemoryLocationDiagnostic[],
+    98	  ): Promise<void> {
+    99	    const rootDir = this.layout.getStandaloneRootDirPath();
+   100	    const runIds = await this.listDirectories(rootDir, diagnostics);
+   101	    for (const runId of runIds) {
+   102	      const metadataPath = this.runMetadataStore.getMetadataPath(runId);
+   103	      try {
+   104	        const metadata = await this.runMetadataStore.readMetadata(runId);
+   105	        if (!metadata) {
+   106	          const present = await pathExists(metadataPath);
+   107	          diagnostics.push({
+   108	            itemId: `agents/${runId}:metadata`,
+   109	            filePath: metadataPath,
+   110	            status: present ? "FAILED" : "SKIPPED",
+   111	            reasonCode: present ? "metadata_invalid" : "metadata_missing",
+   112	            message: present
+   113	              ? "Standalone metadata exists but is not valid current run metadata."
+   114	              : "Standalone run has no current metadata and was not classified.",
+   115	          });
+   116	          continue;
+   117	        }
+   118	        if (metadata.runId !== runId) {
+   119	          throw new Error(`Metadata runId '${metadata.runId}' does not match directory '${runId}'.`);
+   120	        }
+   121	        const exact = this.locationService.getStandaloneLocation({
+   122	          agentRunId: runId,
+   123	        });
+   124	        this.registerLocation(locations, blockedPaths, diagnostics, {
+   125	          itemId: `agents/${runId}`,
+   126	          memoryDir: path.resolve(exact.memoryDir),
+   127	          workingContextSnapshotPath: path.resolve(
+   128	            exact.memoryDir,
+   129	            WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+   130	          ),
+   131	          runtimeKind: runtimeKindFromString(metadata.runtimeKind),
+   132	          snapshotAgentId: runId,
+   133	          subject: { kind: "standalone", runId },
+   134	        });
+   135	      } catch (error) {
+   136	        diagnostics.push({
+   137	          itemId: `agents/${runId}:metadata`,
+   138	          filePath: metadataPath,
+   139	          status: "FAILED",
+   140	          reasonCode: "metadata_invalid",
+   141	          message: `Could not classify standalone run metadata: ${messageFromError(error)}`,
+   142	        });
+   143	      }
+   144	    }
+   145	  }
+   146
+   147	  private async classifyTeamMembers(
+   148	    locations: Map<string, RuntimeMemoryLocation>,
+   149	    blockedPaths: Set<string>,
+   150	    diagnostics: RuntimeMemoryLocationDiagnostic[],
+   151	  ): Promise<void> {
+   152	    const rootDir = this.layout.getTeamRootDirPath();
+   153	    const teamRunIds = await this.listDirectories(rootDir, diagnostics);
+   154	    for (const teamRunId of teamRunIds) {
+   155	      const metadataPath = getTeamRunExecutionTreePath(
+   156	        this.layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }),
+   157	      );
+   158	      try {
+   159	        const exactLocations = await this.locationService.listTeamMemberLocations({ teamRunId });
+   160	        if (exactLocations.length === 0) {
+   161	          diagnostics.push({
+   162	            itemId: `agent_teams/${teamRunId}:metadata`,
+   163	            filePath: metadataPath,
+   164	            status: "SKIPPED",
+   165	            reasonCode: "metadata_missing",
+   166	            message: "Team run has no current execution tree or Agent executions and was not classified.",
+   167	          });
+   168	          continue;
+   169	        }
+   170	        for (const exact of exactLocations) {
+   171	          this.registerLocation(locations, blockedPaths, diagnostics, {
+   172	            itemId: itemIdFor(this.memoryDir, exact.memoryDir),
+   173	            memoryDir: path.resolve(exact.memoryDir),
+   174	            workingContextSnapshotPath: path.resolve(
+   175	              exact.memoryDir,
+   176	              WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+   177	            ),
+   178	            runtimeKind: exact.configuredPlacement
+   179	              ? exact.configuredPlacement.launchConfiguration.runtimeKind
+   180	              : null,
+   181	            snapshotAgentId: exact.agentRunId,
+   182	            subject: {
+   183	              kind: "team_member",
+   184	              rootTeamRunId: exact.rootTeamRunId,
+   185	              memberAddress: exact.memberAddress,
+   186	              agentRunId: exact.agentRunId,
+   187	            },
+   188	          });
+   189	        }
+   190	      } catch (error) {
+   191	        diagnostics.push({
+   192	          itemId: `agent_teams/${teamRunId}:metadata`,
+   193	          filePath: metadataPath,
+   194	          status: "FAILED",
+   195	          reasonCode: "metadata_invalid",
+   196	          message: `Could not classify TeamRun execution tree: ${messageFromError(error)}`,
+   197	        });
+   198	      }
+   199	    }
+   200	  }
+   201
+   202	  private async listDirectories(
+   203	    rootDir: string,
+   204	    diagnostics: RuntimeMemoryLocationDiagnostic[],
+   205	  ): Promise<string[]> {
+   206	    try {
+   207	      const rootStat = await fs.lstat(rootDir);
+   208	      if (rootStat.isSymbolicLink()) {
+   209	        diagnostics.push({
+   210	          itemId: itemIdFor(this.memoryDir, rootDir),
+   211	          filePath: rootDir,
+   212	          status: "SKIPPED",
+   213	          reasonCode: "directory_not_traversed",
+   214	          message: "Symbolic-link directory was not traversed.",
+   215	        });
+   216	        return [];
+   217	      }
+   218	      const entries = await fs.readdir(rootDir, { withFileTypes: true });
+   219	      return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+   220	    } catch (error) {
+
+=== HARD LIMIT EVIDENCE ===
+     523 autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+effective_non_empty_lines=503
+5	2	autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+
+=== SUPPLEMENTAL STALE TEST BLOB IDENTITIES ===
+-- autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+c6d74710ad30b680f853fba0e90a68255f112955 28ad05d4fdf27195f42505da9670606db1d3c5c0
+fb1335867a4223b2499e4513f58c609b6ac33ab4 28ad05d4fdf27195f42505da9670606db1d3c5c0
+52ab1fe6f8dfd347b84283370d7c3e76c2f90393 28ad05d4fdf27195f42505da9670606db1d3c5c0
+-- autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+c6d74710ad30b680f853fba0e90a68255f112955 6b6f576453aee166e390c7461d3f6edbe39536e4
+fb1335867a4223b2499e4513f58c609b6ac33ab4 6b6f576453aee166e390c7461d3f6edbe39536e4
+52ab1fe6f8dfd347b84283370d7c3e76c2f90393 6b6f576453aee166e390c7461d3f6edbe39536e4

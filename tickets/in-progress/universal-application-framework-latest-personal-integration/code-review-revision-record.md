@@ -490,3 +490,43 @@ No prior proportional test-review finding existed. `CRR-015` remains valid for A
 - Reviewer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-017-api-rev-009-no-durable-test-delta.log`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: Electron packaging/smoke, the latest tracked-base refresh, integrated-state verification, documentation confirmation, and finalization remain delivery-owned. Historical `APIE2E-REPO-005` and mutable live-provider/account state remain separately characterized rather than current findings.
+
+### CRR-018 — Personal v1.4.58 hierarchical Team launch and V2 source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `18`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-010`; upstream `AR-006` was resolved by SR-010; new findings `CR-008`, `CR-009`, `CR-010`.
+- Relevant solution revision IDs: `SR-001`–`SR-010`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-010`; current authority `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-001`–`IR-010`
+- Relevant API/E2E revision IDs: retained history `API-REV-001`–`API-REV-009`; IR-010 current execution `N/A`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`
+- Prior authoritative result: immediately prior proportional result `CRR-017 — Not Applicable`; latest implementation-source result `CRR-016 — Pass / 95`
+- Current authoritative result: **Fail — Local Fix / 91**
+- What changed in the review result and why: IR-010 is the exact reviewed two-parent merge of checkpoint `c6d74710...` and Personal `fb1335867...`. Independent merge-tree reproduction confirms the complete `633/50/13/30/7` disposition, and all 30 generated conflict targets remain absent. Source tracing confirms complete Team scope/Agent leaf precedence, concrete SDK types, graph-local Team allocator injection, V1 -> memory -> V2 migration, atomic V2 promotion, V2-only current readers, stored-only location/classification, and retained hierarchical workspace/provider UI. The review fails because the changed launch coordinator crossed the mandatory 500-line source limit, two directly affected migration fixtures still encode pre-V2 shape/order, and the planner validates exact coverage but allocates Team/Agent identities before required launch-value validation rejects a blank model.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-010` | Standalone lifecycle/tool-readiness ordering remains and production build/AFB pass. |
+| `CR-002` | Resolved | Remains resolved | `IR-002`, `CRR-002`, `IR-010` | Launch reads remain read-only; V2 work uses the startup migration runner rather than request-time schema mutation. |
+| `CR-003` | Resolved | Remains resolved | `IR-003`, `CRR-003`, `IR-010` | Read-only event-journal recovery remains outside and unaffected by the Team V2 transition. |
+| `CR-004` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-010` | Exact bound-member identity survives the new V2 member projection; no alias/fallback exists. |
+| `CR-005` | Resolved | Remains resolved | `IR-004`, `CRR-005`, `IR-010` | Application run construction stays graph-local; stored migration classification uses no process-global manager. |
+| `CR-006` | Resolved | Remains resolved | `IR-005`, `CRR-007`, `IR-010` | Canonical application runtime-directory preparation remains before readiness and outside the changed Team projection. |
+| `CR-007` | Resolved | Remains resolved | `IR-006`, `CRR-009`, `IR-010` | Binding-owned exact `agentRunId` input dispatch remains present through current V2 binding members. |
+
+- New or remaining finding IDs:
+  - `CR-008` — `application-launch-configuration-service.ts` is 523 physical / 503 effective non-empty lines after IR-010 (`+5/-2` from the 500-line checkpoint), exceeding the changed-source hard limit. Bounded same-subsystem reduction is required without changing the public owner or adding a second precedence authority.
+  - `CR-009` — `migrate-native-working-context-snapshots-v5-migration.test.ts` omits V2 from the approved registry-order assertion, and `remove-external-runtime-working-context-snapshots-migration.test.ts` constructs a nested Team without V2's required default launch configuration. Update the fixtures/assertion; do not weaken the correct production order/current schema.
+  - `CR-010` — exact-coverage Team input with a blank required Team model calls both Team and Agent identity allocators before `TeamRunConfig` rejects it. Move complete launch-value validation before every allocator and add zero-allocation regressions; do not infer/fallback values.
+- Material score or classification changes: the overall current implementation scores `91/100`, but Data-Flow Spine `8.8`, Separation/File Placement `8.8`, API/E2E Readiness `8.2`, Runtime Correctness `8.3`, and Cleanup Completeness `8.8` are below the mandatory 9.0 threshold. Result is `Fail — Local Fix`; the high average does not override the findings.
+- Validation evidence: independent topology/conflict/generated/marker/retired-owner/size/diff audits; shared contract/backend SDK builds; backend SDK 2 files / 10 tests; focused server 8 files / 69 tests including AFB 15/15; focused hierarchical web 5 files / 61 tests; server build-config TypeScript; and full production build/sanitized bootstrap all pass. A supplemental 3-file migration run exposed CR-009 plus a separate blob-identical historical diagnostic assertion that remains `APIE2E-REPO-005` / `Unclear`. A temporary executable planner probe independently proves CR-010 with `teamCalls=1`, `agentCalls=1`, then required-model rejection.
+- Reviewer evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-merge-source-audit.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-source-trace.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-focused-validation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-planner-completeness-probe.log`
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: API/E2E must not start until CR-008–CR-010 receive affected source re-review Pass. Current-head real Studio/standalone migration, nested Team, provider/model, business, publication/handoff/projection, restart/remount, parity/cleanup, and durable-test checks remain downstream; Electron v1.4.58 and final-base integration remain delivery-owned. Historical `APIE2E-REPO-005` stays separately `Unclear`.
