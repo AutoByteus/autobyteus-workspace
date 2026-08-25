@@ -6,19 +6,19 @@
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
 - Supplemental Task Artifacts: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, merge/conflict/overlap/path inventories
-- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-004`)
+- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-013`)
 - Design Review Report: `design-review-report.md`
-- Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-004` Pass)
+- Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-013` Pass)
 - Implementation Handoff: `implementation-handoff.md`
-- Implementation Revision Record: `implementation-revision-record.md` (`IR-007`)
+- Implementation Revision Record: `implementation-revision-record.md` (`IR-012`)
 - Code Review Report: `code-review-report.md`
-- Code Review Revision Record: `code-review-revision-record.md` (`CRR-012` Pass / 94)
-- Delivery Revision Record: `delivery-revision-record.md` (`DR-001` packaged Electron baseline relevant)
-- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-007`)
-- Current API/E2E Revision ID: `API-REV-007` complete
-- Current Investigation Round: `7`
-- Trigger: `/code_reviewer` `CRR-012` Pass for newest-Personal semantic refresh `IR-007`
-- Prior Investigation Reviewed: API-REV-006 Pass / 99%, API-REV-004 Pass / 98%, CRR-010/011 proportional dispositions, and delivery DR-004 refresh evidence
+- Code Review Revision Record: `code-review-revision-record.md` (`CRR-022` durable-test Pass after `CRR-021` source Pass)
+- Delivery Revision Record: `delivery-revision-record.md` (`DR-011` current integrated v1.4.58/Electron context)
+- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001`–`API-REV-012`)
+- Current API/E2E Revision ID: `API-REV-012` complete
+- Current Investigation Round: `12`
+- Trigger: user-requested real private `Nested Classroom Test Team` execution using both external agent-package roots
+- Prior Investigation Reviewed: API-REV-011 Pass / 98%, CRR-022 proportional durable-test Pass, and DR-011 latest-base integration evidence
 - Latest Authoritative Investigation: this document
 
 ## Current Requirement And Design Basis
@@ -972,3 +972,54 @@ This section supersedes the round-four planning status above.
 - Historical separation: the production-upgrade component associated with earlier general-run symptoms now passes `4/4`, but historical `APIE2E-REPO-005` remains **Unclear / separate** for unrelated broad-suite diagnostics. It is neither current failure attribution nor used as Pass evidence.
 - Final result: **Pass / 98%**. Every API/E2E critical criterion has direct current evidence; every confidence category is at least 97%; broader validation was **Required; executed; Pass**. Electron packaging/shell remains downstream delivery-owned.
 - Required route: `/code_reviewer` for proportional review of `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` before delivery resumes.
+
+## API-REV-012 User-Requested Live Nested Classroom Supplemental Investigation
+
+- Trigger: the user explicitly requested a real test of the private `Nested Classroom Test Team` from `/Users/normy/autobyteus_org/autobyteus-private-agents`, in addition to the already-passed public `Classroom Simulation Team` from `/Users/normy/autobyteus_org/autobyteus-agents`.
+- Current tree: `122381cb2bd9203b9934eeb8097e8b85569c6211`, which adds only the `CRR-022` proportional durable-test review artifact on top of the API-REV-011 reviewed production tree. The API-REV-011 source and durable coverage remain unchanged and preserved.
+- Existing durable nested coverage is **Still Valid**: recursive team-local discovery, nested topology/config editing, physical memory/history, V2 restart hydration, rooted message authorization, task-team creation/projection and task lifecycle tool exposure all have repository coverage. API-REV-011 also proved a real non-nested public Classroom team. However, no retained live evidence executes this exact private nested package and all three fixture-owned routes together.
+- Coverage gap decision: **Use Temporary Executable Probe Only**. This exact private package is an external user fixture, so a repository-resident test would create an inappropriate dependency on a private sibling repository. The live probe must use normal package import, launch, messaging/task APIs and persisted projections; direct SQLite/file injection is invalid.
+- Planned live scenario `APIE2E-NESTED-CLASSROOM-012`:
+  1. Start an isolated current Studio server and import supported credentials through `pnpm secrets:import` without retaining values.
+  2. Import/register both exact user roots through the public package boundary and assert `Nested Classroom Test Team` resolves only from the private root with `/Teacher`, `/StudentStudyGroup`, `/StudentStudyGroup/student_one`, and `/StudentStudyGroup/student_two`.
+  3. Launch the exact nested Team through the public execution surface with real available model/provider selections for every concrete leaf.
+  4. Exercise and distinguish ordinary team-address `send_message_to` to `/StudentStudyGroup`, ordinary direct-member `send_message_to` to `/StudentStudyGroup/student_one`, and lifecycle `delegate_task` -> `submit_task_result` -> `review_task_result` for exact `NESTED_CLASSROOM_OK`.
+  5. Assert persisted nested V2 topology, exact rooted communication packets, task-team execution/result/acceptance, and browser-visible current state.
+  6. Restart the same server/data root, restore the exact root TeamRun, send a second marker through the same nested route, prove continuation, terminate, and clean all owned resources.
+- Broader validation decision: **Required**. The missing evidence is specifically live cross-runtime nested addressing, task lifecycle, persistence, browser projection and restart behavior; repository-only reruns cannot close it.
+- Pre-execution confidence for this supplemental scenario: requirement 70%, changed-boundary directness 82%, cross-boundary realism 65%, environment/fixture fidelity 88%, lifecycle/recovery 70%, browser/user surface 65%, durable relevance 95%; overall **76%**. API-REV-011's overall Pass remains the prior result, but the requested supplemental claim cannot be made until this scenario completes.
+
+### API-REV-012 Post-Execution Coverage Resolution (Authoritative)
+
+- Executed identity: integrated current HEAD `226dcfd1dda71f6507b507a9c8b68145bf4d4bbf`. Relative to the reviewed API-REV-011 source, the integrated delta is the already-reviewed durable test plus the DR-011 independent prototype-removal/restoration record merge; it changes no tested production server/web/application owner.
+- Environment: isolated backend `60240`, Nuxt `31240`, disposable SQLite/vault/runtime root, installed Google Chrome, authenticated Codex `gpt-5.6-luna`, and the supported `pnpm secrets:import` path. The exact operational database was never opened by the accepted process. Secret values were not printed or retained.
+- Package import: **Pass**. Public GraphQL imported or idempotently recognized both exact user roots. `/Users/normy/autobyteus_org/autobyteus-agents` exposed 7 shared agents, 50 team-local agents and 12 teams. `/Users/normy/autobyteus_org/autobyteus-private-agents` exposed 40 shared agents, 25 team-local agents and 9 teams. The exact private canonical identities resolved for `nested-classroom-test`, nested `student-study-group`, Teacher, Student One and Student Two.
+- `APIE2E-NESTED-CLASSROOM-012`: **Pass**. A fresh real root TeamRun `nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7` launched all three concrete configured leaves as Codex Luna with medium reasoning and automatic tool execution. Its persisted execution tree is schema V2 and contains `/Teacher`, `/StudentStudyGroup/student_one`, `/StudentStudyGroup/student_two`, plus one independently materialized nested task-team execution with both task agents.
+- Ordinary team-address route: **Pass**. Teacher sent one normal `send_message_to` packet to `/StudentStudyGroup` with the exact reference path; the canonical nested coordinator returned `NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL`. API sender/receiver identities, reference persistence and browser-visible message/reference rows all matched.
+- Ordinary direct-member route: **Pass**. Teacher sent a distinct normal packet to `/StudentStudyGroup/student_one`; Student One returned `NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL`. This used no delegation record and remained distinguishable from the team-address packet.
+- Nested task lifecycle: **Pass**. Exactly one `delegate_task` record targeted `/StudentStudyGroup`, materialized a separate task TeamRun, received exactly one `NESTED_CLASSROOM_OK_NESTED-CODEX-FINAL` submission through `submit_task_result`, and reached `accepted` through one successful `review_task_result`. The current browser showed one accepted task, its task-team row, exact result detail and zero active transient task rows after settlement.
+- Extra non-blocking peer observation: the task coordinator's rooted `send_message_to` to `/StudentStudyGroup/student_two` was accepted and Student Two replied. Under the reviewed selector-free rooted-address contract, these ordinary logical addresses resolve to the canonical configured placements; the task-team's separate execution identities remain visible in the V2 task topology and lifecycle. Student Two echoed `TASK_PEER_NESTED-CODEX-FINAL` rather than the additional requested `TASK_PEER_REPLY_*` wording. That optional extension is not one of the fixture's three required route contracts and is not used as Pass evidence for exact marker compliance.
+- Browser projection: **Pass**. Installed Chrome displayed the exact completion marker, four original ordinary message rows, the reference, one accepted task and retained lifecycle detail after reload. Separate screenshots captured messages, accepted task detail and the post-restart continuation.
+- Cold restart/recovery: **Pass**. After a graceful backend stop, the same-data cold start returned the run inactive while retaining one accepted task and six communication records. Public `restoreAgentTeamRun` restored the exact run and configured identities; Teacher then repeated the original team-address route and received exact `POST_RESTART_NESTED_TEAM_ACK`. Public termination succeeded, the run became inactive, and all eight communication records plus task history remained readable.
+- Package integrity: **Pass**. SHA-256 for all 10 private fixture Markdown/JSON files was byte-identical before and after import/run/restart. The package roots had no fixture-file mutation.
+- Harness validity: two early disposable attempts used obsolete launch/query selectors and were terminated without being used as product evidence. Their GraphQL validation/duplicate-import logs are retained and classified as temporary harness corrections. The accepted current-schema run and post-restart verifier are the authoritative evidence. One premature model-generated `review_task_result` was correctly rejected because the task was not yet awaiting review; the later supported review succeeded and the durable record contains exactly one accepted review.
+- Cleanup/isolation: **Pass**. Ports `60240` and `31240` are free; the disposable runtime root, database/key, temporary probes and owned processes are absent. The exact private fixture hashes still match. Twelve secret-like source values were compared against 25 retained evidence files with zero matches.
+- Durable coverage decision: unchanged. **No repository-resident durable test was added, updated or removed in API-REV-012.** The temporary live probe is appropriate because the exact fixture is private/external; current repository tests remain the durable owners of nested topology, routing, task lifecycle, V2 persistence and recovery.
+
+#### Final Confidence And Gate
+
+| Category | Final | Evidence / residual |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 99% | all three private fixture routes, exact result/review and restart continuation directly pass |
+| Changed-boundary execution directness | 98% | normal public package, launch, messaging, task, history, restore and terminate boundaries |
+| Cross-boundary integration realism | 99% | real Chrome, Codex, GraphQL, persistence, nested task-team and process restart |
+| Environment/configuration/identity fidelity | 99% | exact two roots, exact private canonical identities, isolated database/vault and exact model/runtime |
+| Failure/lifecycle/recovery | 98% | premature review rejected correctly; cold restart, restore, continuation, terminate and retained history pass |
+| User/browser/desktop-equivalent | 98% | semantic DOM plus screenshots for messages/reference/task/reload/restart |
+| Durable regression quality/relevance | 96% | strong current in-repository nested coverage; private exact fixture intentionally remains a temporary live probe |
+
+- Overall final confidence: **98%** (simple average, rounded).
+- Result: **Pass**. Every critical supplemental criterion has direct proof; no category is below 90%.
+- Broader validation: **Required; executed; Pass**.
+- Historical `APIE2E-REPO-005`: remains separate **Unclear** and is neither current failure attribution nor Pass evidence.
+- Electron: DR-011 remains downstream delivery-owned and already records the current packaged gate; API-REV-012 adds no Electron claim.

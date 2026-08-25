@@ -299,3 +299,33 @@ None. API-REV-009 had no unresolved current failure. Historical `APIE2E-REPO-005
 - New or remaining current failure IDs: **None**.
 - Recommended recipient: `/code_reviewer` for proportional review of the single updated durable E2E test before delivery resumes.
 - Remaining risks: historical `APIE2E-REPO-005` remains separate Unclear; external provider/account availability is mutable; Electron packaging/shell remains downstream delivery-owned.
+
+### API-REV-012 — Exact private nested classroom passes real browser, task lifecycle and cold restart
+
+- Triggering role/report/round: explicit user request; `api-e2e-execution-coverage-report.md`; round 12.
+- Triggering scenario: execute the exact private `Nested Classroom Test Team` from `/Users/normy/autobyteus_org/autobyteus-private-agents` while also loading `/Users/normy/autobyteus_org/autobyteus-agents`.
+- Related revisions: full current-source `API-REV-011` Pass / 98, source review `CRR-021`, durable-test review `CRR-022`, and integrated delivery context `DR-011`.
+- Executed identity: current integrated HEAD `226dcfd1dda71f6507b507a9c8b68145bf4d4bbf`; DR-011's post-review merge changes independent prototype records, not tested production server/web/application behavior.
+- Why recorded: API-REV-011 directly proved the public `Classroom Simulation Team` and durable nested behavior, but did not retain live evidence for this exact private nested package and its three fixture-owned routes together.
+- Coverage decision: temporary executable live probe only. The exact package is a private external fixture and must not become a repository-resident test dependency. Existing repository coverage remains valid; API-REV-012 added, updated and removed zero durable tests.
+- Environment: isolated backend/Nuxt/SQLite/vault on ports `60240`/`31240`; installed Chrome; authenticated Codex `gpt-5.6-luna`; supported secret import without retained values; both exact public/private package roots through public GraphQL.
+- Package result: both roots loaded; the private canonical root/nested team/Teacher/Student identities resolved; all 10 private fixture Markdown/JSON hashes remained byte-identical after execution.
+- Live result: real TeamRun `nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7` persisted exact configured nested V2 topology and one independent task-team execution. Ordinary team-address and ordinary direct-member messages produced their distinct exact acknowledgements. Exactly one delegated task targeted `/StudentStudyGroup`, submitted exact `NESTED_CLASSROOM_OK_NESTED-CODEX-FINAL`, and reached one accepted review.
+- Browser result: exact completion, ordinary messages, reference, accepted task, task-team row and lifecycle detail remained visible after reload; semantic DOM/API assertions and screenshots passed.
+- Recovery result: same-data cold start retained the inactive V2 tree, accepted task and six messages; public restore succeeded; the same team-address route produced exact post-restart reply; public terminate succeeded; inactive history retained one task and eight messages.
+- Extra peer characterization: the task coordinator's extra rooted peer message and a reply persisted. Student Two echoed the request token instead of the additional distinct reply phrase. This bounded model variance is recorded but is outside the fixture's three mandatory routes and is not used as exact-marker Pass evidence.
+- Harness correction: two early disposable probes used obsolete selectors/schema fields and were publicly terminated; they are not Pass evidence. One premature model-generated review was correctly rejected before the later successful review.
+- Cleanup: both ports free; disposable root/DB/key/probes/processes removed; exact package hashes preserved; 12 secret-like values scanned across 25 retained evidence files with zero matches.
+
+#### Prior Failure Resolution
+
+None. API-REV-011 had no unresolved current failure and already passed its proportional test review. API-REV-012 is a supplemental external-fixture expansion.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `evidence/api-e2e/api-rev-012-*`.
+- Prior result/confidence: **Pass / 98%** (`API-REV-011`).
+- Current result/confidence: **Pass / 98%**.
+- Broader validation: **Required; executed; Pass**.
+- New or remaining current failure IDs: **None**.
+- Durable test delta: **None**.
+- Recommended recipient: `/code_reviewer` for workflow-required proportional review, expected **Not Applicable**, before delivery resumes.
+- Remaining risks: live provider/account state is mutable; optional extra peer wording showed bounded model variance; historical `APIE2E-REPO-005` remains separate Unclear; Electron remains delivery-owned.
