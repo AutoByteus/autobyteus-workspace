@@ -105,10 +105,15 @@ describe('TeamRunConfigForm hierarchical scopes', () => {
     reloadRuntimeKind.mockReset()
   })
 
-  it('renders the root defaults and derives inherited nested Team/Agent values', () => {
+  it('preserves the personal-baseline root order and derives inherited nested Team/Agent values', () => {
     const wrapper = mountForm()
     const root = wrapper.findComponent(TeamScopeConfigEditor)
     const tree = wrapper.findComponent(TeamMemberConfigTree)
+    const directChildren = Array.from(wrapper.element.children)
+
+    expect(directChildren[0]?.querySelector('label')?.textContent).toContain('team_definition')
+    expect(directChildren[1]?.tagName.toLowerCase()).toBe('team-scope-config-editor-stub')
+    expect(directChildren[2]?.querySelector('[data-test="team-member-overrides-toggle"]')).not.toBeNull()
 
     expect(root.props()).toEqual(expect.objectContaining({
       address: '/',
@@ -209,11 +214,22 @@ describe('TeamRunConfigForm hierarchical scopes', () => {
     const wrapper = mountForm({ repairAddresses: ['/Removed', '/StudentStudyGroup/old'] })
 
     expect(wrapper.get('[data-test="team-topology-repair-notice"]').text()).toContain('/Removed, /StudentStudyGroup/old')
-    const disclosure = wrapper.get('button[aria-controls="team-scope-members"]')
-    expect(disclosure.attributes('aria-expanded')).toBe('true')
-    await disclosure.trigger('click')
+    const disclosure = wrapper.get('button[aria-controls="team-member-overrides-panel"]')
+    expect(disclosure.text()).toContain('team_members_override (3)')
     expect(disclosure.attributes('aria-expanded')).toBe('false')
-    expect(wrapper.get('#team-scope-members').attributes('style')).toContain('display: none')
+    expect(wrapper.get('#team-member-overrides-panel').attributes('style')).toContain('display: none')
+    await disclosure.trigger('click')
+    expect(disclosure.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('#team-member-overrides-panel').attributes('style')).toBeUndefined()
+  })
+
+  it('renders no hierarchy placeholder for a root-only Team definition', () => {
+    const wrapper = mountForm({
+      teamDefinition: { ...rootDefinition, nodes: [] },
+    })
+
+    expect(wrapper.find('[data-test="team-member-overrides-toggle"]').exists()).toBe(false)
+    expect(wrapper.findComponent(TeamMemberConfigTree).exists()).toBe(false)
   })
 
   it.each([

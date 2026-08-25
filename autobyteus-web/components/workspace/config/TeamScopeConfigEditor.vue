@@ -1,37 +1,122 @@
 <template>
+  <div v-if="isRoot" class="space-y-4" data-test="root-team-config-fields">
+    <div
+      v-if="runtimeCatalogState.status === 'loading'"
+      role="status"
+      class="rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700"
+      data-test="team-runtime-catalog-loading"
+    >
+      {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address }) }}
+    </div>
+    <div
+      v-else-if="runtimeCatalogState.status === 'error'"
+      role="alert"
+      class="flex items-start justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+      data-test="team-runtime-catalog-error"
+    >
+      <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address, error: runtimeCatalogState.error || '' }) }}</span>
+      <button type="button" class="font-semibold underline disabled:opacity-50" :disabled="disabled" @click="retryCatalog">
+        {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}
+      </button>
+    </div>
+
+    <RuntimeModelConfigFields
+      :runtime-kind="effectiveConfig.runtimeKind"
+      :llm-model-identifier="effectiveConfig.llmModelIdentifier"
+      :llm-config="effectiveConfig.llmConfig"
+      :disabled="disabled"
+      :read-only="readOnly || disabled"
+      :runtime-selection-locked="disabled"
+      :runtime-help-text="t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
+      :model-label="t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
+      :model-help-text="t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
+      :id-prefix="inputIdPrefix"
+      :advanced-initially-expanded="readOnly"
+      control-variant="quiet"
+      @update:runtime-kind="updateField('runtime', $event)"
+      @update:llm-model-identifier="updateField('model', $event)"
+      @update:llm-config="updateField('llmConfig', $event)"
+    />
+
+    <div class="mt-8">
+      <WorkspaceSelector
+        :model-value="workspaceSelection"
+        :is-loading="workspaceOperation.status === 'loading'"
+        :error="workspaceOperation.error"
+        :disabled="disabled"
+        :auto-select-default="true"
+        control-variant="quiet"
+        @update:model-value="updateWorkspaceSelection"
+      />
+    </div>
+
+    <div class="mt-4 flex items-center justify-between gap-4 py-2" data-test="team-auto-approve-row">
+      <div class="min-w-0">
+        <label :for="autoExecuteId" class="block select-none text-base text-gray-900" :class="{ 'text-gray-400': disabled }">
+          {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}
+        </label>
+        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+          {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
+        </p>
+      </div>
+      <AutoApproveSwitch
+        :id="autoExecuteId"
+        :checked="effectiveConfig.autoExecuteTools"
+        :disabled="disabled"
+        :label="t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools')"
+        @toggle="updateField('auto', $event)"
+      />
+    </div>
+  </div>
+
   <section
-    class="rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
+    v-else
+    class="bg-slate-50/70 p-3"
     :aria-labelledby="headingId"
     data-test="team-scope-config-editor"
     :data-team-address="address"
   >
     <div class="flex min-w-0 items-start gap-2">
       <button
-        v-if="!isRoot"
         type="button"
-        class="flex min-w-0 flex-1 items-start gap-2 rounded text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        class="flex min-w-0 flex-1 flex-wrap items-center gap-2 rounded text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
         :aria-expanded="expanded"
         :aria-controls="panelId"
         @click="expanded = !expanded"
       >
-        <span aria-hidden="true" class="pt-0.5 text-slate-500">{{ expanded ? '▾' : '▸' }}</span>
-        <span class="min-w-0 flex-1">
-          <span :id="headingId" class="block truncate text-sm font-semibold text-slate-900">{{ displayName }}</span>
-          <span class="block truncate font-mono text-xs text-slate-500" :title="address">{{ address }}</span>
+        <span :id="headingId" class="truncate text-sm font-semibold text-slate-800" :title="address">
+          {{ displayName }}
         </span>
+        <span class="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500">
+          {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.team_marker') }}
+        </span>
+        <span class="min-w-0 flex-1 truncate font-mono text-xs text-slate-500" :title="address">{{ address }}</span>
+        <span class="rounded-full px-2 py-0.5 text-xs font-medium" :class="stateBadgeClass">
+          {{ stateLabel }}
+        </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-4 w-4 flex-shrink-0 transform text-slate-500 transition-transform duration-300"
+          :class="expanded ? '' : '-rotate-90'"
+          data-test="team-scope-chevron"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
       </button>
-      <div v-else class="min-w-0 flex-1">
-        <h4 :id="headingId" class="text-sm font-semibold text-slate-900">{{ rootDefaultsLabel }}</h4>
-        <p class="font-mono text-xs text-slate-500">/</p>
-      </div>
-      <span class="rounded-full px-2 py-0.5 text-xs font-medium" :class="stateBadgeClass">
-        {{ stateLabel }}
-      </span>
       <button
-        v-if="!isRoot && isCustomized"
+        v-if="isCustomized"
         type="button"
         class="rounded px-2 py-0.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
-        :aria-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria', { address })"
+        :aria-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria', { name: displayName, address })"
         :disabled="disabled"
         data-test="reset-team-scope"
         @click="resetScope"
@@ -40,36 +125,27 @@
       </button>
     </div>
 
-    <div v-show="isRoot || expanded" :id="panelId" class="mt-4 border-t border-slate-100 pt-4">
-      <p class="mb-3 text-xs text-slate-600" data-test="team-scope-effective-summary">
-        <span class="font-semibold">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.effective') }}:</span>
-        {{ effectiveConfig.runtimeKind }} · {{ effectiveConfig.llmModelIdentifier || noModelLabel }} ·
-        {{ effectiveConfig.workspaceRootPath || t('workspace.components.workspace.config.StoredTeamRunConfig.none') }}
-      </p>
-      <p v-if="explicitFieldLabels.length" class="mb-3 text-xs text-amber-700" data-test="team-scope-explicit-fields">
-        <span class="font-semibold">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.customized_fields') }}</span>
-        {{ explicitFieldLabels.join(', ') }}
-      </p>
+    <div
+      v-if="runtimeCatalogState.status === 'loading'"
+      role="status"
+      class="mt-3 rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700"
+      data-test="team-runtime-catalog-loading"
+    >
+      {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address }) }}
+    </div>
+    <div
+      v-else-if="runtimeCatalogState.status === 'error'"
+      role="alert"
+      class="mt-3 flex items-start justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
+      data-test="team-runtime-catalog-error"
+    >
+      <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address, error: runtimeCatalogState.error || '' }) }}</span>
+      <button type="button" class="font-semibold underline disabled:opacity-50" :disabled="disabled" @click="retryCatalog">
+        {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}
+      </button>
+    </div>
 
-      <div
-        v-if="runtimeCatalogState.status === 'loading'"
-        role="status"
-        class="mb-3 rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700"
-        data-test="team-runtime-catalog-loading"
-      >
-        {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address }) }}
-      </div>
-      <div
-        v-else-if="runtimeCatalogState.status === 'error'"
-        role="alert"
-        class="mb-3 flex items-start justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
-        data-test="team-runtime-catalog-error"
-      >
-        <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address, error: runtimeCatalogState.error || '' }) }}</span>
-        <button type="button" class="font-semibold underline disabled:opacity-50" :disabled="disabled" @click="retryCatalog">
-          {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}
-        </button>
-      </div>
+    <div v-show="expanded" :id="panelId" class="mt-4 border-t border-slate-200 pt-4">
 
       <RuntimeModelConfigFields
         :runtime-kind="effectiveConfig.runtimeKind"
@@ -108,19 +184,13 @@
           </label>
           <p class="mt-1 text-xs text-gray-500">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_help') }}</p>
         </div>
-        <button
+        <AutoApproveSwitch
           :id="autoExecuteId"
-          type="button"
-          role="switch"
-          :aria-checked="effectiveConfig.autoExecuteTools"
+          :checked="effectiveConfig.autoExecuteTools"
           :disabled="disabled"
-          class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-          :class="effectiveConfig.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-          @click="updateField('auto', !effectiveConfig.autoExecuteTools)"
-        >
-          <span class="sr-only">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve') }}</span>
-          <span aria-hidden="true" class="inline-block h-5 w-5 rounded-full bg-white shadow transition" :class="effectiveConfig.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'" />
-        </button>
+          :label="t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve')"
+          @toggle="updateField('auto', $event)"
+        />
       </div>
 
       <slot />
@@ -131,6 +201,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
+import AutoApproveSwitch from './AutoApproveSwitch.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ResolvedTeamRunLaunchConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
@@ -171,7 +242,7 @@ const emit = defineEmits<{
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 const { t } = useLocalization()
-const expanded = ref(true)
+const expanded = ref(false)
 const pendingOverride = ref<TeamScopeConfigOverride>({ ...(props.override ?? {}) })
 watch(() => props.override, (value) => { pendingOverride.value = { ...(value ?? {}) } }, { deep: true })
 const domKey = computed(() => props.address === '/' ? 'root' : props.address.slice(1).replaceAll('/', '-'))
@@ -179,20 +250,8 @@ const headingId = computed(() => `team-scope-${domKey.value}-heading`)
 const panelId = computed(() => `team-scope-${domKey.value}-panel`)
 const inputIdPrefix = computed(() => `team-scope-${domKey.value}`)
 const autoExecuteId = computed(() => `${inputIdPrefix.value}-auto-execute`)
-const noModelLabel = computed(() => t('workspace.components.workspace.config.TeamScopeConfigEditor.no_model'))
-const rootDefaultsLabel = computed(() => t('workspace.components.workspace.config.TeamScopeConfigEditor.root_defaults'))
-const stateLabel = computed(() => props.isRoot ? rootDefaultsLabel.value : t(`workspace.components.workspace.config.TeamScopeConfigEditor.${props.isCustomized ? 'customized' : 'inherited'}`))
+const stateLabel = computed(() => t(`workspace.components.workspace.config.TeamScopeConfigEditor.${props.isCustomized ? 'customized' : 'inherited'}`))
 const stateBadgeClass = computed(() => props.isCustomized ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600')
-const explicitFieldLabels = computed(() => {
-  const override = props.override ?? {}
-  const labels: string[] = []
-  if (override.runtimeKind !== undefined) labels.push(t('workspace.components.workspace.config.StoredTeamRunConfig.runtime'))
-  if (override.llmModelIdentifier !== undefined) labels.push(t('workspace.components.workspace.config.StoredTeamRunConfig.model'))
-  if (Object.hasOwn(override, 'llmConfig')) labels.push(t('workspace.components.workspace.config.StoredTeamRunConfig.model_config'))
-  if (override.workspace !== undefined) labels.push(t('workspace.components.workspace.config.StoredTeamRunConfig.workspace'))
-  if (override.autoExecuteTools !== undefined) labels.push(t('workspace.components.workspace.config.StoredTeamRunConfig.auto_execute'))
-  return labels
-})
 
 const normalizeOverride = (value: TeamScopeConfigOverride): TeamScopeConfigOverride | null => {
   const inherited = props.inheritedConfig

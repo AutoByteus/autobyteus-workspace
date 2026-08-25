@@ -19,7 +19,7 @@
         @update:workspace-selection="forwardWorkspaceSelection"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
       >
-        <div v-if="node.children.length" class="mt-4 border-l border-slate-200 pl-3">
+        <div v-if="node.children.length" class="mt-3">
           <TeamMemberConfigTree
             :member-nodes="node.children"
             :config="config"
@@ -100,9 +100,12 @@ const emit = defineEmits<{
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 
-const treeClass = computed(() => props.nested
-  ? 'space-y-3'
-  : 'space-y-3 rounded-lg bg-slate-50/60 p-2')
+const treeClass = computed(() => [
+  'divide-y divide-slate-300',
+  props.nested
+    ? 'border-l border-slate-300 pl-3'
+    : 'overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm',
+])
 const teamView = (address: AgentTeamAddress): ResolvedTeamScopeView => {
   const team = props.view.teamsByAddress[address]
   if (!team) throw new Error(`Team launch view is missing '${address}'.`)
