@@ -12,6 +12,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | `CRR-004` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 4 / `IR-003` SR-004 rework | Fail — Requirement Gap | Pass | `CR-F-002` resolved; `CR-F-001` obsolete under SR-004 |
 | `CRR-005` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` | Proportional API/E2E test-code review / `API-REV-001` Pass | Pass — Implementation Review | Pass — Test-Code Review | None |
 | `CRR-006` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 5 / `IR-004` latest-base integration | Pass — Source and Test-Code Reviews; `DR-001` integration blocked | Fail — Design Impact | `CR-F-003` |
+| `CRR-007` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 6 / `IR-005` SR-005 owner-aware correction | Fail — Design Impact | Pass | `CR-F-003` resolved |
+| `CRR-008` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` | Proportional API/E2E test-code review / `API-REV-002` Pass | Pass — Implementation Review | Pass — Test-Code Review | None |
 
 ## Revision Entries
 
@@ -167,3 +169,55 @@ None. No prior proportional test-review finding existed; CR-F-001/002 were alrea
 - Material score or classification changes: Source score decreases from `9.5/10` (`95.3/100`) to `8.6/10` (`86.3/100`); behavior basis changes from Confirmed to Contradicted; classification is `Design Impact`.
 - Recommended recipient: `/solution_designer`
 - Remaining risks or uncertainty: Upstream must decide the authoritative query/update/lifecycle routing for application-owned run IDs, or explicitly revise the applicable product contract. API/E2E is paused until design, architecture, implementation, and source review correct the integrated owner topology; no speculative browser concurrency machinery or coverage should be introduced.
+
+
+### CRR-007 — Application ownership lease correction passes source re-review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `6`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`; `IR-005`; prior finding `CR-F-003`
+- Relevant solution revision IDs: `SR-005` (preserving SR-004/SR-003)
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-001` (historical pre-SR-005 context only)
+- Relevant delivery revision IDs: `DR-001` (historical integrated-base context)
+- Prior authoritative result: **Fail — Design Impact** (`CRR-006`)
+- Current authoritative result: **Pass**
+- What changed in the review result and why: SR-005/ARCH-REV-004 corrected the two-owner design and IR-005 implements that correction narrowly. `ApplicationRunOwnershipService` awaits startup recovery, cross-checks exact global lookup and canonical Agent/Team provenance against the referenced binding, treats `ATTACHED`/`TERMINATING`/`FAILED` as a live lease, releases only verified `TERMINATED`/`ORPHANED` or unowned identities, and throws on uncertainty. `StudioRunModelConfigService` guards exactly the two resume reads and two stopped updates: live ownership overlays the existing lock or returns canonical `RUN_ACTIVE` with no General write; verified release delegates to unchanged General services/lanes. Terminal state is persisted before lookup release, terminal Application input rejects, and provenance covers supported reentry lookup rebuild. Managers/stores remain encapsulated and no browser revision/concurrency machinery returns.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-003` | Open — Design Impact | Resolved | `SR-005`, `ARCH-REV-004`, `IR-005`, `CRR-006` | `application-run-ownership-service.ts:68-108` establishes startup-ready lookup/provenance/binding classification; `studio-run-model-config-service.ts:34-134` guards all four config operations and delegates only after release; `build-studio-server.ts:189-207` composes the Application read port with exact General readers/writers. Terminal transition persists before lookup removal and host input rejects terminal bindings. Reviewer reruns passed 20 focused files / 138 tests plus production TypeScript and structural searches. |
+| `CR-F-002` | Resolved by SR-004/IR-003 | Remains resolved | `SR-004`, `SR-005`, `IR-003`, `IR-005`, `CRR-004` | No revision, rebase, multi-client, hand-speed, cross-owner simultaneous-call, or archive/delete coordination machinery appears in current source/tests. |
+| `CR-F-001` | Obsolete under SR-004 | Remains obsolete | `SR-004`, `SR-005`, `CRR-004`, `IR-005` | The superseded revision/reconciliation contract remains absent. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Source score increases from `8.6/10` (`86.3/100`) to `9.5/10` (`95.4/100`); behavior basis changes from Contradicted to Confirmed; result changes from `Fail — Design Impact` to `Pass`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API-REV-001 predates SR-005. API/E2E must refresh its investigation and exercise normal Application Agent/Team lease, terminal release, startup recovery, and provenance-backed reentry, while retaining exact General lane and sequential browser coverage. Any durable coverage change returns for proportional test-code review. Dynamic catalog, Team persistence/provenance, and paid-Claude environment residuals remain bounded.
+
+
+### CRR-008 — SR-005 Application lifecycle integration passes proportional test-code review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `2`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md`; `API-E2E-007/008`
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: `DR-001` (historical integrated-state trigger)
+- Prior authoritative result: **Pass — Implementation Review** (`CRR-007`)
+- Current authoritative result: **Pass — Test-Code Review**
+- What changed in the review result and why: Reviewed only API-REV-002's single added repository-resident integration test. Its parameterized Agent/Team lifecycle crosses normal Application host launch, real temporary SQLite binding/lookup state, canonical Studio lock/no-write outcomes, startup readiness and provenance-backed lookup-clear reentry, terminal release/input rejection, and exact General delegation. The focused startup-failure case proves canonical fail-closed/no-write behavior. The suite is cohesive, isolated, deterministic for its boundary, current-schema only, and contains no prohibited browser-concurrency or historical same-owner policy.
+
+#### Prior Finding Resolution
+
+None. No proportional test-review finding was open. `CR-F-003` was already resolved by SR-005 / IR-005 / CRR-007 and was not reopened.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: None. The CRR-007 implementation scorecard was not repeated or changed; API-REV-002 remains Pass at `97.1%` final confidence.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: No configured Anthropic credential was available for a paid Claude response turn; direct pinned-adapter coverage and sanitized provider preflight passed. Browser, built backend, and Application worker/ownership evidence are complementary deterministic executions, and Electron plus multi-client/revision/rebase/cross-owner simultaneous scenarios remain outside SR-005.

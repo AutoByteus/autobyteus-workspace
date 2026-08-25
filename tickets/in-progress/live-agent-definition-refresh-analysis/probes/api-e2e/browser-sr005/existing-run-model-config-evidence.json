@@ -1,0 +1,235 @@
+{
+  "startedAt": "2026-08-25T22:32:51.854Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "webDir": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/tests/e2e/fixtures/existing-run-model-config.page.vue",
+  "installedPagePath": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/pages/api-e2e-existing-run-model-config.vue",
+  "routePath": "/api-e2e-existing-run-model-config",
+  "graphqlOperations": [
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "agent-run-browser-1",
+          "llmConfig": {
+            "reasoning_effort": "high",
+            "reasoning_summary": "auto"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team-run-browser-1",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/Nested/reviewer",
+              "llmConfig": {
+                "reasoning_effort": "high",
+                "reasoning_summary": "auto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "agent-run-browser-1",
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          }
+        }
+      }
+    }
+  ],
+  "scenarios": {
+    "API-E2E-004-A": {
+      "id": "API-E2E-004-A",
+      "description": "Agent Settings loads network-fresh, locks fixed identity, and saves model config only",
+      "status": "Pass",
+      "startedAt": "2026-08-25T22:33:00.987Z",
+      "finishedAt": "2026-08-25T22:33:06.697Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "agentRunId": "agent-run-browser-1",
+            "llmConfig": {
+              "reasoning_effort": "high",
+              "reasoning_summary": "auto"
+            }
+          }
+        },
+        "resumeReads": 1
+      }
+    },
+    "API-E2E-004-B": {
+      "id": "API-E2E-004-B",
+      "description": "Full nested Team Settings renders and saves one exact configured-Agent patch",
+      "status": "Pass",
+      "startedAt": "2026-08-25T22:33:06.697Z",
+      "finishedAt": "2026-08-25T22:33:08.124Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "teamRunId": "team-run-browser-1",
+            "patches": [
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/Nested/reviewer",
+                "llmConfig": {
+                  "reasoning_effort": "high",
+                  "reasoning_summary": "auto"
+                }
+              }
+            ]
+          }
+        },
+        "renderedMembers": 3,
+        "resumeReads": 1
+      }
+    },
+    "API-E2E-004-C": {
+      "id": "API-E2E-004-C",
+      "description": "Narrow browser viewport keeps the existing Team Settings editor usable without page overflow",
+      "status": "Pass",
+      "startedAt": "2026-08-25T22:33:08.124Z",
+      "finishedAt": "2026-08-25T22:33:08.192Z",
+      "details": {
+        "viewportWidth": 390,
+        "documentScrollWidth": 390,
+        "saveRect": {
+          "left": 33,
+          "right": 357,
+          "width": 324,
+          "top": 776.890625,
+          "bottom": 814.890625
+        }
+      }
+    },
+    "API-E2E-004-D": {
+      "id": "API-E2E-004-D",
+      "description": "A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock",
+      "status": "Pass",
+      "startedAt": "2026-08-25T22:33:08.192Z",
+      "finishedAt": "2026-08-25T22:33:08.673Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "agentRunId": "agent-run-browser-1",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            }
+          }
+        },
+        "resumeReadsBeforeSave": 2,
+        "resumeReadsAfterSave": 2
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:33299/_nuxt/node_modules/.cache/vite/client/deps/zod.js?v=fc7686e4 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "devServer": {
+      "status": "terminated",
+      "pid": 82462,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM",
+      "processGroupExited": true
+    },
+    "devLog": "closed",
+    "temporaryPage": "removed"
+  },
+  "port": 33299,
+  "baseUrl": "http://127.0.0.1:33299",
+  "finishedAt": "2026-08-25T22:33:09.152Z",
+  "result": "Pass"
+}
