@@ -1,0 +1,10 @@
+recordedAt=2026-08-22T19:16:31Z
+worktreeHead=42496b808df16f4ed24ca66bac03372c578f1f89
+node=v22.23.1
+pnpm=10.28.2
+electronExecutable=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+electronExecutableSha256=c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0
+electronAppAsarSha256=260f1bd61b7d59d3d99774d5437d29847722907558da1dbcc1203258a53697c0
+agentPackage=/Users/normy/autobyteus_org/autobyteus-agents
+agentPackageHead=c4e271924ed64196edbe80927d4f7eec32a68df3
+agentPackageWorktreeClean=true

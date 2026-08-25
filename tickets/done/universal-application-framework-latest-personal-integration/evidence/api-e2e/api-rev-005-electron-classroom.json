@@ -1,0 +1,1444 @@
+{
+  "scenarioId": "APIE2E-ELECTRON-CLASSROOM-001",
+  "startedAt": "2026-08-22T18:11:01.698Z",
+  "requested": {
+    "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "team": "Classroom Simulation Team",
+    "professorRuntime": "codex_app_server",
+    "professorModel": "gpt-5.6-luna",
+    "studentRuntime": "autobyteus",
+    "studentModel": "deepseek-v4-flash"
+  },
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+  },
+  "isolation": {
+    "root": "/private/tmp/api-rev005-electron-classroom-20260822194413",
+    "port": 54491,
+    "workspace": "/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace",
+    "bridge": {
+      "status": {
+        "status": "running",
+        "baseUrl": "http://127.0.0.1:54491",
+        "urls": {
+          "graphql": "http://127.0.0.1:54491/graphql",
+          "rest": "http://127.0.0.1:54491/rest",
+          "graphqlWs": "ws://127.0.0.1:54491/graphql",
+          "transcription": "ws://127.0.0.1:54491/ws/transcribe",
+          "terminalWs": "ws://127.0.0.1:54491/ws/terminal",
+          "health": "http://127.0.0.1:54491/rest/health"
+        },
+        "healthCheckStatus": ""
+      },
+      "registry": {
+        "version": 10,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:54491",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "isSystem": true,
+            "createdAt": "2026-08-22T17:44:15.014Z",
+            "updatedAt": "2026-08-22T18:11:01.920Z"
+          }
+        ]
+      },
+      "context": {
+        "windowId": 1,
+        "nodeId": "embedded-local"
+      },
+      "health": {
+        "status": "ok",
+        "data": {
+          "status": "ok",
+          "message": "Server is running"
+        }
+      }
+    }
+  },
+  "steps": [
+    {
+      "at": "2026-08-22T18:11:04.627Z",
+      "name": "packaged renderer ready",
+      "details": {
+        "baseUrl": "http://127.0.0.1:54491",
+        "nodeId": "embedded-local"
+      }
+    },
+    {
+      "at": "2026-08-22T18:11:04.946Z",
+      "name": "agent package visible in Electron settings",
+      "details": {
+        "importStatus": "already-present-after-supported-UI-import"
+      }
+    },
+    {
+      "at": "2026-08-22T18:12:21.083Z",
+      "name": "requested models present",
+      "details": {
+        "professor": "gpt-5.6-luna",
+        "student": "deepseek-v4-flash"
+      }
+    },
+    {
+      "at": "2026-08-22T18:12:21.095Z",
+      "name": "non-business update notice dismissed",
+      "details": null
+    },
+    {
+      "at": "2026-08-22T18:12:21.314Z",
+      "name": "Classroom Simulation Team selected from Electron catalog",
+      "details": null
+    },
+    {
+      "at": "2026-08-22T18:12:22.907Z",
+      "name": "per-member runtime/model configuration selected",
+      "details": {
+        "professorRuntime": "codex_app_server",
+        "professorModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+        "studentRuntime": "autobyteus",
+        "studentModelLabel": "DeepSeek / deepseek-v4-flash",
+        "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600",
+        "workspacePath": "/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace"
+      }
+    },
+    {
+      "at": "2026-08-22T18:12:23.115Z",
+      "name": "real classroom prompt sent to Professor",
+      "details": null
+    }
+  ],
+  "packageImport": {
+    "importStatus": "already-present-after-supported-UI-import",
+    "packageRow": "autobyteus-agents\nLocal Path | Shared Agents: 7 | Team-local Agents: 50 | Teams: 12 | Applications: 0\n/Users/normy/autobyteus_org/autobyteus-agents\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove"
+  },
+  "modelSelection": {
+    "professor": {
+      "runtimeKind": "codex_app_server",
+      "provider": {
+        "id": "OPENAI",
+        "name": "OpenAI",
+        "providerType": "OPENAI",
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "model": {
+        "modelIdentifier": "gpt-5.6-luna",
+        "name": "GPT-5.6-Luna (default reasoning: medium)",
+        "value": "gpt-5.6-luna",
+        "canonicalName": "gpt-5.6-luna",
+        "providerId": "OPENAI",
+        "providerName": "OpenAI",
+        "providerType": "OPENAI",
+        "runtime": "api"
+      }
+    },
+    "student": {
+      "runtimeKind": "autobyteus",
+      "provider": {
+        "id": "DEEPSEEK",
+        "name": "DeepSeek",
+        "providerType": "DEEPSEEK",
+        "status": "NOT_APPLICABLE",
+        "statusMessage": null
+      },
+      "model": {
+        "modelIdentifier": "deepseek-v4-flash",
+        "name": "deepseek-v4-flash",
+        "value": "deepseek-v4-flash",
+        "canonicalName": "deepseek-v4-flash",
+        "providerId": "DEEPSEEK",
+        "providerName": "DeepSeek",
+        "providerType": "DEEPSEEK",
+        "runtime": "api"
+      }
+    }
+  },
+  "launch": {
+    "selectedConfig": {
+      "professorRuntime": "codex_app_server",
+      "professorModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+      "studentRuntime": "autobyteus",
+      "studentModelLabel": "DeepSeek / deepseek-v4-flash",
+      "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600",
+      "workspacePath": "/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace"
+    },
+    "prompt": "Demonstrate the classroom team with one short arithmetic exercise. Use run_bash to create a file-backed assignment under this workspace, send it to /student with send_message_to and the file reference, require the student to write a file-backed answer and reply to /professor, then read the answer and report to me whether it is correct. Keep the exercise concise."
+  },
+  "teamHistory": null,
+  "teamCommunications": null,
+  "memberProjections": null,
+  "executionCheckpoint": null,
+  "workspaceFiles": null,
+  "ui": {
+    "updateNoticeDismissed": true
+  },
+  "traffic": {
+    "requests": [
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:54491/graphql"
+      }
+    ],
+    "responses": [
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/rest/team-runs/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc/task-delegations/task_c7c9c667b7d34098821663167cd03e84/references/797bfa5a25133521eb37ab2606bbbdbdb066e716a4d711fd89f08e35f8a98752/content"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:54491/graphql"
+      }
+    ],
+    "websockets": [
+      "ws://127.0.0.1:54491/ws/agent-team/classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc"
+    ],
+    "failures": [],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "cleanup": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:5730",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 54491,
+      "detail": null
+    }
+  },
+  "result": "fail",
+  "error": {
+    "message": "Timed out waiting for Classroom team run metadata; last=null",
+    "stack": "Error: Timed out waiting for Classroom team run metadata; last=null\n    at waitFor (file:///private/tmp/api-rev005-electron-classroom.mjs:64:9)\n    at async file:///private/tmp/api-rev005-electron-classroom.mjs:268:15"
+  }
+}

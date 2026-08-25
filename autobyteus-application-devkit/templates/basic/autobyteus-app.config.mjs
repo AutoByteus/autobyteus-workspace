@@ -9,6 +9,9 @@ export default {
   output: {
     packageRoot: 'dist/importable-package',
   },
+  standalone: {
+    enabled: true,
+  },
   frontend: {
     entryPoint: 'app.ts',
     entryHtml: 'index.html',
@@ -23,6 +26,7 @@ export default {
       graphql: true,
       notifications: true,
       eventHandlers: false,
+      webSockets: false,
     },
     migrationsDir: 'migrations',
     assetsDir: 'assets',

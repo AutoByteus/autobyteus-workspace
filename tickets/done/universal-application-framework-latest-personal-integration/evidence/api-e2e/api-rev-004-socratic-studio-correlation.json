@@ -1,0 +1,88 @@
+{
+  "scenarioId": "APIE2E-SOCRATIC-002",
+  "failureId": "APIE2E-F004",
+  "result": "PASS",
+  "environment": {
+    "isolatedDataRoot": "/private/tmp/api-rev004-studio.xkprY3",
+    "applicationRoot": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b",
+    "directDataMutation": false
+  },
+  "lessons": [
+    {
+      "lesson_id": "lesson-3c8aa31e-5875-45c6-81c0-06ceedf2a81e",
+      "prompt": "API REV 004: Solve 4x + 7 = 31 using Socratic questions.",
+      "status": "active",
+      "latest_binding_id": "f28b5cd4-99d9-427a-a51d-2e528570c0ad",
+      "latest_run_id": "socratic_math_team_ce81fa6c73ce4caa877a65d3b950861c",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-08-22T12:12:08.157Z",
+      "updated_at": "2026-08-22T12:12:29.175Z",
+      "closed_at": null,
+      "artifact_catchup_completed_at": null
+    }
+  ],
+  "messages": [
+    {
+      "message_id": "abd8f9a5-c3bd-4f55-ba4a-509c2e5191c1",
+      "lesson_id": "lesson-3c8aa31e-5875-45c6-81c0-06ceedf2a81e",
+      "role": "student",
+      "kind": "prompt",
+      "body": "API REV 004: Solve 4x + 7 = 31 using Socratic questions.",
+      "source_revision_id": null,
+      "created_at": "2026-08-22T12:12:08.157Z"
+    },
+    {
+      "message_id": "0d875e4b-c053-4e3d-802a-42a5d1c126e7",
+      "lesson_id": "lesson-3c8aa31e-5875-45c6-81c0-06ceedf2a81e",
+      "role": "tutor",
+      "kind": "lesson_response",
+      "body": "Let’s start by isolating the term with (x):\n\n**What operation undoes the (+7), and what should you do to both sides of the equation?**",
+      "source_revision_id": "2487f57b-4924-4a46-aa98-afa6795eb24b",
+      "created_at": "2026-08-22T12:12:29.175Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "f28b5cd4-99d9-427a-a51d-2e528570c0ad",
+      "launch_request_id": "lesson-launch-request-44b56b5f-1c64-4d9d-815d-fc34038dbcb6",
+      "status": "ATTACHED",
+      "runtime_subject": "TEAM_RUN",
+      "team_run_id": "socratic_math_team_ce81fa6c73ce4caa877a65d3b950861c",
+      "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d",
+      "resource_owner": "bundle",
+      "resource_kind": "AGENT_TEAM",
+      "resource_local_id": "socratic-math-team",
+      "last_error_message": null
+    }
+  ],
+  "members": [
+    {
+      "binding_id": "f28b5cd4-99d9-427a-a51d-2e528570c0ad",
+      "member_address": "/tutor",
+      "display_name": "tutor",
+      "agent_run_id": "socratic_math_tutor_8a0c6fff20d34a618e1f93c8831ee2b7",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    }
+  ],
+  "globalRunLookups": [
+    {
+      "run_id": "socratic_math_team_ce81fa6c73ce4caa877a65d3b950861c",
+      "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572",
+      "binding_id": "f28b5cd4-99d9-427a-a51d-2e528570c0ad",
+      "updated_at": "2026-08-22T12:12:08.456Z"
+    },
+    {
+      "run_id": "socratic_math_tutor_8a0c6fff20d34a618e1f93c8831ee2b7",
+      "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572",
+      "binding_id": "f28b5cd4-99d9-427a-a51d-2e528570c0ad",
+      "updated_at": "2026-08-22T12:12:08.456Z"
+    }
+  ],
+  "proof": {
+    "exactTutorIdentity": true,
+    "bindingAttached": true,
+    "studentAndTutorSaved": true,
+    "noLastError": true
+  }
+}

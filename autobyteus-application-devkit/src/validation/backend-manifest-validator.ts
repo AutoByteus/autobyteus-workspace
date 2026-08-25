@@ -1,8 +1,8 @@
 import path from 'node:path';
 import {
-  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
 } from '@autobyteus/application-sdk-contracts';
 import { errorDiagnostic, type ValidationDiagnostic } from './validation-result.js';
 import {
@@ -54,13 +54,13 @@ const validateBackendSdkCompatibility = (
   pushVersionDiagnostic(
     diagnostics,
     sdkCompatibility.backendDefinitionContractVersion,
-    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
     'sdkCompatibility.backendDefinitionContractVersion',
   );
   pushVersionDiagnostic(
     diagnostics,
     sdkCompatibility.frontendSdkContractVersion,
-    APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+    APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
     'sdkCompatibility.frontendSdkContractVersion',
   );
 };
@@ -118,7 +118,7 @@ export const validateBackendManifest = async (input: {
     'INVALID_BACKEND_MANIFEST',
   );
 
-  pushVersionDiagnostic(input.diagnostics, rawManifest.contractVersion, APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1, 'backend.contractVersion');
+  pushVersionDiagnostic(input.diagnostics, rawManifest.contractVersion, APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION, 'backend.contractVersion');
   const entryModule = validateManifestPath({
     diagnostics: input.diagnostics,
     value: rawManifest.entryModule,

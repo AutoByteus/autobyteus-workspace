@@ -226,4 +226,38 @@ describe("TeamDefinitionTopologyPlanner", () => {
     expect(teamAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
     expect(agentAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
   });
+
+  it.each([
+    {
+      subject: "Team scope",
+      teamConfigs: [{ ...buildTeamConfig("/"), llmModelIdentifier: " " }, buildTeamConfig("/ReviewTeam")],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer"), buildLeafConfig("/ReviewTeam/Approver")],
+      expected: "defaultLaunchConfiguration at '/'.llmModelIdentifier is required",
+    },
+    {
+      subject: "Agent member",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
+      memberConfigs: [
+        buildLeafConfig("/Lead"),
+        buildLeafConfig("/ReviewTeam/Reviewer"),
+        { ...buildLeafConfig("/ReviewTeam/Approver"), llmModelIdentifier: " " },
+      ],
+      expected: "launchConfiguration at '/ReviewTeam/Approver'.llmModelIdentifier is required",
+    },
+  ])("validates every required $subject value before allocating any identity", async ({
+    teamConfigs,
+    memberConfigs,
+    expected,
+  }) => {
+    const { planner, teamAllocator, agentAllocator } = buildPlanner(rootAndReviewDefinitions());
+
+    await expect(planner.buildPlan({
+      teamDefinitionId: "root-team",
+      teamConfigs,
+      memberConfigs,
+    })).rejects.toThrow(expected);
+
+    expect(teamAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(agentAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+  });
 });

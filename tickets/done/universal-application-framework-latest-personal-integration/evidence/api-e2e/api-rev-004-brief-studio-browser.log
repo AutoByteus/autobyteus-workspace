@@ -1,0 +1,36 @@
+{"at":"2026-08-22T12:21:08.308Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:13.325Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:18.331Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:23.341Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:28.349Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:33.358Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:38.368Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:43.374Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:48.379Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:53.386Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:21:58.396Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:03.406Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:08.418Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:13.423Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:18.435Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:23.442Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:28.453Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:33.465Z","inReview":false,"research":false,"final":true,"iframeCount":1}
+{"at":"2026-08-22T12:22:38.475Z","inReview":true,"research":true,"final":true,"iframeCount":1}
+{
+  "result": "PASS",
+  "setup": {
+    "bundled": true,
+    "researcher": true,
+    "writer": true,
+    "luna": true,
+    "enterEnabled": true
+  },
+  "last": {
+    "at": "2026-08-22T12:22:38.475Z",
+    "inReview": true,
+    "research": true,
+    "final": true,
+    "iframeCount": 1
+  }
+}

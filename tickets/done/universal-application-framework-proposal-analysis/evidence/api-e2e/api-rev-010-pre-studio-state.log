@@ -1,0 +1,13 @@
+UTC=2026-07-30T09:42:01Z
+PORTS_BEFORE:
+43124 CLEAR
+8000 CLEAR
+3000 CLEAR
+9229 CLEAR
+ROOT_DEV_STATE:
+NONE
+BRIEF_DEV_STATE:
+applications/brief-studio/.autobyteus
+applications/brief-studio/.autobyteus/dev
+applications/brief-studio/.autobyteus/dev/data
+applications/brief-studio/.autobyteus/dev/package

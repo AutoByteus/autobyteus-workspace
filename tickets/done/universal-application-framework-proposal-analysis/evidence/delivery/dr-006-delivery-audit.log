@@ -1,0 +1,76 @@
+# DR-006 Delivery Documentation And Package Audit
+started_utc=2026-07-31T13:33:15Z
+candidate=fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+reviewed_anchor=5071b429672e0bf3108f45c30d6747a2ae6331b6
+checkpoint=981a9a393f643e35d77daa0ca7e1a864edb54f66
+integrated_base=ea6d6b011035d71dc9594d61ad035470985fca8e
+ahead_behind=98/0
+
+## Upstream gate audit
+PASS: CRR-037 source, API-REV-013 execution, and CRR-038 proportional test-review gates are current and passing
+
+## Reviewed-package and latest-base ownership audit
+PASS: delivery safety checkpoint added no implementation/package path delta after CRR-038
+Base commits integrated after prior DR-005 base:
+ea6d6b011 docs(delivery): sync post-merge validation records
+44d0e3de0 docs(delivery): retain archived release evidence paths
+05c6382c4 docs(delivery): record v1.4.33 finalization
+1ae4a4d32 chore(release): bump workspace release version to 1.4.33
+12ec509f5 Merge daily-assistant-luna-image-error
+544cc980d fix(llm): harden media request recovery boundaries
+PASS: six latest-base commits are integrated; v1.4.33 release/media-recovery work is independently owned
+
+## Executable architecture documentation audit
+PASS: AFB-001 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-002 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-003 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-004 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-005 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: exact 19 AFB-004 obligation owners and direct test-only Vue parser dependency are present
+PASS: canonical docs cover policy table, seven project profile families, fail-closed project/manifest resolution, external Vue scripts, injection families, and remediation
+
+## Removed architecture paths and current runtime owners
+PASS absent: autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts
+PASS absent: autobyteus-server-ts/src/application-platform/runtime/bind-once-published-artifact-publisher.ts
+PASS absent: autobyteus-server-ts/src/application-platform/runtime/bind-once-application-engine-event-handler.ts
+PASS present: autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts
+PASS present: autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts
+PASS present: autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime.ts
+PASS present: autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts
+
+## Latest-base durable documentation impact
+M	.github/release-notes/release-notes.md
+M	autobyteus-ts/docs/agent_memory_design.md
+M	autobyteus-ts/docs/agent_memory_design_nodejs.md
+M	autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+M	autobyteus-ts/docs/llm_module_design.md
+M	autobyteus-ts/docs/llm_module_design_nodejs.md
+M	autobyteus-ts/docs/provider_model_catalogs.md
+M	autobyteus-web/docs/browser_sessions.md
+PASS: base documentation delta is independent LLM/media-recovery and browser-screenshot history; no application-framework policy conflict
+
+## Integrated executable and Electron evidence
+PASS: integrated full server build, 32-file/130-test matrix, and macOS ARM64 v1.4.33 Electron build/verification evidence are complete
+
+completed_utc=2026-07-31T13:33:15Z
+FINAL=PASS
+
+## Canonical delivery artifact final audit
+PASS present: tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+PASS present: tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+PASS present: tickets/in-progress/universal-application-framework-proposal-analysis/electron-test-build-report.md
+PASS present: tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS present: tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md:111: new blank line at EOF.
+
+## Canonical delivery artifact final audit — completed after whitespace correction
+PASS: DR-006 canonical artifacts, hashes, integrated revision, diff check, process state, and mount state are final-handoff consistent
+USER_VERIFICATION=Pending
+REPOSITORY_FINALIZATION=Not performed
+RELEASE_DEPLOYMENT=Not performed / not in scope
+final_audit_completed_utc=2026-07-31T13:37:46Z
+FINAL_CANONICAL_AUDIT=PASS
+
+## Final post-edit consistency confirmation
+timestamp_utc=2026-07-31T13:38:35Z
+FINAL_POST_EDIT_CONSISTENCY=PASS

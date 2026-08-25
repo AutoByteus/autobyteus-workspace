@@ -12,6 +12,7 @@ import type { CodexClientThreadRouter } from "../../../../../../src/agent-execut
 import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
+import { testMemberTaskRootResolver } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (
   runId: string,
@@ -47,6 +48,7 @@ const createRunContext = (
               agentRunId: runId,
             },
             collaboration: { outgoingHandoffs: [] },
+            taskRootResolver: testMemberTaskRootResolver(),
           })
         : null,
     }),

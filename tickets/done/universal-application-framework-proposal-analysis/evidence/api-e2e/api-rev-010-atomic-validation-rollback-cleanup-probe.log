@@ -1,0 +1,78 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:69380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467
+  let error = new Error(text);
+              ^
+
+Error: Build failed with 1 error:
+src/frontend/app.ts:1:33: ERROR: Could not resolve "@autobyteus/application-frontend-sdk"
+    at failureErrorWithLog (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:926:25
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:878:52
+    at buildResponseToResult (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:924:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:951:16
+    at responseCallbacks.<computed> (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:603:9)
+    at handleIncomingPacket (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:658:12)
+    at Socket.readFromStdout (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:581:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter]
+}
+
+Node.js v22.23.1
+
+--- RETRY WITH PROJECT-RESOLVABLE DEVKIT-LOCAL TEMP ROOT ---
+UTC 2026-07-30T09:45:43Z
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:70518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-30T09:45:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"phase":"baseline","readmeSha256":"bcbcd8066fb4ea42ab233c99f165e9d5be59bd7b7a2a65e03dfce4921d5b017e","scratch":[]}
+{"phase":"validation-before-rename","error":"Generated package failed validation: manifestVersion must be \"4\"; received \"3\".","renameCalls":0,"canonicalRestored":true,"readmeSha256":"bcbcd8066fb4ea42ab233c99f165e9d5be59bd7b7a2a65e03dfce4921d5b017e","scratchBeforeOwnedCleanup":[".pack-staging-8f215ce9-d764-4a19-b2ad-8c2b7f3963b9"]}
+{"phase":"validation-cleanup","scratchAfterOwnedCleanup":[]}
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-30T09:45:44.821Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-30T09:45:44.847Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"phase":"publish-rename-rollback","error":"API-REV-010 injected publish rename failure","renameCalls":3,"canonicalRestored":true,"readmeSha256":"bcbcd8066fb4ea42ab233c99f165e9d5be59bd7b7a2a65e03dfce4921d5b017e","previousResidue":[],"stagingResidueBeforeOwnedCleanup":[".pack-staging-f2004ac3-fe08-43eb-8b6f-821a0b0c7efa"]}
+{"phase":"rollback-cleanup","scratchAfterOwnedCleanup":[]}
+{"result":"PASS","probeRootExistsAfterCleanup":false}

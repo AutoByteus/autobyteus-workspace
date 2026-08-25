@@ -3,7 +3,7 @@ import type {
   ApplicationAgentExecution,
   ApplicationAgentBinding,
   ApplicationAgentTeamBinding,
-  ApplicationConfiguredExecutionResource,
+  ApplicationEffectiveLaunchConfiguration,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactSummary,
   ApplicationStorageContext,
@@ -37,9 +37,9 @@ export class ApplicationHandlerContextFactory {
         listAvailable: async (filter) => this.input.invokeContextCapability({
           capability: "agentResources", operation: "listAvailable", input: filter ?? null,
         }) as Promise<ApplicationExecutionResourceSummary[]>,
-        getConfigured: async (slotKey) => this.input.invokeContextCapability({
-          capability: "agentResources", operation: "getConfigured", input: { slotKey },
-        }) as Promise<ApplicationConfiguredExecutionResource | null>,
+        requireRunnable: async (slotKey) => this.input.invokeContextCapability({
+          capability: "agentResources", operation: "requireRunnable", input: { slotKey },
+        }) as Promise<ApplicationEffectiveLaunchConfiguration>,
       },
       publishedArtifacts: {
         list: async (runId) => this.input.invokeContextCapability({

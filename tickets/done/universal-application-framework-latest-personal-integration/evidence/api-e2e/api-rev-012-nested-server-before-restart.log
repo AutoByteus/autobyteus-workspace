@@ -1,0 +1,252 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/.env
+[dotenv@17.3.1] injecting env (4) from tests/.tmp/api-rev-012-nested-20260825-1/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60240
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60240
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "api-rev-012-nested-20260825-1.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:19660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T18:42:50.087Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-08-25T18:42:50.218Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:42:50.218Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1787683370252,"pid":19660,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:60240"}
+[2026-08-25T18:42:50.252Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60240
+[2026-08-25T18:42:50.254Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:60240
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 9 items.
+[2026-08-25T18:44:16.534Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:44:16.566Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 18 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:44:16.727Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:44:16.749Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:44:16.773Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:44:16.782Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+{"level":30,"time":1787683457798,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-5","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1787683457799,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-5","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":5.185959339141846,"msg":"http request completed"}
+{"level":30,"time":1787683486010,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-7","err":{"type":"GraphQLError","message":"Agent package already exists.","stack":"Error: Agent package already exists.\n    at AgentPackageRootSettingsStore.addAdditionalRootPath (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/agent-packages/stores/agent-package-root-settings-store.js:66:19)\n    at AgentPackageService.importLocalPathPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/agent-packages/services/agent-package-service.js:201:32)\n    at AgentPackageService.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/agent-packages/services/agent-package-service.js:71:25)\n    at AgentPackageResolver.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:216:40)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importAgentPackage"],"locations":[{"line":1,"column":50}],"extensions":{}},"msg":"Agent package already exists."}
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:44:55.693Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:44:55.718Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+{"level":30,"time":1787683496399,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-c","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1787683496400,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-c","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":2.140666961669922,"msg":"http request completed"}
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:45:04.223Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T18:45:04.250Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 634e0b11-fab4-4efc-a08c-d1d37e89ce61 for workspace temp_ws_default
+Created file explorer session 634e0b11-fab4-4efc-a08c-d1d37e89ce61 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 634e0b11-fab4-4efc-a08c-d1d37e89ce61 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+FileExplorerSession closed: 634e0b11-fab4-4efc-a08c-d1d37e89ce61
+Closed file explorer session 634e0b11-fab4-4efc-a08c-d1d37e89ce61. Active sessions: 0
+File explorer WebSocket disconnected: 634e0b11-fab4-4efc-a08c-d1d37e89ce61
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8affeb56-32a1-42cd-b5fa-c7a26471856d for workspace temp_ws_default
+Created file explorer session 8affeb56-32a1-42cd-b5fa-c7a26471856d for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 8affeb56-32a1-42cd-b5fa-c7a26471856d for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+FileExplorerSession closed: 8affeb56-32a1-42cd-b5fa-c7a26471856d
+Closed file explorer session 8affeb56-32a1-42cd-b5fa-c7a26471856d. Active sessions: 0
+File explorer WebSocket disconnected: 8affeb56-32a1-42cd-b5fa-c7a26471856d
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: da09ddd0-4bd1-4ef3-a0bf-327ef9a36041 for workspace temp_ws_default
+Created file explorer session da09ddd0-4bd1-4ef3-a0bf-327ef9a36041 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: da09ddd0-4bd1-4ef3-a0bf-327ef9a36041 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c/test_teacher_7b7a3f2fc6084785ae32a5cf6f4e723c/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c/student_study_group_c9fb483cd13b4f05886ee2bacb55ae65/student_one_5dd968092bda4947851750650b757450/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c/student_study_group_c9fb483cd13b4f05886ee2bacb55ae65/student_two_fe6f14abc4ba407a94c34bf169d2b268/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+FileExplorerSession closed: da09ddd0-4bd1-4ef3-a0bf-327ef9a36041
+Closed file explorer session da09ddd0-4bd1-4ef3-a0bf-327ef9a36041. Active sessions: 0
+File explorer WebSocket disconnected: da09ddd0-4bd1-4ef3-a0bf-327ef9a36041
+Agent team websocket attached for team run nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c
+Created agent session f086ffd5-d157-4ac1-8f8d-1bd732537517 for run nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c
+Agent Team WebSocket connected: session=f086ffd5-d157-4ac1-8f8d-1bd732537517, run=nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1787683667789,"pid":19660,"hostname":"normys-MacBook-Pro.local","reqId":"req-2y","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+Closed agent session f086ffd5-d157-4ac1-8f8d-1bd732537517
+Published codex_app_server agent run 'test_teacher_7b7a3f2fc6084785ae32a5cf6f4e723c'.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b3ee0696-cf48-4106-8115-55df5d072df8 for workspace temp_ws_default
+Created file explorer session b3ee0696-cf48-4106-8115-55df5d072df8 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: b3ee0696-cf48-4106-8115-55df5d072df8 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/test_teacher_9929e29326ca439f8d2f88f10557dbd4/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/student_study_group_11193b4f105b48898427de4b177d6f9f/student_one_3b366df92e944bb692a782c265142627/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/student_study_group_11193b4f105b48898427de4b177d6f9f/student_two_d6fdbc25a936423cbfba21ddb5d3c7b1/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace
+FileExplorerSession closed: b3ee0696-cf48-4106-8115-55df5d072df8
+Closed file explorer session b3ee0696-cf48-4106-8115-55df5d072df8. Active sessions: 0
+File explorer WebSocket disconnected: b3ee0696-cf48-4106-8115-55df5d072df8
+Agent team websocket attached for team run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Created agent session 8897d58a-5804-4a9b-b823-3eb4c460f14d for run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Agent Team WebSocket connected: session=8897d58a-5804-4a9b-b823-3eb4c460f14d, run=nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'test_teacher_9929e29326ca439f8d2f88f10557dbd4'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'student_one_3b366df92e944bb692a782c265142627'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'student_one_b9a9d24c76d441ca925cb9d9963eb5a5'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'student_two_d6fdbc25a936423cbfba21ddb5d3c7b1'.
+Closed agent session 8897d58a-5804-4a9b-b823-3eb4c460f14d
+Created terminal session b5876225-e4d2-4dc9-84f6-fb1164d48988 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b5876225-e4d2-4dc9-84f6-fb1164d48988
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa/student_two_00d559ae2c0f4a23ad5cf86453d85178/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Created agent session e56b4acd-5165-423d-8812-5d78fc917a10 for run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Agent Team WebSocket connected: session=e56b4acd-5165-423d-8812-5d78fc917a10, run=nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Closed agent session e56b4acd-5165-423d-8812-5d78fc917a10
+Closed PTY session b5876225-e4d2-4dc9-84f6-fb1164d48988
+Terminal WebSocket disconnected: b5876225-e4d2-4dc9-84f6-fb1164d48988
+Created terminal session b2870c02-394a-4a19-9998-45d7cf0d8108 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b2870c02-394a-4a19-9998-45d7cf0d8108
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa/student_two_00d559ae2c0f4a23ad5cf86453d85178/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Created agent session 03bcca07-ee38-4fdb-b5ba-628e47c414af for run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Agent Team WebSocket connected: session=03bcca07-ee38-4fdb-b5ba-628e47c414af, run=nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Closed agent session 03bcca07-ee38-4fdb-b5ba-628e47c414af
+Closed PTY session b2870c02-394a-4a19-9998-45d7cf0d8108
+Terminal WebSocket disconnected: b2870c02-394a-4a19-9998-45d7cf0d8108
+Created terminal session 95d29609-b1e0-4ceb-a9c5-93f0dff23907 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 95d29609-b1e0-4ceb-a9c5-93f0dff23907
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/memory/agent_teams/nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7/team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa/student_two_00d559ae2c0f4a23ad5cf86453d85178/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Created agent session 6c3b9adc-8962-4ed1-8d2d-675960e81c93 for run nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Agent Team WebSocket connected: session=6c3b9adc-8962-4ed1-8d2d-675960e81c93, run=nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7
+Closed agent session 6c3b9adc-8962-4ed1-8d2d-675960e81c93
+Closed PTY session 95d29609-b1e0-4ceb-a9c5-93f0dff23907
+Terminal WebSocket disconnected: 95d29609-b1e0-4ceb-a9c5-93f0dff23907

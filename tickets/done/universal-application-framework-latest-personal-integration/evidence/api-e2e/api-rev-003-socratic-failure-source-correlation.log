@@ -1,0 +1,151 @@
+HEAD:
+63000f7bc1d07f3b9b3164594c60fadb8ed6a8b8
+
+application-orchestration-host-service exact addressed target dispatch:
+   437	  private async postAddressedRunInputInternal(
+   438	    binding: ApplicationAgentBindingRecord,
+   439	    address: ApplicationAgentTargetAddress,
+   440	    input: ApplicationAgentInput,
+   441	  ): Promise<void> {
+   442	    rejectUnsupportedApplicationAgentInput(input);
+   443	    const message = buildRuntimeInputMessage(input);
+   444	    if (binding.runtime.subject === "AGENT_RUN") {
+   445	      if (address.target.kind !== "AGENT_RUN") {
+   446	        throw new Error("Application agent input target does not match the bound runtime.");
+   447	      }
+   448	      const run = await this.agentRunService.resolveAgentRun(binding.runtime.agentRunId);
+   449	      if (!run) throw new Error(`Application runtime '${binding.runtime.agentRunId}' is not available.`);
+   450	      const result = await run.postUserMessage(message);
+   451	      if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+   452	      return;
+   453	    }
+   454	    if (address.target.kind === "AGENT_RUN") {
+   455	      throw new Error("Application agent input target does not match the bound runtime.");
+   456	    }
+   457	    const run = await this.teamRunService.resolveActiveTeamRun(binding.runtime.teamRunId);
+   458	    if (!run) throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
+   459	    const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
+   460	    const targetMember = targetAgentRunId
+   461	      ? binding.runtime.members.find((member) => member.agentRunId === targetAgentRunId) ?? null
+   462	      : null;
+   463	    if (address.target.kind === "AGENT_TEAM_MEMBER" && !targetMember) {
+   464	      throw new Error("Application agent input target does not belong to the bound team runtime.");
+   465	    }
+   466	    const targetMemberAddress = targetMember ? assertAgentTeamAddress(targetMember.memberAddress) : null;
+   467	    const result = await run.postMessage(message, targetMemberAddress);
+   468	    if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+   469	  }
+   470	}
+
+mixed member readiness then post:
+    88	  getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
+    89	
+    90	  async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
+    91	    return (await this.ensureReady()).reserveUserMessage(message, options);
+    92	  }
+    93	
+    94	  async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    95	    this.publishCommandStatus("initializing");
+    96	    try {
+    97	      const run = await this.ensureReady();
+    98	      const result = await run.postUserMessage(message);
+    99	      if (result.accepted) {
+   100	        if (isTaskDelegationSystemTaskNotificationMessage(message)) {
+   101	          await run.publishEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+   102	        } else {
+   103	          this.options.publish({
+   104	            eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+   105	            agentRunId: run.runId,
+   106	            payload: buildTeamMemberInputEventPayload({
+   107	              rootTeamRunId: this.options.teamContext.rootTeamRunId,
+   108	              recipientAgentRunId: run.runId,
+   109	              message,
+   110	            }),
+   111	          });
+   112	        }
+   113	      } else this.publishCommandStatus("error", result.message ?? null);
+   114	      return { ...result, agentRunId: run.runId, displayName: this.displayName() };
+   115	    } catch (error) {
+   116	      this.publishCommandStatus("error", error instanceof Error ? error.message : String(error));
+   117	      if (!this.agentRun?.isActive()) {
+   118	        return {
+   119	          accepted: false,
+   120	          code: this.readinessFailureCode(error),
+   121	          message: error instanceof Error ? error.message : String(error),
+   122	          agentRunId: this.context.agentRunId,
+   123	          displayName: this.displayName(),
+   124	        };
+   125	      }
+   228	      if (this.readinessAttempt === attempt) this.readinessAttempt = null;
+   229	    }, () => {
+   230	      if (retrySafe && this.readinessAttempt === attempt) this.readinessAttempt = null;
+   231	    });
+   232	    return attempt;
+   233	  }
+   234	
+   235	  private async initializeReady(markRetrySafe: () => void): Promise<AgentRun> {
+   236	    this.unsubscribe?.();
+   237	    this.unsubscribe = null;
+   238	    let candidate: AgentRunActivationCandidate | null = null;
+   239	    try {
+   240	      const config = await this.buildAgentRunConfig();
+   241	      const plan = this.resolveActivationPlan(config);
+   242	      candidate = await this.prepareCandidate(plan, config);
+   243	      const binding = this.createExternalBinding(candidate);
+   244	      if (binding) {
+   245	        await this.options.acceptPlatformBinding(binding);
+   246	        this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
+   247	      }
+   248	      const run = candidate.commitPublication();
+   249	      this.bindEvents(run);
+   250	      this.agentRun = run;
+   251	      return run;
+   252	    } catch (error) {
+   253	      let cleanupConfirmed = candidate === null;
+   254	      let failure = error;
+   255	      if (candidate) {
+   256	        const cleanup = await candidate.abort();
+   257	        cleanupConfirmed = cleanup.kind === "aborted";
+   258	        if (cleanup.kind === "quarantined") failure = this.cleanupError(candidate.runId, cleanup.error);
+   259	      }
+   260	      if (
+   261	        cleanupConfirmed &&
+   262	        !(failure instanceof TeamAgentPlatformBindingError && failure.indeterminate) &&
+   263	        !isAgentRunActivationQuarantineError(failure)
+   264	      ) markRetrySafe();
+   265	      this.publishReadinessFailure(failure);
+   266	      throw failure;
+   267	    }
+   268	  }
+   269	
+   270	  private resolveActivationPlan(config: AgentRunConfig): MixedAgentActivationPlan {
+   271	    const external = isExternalProviderRuntimeKind(config.runtimeKind);
+   272	    if (this.options.activationMode === "fresh") {
+   273	      if (external) this.assertNoPriorConversationActivity(config);
+   274	      return Object.freeze({ kind: "new" });
+   275	    }
+
+communication rejection currently hides underlying cause:
+   146	  private async deliverInput(requestId: string, input: ApplicationAgentInput): Promise<void> {
+   147	    let accepted = false;
+   148	    try {
+   149	      await this.input.orchestration.sendRunInput(this.input.applicationId, {
+   150	        address: this.input.address,
+   151	        input,
+   152	      });
+   153	      accepted = true;
+   154	    } catch { /* correlated rejection below */ }
+   155	    try {
+   156	      if (this.state === "OPEN") this.write(accepted
+   157	        ? { protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL, type: "INPUT_ACCEPTED", requestId }
+   158	        : {
+   159	            protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
+   160	            type: "INPUT_REJECTED",
+   161	            requestId,
+   162	            error: applicationAgentConnectionError("INPUT_REJECTED"),
+   163	          });
+   164	    } catch (error) {
+   165	      this.failForWrite(error);
+   166	    } finally {
+   167	      this.pendingRequestIds.delete(requestId);
+   168	    }

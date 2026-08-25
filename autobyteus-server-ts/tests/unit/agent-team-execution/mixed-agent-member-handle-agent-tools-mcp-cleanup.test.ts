@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const revokeAgentToolMcpSessionsForAgentRun = vi.hoisted(() => vi.fn());
+const revokeAgentToolMcpSessionsForRun = vi.hoisted(() => vi.fn());
 vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js", () => ({
-  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForAgentRun }),
+  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForRun }),
 }));
 
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
@@ -51,7 +51,7 @@ const buildHandle = () => {
 };
 
 describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
-  beforeEach(() => revokeAgentToolMcpSessionsForAgentRun.mockReset());
+  beforeEach(() => revokeAgentToolMcpSessionsForRun.mockReset());
 
   it("revokes only the exact intrinsic AgentRun identity on every idempotent local dispose", () => {
     const handle = buildHandle();
@@ -59,8 +59,8 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
     handle.dispose();
     handle.dispose();
 
-    expect(revokeAgentToolMcpSessionsForAgentRun).toHaveBeenNthCalledWith(1, "worker-run-1");
-    expect(revokeAgentToolMcpSessionsForAgentRun).toHaveBeenNthCalledWith(2, "worker-run-1");
-    expect(revokeAgentToolMcpSessionsForAgentRun).not.toHaveBeenCalledWith("team-run-1");
+    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenNthCalledWith(1, "worker-run-1");
+    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenNthCalledWith(2, "worker-run-1");
+    expect(revokeAgentToolMcpSessionsForRun).not.toHaveBeenCalledWith("team-run-1");
   });
 });

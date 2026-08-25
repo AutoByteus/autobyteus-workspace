@@ -1,0 +1,55 @@
+Universal Application Framework latest-Personal SR-007 non-mutating merge preview
+Generated: 2026-08-24T08:57:02+02:00
+protected_ticket_head=a23849f165879050e2c9b676a2e9652d8a593c93
+integrated_personal_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+previous_review_target=a00f0d07d00450785c424b6ab79d2ca8fe828869
+prior_sr007_target=3ab4946c7e816787f782755de41077b0bb09d2e2
+latest_origin_personal=c5b87df4d6db15969ba70adee9dfd8394b1e7385
+base_to_latest_commit_count=22
+previous_to_latest_commit_count=17
+prior_sr007_to_latest_commit_count=6
+base_to_latest_shortstat=2463 files changed, 509658 insertions(+), 10476 deletions(-)
+previous_to_latest_shortstat=2194 files changed, 474977 insertions(+), 6504 deletions(-)
+prior_sr007_to_latest_shortstat=1942 files changed, 443468 insertions(+), 6 deletions(-)
+head_latest_divergence=145	22
+post_3ab_delta=6 commits; 1,942 paths (1,938 add, 4 modify); 1,934 added under isolated non-workspace ui-prototypes/autobyteus-web-prototype and 8 prototype/API-key ticket or delivery paths; no production/runtime/shared-workspace modification
+
+merge-tree --write-tree HEAD origin/personal (non-mutating):
+ffe4311832076eb2e9908648d0a74084ff4949d9
+100644 3b2b8e21b71f38ff7080ef3b943e8072b37ded96 1	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 e6c77f6afedb41e4224ca7e26e2319ddd401f521 2	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 e54a64c392e1a811e050bddfad7063ea7163afc9 3	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 fe61fcaaf6e6e3f5d7031b23c7c08949f590f3c0 1	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+100644 031025e9b45440ac97e5c0c0fee7dfddc82c395d 2	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+100644 7237843fe2e21f995d92e9c9d2e537a0be1f3a93 3	autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+100644 e8c992e212a799355cc97f44f7958105a4cb52d0 1	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 8fe7da413d00652088146b28e84c821a3450bedd 2	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 dedc16fe47627b98a2d2270335dffcf3487ed003 3	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 0cc8cd82b9d4da7d74a9385651f70b96258570cb 1	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+100644 2b80ed54fe41514e53411857855fdfb787e43aae 2	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+100644 dde8617edab5a76b712529e1f9a39f6b0a4e9565 3	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+100644 2373a1aa9d26b7b1136d267387daccbf30904095 1	autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+100644 ddf0240c8b80f6a25a44bee4c82a872bd3ba4574 2	autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+100644 f5b79e52bf8222785b2f0a9cf326317f5ce868dc 3	autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+Auto-merging autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+Auto-merging autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+Auto-merging autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+merge_tree_exit_code=1
+
+conflict_count=5
+changed_both_count=10
+index_unmerged_count=0
+worktree_head_after_preview=a23849f165879050e2c9b676a2e9652d8a593c93

@@ -1,0 +1,47 @@
+# DR-002 delivery audit
+
+Recorded UTC: 2026-07-30T10:06:09Z
+
+## Integrated state
+HEAD: f99f71a3cb3e5c11e3a87439570c661bf350e875
+origin/personal: 1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e
+divergence: 62 0
+base commits missing: 0
+
+## Scoped diff check
+PASS: git diff --check for delivery-synchronized docs and canonical delivery artifacts
+
+## Current owner/path existence
+PASS autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+PASS autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts
+PASS autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+PASS autobyteus-server-ts/src/application-platform/launch-configuration/application-portable-launch-config-policy.ts
+PASS autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-graph.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts
+PASS autobyteus-server-ts/src/compositions/build-studio-server-composition.ts
+PASS autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts
+PASS autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+
+## Removed-owner/stale-state audit
+PASS: no deleted configuration owner or obsolete combined readiness state remains in synchronized setup docs
+
+## Canonical delivery artifact state
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS: current gate, base, delivery revision, and verification hold are recorded
+
+## Worktree preservation summary
+Tracked modified paths: 12
+Untracked paths: 47
+API/E2E and delivery-owned uncommitted package remains preserved.
+
+FINAL: PASS

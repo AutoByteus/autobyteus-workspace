@@ -10,12 +10,12 @@ import { AgentRunManager } from "../../../../agent-execution/services/agent-run-
 import type { AgentRunActivationCandidate } from "../../../../agent-execution/services/agent-run-activation-candidate.js";
 import { AgentRunActivationError, isAgentRunActivationQuarantineError } from "../../../../agent-execution/errors.js";
 import { isExternalProviderRuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
-import { getAgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+import { getAgentMemoryLocationService, type AgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
 import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
 } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { getAgentToolMcpSessionService, type AgentToolMcpSessionManager } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { ApplicationExecutionContext } from "../../../../application-orchestration/domain/models.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
@@ -43,6 +43,7 @@ import type {
   MixedTeamRunContext,
 } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
+import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 export type PreparedMixedTaskAgentActivation = Readonly<{
   stagedPlatformBindings: readonly TeamAgentPlatformBinding[];
@@ -68,9 +69,12 @@ export class MixedAgentMemberHandle {
     config: TeamRunAgentNode;
     activationMode: MixedConfiguredMemberActivationMode;
     agentRunManager?: AgentRunManager;
+    agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+    memoryLocationService?: AgentMemoryLocationService;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    taskRootResolver: MemberTaskRootResolver;
     publish: MixedTeamEventPublish;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
@@ -210,7 +214,8 @@ export class MixedAgentMemberHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForAgentRun(this.context.agentRunId);
+    (this.options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService())
+      .revokeAgentToolMcpSessionsForRun(this.context.agentRunId);
     this.agentRun = null;
     this.overlay.clear();
   }
@@ -433,13 +438,14 @@ export class MixedAgentMemberHandle {
       teamContext: this.options.teamContext,
       agentNode: node,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+      taskRootResolver: this.options.taskRootResolver,
     });
     return new AgentRunConfig({
       agentDefinitionId: node.agentDefinitionId,
       llmModelIdentifier: node.llmModelIdentifier,
       autoExecuteTools: node.autoExecuteTools,
       workspaceId,
-      memoryDir: getAgentMemoryLocationService().getTeamAgentRunLocation({
+      memoryDir: (this.options.memoryLocationService ?? getAgentMemoryLocationService()).getTeamAgentRunLocation({
         ...this.options.teamContext.physicalScope,
         agentRunId: this.context.agentRunId,
       }).memoryDir,

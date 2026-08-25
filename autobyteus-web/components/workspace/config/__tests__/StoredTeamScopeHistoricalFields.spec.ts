@@ -67,6 +67,7 @@ describe('stored Team historical model configuration', () => {
     }]
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       providersWithModels: providers,
+      providerSnapshots: vi.fn().mockReturnValue([]),
       providersWithModelsForSelection: vi.fn().mockReturnValue(providers),
       fetchProvidersWithModels: vi.fn().mockResolvedValue(providers),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),

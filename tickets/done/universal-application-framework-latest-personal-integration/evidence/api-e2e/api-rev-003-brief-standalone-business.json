@@ -1,0 +1,186 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STANDALONE-003",
+  "title": "API REV 003 standalone 1787395636624",
+  "startedAt": "2026-08-22T10:47:39.778Z",
+  "stages": [
+    {
+      "stage": "generation-requested",
+      "at": "2026-08-22T10:47:40.541Z"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:43.551Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:46.555Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:49.565Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:52.571Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:55.585Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:47:58.593Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:01.600Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:04.614Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:07.623Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:10.629Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:13.638Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:16.647Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:19.655Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:22.665Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:25.670Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:28.677Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:31.685Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:34.696Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:37.701Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:40.707Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:43.709Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:46.720Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:49.724Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:52.737Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:55.744Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:48:58.747Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:49:01.753Z",
+      "status": "not_started",
+      "outputs": "0"
+    },
+    {
+      "stage": "poll",
+      "at": "2026-08-22T10:49:04.757Z",
+      "status": "in_review",
+      "outputs": "2"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "requestFailures": [],
+  "bodyExcerpt": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI REV 003 standalone 1787395636624\nIn_review\nBrief brief-35809dcd-b4a0-44a3-a0b9-966243098204\nUpdated 22.8.2026, 12:49:02\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI REV 003 standalone 1787395636624\n\nbriefId brief-35809dcd-b4a0-44a3-a0b9-966243098204\n\nIn_review\nCreated 22.8.2026, 12:47:16\nUpdated 22.8.2026, 12:49:02\nBRIEF RECORD\nbrief-35809dcd-b4a0-44a3-a0b9-966243098204\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n0 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md\n\nConcise research checkpoint for the standalone API REV 003 brief.\n\n# API REV 003 standalone 1787395636624 — Research Checkpoint\n\n## Key findings\n- The request is for a reviewable brief titled “API REV 003 standalone 1787395636624”; no API specification, audience, product context, or acceptance criteria were supplied.\n- “Standalone” should be treated as a core constraint: the brief should be self-contained and readable without relying on an earlier revision or external project notes.\n- “REV 003” implies a revision checkpoint; the final brief should make the intended change, rationale, and validation status explicit rather than presenting an untracked draft.\n- A useful review artifact should separate confirmed facts from assumptions and expose decisions needed before implementation or approval.\n\n## Risks or open questions\n- The API surface, change set, compatibility expectations, and target consumers are unspecified.\n- It is unclear whether this is a design brief, release/change brief, implementation brief, or review memo.\n- No source materials or test evidence were provided, so technical claims and readiness cannot yet be verified.\n\n## Recommendations or next steps\n- Draft a concise standalone brief with sections for objective, scope/non-scope, proposed API behavior, compatibility, validation, and approval needs.\n- Mark unknowns as explicit placeholders and request the endpoint/schema diff, consumer impact, versioning policy, and test results.\n- Keep “REV 003” as the revision label and include a short change log so reviewers can distinguish new decisions from unresolved carryovers.\n\nwriter\nFinal\n\n/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md\n\nNo description provided\n\n# API REV 003 standalone 1787395636624\n\n## Recommendation summary\n\nAdvance API REV 003 as a **standalone review checkpoint**, not an implementation-ready specification. The brief should make the proposed change, its rationale, compatibility impact, and validation status explicit while preserving clear placeholders for decisions that cannot be inferred from the current inputs. Approval should be conditional on receiving the API diff, target audience/consumer definition, versioning policy, and test evidence.\n\n## Key evidence\n\n- **Confirmed constraint:** “Standalone” means this brief must be self-contained and readable without prior revisions or external project notes.\n- **Confirmed revision intent:** “REV 003” is a revision checkpoint; reviewers need a visible change log and a distinction between new decisions, carried-forward items, and unresolved questions.\n- **Current scope signal:** The request concerns an API revision, but no endpoint, method, schema, error contract, authentication behavior, or operational boundary is supplied.\n- **Proposed review content:** Objective, in-scope and out-of-scope behavior, proposed API contract, compatibility expectations, validation status, and approval needs.\n- **Assumption (must validate):** The primary audience is API reviewers and implementers who need to assess consumer impact before build or release.\n- **Assumption (must validate):** The revision should prefer backward-compatible evolution unless the missing versioning policy explicitly permits breaking changes.\n- **Validation status:** **Not validated.** No source materials, API diff, automated test results, integration evidence, or deployment/release checks were provided.\n\n## Risks or cautions\n\n- **Open question — API surface:** Which endpoints/resources, request and response schemas, status codes, error formats, and authentication changes are included?\n- **Open question — audience and consumers:** Who consumes this API, and which clients, SDKs, integrations, or internal services may be affected?\n- **Open question — compatibility:** Is backward compatibility required? What is the versioning, deprecation, migration, and rollout policy?\n- **Open question — change rationale:** What user, product, reliability, or maintainability problem does REV 003 solve, and what changed since REV 002?\n- Do not label the revision ready for implementation or release until the contract and evidence are supplied; unsupported technical claims would create review and rollout risk.\n\n## Next actions\n\n- Provide the endpoint/schema diff and a concise REV 002 → REV 003 change log.\n- Name target consumers and document compatibility, versioning, deprecation, and migration expectations.\n- Define acceptance criteria, including contract tests, negative/error cases, backward-compatibility checks, and any performance or security gates.\n- Attach test and integration results, then update validation status to **Pass**, **Conditional**, or **Blocked** with links or artifact names.\n- Confirm whether this artifact is the design brief, release/change brief, implementation brief, or review memo before final approval.\n\nReview notes\n\nKeep the approval conversation on the brief record itself.\n\nNo review notes yet.\nAdd review note\nWorkflow diagnostics",
+  "passed": true,
+  "finishedAt": "2026-08-22T10:49:04.923Z"
+}

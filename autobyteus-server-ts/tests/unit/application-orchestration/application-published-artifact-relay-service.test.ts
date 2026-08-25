@@ -59,12 +59,12 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         lastErrorMessage: null,
       }),
     };
-    const engineHostService = {
-      invokeApplicationArtifactHandler: vi.fn().mockResolvedValue({ status: "acknowledged" }),
+    const deliveryQueue = {
+      accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
       bindingStore: bindingStore as any,
-      engineHostService: engineHostService as any,
+      deliveryQueue: deliveryQueue as any,
     });
 
     service.attachToRun(run);
@@ -89,7 +89,11 @@ describe("ApplicationPublishedArtifactRelayService", () => {
     }
 
     await vi.waitFor(() => {
-      expect(engineHostService.invokeApplicationArtifactHandler).toHaveBeenCalledWith("app-1", {
+      expect(deliveryQueue.accept).toHaveBeenCalledWith({
+        runId: "run-1",
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        revisionId: "revision-1",
         event: {
           runId: "run-1",
           artifactId: "run-1:brief-studio/final-brief.md",
@@ -148,12 +152,12 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         lastErrorMessage: null,
       }),
     };
-    const engineHostService = {
-      invokeApplicationArtifactHandler: vi.fn().mockResolvedValue({ status: "acknowledged" }),
+    const deliveryQueue = {
+      accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
       bindingStore: bindingStore as any,
-      engineHostService: engineHostService as any,
+      deliveryQueue: deliveryQueue as any,
     });
 
     await service.relayArtifactForExecutionContext({
@@ -183,7 +187,11 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       },
     });
 
-    expect(engineHostService.invokeApplicationArtifactHandler).toHaveBeenCalledWith("app-1", {
+    expect(deliveryQueue.accept).toHaveBeenCalledWith({
+      runId: "researcher_member_run",
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      revisionId: "revision-1",
       event: {
         runId: "researcher_member_run",
         artifactId: "researcher_member_run:brief-studio/research.md",

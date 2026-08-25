@@ -1,5 +1,5 @@
 import { Arg, Field, Mutation, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
-import { ApplicationCapabilityService } from "../../../application-capability/services/application-capability-service.js";
+import { getStudioApplicationCapabilityService } from "../studio-application-api-services.js";
 
 export enum ApplicationsCapabilityScope {
   BOUND_NODE = "BOUND_NODE",
@@ -36,11 +36,9 @@ export class ApplicationsCapability {
 
 @Resolver()
 export class ApplicationCapabilityResolver {
-  private readonly service = ApplicationCapabilityService.getInstance();
-
   @Query(() => ApplicationsCapability)
   async applicationsCapability(): Promise<ApplicationsCapability> {
-    const capability = await this.service.getCapability();
+    const capability = await getStudioApplicationCapabilityService().getCapability();
     return {
       enabled: capability.enabled,
       scope: ApplicationsCapabilityScope.BOUND_NODE,
@@ -53,7 +51,7 @@ export class ApplicationCapabilityResolver {
   async setApplicationsEnabled(
     @Arg("enabled", () => Boolean) enabled: boolean,
   ): Promise<ApplicationsCapability> {
-    const capability = await this.service.setEnabled(enabled);
+    const capability = await getStudioApplicationCapabilityService().setEnabled(enabled);
     return {
       enabled: capability.enabled,
       scope: ApplicationsCapabilityScope.BOUND_NODE,

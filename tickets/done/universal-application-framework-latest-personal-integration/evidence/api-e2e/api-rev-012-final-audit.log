@@ -1,0 +1,30 @@
+checkedAt=2026-08-25T19:09:46Z
+head=226dcfd1dda71f6507b507a9c8b68145bf4d4bbf
+initialLiveBrowserAndApi=PASS
+coldRestartContinuationAndTerminate=PASS
+publicRestore=PASS
+secretLeakScan=PASS
+privateFixtureHashes=PASS_10_OF_10
+cleanup=PASS
+gitDiffCheck=PASS
+trackedChanges:
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+?? applications/brief-studio/dist/
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-devkit/dist/
+?? autobyteus-application-frontend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-agent-package-integrity.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-final-audit.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-after-cold-start-before-restore.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser-live.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser-verified.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-cleanup.log

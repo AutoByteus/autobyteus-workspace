@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 2,
+  "slug": "nested-codex",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-25T18:47:43.000Z",
+  "completedAt": "2026-08-25T18:47:47.790Z",
+  "passed": false,
+  "fatalError": "Error: GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"receiverTargetKind\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":21}]},{\"message\":\"Cannot query field \\\"content\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":40}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":5,\"column\":7}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"recipientAddress\\\"?\",\"locations\":[{\"line\":6,\"column\":7}]},{\"message\":\"Cannot query field \\\"taskRun\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"taskId\\\"?\",\"locations\":[{\"line\":8,\"column\":7}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":14,\"column\":9}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":15,\"column\":9}]}]\nError: GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"receiverTargetKind\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":21}]},{\"message\":\"Cannot query field \\\"content\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":40}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":5,\"column\":7}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"recipientAddress\\\"?\",\"locations\":[{\"line\":6,\"column\":7}]},{\"message\":\"Cannot query field \\\"taskRun\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"taskId\\\"?\",\"locations\":[{\"line\":8,\"column\":7}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":14,\"column\":9}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":15,\"column\":9}]}]\n    at gql (file:///private/tmp/api-rev-012-nested-browser.mjs:76:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///private/tmp/api-rev-012-nested-browser.mjs:249:22",
+  "rootRun": {
+    "teamRunId": "nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "coordinatorAddress": "/Teacher",
+    "createdAt": "2026-08-25T18:47:46.852Z",
+    "terminatedAt": null,
+    "isActive": true,
+    "rootTeam": {
+      "address": "/",
+      "team_definition_id": "nested-classroom-test",
+      "team_definition_name": "Nested Classroom Test Team",
+      "team_run_id": "nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c",
+      "coordinator_address": "/Teacher",
+      "default_launch_configuration": {
+        "runtime_kind": "codex_app_server",
+        "llm_model_identifier": "gpt-5.6-luna",
+        "llm_config": {
+          "reasoning_effort": "medium"
+        },
+        "auto_execute_tools": true,
+        "skill_access_mode": "PRELOADED_ONLY",
+        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+      },
+      "members": [
+        {
+          "kind": "configured_agent",
+          "address": "/Teacher",
+          "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+          "role": null,
+          "description": null,
+          "agent_run_id": "test_teacher_7b7a3f2fc6084785ae32a5cf6f4e723c",
+          "platform_agent_run_id": null,
+          "launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": {
+              "reasoning_effort": "medium"
+            },
+            "auto_execute_tools": true,
+            "skill_access_mode": "PRELOADED_ONLY",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+          }
+        },
+        {
+          "kind": "configured_team",
+          "address": "/StudentStudyGroup",
+          "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+          "role": null,
+          "description": null,
+          "team_run_id": "student_study_group_c9fb483cd13b4f05886ee2bacb55ae65",
+          "coordinator_address": "/StudentStudyGroup/student_one",
+          "default_launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": {
+              "reasoning_effort": "medium"
+            },
+            "auto_execute_tools": true,
+            "skill_access_mode": "PRELOADED_ONLY",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+          },
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_one_5dd968092bda4947851750650b757450",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_two_fe6f14abc4ba407a94c34bf169d2b268",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      ],
+      "task_executions": []
+    },
+    "members": [
+      {
+        "memberAddress": "/Teacher",
+        "displayName": "Teacher",
+        "agentRunId": "test_teacher_7b7a3f2fc6084785ae32a5cf6f4e723c",
+        "status": "offline",
+        "runtimeKind": "codex_app_server",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "displayName": "student_one",
+        "agentRunId": "student_one_5dd968092bda4947851750650b757450",
+        "status": "offline",
+        "runtimeKind": "codex_app_server",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "displayName": "student_two",
+        "agentRunId": "student_two_fe6f14abc4ba407a94c34bf169d2b268",
+        "status": "offline",
+        "runtimeKind": "codex_app_server",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+      }
+    ]
+  },
+  "consoleEvents": [],
+  "graphqlResponseSummaries": [
+    {
+      "at": "2026-08-25T18:47:43.666Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:43.815Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:46.906Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:46.915Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:46.920Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:46.920Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": true,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-25T18:47:47.082Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    }
+  ],
+  "termination": null
+}

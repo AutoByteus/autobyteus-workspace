@@ -1,8 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ApplicationWebSocketRequest } from "@autobyteus/application-sdk-contracts";
-import {
-  getApplicationBackendApiGatewayService,
-} from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendRealtimeContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { ApplicationBackendNetworkWebSocket } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
 import { authorizeRemoteAccessWebSocket, closeSocketForRemoteAccessRejection } from "./remote-access-websocket-auth.js";
 import { observePendingWebSocketState } from "./pending-websocket-state.js";
@@ -29,7 +27,13 @@ const toQuery = (query: unknown): ApplicationWebSocketRequest["query"] => {
   return result;
 };
 
-export async function registerApplicationBackendWebsocket(app: FastifyInstance): Promise<void> {
+export async function registerApplicationBackendWebsocket(
+  app: FastifyInstance,
+  dependencies: {
+    gateway: ApplicationBackendRealtimeContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
+  },
+): Promise<void> {
   (app as any).get(
     "/ws/applications/:applicationId/backend/routes/*",
     { websocket: true },
@@ -39,9 +43,9 @@ export async function registerApplicationBackendWebsocket(app: FastifyInstance):
       const pendingSocket = observePendingWebSocketState(socket);
       const applicationId = req.params.applicationId;
       const path = `/${req.params["*"] ?? ""}`;
-      void authorizeRemoteAccessWebSocket(req).then(() => {
+      void authorizeRemoteAccessWebSocket(req).then(() => dependencies.lifecycle.awaitReady()).then(() => {
         if (pendingSocket.isClosed()) return;
-        getApplicationBackendApiGatewayService().connectApplicationWebSocket({
+        dependencies.gateway.connectApplicationWebSocket({
           applicationId,
           socket,
           request: {

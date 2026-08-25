@@ -7,6 +7,8 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
 import { ApplicationOrchestrationRecoveryService } from "../../../src/application-orchestration/services/application-orchestration-recovery-service.js";
+import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
+import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
 
@@ -24,23 +26,19 @@ const buildBinding = (): ApplicationAgentBindingRecord => ({
   },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-1",
+    teamRunId: "team-run-1",
     definitionId: "bundle-team__pkg__brief-studio__brief-studio-team",
     members: [
       {
-        memberName: "researcher",
-        memberRouteKey: "researcher",
+        memberAddress: "/researcher",
         displayName: "Researcher",
-        teamPath: [],
-        runId: "team-run-1::researcher",
+        agentRunId: "team-run-1::researcher",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
-        memberName: "writer",
-        memberRouteKey: "writer",
+        memberAddress: "/writer",
         displayName: "Writer",
-        teamPath: [],
-        runId: "team-run-1::writer",
+        agentRunId: "team-run-1::writer",
         runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
@@ -56,6 +54,7 @@ describe("ApplicationOrchestrationRecoveryService", () => {
   let storageLifecycleService: ApplicationStorageLifecycleService;
   let bindingStore: ApplicationRunBindingStore;
   let lookupStore: ApplicationRunLookupStore;
+  let platformStateStore: ApplicationPlatformStateStore;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-aor-recovery-"));
@@ -82,7 +81,7 @@ describe("ApplicationOrchestrationRecoveryService", () => {
       applicationBundleService: fakeBundleService as never,
     });
 
-    const platformStateStore = new ApplicationPlatformStateStore({
+    platformStateStore = new ApplicationPlatformStateStore({
       storageLifecycleService,
     });
 
@@ -107,6 +106,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
     const ingressService = {
       appendBindingLifecycleEvent: vi.fn(),
     };
+    const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
+      bindingStore,
+      lookupStore,
+      ingressService: ingressService as never,
+      lifecycleHub: new ApplicationRunBindingLifecycleHub(),
+    });
 
     const recoveryService = new ApplicationOrchestrationRecoveryService({
       applicationBundleService: {
@@ -115,10 +120,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
           diagnostics: [],
         }),
       } as never,
+      platformStateStore,
       bindingStore,
       lookupStore,
       runObserverService: runObserverService as never,
       ingressService: ingressService as never,
+      terminalTransitionService,
     });
 
     await recoveryService.resumeBindings();
@@ -126,18 +133,18 @@ describe("ApplicationOrchestrationRecoveryService", () => {
     expect(runObserverService.attachBinding).toHaveBeenCalledWith(binding, {
       emitAttachedEvent: false,
     });
-    expect(lookupStore.getLookupByRunId(binding.runtime.runId)).toEqual({
-      runId: binding.runtime.runId,
+    expect(lookupStore.getLookupByRunId(binding.runtime.teamRunId)).toEqual({
+      runId: binding.runtime.teamRunId,
       applicationId,
       bindingId: binding.bindingId,
     });
-    expect(lookupStore.getLookupByRunId(binding.runtime.members[0]!.runId)).toEqual({
-      runId: binding.runtime.members[0]!.runId,
+    expect(lookupStore.getLookupByRunId(binding.runtime.members[0]!.agentRunId)).toEqual({
+      runId: binding.runtime.members[0]!.agentRunId,
       applicationId,
       bindingId: binding.bindingId,
     });
-    expect(lookupStore.getLookupByRunId(binding.runtime.members[1]!.runId)).toEqual({
-      runId: binding.runtime.members[1]!.runId,
+    expect(lookupStore.getLookupByRunId(binding.runtime.members[1]!.agentRunId)).toEqual({
+      runId: binding.runtime.members[1]!.agentRunId,
       applicationId,
       bindingId: binding.bindingId,
     });
@@ -151,6 +158,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
     const ingressService = {
       appendBindingLifecycleEvent: vi.fn(),
     };
+    const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
+      bindingStore,
+      lookupStore,
+      ingressService: ingressService as never,
+      lifecycleHub: new ApplicationRunBindingLifecycleHub(),
+    });
 
     const recoveryService = new ApplicationOrchestrationRecoveryService({
       applicationBundleService: {
@@ -159,13 +172,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
           diagnostics: [],
         }),
       } as never,
-      platformStateStore: new ApplicationPlatformStateStore({
-        storageLifecycleService,
-      }),
+      platformStateStore,
       bindingStore,
       lookupStore,
       runObserverService: runObserverService as never,
       ingressService: ingressService as never,
+      terminalTransitionService,
     });
 
     const outcomes = await recoveryService.resumeBindings();
@@ -193,6 +205,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
     const ingressService = {
       appendBindingLifecycleEvent: vi.fn(async () => undefined),
     };
+    const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
+      bindingStore,
+      lookupStore,
+      ingressService: ingressService as never,
+      lifecycleHub: new ApplicationRunBindingLifecycleHub(),
+    });
 
     const recoveryService = new ApplicationOrchestrationRecoveryService({
       applicationBundleService: {
@@ -201,10 +219,12 @@ describe("ApplicationOrchestrationRecoveryService", () => {
           diagnostics: [],
         }),
       } as never,
+      platformStateStore,
       bindingStore,
       lookupStore,
       runObserverService: runObserverService as never,
       ingressService: ingressService as never,
+      terminalTransitionService,
     });
 
     await recoveryService.resumeBindings();
@@ -217,9 +237,9 @@ describe("ApplicationOrchestrationRecoveryService", () => {
       applicationId,
     });
     expect(persisted?.terminatedAt).toEqual(expect.any(String));
-    expect(lookupStore.getLookupByRunId(binding.runtime.runId)).toBeNull();
-    expect(lookupStore.getLookupByRunId(binding.runtime.members[0]!.runId)).toBeNull();
-    expect(lookupStore.getLookupByRunId(binding.runtime.members[1]!.runId)).toBeNull();
+    expect(lookupStore.getLookupByRunId(binding.runtime.teamRunId)).toBeNull();
+    expect(lookupStore.getLookupByRunId(binding.runtime.members[0]!.agentRunId)).toBeNull();
+    expect(lookupStore.getLookupByRunId(binding.runtime.members[1]!.agentRunId)).toBeNull();
     expect(runObserverService.detachBinding).toHaveBeenCalledWith(binding.bindingId);
     expect(ingressService.appendBindingLifecycleEvent).toHaveBeenCalledWith(
       expect.objectContaining({

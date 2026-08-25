@@ -1,0 +1,167 @@
+{
+  "scenario": "APIE2E-PUBLICATION-008",
+  "root": "/private/tmp/api-rev008-brief-standalone-1787560452",
+  "runs": [
+    "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+    "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e"
+  ],
+  "publishSuccesses": 2,
+  "handoffAccepted": true,
+  "events": [
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 3,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": false
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 4,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 6,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": false
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 7,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 9,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 10,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 12,
+      "type": "tool_call",
+      "tool": "publish_artifacts",
+      "artifactCount": 1
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 13,
+      "type": "tool_result",
+      "tool": "publish_artifacts",
+      "success": false
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 15,
+      "type": "tool_call",
+      "tool": "publish_artifacts",
+      "artifactCount": 1
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 16,
+      "type": "tool_result",
+      "tool": "publish_artifacts",
+      "success": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 17,
+      "type": "tool_call",
+      "tool": "send_message_to",
+      "recipient": "/writer"
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 18,
+      "type": "tool_result",
+      "tool": "send_message_to",
+      "success": null,
+      "accepted": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 23,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 24,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 26,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": false
+    },
+    {
+      "run": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+      "seq": 27,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 3,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": true
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 4,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 6,
+      "type": "tool_call",
+      "tool": "run_bash",
+      "writesBriefPath": true
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 7,
+      "type": "tool_result",
+      "tool": "run_bash",
+      "success": true
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 8,
+      "type": "tool_call",
+      "tool": "publish_artifacts",
+      "artifactCount": 1
+    },
+    {
+      "run": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+      "seq": 9,
+      "type": "tool_result",
+      "tool": "publish_artifacts",
+      "success": true
+    }
+  ]
+}

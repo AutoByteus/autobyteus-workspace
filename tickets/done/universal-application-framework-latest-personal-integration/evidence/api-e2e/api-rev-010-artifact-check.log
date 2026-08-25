@@ -1,0 +1,90 @@
+head=243143e62e0f198bf14f411a9688d59d5febc5f0
+git diff --check:
+canonical markers:
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:16:| `API-REV-010` | `code_reviewer` / `CRR-019` / round 10 | `SR-009`–`SR-010`, `ARCH-REV-009`–`ARCH-REV-010`, `IR-011`, `CRR-019`, `DR-010` | **Pass / 98%** | **Fail / 72%** |
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:249:### API-REV-010 — Current v1.4.58 hierarchy and migration execution exposes authority/recovery failures
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:258:- `APIE2E-HIERARCHY-010` / `APIE2E-F005`: positive V2 lifecycle failed because a root Team definition created successfully through public GraphQL was not found by `createAgentTeamRun`; all six invalid Team/Agent zero-side-effect cases passed. A separate real-server public API probe reproduced both Agent and Team cases after successful definition creation/listing and source correlation exposed the distinct definition/run authorities.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:259:- `APIE2E-MIGRATION-010` / `APIE2E-F006`: the positive old-memory move/restart case passed, but after retry reported migration success, public member projection failed because `agent-run-architect` was not found in `team-run-root`.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:270:- New or remaining failure IDs: `APIE2E-F005`, `APIE2E-F006`.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:13:- Current API/E2E Revision ID: `API-REV-010`; execution round 10.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:23:1. `APIE2E-HIERARCHY-010` / `APIE2E-F005`: the positive hierarchical TeamRun V2 GraphQL lifecycle cannot launch a definition just created through the public Studio definition API. The run service reports the root Team definition is not found.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:24:2. `APIE2E-MIGRATION-010` / `APIE2E-F006`: after public retry reports the nested-memory migration succeeded, the public member projection cannot find the migrated AgentRun in its root TeamRun.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:32:- Investigation completed before durable changes/final execution: **Yes**; the `API-REV-010` investigation section predates execution.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:44:| `APIE2E-HIERARCHY-010` / `APIE2E-F005` | public definition creation -> hierarchical TeamRun V2 create/persist/restart | Durable real built-server E2E | **Fail** | `api-rev-010-failing-e2e-isolated.log` |
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:45:| `APIE2E-AUTHORITY-010` / `APIE2E-F005` | public Agent/Team definition authorities versus public run authorities | Temporary non-fake real-server GraphQL probe | **Fail** | `api-rev-010-definition-run-authority-failure.json`; `api-rev-010-source-correlation.log` |
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:46:| `APIE2E-MIGRATION-010` / `APIE2E-F006` | old flat memory move, restart, public retry and projection | Durable real built-server/SQLite E2E | **Fail** (1 Pass / 1 Fail) | `api-rev-010-nested-history-failure-detail.log` |
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:115:- All API-REV-010 generated SDK/devkit/server/application outputs and test roots were removed.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:122:- `APIE2E-F005`: **Unclear / likely implementation authority integration**. Public definition writes/reads and public run owners resolve through different service identities. The signature overlaps pre-existing `APIE2E-REPO-005`, so API/E2E does not assign IR-011 blame; code review must determine whether this is historical debt newly made critical by the v1.4.58 hierarchy path or a merge/source defect.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:123:- `APIE2E-F006`: **Unclear / likely persisted-data migration or current projection integration**. Public retry succeeds but current projection cannot find the migrated member in the root TeamRun. It is a current regression relative to the earlier API-REV-008 two-case pass and requires source/fixture origin review.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:126:## Latest Authoritative Result
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:128:- Result: **Fail**.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md:133:- Required next recipient: `/code_reviewer` for focused failure-origin review of `APIE2E-F005` and `APIE2E-F006`.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:359:- Result: **Fail** due to new `APIE2E-F004`; `APIE2E-F001`–`F003` are resolved.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:804:## API-REV-010 IR-011 / Personal v1.4.58 Hierarchical TeamRun V2 Investigation
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:861:8. cleanup/leak/secret scan, confidence reassessment, canonical API-REV-010 report/revision and outcome routing.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:879:### API-REV-010 Post-Repository Resolution — Critical Failure Reroute
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:886:- **`APIE2E-HIERARCHY-010` / `APIE2E-F005`: Fail.** The durable hierarchical lifecycle passed all six invalid Team/Agent zero-side-effect cases but failed the positive persist/restart case because the newly created root definition could not be resolved by the run owner.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:887:- **`APIE2E-MIGRATION-010` / `APIE2E-F006`: Fail.** The actual-process nested-memory migration positive path passed and remained canonical after restart. Its failure/retry path completed the public migration action successfully but the next public projection read returned GraphQL error `AgentRun 'agent-run-architect' was not found in root TeamRun 'team-run-root'`. API-REV-008 had passed the earlier two-case suite; the current current-tree expectation is valid under the approved old-data nested history/recovery requirement.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:889:- No repository-resident durable test or production source was added, updated or removed by API/E2E. A temporary harness diagnostic exposed the hidden GraphQL payload for `APIE2E-F006`; the harness was restored byte-for-byte and all generated prerequisites, test roots and owned processes were cleaned.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:905:- Result: **Fail**. Critical current criteria are failing; one category is below 90% and the default 95% target is not met.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:906:- Required route: `/code_reviewer` for focused failure-origin review of `APIE2E-F005` and `APIE2E-F006`, not proportional successful-test review.
+evidence files:
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-topology.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-affected-server.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-system-build.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-application-migration-e2e.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-failing-e2e-isolated.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-definition-run-authority-failure.json
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-source-correlation.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-nested-history-failure-detail.log
+PASS tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-cleanup.log
+durable/production API-owned diff:
+temporary harness restored:
+PASS
+generated outputs absent:
+PASS ABSENT autobyteus-ts/dist
+PASS ABSENT autobyteus-application-sdk-contracts/dist
+PASS ABSENT autobyteus-application-backend-sdk/dist
+PASS ABSENT autobyteus-application-frontend-sdk/dist
+PASS ABSENT autobyteus-application-devkit/dist
+PASS ABSENT autobyteus-application-devkit/.tmp-tests
+PASS ABSENT autobyteus-server-ts/dist
+PASS ABSENT autobyteus-server-ts/tests/.tmp
+PASS ABSENT applications/brief-studio/dist
+PASS ABSENT applications/socratic-math-teacher/dist
+status:
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-design-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-affected-server.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-application-migration-e2e.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-artifact-check.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-cleanup.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-definition-run-authority-failure.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-failing-e2e-isolated.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-nested-history-failure-detail.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-source-correlation.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-system-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-topology.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-conflict-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-merge-preview.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-overlap-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-path-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-design-analysis.md

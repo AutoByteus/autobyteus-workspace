@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-07-29T14:11:41.969Z",
+  "bootstrap": {
+    "contractVersion": "1",
+    "application": {
+      "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+      "localApplicationId": "brief-studio",
+      "packageId": "standalone",
+      "name": "Brief Studio"
+    },
+    "transportPaths": {
+      "backendBasePath": "/_autobyteus/backend",
+      "backendNotificationsPath": "/_autobyteus/backend/notifications",
+      "backendWebSocketBasePath": null,
+      "agentCommunicationWebSocketBasePath": "/_autobyteus/agent"
+    }
+  },
+  "brief": {
+    "status": 200,
+    "body": {
+      "result": {
+        "data": {
+          "brief": {
+            "briefId": "brief-b74d3111-035e-4d54-8b13-f0f687e3ecef",
+            "title": "API REV 004 standalone live team 2026-07-29T14:10:41.069Z",
+            "status": "blocked",
+            "latestBindingId": null,
+            "latestRunId": null,
+            "latestBindingStatus": "FAILED",
+            "lastErrorMessage": "llmModelIdentifier is required.",
+            "createdAt": "2026-07-29T14:10:42.130Z",
+            "updatedAt": "2026-07-29T14:10:42.229Z",
+            "approvedAt": null,
+            "rejectedAt": null,
+            "artifacts": [],
+            "reviewNotes": []
+          }
+        }
+      }
+    }
+  },
+  "executions": {
+    "status": 200,
+    "body": {
+      "result": {
+        "data": {
+          "briefExecutions": []
+        }
+      }
+    }
+  }
+}

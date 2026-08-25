@@ -1,0 +1,228 @@
+=== REQUIREMENT / DESIGN ===
+28:| BEH-001 | Studio supports a setup-first, iframe-hosted lifecycle backed by a real application worker and app-owned orchestration. No standalone vertical-product host exists. | The same validated application package can be selected by Studio or by a standalone composition that serves its UI at `/`. | Studio setup/enter/reload/exit, iframe correlation, and app-owned run creation remain authoritative. | REQ-001, REQ-004 / AC-001, AC-003, AC-006 |
+31:| BEH-004 | Bundled agents/teams are application-scoped. Execution-resource configuration may select bundled or shared definitions; tools/skills are resolved by the existing platform. | Both hosts resolve resources through the same current resource/configuration/orchestration owners and execute real agent/team paths. | Current resource-slot contract, bundled identities, selected runtime configuration, and configured tool/skill behavior remain unchanged. | REQ-004 / AC-005, AC-006 |
+33:| BEH-006 | `autobyteus-app dev` currently serves an iframe-contract host and defaults to a mock backend when real server URLs are absent. The starter exposes `build`, `validate`, and that mock-capable `dev`; Brief Studio and Socratic expose only custom `build`/backend typecheck scripts, use non-default `frontend-src`/`backend-src` layouts, and have no devkit config or application-folder production `start` command. | Every maintained application project exposes one native command surface: `pnpm dev` runs real standalone watch/rebuild/restart, `pnpm dev:studio` exercises the real Studio host, `pnpm build` produces `dist/importable-package`, `pnpm validate` validates it, and `pnpm start` runs that already-built package through the real production standalone composition without rebuilding, watching, or mocking. Each maintained non-default project supplies a checked-in devkit mapping for its real source/resource directories, entrypoints, migrations, exposures, and output so all five commands use the same package owner. | Focused mocks remain test fixtures only and never satisfy developer product flow, production start, or dual-host conformance. Custom sample builders do not become a second package path. | REQ-006 / AC-005, AC-006, AC-011, AC-013 |
+34:| BEH-007 | Application data uses per-app `app.sqlite`; platform orchestration state uses per-app `platform.sqlite` and a global lookup store. | Both hosts use the same current storage lifecycle and migrations under host-specific data roots. Existing data shapes do not change. | App/platform database ownership, migration ordering/checksums, binding recovery, and event semantics remain unchanged. | REQ-004, REQ-005 / AC-006, AC-012 |
+52:| [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md) | User-supplied proposal snapshot | REQ-001–REQ-006 | AC-001–AC-013 | Input source; not accepted wholesale | Defines the original vision and claims evaluated by the task. |
+53:| [proposal-critical-analysis.md](proposal-critical-analysis.md) | Claim/evidence/readiness assessment and revised roadmap | REQ-001–REQ-006 | AC-001–AC-013 | Approved/refined through 2026-07-27 with user/account concerns excluded and the native command surface confirmed; SR-003 removes a contradiction without changing approved behavior | Supplies the evidence classification and bounded dual-host recommendation used by the design. |
+54:| [design-self-validation.md](design-self-validation.md) | Reachable use-case simulation, data-flow coverage, and canonical design-principles audit | REQ-001–REQ-006 | AC-001–AC-013 | Complete through SV-008; approval `N/A` | Records bounded design corrections without replacing the requirements or design authorities. |
+88:| UC-001 — Build once, consume in both hosts | Developer runs the supported package command and then chooses Studio import or standalone run | One validated read-only package and the same frontend/backend entry bytes run through both hosts without a host-specific rebuild | BEH-001, BEH-003, BEH-006 / REQ-001, REQ-003, REQ-006 / AC-001, AC-008, AC-011 |
+89:| UC-002 — Studio setup and entry | Studio user imports/selects an application, completes its supported setup gate, and clicks `Enter application` | Existing ensure-ready, worker, iframe bootstrap, shared client, and business UI path remains operational | BEH-001, BEH-002, BEH-004 / REQ-001, REQ-002, REQ-004, REQ-005 / AC-002, AC-003, AC-005, AC-006 |
+90:| UC-003 — Studio presentation lifecycle | Studio user saves setup after entry, clicks `Reload application`, clicks `Exit application`, or leaves the application route | Post-entry setup save does not silently relaunch; reload creates a fresh launch/iframe document; exit/route leave clears launch state, tears down the application document, and restores the Studio shell without inventing a runtime-run action | BEH-001, BEH-002, BEH-004 / REQ-001, REQ-002, REQ-004 / AC-003, AC-005, AC-006 |
+91:| UC-004 — Standalone start and browser entry | Operator starts standalone with a valid package root/local ID/data root; browser opens or reloads `/` | One selected application is prepared, recovered, served at `/`, bootstrapped same-origin, and mounted with the shared client | BEH-001, BEH-002, BEH-003, BEH-005, BEH-007 / REQ-001–REQ-005 / AC-001, AC-003, AC-004, AC-006, AC-009, AC-010, AC-012 |
+94:| UC-007 — Shared backend operation | Application frontend invokes a query, command, route, or GraphQL operation through `ApplicationClient` | Host mount delegates to the same gateway/engine/worker handler and returns the same business result | BEH-002, BEH-004 / REQ-002, REQ-004, REQ-005 / AC-003, AC-006, AC-010 |
+95:| UC-008 — Live application communication | Application frontend subscribes to notifications, opens a custom backend WebSocket, or connects directly to an application-scoped agent target | Both hosts use the same notification, custom-WebSocket, streaming, and agent-communication owners through host-specific mounts | BEH-002, BEH-004, BEH-005 / REQ-002, REQ-004, REQ-005 / AC-003, AC-006, AC-010 |
+96:| UC-009 — Real resource and agent/team execution | Application backend resolves its configured/default execution resource and calls `context.agentExecution` | The same resolver, runtime, binding, event, notification, and artifact path executes in both hosts; missing required setup/runtime produces an explicit application availability/setup result | BEH-004 / REQ-004, REQ-006 / AC-005, AC-006 |
+97:| UC-010 — Storage preparation and migrations | Host ensures the selected/installed application backend is ready | Existing app/platform databases and application migrations are prepared under the host data root before worker use; package files remain immutable | BEH-003, BEH-007 / REQ-003, REQ-004, REQ-005 / AC-006, AC-012 |
+98:| UC-011 — Restart and recovery | Operator restarts Studio or standalone with its existing data root | Current bindings, known state, availability, and pending events recover through existing owners; standalone activates only the currently selected canonical application | BEH-007 / REQ-004, REQ-005 / AC-006, AC-012 |
+99:| UC-012 — Required readiness or worker failure | A named required startup dependency fails, or an active worker exits and a supported later request/reload exercises current recovery/ensure-ready behavior | Readiness never reports success prematurely; failures are explicit; existing engine/availability authority, not host adapters, owns worker state and retry/ensure-ready behavior | BEH-001, BEH-005, BEH-007 / REQ-004, REQ-005, REQ-006 / AC-003, AC-005, AC-006 |
+101:| UC-014 — Graceful process stop | Operator sends a normal process termination signal or the host closes | New ingress stops; timers, sockets, observers, workers, and streams close in the named order without creating terminal business events accidentally | BEH-005, BEH-007 / REQ-004, REQ-005 / AC-006, AC-010 |
+102:| UC-015 — Native application-folder development | Developer changes into the starter, Brief Studio, or Socratic project and runs `pnpm dev` or `pnpm dev:studio` | The devkit resolves that project's checked-in source/resource mapping, then `dev` builds a disposable package and runs/watch-restarts the real standalone composition while `dev:studio` builds/watches the real local-path package through the real Studio import/reload and iframe path; neither mode silently substitutes a mock or invokes a second custom package builder | BEH-006 / REQ-006 / AC-001, AC-005, AC-006, AC-011 |
+103:| UC-016 — Host-neutral application authoring | Developer implements an application or generates the starter and imports only application SDK/contracts | Source calls `startApplication`, contains no Studio/standalone branch or host/server import, and produces one package for both hosts | BEH-002, BEH-003, BEH-006 / REQ-001, REQ-002, REQ-003, REQ-006 / AC-001, AC-002, AC-007, AC-008, AC-011 |
+105:| UC-018 — Build, validate, and start standalone production | Developer/operator runs `pnpm build`, optionally confirms with `pnpm validate`, and then runs `pnpm start` from the application folder | `start` selects `dist/importable-package` plus the source manifest's explicit local application ID, validates the existing output, and delegates to the real standalone process/composition with a separate durable data root; it does not repack, watch, enable development reload, or invoke mock routes | BEH-001, BEH-003, BEH-005, BEH-006, BEH-007 / REQ-001, REQ-003, REQ-005, REQ-006 / AC-001, AC-004, AC-009, AC-010, AC-012, AC-013 |
+132:- **AC-005:** A real Brief Studio bundled team starts through `context.agentExecution` in both hosts with the same selected resource/launch semantics.
+133:- **AC-006:** Both hosts complete a real backend-state, migration, lifecycle-event, notification, and published-artifact journey without mock substitution.
+138:- **AC-011:** From the devkit starter, Brief Studio, and Socratic project roots, `pnpm dev` runs a real standalone development session and `pnpm dev:studio` runs a real Studio-connected development session. Brief and Socratic each check in a devkit config that maps `frontend-src`, `backend-src`, root `agent-teams`, frontend/backend entrypoints, migrations, all seven backend exposure flags, and `dist/importable-package` into the shared pack owner; their frontend icon is an input under `frontend-src`, and their application entry imports the frontend SDK package rather than a generated local vendor tree. Both commands watch the resolved application inputs and rebuild through the same pack/validation owners; standalone performs a graceful full-host restart after an atomic rebuild and browser reload, while Studio uses the current local-package import/reload and iframe-host path. Neither command has an implicit mock or custom-builder fallback.
+140:- **AC-013:** From the same project roots, `pnpm build` produces `dist/importable-package`, `pnpm validate` checks that output, and `pnpm start` launches the existing output through the real standalone process with the source manifest's explicit local application ID, loopback default, configurable separate durable data root, and graceful signal handling. For a new writable data root it may create only a missing empty/non-secret host `.env` required by current `AppConfig`, without overwriting an existing file. `start` fails when the build is absent/invalid and never rebuilds, watches, serves mock routes, mutates the package root, or persists credentials.
+168:- Related requirement and acceptance-criteria IDs: REQ-004, REQ-005 / AC-006, AC-012
+206:- AC-005: UC-002, UC-009, UC-012, UC-015
+207:- AC-006: UC-002, UC-003, UC-004, UC-007, UC-008, UC-009, UC-010, UC-011, UC-012, UC-014, UC-015
+212:- AC-011: UC-001, UC-015, UC-016
+214:- AC-013: UC-001, UC-004, UC-014, UC-018
+=== DOCUMENTED COMMAND SURFACE ===
+84-The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v4 SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
+85-
+86:## Develop in either real host
+87-
+88-```bash
+89:autobyteus-app dev
+90-```
+91-
+92-The default command builds a disposable package, starts the real selected-application standalone host, and rebuilds/restarts it when resolved application inputs change. No backend URL or application ID override is required.
+93-
+94-```bash
+95-autobyteus-app dev --host studio --studio-url http://127.0.0.1:8000
+96-```
+--
+98-Studio mode packs the configured output, imports or finds that exact local package through Studio's public API, and requests package reload after rebuild. Use Studio's explicit **Reload application** action to remount the current view.
+99-
+100:## Run an existing build standalone
+101-
+102-```bash
+103-pnpm build
+104:pnpm start
+105-```
+106-
+107-`start` validates `dist/importable-package` and runs it without rebuilding or watching. Mutable database, vault, logs, and application state live under `.autobyteus/standalone-data` by default; the package remains read-only.
+108-
+109-## Agent-published artifacts
+110-
+111-When an application agent needs to publish files back to the application, configure the agent with the canonical local tool name:
+=== DEV CLI ACCEPTED FLAGS ===
+import path from 'node:path';
+import { runStandaloneDevelopmentSession } from '../development/standalone-development-session.js';
+import { runStudioDevelopmentSession } from '../development/studio-development-session.js';
+import {
+  parseCommandOptions,
+  readBooleanFlag,
+  readPortFlag,
+  readStringFlag,
+} from './command-options.js';
+
+export const runDevCommand = async (args: string[]): Promise<void> => {
+  const options = parseCommandOptions(args);
+  const projectRoot = path.resolve(
+    readStringFlag(options, 'project-root') ?? process.cwd(),
+  );
+  const hostMode = readStringFlag(options, 'host') ?? 'standalone';
+  if (hostMode === 'studio') {
+    await runStudioDevelopmentSession({
+      projectRoot,
+      studioUrl: readStringFlag(options, 'studio-url') ?? 'http://127.0.0.1:8000',
+    });
+    return;
+  }
+  if (hostMode !== 'standalone') {
+    throw new Error("--host must be 'standalone' or 'studio'.");
+  }
+  await runStandaloneDevelopmentSession({
+    projectRoot,
+    host: readStringFlag(options, 'listen-host') ?? '127.0.0.1',
+    portOverride: readPortFlag(options, 'port'),
+    publicBaseUrl: readStringFlag(options, 'public-base-url'),
+    openBrowser: !readBooleanFlag(options, 'no-open'),
+  });
+};
+=== START CLI ACCEPTED FLAGS ===
+import path from 'node:path';
+import { startStandaloneApplicationHost } from 'autobyteus-server-ts';
+import { loadApplicationDevkitConfig } from '../config/load-application-devkit-config.js';
+import { readApplicationSourceManifest } from '../package/package-assembler.js';
+import { validateApplicationPackage } from '../validation/package-validator.js';
+import { formatValidationDiagnostics } from '../validation/validation-result.js';
+import { waitForDevelopmentShutdown } from '../development/development-process-lifetime.js';
+import {
+  parseCommandOptions,
+  readPortFlag,
+  readStringFlag,
+} from './command-options.js';
+
+export const runStartCommand = async (args: string[]): Promise<void> => {
+  const options = parseCommandOptions(args);
+  const projectRoot = path.resolve(
+    readStringFlag(options, 'project-root') ?? process.cwd(),
+  );
+  const config = await loadApplicationDevkitConfig(projectRoot);
+  const manifest = await readApplicationSourceManifest(projectRoot);
+  const packageRoot = path.resolve(
+    readStringFlag(options, 'package-root')
+    ?? path.join(projectRoot, config.config.output.packageRoot),
+  );
+  const validation = await validateApplicationPackage(packageRoot);
+  if (!validation.valid) {
+    throw new Error(
+      `The existing application build is invalid. Run pnpm build first.\n`
+      + formatValidationDiagnostics(validation),
+    );
+  }
+  const handle = await startStandaloneApplicationHost({
+    packageRoot,
+    localApplicationId: manifest.id,
+    appDataDir: path.resolve(
+      readStringFlag(options, 'data-dir')
+      ?? path.join(projectRoot, '.autobyteus', 'standalone-data'),
+    ),
+    host: readStringFlag(options, 'host'),
+    port: readPortFlag(options, 'port') ?? config.config.dev.port,
+    publicBaseUrl: readStringFlag(options, 'public-base-url'),
+  });
+  console.log(`Standalone application ready: ${handle.url}`);
+  await waitForDevelopmentShutdown(handle.close);
+};
+=== STANDALONE MOUNT SURFACE ===
+import fastify, { type FastifyInstance } from "fastify";
+import websocket from "@fastify/websocket";
+import type { LoggingConfig } from "../config/logging-config.js";
+import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
+import { registerHttpAccessLogPolicy } from "../logging/http-access-log-policy.js";
+import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js";
+import type { ApplicationPlatformRuntimeGraph } from "../application-platform/runtime/application-platform-runtime-graph.js";
+import type { StandaloneApplicationSelection } from "../standalone-application-host/domain/standalone-application-selection.js";
+import { registerStandaloneApplicationRest } from "../standalone-application-host/api/register-standalone-application-rest.js";
+import { registerStandaloneApplicationWebSockets } from "../standalone-application-host/api/register-standalone-application-websockets.js";
+import { registerStandaloneApplicationStaticRoutes } from "../standalone-application-host/api/standalone-application-static-routes.js";
+
+export const buildStandaloneApplicationServerComposition = async (input: {
+  selection: StandaloneApplicationSelection;
+  graph: ApplicationPlatformRuntimeGraph;
+  loggingConfig: LoggingConfig;
+}): Promise<FastifyInstance> => {
+  const app = fastify({
+    logger: getFastifyLoggerOptions(input.loggingConfig),
+    disableRequestLogging: true,
+    maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+  });
+  registerHttpAccessLogPolicy(app, {
+    mode: input.loggingConfig.httpAccessLogMode,
+    includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
+  });
+  await app.register(websocket);
+  await registerStandaloneApplicationRest(app, {
+    selection: input.selection,
+    lifecycle: input.graph.lifecycle,
+    gateway: input.graph.backendGateway,
+  });
+  await registerStandaloneApplicationWebSockets(app, {
+    selection: input.selection,
+    lifecycle: input.graph.lifecycle,
+    gateway: input.graph.backendGateway,
+    notificationHub: input.graph.notificationHub,
+    agentCommunicationService: input.graph.agentCommunicationService,
+  });
+  await registerStandaloneApplicationStaticRoutes(app, input.selection);
+  app.addHook("onClose", async () => input.graph.lifecycle.stop());
+  return app;
+};
+=== BRIEF DECLARED HOST-MANAGED DEFAULTS ===
+87-          <div>
+88-            <h2>Create a brief</h2>
+89-            <p class="muted">
+90-              Start the workflow with the business record. Execution resource, model, workspace, and tool-execution
+91:              defaults come from the host-managed application launch setup.
+92-            </p>
+93-          </div>
+94-        </div>
+95-        <form id="create-brief-form" class="brief-composer">
+96-          <div class="composer-grid">
+=== REQUIRED MODEL GUARD ===
+  ): Promise<{
+    agentDefinitionId: string;
+    runtimeKind: RuntimeKind;
+    workspaceId: string | null;
+    workspaceRootPath: string;
+    llmModelIdentifier: string;
+    autoExecuteTools: boolean;
+    llmConfig: Record<string, unknown> | null;
+    skillAccessMode: SkillAccessMode;
+    applicationExecutionContext: ApplicationExecutionContext | null;
+  }> {
+    if (!hasNonEmptyString(input.agentDefinitionId)) {
+      throw new Error(`agentDefinitionId is required when ${action} a run.`);
+    }
+    if (!hasNonEmptyString(input.workspaceRootPath)) {
+      throw new Error(`workspaceRootPath is required when ${action} a run.`);
+    }
+    if (!hasNonEmptyString(input.llmModelIdentifier)) {
+      throw new Error(`llmModelIdentifier is required when ${action} a run.`);
+    }
+    if (!hasNonEmptyString(input.runtimeKind)) {
+      throw new Error(`runtimeKind is required when ${action} a run.`);
+    }
+
+    const workspaceRootPath = canonicalizeWorkspaceRootPath(input.workspaceRootPath.trim());
+    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
+    const runtimeKind = runtimeKindFromString(input.runtimeKind);
+    if (!runtimeKind) {
+      throw new Error(`runtimeKind '${input.runtimeKind}' is not supported.`);
+    }
+

@@ -13,7 +13,11 @@ import {
   listTeamLocalAgentDefinitions,
   readTeamLocalAgentFromSourcePaths,
 } from "./team-local-agent-discovery.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
+import type { AppConfig } from "../../config/app-config.js";
 import {
   parseCanonicalApplicationOwnedAgentId,
 } from "../../application-bundles/utils/application-bundle-identity.js";
@@ -53,10 +57,24 @@ const slugify = (value: string): string => {
 };
 
 export class FileAgentDefinitionProvider {
-  private readonly applicationBundleService = ApplicationBundleService.getInstance();
+  constructor(
+    private readonly dependencies: {
+      appConfig?: AppConfig;
+      applicationBundleService?: ApplicationBundleService;
+    } = {},
+  ) {}
+
+  private get applicationBundleService(): ApplicationBundleService {
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
+  }
+
+  private get appConfig(): AppConfig {
+    return this.dependencies.appConfig ?? appConfigProvider.config;
+  }
 
   private getAgentsDir(): string {
-    return appConfigProvider.config.getAgentsDir();
+    return this.appConfig.getAgentsDir();
   }
 
   private getAgentDir(agentId: string): string {
@@ -65,15 +83,15 @@ export class FileAgentDefinitionProvider {
 
   private getReadAgentRoots(): string[] {
     const roots = [this.getAgentsDir()];
-    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
+    for (const sourceRoot of this.appConfig.getAdditionalAgentPackageRoots()) {
       roots.push(path.join(sourceRoot, "agents"));
     }
     return roots;
   }
 
   private getReadTeamRoots(): string[] {
-    const roots = [appConfigProvider.config.getAgentTeamsDir()];
-    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
+    const roots = [this.appConfig.getAgentTeamsDir()];
+    for (const sourceRoot of this.appConfig.getAdditionalAgentPackageRoots()) {
       roots.push(path.join(sourceRoot, "agent-teams"));
     }
     return roots;
@@ -214,10 +232,10 @@ export class FileAgentDefinitionProvider {
       },
       domainObj.instructions,
     );
-    await writeRawFile(appConfigProvider.config.getAgentMdPath(agentId), mdContent);
+    await writeRawFile(this.appConfig.getAgentMdPath(agentId), mdContent);
 
     await writeJsonFile(
-      appConfigProvider.config.getAgentConfigPath(agentId),
+      this.appConfig.getAgentConfigPath(agentId),
       buildAgentConfigRecord(domainObj),
     );
 

@@ -1,0 +1,133 @@
+$ NUXT_TEST=true pnpm -C autobyteus-web exec vitest run controlled workspace/provider selection
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/useRuntimeScopedModelSelection.spec.ts [ composables/__tests__/useRuntimeScopedModelSelection.spec.ts ]
+ FAIL  tests/stores/llmProviderConfigStore.test.ts [ tests/stores/llmProviderConfigStore.test.ts ]
+ FAIL  components/workspace/config/__tests__/AgentRunConfigForm.spec.ts [ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts ]
+ FAIL  components/workspace/config/__tests__/MemberOverrideItem.spec.ts [ components/workspace/config/__tests__/MemberOverrideItem.spec.ts ]
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts [ components/workspace/config/__tests__/RunConfigPanel.spec.ts ]
+ FAIL  components/workspace/config/__tests__/TeamRunConfigForm.spec.ts [ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts ]
+ FAIL  components/workspace/config/__tests__/WorkspaceSelector.spec.ts [ components/workspace/config/__tests__/WorkspaceSelector.spec.ts ]
+TSConfckParseError: failed to resolve "extends":"./.nuxt/tsconfig.json" in /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/tsconfig.json
+  Plugin: vite:esbuild
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/tests/setup/websocket.ts
+ ❯ resolveExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5809:8
+ ❯ parseExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5775:71
+ ❯ parse$13 ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5677:23
+ ❯ loadTsconfigJsonForFile ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6286:37
+ ❯ transformWithEsbuild ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6086:55
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6172:20
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+Caused by: Error: Cannot find module './.nuxt/tsconfig.json'
+Require stack:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/tsconfig.json
+ ❯ resolveExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5800:16
+ ❯ parseExtends ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5775:71
+ ❯ parse$13 ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:5677:23
+ ❯ loadTsconfigJsonForFile ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6286:37
+ ❯ transformWithEsbuild ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6086:55
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:6172:20
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+
+ Test Files  7 failed (7)
+      Tests  no tests
+   Start at  12:46:20
+   Duration  796ms (transform 51ms, setup 0ms, collect 0ms, tests 0ms, environment 2.30s, prepare 1.40s)
+
+\n$ pnpm -C autobyteus-web exec nuxi prepare
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+\n$ NUXT_TEST=true pnpm -C autobyteus-web exec vitest run controlled workspace/provider selection (after canonical prepare)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/llmProviderConfigStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/llmProviderConfigStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useRuntimeScopedModelSelection.spec.ts (4 tests) 6ms
+ ✓ tests/stores/llmProviderConfigStore.test.ts (12 tests) 23ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (19 tests) 78ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 109ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 137ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (26 tests) 119ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (13 tests) 116ms
+
+ Test Files  7 passed (7)
+      Tests  100 passed (100)
+   Start at  12:46:34
+   Duration  6.99s (transform 3.84s, setup 39.61s, collect 1.74s, tests 589ms, environment 2.20s, prepare 1.26s)
+

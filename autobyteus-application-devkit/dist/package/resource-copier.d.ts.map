@@ -1,1 +1,0 @@
-{"version":3,"file":"resource-copier.d.ts","sourceRoot":"","sources":["../../src/package/resource-copier.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,+BAA+B,EAAE,MAAM,uCAAuC,CAAC;AAqB7F,eAAO,MAAM,wBAAwB,GAAU,OAAO;IACpD,KAAK,EAAE,+BAA+B,CAAC;CACxC,KAAG,OAAO,CAAC;IAAE,aAAa,EAAE,OAAO,CAAC;IAAC,SAAS,EAAE,OAAO,CAAA;CAAE,CAYzD,CAAC"}

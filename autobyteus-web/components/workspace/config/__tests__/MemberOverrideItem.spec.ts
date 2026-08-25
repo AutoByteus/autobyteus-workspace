@@ -130,6 +130,7 @@ describe('MemberOverrideItem', () => {
     setActivePinia(createPinia())
     llmStore = {
       providersWithModels: [],
+      providerSnapshots: vi.fn(() => []),
       providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []

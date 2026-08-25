@@ -1,0 +1,9 @@
+API-REV-006 packaged Electron harness preflight
+Initial Playwright launch: failed before PID because the current test-runner shell exported ELECTRON_RUN_AS_NODE.
+Focused direct executable probe: entered the Node REPL, confirming harness-environment origin; no application process or data was created.
+Correction: temporary API-REV-006 harness removes ELECTRON_RUN_AS_NODE from the child Electron environment before the supported launch adapter runs.
+Repository source/durable coverage changes: none.
+Owned direct probe exited cleanly; discovery and classroom ports were free before retry.
+First isolated discovery retry: packaged app/server/renderer started successfully, but the inherited test-runner AUTOBYTEUS_AGENT_PACKAGE_ROOTS preloaded the external package; the real UI correctly rejected a duplicate import.
+Correction: temporary harness strips test-runner AUTOBYTEUS_* and DATABASE_URL overrides before the supported E2E launcher injects its authorized root/port. This preserves the requested clean UI import and isolated DB contract.
+First root had no credentials imported or business run. Owned processes stopped gracefully and its port was free before the root was removed.

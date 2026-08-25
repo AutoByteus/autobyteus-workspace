@@ -1,0 +1,6 @@
+utc=2026-08-23T06:15:31Z
+port_8027=free
+owned_children_after:
+44575 44554 node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/node_modules/.bin/../@autobyteus/application-devkit/dist/cli.js dev --host studio -- --studio-url http://127.0.0.1:8027
+44589 44555 node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher/node_modules/.bin/../@autobyteus/application-devkit/dist/cli.js dev --host studio -- --studio-url http://127.0.0.1:8027
+PASS backend stopped and no owned application worker remains

@@ -1,8 +1,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RunHistoryIndexV2AppDataMigration } from "../../../src/app-data-migrations/migrations/run-history-index-v2-migration.js";
+import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 
 let memoryDir: string;
 
@@ -38,6 +39,7 @@ describe("RunHistoryIndexV2AppDataMigration", () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
@@ -194,6 +196,26 @@ describe("RunHistoryIndexV2AppDataMigration", () => {
         runId: "run-good",
         workspaceRootPath: "/workspace/good",
       },
+    ]);
+  });
+
+  it("uses persistence-only label lookup without claiming the process definition service", async () => {
+    const getProcessDefinitionService = vi.spyOn(AgentDefinitionService, "getInstance");
+    await writeMetadata("run-persistence-label", {
+      agentDefinitionId: "missing-agent-definition",
+      workspaceRootPath: "/workspace/persistence-label",
+      preparedAt: "2026-03-27T10:00:00.000Z",
+    });
+
+    const result = await new RunHistoryIndexV2AppDataMigration(memoryDir).execute();
+
+    expect(result.status).toBe("SUCCEEDED");
+    expect(getProcessDefinitionService).not.toHaveBeenCalled();
+    await expect(readIndex()).resolves.toEqual([
+      expect.objectContaining({
+        agentDefinitionId: "missing-agent-definition",
+        agentName: "missing-agent-definition",
+      }),
     ]);
   });
 });

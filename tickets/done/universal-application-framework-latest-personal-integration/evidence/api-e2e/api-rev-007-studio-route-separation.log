@@ -1,0 +1,23 @@
+## Studio internal Agent Tools fake session
+2026-08-23T06:10:52Z
+HTTP/1.1 401 Unauthorized
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Sun, 23 Aug 2026 06:10:52 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}
+## Studio external gateway initialize
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 193
+Date: Sun, 23 Aug 2026 06:10:52 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}
+## Assert
+PASS: internal fake session is 401 and Studio external gateway initialize is 200

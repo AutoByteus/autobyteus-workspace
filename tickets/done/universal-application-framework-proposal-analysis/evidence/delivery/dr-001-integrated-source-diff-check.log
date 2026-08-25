@@ -1,0 +1,3 @@
+# DR-001 integrated source/package hygiene
+command=git diff --check origin/personal...HEAD excluding retained raw evidence and source snapshot
+result=Pass

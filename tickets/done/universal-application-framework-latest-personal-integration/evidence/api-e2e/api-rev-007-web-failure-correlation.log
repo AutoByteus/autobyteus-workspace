@@ -1,0 +1,425 @@
+=== current paths changed from checkpoint parent ===
+=== versus Personal parent ===
+M	autobyteus-web/localization/messages/en/applications.ts
+M	autobyteus-web/localization/messages/zh-CN/applications.ts
+=== focused interrupt test ===
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { nextTick, reactive } from 'vue';
+import AgentUserInputTextArea from '../AgentUserInputTextArea.vue';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+
+const {
+  mockWsConnect,
+  mockWsDisconnect,
+  mockWsOn,
+  mockWsOff,
+  mockWsSend,
+} = vi.hoisted(() => ({
+  mockWsConnect: vi.fn(),
+  mockWsDisconnect: vi.fn(),
+  mockWsOn: vi.fn(),
+  mockWsOff: vi.fn(),
+  mockWsSend: vi.fn(),
+}));
+
+vi.mock('~/services/agentStreaming/transport', () => ({
+  ConnectionState: {
+    DISCONNECTED: 'disconnected',
+    CONNECTING: 'connecting',
+    CONNECTED: 'connected',
+    DISCONNECTING: 'disconnecting',
+    RECONNECTING: 'reconnecting',
+  },
+  WebSocketClient: vi.fn().mockImplementation(() => ({
+    get state() {
+      return 'connected';
+    },
+    connect: mockWsConnect,
+    disconnect: mockWsDisconnect,
+    on: mockWsOn,
+    off: mockWsOff,
+    send: mockWsSend,
+  })),
+}));
+
+vi.mock('~/services/agentStreaming/browser/browserToolExecutionSucceededHandler', () => ({
+  handleBrowserToolExecutionSucceeded: vi.fn(),
+}));
+
+vi.mock('~/stores/teamCommunicationStore', () => ({
+  useTeamCommunicationStore: () => ({
+    upsertFromBackendPayload: vi.fn(),
+  }),
+}));
+
+const voiceInputStoreMock = reactive({
+  isAvailable: false,
+  isRecording: false,
+  isTranscribing: false,
+  initialize: vi.fn().mockResolvedValue(undefined),
+  cleanup: vi.fn().mockResolvedValue(undefined),
+  toggleRecording: vi.fn().mockResolvedValue(undefined),
+});
+
+vi.mock('~/stores/voiceInputStore', () => ({
+  useVoiceInputStore: () => voiceInputStoreMock,
+}));
+
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => ({
+    isEmbeddedWindow: true,
+    getBoundEndpoints: () => ({
+      teamWs: 'ws://node-a.example/ws/agent-team',
+    }),
+  }),
+}));
+
+vi.mock('~/stores/contextFileUploadStore', () => ({
+  useContextFileUploadStore: () => ({
+    isUploading: false,
+  }),
+}));
+
+vi.mock('~/stores/workspace', () => ({
+  useWorkspaceStore: () => ({
+    activeWorkspace: { absolutePath: '/tmp/workspace' },
+    allWorkspaces: [],
+    workspaces: {},
+  }),
+}));
+
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => ({ showChat: vi.fn() }),
+}));
+
+vi.mock('@iconify/vue', () => ({
+  Icon: {
+    props: ['icon'],
+    template: '<span :data-icon="icon" />',
+  },
+}));
+
+const createAgentContext = (routeKey: string): AgentContext => {
+  const runId = `team-1::${routeKey}`;
+  const config: AgentRunConfig = {
+    agentDefinitionId: `def-${routeKey}`,
+    agentDefinitionName: routeKey,
+    llmModelIdentifier: 'model-x',
+    runtimeKind: 'codex_app_server',
+    workspaceId: null,
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+    llmConfig: null,
+    isLocked: false,
+  } as AgentRunConfig;
+  const conversation = {
+    id: runId,
+    messages: [],
+    createdAt: '2026-05-16T00:00:00.000Z',
+    updatedAt: '2026-05-16T00:00:00.000Z',
+    agentDefinitionId: config.agentDefinitionId,
+  } as any;
+  const context = new AgentContext(config, new AgentRunState(runId, conversation));
+  context.state.currentStatus = AgentStatus.Running;
+  return context;
+};
+
+const buildTeamContext = (
+  members: Array<[string, AgentContext]>,
+  focusedAgentRunId: string,
+) => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  rootChildren: members.map(([memberAddress, context]) => testAgentNode(
+    memberAddress.startsWith('/') ? memberAddress : `/${memberAddress}`,
+    { agentRunId: context.state.runId, currentStatus: context.state.currentStatus },
+  )),
+  contexts: members.map(([, context]) => ({ agentRunId: context.state.runId, context })),
+  focusedAgentRunId,
+  isActive: true,
+});
+
+describe('focused team member interrupt UI-to-WebSocket e2e', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+    voiceInputStoreMock.isAvailable = false;
+    voiceInputStoreMock.isRecording = false;
+    voiceInputStoreMock.isTranscribing = false;
+  });
+
+  it('clicking stop after switching focus sends the WebSocket interrupt to the visible focused member', async () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const teamRunStore = useAgentTeamRunStore();
+    const activeContextStore = useActiveContextStore();
+
+    const solutionDesigner = createAgentContext('solution_designer');
+    const codeReviewer = createAgentContext('code_reviewer');
+
+    teamContextsStore.addTeamContext(buildTeamContext([
+      ['solution_designer', solutionDesigner],
+      ['code_reviewer', codeReviewer],
+    ], solutionDesigner.state.runId));
+    selectionStore.selectRun('team-1', 'team');
+    teamRunStore.connectToTeamStream('team-1');
+
+    const wrapper = mount(AgentUserInputTextArea, {
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
+    });
+    await nextTick();
+
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
+
+    teamContextsStore.focusMember('team-1', codeReviewer.state.runId);
+    await nextTick();
+
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::code_reviewer');
+
+    await wrapper.get('button[title="Stop generation"]').trigger('click');
+
+    expect(mockWsSend).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
+      type: 'INTERRUPT_GENERATION',
+      payload: {
+        command_id: expect.stringMatching(/^client_interrupt_/),
+        agent_run_id: 'team-1::code_reviewer',
+      },
+    });
+  });
+});
+=== historical test mock setup ===
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { defineComponent, nextTick } from 'vue';
+import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import TeamWorkspaceView from '../../team/TeamWorkspaceView.vue';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+
+const flushPromises = async () => {
+  await Promise.resolve();
+  await nextTick();
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
+  await nextTick();
+};
+
+const agentMetadata = (address: string, agentRunId: string, agentDefinitionId: string) => ({
+  kind: 'agent' as const,
+  address,
+  role: null,
+  description: null,
+  agentRunId,
+  runtimeKind: 'autobyteus',
+  platformAgentRunId: null,
+  agentDefinitionId,
+  llmModelIdentifier: 'model-x',
+  autoExecuteTools: false,
+  skillAccessMode: 'PRELOADED_ONLY',
+  llmConfig: null,
+  workspaceRootPath: '/ws/a',
+  applicationExecutionContext: null,
+});
+
+const buildRootMetadata = () => ({
+  kind: 'agent_team' as const,
+  address: '/',
+  teamDefinitionId: 'team-def-1',
+  teamRunId: 'team-1',
+  coordinatorAddress: '/solution_designer',
+  children: [
+    agentMetadata('/solution_designer', 'member-run-sd', 'agent-sd'),
+    agentMetadata('/architect_reviewer', 'member-run-ar', 'agent-ar'),
+    agentMetadata('/code_reviewer', 'member-run-cr', 'agent-cr'),
+  ],
+});
+
+const buildCurrentExecutionTree = () => buildTestTeamContext({
+  teamRunId: 'team-1',
+  teamDefinitionId: 'team-def-1',
+  teamDefinitionName: 'Software Engineering Team',
+  coordinatorAddress: '/solution_designer',
+  rootChildren: [
+    testAgentNode('/solution_designer', { agentRunId: 'member-run-sd', agentDefinitionId: 'agent-sd', workspaceRootPath: '/ws/a' }),
+    testAgentNode('/architect_reviewer', { agentRunId: 'member-run-ar', agentDefinitionId: 'agent-ar', workspaceRootPath: '/ws/a' }),
+    testAgentNode('/code_reviewer', { agentRunId: 'member-run-cr', agentDefinitionId: 'agent-cr', workspaceRootPath: '/ws/a' }),
+  ],
+  isActive: false,
+}).view.getExecutionTree();
+
+const buildWorkspaceHistoryResponse = () => ({
+  listWorkspaceRunHistory: [{
+    workspaceRootPath: '/ws/a',
+    workspaceName: 'autobyteus-workspace-superrepo',
+    agentDefinitions: [],
+    teamDefinitions: [{
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Software Engineering Team',
+      runs: [{
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Software Engineering Team',
+        coordinatorAddress: '/solution_designer',
+        workspaceRootPath: '/ws/a',
+        summary: 'Build the demo fruit shop website',
+        createdAt: '2026-01-01T00:05:00.000Z',
+        isActive: false,
+        rootTeam: buildCurrentExecutionTree().root_team,
+        members: [
+          { memberAddress: '/solution_designer', displayName: 'solution_designer', agentRunId: 'member-run-sd', status: 'idle', workspaceRootPath: '/ws/a' },
+          { memberAddress: '/architect_reviewer', displayName: 'architect_reviewer', agentRunId: 'member-run-ar', status: 'idle', workspaceRootPath: '/ws/a' },
+          { memberAddress: '/code_reviewer', displayName: 'code_reviewer', agentRunId: 'member-run-cr', status: 'idle', workspaceRootPath: '/ws/a' },
+        ],
+      }],
+    }],
+  }],
+});
+
+const buildTeamResumeConfigResponse = () => ({
+  getTeamRunResumeConfig: {
+    teamRunId: 'team-1',
+    isActive: false,
+    executionTree: buildCurrentExecutionTree(),
+  },
+});
+
+const runIdByAddress: Record<string, string> = {
+  '/solution_designer': 'member-run-sd',
+  '/architect_reviewer': 'member-run-ar',
+  '/code_reviewer': 'member-run-cr',
+};
+
+const addressByRunId = Object.fromEntries(Object.entries(runIdByAddress).map(([address, runId]) => [runId, address]));
+
+const buildProjectionResponse = (agentRunId: string) => {
+  const memberAddress = addressByRunId[agentRunId] ?? '/unknown';
+  return ({
+  getTeamMemberRunProjection: {
+    agentRunId,
+    summary: `${memberAddress.slice(1)} summary`,
+    lastActivityAt: '2026-01-01T00:05:00.000Z',
+    hasEarlierActiveTraceEvents: false,
+    conversation: [
+      { kind: 'message', role: 'user', content: `hello from ${memberAddress}`, ts: 1700000000 },
+      { kind: 'message', role: 'assistant', content: `reply from ${memberAddress}`, ts: 1700000010 },
+    ],
+    activities: [],
+  },
+  });
+};
+
+const {
+  queryMock,
+  mutateMock,
+  workspaceStoreMock,
+  windowNodeContextStoreMock,
+  agentDefinitionStoreMock,
+  agentTeamDefinitionStoreMock,
+  agentContextsStoreMock,
+  agentRunConfigStoreMock,
+  teamRunConfigStoreMock,
+  agentRunStoreMock,
+  agentTeamRunStoreMock,
+  llmProviderConfigStoreMock,
+  workspaceCenterViewStoreMock,
+  addToastMock,
+} = vi.hoisted(() => ({
+  queryMock: vi.fn(),
+  mutateMock: vi.fn(),
+  workspaceStoreMock: {
+    workspacesFetched: true,
+    allWorkspaces: [
+      {
+        workspaceId: 'ws-1',
+        absolutePath: '/ws/a',
+        workspaceConfig: { root_path: '/ws/a' },
+        name: 'autobyteus-workspace-superrepo',
+      },
+    ],
+    workspaces: {
+      'ws-1': {
+        absolutePath: '/ws/a',
+        workspaceConfig: { root_path: '/ws/a' },
+      },
+    } as Record<string, any>,
+    fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
+    createWorkspace: vi.fn().mockResolvedValue('ws-1'),
+  },
+  windowNodeContextStoreMock: {
+    waitForBoundBackendReady: vi.fn().mockResolvedValue(true),
+    lastReadyError: { __v_isRef: true, value: null as string | null },
+    isEmbeddedWindow: { __v_isRef: true, value: false },
+  },
+  agentDefinitionStoreMock: {
+    agentDefinitions: [
+      { id: 'agent-sd', name: 'Solution Designer', avatarUrl: 'https://example.com/sd.png' },
+      { id: 'agent-ar', name: 'Architect Reviewer', avatarUrl: 'https://example.com/ar.png' },
+      { id: 'agent-cr', name: 'Code Reviewer', avatarUrl: 'https://example.com/cr.png' },
+    ],
+    fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
+    getAgentDefinitionById: vi.fn((id: string) => {
+      const all = [
+        { id: 'agent-sd', name: 'Solution Designer', avatarUrl: 'https://example.com/sd.png' },
+        { id: 'agent-ar', name: 'Architect Reviewer', avatarUrl: 'https://example.com/ar.png' },
+        { id: 'agent-cr', name: 'Code Reviewer', avatarUrl: 'https://example.com/cr.png' },
+      ];
+      return all.find((agent) => agent.id === id) ?? null;
+    }),
+  },
+  agentTeamDefinitionStoreMock: {
+    agentTeamDefinitions: [
+      {
+        id: 'team-def-1',
+        name: 'Software Engineering Team',
+        avatarUrl: 'https://example.com/team.png',
+      },
+    ],
+    fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
+  },
+  agentContextsStoreMock: {
+    runs: new Map<string, any>(),
+    getRun: vi.fn().mockReturnValue(undefined),
+  },
+  agentRunConfigStoreMock: {
+    clearConfig: vi.fn(),
+    setTemplate: vi.fn(),
+    setAgentConfig: vi.fn(),
+    updateAgentConfig: vi.fn(),
+  },
+  teamRunConfigStoreMock: {
+    clearConfig: vi.fn(),
+    setConfig: vi.fn(),
+    selectDraft: vi.fn(),
+  },
+  agentRunStoreMock: {
+    terminateRun: vi.fn().mockResolvedValue(true),
+    closeAgent: vi.fn().mockResolvedValue(undefined),
+    connectToAgentStream: vi.fn(),
+    disconnectAgentStream: vi.fn(),
+  },
+  agentTeamRunStoreMock: {
+    terminateTeamRun: vi.fn().mockResolvedValue(undefined),
+    connectToTeamStream: vi.fn(),
+    disconnectTeamStream: vi.fn(),
+  },
+  llmProviderConfigStoreMock: {
+    models: ['model-x'],
+    fetchProvidersWithModels: vi.fn().mockResolvedValue(undefined),
+  },

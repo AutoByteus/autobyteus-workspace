@@ -1,0 +1,187 @@
+# API-REV-006 source correlation (read-only)
+HEAD 5f37408b5b4b7460ef202a6549a72b62b13854dd
+## application graph constructs AgentRunManager without codexBackendFactory
+    26	export const createApplicationRunAuthorities = (input: {
+    27	  appConfig: AppConfig;
+    28	  bindingStore: ApplicationRunBindingStore;
+    29	  deferredEnginePort: DeferredApplicationEngineEventHandlerPort;
+    30	  agentDefinitionService: AgentDefinitionService;
+    31	  agentTeamDefinitionService: AgentTeamDefinitionService;
+    32	}) => {
+    33	  const memoryDir = input.appConfig.getMemoryDir();
+    34	  const memoryLocationService = new AgentMemoryLocationService({ memoryDir });
+    35	  const runFileChangeService = new RunFileChangeService({
+    36	    memoryDir,
+    37	    memoryLocationService,
+    38	  });
+    39	  const artifactRelay = new ApplicationPublishedArtifactRelayService({
+    40	    bindingStore: input.bindingStore,
+    41	    engineHostService: input.deferredEnginePort as never,
+    42	  });
+    43	  const memberTeamContextBuilder = new MemberTeamContextBuilder(
+    44	    input.agentTeamDefinitionService,
+    45	  );
+    46	  const agentRunManager = new AgentRunManager({
+    47	    autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
+    48	      agentDefinitionService: input.agentDefinitionService,
+    49	    }),
+    50	    publishedArtifactRelayService: artifactRelay,
+    51	    runFileChangeService,
+    52	    memoryRecorder: new AgentRunMemoryRecorder(),
+    53	  });
+    54	  const agentTeamRunManager = new AgentTeamRunManager({
+    55	    mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+    56	      memberTeamContextBuilder,
+    57	      createTeamManager: (context, subTeamRunFactory) =>
+    58	        new MixedTeamManager(context, {
+    59	          subTeamRunFactory,
+    60	          agentRunManager,
+    61	          memberTeamContextBuilder,
+    62	        }),
+    63	    }),
+    64	    teamCommunicationService: new TeamCommunicationService({ memoryDir }),
+    65	    runFileChangeService,
+    66	  });
+    67	  const agentRunMetadataService = new AgentRunMetadataService(memoryDir);
+    68	  const teamRunMetadataService = new TeamRunMetadataService(memoryDir);
+    69	  const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
+    70	    agentDefinitionService: input.agentDefinitionService,
+    71	    agentRunManager,
+    72	    agentRunMetadataService,
+    73	    teamRunMetadataService,
+    74	    memoryDir,
+    75	  });
+    76	  const agentRunService = new AgentRunService(memoryDir, {
+    77	    agentRunManager,
+    78	    metadataService: agentRunMetadataService,
+    79	    agentRunIdentityAllocator,
+    80	  });
+## omitted manager option falls back to process-global Codex factory
+    48	  }
+    49	  return normalized;
+    50	};
+    51	
+    52	type AgentRunManagerOptions = {
+    53	  autoByteusBackendFactory?: AgentRunBackendFactory;
+    54	  codexBackendFactory?: AgentRunBackendFactory;
+    55	  claudeBackendFactory?: AgentRunBackendFactory;
+    56	  runFileChangeService?: RunFileChangeService;
+    57	  publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
+    58	  memoryRecorder?: AgentRunMemoryRecorder;
+    59	};
+    60	
+    61	export class AgentRunManager {
+    62	  private static instance: AgentRunManager | null = null;
+    63	  private readonly autoByteusBackendFactory: AgentRunBackendFactory;
+    64	  private readonly codexBackendFactory: AgentRunBackendFactory;
+    65	  private readonly claudeBackendFactory: AgentRunBackendFactory;
+    66	  private readonly runFileChangeService: RunFileChangeService;
+    67	  private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
+    68	  private readonly memoryRecorder: AgentRunMemoryRecorder;
+    69	  private activeRuns = new Map<string, AgentRun>();
+    70	  private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
+    71	  private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
+    72	  private readonly memoryRecorderUnsubscribers = new Map<string, () => void>();
+    73	
+    74	  static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
+    75	    if (!AgentRunManager.instance) {
+    76	      AgentRunManager.instance = new AgentRunManager(options);
+    77	    }
+    78	    return AgentRunManager.instance;
+    79	  }
+    80	
+    81	  constructor(options: AgentRunManagerOptions = {}) {
+    82	    this.autoByteusBackendFactory =
+    83	      options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    84	    this.codexBackendFactory =
+    85	      options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    86	    this.claudeBackendFactory =
+    87	      options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    88	    this.runFileChangeService =
+    89	      options.runFileChangeService ?? getRunFileChangeService();
+    90	    this.publishedArtifactRelayService =
+## default Codex factory uses global bootstrapper
+    18	
+    19	export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
+    20	  private readonly threadManager: CodexThreadManager;
+    21	  private readonly threadBootstrapper: CodexThreadBootstrapper;
+    22	  private readonly threadCleanup: CodexThreadCleanup;
+    23	  constructor(
+    24	    threadManager: CodexThreadManager = getCodexThreadManager(),
+    25	    threadBootstrapper: CodexThreadBootstrapper = getCodexThreadBootstrapper(),
+    26	    threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
+    27	  ) {
+    28	    this.threadManager = threadManager;
+    29	    this.threadBootstrapper = threadBootstrapper;
+    30	    this.threadCleanup = threadCleanup;
+    31	  }
+    32	
+    81	let cachedCodexAgentRunBackendFactory: CodexAgentRunBackendFactory | null = null;
+    82	
+    83	export const getCodexAgentRunBackendFactory = (): CodexAgentRunBackendFactory => {
+    84	  if (!cachedCodexAgentRunBackendFactory) {
+    85	    cachedCodexAgentRunBackendFactory = new CodexAgentRunBackendFactory();
+    86	  }
+    87	  return cachedCodexAgentRunBackendFactory;
+    88	};
+## default bootstrapper uses process-global AgentDefinitionService
+   176	};
+   177	
+   178	export class CodexThreadBootstrapper {
+   179	  private readonly workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer;
+   180	  private readonly workspaceResolver: CodexWorkspaceResolver;
+   181	  private readonly agentDefinitionService: AgentDefinitionService;
+   182	  private readonly skillService: SkillService;
+   183	  private readonly defaultBootstrapStrategy: CodexThreadBootstrapStrategy;
+   184	  private readonly teamBootstrapStrategy: CodexThreadBootstrapStrategy;
+   185	  private readonly clientManager: CodexAppServerClientManager;
+   186	  private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
+   187	
+   188	  constructor(
+   189	    workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
+   190	    workspaceResolver: CodexWorkspaceResolver = getCodexWorkspaceResolver(),
+   191	    agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
+   192	    skillService: SkillService = SkillService.getInstance(),
+   193	    defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
+   194	    teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamMemberCodexThreadBootstrapStrategy(),
+   195	    clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
+   196	    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
+   197	  ) {
+   198	    this.workspaceSkillMaterializer = workspaceSkillMaterializer;
+   199	    this.workspaceResolver = workspaceResolver;
+   200	    this.agentDefinitionService = agentDefinitionService;
+   201	    this.skillService = skillService;
+   202	    this.defaultBootstrapStrategy = defaultBootstrapStrategy;
+   203	    this.teamBootstrapStrategy = teamBootstrapStrategy;
+   204	    this.clientManager = clientManager;
+   205	    this.agentToolMcpSessionService = agentToolMcpSessionService;
+   206	  }
+   207	
+   208	  async bootstrapForCreate(
+   209	    runContext: AgentRunContext<null>,
+   210	  ): Promise<CodexRunContext> {
+   211	    return this.bootstrapInternal(runContext, null);
+   212	  }
+   213	
+   214	  async bootstrapForRestore(
+   215	    runContext: AgentRunContext<CodexAgentRunContext>,
+   216	  ): Promise<CodexRunContext> {
+   217	    return this.bootstrapInternal(runContext, runContext.runtimeContext);
+   218	  }
+   219	
+   220	  private async bootstrapInternal(
+   221	    runContext: AgentRunContext<CodexAgentRunContext | null>,
+   222	    existingRuntimeContext: CodexAgentRunContext | null,
+   223	  ): Promise<CodexRunContext> {
+   224	    const workingDirectory = await this.workspaceResolver.resolveWorkingDirectory(
+   225	      runContext.config.workspaceId,
+   226	    );
+   227	    const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
+   228	      runContext.config.agentDefinitionId,
+   229	    );
+   230	    const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
+   231	    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
+   232	    const skillAccessMode = resolveSkillAccessMode(
+   233	      runContext.config.skillAccessMode ?? null,
+   234	      configuredSkills.length,
+   235	    );

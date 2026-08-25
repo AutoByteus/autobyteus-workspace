@@ -50,6 +50,7 @@ describe('AgentRunConfigForm', () => {
 
     llmStore = {
       providerRows: [],
+      providerSnapshots: vi.fn(() => []),
       providersWithModelsForSelection: vi.fn(() =>
         llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
       ),

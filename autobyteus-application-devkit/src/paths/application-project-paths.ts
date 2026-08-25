@@ -15,6 +15,7 @@ export type ResolvedApplicationProjectPaths = {
   sourceAgentsRoot: string;
   sourceAgentTeamsRoot: string;
   outputPackageRoot: string;
+  metadataPackageRoot: string;
   generatedApplicationsRoot: string;
   generatedApplicationRoot: string;
   generatedUiRoot: string;
@@ -115,12 +116,18 @@ export const resolveApplicationProjectPaths = (input: {
   config: ResolvedApplicationDevkitConfig;
   localApplicationId: string;
   outputPackageRootOverride?: string | null;
+  metadataPackageRootOverride?: string | null;
 }): ResolvedApplicationProjectPaths => {
   const projectRoot = path.resolve(input.projectRoot);
   const outputPackageRoot = resolveOutputPath(
     projectRoot,
     input.outputPackageRootOverride ?? input.config.output.packageRoot,
     'output.packageRoot',
+  );
+  const metadataPackageRoot = resolveOutputPath(
+    projectRoot,
+    input.metadataPackageRootOverride ?? outputPackageRoot,
+    'metadata package root',
   );
   const sourceFrontendRoot = resolveProjectRelativePath(projectRoot, input.config.source.frontendDir, 'source.frontendDir');
   const sourceBackendRoot = resolveProjectRelativePath(projectRoot, input.config.source.backendDir, 'source.backendDir');
@@ -140,6 +147,11 @@ export const resolveApplicationProjectPaths = (input: {
   ];
   for (const source of sourceRoots) {
     assertNoOverlap(source.path, outputPackageRoot, `output.packageRoot must not overlap ${source.label}.`);
+    assertNoOverlap(
+      source.path,
+      metadataPackageRoot,
+      `metadata package root must not overlap ${source.label}.`,
+    );
   }
 
   const generatedApplicationsRoot = path.join(outputPackageRoot, 'applications');
@@ -163,6 +175,7 @@ export const resolveApplicationProjectPaths = (input: {
     sourceAgentsRoot,
     sourceAgentTeamsRoot,
     outputPackageRoot,
+    metadataPackageRoot,
     generatedApplicationsRoot,
     generatedApplicationRoot,
     generatedUiRoot: path.join(generatedApplicationRoot, 'ui'),

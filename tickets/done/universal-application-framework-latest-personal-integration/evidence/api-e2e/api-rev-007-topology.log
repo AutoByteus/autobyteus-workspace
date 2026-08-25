@@ -1,0 +1,23 @@
+API-REV-007 topology and retired-boundary audit
+recordedAt=2026-08-23T05:44:32Z
+head=fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342
+implementationMerge=5cf9b8eb22a3b83c114dbb4199341a65aaee8cea
+mergeParents=663f44d31deb05bf47f0eda780de4d754187a51b 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+latestReviewedPersonalAncestor=true
+protectedCheckpointAncestor=true
+unmergedEntries=0
+absent=autobyteus-server-ts/src/application-platform/launch-configuration/application-execution-resource-configuration-service.ts
+absent=autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-normalizer.ts
+absent=autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-resource-selection.ts
+absent=autobyteus-application-sdk-contracts/dist/index.d.ts
+absent=autobyteus-application-backend-sdk/dist/index.d.ts
+retiredReferences=0
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:2:==========================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:28:===========================================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:94:================================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:111:===========================================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:195:===============================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:223:==================================
+./autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:227:==================================
+gitDiffCheck=pass
+conflictMarkers=0 (exact Git marker forms)

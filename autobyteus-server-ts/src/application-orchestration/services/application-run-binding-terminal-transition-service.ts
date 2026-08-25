@@ -4,7 +4,6 @@ import { ApplicationRunLookupStore } from "../stores/application-run-lookup-stor
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import {
   ApplicationRunBindingLifecycleHub,
-  getApplicationRunBindingLifecycleHub,
   type ApplicationRunBindingTerminalStatus,
 } from "./application-run-binding-lifecycle-hub.js";
 
@@ -12,43 +11,29 @@ const cloneBinding = (binding: ApplicationAgentBindingRecord): ApplicationAgentB
   structuredClone(binding);
 
 export class ApplicationRunBindingTerminalTransitionService {
-  private static instance: ApplicationRunBindingTerminalTransitionService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationRunBindingTerminalTransitionService>[0] = {},
-  ): ApplicationRunBindingTerminalTransitionService {
-    if (!this.instance) this.instance = new ApplicationRunBindingTerminalTransitionService(dependencies);
-    return this.instance;
-  }
-
-  static resetInstance(): void {
-    this.instance = null;
-    cachedApplicationRunBindingTerminalTransitionService = null;
-  }
-
   private readonly tails = new Map<string, Promise<void>>();
 
   constructor(private readonly dependencies: {
-    bindingStore?: ApplicationRunBindingStore;
-    lookupStore?: ApplicationRunLookupStore;
-    ingressService?: ApplicationExecutionEventIngressService;
-    lifecycleHub?: ApplicationRunBindingLifecycleHub;
-  } = {}) {}
+    bindingStore: ApplicationRunBindingStore;
+    lookupStore: ApplicationRunLookupStore;
+    ingressService: ApplicationExecutionEventIngressService;
+    lifecycleHub: ApplicationRunBindingLifecycleHub;
+  }) {}
 
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
+    return this.dependencies.lookupStore;
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
-    return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+    return this.dependencies.ingressService;
   }
 
   private get lifecycleHub(): ApplicationRunBindingLifecycleHub {
-    return this.dependencies.lifecycleHub ?? getApplicationRunBindingLifecycleHub();
+    return this.dependencies.lifecycleHub;
   }
 
   async transition(input: {
@@ -122,12 +107,3 @@ export class ApplicationRunBindingTerminalTransitionService {
     return cloneBinding(terminal);
   }
 }
-
-let cachedApplicationRunBindingTerminalTransitionService: ApplicationRunBindingTerminalTransitionService | null = null;
-
-export const getApplicationRunBindingTerminalTransitionService = (): ApplicationRunBindingTerminalTransitionService => {
-  if (!cachedApplicationRunBindingTerminalTransitionService) {
-    cachedApplicationRunBindingTerminalTransitionService = ApplicationRunBindingTerminalTransitionService.getInstance();
-  }
-  return cachedApplicationRunBindingTerminalTransitionService;
-};

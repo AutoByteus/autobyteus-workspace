@@ -6,25 +6,22 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
 import type { ApplicationExecutionEventPayload } from "../domain/models.js";
-import {
-  ApplicationExecutionEventDispatchService,
-  getApplicationExecutionEventDispatchService,
-} from "./application-execution-event-dispatch-service.js";
+import { ApplicationExecutionEventDispatchQueue } from "./application-execution-event-dispatch-queue.js";
 
 export class ApplicationExecutionEventIngressService {
   constructor(
     private readonly dependencies: {
-      journalStore?: ApplicationExecutionEventJournalStore;
-      dispatchService?: ApplicationExecutionEventDispatchService;
-    } = {},
+      journalStore: ApplicationExecutionEventJournalStore;
+      dispatchQueue: ApplicationExecutionEventDispatchQueue;
+    },
   ) {}
 
   private get journalStore(): ApplicationExecutionEventJournalStore {
-    return this.dependencies.journalStore ?? new ApplicationExecutionEventJournalStore();
+    return this.dependencies.journalStore;
   }
 
-  private get dispatchService(): ApplicationExecutionEventDispatchService {
-    return this.dependencies.dispatchService ?? getApplicationExecutionEventDispatchService();
+  private get dispatchQueue(): ApplicationExecutionEventDispatchQueue {
+    return this.dependencies.dispatchQueue;
   }
 
   async appendBindingLifecycleEvent(input: {
@@ -58,6 +55,6 @@ export class ApplicationExecutionEventIngressService {
       producer: input.producer ? structuredClone(input.producer) : null,
       payload: structuredClone(input.payload),
     });
-    this.dispatchService.schedule(input.applicationId);
+    this.dispatchQueue.enqueue(input.applicationId);
   }
 }

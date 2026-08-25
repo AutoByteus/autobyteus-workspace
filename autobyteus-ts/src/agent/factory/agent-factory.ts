@@ -17,7 +17,6 @@ import { FileCompactionLineageStore } from '../../memory/store/file-compaction-l
 import { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryIngestInputProcessor } from '../input-processor/memory-ingest-input-processor.js';
 import { AgentRuntime } from '../runtime/agent-runtime.js';
-import { registerTools } from '../../tools/register-tools.js';
 import { initializeLogging } from '../../utils/logger.js';
 import { generateReadableAgentId } from './agent-id.js';
 
@@ -54,7 +53,6 @@ export class AgentFactory extends Singleton {
     }
     AgentFactory.instance = this;
     initializeLogging();
-    registerTools();
     console.info('AgentFactory (Singleton) initialized.');
   }
 

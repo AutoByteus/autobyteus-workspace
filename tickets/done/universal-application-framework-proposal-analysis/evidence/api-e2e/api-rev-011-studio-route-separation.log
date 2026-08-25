@@ -1,0 +1,10 @@
+UTC=2026-07-30T18:43:38Z
+## internal no bearer expected 401
+STATUS=401
+{"error":"unauthorized","message":"Unauthorized"}
+## internal invalid bearer expected 404
+STATUS=404
+{"error":"session_unavailable","message":"Agent tool MCP session is unavailable."}
+## Studio external gateway must be registered (not generic route 404)
+STATUS=200
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}

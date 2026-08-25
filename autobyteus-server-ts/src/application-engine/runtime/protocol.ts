@@ -112,7 +112,7 @@ export type ApplicationWorkerContextCapabilityInput =
         kind?: ApplicationExecutionResourceKind | null;
       } | null;
     }
-  | { capability: "agentResources"; operation: "getConfigured"; input: { slotKey: string } }
+  | { capability: "agentResources"; operation: "requireRunnable"; input: { slotKey: string } }
   | { capability: "publishedArtifacts"; operation: "list"; input: { runId: string } }
   | {
       capability: "publishedArtifacts";

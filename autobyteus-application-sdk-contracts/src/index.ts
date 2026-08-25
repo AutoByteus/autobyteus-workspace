@@ -1,5 +1,5 @@
 import type {
-  ApplicationConfiguredExecutionResource,
+  ApplicationEffectiveLaunchConfiguration,
   ApplicationExecutionResourceKind,
   ApplicationExecutionResourceSource,
   ApplicationExecutionResourceRef,
@@ -29,10 +29,12 @@ export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
 export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
+export * from "./application-runtime-bootstrap.js";
+export * from "./standalone-application-bootstrap.js";
 
-export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6 = "6" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6 = "6" as const;
+export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION = "1" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "6" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION = "6" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
 export type ApplicationRouteMethod =
@@ -55,8 +57,8 @@ export type ApplicationBackendSupportedExposures = {
   webSockets: boolean;
 };
 
-export type ApplicationBackendBundleManifestV1 = {
-  contractVersion: typeof APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1;
+export type ApplicationBackendBundleManifest = {
+  contractVersion: typeof APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION;
   entryModule: string;
   moduleFormat: "esm";
   distribution: "self-contained";
@@ -65,8 +67,8 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -120,17 +122,27 @@ export type ApplicationTeamRunPreset = {
   llmConfig?: Record<string, unknown> | null;
 };
 
-export type ApplicationTeamMemberLaunchConfig = {
-  memberAddress: string;
-  agentDefinitionId?: string | null;
+export type ApplicationTeamScopeLaunchConfig = Readonly<{
+  teamAddress: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   skillAccessMode: ApplicationSkillAccessMode;
-  workspaceId?: string | null;
-  workspaceRootPath?: string | null;
+  workspaceRootPath: string;
   llmConfig?: Record<string, unknown> | null;
-  runtimeKind?: string | null;
-};
+  runtimeKind: string;
+}>;
+
+export type ApplicationTeamMemberLaunchConfig = Readonly<{
+  memberAddress: string;
+  displayName: string;
+  agentDefinitionId: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: ApplicationSkillAccessMode;
+  workspaceRootPath: string;
+  llmConfig?: Record<string, unknown> | null;
+  runtimeKind: string;
+}>;
 
 export type ApplicationTeamRunLaunch =
   | {
@@ -141,8 +153,8 @@ export type ApplicationTeamRunLaunch =
   | {
       kind: "AGENT_TEAM";
       mode: "memberConfigs";
-      teamDefaultConfig: ApplicationTeamRunPreset;
-      memberConfigs: ApplicationTeamMemberLaunchConfig[];
+      teamConfigs: readonly ApplicationTeamScopeLaunchConfig[];
+      memberConfigs: readonly ApplicationTeamMemberLaunchConfig[];
     };
 
 export type ApplicationStartAgentInput = {
@@ -230,7 +242,7 @@ export type ApplicationAgentResources = {
     source?: ApplicationExecutionResourceSource | null;
     kind?: ApplicationExecutionResourceKind | null;
   } | null) => Promise<ApplicationExecutionResourceSummary[]>;
-  getConfigured: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
+  requireRunnable: (slotKey: string) => Promise<ApplicationEffectiveLaunchConfiguration>;
 };
 
 export type ApplicationPublishedArtifactSummary = {
@@ -330,7 +342,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;

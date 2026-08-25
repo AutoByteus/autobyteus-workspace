@@ -1,0 +1,50 @@
+# API-REV-010 preserved atomic metadata regression first
+UTC_START=2026-07-30T09:38:59Z
+HEAD=f90a8b666cb102e877772af53656a82529802a41
++ pnpm -C autobyteus-application-devkit build
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
++ node --test --test-name-pattern='atomic development pack keeps generated package metadata canonical after staging rename' autobyteus-application-devkit/tests/application-devkit.test.mjs
+TAP version 13
+# Successfully registered tool definition: 'read_file'
+# Successfully registered tool definition: 'write_file'
+# Successfully registered tool definition: 'edit_file'
+# Successfully registered tool definition: 'replace_in_file'
+# Successfully registered tool definition: 'insert_in_file'
+# Successfully registered tool definition: 'run_bash'
+# Successfully registered tool definition: 'start_background_process'
+# Successfully registered tool definition: 'get_background_processes'
+# Successfully registered tool definition: 'get_process_output'
+# Successfully registered tool definition: 'stop_background_process'
+# Successfully registered tool definition: 'search_web'
+# Successfully registered tool definition: 'read_media_file'
+# Successfully registered tool definition: 'download_media'
+# Successfully registered tool definition: 'read_url'
+# Successfully registered tool definition: 'add_todo'
+# Successfully registered tool definition: 'create_todo_list'
+# Successfully registered tool definition: 'get_todo_list'
+# Successfully registered tool definition: 'update_todo_status'
+# AgentFactory (Singleton) initialized.
+# (node:59920) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-30T09:39:03.061Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: atomic development pack keeps generated package metadata canonical after staging rename
+ok 1 - atomic development pack keeps generated package metadata canonical after staging rename
+  ---
+  duration_ms: 95.8975
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1983.0015
+EXIT_CODE=0
+UTC_END=2026-07-30T09:39:03Z

@@ -1,0 +1,334 @@
+{
+  "scenarioId": "APIE2E-ELECTRON-CLASSROOM-001",
+  "apiRevision": "API-REV-006",
+  "result": "Pass",
+  "blockerRecheck": {
+    "id": "APIE2E-BLOCKER-001",
+    "prior": "HTTP 402 Insufficient Balance",
+    "current": "HTTP 200 with exact deepseek-v4-flash response OK",
+    "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-deepseek-direct-probe.log"
+  },
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+  },
+  "isolation": {
+    "root": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567",
+    "port": 55889,
+    "workspace": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace",
+    "bridge": {
+      "status": {
+        "status": "running",
+        "baseUrl": "http://127.0.0.1:55889",
+        "urls": {
+          "graphql": "http://127.0.0.1:55889/graphql",
+          "rest": "http://127.0.0.1:55889/rest",
+          "graphqlWs": "ws://127.0.0.1:55889/graphql",
+          "transcription": "ws://127.0.0.1:55889/ws/transcribe",
+          "terminalWs": "ws://127.0.0.1:55889/ws/terminal",
+          "health": "http://127.0.0.1:55889/rest/health"
+        },
+        "healthCheckStatus": ""
+      },
+      "registry": {
+        "version": 2,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:55889",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "isSystem": true,
+            "createdAt": "2026-08-22T19:09:56.164Z",
+            "updatedAt": "2026-08-22T19:11:58.635Z"
+          }
+        ]
+      },
+      "context": {
+        "windowId": 1,
+        "nodeId": "embedded-local"
+      },
+      "health": {
+        "status": "ok",
+        "data": {
+          "status": "ok",
+          "message": "Server is running"
+        }
+      }
+    }
+  },
+  "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "packageImport": {
+    "importStatus": "already-present-after-supported-UI-import",
+    "packageRow": "autobyteus-agents\nLocal Path | Shared Agents: 7 | Team-local Agents: 50 | Teams: 12 | Applications: 0\n/Users/normy/autobyteus_org/autobyteus-agents\nLocal folder \u2014 reload after external changes.\nLocal Path\nReload\nRemove"
+  },
+  "teamRunId": "classroom_simulation_team_9693a92160e241adbe8243054b6d5701",
+  "members": [
+    {
+      "address": "/professor",
+      "agentRunId": "professor_920a447540dd41ad9c421a237f874226",
+      "platformAgentRunId": "01a02ae3-330c-7ce2-97c3-f5f68bda9aa0",
+      "runtimeKind": "CODEX",
+      "model": "gpt-5.6-luna",
+      "autoExecuteTools": true,
+      "workspace": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace"
+    },
+    {
+      "address": "/student",
+      "agentRunId": "student_5ebfe51298bb44baba0915b61bf245d5",
+      "platformAgentRunId": null,
+      "runtimeKind": "AUTOBYTEUS",
+      "model": "deepseek-v4-flash",
+      "autoExecuteTools": true,
+      "workspace": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace"
+    }
+  ],
+  "runtimeTraces": {
+    "/professor": {
+      "rawTraceFile": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/memory/agent_teams/classroom_simulation_team_9693a92160e241adbe8243054b6d5701/professor_920a447540dd41ad9c421a237f874226/raw_traces_active.jsonl",
+      "traceCount": 33,
+      "traceTypeCounts": {
+        "assistant": 3,
+        "reasoning": 8,
+        "system_instruction": 1,
+        "tool_call": 9,
+        "tool_result": 9,
+        "user": 3
+      },
+      "toolCalls": [
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": false
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "send_message_to",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "recipientAddress": "/student",
+          "referencePaths": [
+            "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/assignment.md"
+          ]
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "send_message_to",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "recipientAddress": "/student",
+          "referencePaths": [
+            "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/feedback-round-1.md"
+          ]
+        },
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "TOOL_EXECUTION_STARTED",
+          "touchesWorkspace": true
+        }
+      ],
+      "assistantOutputs": [
+        "Assignment sent to `/student` with a file reference. The student returned a file-backed answer:\n\n**27 + 15 = 42**\n\nThe answer is **correct**.",
+        "I reviewed the student\u2019s file-backed answer and sent feedback. The solution **42** is correct, with clear work; no revision is needed.",
+        "I reviewed the student\u2019s acknowledgement. They understood the feedback, confirmed no revision is needed, and are ready for another exercise."
+      ]
+    },
+    "/student": {
+      "rawTraceFile": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/memory/agent_teams/classroom_simulation_team_9693a92160e241adbe8243054b6d5701/student_5ebfe51298bb44baba0915b61bf245d5/raw_traces_active.jsonl",
+      "traceCount": 29,
+      "traceTypeCounts": {
+        "assistant": 8,
+        "reasoning": 4,
+        "system_instruction": 1,
+        "tool_call": 7,
+        "tool_result": 7,
+        "user": 2
+      },
+      "toolCalls": [
+        {
+          "toolName": "run_bash",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "touchesWorkspace": true
+        },
+        {
+          "toolName": "read_file",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "touchesWorkspace": true,
+          "relativePath": "classroom-runs/arithmetic-20260822/assignment.md"
+        },
+        {
+          "toolName": "write_file",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "touchesWorkspace": true,
+          "relativePath": "classroom-runs/arithmetic-20260822/student-answer.md"
+        },
+        {
+          "toolName": "send_message_to",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "recipientAddress": "/professor",
+          "referencePaths": [
+            "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/student-answer.md"
+          ]
+        },
+        {
+          "toolName": "read_file",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "touchesWorkspace": true,
+          "relativePath": "classroom-runs/arithmetic-20260822/feedback-round-1.md"
+        },
+        {
+          "toolName": "write_file",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "touchesWorkspace": true,
+          "relativePath": "classroom-runs/arithmetic-20260822/student-acknowledgement.md"
+        },
+        {
+          "toolName": "send_message_to",
+          "sourceEvent": "PendingToolInvocationEvent",
+          "recipientAddress": "/professor",
+          "referencePaths": [
+            "/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/student-acknowledgement.md"
+          ]
+        }
+      ],
+      "assistantOutputs": [
+        "Done. I read the assignment, wrote my answer to `student-answer.md` (27 + 15 = 42, with work shown), and delivered it to `/professor` with the file attached.",
+        "Acknowledged the feedback. I read `feedback-round-1.md`, wrote my acknowledgement to `student-acknowledgement.md`, and delivered the reply to `/professor` with the file attached."
+      ]
+    }
+  },
+  "communications": [
+    {
+      "messageId": "teammsg_gF_EvZUBNSSx74GXfnYvhgV2aeW28eWj",
+      "fromRunId": "professor_920a447540dd41ad9c421a237f874226",
+      "toRunId": "student_5ebfe51298bb44baba0915b61bf245d5",
+      "messageType": "assignment",
+      "content": "Please complete the concise arithmetic exercise in /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/assignment.md. Read it, write your file-backed answer to /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/student-answer.md, and reply to /professor with that file attached.",
+      "referenceFiles": [
+        "classroom-runs/arithmetic-20260822/assignment.md"
+      ],
+      "createdAt": "2026-08-22T19:12:35.413Z"
+    },
+    {
+      "messageId": "teammsg_P5zwcWl_MdBywLE31xtcnxvnnV-9gu0X",
+      "fromRunId": "student_5ebfe51298bb44baba0915b61bf245d5",
+      "toRunId": "professor_920a447540dd41ad9c421a237f874226",
+      "messageType": "agent_message",
+      "content": "Hi Professor, I completed the arithmetic exercise. The answer is 42 (27 + 15 = 42). My file-backed answer with the work shown is at /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/student-answer.md. Please let me know if you'd like any revisions.",
+      "referenceFiles": [
+        "classroom-runs/arithmetic-20260822/student-answer.md"
+      ],
+      "createdAt": "2026-08-22T19:12:41.139Z"
+    },
+    {
+      "messageId": "teammsg_eUXoOE8n2S1BBDNLZiL2hj9ywK1Io09f",
+      "fromRunId": "professor_920a447540dd41ad9c421a237f874226",
+      "toRunId": "student_5ebfe51298bb44baba0915b61bf245d5",
+      "messageType": "feedback",
+      "content": "Your answer is correct; no revision is needed. Feedback is in /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/feedback-round-1.md.",
+      "referenceFiles": [
+        "classroom-runs/arithmetic-20260822/feedback-round-1.md"
+      ],
+      "createdAt": "2026-08-22T19:13:04.061Z"
+    },
+    {
+      "messageId": "teammsg__cmr3670zYK_wo084E_O2CybuHcErCVY",
+      "fromRunId": "student_5ebfe51298bb44baba0915b61bf245d5",
+      "toRunId": "professor_920a447540dd41ad9c421a237f874226",
+      "messageType": "agent_message",
+      "content": "Hi Professor, thank you for the feedback! I read feedback-round-1.md and I'm glad my answer of 42 was correct with clear work shown. No revision is needed on my end. My written acknowledgement is at /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace/classroom-runs/arithmetic-20260822/student-acknowledgement.md. Ready for the next exercise whenever you are.",
+      "referenceFiles": [
+        "classroom-runs/arithmetic-20260822/student-acknowledgement.md"
+      ],
+      "createdAt": "2026-08-22T19:13:09.818Z"
+    }
+  ],
+  "files": [
+    {
+      "relativePath": "classroom-runs/arithmetic-20260822/assignment.md",
+      "size": 218,
+      "sha256": "a2a1640a8632ef4aea5b317a492c44bd7f355ef2518b12e648864f2c4e7966eb",
+      "content": "# Arithmetic Exercise\n\nCalculate: **27 + 15**\n\nReply with the numerical answer and one short line showing your work. Write your response to `student-answer.md` in this same folder, then send that file to `/professor`.\n"
+    },
+    {
+      "relativePath": "classroom-runs/arithmetic-20260822/feedback-round-1.md",
+      "size": 97,
+      "sha256": "dc6dc190f8b65c4266dc9f26c67a44704e0f509a2bb75dcdf5e9b19301e050f6",
+      "content": "# Feedback\n\nCorrect. The answer is **42**, and the work is shown clearly. No revision is needed.\n"
+    },
+    {
+      "relativePath": "classroom-runs/arithmetic-20260822/student-acknowledgement.md",
+      "size": 277,
+      "sha256": "61daed86427c8955ce99859a68c91bd72cf90b0f231b58fa5f0739ff83597ccc",
+      "content": "# Student Acknowledgement \u2014 Feedback Round 1\n\nThank you, Professor. I read the feedback in `feedback-round-1.md` confirming that my answer of **42** is correct and the work is shown clearly. No revision is needed on my end.\n\nI'm ready for the next exercise whenever you are.\n"
+    },
+    {
+      "relativePath": "classroom-runs/arithmetic-20260822/student-answer.md",
+      "size": 124,
+      "sha256": "02a2b4b8f16b25f2534739ebf6b16404b0e8c68dafadc7760303af7ecc2b1be2",
+      "content": "# Student Answer \u2014 Arithmetic Exercise\n\nCalculate: **27 + 15**\n\nWork: 27 + 15 = 27 + 10 + 5 = 37 + 5 = 42\n\n**Answer: 42**\n"
+    }
+  ],
+  "checkpoint": {
+    "rootTeamRunId": "classroom_simulation_team_9693a92160e241adbe8243054b6d5701",
+    "changeSequence": 2448,
+    "hasOpenExecutionWork": false
+  },
+  "ui": {
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-006-electron-classroom-result.png",
+    "bodyContainsTeam": true,
+    "bodyContainsProfessor": true,
+    "bodyContainsStudent": true
+  },
+  "transport": {
+    "requests": 76,
+    "responses": 76,
+    "websockets": 1,
+    "requestFailures": [],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "providerLogObservation": {
+    "deepSeekInstancePrepared": true,
+    "insufficientBalanceOccurrences": 0,
+    "http402Occurrences": 0
+  },
+  "cleanupAtHarnessExit": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:7613",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 55889,
+      "detail": null
+    }
+  }
+}

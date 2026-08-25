@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-const revokeAgentToolMcpSessionsForAgentRun = vi.hoisted(() => vi.fn());
+const revokeAgentToolMcpSessionsForRun = vi.hoisted(() => vi.fn());
 vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js", () => ({
-  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForAgentRun }),
+  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForRun }),
 }));
 
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
@@ -116,7 +116,7 @@ describe("MixedAgentMemberHandle termination", () => {
 
     expect(agentRunManager.restoreAgentRunFromPlatformState).not.toHaveBeenCalled();
     expect(agentRunManager.createAgentRun).not.toHaveBeenCalled();
-    expect(revokeAgentToolMcpSessionsForAgentRun).toHaveBeenCalledWith("worker-run-1");
+    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenCalledWith("worker-run-1");
     expect(handle.isActive()).toBe(false);
   });
 

@@ -1,0 +1,12 @@
+utc=2026-07-31T09:20:25Z
+host_pid=32782
+old_worker_pid=34533
+binding_before_kill:
+[{"binding_id":"2bd76077-ac2d-42ba-8569-0042cd9d7514","status":"ATTACHED","summary_json":"{\"bindingId\":\"2bd76077-ac2d-42ba-8569-0042cd9d7514\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-f3ce0e9a-c0d6-45ef-ac50-584c33123e77\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_1487ab0c74944eb7877e84028c263447\",\"definitionId\":\"bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_c3653de605b8469b81b6325c0ddb2685\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]},\"createdAt\":\"2026-07-31T09:19:54.669Z\",\"updatedAt\":\"2026-07-31T09:19:54.669Z\",\"terminatedAt\":null,\"lastErrorMessage\":null}"}]
+processes_before_kill:
+34533 32782 00:32 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+34886 32782 00:31 codex app-server
+old_worker_alive_after_term=no
+waiting_for_replacement_worker
+new_worker_pid=39934
+39934 32782 00:01 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js

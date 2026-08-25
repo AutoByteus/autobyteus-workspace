@@ -1,0 +1,106 @@
+{
+  "briefs": [
+    {
+      "brief_id": "brief-77f78295-25a5-4111-83f2-1c19f6cc4226",
+      "title": "API REV 013 Studio retained business path 1785503319652",
+      "status": "in_review",
+      "latest_binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "latest_run_id": "brief_studio_team_38486e0fa5f24ec2b14d58ed7e28f060",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-07-31T13:08:42.661Z",
+      "updated_at": "2026-07-31T13:10:11.792Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-77f78295-25a5-4111-83f2-1c19f6cc4226",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "37fd03e0-5a8f-4ee7-914b-c26f8fa3ba4a",
+      "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the retained API REV 013 business path.",
+      "body": "# API REV 013 Studio retained business path 1785503319652\n\n## Key findings\n- The brief should preserve the retained business path as the primary outcome: make the API REV 013 studio flow understandable, reviewable, and easy to continue without losing context.\n- A reviewable brief needs a clear problem statement, intended audience, success criteria, and explicit boundaries between research, drafting, review, and publication.\n- The identifier `1785503319652` should remain attached to the title and any downstream artifact metadata so reviewers can trace this run.\n- The workflow is research-first: publish a concise checkpoint before drafting, then hand off the exact artifact path to the writer.\n- The final brief should favor a small set of actionable decisions over broad platform description, with assumptions labeled for later validation.\n\n## Risks or open questions\n- The phrase “retained business path” may refer to a specific product or operational path whose detailed requirements are not present in the request.\n- No source metrics, user evidence, API contract, or acceptance thresholds were supplied; claims should therefore be framed as working assumptions.\n- Ownership of final approval, retention duration, and rollback/escalation behavior remains to be confirmed.\n\n## Recommendations or next steps\n- Writer: frame the brief around the retained path, its users, the desired decision, and a compact success-measurement plan.\n- Keep the run identifier visible and preserve a direct chain from research checkpoint to final draft.\n- Mark unresolved requirements as review questions rather than inventing specifics; request validation from the business owner before implementation.\n",
+      "producer_member_route_key": "researcher",
+      "updated_at": "2026-07-31T13:09:27.504Z"
+    },
+    {
+      "brief_id": "brief-77f78295-25a5-4111-83f2-1c19f6cc4226",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "5a1ec2d6-4725-4a69-aef3-da4e043dabeb",
+      "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "description": "Concise writer checkpoint and final brief for retained API REV 013 business path 1785503319652.",
+      "body": "# API REV 013 Studio retained business path 1785503319652\n\nThe recommendation is to preserve the retained API REV 013 business path as the primary continuity and review objective. The next decision is whether the documented studio flow is sufficiently clear and traceable to advance into business-owner validation, without losing context between research, drafting, review, and publication. The brief is for business owners, reviewers, and the team responsible for continuing the retained path.\n\n## Key evidence\n- The retained path should remain the organizing concept: make the studio flow understandable, reviewable, and easy to continue.\n- Keep identifier `1785503319652` in the title and downstream artifact metadata so reviewers can trace the run end to end.\n- The workflow should preserve a direct chain from the concise research checkpoint to the final brief and subsequent review decision.\n- Define success through reviewability and continuity: reviewers can identify the intended path, audience, decision, boundaries, and next owner; the artifact can be continued without reconstructing lost context.\n- Keep the scope decision-oriented rather than describing the broader platform. Separate research, drafting, review, and publication responsibilities.\n- Treat the current brief as a working decision aid, not as evidence of a finalized API contract or implementation plan.\n\n## Risks or cautions\n- “Retained business path” may refer to a product or operational path whose detailed requirements are not yet documented.\n- No source metrics, user evidence, API contract, or acceptance thresholds were supplied; do not present assumptions as verified facts.\n- Confirm final approval ownership, retention duration, rollback/escalation behavior, and any required API evidence before implementation.\n\n## Next actions\n- Business owner: confirm the exact retained path and the decision this brief should support.\n- Reviewer: validate audience, boundaries, identifier traceability, and minimum acceptance criteria.\n- Team: add source metrics, API evidence, named ownership, retention expectations, and rollback/escalation steps as they become available.\n- After validation, record the approval decision and carry the same identifier into the next artifact or implementation checkpoint.\n",
+      "producer_member_route_key": "writer",
+      "updated_at": "2026-07-31T13:10:11.792Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "37fd03e0-5a8f-4ee7-914b-c26f8fa3ba4a",
+      "brief_id": "brief-77f78295-25a5-4111-83f2-1c19f6cc4226",
+      "binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "published_at": "2026-07-31T13:09:27.504Z",
+      "projected_at": "2026-07-31T13:09:27.519Z"
+    },
+    {
+      "revision_id": "5a1ec2d6-4725-4a69-aef3-da4e043dabeb",
+      "brief_id": "brief-77f78295-25a5-4111-83f2-1c19f6cc4226",
+      "binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "run_id": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "published_at": "2026-07-31T13:10:11.792Z",
+      "projected_at": "2026-07-31T13:10:11.803Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "launch_request_id": "brief-launch-request-6e6cfda1-a976-4b72-bfa3-ee2ecfc60ce6",
+      "status": "ATTACHED",
+      "runtime_subject": "TEAM_RUN",
+      "run_id": "brief_studio_team_38486e0fa5f24ec2b14d58ed7e28f060",
+      "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "resource_owner": "bundle",
+      "resource_kind": "AGENT_TEAM",
+      "resource_local_id": "brief-studio-team",
+      "resource_definition_id": null,
+      "created_at": "2026-07-31T13:08:43.026Z",
+      "updated_at": "2026-07-31T13:08:43.026Z",
+      "terminated_at": null,
+      "last_error_message": null,
+      "summary_json": "{\"bindingId\":\"be8316df-0904-43b2-9954-48fce85f5056\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-6e6cfda1-a976-4b72-bfa3-ee2ecfc60ce6\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_38486e0fa5f24ec2b14d58ed7e28f060\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]},\"createdAt\":\"2026-07-31T13:08:43.026Z\",\"updatedAt\":\"2026-07-31T13:08:43.026Z\",\"terminatedAt\":null,\"lastErrorMessage\":null}"
+    }
+  ],
+  "members": [
+    {
+      "binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "member_name": "researcher",
+      "member_route_key": "researcher",
+      "display_name": "researcher",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    },
+    {
+      "binding_id": "be8316df-0904-43b2-9954-48fce85f5056",
+      "member_name": "writer",
+      "member_route_key": "writer",
+      "display_name": "writer",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    }
+  ]
+}

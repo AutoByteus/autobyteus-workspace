@@ -1,0 +1,37 @@
+Sat Aug 22 10:50:28 UTC 2026
+port
+root-processes
+73018
+73324
+codex run processes mentioning root
+engine status
+{
+  "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+  "state": "ready",
+  "ready": true,
+  "startedAt": "2026-08-22T10:47:05.382Z",
+  "lastFailure": null,
+  "exposures": {
+    "supportedExposures": {
+      "queries": false,
+      "commands": false,
+      "routes": false,
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": true,
+      "webSockets": false
+    },
+    "queries": [],
+    "commands": [],
+    "routes": [],
+    "webSocketRoutes": [],
+    "graphql": true,
+    "notifications": true,
+    "eventHandlers": [
+      "RUN_STARTED",
+      "RUN_TERMINATED",
+      "RUN_FAILED",
+      "RUN_ORPHANED"
+    ]
+  }
+}

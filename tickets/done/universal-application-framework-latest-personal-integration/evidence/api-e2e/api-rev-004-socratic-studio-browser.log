@@ -1,0 +1,27 @@
+{"at":"2026-08-22T12:12:11.164Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:14.169Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:17.180Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:20.186Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:23.194Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:26.204Z","live":"Tutor is responding…","conversation":"1 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:29.208Z","live":"Tutor is responding…","conversation":"2 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:32.227Z","live":"Tutor is responding…","conversation":"2 messages","hasSaved":false,"hasRejected":false}
+{"at":"2026-08-22T12:12:35.236Z","live":"Tutor response saved","conversation":"2 messages","hasSaved":true,"hasRejected":false}
+{
+  "result": "PASS",
+  "setup": {
+    "packageTeam": true,
+    "tutor": true,
+    "luna": true,
+    "enterEnabled": true,
+    "url": "http://127.0.0.1:3015/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572"
+  },
+  "polls": 9,
+  "last": {
+    "at": "2026-08-22T12:12:35.236Z",
+    "live": "Tutor response saved",
+    "conversation": "2 messages",
+    "hasSaved": true,
+    "hasRejected": false
+  }
+}

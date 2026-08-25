@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "roots": [
+    "/Users/normy/autobyteus_org/autobyteus-agents",
+    "/Users/normy/autobyteus_org/autobyteus-private-agents"
+  ],
+  "ids": {
+    "root": "nested-classroom-test",
+    "child": "team-local-team:nested-classroom-test:student-study-group",
+    "teacher": "team-local-agent:nested-classroom-test:teacher",
+    "studentOne": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+    "studentTwo": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two"
+  },
+  "models": {
+    "codexLuna": true,
+    "autobyteusDeepseekFlash": true
+  },
+  "catalogSummary": {
+    "autobyteus": {
+      "providers": 13,
+      "models": 28
+    },
+    "codex_app_server": {
+      "providers": 1,
+      "models": 7
+    },
+    "claude_agent_sdk": {
+      "providers": 1,
+      "models": 4
+    }
+  },
+  "packageCounts": [
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+      "displayName": "autobyteus-agents",
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "sourceKind": "LOCAL_PATH",
+      "sharedAgentCount": 7,
+      "teamLocalAgentCount": 50,
+      "agentTeamCount": 12
+    },
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-private-agents",
+      "displayName": "autobyteus-private-agents",
+      "path": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+      "sourceKind": "LOCAL_PATH",
+      "sharedAgentCount": 40,
+      "teamLocalAgentCount": 25,
+      "agentTeamCount": 9
+    }
+  ]
+}

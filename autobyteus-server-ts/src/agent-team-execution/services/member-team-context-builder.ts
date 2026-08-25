@@ -5,6 +5,7 @@ import { MemberTeamContext } from "../domain/member-team-context.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
 import { createTeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
+import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
 
 export class MemberTeamContextBuilder {
   private readonly summaryCache = new Map<string, Promise<{ name: string; instruction: string | null }>>();
@@ -17,6 +18,7 @@ export class MemberTeamContextBuilder {
     teamContext: TeamRunContext<unknown>;
     agentNode: TeamRunAgentNode;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
+    taskRootResolver: MemberTaskRootResolver;
   }): Promise<MemberTeamContext> {
     const collaboration = new MemberCollaborationContext({
       outgoingHandoffs: input.teamContext.handoffs.filter(
@@ -33,6 +35,7 @@ export class MemberTeamContextBuilder {
       }),
       authoredTeamInstruction: summary.instruction,
       collaboration,
+      taskRootResolver: input.taskRootResolver,
     });
   }
 

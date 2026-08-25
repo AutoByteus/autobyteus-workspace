@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "rootTeamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+  "apiConditions": {
+    "activeRealRun": true,
+    "exactConfiguredTopology": true,
+    "exactTaskTeamMaterialized": true,
+    "exactOneTask": true,
+    "exactDelegationTarget": true,
+    "accepted": true,
+    "exactSubmission": true,
+    "acceptedReview": true,
+    "ordinaryTeamAddressRequest": true,
+    "ordinaryTeamAddressReply": true,
+    "ordinaryDirectMemberRequest": true,
+    "ordinaryDirectMemberReply": true,
+    "exactReferenceDelivered": true,
+    "taskCoordinatorPeerMessageAccepted": true,
+    "peerReturnedToCanonicalNestedCoordinator": true,
+    "v2ExecutionTree": true,
+    "exactCodexLunaLaunch": true
+  },
+  "uiConditions": {
+    "completionVisible": true,
+    "acceptedTaskVisible": true,
+    "taskDetailVisible": true,
+    "messagesVisible": true,
+    "referenceVisible": true,
+    "settledTaskRemovedFromTransientRows": true
+  }
+}

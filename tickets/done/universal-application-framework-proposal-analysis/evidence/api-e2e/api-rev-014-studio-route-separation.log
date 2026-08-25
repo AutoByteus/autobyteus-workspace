@@ -1,0 +1,10 @@
+utc=2026-08-13T10:30:05Z
+isolated_data=/tmp/api-rev014-studio-isolated-1786616773
+root=404
+internal_unauth=401
+external_gateway=200
+internal_body={"error":"unauthorized","message":"Unauthorized"}
+gateway_body={"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}
+assert_internal_401=pass
+assert_studio_gateway_initialize=pass
+negotiated_protocol=2025-03-26

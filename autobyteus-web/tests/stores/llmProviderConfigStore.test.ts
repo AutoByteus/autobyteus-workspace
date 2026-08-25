@@ -179,6 +179,39 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     expect(mutate).toHaveBeenNthCalledWith(2, expect.objectContaining({ mutation: RELOAD_PROVIDER_MODEL_CATALOG }))
   })
 
+  it('settles missing-provider failures while retaining stale rows and explicit source status', async () => {
+    const query = vi.fn().mockResolvedValue({
+      data: {
+        providerModelCatalogSnapshots: [
+          snapshot('AUTOBYTEUS', 'IDLE', ['retained']),
+          snapshot('OLLAMA', 'IDLE'),
+        ],
+      },
+    })
+    const mutate = vi.fn().mockImplementation(({ variables }) =>
+      variables.providerId === 'AUTOBYTEUS'
+        ? Promise.reject(new Error('sensitive discovery failure'))
+        : Promise.resolve({
+            data: { ensureProviderModelCatalog: snapshot('OLLAMA', 'READY', ['local-current']) },
+          }))
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+
+    await expect(store.ensureMissingDynamicProviders('autobyteus')).resolves.toBeUndefined()
+    expect(mutate).toHaveBeenCalledTimes(2)
+    expect(store.providerSnapshot('autobyteus', 'AUTOBYTEUS')).toMatchObject({
+      llmModels: [expect.objectContaining({ modelIdentifier: 'retained' })],
+      sources: [expect.objectContaining({
+        state: 'STALE_ERROR',
+        safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
+      })],
+    })
+    expect(store.providerSnapshot('autobyteus', 'OLLAMA')).toMatchObject({
+      llmModels: [expect.objectContaining({ modelIdentifier: 'local-current' })],
+      sources: [expect.objectContaining({ state: 'READY' })],
+    })
+  })
+
   it('prevents an older provider request from overwriting its newer generation', async () => {
     const old = deferred<unknown>()
     const current = deferred<unknown>()

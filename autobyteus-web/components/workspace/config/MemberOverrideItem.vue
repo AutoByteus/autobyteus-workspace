@@ -185,7 +185,7 @@ const isUnresolvedInheritedModel = computed(() => Boolean(
 ))
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
   globalLlmModelIdentifier: globalModelIdentifier.value,
-  runtimeKind: effectiveRuntimeKind.value,
+  runtimeKind: effectiveRuntimeKind.value ?? '',
   memberName: props.node.displayName,
 }))
 const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
@@ -321,6 +321,6 @@ const handleAutoExecuteChange = () => {
   }))
 }
 const retryRuntimeCatalog = () => {
-  if (!isInteractionDisabled.value && editableNode.value) emit('retry-runtime-catalog', effectiveRuntimeKind.value)
+  if (!isInteractionDisabled.value && editableNode.value) emit('retry-runtime-catalog', effectiveRuntimeKind.value ?? '')
 }
 </script>

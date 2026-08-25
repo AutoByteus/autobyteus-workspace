@@ -10,7 +10,7 @@ import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execut
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { TeamRunResolver } from "../../../src/agent-team-execution/services/team-run-resolver.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testAgentTeamNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const deferred = <T = void>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -67,12 +67,14 @@ describe("TeamRunResolver configured child overlap", () => {
       createTeamManager: (context, subTeamRunFactory, callbacks) => new MixedTeamManager(context, {
         subTeamRunFactory,
         agentRunManager: agentRunManager as never,
+        taskRootResolver: callbacks.taskRootResolver,
         publish: callbacks.publish,
         deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
         acceptPlatformBinding: callbacks.acceptPlatformBinding,
       }),
     });
     const callbacks = {
+      taskRootResolver: testMemberTaskRootResolver(),
       publish: vi.fn(),
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true as const })),
       acceptPlatformBinding: vi.fn(async () => undefined),

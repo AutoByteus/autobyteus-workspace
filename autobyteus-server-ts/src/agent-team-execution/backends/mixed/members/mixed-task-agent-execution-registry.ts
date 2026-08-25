@@ -11,6 +11,12 @@ import { MixedAgentMemberContext, type MixedTeamRunContext } from "../mixed-team
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
+import type { AgentToolMcpSessionManager } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
+import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
+import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 
@@ -25,6 +31,12 @@ export class MixedTaskAgentExecutionRegistry {
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     agentRunManager?: AgentRunManager;
+    agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+    memoryLocationService?: AgentMemoryLocationService;
+    activityInspector?: AgentConversationActivityInspector;
+    memberTeamContextBuilder?: MemberTeamContextBuilder;
+    workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    taskRootResolver: MemberTaskRootResolver;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
@@ -57,6 +69,12 @@ export class MixedTaskAgentExecutionRegistry {
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
       activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
+      agentToolMcpSessionManager: this.options.agentToolMcpSessionManager,
+      memoryLocationService: this.options.memoryLocationService,
+      activityInspector: this.options.activityInspector,
+      memberTeamContextBuilder: this.options.memberTeamContextBuilder,
+      workspaceManager: this.options.workspaceManager,
+      taskRootResolver: this.options.taskRootResolver,
       publish: (event) => retainedEvents.push(event),
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       acceptPlatformBinding: this.options.acceptPlatformBinding,

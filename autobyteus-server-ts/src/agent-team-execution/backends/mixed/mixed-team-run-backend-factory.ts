@@ -20,6 +20,10 @@ import {
   createRootTeamRunPhysicalScope,
   type TeamRunPhysicalScope,
 } from "../../domain/team-run-physical-scope.js";
+import {
+  requireMemberTaskRootResolver,
+  type MemberTaskRootResolver,
+} from "../../task-delegation/member-task-root-resolver.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (
@@ -30,16 +34,26 @@ export type MixedTeamRunBackendFactoryOptions = {
 };
 
 export type MixedTeamRunCallbacks = Readonly<{
+  taskRootResolver: MemberTaskRootResolver;
   publish: (event: TeamRunEvent) => void;
   deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
 }>;
 
-const noopCallbacks = (): MixedTeamRunCallbacks => ({
-  publish: () => undefined,
-  deliverInterAgentMessage: async () => ({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "The TeamRun is not bound to a root operation owner." }),
-  acceptPlatformBinding: async () => { throw new Error("The TeamRun is not bound to a root operation owner."); },
-});
+const requireCallbacks = (
+  callbacks: MixedTeamRunCallbacks | null | undefined,
+): MixedTeamRunCallbacks => {
+  if (
+    !callbacks ||
+    typeof callbacks.publish !== "function" ||
+    typeof callbacks.deliverInterAgentMessage !== "function" ||
+    typeof callbacks.acceptPlatformBinding !== "function"
+  ) {
+    throw new Error("Complete MixedTeamRunCallbacks are required.");
+  }
+  requireMemberTaskRootResolver(callbacks.taskRootResolver);
+  return callbacks;
+};
 
 export class MixedTeamRunBackendFactory {
   constructor(private readonly options: MixedTeamRunBackendFactoryOptions = {}) {}
@@ -47,8 +61,9 @@ export class MixedTeamRunBackendFactory {
   async createBackend(
     config: TeamRunConfig,
     teamRunId: string,
-    callbacks: MixedTeamRunCallbacks = noopCallbacks(),
+    callbacks: MixedTeamRunCallbacks,
   ): Promise<MixedTeamRunBackend> {
+    requireCallbacks(callbacks);
     if (config.rootTeam.teamRunId !== teamRunId) throw new Error(`Root TeamRun id '${config.rootTeam.teamRunId}' does not match '${teamRunId}'.`);
     return this.createBackendForNode({
       config,
@@ -62,8 +77,9 @@ export class MixedTeamRunBackendFactory {
   async restoreBackend(
     config: TeamRunConfig,
     teamRunId: string,
-    callbacks: MixedTeamRunCallbacks = noopCallbacks(),
+    callbacks: MixedTeamRunCallbacks,
   ): Promise<MixedTeamRunBackend> {
+    requireCallbacks(callbacks);
     if (config.rootTeam.teamRunId !== teamRunId) throw new Error(`Root TeamRun id '${config.rootTeam.teamRunId}' does not match '${teamRunId}'.`);
     return this.createBackendForNode({
       config,
@@ -81,11 +97,13 @@ export class MixedTeamRunBackendFactory {
     configuredMemberActivationMode: MixedConfiguredMemberActivationMode;
     callbacks: MixedTeamRunCallbacks;
   }): MixedTeamRunBackend {
+    requireCallbacks(input.callbacks);
     let subTeamRunFactory!: MixedSubTeamRunFactory;
     const createManager = (context: TeamRunContext<MixedTeamRunContext>): MixedTeamManager =>
       (this.options.createTeamManager?.(context, subTeamRunFactory, input.callbacks)
         ?? new MixedTeamManager(context, {
           subTeamRunFactory,
+          taskRootResolver: input.callbacks.taskRootResolver,
           publish: input.callbacks.publish,
           deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
           acceptPlatformBinding: input.callbacks.acceptPlatformBinding,

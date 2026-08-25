@@ -155,6 +155,7 @@ export class ApplicationPlatformStateStore {
     }
   }
 
+  /** Opens only existing platform state and enforces a read-only SQLite handle. */
   async withExistingDatabase<T>(
     applicationId: string,
     fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
@@ -164,7 +165,7 @@ export class ApplicationPlatformStateStore {
       return null;
     }
 
-    const db = new DatabaseSync(layout.platformDatabasePath);
+    const db = new DatabaseSync(layout.platformDatabasePath, { readOnly: true });
     try {
       return fn(db, layout);
     } finally {
@@ -176,20 +177,47 @@ export class ApplicationPlatformStateStore {
     applicationId: string,
     fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
   ): Promise<T> {
-    return this.withDatabase(applicationId, (db, layout) => {
-      db.exec("BEGIN IMMEDIATE");
+    return this.withDatabase(
+      applicationId,
+      (db, layout) => this.runTransaction(db, layout, fn),
+    );
+  }
+
+  /** Runs an explicit mutation against existing platform state without preparing new storage. */
+  async withExistingTransaction<T>(
+    applicationId: string,
+    fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
+  ): Promise<T | null> {
+    const layout = this.storageLifecycleService.getStorageLayout(applicationId);
+    if (!fs.existsSync(layout.platformDatabasePath)) {
+      return null;
+    }
+
+    const db = new DatabaseSync(layout.platformDatabasePath);
+    try {
+      return this.runTransaction(db, layout, fn);
+    } finally {
+      db.close();
+    }
+  }
+
+  private runTransaction<T>(
+    db: DatabaseSync,
+    layout: ApplicationStorageLayout,
+    fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
+  ): T {
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      const result = fn(db, layout);
+      db.exec("COMMIT");
+      return result;
+    } catch (error) {
       try {
-        const result = fn(db, layout);
-        db.exec("COMMIT");
-        return result;
-      } catch (error) {
-        try {
-          db.exec("ROLLBACK");
-        } catch {
-          // no-op
-        }
-        throw error;
+        db.exec("ROLLBACK");
+      } catch {
+        // no-op
       }
-    });
+      throw error;
+    }
   }
 }

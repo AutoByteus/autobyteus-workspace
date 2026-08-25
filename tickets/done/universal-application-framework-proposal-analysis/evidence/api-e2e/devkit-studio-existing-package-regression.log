@@ -1,0 +1,146 @@
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 21.764042
+  type: 'test'
+  ...
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 65.658375
+  type: 'test'
+  ...
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 63.475041
+      type: 'test'
+      ...
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 43.598209
+      type: 'test'
+      ...
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 42.757375
+      type: 'test'
+      ...
+    1..3
+ok 3 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 150.599125
+  type: 'test'
+  ...
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 4 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 45.130875
+  type: 'test'
+  ...
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 5 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 45.018792
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 9.630834
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 9.593625
+      type: 'test'
+      ...
+    1..2
+ok 6 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 20.046666
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 7 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 7.115916
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 12.449209
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 16.52925
+      type: 'test'
+      ...
+    1..2
+ok 8 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 29.398834
+  type: 'test'
+  ...
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 9 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 53.610791
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 10 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 352.478291
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 11 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 70.222
+  type: 'test'
+  ...
+# Subtest: Studio client reuses a registered local package before resolving its current identity
+not ok 12 - Studio client reuses a registered local package before resolving its current identity
+  ---
+  duration_ms: 2.878375
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit/tests/application-devkit.test.mjs:360:1'
+  failureType: 'testCodeFailure'
+  error: 'Application package already exists.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    StudioApplicationClient.graphql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit/dist/development/studio-application-client.js:19:19)
+    async StudioApplicationClient.ensureLocalPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit/dist/development/studio-application-client.js:37:9)
+    async TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit/tests/application-devkit.test.mjs:397:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 19
+# suites 0
+# pass 18
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1027.635875
+ ELIFECYCLE  Test failed. See above for more details.

@@ -1,0 +1,159 @@
+{
+  "scenario": "APIE2E-PROVIDER-DYNAMIC-008",
+  "providers": [
+    {
+      "providerId": "AUTOBYTEUS",
+      "response": {
+        "data": {
+          "reloadProviderModelCatalog": {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "AUTOBYTEUS",
+              "name": "AutoByteus",
+              "providerType": "AUTOBYTEUS",
+              "isCustom": false,
+              "catalogMode": "DISCOVERED"
+            },
+            "sources": [
+              {
+                "modelKind": "LLM",
+                "state": "ERROR",
+                "modelCount": 0,
+                "successfulUnitCount": 0,
+                "failedUnitCount": 1,
+                "safeMessage": "AUTOBYTEUS_MODEL_DISCOVERY_CREDENTIAL_UNAVAILABLE"
+              },
+              {
+                "modelKind": "AUDIO",
+                "state": "ERROR",
+                "modelCount": 0,
+                "successfulUnitCount": 0,
+                "failedUnitCount": 1,
+                "safeMessage": "AUTOBYTEUS_MODEL_DISCOVERY_CREDENTIAL_UNAVAILABLE"
+              },
+              {
+                "modelKind": "IMAGE",
+                "state": "ERROR",
+                "modelCount": 0,
+                "successfulUnitCount": 0,
+                "failedUnitCount": 1,
+                "safeMessage": "AUTOBYTEUS_MODEL_DISCOVERY_CREDENTIAL_UNAVAILABLE"
+              }
+            ],
+            "llmModels": [],
+            "audioModels": [],
+            "imageModels": [],
+            "videoModels": []
+          }
+        }
+      }
+    },
+    {
+      "providerId": "LMSTUDIO",
+      "response": {
+        "data": {
+          "reloadProviderModelCatalog": {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "LMSTUDIO",
+              "name": "LM Studio",
+              "providerType": "LMSTUDIO",
+              "isCustom": false,
+              "catalogMode": "DISCOVERED"
+            },
+            "sources": [
+              {
+                "modelKind": "LLM",
+                "state": "READY",
+                "modelCount": 15,
+                "successfulUnitCount": 1,
+                "failedUnitCount": 0,
+                "safeMessage": null
+              }
+            ],
+            "llmModels": [
+              {
+                "modelIdentifier": "deepseek-ocr:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "google/gemma-4-31b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen3.5-27b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen3.6-27b:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              },
+              {
+                "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@127.0.0.1:1234",
+                "providerId": "LMSTUDIO",
+                "runtime": "lmstudio"
+              }
+            ],
+            "audioModels": [],
+            "imageModels": [],
+            "videoModels": []
+          }
+        }
+      }
+    }
+  ]
+}

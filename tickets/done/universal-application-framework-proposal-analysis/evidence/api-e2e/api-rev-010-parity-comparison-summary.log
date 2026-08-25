@@ -1,0 +1,8 @@
+# API-REV-010 exact parity comparison summary
+UTC 2026-07-30T09:50:46Z
+BASELINE_COUNT 73
+after-standalone-initial COUNT=73 PARITY=73/73_IDENTICAL
+after-standalone-watch COUNT=73 PARITY=73/73_IDENTICAL
+after-dev-studio-initial COUNT=73 PARITY=73/73_IDENTICAL
+after-dev-studio-watch COUNT=73 PARITY=73/73_IDENTICAL
+RESULT=PASS

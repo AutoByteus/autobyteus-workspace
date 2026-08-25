@@ -87,6 +87,7 @@ export class AgentRunService {
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+      provisioningService?: AgentRunProvisioningService;
       activationService?: StandaloneAgentRunActivationService;
     } = {},
   ) {
@@ -96,7 +97,7 @@ export class AgentRunService {
     this.historyCatalogService =
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     const workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.provisioningService = new AgentRunProvisioningService(memoryDir, {
+    this.provisioningService = deps.provisioningService ?? new AgentRunProvisioningService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,
@@ -282,6 +283,22 @@ const normalizeRequiredRunId = (runId: string): string => {
 };
 
 let cachedAgentRunService: AgentRunService | null = null;
+
+export const bindProcessAgentRunService = (service: AgentRunService): void => {
+  if (!service) {
+    throw new Error("A process AgentRunService instance is required.");
+  }
+  if (cachedAgentRunService) {
+    throw new Error("The process AgentRunService is already initialized.");
+  }
+  cachedAgentRunService = service;
+};
+
+export const releaseProcessAgentRunService = (service: AgentRunService): void => {
+  if (cachedAgentRunService === service) {
+    cachedAgentRunService = null;
+  }
+};
 
 export const getAgentRunService = (): AgentRunService => {
   if (!cachedAgentRunService) {

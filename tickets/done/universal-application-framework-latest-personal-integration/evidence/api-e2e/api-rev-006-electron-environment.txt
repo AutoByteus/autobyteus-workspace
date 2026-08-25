@@ -1,0 +1,13 @@
+recordedAt=2026-08-22T19:09:50Z
+root=/private/tmp/api-rev006-electron-classroom-20260822210950-99567
+marker=/private/tmp/api-rev006-electron-classroom-20260822210950-99567/.api-rev-006-owned
+discoveryPort=55888
+classroomPort=55889
+executable=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+credentialSource=/Users/normy/.autobyteus/server-data/.env
+credentialSourceMode=-rw-------
+agentPackage=/Users/normy/autobyteus_org/autobyteus-agents
+ordinaryPort=29695
+ordinaryPid=37991
+ordinaryHealthHttp=200
+harnessEnvironment=AUTOBYTEUS_* and DATABASE_URL parent overrides stripped; supported E2E launcher injects isolated root/port
