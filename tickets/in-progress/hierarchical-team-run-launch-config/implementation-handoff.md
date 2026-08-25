@@ -17,120 +17,138 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md`
-- Preserved API/E2E and delivery history:
+- Corrected API/E2E applicability authority and preserved real-user baseline:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-user-reachability-correction.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-010-real-user-scope-resolution.md`
+- Preserved delivery history:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integrated-state-refresh.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md`
-- Triggering CRR-018 evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-018.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-018.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-018.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stored-control-losslessness-crr-018.txt`
 
 ## Current Implementation Summary
 
-IR-012 is the bounded implementation-owned Local Fix for CRR-018 finding CR-013 / MP-CR-010. CR-011 and CR-012 remain resolved, and the approved SR-013 capability split and singular historical representability policy remain unchanged.
+IR-013 implements the reviewed SR-015 / ARCH-REV-007 producer-bounded cleanup from committed IR-012. The unsupported CR/LF-specific classifier predicate, residual styling, and synthetic fixtures are removed. The generic IR-011 per-field schema/enum/type classifier remains the singular policy and has no product provenance or provider branch. Retained stale/removed-value tests now use the named product path: stale `reasoning_effort=ultra` and removed optional `service_tier=fast`.
 
-`historicalModelConfigFields.ts` now chooses the normal text control only when a schema-valid string contains no carriage return or line feed, matching the actual `<input type="text">` value capability. Ordinary single-line values remain normal disabled controls. Values the control would change become one `historical_residual`. The existing exact residual renderer now uses whitespace-preserving presentation so its retained CR/LF content is visible rather than collapsed. No component-local classification or alternate fallback path was added.
+The SR-012 shared locked Settings form, SR-013 editable/stored Team and Agent capability split, immutable V2 topology/order, exact producer-backed residual behavior, stable ordering, no duplication, and zero mutation remain unchanged. No draft, store, workspace, readiness, launch, backend, GraphQL, V2, migration, allocation, mobile, application, or external-channel owner changed.
 
-- Current source commit: `003413b05` (`fix(web): preserve multiline stored config values`)
-- Preserved IR-011 source commit: `ab7d8eedf` (`fix(web): preserve exact stored model config history`)
-- Implementation cycle: `Local Fix`
-- Current implementation revision: `IR-012`
-- Current solution basis: `SR-013`
-- Current architecture review: `ARCH-REV-005 / Pass`
-- Triggering review/finding: `CRR-018`; `CR-013`; material premise `MP-CR-010`
-- Resolved findings retained: `CR-011`, `CR-012`
-- Current disposition: ready for repeat complete source review; API/E2E and delivery remain blocked until source Pass
+- Implementation cycle: `Design-Approved Cleanup`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/tickets/in-progress/hierarchical-team-run-launch-config/implementation-revision-record.md`
+- Current implementation revision: `IR-013`
+- Current source commit: `554e1baaa2e455ca8c73e0414a100e1c8e24829a` (`refactor(web): remove synthetic multiline history scope`)
+- Related solution revisions: `SR-015` current; `SR-014` producer boundary; `SR-013` capability/classifier baseline; `SR-012` shared-form baseline
+- Related architecture review: `ARCH-REV-007 / Pass`; `ARCH-REV-006 / AR-001` resolved
+- Related code review: `CRR-021` rescinded `CR-013` and classified `MP-CR-010` Not Reachable
+- Related API/E2E: `API-REV-010 / Pass 98%` for real current-user paths; `API-E2E-F-003` Out Of Scope / Non-Blocking
+- Related delivery: `DR-004` is preserved historical delivery state; no delivery re-entry is claimed
+- Current disposition: ready for complete source review; do not route directly to API/E2E or delivery
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior / requirement | IR-012 implementation | Result |
-| --- | --- | --- |
-| BEH-010 / R-044 / AC-038 / MP-CR-010 | The singular `canCurrentControlRepresent` path delegates text strings to `canTextInputRepresentExactly`; CR/LF strings become residuals while ordinary strings remain current controls. | The actual HTML text input never receives a persisted string it would change. |
-| R-044 / AC-038 | `HistoricalModelConfigFallback.vue` retains exact string text and uses `whitespace-pre-wrap`. | A multiline value appears once, with its line break visible, and without a duplicate or changed text input value. |
-| BEH-010 / R-042–R-043 / AC-035–AC-037 | No neutral/editable/stored type, stored projector, recursive discrimination, or immutable topology path changed. | CR-011 remains resolved and one shared visual form retains distinct capabilities. |
-| BEH-001–BEH-009 | No draft/store/readiness/workspace preparation/launch/backend/GraphQL/V2/migration/allocation/mobile/application/external owner changed. | Prior functional and editable-presentation baselines remain unopened. |
+| Behavior / Requirement | Approved Change Or Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| BEH-010 / R-044 / AC-038 / DS-006 | Apply blocking exact-history acceptance only to settings accepted through a named supported current/released catalog and normal launch path. | `historicalModelConfigFields.ts` retains generic schema/enum/type scalar classification; `HistoricalModelConfigFallback.vue` retains one compact residual renderer. | Producer-backed stale/removed values remain exact once; unsupported free-text CR/LF machinery is absent. |
+| R-043–R-044 / AC-036–AC-038 / MP-CR-009 | Preserve one explicit stored key exactly once, without editable Default normalization, in stable order and without mutation. | Direct classifier plus root/nested-Team and Agent mounted coverage use stale `reasoning_effort` and removed `service_tier`. | Supported partial/whole-schema history remains covered at all three subject boundaries. |
+| BEH-010 / USER-UX-003 | Preserve one shared locked Settings form with disabled controls, operable disclosures, no Reset, and no Run. | Existing shared Team form/tree/control composition is unchanged; the supported stored Settings journey was rerendered. | Eight fields remained disabled; explanation present; disclosure operable; no command output or narrow overflow. |
+| BEH-001–BEH-009 | Preserve all previously passed authoring, workspace, readiness, launch, backend, V2, migration, allocation, mobile, application, and external behavior. | No source in those owners changed. | Prior functional baseline remains unopened. |
+| Product-reachability gate / MP-CR-010 | Do not ship code or blockers for a state created only by page-local catalog mutation and arbitrary injected GraphQL/V2 data. | Removed `canTextInputRepresentExactly`, CR/LF branches, multiline-only styling, and ordinary/LF/CR fixtures/assertions. | Clean-cut removal completed; no renamed synthetic case, provenance helper, feature flag, or alternate fallback added. |
 
 ## Key Files Or Areas
 
-### Production correction
+### Production cleanup
 
 - `autobyteus-web/utils/historicalModelConfigFields.ts`
 - `autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue`
 
-### Focused coverage
+### Focused coverage cleanup and retargeting
 
 - `autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts`
 - `autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts`
+- `autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts`
 
 ## Important Assumptions
 
-- SR-013, R-044 / AC-038, and ARCH-REV-005 remain authoritative.
-- Current controls may present an explicit stored value only if that concrete control retains it exactly.
-- HTML single-line text inputs strip CR/LF; enum, boolean, and numeric behavior is unchanged by this correction.
-- Historical residual rows are the approved compact exact presentation for values the current control cannot reproduce.
+- The user-approved production-reachability rule and SR-015 govern this round: arbitrary GraphQLJSON injection, page-local catalog mutation, and hypothetical future/custom fields are not current acceptance blockers.
+- The current/released producer-backed history path includes emitted `reasoning_effort` and optional `service_tier`; these are the retained regression vocabulary.
+- The runtime classifier remains deliberately generic and provenance-free. Product scope is governed by initiating producer/path evidence, not by provider-specific conditions inside the classifier.
+- API-REV-010 is the independent real-user coverage baseline; the synthetic CR browser probe must not be rerun or treated as a product path.
 
 ## Known Risks And Limitations
 
-- IR-012 has implementation validation only and requires repeat complete source review. No API/E2E or delivery approval is claimed.
+- IR-013 has implementation validation only and requires complete source review before any later gate.
 - The package still has no directly installed `vue-tsc` executable; no standalone typecheck pass is claimed. Vue/TypeScript transforms and the production Nuxt build pass.
-- The actual stored `hello` TeamRun lacks a multiline current-schema value. That exact state was therefore rendered through mounted real root/nested-Team consumers rather than by mutating user history.
-- Existing Browserslist-age and chunk-size warnings remain unchanged.
-- No API/E2E environment setup, durable API/E2E execution, push, release, deployment, archival, tag, or cleanup was performed.
+- The actual stored `hello` TeamRun contains current representable values. Producer-backed stale/removed values are therefore validated in mounted shared-form consumers, without mutating product history.
+- Existing Browserslist-age, chunk-size, and expected focused-test warning output remain unchanged.
+- No API/E2E environment setup or execution, synthetic CR scenario, push, release, deployment, archival, tag, or cleanup was performed.
 
 ## Task Design Health Assessment Implementation Check
 
-- **Post-implementation design health:** Healthy; CRR-018 explicitly classified this as a bounded Local Fix rather than Design Impact.
-- **Authority:** Historical representability remains owned by one pure classifier; no component-local capability policy was added.
-- **Actual-control fidelity:** The predicate now reflects the single-line text input's CR/LF sanitization.
-- **Historical truth:** Residual text preserves exact content and visual whitespace, with no editable normalization or mutation.
-- **Complexity:** Changed production files are 82 and 41 effective non-empty lines, both below 500; the correction is 12 production-source changed lines.
+- Reviewed change posture: clean-cut cleanup of premise-driven unsupported behavior
+- Reviewed root-cause classification: no current product defect; `MP-CR-010` Not Reachable and `API-E2E-F-003` Out Of Scope
+- Reviewed refactor decision: bounded removal now; no broader refactor
+- Implementation matched the reviewed assessment: `Yes`
+- If challenged, routed as Design Impact: `N/A` for IR-013; SR-014/SR-015 and ARCH-REV-006/007 already corrected the scope
+- Evidence / notes: the five-path delta exactly removes the enumerated unsupported predicate, styling, and fixtures and retargets retained tests without adding new runtime machinery or changing an authority boundary
 
 ## Legacy / Compatibility Removal Check
 
-- No compatibility wrapper, dual read, alternate renderer, or legacy fallback was added.
-- The rejected `StoredTeamRunConfigForm.vue`, `StoredTeamRunConfigTree.vue`, and `StoredLaunchConfigurationCard.vue` remain absent.
-- Stored projection remains free of authoring imports and fabricated authoring sentinels.
+- Backward-compatibility mechanisms introduced: `None`
+- Legacy old behavior retained in scope: `No`
+- Dead/obsolete code, helpers, tests, and styling removed in scope: `Yes`
+- Shared structures remain tight: `Yes`; no optional shared capability or parallel representation was added
+- Canonical shared design guidance reapplied: `Yes`; the production-reachability gate is the direct basis for removal
+- Changed production source guardrails: `Yes`; 77 and 41 effective non-empty lines, both below 500, with a net production reduction
+- Notes: the rejected three Stored-card components remain absent; stored type/projector authoring-import and sentinel guards remain green
 
 ## Persisted Data Transition Check
 
-Not applicable to IR-012. No persistence, GraphQL, generated contract, V2 schema, migration, runtime, backend, or identity-allocation behavior changed.
+- Approved decision: `Not Affected`
+- Design reference: SR-015 changes only UI classification/presentation scope and test vocabulary; V2 data and normal readers/writers remain unchanged
+- Unapproved migration or version-specific fallback introduced: `No`
+- Deviation: `None`
+
+## Environment Or Dependency Notes
+
+- Focused tests and build used the repository's existing `pnpm` workspace installation.
+- The implementation render check used the browser-rendered Nuxt `/workspace` surface against the existing local application backend and did not disturb or alter persisted user data.
+- Nuxt dev was stopped after inspection. No implementation-owned long-running process remains.
 
 ## Local Implementation Checks Run
 
 | Check | Result |
 | --- | --- |
-| Focused stored/shared form cohort | Pass: 11 files / 113 tests. Direct classifier covers ordinary, LF, and CR strings. Mounted root/nested-Team consumers cover normal disabled control versus exact multiline residual, no duplicate input, whitespace preservation, and zero mutation. Evidence: `implementation-evidence/web-stored-settings-focused-ir-012.txt`. |
-| `autobyteus-web: pnpm build` | Pass: 3,732 modules and 15 prerendered routes. Evidence: `implementation-evidence/web-build-ir-012.txt`. |
-| Web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-012.txt`. |
-| Static/source audit | Pass: singular classifier ownership, exact residual presentation, stored-authoring boundary, source sizes, and source-commit whitespace. Evidence: `implementation-evidence/static-audit-ir-012.txt`. |
-| Standalone `vue-tsc` | Still unavailable in this package; no green result claimed. The unchanged command-not-found evidence remains `implementation-evidence/web-typecheck-ir-011.txt`. |
+| Focused stored/shared form cohort | Pass: 11 files / 112 tests. Includes direct classifier, root/nested-Team, Agent, stored adapter, shared runtime/config form, workspace, panel, and launch-store coverage. Evidence: `implementation-evidence/web-stored-settings-focused-ir-013.txt`. |
+| `autobyteus-web: pnpm build` | Pass: Nuxt production build, 3,732 modules, 15 prerendered routes. Evidence: `implementation-evidence/web-build-ir-013.txt`. |
+| Web/localization guards | Pass: web boundary, localization boundary, and localization literal audit. Evidence: `implementation-evidence/web-guards-ir-013.txt`. |
+| Static/source audit | Pass: unsupported vocabulary and styling absent, named producer-backed test vocabulary present across direct/Team/Agent coverage, stored-authoring boundary preserved, source sizes green, source diff whitespace green. Evidence: `implementation-evidence/static-audit-ir-013.txt`. |
+| Standalone `vue-tsc` | Not run because the executable remains unavailable in this package; no green result is claimed. The unchanged limitation is documented in the prior IR-011 evidence. |
 
 ## Frontend Rendered-Result Check
 
-- **Actual journey:** Browser-rendered Nuxt `/workspace` -> Temp Workspace -> Nested Classroom Test Team -> stored run `hello` -> stored Teacher -> header Edit Config.
-- **Actual result:** Stored form retained `data-mode="stored"`; eight real fields were disabled; read-only explanation remained; Run/Reset were absent; Advanced disclosure remained operable.
-- **Narrow result:** At 1050x900 the form measured 645px client and scroll widths, with no horizontal overflow. Direct screenshot inspection found no density, alignment, control, copy, or disclosure regression.
-- **CR-013 state:** Mounted root and nested-Team renderers showed ordinary text once in the normal disabled input and `line one\nline two` once in a residual with exact `textContent`, `whitespace-pre-wrap`, no multiline input, and zero mutation.
-- **Evidence:**
-  - `implementation-evidence/render-check-ir-012.txt`
-  - `implementation-evidence/render-browser-ir-012.json`
-  - `implementation-evidence/stored-team-settings-ir-012.png`
-  - `implementation-evidence/web-stored-settings-focused-ir-012.txt`
+- Affected surface / journey: Workspace -> Temp Workspace -> Nested Classroom Test Team -> stored TeamRun `hello` -> Teacher -> Edit Config.
+- References: SR-015, SR-014, SR-013, SR-012, `ui-ux-spec.md`, API-REV-010 real-user scope.
+- Rendered surface: current Nuxt browser renderer against the existing local application backend.
+- Inspected result: `data-mode="stored"`; eight disabled value fields; read-only explanation; no Run or Reset; real Advanced disclosure toggled `aria-expanded` from true to false; 645px client/scroll widths with no narrow overflow.
+- Direct visual inspection: approved quiet root sequence, compact historical layout, disabled state, spacing, and narrow readability were preserved; no regression was found.
+- Scope discipline: no page catalog mutation, arbitrary GraphQLJSON injection, persisted-data edit, synthetic CR/LF rerun, or unsupported-state screenshot was used.
+- Evidence:
+  - `implementation-evidence/render-check-ir-013.txt`
+  - `implementation-evidence/render-browser-ir-013.json`
+  - `implementation-evidence/stored-team-settings-ir-013.png`
+  - `implementation-evidence/web-stored-settings-focused-ir-013.txt`
+- Limitation: the live user snapshot does not contain producer-backed stale/removed values; mounted real shared-form consumers cover stale `reasoning_effort` and removed `service_tier` without mutating history.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Repeat complete source-review CR-013 at the singular classifier/control boundary, including LF/CR rejection, ordinary-string retention, exact residual whitespace, no duplication, and no component-local classification.
-- Confirm CR-011/CR-012 remain resolved and the bounded change does not reopen stored/editable capability ownership or any functional launch/backend owner.
-- Only after source Pass, API/E2E should refresh its coverage investigation and decide proportional execution for a persisted multiline string through existing-TeamRun/member Settings.
-- Repository-resident durable coverage changes made during API/E2E must return through proportional code review before delivery.
+- Complete source review should verify the exact SR-015 five-path removal, absence of renamed synthetic CR/LF fixtures, and preservation of the generic classifier and one compact residual owner.
+- Reconfirm retained direct/root/nested-Team/Agent assertions for stale `reasoning_effort`, removed `service_tier=fast`, stable order, one occurrence, and zero mutation.
+- Reconfirm no stored-authoring import/sentinel or deleted Stored-card path was reintroduced.
+- Treat API-REV-010 as the real-user baseline. Do not request or rerun the rescinded synthetic CR browser scenario.
 
-## API / E2E / Executable Coverage Status
+## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-CRR-018 failed IR-011 only on CR-013 and explicitly blocked API/E2E and delivery. IR-012 returns to repeat complete source review under the unchanged SR-013 / ARCH-REV-005 design. It is not routed directly to API/E2E or delivery, and no downstream approval is implied.
+IR-013 is routed only to complete source review. API-REV-010 already records `Pass / 98%` for real current-user paths and closes API-E2E-F-003 as Out Of Scope / Non-Blocking. This handoff does not claim a fresh API/E2E result and does not authorize direct delivery. The code reviewer owns the next routing decision after complete source review.
