@@ -1,0 +1,615 @@
+DR-003 LATEST BASE FETCH
+timestamp_utc=2026-08-22T20:08:08Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration
+branch=codex/universal-application-framework-latest-personal-integration
+pre_refresh_checkpoint=0b607a5844f66e19ffb55162e91150a7383c030a
+recorded_bootstrap_base=8ef282ba77705180d985e7000d801f0e0068cdc1
+pre_fetch_tracking_base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_fetch_tracking_base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+pre_merge_divergence=138/18
+base_commits_since_recorded_bootstrap=18
+base_changed_paths_since_recorded_bootstrap=201
+base_commit_list:
+d7d4eace4 (origin/personal, origin/HEAD, personal) docs(delivery): record token analytics cleanup
+ffdf344f2 docs(delivery): record token analytics finalization
+c3315f1e7 chore(ticket): finalize token statistics analytics
+49e386709 chore(delivery): refresh integrated Electron build evidence
+b37617ed4 chore(delivery): checkpoint token analytics candidate
+14c08eeb4 docs(delivery): retain final artifact paths
+201eddc45 docs(delivery): archive cwd terminal ticket
+7a21d5923 docs: reconcile token analytics field lifecycle
+95f538b66 fix(terminal): enforce absolute cwd contract
+0e571644f fix: align token statistics tab styling
+9dc755431 fix: reconcile sparse token cost buckets
+9b8846a12 fix: align cumulative token cost quality
+ea55b27bd fix: correct token analytics evidence
+f5be85b04 feat: add token usage analytics
+3c2967d95 feat(terminal): allow external absolute cwd
+base_changed_path_list:
+M	autobyteus-server-ts/docs/ARCHITECTURE.md
+M	autobyteus-server-ts/docs/modules/README.md
+M	autobyteus-server-ts/docs/modules/token_usage.md
+A	autobyteus-server-ts/prisma/migrations/20260822090000_add_token_usage_analytics/migration.sql
+M	autobyteus-server-ts/prisma/schema.prisma
+M	autobyteus-server-ts/src/api/graphql/schema.ts
+A	autobyteus-server-ts/src/api/graphql/types/token-usage-analytics.ts
+A	autobyteus-server-ts/src/api/graphql/types/token-usage-cost-summary.ts
+M	autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts
+M	autobyteus-server-ts/src/server-runtime.ts
+M	autobyteus-server-ts/src/startup/token-usage-current-schema-readiness.ts
+A	autobyteus-server-ts/src/token-usage/domain/token-usage-accounting-summary.ts
+A	autobyteus-server-ts/src/token-usage/domain/token-usage-analytics.ts
+M	autobyteus-server-ts/src/token-usage/domain/token-usage-run-record.ts
+A	autobyteus-server-ts/src/token-usage/projections/token-usage-analytics-contribution.ts
+M	autobyteus-server-ts/src/token-usage/projections/token-usage-cost-summary-aggregate.ts
+M	autobyteus-server-ts/src/token-usage/projections/token-usage-model-display-projection.ts
+M	autobyteus-server-ts/src/token-usage/projections/token-usage-pricing-summary.ts
+M	autobyteus-server-ts/src/token-usage/projections/token-usage-run-aggregate.ts
+M	autobyteus-server-ts/src/token-usage/projections/token-usage-run-record-state.ts
+A	autobyteus-server-ts/src/token-usage/providers/token-usage-analytics-provider.ts
+A	autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-analytics-record-codec.ts
+A	autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-analytics-repository.ts
+M	autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-record-codec.ts
+M	autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-summary-codec.ts
+A	autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts
+A	autobyteus-server-ts/src/token-usage/services/token-usage-analytics-projection-writer.ts
+A	autobyteus-server-ts/src/token-usage/services/token-usage-analytics-range-policy.ts
+M	autobyteus-server-ts/src/token-usage/services/token-usage-run-accumulator.ts
+A	autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+A	autobyteus-server-ts/tests/integration/token-usage/repositories/token-usage-analytics-atomicity.integration.test.ts
+A	autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-analytics-contribution.test.ts
+M	autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-run-fold.test.ts
+A	autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts
+A	autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-range-policy.test.ts
+M	autobyteus-ts/docs/terminal_tools.md
+M	autobyteus-ts/docs/tool_schema_and_configuration.md
+M	autobyteus-ts/src/tools/terminal/execution-cwd.ts
+M	autobyteus-ts/src/tools/terminal/tools/run-bash.ts
+M	autobyteus-ts/src/tools/terminal/tools/start-background-process.ts
+M	autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts
+M	autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts
+M	autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts
+D	autobyteus-web/components/common/BarChart.vue
+M	autobyteus-web/components/settings/TokenUsageStatistics.vue
+A	autobyteus-web/components/settings/__tests__/TokenUsageRunDetailsView.spec.ts
+M	autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts
+M	autobyteus-web/components/settings/token-usage/TokenUsageCostBreakdown.vue
+M	autobyteus-web/components/settings/token-usage/TokenUsageModelStatisticsTable.vue
+A	autobyteus-web/components/settings/token-usage/TokenUsageRunDetailsView.vue
+M	autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue
+M	autobyteus-web/components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+M	autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsControls.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsCoverage.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsSummaryCards.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsView.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageBreakdown.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageExactBreakdownTable.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsagePaceChart.vue
+A	autobyteus-web/components/settings/token-usage/analytics/TokenUsageTrendChart.vue
+A	autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+A	autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+A	autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts
+A	autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+A	autobyteus-web/components/settings/token-usage/analytics/__tests__/tokenUsageAnalyticsTestFixtures.ts
+M	autobyteus-web/components/settings/token-usage/tokenUsageStatisticsUi.ts
+M	autobyteus-web/docs/agent_execution_architecture.md
+M	autobyteus-web/docs/settings.md
+M	autobyteus-web/generated/graphql.ts
+A	autobyteus-web/graphql/queries/token_usage_analytics_queries.ts
+A	autobyteus-web/graphql/queries/token_usage_cost_summary_fragment.ts
+R063	autobyteus-web/graphql/queries/token_usage_statistics_queries.ts	autobyteus-web/graphql/queries/token_usage_run_statistics_queries.ts
+M	autobyteus-web/localization/messages/en/settings.ts
+M	autobyteus-web/localization/messages/zh-CN/settings.ts
+A	autobyteus-web/stores/__tests__/tokenUsageAnalytics.spec.ts
+M	autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts
+A	autobyteus-web/stores/tokenUsageAnalytics.ts
+R097	autobyteus-web/stores/tokenUsageStatistics.ts	autobyteus-web/stores/tokenUsageRunStatistics.ts
+A	autobyteus-web/types/tokenUsageAnalytics.ts
+R055	autobyteus-web/types/tokenUsageStatistics.ts	autobyteus-web/types/tokenUsageCostSummary.ts
+A	autobyteus-web/types/tokenUsageRunStatistics.ts
+A	autobyteus-web/utils/__tests__/tokenUsageAnalyticsCsv.spec.ts
+A	autobyteus-web/utils/tokenUsageAnalyticsCsv.ts
+A	autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts
+A	tickets/done/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md
+A	tickets/done/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md
+A	tickets/done/cwd-outside-workspace-tools/api-e2e-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/api-e2e-test-review-report.md
+A	tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/code-review-report.md
+A	tickets/done/cwd-outside-workspace-tools/code-review-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log
+A	tickets/done/cwd-outside-workspace-tools/delivery-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/design-review-report.md
+A	tickets/done/cwd-outside-workspace-tools/design-spec.md
+A	tickets/done/cwd-outside-workspace-tools/docs-sync-report.md
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-adjacent-without-mcp.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-adjacent.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-build.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-diff-check.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-final-diff-check.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-package-consumer.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-boundary.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-package-consumer.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-terminal-integration.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-unit.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log
+A	tickets/done/cwd-outside-workspace-tools/evidence/electron-build.log
+A	tickets/done/cwd-outside-workspace-tools/handoff-summary.md
+A	tickets/done/cwd-outside-workspace-tools/implementation-handoff.md
+A	tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/investigation-notes.md
+A	tickets/done/cwd-outside-workspace-tools/release-deployment-report.md
+A	tickets/done/cwd-outside-workspace-tools/requirements.md
+A	tickets/done/cwd-outside-workspace-tools/solution-revision-record.md
+A	tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md
+A	tickets/done/token-statistics-analytics/api-e2e-coverage-investigation.md
+A	tickets/done/token-statistics-analytics/api-e2e-execution-coverage-report.md
+A	tickets/done/token-statistics-analytics/api-e2e-revision-record.md
+A	tickets/done/token-statistics-analytics/api-e2e-test-review-report.md
+A	tickets/done/token-statistics-analytics/architecture-review-revision-record.md
+A	tickets/done/token-statistics-analytics/code-review-report.md
+A	tickets/done/token-statistics-analytics/code-review-revision-record.md
+A	tickets/done/token-statistics-analytics/delivery-revision-record.md
+A	tickets/done/token-statistics-analytics/design-review-report.md
+A	tickets/done/token-statistics-analytics/design-spec.md
+A	tickets/done/token-statistics-analytics/docs-sync-report.md
+A	tickets/done/token-statistics-analytics/electron-build-mac-report.md
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-backend.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-command.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-desktop.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-frontend.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-mobile.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-result.json
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-backend-health.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-browser-command.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-browser-result.json
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-desktop-analytics.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-desktop-runs.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-mobile-analytics.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-static-server.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-aggregation-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-final.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-tr-f-001-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-combined-tr-f-001-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-combined.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-graphql-e2e-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-graphql-e2e.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-unit.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-build.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/server-run-details-graphql-preserved.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-field-diagnosis.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-browser-result.json
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-current-frontend.png
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-frontend-build.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-frontend.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-static-server.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-graphql-this-month.json
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-focused-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-focused.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-trend.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-build-guards.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-field-revalidation-build.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-field-revalidation-guards.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-tabs-field-revalidation.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-tabs-tr-f-002-rerun.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-token-usage-broader.log
+A	tickets/done/token-statistics-analytics/evidence/api-e2e/web-token-usage-field-revalidation.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/delivery-final-check.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/electron-build-integrity-current.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/electron-build-integrity.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/electron-build-mac-current.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/electron-build-mac.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/integrated-state-current.log
+A	tickets/done/token-statistics-analytics/evidence/delivery/post-integration-token-tabs.log
+A	tickets/done/token-statistics-analytics/evidence/implementation-desktop.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-mobile-summary.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-mobile.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-desktop.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-desktop-analytics.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-desktop-runs.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-mobile-analytics.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-mobile-runs.png
+A	tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-result.json
+A	tickets/done/token-statistics-analytics/evidence/prototype-desktop.png
+A	tickets/done/token-statistics-analytics/evidence/prototype-mobile.png
+A	tickets/done/token-statistics-analytics/handoff-summary.md
+A	tickets/done/token-statistics-analytics/implementation-handoff.md
+A	tickets/done/token-statistics-analytics/implementation-revision-record.md
+A	tickets/done/token-statistics-analytics/investigation-notes.md
+A	tickets/done/token-statistics-analytics/prototype.html
+A	tickets/done/token-statistics-analytics/release-deployment-report.md
+A	tickets/done/token-statistics-analytics/release-notes.md
+A	tickets/done/token-statistics-analytics/requirements.md
+A	tickets/done/token-statistics-analytics/solution-revision-record.md
+A	tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md
+A	tickets/done/token-statistics-analytics/ui-ux-spec.md
+merge_tree_preview=PASS_NO_CONFLICTS
+integration_method=MERGE
+Auto-merging autobyteus-server-ts/docs/ARCHITECTURE.md
+Auto-merging autobyteus-server-ts/src/server-runtime.ts
+Merge made by the 'ort' strategy.
+ autobyteus-server-ts/docs/ARCHITECTURE.md          |   18 +-
+ autobyteus-server-ts/docs/modules/README.md        |    8 +-
+ autobyteus-server-ts/docs/modules/token_usage.md   |  224 +-
+ .../migration.sql                                  |   54 +
+ autobyteus-server-ts/prisma/schema.prisma          |   61 +-
+ autobyteus-server-ts/src/api/graphql/schema.ts     |    2 +
+ .../src/api/graphql/types/token-usage-analytics.ts |  252 +
+ .../api/graphql/types/token-usage-cost-summary.ts  |  204 +
+ .../src/api/graphql/types/token-usage-stats.ts     |  209 +-
+ .../legacy-token-usage-consolidation-repository.ts |    4 +-
+ autobyteus-server-ts/src/server-runtime.ts         |    2 +
+ .../token-usage-current-schema-readiness.ts        |   58 +-
+ .../domain/token-usage-accounting-summary.ts       |   69 +
+ .../token-usage/domain/token-usage-analytics.ts    |  131 +
+ .../token-usage/domain/token-usage-run-record.ts   |   60 +-
+ .../token-usage-analytics-contribution.ts          |   77 +
+ .../token-usage-cost-summary-aggregate.ts          |  102 +-
+ .../token-usage-model-display-projection.ts        |    9 +
+ .../projections/token-usage-pricing-summary.ts     |    2 +-
+ .../projections/token-usage-run-aggregate.ts       |  147 +-
+ .../projections/token-usage-run-record-state.ts    |    5 +-
+ .../providers/token-usage-analytics-provider.ts    |  153 +
+ .../sql/token-usage-analytics-record-codec.ts      |   68 +
+ .../sql/token-usage-analytics-repository.ts        |  106 +
+ .../sql/token-usage-run-record-codec.ts            |    4 +-
+ .../sql/token-usage-run-summary-codec.ts           |    4 +-
+ .../token-usage-analytics-aggregation-policy.ts    |  116 +
+ .../token-usage-analytics-projection-writer.ts     |   16 +
+ .../services/token-usage-analytics-range-policy.ts |   95 +
+ .../services/token-usage-run-accumulator.ts        |    5 +
+ .../token-usage-analytics-graphql.e2e.test.ts      |  331 +
+ ...n-usage-analytics-atomicity.integration.test.ts |  164 +
+ .../token-usage-analytics-contribution.test.ts     |   93 +
+ .../projections/token-usage-run-fold.test.ts       |   18 +
+ ...oken-usage-analytics-aggregation-policy.test.ts |  147 +
+ .../token-usage-analytics-range-policy.test.ts     |   74 +
+ autobyteus-ts/docs/terminal_tools.md               |   33 +-
+ .../docs/tool_schema_and_configuration.md          |   10 +-
+ autobyteus-ts/src/tools/terminal/execution-cwd.ts  |   55 +-
+ autobyteus-ts/src/tools/terminal/tools/run-bash.ts |    5 +-
+ .../terminal/tools/start-background-process.ts     |    5 +-
+ .../tools/terminal/terminal-tools.test.ts          |   66 +-
+ .../tests/unit/tools/terminal/run-bash.test.ts     |  128 +-
+ .../usage/providers/run-bash-openai-schema.test.ts |   64 +
+ autobyteus-web/components/common/BarChart.vue      |  128 -
+ .../components/settings/TokenUsageStatistics.vue   |  129 +-
+ .../__tests__/TokenUsageRunDetailsView.spec.ts     |  184 +
+ .../__tests__/TokenUsageStatistics.spec.ts         |  208 +-
+ .../token-usage/TokenUsageCostBreakdown.vue        |    2 +-
+ .../token-usage/TokenUsageModelStatisticsTable.vue |   38 +-
+ .../token-usage/TokenUsageRunDetailsView.vue       |  111 +
+ .../token-usage/TokenUsageTaskStatisticsTable.vue  |    2 +-
+ .../TokenUsageModelStatisticsTable.spec.ts         |   14 +-
+ .../TokenUsageTaskStatisticsTable.spec.ts          |    6 +-
+ .../analytics/TokenUsageAnalyticsControls.vue      |  110 +
+ .../analytics/TokenUsageAnalyticsCoverage.vue      |   48 +
+ .../analytics/TokenUsageAnalyticsSummaryCards.vue  |   71 +
+ .../analytics/TokenUsageAnalyticsView.vue          |   55 +
+ .../token-usage/analytics/TokenUsageBreakdown.vue  |  187 +
+ .../analytics/TokenUsageExactBreakdownTable.vue    |   82 +
+ .../token-usage/analytics/TokenUsagePaceChart.vue  |  205 +
+ .../token-usage/analytics/TokenUsageTrendChart.vue |  120 +
+ .../__tests__/TokenUsageAnalyticsStates.spec.ts    |  169 +
+ .../__tests__/TokenUsageBreakdown.spec.ts          |   90 +
+ .../__tests__/TokenUsagePaceChart.spec.ts          |  131 +
+ .../__tests__/TokenUsageTrendChart.spec.ts         |   69 +
+ .../__tests__/tokenUsageAnalyticsTestFixtures.ts   |   89 +
+ .../settings/token-usage/tokenUsageStatisticsUi.ts |    2 +-
+ .../docs/agent_execution_architecture.md           |   28 +-
+ autobyteus-web/docs/settings.md                    |   28 +-
+ autobyteus-web/generated/graphql.ts                |  284 +-
+ .../queries/token_usage_analytics_queries.ts       |   52 +
+ .../queries/token_usage_cost_summary_fragment.ts   |   40 +
+ ...es.ts => token_usage_run_statistics_queries.ts} |   39 +-
+ .../localization/messages/en/settings.ts           |   90 +
+ .../localization/messages/zh-CN/settings.ts        |   90 +
+ .../stores/__tests__/tokenUsageAnalytics.spec.ts   |  116 +
+ .../stores/__tests__/tokenUsageStatistics.spec.ts  |    6 +-
+ autobyteus-web/stores/tokenUsageAnalytics.ts       |  102 +
+ ...ageStatistics.ts => tokenUsageRunStatistics.ts} |    6 +-
+ autobyteus-web/types/tokenUsageAnalytics.ts        |   16 +
+ ...UsageStatistics.ts => tokenUsageCostSummary.ts} |   37 -
+ autobyteus-web/types/tokenUsageRunStatistics.ts    |   41 +
+ .../utils/__tests__/tokenUsageAnalyticsCsv.spec.ts |   77 +
+ autobyteus-web/utils/tokenUsageAnalyticsCsv.ts     |   56 +
+ .../utils/tokenUsageAnalyticsPresentation.ts       |  123 +
+ .../api-e2e-coverage-investigation.md              |  221 +
+ .../api-e2e-execution-coverage-report.md           |  228 +
+ .../api-e2e-revision-record.md                     |   60 +
+ .../api-e2e-test-review-report.md                  |   72 +
+ .../architecture-review-revision-record.md         |  151 +
+ .../code-review-report.md                          |  173 +
+ .../code-review-revision-record.md                 |  105 +
+ .../delivery-integration-check.log                 |  103 +
+ .../delivery-revision-record.md                    |   92 +
+ .../design-review-report.md                        |  236 +
+ .../cwd-outside-workspace-tools/design-spec.md     |  549 ++
+ .../docs-sync-report.md                            |   65 +
+ .../evidence/api-e2e-adjacent-without-mcp.log      |  168 +
+ .../evidence/api-e2e-adjacent.log                  |  179 +
+ .../evidence/api-e2e-build.log                     |    5 +
+ .../evidence/api-e2e-diff-check.log                |  188 +
+ .../evidence/api-e2e-final-diff-check.log          |    0
+ .../evidence/api-e2e-package-consumer.log          |   35 +
+ .../evidence/api-e2e-round2-boundary.log           |   49 +
+ .../evidence/api-e2e-round2-package-consumer.log   |   40 +
+ .../evidence/api-e2e-terminal-integration.log      |   30 +
+ .../evidence/api-e2e-unit.log                      |  140 +
+ .../evidence/electron-build-round2.log             |  700 ++
+ .../evidence/electron-build.log                    |  701 ++
+ .../cwd-outside-workspace-tools/handoff-summary.md |  143 +
+ .../implementation-handoff.md                      |  144 +
+ .../implementation-revision-record.md              |   89 +
+ .../investigation-notes.md                         |  196 +
+ .../release-deployment-report.md                   |   91 +
+ .../cwd-outside-workspace-tools/requirements.md    |  178 +
+ .../solution-revision-record.md                    |   88 +
+ .../terminal-cwd-policy.md                         |   52 +
+ .../api-e2e-coverage-investigation.md              |  271 +
+ .../api-e2e-execution-coverage-report.md           |  281 +
+ .../api-e2e-revision-record.md                     |  155 +
+ .../api-e2e-test-review-report.md                  |   61 +
+ .../architecture-review-revision-record.md         |   53 +
+ .../code-review-report.md                          |  178 +
+ .../code-review-revision-record.md                 |  331 +
+ .../delivery-revision-record.md                    |   70 +
+ .../design-review-report.md                        |  324 +
+ .../done/token-statistics-analytics/design-spec.md |  561 ++
+ .../token-statistics-analytics/docs-sync-report.md |   53 +
+ .../electron-build-mac-report.md                   |   45 +
+ .../evidence/api-e2e/browser-live-backend.log      |  157 +
+ .../evidence/api-e2e/browser-live-command.log      |    4 +
+ .../evidence/api-e2e/browser-live-desktop.png      |  Bin 0 -> 76802 bytes
+ .../evidence/api-e2e/browser-live-frontend.log     |   19 +
+ .../evidence/api-e2e/browser-live-mobile.png       |  Bin 0 -> 35951 bytes
+ .../evidence/api-e2e/browser-live-result.json      |   29 +
+ .../api-e2e/field-rerun-backend-health.log         |    5 +
+ .../api-e2e/field-rerun-browser-command.log        |  139 +
+ .../api-e2e/field-rerun-browser-result.json        |  153 +
+ .../api-e2e/field-rerun-desktop-analytics.png      |  Bin 0 -> 118216 bytes
+ .../evidence/api-e2e/field-rerun-desktop-runs.png  |  Bin 0 -> 167550 bytes
+ .../api-e2e/field-rerun-mobile-analytics.png       |  Bin 0 -> 36048 bytes
+ .../evidence/api-e2e/field-rerun-static-server.log |   93 +
+ .../api-e2e/server-analytics-aggregation-rerun.log |  111 +
+ .../api-e2e/server-analytics-atomicity-final.log   |  113 +
+ .../api-e2e/server-analytics-atomicity-rerun.log   |  135 +
+ .../server-analytics-atomicity-tr-f-001-rerun.log  |  113 +
+ .../api-e2e/server-analytics-atomicity.log         |  165 +
+ .../server-analytics-combined-tr-f-001-rerun.log   |  187 +
+ .../evidence/api-e2e/server-analytics-combined.log |  187 +
+ .../api-e2e/server-analytics-graphql-e2e-rerun.log |  118 +
+ .../api-e2e/server-analytics-graphql-e2e.log       |  145 +
+ .../evidence/api-e2e/server-analytics-unit.log     |  158 +
+ .../evidence/api-e2e/server-build.log              |   49 +
+ .../server-run-details-graphql-preserved.log       |  119 +
+ .../evidence/api-e2e/user-field-diagnosis.log      |   27 +
+ .../user-live-electron-backend-browser-result.json | 7917 ++++++++++++++++++++
+ ...user-live-electron-backend-current-frontend.png |  Bin 0 -> 119297 bytes
+ .../user-live-electron-backend-frontend-build.log  |  227 +
+ .../user-live-electron-backend-frontend.log        |  169 +
+ .../user-live-electron-backend-static-server.log   |   46 +
+ .../user-live-electron-graphql-this-month.json     |  200 +
+ .../api-e2e/web-analytics-focused-rerun.log        |   65 +
+ .../evidence/api-e2e/web-analytics-focused.log     |  126 +
+ .../evidence/api-e2e/web-analytics-trend.log       |   26 +
+ .../evidence/api-e2e/web-build-guards.log          |  250 +
+ .../api-e2e/web-field-revalidation-build.log       |  227 +
+ .../api-e2e/web-field-revalidation-guards.log      |   19 +
+ .../api-e2e/web-tabs-field-revalidation.log        |   22 +
+ .../evidence/api-e2e/web-tabs-tr-f-002-rerun.log   |   22 +
+ .../evidence/api-e2e/web-token-usage-broader.log   |  123 +
+ .../api-e2e/web-token-usage-field-revalidation.log |  140 +
+ .../evidence/delivery/delivery-final-check.log     |    6 +
+ .../delivery/electron-build-integrity-current.log  |   36 +
+ .../evidence/delivery/electron-build-integrity.log |   32 +
+ .../delivery/electron-build-mac-current.log        |  691 ++
+ .../evidence/delivery/electron-build-mac.log       |  691 ++
+ .../evidence/delivery/integrated-state-current.log |   10 +
+ .../delivery/post-integration-token-tabs.log       |   26 +
+ .../evidence/implementation-desktop.png            |  Bin 0 -> 124686 bytes
+ .../evidence/implementation-mobile-summary.png     |  Bin 0 -> 45743 bytes
+ .../evidence/implementation-mobile.png             |  Bin 0 -> 35985 bytes
+ .../evidence/implementation-rework-desktop.png     |  Bin 0 -> 115717 bytes
+ ...mplementation-rework-tabs-desktop-analytics.png |  Bin 0 -> 58928 bytes
+ .../implementation-rework-tabs-desktop-runs.png    |  Bin 0 -> 50154 bytes
+ ...implementation-rework-tabs-mobile-analytics.png |  Bin 0 -> 36036 bytes
+ .../implementation-rework-tabs-mobile-runs.png     |  Bin 0 -> 30827 bytes
+ .../implementation-rework-tabs-result.json         |  214 +
+ .../evidence/prototype-desktop.png                 |  Bin 0 -> 187147 bytes
+ .../evidence/prototype-mobile.png                  |  Bin 0 -> 88691 bytes
+ .../token-statistics-analytics/handoff-summary.md  |   86 +
+ .../implementation-handoff.md                      |  132 +
+ .../implementation-revision-record.md              |  134 +
+ .../investigation-notes.md                         |  190 +
+ .../done/token-statistics-analytics/prototype.html |  518 ++
+ .../release-deployment-report.md                   |  107 +
+ .../token-statistics-analytics/release-notes.md    |   21 +
+ .../token-statistics-analytics/requirements.md     |  239 +
+ .../solution-revision-record.md                    |   42 +
+ .../token-usage-analytics-data-contract.md         |  202 +
+ .../done/token-statistics-analytics/ui-ux-spec.md  |  267 +
+ 201 files changed, 28919 insertions(+), 1123 deletions(-)
+ create mode 100644 autobyteus-server-ts/prisma/migrations/20260822090000_add_token_usage_analytics/migration.sql
+ create mode 100644 autobyteus-server-ts/src/api/graphql/types/token-usage-analytics.ts
+ create mode 100644 autobyteus-server-ts/src/api/graphql/types/token-usage-cost-summary.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/domain/token-usage-accounting-summary.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/domain/token-usage-analytics.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/projections/token-usage-analytics-contribution.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/providers/token-usage-analytics-provider.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-analytics-record-codec.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-analytics-repository.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/services/token-usage-analytics-projection-writer.ts
+ create mode 100644 autobyteus-server-ts/src/token-usage/services/token-usage-analytics-range-policy.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/integration/token-usage/repositories/token-usage-analytics-atomicity.integration.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-analytics-contribution.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-range-policy.test.ts
+ delete mode 100644 autobyteus-web/components/common/BarChart.vue
+ create mode 100644 autobyteus-web/components/settings/__tests__/TokenUsageRunDetailsView.spec.ts
+ create mode 100644 autobyteus-web/components/settings/token-usage/TokenUsageRunDetailsView.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsControls.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsCoverage.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsSummaryCards.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsView.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageBreakdown.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageExactBreakdownTable.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsagePaceChart.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/TokenUsageTrendChart.vue
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsagePaceChart.spec.ts
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts
+ create mode 100644 autobyteus-web/components/settings/token-usage/analytics/__tests__/tokenUsageAnalyticsTestFixtures.ts
+ create mode 100644 autobyteus-web/graphql/queries/token_usage_analytics_queries.ts
+ create mode 100644 autobyteus-web/graphql/queries/token_usage_cost_summary_fragment.ts
+ rename autobyteus-web/graphql/queries/{token_usage_statistics_queries.ts => token_usage_run_statistics_queries.ts} (63%)
+ create mode 100644 autobyteus-web/stores/__tests__/tokenUsageAnalytics.spec.ts
+ create mode 100644 autobyteus-web/stores/tokenUsageAnalytics.ts
+ rename autobyteus-web/stores/{tokenUsageStatistics.ts => tokenUsageRunStatistics.ts} (97%)
+ create mode 100644 autobyteus-web/types/tokenUsageAnalytics.ts
+ rename autobyteus-web/types/{tokenUsageStatistics.ts => tokenUsageCostSummary.ts} (55%)
+ create mode 100644 autobyteus-web/types/tokenUsageRunStatistics.ts
+ create mode 100644 autobyteus-web/utils/__tests__/tokenUsageAnalyticsCsv.spec.ts
+ create mode 100644 autobyteus-web/utils/tokenUsageAnalyticsCsv.ts
+ create mode 100644 autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/api-e2e-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/architecture-review-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/code-review-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/code-review-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/delivery-integration-check.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/delivery-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/design-review-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/design-spec.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/docs-sync-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-adjacent-without-mcp.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-adjacent.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-build.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-diff-check.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-final-diff-check.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-package-consumer.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-boundary.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-round2-package-consumer.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-terminal-integration.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/api-e2e-unit.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/electron-build-round2.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/evidence/electron-build.log
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/handoff-summary.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/implementation-handoff.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/implementation-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/investigation-notes.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/release-deployment-report.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/requirements.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/solution-revision-record.md
+ create mode 100644 tickets/done/cwd-outside-workspace-tools/terminal-cwd-policy.md
+ create mode 100644 tickets/done/token-statistics-analytics/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/token-statistics-analytics/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/api-e2e-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/architecture-review-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/code-review-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/code-review-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/delivery-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/design-review-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/design-spec.md
+ create mode 100644 tickets/done/token-statistics-analytics/docs-sync-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/electron-build-mac-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-backend.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-command.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-desktop.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-frontend.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-mobile.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/browser-live-result.json
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-backend-health.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-browser-command.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-browser-result.json
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-desktop-analytics.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-desktop-runs.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-mobile-analytics.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/field-rerun-static-server.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-aggregation-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-final.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity-tr-f-001-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-atomicity.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-combined-tr-f-001-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-combined.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-graphql-e2e-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-graphql-e2e.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-analytics-unit.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-build.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/server-run-details-graphql-preserved.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-field-diagnosis.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-browser-result.json
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-current-frontend.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-frontend-build.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-frontend.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-backend-static-server.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/user-live-electron-graphql-this-month.json
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-focused-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-focused.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-analytics-trend.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-build-guards.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-field-revalidation-build.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-field-revalidation-guards.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-tabs-field-revalidation.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-tabs-tr-f-002-rerun.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-token-usage-broader.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/api-e2e/web-token-usage-field-revalidation.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/delivery-final-check.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/electron-build-integrity-current.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/electron-build-integrity.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/electron-build-mac-current.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/electron-build-mac.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/integrated-state-current.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/delivery/post-integration-token-tabs.log
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-desktop.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-mobile-summary.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-mobile.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-desktop.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-desktop-analytics.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-desktop-runs.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-mobile-analytics.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-mobile-runs.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/implementation-rework-tabs-result.json
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/prototype-desktop.png
+ create mode 100644 tickets/done/token-statistics-analytics/evidence/prototype-mobile.png
+ create mode 100644 tickets/done/token-statistics-analytics/handoff-summary.md
+ create mode 100644 tickets/done/token-statistics-analytics/implementation-handoff.md
+ create mode 100644 tickets/done/token-statistics-analytics/implementation-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/investigation-notes.md
+ create mode 100644 tickets/done/token-statistics-analytics/prototype.html
+ create mode 100644 tickets/done/token-statistics-analytics/release-deployment-report.md
+ create mode 100644 tickets/done/token-statistics-analytics/release-notes.md
+ create mode 100644 tickets/done/token-statistics-analytics/requirements.md
+ create mode 100644 tickets/done/token-statistics-analytics/solution-revision-record.md
+ create mode 100644 tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md
+ create mode 100644 tickets/done/token-statistics-analytics/ui-ux-spec.md
+merge_commit=f8d0bf67a9cdb89da8e3cb24b8331744d9f61865
+merge_parents=0b607a5844f66e19ffb55162e91150a7383c030a d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+post_merge_divergence=139/0
+base_ancestor_after_merge=PASS
+unmerged_paths=NONE_PASS
+status_after_merge:
+## codex/universal-application-framework-latest-personal-integration...origin/personal [ahead 139]
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-base-refresh-and-integration.log
+post_build_refetch_timestamp_utc=2026-08-22T20:17:12Z
+pre_post_build_refetch_base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_build_refetch_base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+base_stable_through_build=YES
+post_build_base_ancestor=PASS
+post_build_divergence=139/0
+FINAL=PASS

@@ -9,8 +9,7 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
-import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
+import { getStudioAgentRunService } from "../studio-application-api-services.js";
 import {
   RunModelConfigEditabilityObject,
   RunModelConfigFieldErrorObject,
@@ -175,10 +174,7 @@ export class ApproveToolInvocationResult {
 
 @Resolver()
 export class AgentRunResolver {
-  private agentRunService = getAgentRunService();
-  private get agentRunManager() {
-    return AgentRunManager.getInstance();
-  }
+  private readonly agentRunService = getStudioAgentRunService();
 
   @Mutation(() => TerminateAgentRunResult)
   async terminateAgentRun(
@@ -343,7 +339,7 @@ export class AgentRunResolver {
         `Received tool invocation approval request for agent run '${input.agentRunId}', invocation '${input.invocationId}', approved: ${input.isApproved}`,
       );
 
-      const activeRun = this.agentRunManager.getActiveRun(input.agentRunId);
+      const activeRun = this.agentRunService.getAgentRun(input.agentRunId);
       if (!activeRun) {
         logger.warn(`approveToolInvocation: Agent run with ID '${input.agentRunId}' not found.`);
         return {

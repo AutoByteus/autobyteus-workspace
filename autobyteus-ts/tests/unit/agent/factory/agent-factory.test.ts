@@ -72,6 +72,17 @@ describe('AgentFactory', () => {
     vi.restoreAllMocks();
   });
 
+  it('does not mutate the tool catalog when the factory module is imported or constructed', async () => {
+    vi.resetModules();
+    const { defaultToolRegistry } = await import('../../../../src/tools/registry/tool-registry.js');
+    defaultToolRegistry.clear();
+
+    const imported = await import('../../../../src/agent/factory/agent-factory.js');
+    expect(defaultToolRegistry.listToolNames()).toEqual([]);
+    new imported.AgentFactory();
+    expect(defaultToolRegistry.listToolNames()).toEqual([]);
+  });
+
   it('initializes without legacy dependencies', () => {
     const factory = new AgentFactory();
     expect(factory).toBeInstanceOf(AgentFactory);

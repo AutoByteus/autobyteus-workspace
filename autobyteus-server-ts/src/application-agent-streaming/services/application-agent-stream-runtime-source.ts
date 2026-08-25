@@ -13,9 +13,9 @@ const runtimeNotActive = (): ApplicationAgentStreamingEstablishmentError =>
 
 export class ApplicationAgentStreamRuntimeSource {
   constructor(private readonly dependencies: {
-    agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
-    teamRunManager?: Pick<AgentTeamRunManager, "getActiveTeamRun">;
-  } = {}) {}
+    agentRunManager: Pick<AgentRunManager, "getActiveRun">;
+    teamRunManager: Pick<AgentTeamRunManager, "getActiveTeamRun">;
+  }) {}
 
   attach(
     descriptor: AuthorizedApplicationAgentTargetDescriptor,
@@ -32,7 +32,7 @@ export class ApplicationAgentStreamRuntimeSource {
       });
     }
 
-    const run = (this.dependencies.teamRunManager ?? AgentTeamRunManager.getInstance())
+    const run = this.dependencies.teamRunManager
       .getActiveTeamRun(descriptor.runtimeRunId);
     if (!run) throw runtimeNotActive();
     const selectedAgentRunId = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"

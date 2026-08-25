@@ -1,0 +1,69 @@
+Sat Aug 22 12:23:29 UTC 2026
+== port 8015 ==
+FREE
+== exact prior provider/worker pids ==
+  PID  PPID STAT COMMAND
+== children of stopped backend ==
+NONE
+== engine statuses ==
+/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime/engine-status.json
+{
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572",
+  "state": "ready",
+  "ready": true,
+  "startedAt": "2026-08-22T12:16:55.838Z",
+  "lastFailure": null,
+  "exposures": {
+    "supportedExposures": {
+      "queries": false,
+      "commands": false,
+      "routes": false,
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": true,
+      "webSockets": false
+    },
+    "queries": [],
+    "commands": [],
+    "routes": [],
+    "webSocketRoutes": [],
+    "graphql": true,
+    "notifications": true,
+    "eventHandlers": [
+      "RUN_STARTED",
+      "RUN_TERMINATED",
+      "RUN_FAILED",
+      "RUN_ORPHANED"
+    ]
+  }
+}/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/engine-status.json
+{
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "state": "ready",
+  "ready": true,
+  "startedAt": "2026-08-22T12:20:59.141Z",
+  "lastFailure": null,
+  "exposures": {
+    "supportedExposures": {
+      "queries": false,
+      "commands": false,
+      "routes": false,
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": true,
+      "webSockets": false
+    },
+    "queries": [],
+    "commands": [],
+    "routes": [],
+    "webSocketRoutes": [],
+    "graphql": true,
+    "notifications": true,
+    "eventHandlers": [
+      "RUN_STARTED",
+      "RUN_TERMINATED",
+      "RUN_FAILED",
+      "RUN_ORPHANED"
+    ]
+  }
+}

@@ -7,6 +7,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import {
   testAgentNode,
   testAgentTeamNode,
+  testMemberTaskRootResolver,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -14,6 +15,13 @@ const createManagerStub = () => ({
   isActive: vi.fn(() => true),
   getLeafAgentStatusSnapshots: vi.fn(() => []),
   hasOpenExecutionWork: vi.fn(() => false),
+});
+
+const callbacks = () => ({
+  taskRootResolver: testMemberTaskRootResolver(),
+  publish: vi.fn(),
+  deliverInterAgentMessage: vi.fn(async () => ({ accepted: true as const })),
+  acceptPlatformBinding: vi.fn(async () => undefined),
 });
 
 const createConfig = () => {
@@ -60,7 +68,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     });
 
     const config = createConfig();
-    const backend = await factory.createBackend(config, config.rootTeam.teamRunId);
+    const backend = await factory.createBackend(config, config.rootTeam.teamRunId, callbacks());
 
     expect(contexts).toHaveLength(1);
     const context = contexts[0]!;
@@ -104,7 +112,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     const factory = new MixedTeamRunBackendFactory({ createTeamManager: createTeamManager as never });
     const config = createConfig();
 
-    await expect(factory.createBackend(config, "foreign-root-run")).rejects.toThrow(
+    await expect(factory.createBackend(config, "foreign-root-run", callbacks())).rejects.toThrow(
       "Root TeamRun id 'team-mixed-run-1' does not match 'foreign-root-run'",
     );
     expect(createTeamManager).not.toHaveBeenCalled();
@@ -143,7 +151,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
       }),
     });
 
-    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId);
+    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId, callbacks());
 
     const runtime = contexts[0]!.runtimeContext;
     expect(runtime.configuredMemberActivationMode).toBe("restore");

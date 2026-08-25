@@ -1,0 +1,256 @@
+# CRR-001 complete implementation-source review evidence
+UTC 2026-08-22T07:55:54Z
+
+## Merge identity and integrity
+HEAD=28a8c368e784f09b15286e2412e8311bcb3c4493
+PARENTS=b6dddd5887af5f5bd29f595a5bc3d88d9da41eb9 a5ffd289aa58293574e44dfa8b38ed8b1978ffd0
+ancestor 8ef282ba77705180d985e7000d801f0e0068cdc1: PASS
+ancestor a5ffd289aa58293574e44dfa8b38ed8b1978ffd0: PASS
+ancestor b6dddd5887af5f5bd29f595a5bc3d88d9da41eb9: PASS
+unmerged_paths=0
+conflict_markers: PASS (none)
+
+## Retired path audit
+absent (PASS): autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts
+absent (PASS): autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+absent (PASS): autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+absent (PASS): autobyteus-server-ts/src/application-orchestration/stores/application-execution-resource-configuration-store.ts
+absent (PASS): autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+
+## CR-001 static lifecycle correlation
+Standalone token/catalog/readable imports and calls:
+(none)
+Standalone generic migration gate:
+const assertStandaloneMigrationsReady = async (): Promise<void> => {
+  const results = await getAppDataMigrationRunner().runPending();
+  const failures = results.filter(
+    (result) => result.requiredOnStartup
+      && result.status !== "SUCCEEDED"
+      && result.status !== "SUCCEEDED_WITH_WARNINGS",
+  );
+  if (failures.length > 0) {
+    throw new Error(
+      "Standalone app-data migration readiness failed: "
+      + failures.map((result) =>
+        `${result.migrationId}=${result.status}${result.errorMessage ? ` (${result.errorMessage})` : ""}`)
+        .join("; "),
+    );
+  }
+};
+    prismaInitializationStarted = true;
+    await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
+    vaultInitializationStarted = true;
+    await getSecretVaultRuntime().initialize(databaseLocation);
+    await assertStandaloneMigrationsReady();
+    let closePromise: Promise<void> | null = null;
+Normative standalone phases:
+| 5 | Assert current token-usage schema; initialize readiness as current-schema/degraded-not-run | Each host starter via `assertTokenUsageCurrentSchema` and `configureTokenUsageMigrationReadiness` | Yes | Yes | A | Failure sets `CRITICAL_CURRENT_SCHEMA_FAILURE`; Studio emits `TOKEN_USAGE_CURRENT_SCHEMA_INVALID`; standalone unwinds and rejects. |
+| 6 | Secret vault initialize | Each host starter | Yes | Yes | A | Studio: `SECRET_VAULT_INITIALIZATION_FAILED`. Standalone: close vault then Prisma. |
+| 7 | Run current required app-data migrations once | Each host starter via current `AppDataMigrationRunner.runPending` | Yes | Yes | A | One status list feeds phases 8–10. Runner exceptions are fatal. No second standalone-only migration pass. |
+| 8 | Set token-usage migration readiness | Each host starter from `TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID` result | Yes | Yes | S after 7 | Success/warnings -> `READY`; otherwise `CURRENT_SCHEMA_DEGRADED` with status/log. Degraded migration is nonfatal because phase 5 proved the usable current schema. |
+| 9 | Rebuild TeamRun V1 package catalog and apply strict admission warning | Each host starter via current `TeamRunV1PackageCatalog` | Yes | Yes | A | Catalog rebuild exception is fatal. A migration result other than clean `SUCCEEDED` logs the current warning and continues under strict current-package admission. |
+| 10 | Enforce readable-provider migration gate | Each host starter from `CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID` result | Yes | Yes | S after 7–9 | Only `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` passes. Studio: `APP_DATA_STARTUP_GATE_FAILED`; standalone unwinds and rejects. Earlier required migration failures remain represented through the current runner/prerequisite chain; no new blanket policy is invented. |
+| 11 | Reset default run-event pipeline | Standalone host starter only, before process/application run owners | No | Yes | A | Reject and unwind repository resources on failure. Studio retains its normal process pipeline lifecycle. |
+Standalone:
+
+```text
+resolve/validate package -> materialize isolated root -> logging -> core migration
+-> protected paths -> Prisma -> token schema -> vault -> app-data statuses
+-> token readiness -> TeamRun catalog -> readable-provider gate -> reset run pipeline
+-> process MCP/general-run owners -> selected application assembly -> application prepare
+-> listen -> internal URL -> selected application recovery -> READY
+```
+Token readiness default and consumer:
+let capabilityState: TokenUsageMigrationCapabilityState = {
+  kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
+  reason: "Token usage current-schema readiness has not been initialized.",
+};
+  assertCurrentSchemaReady(): void {
+    if (capabilityState.kind === "CRITICAL_CURRENT_SCHEMA_FAILURE") {
+      throw new TokenUsageCapabilityUnavailableError(
+        "TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED",
+        capabilityState,
+      );
+    }
+  async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
+    this.tokenUsageReadiness.assertCurrentSchemaReady();
+    const workspaces = new Map<string, Promise<string>>();
+    const memberConfigs = await Promise.all(input.memberConfigs.map(async (member) => {
+
+## CR-001 compiled default-readiness probe
+TokenUsageCapabilityUnavailableError:TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+## CR-002 static read-mutation correlation
+const ensureTables = (db: DatabaseSync): void => {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
+      slot_key TEXT PRIMARY KEY,
+      resource_ref_json TEXT,
+      launch_profile_json TEXT,
+      launch_defaults_json TEXT,
+      updated_at TEXT NOT NULL
+    );
+  `);
+  if (!hasColumn(db, "launch_profile_json")) {
+    db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_profile_json TEXT`);
+  }
+  if (!hasColumn(db, "launch_defaults_json")) {
+    db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_defaults_json TEXT`);
+  }
+};
+  async getOverride(
+    applicationId: string,
+    slotKey: string,
+  ): Promise<StoredApplicationLaunchOverride | null> {
+    return this.platformStateStore.withDatabase(applicationId, (db) => {
+      ensureTables(db);
+      const row = db.prepare(
+        `SELECT slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
+           FROM ${TABLE_NAME}
+          WHERE slot_key = ?
+          LIMIT 1`,
+      ).get(slotKey.trim()) as Record<string, unknown> | undefined;
+      return row ? hydrateRecord(row) : null;
+    });
+  }
+
+  async listOverrides(applicationId: string): Promise<StoredApplicationLaunchOverride[]> {
+    return this.platformStateStore.withDatabase(applicationId, (db) => {
+      ensureTables(db);
+      const rows = db.prepare(
+        `SELECT slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
+           FROM ${TABLE_NAME}
+          ORDER BY slot_key ASC`,
+      ).all() as Record<string, unknown>[];
+      return rows.map(hydrateRecord);
+    });
+  }
+  async withDatabase<T>(
+    applicationId: string,
+    fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
+  ): Promise<T> {
+    const layout = await this.storageLifecycleService.ensurePlatformStatePrepared(applicationId);
+    const db = new DatabaseSync(layout.platformDatabasePath);
+    try {
+      return fn(db, layout);
+    } finally {
+      db.close();
+    }
+  }
+
+  async withExistingDatabase<T>(
+    applicationId: string,
+    fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
+  ): Promise<T | null> {
+    const layout = this.storageLifecycleService.getStorageLayout(applicationId);
+    if (!fs.existsSync(layout.platformDatabasePath)) {
+      return null;
+    }
+
+    const db = new DatabaseSync(layout.platformDatabasePath);
+    try {
+      return fn(db, layout);
+    } finally {
+      db.close();
+    }
+  }
+### 3.3 Reader stages and write policy
+
+For each declared slot the service evaluates, in order:
+
+```text
+immutable package default resource
+-> package baseline from current agent/team definitions
+-> optional saved selected resource
+-> selected-resource baseline from current definitions
+-> current-rooted sparse saved override
+-> effective per-leaf configuration + provenance
+-> current host runtime/model/credential availability
+-> RUNNABLE | INVALID_PACKAGE | HOST_REQUIREMENT_MISSING
+```
+
+- A missing saved row means package defaults, not a copied DB default.
+- `execution_resource_ref = null` on a present row means the package default resource remains selected while `launch_profile_json` overlays it.
+- A saved alternate resource builds its own pre-overlay baseline; the Studio editor consumes that authoritative projection.
+- Read/list/evaluate/preview never writes, deletes, normalizes, seeds, or repairs a row.
+- Only an explicit save writes the normalized current-rooted sparse contract and sets `launch_defaults_json = NULL`.
+- Only explicit Reset deletes the slot row.
+- An invalid saved row never falls back silently to the package default. It yields `HOST_REQUIREMENT_MISSING`, retains the saved selection/diagnostic where parseable, and exposes Reset.
+- Package bytes are never mutated.
+  app.get<{ Params: { applicationId: string } }>(
+    "/applications/:applicationId/execution-resource-configurations",
+    async (request, reply) => {
+      try { return reply.send(await orchestration.getApplicationLaunchConfigurationView(request.params.applicationId)); }
+      catch (error) { return sendApplicationRouteError(reply, error); }
+    },
+  );
+const loadSetup = async (): Promise<void> => {
+  const normalizedApplicationId = props.applicationId.trim()
+  if (!normalizedApplicationId) {
+    loadError.value = $t('applications.components.applications.ApplicationLaunchSetupPanel.applicationIdMissing')
+    configurationViews.value = []
+    launchReadiness.value = null
+    availableResources.value = []
+    drafts.value = {}
+    slotReadinessByKey.value = {}
+    return
+  }
+
+  loading.value = true
+  loadError.value = null
+  clearSelectionPreviews()
+  resetTransientMessages()
+
+  try {
+    const [launchView, resources] = await Promise.all([
+      fetchJson<ApplicationLaunchConfigurationView>(
+        `/applications/${encodeURIComponent(normalizedApplicationId)}/execution-resource-configurations`,
+      ),
+      fetchJson<ApplicationExecutionResourceSummary[]>(
+        `/applications/${encodeURIComponent(normalizedApplicationId)}/available-execution-resources`,
+      ),
+    ])
+watch(
+  () => props.applicationId,
+  () => {
+    void loadSetup()
+  },
+  { immediate: true },
+)
+
+## CR-002 compiled read-mutation probe
+AgentFactory (Singleton) initialized.
+{"before":0}
+{"after":1,"rows":0}
+(node:87926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+## Changed production-source size audit
+changed_production_files=184
+over_500=0
+exactly_500=1
+delta_over_220=14
+ 500 effective  520 delta (+520/-0) autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+ 225 effective  517 delta (+113/-404) autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts
+ 480 effective   11 delta (+7/-4) autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ 443 effective   19 delta (+11/-8) autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts
+ 424 effective  255 delta (+102/-153) autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts
+ 404 effective   34 delta (+18/-16) applications/socratic-math-teacher/frontend-src/socratic-renderer.js
+ 402 effective   30 delta (+24/-6) autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts
+ 401 effective   34 delta (+26/-8) autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts
+ 395 effective   10 delta (+5/-5) applications/socratic-math-teacher/frontend-src/socratic-runtime.js
+ 395 effective   20 delta (+20/-0) autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ 376 effective    6 delta (+3/-3) autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ 361 effective  277 delta (+129/-148) autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ 314 effective  332 delta (+332/-0) autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-override-normalizer.ts
+ 284 effective  314 delta (+113/-201) autobyteus-server-ts/src/server-runtime.ts
+ 267 effective  290 delta (+290/-0) autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts
+ 273 effective  285 delta (+285/-0) autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts
+ 241 effective  248 delta (+248/-0) autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+ 232 effective  247 delta (+247/-0) autobyteus-server-ts/src/application-platform/launch-configuration/application-portable-launch-config-policy.ts
+ 233 effective  238 delta (+238/-0) autobyteus-server-ts/src/compositions/build-studio-server.ts
+ 234 effective  235 delta (+235/-0) autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+ 205 effective  230 delta (+230/-0) autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts
+ 213 effective  224 delta (+224/-0) autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts
+
+## Worktree diff check before review artifacts

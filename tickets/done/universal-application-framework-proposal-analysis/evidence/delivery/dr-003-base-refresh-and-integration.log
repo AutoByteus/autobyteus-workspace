@@ -1,0 +1,21 @@
+# DR-003 latest-base refresh and integration record
+
+Recorded UTC: 2026-07-30T19:07:05Z
+Ticket branch: codex/universal-application-framework-proposal-analysis
+Reviewed handoff HEAD: deb235f292251477b3e10808a93fe622753c709e
+Reviewed package safety checkpoint: 3f8ec4362f489b41c99e01b222eadfa8e1b76b74
+Latest tracked remote base: origin/personal at dfc0468b137cd231b79ff8096fa46750611b06e2
+Pre-integration divergence (ticket/base): 70/13 after safety checkpoint
+Integration method: merge
+Integrated candidate: 669273f900950113ff0a8e60f9eca8142a3224bc
+Post-integration divergence (ticket/base): 71/0
+Textual conflicts: none
+
+The 13 base-only commits are the completed token-statistics custom-provider/model release through v1.4.31. They update token-usage schema/migrations, agent backend token observations, GraphQL/statistics projections, web token-usage views, tests, docs, release metadata, and the completed ticket package. They do not rename or replace the SR-011/IR-016 application-framework owners, but they touch the same server build/runtime and therefore required post-integration execution.
+
+Post-integration executable result: PASS.
+Evidence: evidence/delivery/dr-003-post-integration-check.log
+- pnpm -C autobyteus-server-ts build: PASS, including shared builds, Prisma generation with the new migration, TypeScript full build, managed assets, and sanitized bootstrap smoke.
+- Exact API-REV-011 renamed/business boundary selection: 11 files / 34 tests PASS.
+
+The pre-existing/user-used untracked autobyteus-application-devkit/dist directory was deliberately preserved and excluded from the checkpoint and merge.

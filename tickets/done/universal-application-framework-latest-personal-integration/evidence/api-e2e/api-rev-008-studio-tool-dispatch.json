@@ -1,0 +1,91 @@
+{
+  "scenario": "APIE2E-STUDIO-TOOLS-008",
+  "publishArtifactSucceeded": 3,
+  "namedHandoffAccepted": true,
+  "namedHandoffRecipient": "/writer",
+  "physicalTraceFiles": [
+    "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_researcher_44fdea1e14fd4e25b9363e9fe2f728c5/raw_traces_active.jsonl",
+    "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_writer_7bc5c5095c7242e1aee1825727b13476/raw_traces_active.jsonl",
+    "memory/agent_teams/socratic_math_team_ffca0037e3a644598be547f15f925fdf/socratic_math_tutor_abc3651ddae147b78d52d8680b2382c4/raw_traces_active.jsonl"
+  ],
+  "events": [
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_writer_7bc5c5095c7242e1aee1825727b13476/raw_traces_active.jsonl",
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-42f82878-b2c2-4111-b620-46b5d2db21ff",
+      "artifactPaths": [
+        "/private/tmp/api-rev008-studio-clean-1787560810/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md"
+      ]
+    },
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_writer_7bc5c5095c7242e1aee1825727b13476/raw_traces_active.jsonl",
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-42f82878-b2c2-4111-b620-46b5d2db21ff",
+      "success": true,
+      "code": null
+    },
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_researcher_44fdea1e14fd4e25b9363e9fe2f728c5/raw_traces_active.jsonl",
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-cf2e2a5d-2a7e-4b97-89f8-77a1a51819ae",
+      "artifactPaths": [
+        "/private/tmp/api-rev008-studio-clean-1787560810/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md"
+      ]
+    },
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_researcher_44fdea1e14fd4e25b9363e9fe2f728c5/raw_traces_active.jsonl",
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-cf2e2a5d-2a7e-4b97-89f8-77a1a51819ae",
+      "success": true,
+      "code": null
+    },
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_researcher_44fdea1e14fd4e25b9363e9fe2f728c5/raw_traces_active.jsonl",
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "send_message_to",
+      "toolCallId": "exec-3a67c877-8ccb-42ce-9e4a-331388a366ee",
+      "recipientAddress": "/writer",
+      "messageType": "handoff",
+      "referenceFiles": [
+        "/private/tmp/api-rev008-studio-clean-1787560810/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md"
+      ]
+    },
+    {
+      "relativeTrace": "memory/agent_teams/brief_studio_team_e450f538995e42b59bb73502bafa6c33/brief_studio_researcher_44fdea1e14fd4e25b9363e9fe2f728c5/raw_traces_active.jsonl",
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "send_message_to",
+      "toolCallId": "exec-3a67c877-8ccb-42ce-9e4a-331388a366ee",
+      "success": true,
+      "code": "DELIVERED"
+    },
+    {
+      "relativeTrace": "memory/agent_teams/socratic_math_team_ffca0037e3a644598be547f15f925fdf/socratic_math_tutor_abc3651ddae147b78d52d8680b2382c4/raw_traces_active.jsonl",
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-97c2e0d6-6ca4-4d97-ab6b-e45d442d9717",
+      "artifactPaths": [
+        "socratic-math/lesson-response.md"
+      ]
+    },
+    {
+      "relativeTrace": "memory/agent_teams/socratic_math_team_ffca0037e3a644598be547f15f925fdf/socratic_math_tutor_abc3651ddae147b78d52d8680b2382c4/raw_traces_active.jsonl",
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "publish_artifacts",
+      "toolCallId": "exec-97c2e0d6-6ca4-4d97-ab6b-e45d442d9717",
+      "success": true,
+      "code": null
+    }
+  ]
+}

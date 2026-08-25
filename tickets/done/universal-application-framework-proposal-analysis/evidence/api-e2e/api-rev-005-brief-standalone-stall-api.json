@@ -1,0 +1,46 @@
+{
+  "capturedAt": "2026-07-29T21:01:54.062Z",
+  "elapsedSinceCreatedSeconds": 381,
+  "bootstrap": {
+    "contractVersion": "1",
+    "application": {
+      "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+      "localApplicationId": "brief-studio",
+      "packageId": "standalone",
+      "name": "Brief Studio"
+    },
+    "transportPaths": {
+      "backendBasePath": "/_autobyteus/backend",
+      "backendNotificationsPath": "/_autobyteus/backend/notifications",
+      "backendWebSocketBasePath": null,
+      "agentCommunicationWebSocketBasePath": "/_autobyteus/agent"
+    }
+  },
+  "brief": {
+    "briefId": "brief-c0a864c9-bc3a-4522-9798-b97bf16b82df",
+    "title": "API REV 005 standalone Luna parity 2026-07-29T20:55:33.128Z",
+    "status": "not_started",
+    "latestBindingId": "0d8ed907-78ec-49ef-b692-7bd53f429858",
+    "latestRunId": "brief_studio_team_f902a8f9031147ec9f5fc743e26b6e8e",
+    "latestBindingStatus": "ATTACHED",
+    "lastErrorMessage": null,
+    "createdAt": "2026-07-29T20:55:33.160Z",
+    "updatedAt": "2026-07-29T20:55:33.960Z",
+    "approvedAt": null,
+    "rejectedAt": null,
+    "artifacts": [],
+    "reviewNotes": []
+  },
+  "executions": [
+    {
+      "bindingId": "0d8ed907-78ec-49ef-b692-7bd53f429858",
+      "status": "ATTACHED",
+      "runId": "brief_studio_team_f902a8f9031147ec9f5fc743e26b6e8e",
+      "definitionId": "bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "createdAt": "2026-07-29T20:55:33.955Z",
+      "updatedAt": "2026-07-29T20:55:33.955Z",
+      "terminatedAt": null,
+      "lastErrorMessage": null
+    }
+  ]
+}

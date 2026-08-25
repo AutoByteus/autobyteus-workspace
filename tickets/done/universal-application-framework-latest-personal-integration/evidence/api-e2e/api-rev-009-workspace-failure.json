@@ -1,0 +1,16 @@
+{
+  "scenario": "APIE2E-WORKSPACE-FAILURE-009",
+  "assertions": {
+    "errorVisible": true,
+    "newModeSelected": true,
+    "pathRetained": "/private/tmp/api-rev009-unavailable-workspace",
+    "operationDelta": {
+      "workspace": 1,
+      "prepare": 0,
+      "create": 0,
+      "team": 0
+    },
+    "stillOnConfig": true,
+    "noStaleExistingFallback": true
+  }
+}

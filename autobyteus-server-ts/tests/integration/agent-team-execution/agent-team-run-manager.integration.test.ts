@@ -63,6 +63,7 @@ const createConfig = (runtimeKinds: readonly RuntimeKind[]) => {
 const createFactory = (input: {
   active?: boolean;
   terminateResult?: { accepted: boolean; code?: string; message?: string };
+  beforeBackendReturn?: (callbacks: MixedTeamRunCallbacks) => Promise<void>;
 } = {}) => {
   const state = { active: input.active ?? true };
   const callbacks: MixedTeamRunCallbacks[] = [];
@@ -115,6 +116,7 @@ const createFactory = (input: {
       }),
     };
     backends.push(backend);
+    await input.beforeBackendReturn?.(callback);
     return backend;
   };
   const createBackend = vi.fn((config, teamRunId, callback) =>
@@ -212,7 +214,11 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     expect(factory.createBackend).toHaveBeenCalledWith(
       expect.objectContaining({ rootTeam: config.rootTeam }),
       "team-runtime-root",
-      expect.objectContaining({ publish: expect.any(Function), deliverInterAgentMessage: expect.any(Function) }),
+      expect.objectContaining({
+        taskRootResolver: expect.objectContaining({ resolveActiveRoot: expect.any(Function) }),
+        publish: expect.any(Function),
+        deliverInterAgentMessage: expect.any(Function),
+      }),
     );
     const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({
       rootTeamRunId: run.teamRunId,
@@ -247,6 +253,28 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     await expect(manager.createTeamRun({ config, teamDefinitionName: "Duplicate" })).rejects.toThrow(
       "already managed",
     );
+  });
+
+  it("binds one exact root resolver after construction and rejects before bind and after close", async () => {
+    const memoryDir = await createMemoryDir();
+    initializeTaskIdentityAllocator(memoryDir);
+    const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    const beforeBackendReturn = vi.fn(async (callbacks: MixedTeamRunCallbacks) => {
+      await expect(callbacks.taskRootResolver.resolveActiveRoot()).rejects.toMatchObject({
+        code: "TEAM_ROOT_NOT_BOUND",
+      });
+    });
+    const factory = createFactory({ beforeBackendReturn });
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Resolver Team" });
+    const resolver = factory.callbacks[0]!.taskRootResolver;
+    await expect(resolver.resolveActiveRoot()).resolves.toBe(root);
+    await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
+    await expect(resolver.resolveActiveRoot()).rejects.toMatchObject({
+      code: "TEAM_RUN_NOT_ACTIVE",
+    });
+    expect(beforeBackendReturn).toHaveBeenCalledOnce();
   });
 
   it("restores the strict three-file package and rebuilds runtime context from current tree identity", async () => {

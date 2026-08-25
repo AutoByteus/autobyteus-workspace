@@ -1,0 +1,322 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+(node:52852) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 203ms
+(node:53116) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 249ms
+(node:53121) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 101ms
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts (18 tests | 3 failed) 160ms
+     ✓ treats an empty managed built-in application root as a valid steady state 5ms
+     ✓ lists valid bundles from the managed built-in application root with manifest execution resource slots 13ms
+     × surfaces retired frontend SDK compatibility versions as diagnostics 12ms
+     × surfaces retired backend bundle frontend SDK compatibility versions as diagnostics 8ms
+     × rejects an explicit v3 backend-definition compatibility fixture during discovery 7ms
+     ✓ surfaces malformed manifests as diagnostics instead of crashing discovery 10ms
+     ✓ surfaces legacy top-level resourceSlots as diagnostics instead of silently dropping slots 17ms
+     ✓ surfaces legacy slot field 'allowedResourceKinds' as diagnostics 6ms
+     ✓ surfaces legacy slot field 'allowedResourceOwners' as diagnostics 6ms
+     ✓ surfaces legacy slot field 'defaultResourceRef' as diagnostics 7ms
+     ✓ surfaces legacy slot field 'defaultExecutionResourceRef.owner' as diagnostics 6ms
+     ✓ fails package validation when a discovered resource-slot default does not resolve 7ms
+     ✓ rejects bundles whose application-owned team references a missing local agent 6ms
+     ✓ recursively validates team-local child teams without cataloging them as app-owned roots 15ms
+     ✓ rejects malformed team-local child team configs during application bundle validation 9ms
+     ✓ rejects team-local child teams whose own local agents are missing 9ms
+     ✓ ignores nested packaging mirrors under a discovered package root 8ms
+     ✓ preserves built-in application ids when the same root path is also configured as an additional package root 7ms
+(node:53125) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ❯ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests | 1 failed) 91ms
+     × executes all named capabilities and both explicit starts through the real worker/host boundary 71ms
+     ✓ creates only canonical launch-request tables and columns from both built-in fresh baselines 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Error: teamRun.getExecutionTreeSnapshot is not a function
+ ❯ ApplicationEngineClient.handleLine src/application-engine/runtime/application-engine-client.ts:247:22
+    245|           ? errorPayload.message
+    246|           : "Application worker request failed.";
+    247|       pending.reject(new Error(message));
+       |                      ^
+    248|       return;
+    249|     }
+ ❯ ApplicationEngineClient.onStdout src/application-engine/runtime/application-engine-client.ts:196:12
+ ❯ Socket.<anonymous> src/application-engine/runtime/application-engine-client.ts:48:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Unsupported ui.frontendSdkContractVer…' to contain 'declares ui.frontendSdkContractVersio…'
+
+Expected: "declares ui.frontendSdkContractVersion '2', but '6' is required"
+Received: "Unsupported ui.frontendSdkContractVersion '2'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:409:46
+    407|     expect(snapshot.applications).toHaveLength(0);
+    408|     expect(snapshot.diagnostics).toHaveLength(1);
+    409|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    410|       `declares ui.frontendSdkContractVersion '${retiredFrontendSdkVer…
+    411|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > surfaces retired backend bundle frontend SDK compatibility versions as diagnostics
+AssertionError: expected 'Unsupported frontendSdkContractVersio…' to contain 'declares sdkCompatibility.frontendSdk…'
+
+Expected: "declares sdkCompatibility.frontendSdkContractVersion '2', but '6' is required"
+Received: "Unsupported frontendSdkContractVersion '2'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:449:46
+    447|     expect(snapshot.applications).toHaveLength(0);
+    448|     expect(snapshot.diagnostics).toHaveLength(1);
+    449|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    450|       `declares sdkCompatibility.frontendSdkContractVersion '${retired…
+    451|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/application-bundles/file-application-bundle-provider.test.ts > FileApplicationBundleProvider > rejects an explicit v3 backend-definition compatibility fixture during discovery
+AssertionError: expected 'Unsupported backendDefinitionContract…' to contain 'declares sdkCompatibility.backendDefi…'
+
+Expected: "declares sdkCompatibility.backendDefinitionContractVersion '3', but '6' is required"
+Received: "Unsupported backendDefinitionContractVersion '3'."
+
+ ❯ tests/unit/application-bundles/file-application-bundle-provider.test.ts:471:46
+    469|     expect(snapshot.applications).toHaveLength(0);
+    470|     expect(snapshot.diagnostics).toHaveLength(1);
+    471|     expect(snapshot.diagnostics[0]?.message).toContain(
+       |                                              ^
+    472|       "declares sdkCompatibility.backendDefinitionContractVersion '3',…
+    473|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  4 failed | 22 passed (26)
+   Start at  11:03:57
+   Duration  7.45s (transform 2.14s, setup 37ms, import 5.69s, tests 804ms, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ✓ tests/unit/application-bundles/file-application-bundle-provider.test.ts (18 tests) 158ms
+(node:54751) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ❯ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests | 1 failed) 129ms
+     × executes all named capabilities and both explicit starts through the real worker/host boundary 104ms
+     ✓ creates only canonical launch-request tables and columns from both built-in fresh baselines 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Error: The application agent target is invalid.
+ ❯ ApplicationEngineClient.handleLine src/application-engine/runtime/application-engine-client.ts:247:22
+    245|           ? errorPayload.message
+    246|           : "Application worker request failed.";
+    247|       pending.reject(new Error(message));
+       |                      ^
+    248|       return;
+    249|     }
+ ❯ ApplicationEngineClient.onStdout src/application-engine/runtime/application-engine-client.ts:196:12
+ ❯ Socket.<anonymous> src/application-engine/runtime/application-engine-client.ts:48:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 19 passed (20)
+   Start at  11:04:33
+   Duration  3.69s (transform 1.75s, setup 21ms, import 2.78s, tests 287ms, environment 0ms)
+

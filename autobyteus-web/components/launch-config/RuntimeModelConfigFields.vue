@@ -199,7 +199,7 @@ watch(
       resolveEffectiveScopedRuntimeKind(previousRuntimeKind) !== effectiveRuntimeKind.value
 
     try {
-      await ensureModelsForRuntime(effectiveRuntimeKind.value)
+      await ensureModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
     } catch {
       return
     }
@@ -311,7 +311,7 @@ watch(
 )
 
 const retryModelCatalog = () => {
-  void reloadModelsForRuntime(effectiveRuntimeKind.value)
+  void reloadModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
 }
 const updateRuntimeKind = (value: string) => {
   if (readOnlyComputed.value || runtimeSelectionLockedComputed.value) return

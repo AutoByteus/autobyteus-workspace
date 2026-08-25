@@ -1,0 +1,21 @@
+{
+  "scenario": "APIE2E-STUDIO-RESTART-008",
+  "result": "PASS",
+  "brief": {
+    "confirmationRequired": true,
+    "iframeCount": 1,
+    "twoArtifacts": true,
+    "inReview": true,
+    "hasResearch": true,
+    "hasFinal": true
+  },
+  "socratic": {
+    "confirmationRequired": true,
+    "iframeCount": 1,
+    "answer": true,
+    "twoMessages": true,
+    "active": true
+  },
+  "consoleErrors": [],
+  "resultCorrection": "Original harness reducer incorrectly compared numeric iframeCount to boolean true; scenario assertions above all passed and this corrected result is derived from the same browser execution."
+}

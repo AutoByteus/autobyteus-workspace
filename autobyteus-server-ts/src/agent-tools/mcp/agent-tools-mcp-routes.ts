@@ -1,12 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import {
-  AgentToolMcpSessionRegistry,
-  getAgentToolMcpSessionRegistry,
-} from "./agent-tool-mcp-session-registry.js";
-import {
-  AgentToolsMcpMethodDispatcher,
-  getAgentToolsMcpMethodDispatcher,
-} from "./agent-tools-mcp-method-dispatcher.js";
+import { AgentToolMcpSessionRegistry } from "./agent-tool-mcp-session-registry.js";
+import { AgentToolsMcpMethodDispatcher } from "./agent-tools-mcp-method-dispatcher.js";
 import {
   getAgentToolsMcpResultMapper,
   type JsonRpcId,
@@ -28,10 +22,10 @@ const MCP_ROUTE = "/mcp/agent-tools/:sessionId";
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-11-25"]);
 const DEFAULT_PROTOCOL_VERSION = "2025-03-26";
 
-type AgentToolsMcpRouteDeps = {
-  registry?: AgentToolMcpSessionRegistry;
-  dispatcher?: AgentToolsMcpMethodDispatcher;
-};
+export type AgentToolsMcpRouteDependencies = Readonly<{
+  registry: AgentToolMcpSessionRegistry;
+  dispatcher: AgentToolsMcpMethodDispatcher;
+}>;
 
 type AgentToolsMcpRouteParams = {
   sessionId: string;
@@ -39,10 +33,9 @@ type AgentToolsMcpRouteParams = {
 
 export async function registerAgentToolsMcpRoutes(
   app: FastifyInstance,
-  deps: AgentToolsMcpRouteDeps = {},
+  deps: AgentToolsMcpRouteDependencies,
 ): Promise<void> {
-  const registry = deps.registry ?? getAgentToolMcpSessionRegistry();
-  const dispatcher = deps.dispatcher ?? getAgentToolsMcpMethodDispatcher();
+  const { registry, dispatcher } = deps;
 
   registerAgentToolsMcpRequestGate(app, registry);
   await app.register(async (mcpApp) => {

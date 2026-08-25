@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
+import { getStudioTeamRunService } from "../studio-application-api-services.js";
 import {
   RunModelConfigEditabilityObject,
   RunModelConfigFieldErrorObject,
@@ -169,7 +169,7 @@ export class UpdateStoppedTeamRunModelConfigsResult {
 
 @Resolver()
 export class AgentTeamRunResolver {
-  private readonly teamRunService = getTeamRunService();
+  private readonly teamRunService = getStudioTeamRunService();
 
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(

@@ -13,6 +13,7 @@ import { RuntimeKind } from '../../../../src/runtime-management/runtime-kind-enu
 import type { AgentRunEvent } from '../../../../src/agent-execution/domain/agent-run-event.js';
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenPriceConfigProvider } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
+import { testMemberTaskRootResolver } from '../../../fixtures/current-team-run-fixtures.js';
 
 const runContext = new AgentRunContext({
   runId: 'member-run-1',
@@ -31,6 +32,7 @@ const runContext = new AgentRunContext({
         agentRunId: 'member-run-1',
       },
       collaboration: { outgoingHandoffs: [] },
+      taskRootResolver: testMemberTaskRootResolver(),
     }),
   }),
 });

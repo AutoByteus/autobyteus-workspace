@@ -1,0 +1,19 @@
+# DR-013 finalization preflight
+timestamp_utc=2026-08-25T19:35:41Z
+user_signal=Explicit verification received: "i have tested. lets finalize."
+release_instruction=No new release version.
+finalization_target=personal
+post_finalization_instruction=Update main-repository personal and build Electron from it.
+ticket_branch=codex/universal-application-framework-latest-personal-integration
+ticket_head=cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b
+origin_personal=9d0fd7c570d58da1af2c7a40279327c8a20a8093
+divergence_origin_personal_vs_ticket=0/176
+origin_personal_is_ancestor=yes
+unmerged_paths=0
+dmg_sha256=eee0ac6cf7e3e3f4f4121a3b351004842a296e38fbaf5a37650f062381e2ef2c
+dmg_size=465981133
+zip_sha256=e257e3e4a2d75092b846aafd41515df406a9603e0d4bd75fe946d86aec0d711c
+zip_size=461646534
+material_change_since_verified_package=no
+renewed_verification_required=no
+preflight_result=Pass

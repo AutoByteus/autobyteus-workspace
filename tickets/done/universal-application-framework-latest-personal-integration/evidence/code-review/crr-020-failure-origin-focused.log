@@ -1,0 +1,540 @@
+# CRR-020 focused API-REV-010 failure-origin evidence
+
+## Identity and API evidence
+243143e62e0f198bf14f411a9688d59d5febc5f0
+
+### Public definition/run authority correlation
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:122:  private readonly teamRunService = getTeamRunService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:12:import { getStudioAgentDefinitionService } from "../studio-application-api-services.js";
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:208:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:223:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:237:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:251:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:265:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:294:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:325:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:24:  getStudioAgentDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:25:  getStudioAgentTeamDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:248:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:263:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:275:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:287:      await getStudioAgentDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:288:      await getStudioAgentTeamDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:301:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:337:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:376:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts:141:  private agentRunService = getAgentRunService();
+
+### Composition creates application definition services after the general-process owner
+   136	export const buildStudioServer = async (input: {
+   137	  appConfig: AppConfig;
+   138	  loggingConfig: LoggingConfig;
+   139	}): Promise<StudioServer> => {
+   140	  const agentToolsMcpRuntime =
+   141	    createAgentToolsMcpRuntime({
+   142	      generalProcessPublisher:
+   143	        getGeneralProcessPublishedArtifactPublisher(),
+   144	    });
+   145	  const generalProcessRunSupervisor =
+   146	    createGeneralProcessRunSupervisor(
+   147	      agentToolsMcpRuntime.generalProcessSessionManager,
+   148	    );
+   149	  let studioServices:
+   150	    ReturnType<typeof createStudioApplicationServices>;
+   151	  try {
+   152	    studioServices = createStudioApplicationServices(
+   153	      input.appConfig,
+   154	      agentToolsMcpRuntime,
+   155	    );
+   156	  } catch (error) {
+   157	    await closeStudioProcessResources({
+   158	      agentToolsMcpRuntime,
+   159	      generalProcessRunSupervisor,
+   160	    });
+   161	    throw error;
+   162	  }
+   163	  const {
+   164	    packageRegistryService,
+   165	    packageCommandService,
+   166	    bundleService,
+   167	    applicationRuntime,
+   168	    agentDefinitionService,
+   169	    agentTeamDefinitionService,
+   170	  } = studioServices;
+   171	  configureStudioApplicationApiServices({
+   172	    bundleService,
+   173	    capabilityService: new ApplicationCapabilityService({
+   174	      applicationBundleService: bundleService,
+   175	    }),
+   176	    packageQueries: packageRegistryService,
+   177	    packageCommands: packageCommandService,
+   178	    agentDefinitionService,
+   179	    agentTeamDefinitionService,
+   180	  });
+   181
+
+### Application definition services are distinct constructed objects
+    10	export const createApplicationDefinitionServices = (input: {
+    11	  appConfig: AppConfig;
+    12	  bundleService: ApplicationBundleService;
+    13	}): {
+    14	  agentDefinitionService: AgentDefinitionService;
+    15	  agentTeamDefinitionService: AgentTeamDefinitionService;
+    16	} => {
+    17	  const agentPersistenceProvider = new AgentDefinitionPersistenceProvider(
+    18	    new FileAgentDefinitionProvider({
+    19	      appConfig: input.appConfig,
+    20	      applicationBundleService: input.bundleService,
+    21	    }),
+    22	  );
+    23	  const agentDefinitionService = new AgentDefinitionService({
+    24	    persistenceProvider: agentPersistenceProvider,
+    25	  });
+    26	  const teamPersistenceProvider = new AgentTeamDefinitionPersistenceProvider(
+    27	    new FileAgentTeamDefinitionProvider({
+    28	      appConfig: input.appConfig,
+    29	      applicationBundleService: input.bundleService,
+    30	    }),
+    31	  );
+    32	  const agentTeamDefinitionService = new AgentTeamDefinitionService({
+    33	    persistenceProvider: teamPersistenceProvider,
+    34	    agentDefinitionService,
+    35	  });
+    36	  return { agentDefinitionService, agentTeamDefinitionService };
+    37	};
+
+### General run services default to separate process-global definition authorities
+    43	  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+    44	  private readonly agentRunManager: Pick<AgentRunManager, "hasActiveRun">;
+    45	  private readonly agentRunMetadataService: Pick<AgentRunMetadataService, "readMetadata">;
+    46	  private readonly teamRunExecutionTreeLocations: Pick<TeamRunExecutionTreeLocationService, "containsRunId">;
+    47	  private readonly memoryLayout: AgentMemoryLayout;
+    48	  private readonly createToken: () => string;
+    49	  private readonly reservations = new Set<string>();
+    50
+    51	  constructor(options: AgentRunIdentityAllocatorOptions = {}) {
+    52	    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    53	    this.agentDefinitionService =
+    54	      options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    55	    this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
+    56	    this.agentRunMetadataService = options.agentRunMetadataService ?? getAgentRunMetadataService();
+    57	    this.teamRunExecutionTreeLocations = options.teamRunExecutionTreeLocationService
+    58	      ?? new TeamRunExecutionTreeLocationService({ memoryDir });
+    59	    this.memoryLayout = new AgentMemoryLayout(memoryDir);
+    60	    this.createToken = options.createToken ?? createUuidIdentityToken;
+    61	  }
+    62
+    63	  async allocateForAgentDefinition(agentDefinitionId: string): Promise<string> {
+    64	    const normalizedDefinitionId = normalizeRequiredString(agentDefinitionId, "agentDefinitionId");
+    65	    const definition = await this.agentDefinitionService.getAgentDefinitionById(normalizedDefinitionId);
+    66	    if (!definition) {
+    68	  constructor(options: {
+    69	    agentTeamRunManager?: AgentTeamRunManager;
+    70	    teamDefinitionService?: AgentTeamDefinitionService;
+    71	    teamRunHistoryCatalogService?: TeamRunHistoryCatalogService;
+    72	    workspaceManager?: WorkspaceManager;
+    73	    memoryDir?: string;
+    74	    memoryLocationService?: AgentMemoryLocationService;
+    75	    agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    76	    teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
+    77	    tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+    78	      "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+    79	  } = {}) {
+    80	    this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
+    81	    this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+    82	    this.catalog = options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
+    83	    this.workspaces = options.workspaceManager ?? getWorkspaceManager();
+    84	    void (options.memoryLocationService ?? (options.memoryDir ? new AgentMemoryLocationService({ memoryDir: options.memoryDir }) : getAgentMemoryLocationService()));
+    85	    this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator({
+    86	      memoryDir: options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    87	    });
+    88	    this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
+    89	    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    90	  }
+
+### IR-011 correction does not touch the authority paths
+tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md
+tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-revision-record.md
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-affected-validation.log
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-build-validation.log
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-recursive-cleanup-characterization.log
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-source-audit.log
+tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md
+tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md
+autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+
+## Migration retry/current-reader correlation
+### Public mutation invokes exactly the requested migration; only a V2 request rebuilds admission
+   101	@Resolver()
+   102	export class AppDataMigrationResolver {
+   103	  private readonly runner = getAppDataMigrationRunner();
+   104
+   105	  @Query(() => [AppDataMigrationRecordObject])
+   106	  async getAppDataMigrations(): Promise<AppDataMigrationRecordObject[]> {
+   107	    return (await this.runner.listStatuses()).map(toRecordObject);
+   108	  }
+   109
+   110	  @Mutation(() => AppDataMigrationMutationResult)
+   111	  async runAppDataMigration(
+   112	    @Arg("migrationId", () => String) migrationId: string,
+   113	  ): Promise<AppDataMigrationMutationResult> {
+   114	    try {
+   115	      const snapshot = await this.runner.runMigration(migrationId);
+   116	      if (migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID) {
+   117	        // Manual Settings Retry is not complete until the current-package
+   118	        // admission catalog reflects every V2 file produced by this attempt.
+   119	        await new TeamRunPackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
+   120	      }
+   121	      return {
+   122	        success: snapshot.status !== "FAILED",
+   123	        message: `Migration '${migrationId}' completed with status ${snapshot.status}.`,
+   124	        migration: toRecordObject(snapshot),
+   125	      };
+   126	    } catch (error) {
+   127	      const duplicate = error instanceof AppDataMigrationDuplicateRunError;
+   128	      return {
+   129	        success: false,
+   130	        message: duplicate
+
+### Runner runMigration invokes only the selected definition and validates prerequisites
+    81	  async runMigration(migrationId: string): Promise<AppDataMigrationStatusSnapshot> {
+    82	    const definition = this.registry.getDefinition(migrationId);
+    83	    if (!definition) {
+    84	      throw new Error(`Unknown app data migration '${migrationId}'.`);
+    85	    }
+    86	    if (definition.executionPolicy === "STARTUP_ONLY") {
+    87	      throw new AppDataMigrationRestartRequiredError(definition.id);
+    88	    }
+    89	    const record = await this.runDefinition(definition);
+    90	    return this.toStatusSnapshot(definition, record);
+    91	  }
+    92
+    93	  private async runDefinition(
+    94	    definition: AppDataMigrationDefinition,
+    95	  ): Promise<AppDataMigrationRecordSnapshot> {
+    96	    if (this.inFlight.has(definition.id)) {
+    97	      throw new AppDataMigrationDuplicateRunError(definition.id);
+    98	    }
+    99
+   100	    const runPromise = this.runDefinitionWithRecordLock(definition);
+   101	    this.inFlight.set(definition.id, runPromise);
+   102	    try {
+   103	      return await runPromise;
+   104	    } finally {
+   105	      this.inFlight.delete(definition.id);
+   106	    }
+   107	  }
+   108
+   109	  private async runDefinitionWithRecordLock(
+   110	    definition: AppDataMigrationDefinition,
+   111	  ): Promise<AppDataMigrationRecordSnapshot> {
+   112	    const existingRecord = await this.repository.getRecord(definition.id);
+   113	    if (this.isCurrentlyRunning(existingRecord)) {
+   114	      throw new AppDataMigrationDuplicateRunError(definition.id);
+   115	    }
+   116	    await this.assertPrerequisites(definition);
+   117
+   118	    return this.executeDefinition(definition);
+   119	  }
+   120
+   121	  private async assertPrerequisites(definition: AppDataMigrationDefinition): Promise<void> {
+   122	    const statuses = await Promise.all(
+   123	      (definition.prerequisiteMigrationIds ?? []).map(async (migrationId) => ({
+   124	        migrationId,
+   125	        status: (await this.repository.getRecord(migrationId))?.status ?? "NOT_RUN" as const,
+   126	      })),
+   127	    );
+   128	    const incomplete = statuses.filter(
+   129	      ({ status }) => status !== "SUCCEEDED" && status !== "SUCCEEDED_WITH_WARNINGS",
+   130	    );
+   131	    if (incomplete.length > 0) {
+   132	      throw new AppDataMigrationPrerequisiteError(definition.id, incomplete);
+   133	    }
+   134	  }
+
+### V2 declares memory-layout as prerequisite and current projection is V2-location based
+   150	  }, tree.rootTeam.teamRunId);
+   151	};
+   152
+   153	export class TeamRunExecutionTreeV2AppDataMigration implements AppDataMigrationDefinition {
+   154	  readonly id = TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID;
+   155	  readonly displayName = "Upgrade TeamRun execution trees to V2";
+   156	  readonly description = "Materializes a complete effective launch default on every configured TeamRun.";
+   157	  readonly requiredOnStartup = true;
+   158	  readonly executionPolicy = "ANYTIME" as const;
+   159	  readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
+   160
+   161	  private readonly layout: AgentMemoryLayout;
+   162	  private readonly dispositions = new Map<Disposition, DispositionRecord>();
+   163	  private scannedCount = 0;
+   164
+    22	export class TeamMemberRunViewProjectionService {
+    23	  private readonly agentViews: AgentRunViewProjectionService;
+    24	  private readonly locations: TeamRunExecutionTreeLocationService;
+    25
+    26	  constructor(options: {
+    27	    memoryDir?: string;
+    28	    agentRunViewProjectionService?: AgentRunViewProjectionService;
+    29	    locations?: TeamRunExecutionTreeLocationService;
+    30	  } = {}) {
+    31	    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    32	    this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
+    33	    this.locations = options.locations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
+    34	  }
+    35
+    36	  async getProjection(rootTeamRunId: string, agentRunId: string): Promise<TeamMemberRunProjection> {
+    37	    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    38	    const projection = await this.agentViews.getProjectionFromMetadata({
+    39	      runId: location.agentRunId,
+    40	      metadata: metadataFor(location),
+    41	    });
+    42	    return {
+    43	      agentRunId: projection.runId,
+    44	      conversation: projection.conversation,
+    45	      activities: projection.activities,
+    46	      summary: projection.summary,
+    47	      lastActivityAt: projection.lastActivityAt,
+    48	      hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
+    49	    };
+    50	  }
+    51
+    52	  async getActiveTracePage(
+    53	    rootTeamRunId: string,
+    54	    agentRunId: string,
+    55	    beforeCursor?: string | null,
+    56	  ): Promise<EventMonitorActiveTracePage> {
+    57	    const location = await this.requireLocation(rootTeamRunId, agentRunId);
+    58	    return this.agentViews.getActiveTracePageFromMetadata({
+    59	      runId: location.agentRunId,
+    60	      metadata: metadataFor(location),
+    61	      beforeCursor,
+    62	      canonicalSubject: `team:${location.rootTeamRunId}:agent:${location.agentRunId}`,
+    63	    });
+    64	  }
+    65
+    66	  private async requireLocation(rootTeamRunId: string, agentRunId: string) {
+    67	    const root = required(rootTeamRunId, "rootTeamRunId");
+    68	    const run = required(agentRunId, "agentRunId");
+    69	    const location = await this.locations.findAgent({ agentRunId: run });
+    70	    if (!location || location.rootTeamRunId !== root) {
+    71	      throw new Error(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
+    72	    }
+    73	    if (!location.configuredPlacement) {
+    74	      throw new Error(`AgentRun '${run}' has no configured launch placement.`);
+    75	    }
+    76	    return location;
+
+### F006 test retries only memory layout, then calls a current V2-only projection before V2 retry
+   362	  it("keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action", async () => {
+   363	    const target = makeTarget("nested-history-manual-retry");
+   364	    const rootDir = seedAuthorityPackage(target.runtimeRoot);
+   365	    const alreadyMovable = seedMemberDirectory(rootDir, "agent-run-reviewer", "MOVED_BEFORE_RETRY");
+   366	    const blocked = seedMemberDirectory(rootDir, "agent-run-architect", "BLOCKED_UNTIL_RETRY");
+   367	    const movedCanonical = canonicalMemberDir(rootDir, ["team-run-architecture"], "agent-run-reviewer");
+   368	    const blockedCanonical = canonicalMemberDir(rootDir, ["team-run-architecture"], "agent-run-architect");
+   369	    fs.mkdirSync(path.dirname(blockedCanonical), { recursive: true, mode: 0o700 });
+   370	    fs.writeFileSync(blockedCanonical, "invalid canonical target blocker\n", { mode: 0o600 });
+   371
+   372	    const server = await startServer(target);
+   373	    await expectHealthy(server.serverUrl);
+   374	    expect(server.output()).toContain("Server listening on");
+   375	    expect(await requireStatus(server.serverUrl, LAYOUT_MIGRATION_ID)).toMatchObject({
+   376	      status: "FAILED",
+   377	      attempts: 1,
+   378	      recoveryAction: "MANUAL_RETRY",
+   379	      canRetry: true,
+   380	      summary: expect.stringMatching(/^Scanned \d+; migrated 1; skipped \d+; failed 1\.$/),
+   381	      errorMessage: "1 Team Agent memory location could not be established.",
+   382	    });
+   383	    expect(fs.existsSync(alreadyMovable.memberDir)).toBe(false);
+   384	    expect(fs.readFileSync(path.join(movedCanonical, "restart-owned-sentinel.bin"))).toEqual(alreadyMovable.sentinelBytes);
+   385	    expect(fs.existsSync(blocked.memberDir)).toBe(true);
+   386	    expect(fs.statSync(blockedCanonical).isFile()).toBe(true);
+   387	    expect(await requireStatus(server.serverUrl, EXTERNAL_SNAPSHOT_MIGRATION_ID)).toMatchObject({
+   388	      status: "NOT_RUN",
+   389	      attempts: 0,
+   390	    });
+   391	    expect(await requireStatus(server.serverUrl, NATIVE_SNAPSHOT_MIGRATION_ID)).toMatchObject({
+   392	      status: "NOT_RUN",
+   393	      attempts: 0,
+   394	    });
+   395
+   396	    fs.rmSync(blockedCanonical);
+   397	    const retry = await executeGraphql<{
+   398	      runAppDataMigration: {
+   399	        success: boolean;
+   400	        message: string;
+   401	        migration: MigrationStatus | null;
+   402	      };
+   403	    }>(server.serverUrl, `
+   404	      mutation RetryNestedHistoryMigration($migrationId: String!) {
+   405	        runAppDataMigration(migrationId: $migrationId) {
+   406	          success message
+   407	          migration {
+   408	            migrationId status recoveryAction canRetry attempts summary errorMessage
+   409	          }
+   410	        }
+   411	      }
+   412	    `, { migrationId: LAYOUT_MIGRATION_ID });
+   413	    expect(retry.runAppDataMigration).toMatchObject({
+   414	      success: true,
+   415	      migration: {
+   416	        migrationId: LAYOUT_MIGRATION_ID,
+   417	        status: "SUCCEEDED",
+   418	        attempts: 2,
+   419	        recoveryAction: "NONE",
+   420	        canRetry: false,
+   421	        summary: expect.stringMatching(/^Scanned \d+; migrated 1; skipped \d+; failed 0\.$/),
+   422	        errorMessage: null,
+   423	      },
+   424	    });
+   425	    expect(fs.existsSync(blocked.memberDir)).toBe(false);
+   426	    expect(fs.readFileSync(path.join(blockedCanonical, "raw_traces_active.jsonl"))).toEqual(blocked.traceBytes);
+   427	    expectProjectionTokenSet(await projection(server.serverUrl, "agent-run-architect"), "BLOCKED_UNTIL_RETRY", false);
+   428
+   429	    const dependent = await executeGraphql<{
+   430	      runAppDataMigration: { success: boolean; migration: MigrationStatus | null };
+   431	    }>(server.serverUrl, `
+   432	      mutation RunUnblockedDependent($migrationId: String!) {
+   433	        runAppDataMigration(migrationId: $migrationId) {
+   434	          success
+   435	          migration { migrationId status recoveryAction canRetry attempts summary errorMessage }
+   436	        }
+   437	      }
+   438	    `, { migrationId: EXTERNAL_SNAPSHOT_MIGRATION_ID });
+   439	    expect(dependent.runAppDataMigration).toMatchObject({
+   440	      success: true,
+
+## Focused current checks
+=== prepare:shared ===
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+=== focused migration tests ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:56992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (21 tests) 54ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:57041) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts > TeamRunExecutionTreeV2AppDataMigration > is registered once immediately after its memory-layout prerequisite
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts (4 tests) 41ms
+
+ Test Files  2 passed (2)
+      Tests  25 passed (25)
+   Start at  15:54:17
+   Duration  10.70s (transform 5.97s, setup 30ms, import 9.76s, tests 94ms, environment 0ms)
+
+
+## Cleanup
+absent autobyteus-ts/dist
+absent autobyteus-application-sdk-contracts/dist
+absent autobyteus-application-backend-sdk/dist

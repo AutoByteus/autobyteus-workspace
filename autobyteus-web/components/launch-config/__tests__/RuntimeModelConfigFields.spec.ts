@@ -20,7 +20,9 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     providers = []
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
+      refreshLocalCatalog: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+      providerSnapshots: vi.fn().mockReturnValue([]),
       providersWithModelsForSelection: vi.fn(() => providers),
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({

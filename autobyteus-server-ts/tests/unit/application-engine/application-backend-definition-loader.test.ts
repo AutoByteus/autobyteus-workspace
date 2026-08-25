@@ -40,9 +40,9 @@ const inputFor = (entryModulePath: string, webSockets = true) => ({
 });
 
 describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
-  it("derives the v4 WebSocket exposure summary from exact valid routes", async () => {
+  it("derives the current WebSocket exposure summary from exact valid routes", async () => {
     const entry = await writeDefinition(`export default {
-      definitionContractVersion: "5",
+      definitionContractVersion: "6",
       webSocketRoutes: [{ path: "/rooms/:roomId", open() {} }],
     };`);
     const loaded = await new ApplicationBackendDefinitionLoader().load(inputFor(entry));
@@ -54,10 +54,10 @@ describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
   it("rejects stale v3 definitions and routes disabled by the bundle authority", async () => {
     const stale = await writeDefinition(`export default { definitionContractVersion: "3" };`);
     await expect(new ApplicationBackendDefinitionLoader().load(inputFor(stale))).rejects.toThrow(
-      "exports definitionContractVersion '3', but '5' is required",
+      "exports definitionContractVersion '3', but '6' is required",
     );
     const disabled = await writeDefinition(`export default {
-      definitionContractVersion: "5",
+      definitionContractVersion: "6",
       webSocketRoutes: [{ path: "/rooms", open() {} }],
     };`);
     await expect(new ApplicationBackendDefinitionLoader().load(inputFor(disabled, false))).rejects.toThrow(
@@ -67,9 +67,9 @@ describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
 
   it("rejects malformed, duplicate-parameter, and ambiguous route declarations", async () => {
     const sources = [
-      `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/rooms" }] };`,
-      `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/:room/:room", open() {} }] };`,
-      `export default { definitionContractVersion: "5", webSocketRoutes: [
+      `export default { definitionContractVersion: "6", webSocketRoutes: [{ path: "/rooms" }] };`,
+      `export default { definitionContractVersion: "6", webSocketRoutes: [{ path: "/:room/:room", open() {} }] };`,
+      `export default { definitionContractVersion: "6", webSocketRoutes: [
         { path: "/rooms/:room", open() {} },
         { path: "/rooms/public", open() {} },
       ] };`,

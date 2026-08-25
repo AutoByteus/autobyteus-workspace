@@ -1,0 +1,119 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1785503367.499,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7637f3a9-0870-4dac-a36d-9427a3955ae1",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the retained API REV 013 business path."
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267"
+    },
+    {
+      "ts": 1785503367.512,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7637f3a9-0870-4dac-a36d-9427a3955ae1",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267:/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267",
+            "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the retained API REV 013 business path.",
+            "revisionId": "37fd03e0-5a8f-4ee7-914b-c26f8fa3ba4a",
+            "createdAt": "2026-07-31T13:09:27.504Z",
+            "updatedAt": "2026-07-31T13:09:27.504Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267"
+    },
+    {
+      "ts": 1785503374.476,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-dbef2684-a26d-41a8-8c34-f42172105a29",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "research_handoff",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md. Key findings: center the brief on preserving and making reviewable the retained API REV 013 business path; keep identifier 1785503319652 traceable; define audience, decision, boundaries, and success measures; label missing metrics, API evidence, ownership, retention, and rollback details as validation questions rather than inventing specifics. Please review this file before drafting.",
+        "reference_files": [
+          "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md"
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267"
+    },
+    {
+      "ts": 1785503374.583,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-dbef2684-a26d-41a8-8c34-f42172105a29",
+      "tool_result": "Delivered message to writer.",
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_a9406215d8e04676a1ed2ab80c790267"
+    },
+    {
+      "ts": 1785503411.789,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-c0599a42-d523-46a9-ac22-a301227724a0",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "description": "Concise writer checkpoint and final brief for retained API REV 013 business path 1785503319652."
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56"
+    },
+    {
+      "ts": 1785503411.799,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-c0599a42-d523-46a9-ac22-a301227724a0",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56:/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56",
+            "path": "/private/tmp/api-rev013-studio-data-1785503104/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise writer checkpoint and final brief for retained API REV 013 business path 1785503319652.",
+            "revisionId": "5a1ec2d6-4725-4a69-aef3-da4e043dabeb",
+            "createdAt": "2026-07-31T13:10:11.792Z",
+            "updatedAt": "2026-07-31T13:10:11.792Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_370c96bcd7ba477aacb0ad90202a1b56"
+    }
+  ]
+}

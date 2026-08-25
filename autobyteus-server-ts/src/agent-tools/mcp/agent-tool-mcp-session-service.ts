@@ -6,6 +6,8 @@ import {
   type AgentToolMcpCreateSessionInput,
   type AgentToolMcpDescriptor,
   type AgentToolMcpSession,
+  type AgentToolMcpSessionBaseExecutionCapabilities,
+  type AgentToolMcpSessionExecutionCapabilities,
   type AgentToolMcpSessionOwnerIdentity,
   type RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
@@ -24,10 +26,30 @@ export type CreateAgentToolMcpSessionResult = {
   redactedDescriptor: RedactedAgentToolMcpDescriptor;
 };
 
+export type AgentToolMcpSessionIssueInput = Omit<
+  AgentToolMcpCreateSessionInput,
+  "enabledTools" | "toolRoutes" | "configuredMcpToolSources" | "executionCapabilities"
+>;
+
+export type AgentToolMcpSessionManager = {
+  createAgentToolMcpSession(
+    input: AgentToolMcpSessionIssueInput,
+  ): CreateAgentToolMcpSessionResult;
+  revokeAgentToolMcpSession(sessionId: string): boolean;
+  revokeAgentToolMcpSessionsForRun(runId: string): number;
+  revokeAgentToolMcpSessionsForOwner(
+    owner: Partial<AgentToolMcpSessionOwnerIdentity>,
+  ): number;
+  redactAgentToolMcpDescriptor(
+    descriptor: AgentToolMcpDescriptor,
+  ): RedactedAgentToolMcpDescriptor;
+};
+
 type AgentToolMcpSessionServiceDeps = {
   registry?: AgentToolMcpSessionRegistry;
   catalog?: AgentToolMcpCatalog;
   getInternalBaseUrl?: () => string;
+  executionCapabilities?: AgentToolMcpSessionBaseExecutionCapabilities | null;
 };
 
 export class AgentToolMcpSessionService {
@@ -35,6 +57,7 @@ export class AgentToolMcpSessionService {
   private readonly registry: AgentToolMcpSessionRegistry;
   private readonly catalog: AgentToolMcpCatalog;
   private readonly getInternalBaseUrl: () => string;
+  private readonly executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities | null;
 
   static getInstance(): AgentToolMcpSessionService {
     if (!AgentToolMcpSessionService.instance) {
@@ -51,11 +74,18 @@ export class AgentToolMcpSessionService {
     this.registry = deps.registry ?? getAgentToolMcpSessionRegistry();
     this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
     this.getInternalBaseUrl = deps.getInternalBaseUrl ?? getInternalServerBaseUrlOrThrow;
+    this.executionCapabilities = deps.executionCapabilities
+      ? Object.freeze({
+          publishedArtifactPublisher:
+            deps.executionCapabilities.publishedArtifactPublisher,
+        })
+      : null;
   }
 
   createAgentToolMcpSession(
-    input: Omit<AgentToolMcpCreateSessionInput, "enabledTools" | "toolRoutes" | "configuredMcpToolSources">,
+    input: AgentToolMcpSessionIssueInput,
   ): CreateAgentToolMcpSessionResult {
+    const executionCapabilities = this.buildExecutionCapabilities(input);
     const exposure = this.catalog.resolveRuntimeSessionToolExposure({
       runtimeExposure: input.runtimeExposure,
       sender: input.sender,
@@ -63,6 +93,7 @@ export class AgentToolMcpSessionService {
     });
     const { session, capabilityToken } = this.registry.createSession({
       ...input,
+      executionCapabilities,
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
@@ -75,6 +106,49 @@ export class AgentToolMcpSessionService {
     };
   }
 
+  private buildExecutionCapabilities(
+    input: AgentToolMcpSessionIssueInput,
+  ): AgentToolMcpSessionExecutionCapabilities {
+    const base = this.executionCapabilities;
+    if (!base) {
+      throw new Error("Agent Tools MCP session issuance is unavailable for this scope.");
+    }
+    const member = input.sender.memberTeamContext;
+    const ownerTeamIdentity = input.owner.teamIdentity ?? null;
+    if (!member) {
+      if (ownerTeamIdentity) {
+        throw new Error(
+          "Agent Tools MCP Team owner identity requires a Team-member sender context.",
+        );
+      }
+      return Object.freeze({
+        kind: "agent",
+        publishedArtifactPublisher: base.publishedArtifactPublisher,
+      });
+    }
+
+    const memberIdentity = member.identity;
+    if (
+      input.owner.runId !== memberIdentity.agentRunId ||
+      !ownerTeamIdentity ||
+      ownerTeamIdentity.rootTeamRunId !== memberIdentity.rootTeamRunId ||
+      ownerTeamIdentity.memberAddress !== memberIdentity.memberAddress ||
+      ownerTeamIdentity.agentRunId !== memberIdentity.agentRunId
+    ) {
+      throw new Error(
+        "Agent Tools MCP Team owner identity does not match the Team-member sender context.",
+      );
+    }
+    return Object.freeze({
+      kind: "team_member",
+      publishedArtifactPublisher: base.publishedArtifactPublisher,
+      taskDelegation: Object.freeze({
+        identity: { ...memberIdentity },
+        rootResolver: member.taskRootResolver,
+      }),
+    });
+  }
+
   revokeAgentToolMcpSession(sessionId: string): boolean {
     return this.registry.revokeSession(sessionId);
   }
@@ -85,14 +159,6 @@ export class AgentToolMcpSessionService {
       return 0;
     }
     return this.registry.revokeSessionsForOwner({ runId: normalizedRunId });
-  }
-
-  revokeAgentToolMcpSessionsForAgentRun(agentRunId: string): number {
-    const normalizedAgentRunId = agentRunId.trim();
-    if (!normalizedAgentRunId) {
-      return 0;
-    }
-    return this.registry.revokeSessionsForOwner({ runId: normalizedAgentRunId });
   }
 
   revokeAgentToolMcpSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {

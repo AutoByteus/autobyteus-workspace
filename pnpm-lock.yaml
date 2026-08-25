@@ -17,6 +17,9 @@ importers:
         specifier: workspace:*
         version: link:../../autobyteus-application-frontend-sdk
     devDependencies:
+      '@autobyteus/application-devkit':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-devkit
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
@@ -33,6 +36,9 @@ importers:
         specifier: workspace:*
         version: link:../../autobyteus-application-frontend-sdk
     devDependencies:
+      '@autobyteus/application-devkit':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-devkit
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
@@ -61,9 +67,18 @@ importers:
       '@autobyteus/application-sdk-contracts':
         specifier: workspace:*
         version: link:../autobyteus-application-sdk-contracts
+      autobyteus-server-ts:
+        specifier: workspace:*
+        version: link:../autobyteus-server-ts
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
       esbuild:
         specifier: ^0.27.3
         version: 0.27.3
+      playwright-core:
+        specifier: ^1.48.0
+        version: 1.58.2
     devDependencies:
       '@autobyteus/application-backend-sdk':
         specifier: workspace:*
@@ -206,6 +221,9 @@ importers:
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
+      '@vue/compiler-sfc':
+        specifier: ^3.5.28
+        version: 3.5.28
       prisma:
         specifier: ^5.22.0
         version: 5.22.0
@@ -7512,11 +7530,6 @@ packages:
   sponge-case@1.0.1:
     resolution: {integrity: sha512-dblb9Et4DAtiZ5YSUZHLl4XhH4uK80GhAZrVXdN4O2P4gQ40Wa5UIOPUHlA/nFd2PLblBZWUioLMMAVrgpoYcA==}
 
-  srvx@0.11.7:
-    resolution: {integrity: sha512-p9qj9wkv/MqG1VoJpOsqXv1QcaVcYRk7ifsC6i3TEwDXFyugdhJN4J3KzQPZq2IJJ2ZCt7ASOB++85pEK38jRw==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
-
   srvx@0.11.9:
     resolution: {integrity: sha512-97wWJS6F0KTKAhDlHVmBzMvlBOp5FiNp3XrLoodIgYJpXxgG5tE9rX4Pg7s46n2shI4wtEsMATTS1+rI3/ubzA==}
     engines: {node: '>=20.16.0'}
@@ -10464,7 +10477,7 @@ snapshots:
       pkg-types: 2.3.0
       scule: 1.3.0
       semver: 7.7.4
-      srvx: 0.11.7
+      srvx: 0.11.9
       std-env: 3.10.0
       tinyexec: 1.0.2
       ufo: 1.6.3
@@ -16739,8 +16752,6 @@ snapshots:
   sponge-case@1.0.1:
     dependencies:
       tslib: 2.8.1
-
-  srvx@0.11.7: {}
 
   srvx@0.11.9: {}
 

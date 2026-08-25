@@ -1,0 +1,24 @@
+# DR-007 Fresh Electron Delivery Audit
+timestamp_utc=2026-07-31T15:28:29Z
+candidate=fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+integrated_base=ea6d6b011035d71dc9594d61ad035470985fca8e
+ahead_behind=98/0
+
+## README basis
+PASS: root README, web README desktop-build section, and Electron packaging guide read and applied
+
+## Build and verification evidence
+PASS: fresh documented build and artifact verification completed
+
+## Current artifacts
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg 405257693 bytes
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.zip 401376716 bytes
+3b59f15063801ba96d0c90e68324e1c8d8a1d21954bfb6d83e2591ad0a7f0bc8  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg
+21c82995f1670c47373895c9e9a6686c4b5ff4b1286ce8bbc7daa16f74e80217  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.zip
+PASS: current bytes match canonical DR-007 identity
+
+## Canonical delivery records
+PASS: canonical records, diff check, process state, and mount state are handoff-consistent
+USER_VERIFICATION=Pending
+REPOSITORY_FINALIZATION=Not performed
+FINAL=PASS

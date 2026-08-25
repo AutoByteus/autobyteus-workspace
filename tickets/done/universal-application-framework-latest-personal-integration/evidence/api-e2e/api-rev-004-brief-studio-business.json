@@ -1,0 +1,153 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STUDIO-004",
+  "startedAt": "2026-08-22T12:20:48.680Z",
+  "title": "API REV 004 Studio exact identity brief",
+  "setup": {
+    "bundled": true,
+    "researcher": true,
+    "writer": true,
+    "luna": true,
+    "enterEnabled": true
+  },
+  "polls": [
+    {
+      "at": "2026-08-22T12:21:08.308Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:13.325Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:18.331Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:23.341Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:28.349Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:33.358Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:38.368Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:43.374Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:48.379Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:53.386Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:21:58.396Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:03.406Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:08.418Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:13.423Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:18.435Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:23.442Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:28.453Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:33.465Z",
+      "inReview": false,
+      "research": false,
+      "final": true,
+      "iframeCount": 1
+    },
+    {
+      "at": "2026-08-22T12:22:38.475Z",
+      "inReview": true,
+      "research": true,
+      "final": true,
+      "iframeCount": 1
+    }
+  ],
+  "consoleErrors": [],
+  "requestFailures": [],
+  "cardCount": 1,
+  "bodyExcerpt": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI REV 004 Studio exact identity brief\nIn_review\nBrief brief-638a6b63-880d-4d3d-a8a7-fec1de8f273f\nUpdated 22.8.2026, 14:22:35\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI REV 004 Studio exact identity brief\n\nbriefId brief-638a6b63-880d-4d3d-a8a7-fec1de8f273f\n\nIn_review\nCreated 22.8.2026, 14:21:03\nUpdated 22.8.2026, 14:22:35\nBRIEF RECORD\nbrief-638a6b63-880d-4d3d-a8a7-fec1de8f273f\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n0 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md\n\nConcise research checkpoint for the exact identity brief.\n\n# API REV 004 Studio exact identity brief — research checkpoint\n\n## Key findings\n- The brief title is the only supplied source context; the central requirement is exact identity, not a broad brand exploration.\n- “API REV 004 Studio” should be treated as the canonical name, preserving capitalization, spacing, and the three-part structure exactly.\n- “exact identity” implies a reviewable identity spec: approved name treatment, concise positioning, voice, visual direction, and explicit exclusions.\n- The checkpoint should distinguish confirmed facts (the title) from proposed identity decisions so reviewers can approve or revise them cleanly.\n- A compact brief is preferable: one central promise, a small set of identity principles, and concrete acceptance criteria.\n\n## Risks or open questions\n- No product description, audience, market, geography, or existing visual references were provided.\n- “API REV 004” could be a project/version code or an outward-facing brand element; its public display role needs confirmation.\n- Exact logo, color, typography, and usage rules cannot be finalized without stakeholder/source validation.\n\n## Recommendations or next steps\n- Draft the identity around precision, technical fluency, and studio craft while labeling these as working hypotheses.\n- Make the canonical lockup “API REV 004 Studio” and define any shortened form only as a secondary usage.\n- Include a reviewer checklist covering naming, audience, promise, tone, visual system, and prohibited variants.\n\nwriter\nFinal\n\n/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md\n\nConcise reviewable identity brief for API REV 004 Studio.\n\n# API REV 004 Studio — Identity Brief\n\n**Recommendation summary**\n\nAdopt **“API REV 004 Studio”** as the canonical identity treatment, preserving its capitalization, spacing, and three-part structure exactly. Build a compact identity around a clear, exacting, technically fluent studio character. The following positioning, voice, and visual direction are working hypotheses—not validated brand decisions—because no audience, product description, market context, or visual references were supplied.\n\n**Key evidence**\n\n- **Confirmed naming:** The supplied title is the only firm source context; therefore, the exact name treatment is the strongest approved direction.\n- **Positioning hypothesis:** A precision-led studio that turns complex systems, revisions, or technical work into clear, crafted outcomes.\n- **Voice:** Direct, calm, specific, and confident. Prefer plain language, useful detail, and deliberate restraint over hype, jargon, or exaggerated claims.\n- **Visual direction:** Structured and editorial; use disciplined spacing, modular layouts, strong hierarchy, and a restrained technical sensibility. Let craft and clarity lead rather than decorative futurism.\n- **Identity principle:** Every touchpoint should feel intentional, legible, and revision-aware—precise enough for technical audiences, but accessible to non-specialists.\n- **Exclusions:** Do not introduce unapproved shortened names, alternate capitalization, generic “AI/tech” visual clichés, noisy gradients, gratuitous code imagery, or claims that imply a defined product or audience.\n\n**Risks or cautions**\n\n- “API REV 004” may be an internal project/version code rather than a public-facing brand element; confirm its display role before finalizing.\n- Logo construction, color palette, typography, spacing, and accessibility rules remain undefined and require stakeholder/source validation.\n- Precision, technical fluency, and studio craft are hypotheses inferred from the name and brief—not evidence-based audience insights.\n- Avoid presenting this checkpoint as a final brand system until the audience, offer, and competitive context are known.\n\n**Next actions**\n\n- Confirm whether **“API REV 004 Studio”** is the public-facing canonical name and whether a secondary short form is permitted.\n- Validate the intended audience, offer, market context, and any existing visual references.\n- Approve or revise the positioning and voice hypotheses.\n- Develop two or three visual routes, then select and document the logo, color, type, layout, and usage rules.\n- Run a reviewer checklist for name fidelity, promise, tone, visual coherence, accessibility, and prohibited variants.\n\nReview notes\n\nKeep the approval conversation on the brief record itself.\n\nNo review notes yet.\nAdd review note\nWorkflow diagnostics",
+  "result": "PASS",
+  "finishedAt": "2026-08-22T12:22:38.566Z"
+}

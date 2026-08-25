@@ -1,0 +1,51 @@
+# DR-008 Delivery Documentation And Package Audit
+started_utc=2026-08-01T04:50:21Z
+candidate=9987c2c10fdc74416b55baa8bd123ab31afe3285
+reviewed_anchor=5071b429672e0bf3108f45c30d6747a2ae6331b6
+checkpoint=a1bd2018d419a977b90c236061555b33df9bafd9
+prior_base=ea6d6b011035d71dc9594d61ad035470985fca8e
+integrated_base=8b8ae4c304928b391bdd5466b2262f87d43cf272
+base_commit_count=29
+ahead_behind=100/0
+
+## Integrated-state identity
+PASS: latest fetched origin/personal is integrated; candidate/base divergence is 100/0
+
+## README/build-instruction audit
+PASS: repository, web, and Electron-packaging guidance contains the followed desktop build/runtime instructions
+
+## Upstream and post-integration evidence
+PASS final evidence: tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-008-base-refresh-and-integration.log
+PASS final evidence: tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-008-post-integration-check.log
+PASS final evidence: tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-008-electron-macos-arm64-build.log
+PASS final evidence: tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-008-electron-macos-arm64-verification.log
+PASS: integrated full server build and exact 32-file/130-test matrix are recorded
+
+## Executable architecture documentation audit
+PASS: AFB-001 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-002 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-003 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-004 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: AFB-005 appears in architecture pointer, canonical applications policy, and executable owner
+PASS: retired broad owners remain absent and current narrow runtime owners remain present
+
+## Latest-base documentation/runtime impact
+PASS: current memory/migration owners and independently completed v1.4.35 documentation are integrated
+PASS: no application-framework documentation conflict was introduced by the merge
+
+## Canonical delivery artifact audit
+PASS current canonical artifact: tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+PASS current canonical artifact: tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+PASS current canonical artifact: tickets/in-progress/universal-application-framework-proposal-analysis/electron-test-build-report.md
+PASS current canonical artifact: tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS current canonical artifact: tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+PASS: canonical delivery artifact diff check
+
+## Electron artifact identity and hygiene
+PASS: exact v1.4.35 artifacts/hashes, ignore status, process state, and mount state
+
+USER_VERIFICATION=Pending
+REPOSITORY_FINALIZATION=Not performed
+RELEASE_DEPLOYMENT=Not performed / not in scope
+completed_utc=2026-08-01T04:50:25Z
+FINAL=PASS

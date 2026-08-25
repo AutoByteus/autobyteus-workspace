@@ -1,0 +1,55 @@
+
+> @autobyteus-example/brief-studio-authoring@ dev:studio /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio
+> autobyteus-app dev --host studio -- --studio-url http://127.0.0.1:8049
+
+AgentFactory (Singleton) initialized.
+(node:74111) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T10:55:53.725Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T10:55:53.725Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T10:55:53.726Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Use Studio's “Reload application” action to remount the current application view.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:10.680Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:10.680Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:21:10.680Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:11.680Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:11.680Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:21:11.682Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:20.648Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:20.648Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:21:20.649Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:21.653Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:21:21.653Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:21:21.654Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:29:37.106Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:29:37.106Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:29:37.107Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/index.html
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:29:38.016Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-24T11:29:38.016Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-24T11:29:38.016Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.

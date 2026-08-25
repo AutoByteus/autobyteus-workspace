@@ -17,7 +17,7 @@ import { AgentDefinition } from "../../../../../src/agent-definition/domain/mode
 import { AutoByteusAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
+import { TASK_DELEGATION_TOOL_NAME_LIST } from "../../../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberTeamContext } from "../../../../fixtures/current-team-run-fixtures.js";
@@ -74,19 +74,27 @@ const createMemberTeamContext = (
     .mockResolvedValue({ accepted: true }),
   taskAgentContext: TaskAgentContextFacts | null = null,
   sendMessageToEnabled = true,
-) =>
-  testMemberTeamContext({
-    teamRunId: "team-1",
-    teamDefinitionId: "team-def-1",
+) => {
+  const root = {
+    delegateTask: vi.fn(async () => ({
+      task_id: "task_0008",
+      status: "active" as const,
+      target_agent_run_id: "run-reviewer",
+    })),
+  };
+  const taskRootResolver = Object.freeze({
+    resolveActiveRoot: vi.fn(async () => root as any),
+  });
+  const context = testMemberTeamContext({
     rootTeamRunId: "team-1",
     memberAddress: "/professor",
-    coordinatorAddress: "/professor",
     agentRunId: taskAgentContext?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
     deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
-    taskAgentRunId: taskAgentContext?.taskAgentRunId ?? null,
-    taskId: taskAgentContext?.taskId ?? null,
+    taskRootResolver,
   });
+  return context;
+};
 
 describe("AutoByteusAgentRunBackendFactory", () => {
   const toolRegistrySnapshot = defaultToolRegistry.snapshot();
@@ -176,6 +184,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       }),
       new LLMConfig(),
     );
+    vi.spyOn(LLMFactory, "listAvailableModels").mockResolvedValue([
+      { model_identifier: "dummy-model" },
+    ] as any);
+    vi.spyOn(LLMFactory, "requiresGeminiRuntimeResolver").mockResolvedValue(false);
     const createLLM = vi.spyOn(LLMFactory, "createLLM").mockResolvedValue(llm);
     const factory = new AutoByteusAgentRunBackendFactory();
 
@@ -560,16 +572,28 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(JSON.stringify(sendMessageTool?.definition)).toContain("target_agent_run_id");
   });
 
-  it("propagates the exact AutoByteus task Agent execution identity through managed task delegation context", async () => {
+  it("binds the exact AutoByteus task Agent identity and root capability into the task tool", async () => {
     const taskAgentContext: TaskAgentContextFacts = {
       taskAgentRunId: "team-1__professor__task_0007",
       taskId: "task_0007",
     };
-    const memberTeamContext = createMemberTeamContext(
-      TeamBackendKind.MIXED,
-      vi.fn().mockResolvedValue({ accepted: true }),
-      taskAgentContext,
-    );
+    const taskRoot = {
+      delegateTask: vi.fn(async () => ({
+        task_id: "task_0008",
+        status: "active" as const,
+        target_agent_run_id: "run-reviewer",
+      })),
+    };
+    const taskRootResolver = Object.freeze({
+      resolveActiveRoot: vi.fn(async () => taskRoot as any),
+    });
+    const memberTeamContext = testMemberTeamContext({
+      rootTeamRunId: "team-1",
+      memberAddress: "/professor",
+      agentRunId: taskAgentContext.taskAgentRunId,
+      deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      taskRootResolver,
+    });
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -577,7 +601,11 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             id: "agent-1",
             name: "Professor",
             description: "Coordinates work.",
-            toolNames: ["send_message_to"],
+            toolNames: [
+              "send_message_to",
+              "submit_task_result",
+              "review_task_result",
+            ],
           }),
         ),
       } as any,
@@ -623,17 +651,40 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       memberAddress: "/professor",
       agentRunId: "team-1__professor__task_0007",
     });
-
-    const delegationContext = buildTaskDelegationToolContextFromNativeContext({
-      config: { name: "Professor" },
-      customData: { teamContext: managedTeamContext },
+    const delegateTask = built.agentConfig.tools.find(
+      (tool: BaseTool) => tool.definition?.name === "delegate_task",
+    );
+    expect(built.agentConfig.tools
+      .map((tool: BaseTool) => tool.definition?.name)
+      .filter((name: string) => TASK_DELEGATION_TOOL_NAME_LIST.includes(name as never))
+      .sort())
+      .toEqual([...TASK_DELEGATION_TOOL_NAME_LIST].sort());
+    for (const toolName of TASK_DELEGATION_TOOL_NAME_LIST) {
+      expect(() => defaultToolRegistry.createTool(toolName)).toThrow(
+        "bound taskDelegation ToolConfig",
+      );
+    }
+    expect(delegateTask).toBeDefined();
+    await delegateTask!.execute({}, {
+      recipient_address: "/reviewer",
+      description: "Review the exact task result.",
     });
-
-    expect(delegationContext.identity).toEqual({
-      rootTeamRunId: "team-1",
-      memberAddress: "/professor",
-      agentRunId: "team-1__professor__task_0007",
-    });
+    expect(taskRootResolver.resolveActiveRoot).toHaveBeenCalledTimes(1);
+    expect(taskRoot.delegateTask).toHaveBeenCalledWith(
+      {
+        identity: {
+          rootTeamRunId: "team-1",
+          memberAddress: "/professor",
+          agentRunId: "team-1__professor__task_0007",
+        },
+        rootResolver: taskRootResolver,
+      },
+      {
+        recipient_address: "/reviewer",
+        description: "Review the exact task result.",
+        reference_files: [],
+      },
+    );
   });
 
   it("injects a server-backed compaction runner using the parent workspace context", async () => {

@@ -7,7 +7,11 @@ import {
   type ResolvedApplicationDevkitConfig,
 } from './application-devkit-config.js';
 
-const CONFIG_FILE_NAME = 'autobyteus-app.config.mjs';
+export const APPLICATION_DEVKIT_CONFIG_FILE_NAME = 'autobyteus-app.config.mjs';
+
+export const resolveApplicationDevkitConfigPath = (
+  projectRoot: string,
+): string => path.join(path.resolve(projectRoot), APPLICATION_DEVKIT_CONFIG_FILE_NAME);
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -24,7 +28,9 @@ const readConfigModuleValue = async (configPath: string): Promise<ApplicationDev
     default?: unknown;
   };
   if (!isObjectRecord(imported.default)) {
-    throw new Error(`${CONFIG_FILE_NAME} must export a default config object.`);
+    throw new Error(
+      `${APPLICATION_DEVKIT_CONFIG_FILE_NAME} must export a default config object.`,
+    );
   }
   return imported.default as ApplicationDevkitConfig;
 };
@@ -38,7 +44,7 @@ export const loadApplicationDevkitConfig = async (
   projectRoot: string,
 ): Promise<LoadedApplicationDevkitConfig> => {
   const resolvedProjectRoot = path.resolve(projectRoot);
-  const configPath = path.join(resolvedProjectRoot, CONFIG_FILE_NAME);
+  const configPath = resolveApplicationDevkitConfigPath(resolvedProjectRoot);
   const config = await readConfigModuleValue(configPath);
 
   return {

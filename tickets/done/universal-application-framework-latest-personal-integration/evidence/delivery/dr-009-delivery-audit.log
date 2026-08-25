@@ -1,0 +1,35 @@
+DR-009 DELIVERY AUDIT
+timestamp_utc=2026-08-24T11:55:59Z
+branch=codex/universal-application-framework-latest-personal-integration
+head=26ea0891d80caf6edc1a6e9b92e7cadeff7fa6b9
+head_parents=d6d3b040b33a9ad070ad3047783514470cd0aece 8a4c3868c7c54a46991f45be22a68151076412b1
+origin_personal=8a4c3868c7c54a46991f45be22a68151076412b1
+origin_personal_is_ancestor=PASS
+divergence_base_to_ticket=0 159
+unmerged_paths=0_PASS
+dr-009-base-refresh-and-integration.log:POST_BUILD_FINAL=PASS=PRESENT_PASS
+dr-009-electron-macos-arm64-build.log:FINAL=PASS=PRESENT_PASS
+dr-009-electron-isolation.log:FINAL=PASS=PRESENT_PASS
+dr-009-electron-macos-arm64-verification.log:FINAL=PASS=PRESENT_PASS
+electron_isolation_scenarios=5/5_PASS
+electron_isolation_cleanup=9/9_PASS
+ordinary_application_identity_preserved=PASS
+app_exists=PASS
+dmg_size=466994232
+dmg_sha256=ad922e458a838fccbf057ec83d1556ad2fb0c19bedcad9b47687963d3d38ef54
+zip_size=461539918
+zip_sha256=3da927ac75bbe0011fae940d4b424d2ed0834f33fe9bf48379992e10cca078b5
+root_prototype_present=PASS
+prototype_absent_from_root_workspace=PASS
+generated_dist_absent=PASS:autobyteus-application-backend-sdk/dist
+generated_dist_absent=PASS:autobyteus-application-sdk-contracts/dist
+doc_sha256:docs-sync-report.md=4133fd69bb0eea037430833ef8e8f3a85b46f1aea62ee061ab768ebb21bd7699
+doc_sha256:electron-test-build-report.md=138890877def35dbd339838e1b1825b7f65d9cf102487f612b80c9299d1aa0c7
+doc_sha256:handoff-summary.md=07fad0d384c27c9f2b7c8b0564869d50e5dc179b8e5b6544ab54a16d09d9b405
+doc_sha256:release-deployment-report.md=85fd76d634a3cea78f6d51127d00e10b7af2e8926ffe44db97573d1348c63f3d
+doc_sha256:delivery-revision-record.md=578e68933bf8bd55179ee3f5bea9c06d6a0b7e81b295f6ea83f0773ae7311fdf
+git_diff_check=PASS
+ticket_state=in_progress_PASS
+final_push_performed=NO_PASS
+personal_merge_or_push_performed=NO_PASS
+FINAL=PASS

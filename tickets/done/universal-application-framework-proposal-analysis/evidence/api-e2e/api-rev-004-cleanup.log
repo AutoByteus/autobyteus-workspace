@@ -1,0 +1,17 @@
+captured=2026-07-29T14:13:00Z
+--- listeners ---
+PORT_3000=CLEAN
+PORT_8000=CLEAN
+PORT_43124=CLEAN
+--- owned processes ---
+CLEAN
+--- state roots ---
+ABSENT .autobyteus
+ABSENT applications/brief-studio/.autobyteus
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-devkit/.tmp-tests
+ABSENT autobyteus-server-ts/.tmp
+ABSENT autobyteus-server-ts/tests/.tmp
+--- temp probes ---
+--- diff check ---
+DIFF_CHECK_EXIT=0

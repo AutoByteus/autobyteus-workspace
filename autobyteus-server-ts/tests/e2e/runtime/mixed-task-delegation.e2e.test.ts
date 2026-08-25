@@ -19,7 +19,8 @@ import {
   seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
+import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
+import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const codexBinaryReady = process.env.RUN_CODEX_E2E === "1" || spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
@@ -359,7 +360,9 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    await loadAllAgentTools();
+    await new AgentToolRegistryReadiness({
+      publishedArtifactPublicationService: getGeneralProcessPublishedArtifactPublisher(),
+    }).registerRequiredGroups();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));

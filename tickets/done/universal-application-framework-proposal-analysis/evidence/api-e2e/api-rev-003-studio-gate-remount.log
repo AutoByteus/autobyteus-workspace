@@ -1,0 +1,480 @@
+node:internal/modules/package_json_reader:314
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright-core' imported from /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:855:18)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v22.23.1
+{
+  "application": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+    "name": "Brief Studio"
+  },
+  "configurations": [
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Drafting Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": true,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        }
+      },
+      "updatedAt": null,
+      "status": "READY",
+      "configuration": {
+        "slotKey": "draftingTeam",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        },
+        "launchProfile": null
+      },
+      "invalidSavedConfiguration": null,
+      "issue": null
+    }
+  ],
+  "bundleResource": {
+    "source": "bundle",
+    "kind": "AGENT_TEAM",
+    "localId": "brief-studio-team",
+    "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team",
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+  },
+  "studioGraphqlDefinitionCount": 29,
+  "studioGraphqlBundleTeam": {
+    "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team"
+  }
+}
+NAVIGATE http://127.0.0.1:3000/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 60000ms exceeded.
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:67:14 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+{
+  "application": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+    "name": "Brief Studio"
+  },
+  "configurations": [
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Drafting Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": true,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        }
+      },
+      "updatedAt": null,
+      "status": "READY",
+      "configuration": {
+        "slotKey": "draftingTeam",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        },
+        "launchProfile": null
+      },
+      "invalidSavedConfiguration": null,
+      "issue": null
+    }
+  ],
+  "bundleResource": {
+    "source": "bundle",
+    "kind": "AGENT_TEAM",
+    "localId": "brief-studio-team",
+    "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team",
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+  },
+  "studioGraphqlDefinitionCount": 29,
+  "studioGraphqlBundleTeam": {
+    "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team"
+  }
+}
+NAVIGATE http://127.0.0.1:3000/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+SETUP_BODY "← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nDrafting Team\nRequired\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nUsing manifest defaults only\n\nExecution resource\nUse manifest default · Brief Studio Team · Bundled · Agent team\nBrief Studio Team · Bundled · Agent team\nBible Study Group · Shared · Agent team\nClara Ocean Friends · Shared · Agent team\nJob Search Application Team · Shared · Agent team\nMarketing Team · Shared · Agent team\nMovie Maker · Shared · Agent team\nNested Classroom Test Team · Shared · Agent team\nPresentation_Chemie · Shared · Agent team\nSocratic Math Team · Shared · Agent team\nTutorial Video Creation Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nNorthstar Operating Company · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nresearcher\n\nresearcher\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\n\nwriter\n\nwriter\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\nSave setup\nReset changes\nConfirm launch setup before opening the app\n\nSave or reset launch setup changes before entering the application.\n\nEnter application"
+{
+  "setupVisible": true,
+  "enterDisabled": true,
+  "missingDefinitionError": false
+}
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:73
+  if (enterDisabled || missingDefinitionError) throw new Error("Studio setup gate is not launch-ready");
+                                                     ^
+
+Error: Studio setup gate is not launch-ready
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:73:54
+
+Node.js v22.23.1
+{
+  "application": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+    "name": "Brief Studio"
+  },
+  "configurations": [
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Drafting Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": true,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        }
+      },
+      "updatedAt": null,
+      "status": "READY",
+      "configuration": {
+        "slotKey": "draftingTeam",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        },
+        "launchProfile": null
+      },
+      "invalidSavedConfiguration": null,
+      "issue": null
+    }
+  ],
+  "bundleResource": {
+    "source": "bundle",
+    "kind": "AGENT_TEAM",
+    "localId": "brief-studio-team",
+    "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team",
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+  },
+  "studioGraphqlDefinitionCount": 29,
+  "studioGraphqlBundleTeam": {
+    "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team"
+  }
+}
+NAVIGATE http://127.0.0.1:3000/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+SETUP_BODY "← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nDrafting Team\nRequired\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nUsing manifest defaults only\n\nExecution resource\nUse manifest default · Brief Studio Team · Bundled · Agent team\nBrief Studio Team · Bundled · Agent team\nBible Study Group · Shared · Agent team\nClara Ocean Friends · Shared · Agent team\nJob Search Application Team · Shared · Agent team\nMarketing Team · Shared · Agent team\nMovie Maker · Shared · Agent team\nNested Classroom Test Team · Shared · Agent team\nPresentation_Chemie · Shared · Agent team\nSocratic Math Team · Shared · Agent team\nTutorial Video Creation Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nNorthstar Operating Company · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nresearcher\n\nresearcher\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\n\nwriter\n\nwriter\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\nSave setup\nReset changes\nConfirm launch setup before opening the app\n\nSave or reset launch setup changes before entering the application.\n\nEnter application"
+{
+  "setupVisible": true,
+  "enterDisabledBeforeCompletion": true,
+  "missingDefinitionError": false,
+  "saveDisabled": true
+}
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:77
+    if (saveDisabled) throw new Error("Studio setup is not launch-ready and cannot be saved");
+                            ^
+
+Error: Studio setup is not launch-ready and cannot be saved
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:77:29
+
+Node.js v22.23.1
+{
+  "application": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+    "name": "Brief Studio"
+  },
+  "configurations": [
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Drafting Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": true,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        }
+      },
+      "updatedAt": null,
+      "status": "READY",
+      "configuration": {
+        "slotKey": "draftingTeam",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        },
+        "launchProfile": null
+      },
+      "invalidSavedConfiguration": null,
+      "issue": null
+    }
+  ],
+  "bundleResource": {
+    "source": "bundle",
+    "kind": "AGENT_TEAM",
+    "localId": "brief-studio-team",
+    "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team",
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+  },
+  "studioGraphqlDefinitionCount": 29,
+  "studioGraphqlBundleTeam": {
+    "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team"
+  }
+}
+NAVIGATE http://127.0.0.1:3000/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+SETUP_BODY "← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nDrafting Team\nRequired\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nUsing manifest defaults only\n\nExecution resource\nUse manifest default · Brief Studio Team · Bundled · Agent team\nBrief Studio Team · Bundled · Agent team\nBible Study Group · Shared · Agent team\nClara Ocean Friends · Shared · Agent team\nJob Search Application Team · Shared · Agent team\nMarketing Team · Shared · Agent team\nMovie Maker · Shared · Agent team\nNested Classroom Test Team · Shared · Agent team\nPresentation_Chemie · Shared · Agent team\nSocratic Math Team · Shared · Agent team\nTutorial Video Creation Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nNorthstar Operating Company · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nresearcher\n\nresearcher\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\n\nwriter\n\nwriter\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\nSave setup\nReset changes\nConfirm launch setup before opening the app\n\nSave or reset launch setup changes before entering the application.\n\nEnter application"
+{
+  "setupVisible": true,
+  "enterDisabledBeforeCompletion": true,
+  "missingDefinitionError": false,
+  "saveDisabled": true
+}
+SETUP_MODEL_SELECTED qwen3.5-27b from available LM Studio catalog
+{
+  "setupCompletionSucceeded": true,
+  "enterDisabledAfterCompletion": false
+}
+BROWSER_INFO [ApplicationSurface] committed launch descriptor applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html
+BROWSER_INFO [ApplicationIframeHost] iframe loaded applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 src=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000
+BROWSER_INFO [ApplicationIframeHost] received ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationSurface] accepted ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1
+BROWSER_INFO [BriefStudio] refresh start applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for locator('iframe').first().contentFrame().locator('#brief-studio-app') to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.api-e2e-round3-studio-gate.mjs:107:47 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+{
+  "application": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+    "name": "Brief Studio"
+  },
+  "configurations": [
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Drafting Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": true,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        }
+      },
+      "updatedAt": "2026-07-29T13:09:35.941Z",
+      "status": "READY",
+      "configuration": {
+        "slotKey": "draftingTeam",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT_TEAM",
+          "localId": "brief-studio-team"
+        },
+        "launchProfile": {
+          "kind": "AGENT_TEAM",
+          "defaults": {
+            "llmModelIdentifier": "qwen3.5-27b:lmstudio@127.0.0.1:1234"
+          },
+          "memberProfiles": [
+            {
+              "memberRouteKey": "researcher",
+              "memberName": "researcher",
+              "agentDefinitionId": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher"
+            },
+            {
+              "memberRouteKey": "writer",
+              "memberName": "writer",
+              "agentDefinitionId": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer"
+            }
+          ]
+        }
+      },
+      "invalidSavedConfiguration": null,
+      "issue": null
+    }
+  ],
+  "bundleResource": {
+    "source": "bundle",
+    "kind": "AGENT_TEAM",
+    "localId": "brief-studio-team",
+    "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team",
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+  },
+  "studioGraphqlDefinitionCount": 29,
+  "studioGraphqlBundleTeam": {
+    "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "name": "Brief Studio Team"
+  }
+}
+NAVIGATE http://127.0.0.1:3000/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+SETUP_BODY "← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nDrafting Team\nRequired\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nSaved 29.7.2026, 15:09:35\n\nExecution resource\nUse manifest default · Brief Studio Team · Bundled · Agent team\nBrief Studio Team · Bundled · Agent team\nBible Study Group · Shared · Agent team\nClara Ocean Friends · Shared · Agent team\nJob Search Application Team · Shared · Agent team\nMarketing Team · Shared · Agent team\nMovie Maker · Shared · Agent team\nNested Classroom Test Team · Shared · Agent team\nPresentation_Chemie · Shared · Agent team\nSocratic Math Team · Shared · Agent team\nTutorial Video Creation Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nNorthstar Operating Company · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nLM Studio / qwen3.5-27b:lmstudio@127.0.0.1:1234\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nresearcher\n\nresearcher\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\n\nwriter\n\nwriter\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\nSave setup\nReset changes\nConfirm launch setup before opening the app\n\nReview or save the host-managed resource and launch defaults below, then enter the application. This gate never starts a run by itself.\n\nEnter application"
+{
+  "setupVisible": true,
+  "enterDisabledBeforeCompletion": false,
+  "missingDefinitionError": false,
+  "saveDisabled": false
+}
+{
+  "setupCompletionSucceeded": true,
+  "enterDisabledAfterCompletion": false
+}
+BROWSER_INFO [ApplicationSurface] committed launch descriptor applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html
+BROWSER_INFO [ApplicationIframeHost] iframe loaded applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 src=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000
+BROWSER_INFO [ApplicationIframeHost] received ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationSurface] accepted ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-1
+BROWSER_INFO [BriefStudio] refresh start applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+{
+  "immersiveVisible": true,
+  "iframeCount": 1,
+  "initialSrc": "http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000",
+  "initialBriefUi": true
+}
+BROWSER_INFO [ApplicationSurface] committed launch descriptor applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-2 entryHtmlUrl=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html
+BROWSER_INFO [ApplicationIframeHost] iframe loaded applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-2 src=http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-2&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000
+BROWSER_INFO [ApplicationIframeHost] received ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-2 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationSurface] accepted ready event applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-2 origin=http://127.0.0.1:8000
+BROWSER_INFO [ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f iframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f::iframe-launch-2
+BROWSER_INFO [BriefStudio] refresh start applicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+{
+  "remountSucceeded": true,
+  "initialSrc": "http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000",
+  "reloadedSrc": "http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-2&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000",
+  "freshIframeLaunch": true,
+  "iframeCount": 1
+}

@@ -1,0 +1,105 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1785490379.426,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-1d77c8d6-05aa-497e-8f74-3818d3df1717",
+      "member_run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the Studio publication remount brief."
+          }
+        ]
+      }
+    },
+    {
+      "ts": 1785490379.436,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-1d77c8d6-05aa-497e-8f74-3818d3df1717",
+      "member_run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "runId": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+            "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "status": "available",
+            "revisionId": "aad6a477-7ab8-4783-ab1c-53cd9e79341f"
+          }
+        ]
+      }
+    },
+    {
+      "ts": 1785490385.772,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-c2501c17-32e3-4f18-8372-8e63198c5b30",
+      "member_run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "reference_files": [
+          "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md"
+        ]
+      }
+    },
+    {
+      "ts": 1785490385.895,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-c2501c17-32e3-4f18-8372-8e63198c5b30",
+      "member_run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "tool_result": "Delivered message to writer."
+    },
+    {
+      "ts": 1785490418.598,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7e0a7cc0-bc17-4cd6-bf61-c2856e7d03be",
+      "member_run_id": "brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "description": "Writer checkpoint: concise API REV 012 publication remount brief"
+          }
+        ]
+      }
+    },
+    {
+      "ts": 1785490418.604,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7e0a7cc0-bc17-4cd6-bf61-c2856e7d03be",
+      "member_run_id": "brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "runId": "brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39",
+            "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "status": "available",
+            "revisionId": "b985ce84-9840-4307-b0b1-ce23c6423219"
+          }
+        ]
+      }
+    }
+  ]
+}

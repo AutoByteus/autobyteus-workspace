@@ -1,0 +1,66 @@
+DR-003 ELECTRON MACOS ARM64 PACKAGE VERIFICATION
+timestamp_utc=2026-08-22T20:16:40Z
+head=f8d0bf67a9cdb89da8e3cb24b8331744d9f61865
+base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip
+bundle_identifier=com.autobyteus.app
+bundle_version=1.4.54
+bundle_short_version=1.4.54
+minimum_system=12.0
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal_runtime=PASS
+packaged_owner=PASS:dist/compositions/build-studio-server.js
+packaged_owner=PASS:dist/compositions/build-standalone-application-server.js
+packaged_owner=PASS:dist/standalone-application-host/start-standalone-application-host.js
+packaged_owner=PASS:dist/application-platform/runtime/build-application-platform-runtime.js
+packaged_owner=PASS:dist/application-platform/runtime/application-platform-runtime-contracts.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-controller.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-launcher.js
+packaged_owner=PASS:dist/application-orchestration/services/application-agent-target-authorization-service.js
+packaged_owner=PASS:dist/application-orchestration/services/application-run-binding-launch-service.js
+packaged_owner=PASS:dist/agent-tools/published-artifacts/publish-artifacts-tool.js
+packaged_owner=PASS:dist/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js
+packaged_owner=PASS:dist/api/graphql/types/token-usage-analytics.js
+packaged_owner=PASS:dist/token-usage/providers/token-usage-analytics-provider.js
+packaged_owner=PASS:dist/token-usage/repositories/sql/token-usage-analytics-repository.js
+packaged_owner=PASS:prisma/migrations/20260822090000_add_token_usage_analytics/migration.sql
+retired_broad_engine_host_absent=PASS
+latest_base_absolute_cwd_owner=PASS:autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/tools/terminal/execution-cwd.js
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $2BF14BA3
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $FCD532DE
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $A56B9DED
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $2C39DA5A
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $A56B9DED
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F1942AB8
+Die überprüfte CRC32-Prüfsumme ist $3C6DF8B3
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg" is VALID
+dmg_verify=PASS
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip.
+zip_verify=PASS
+dmg_size=466805857
+dmg_sha256=09ecfbe4b8fb45afdb1cb231fdc81d11d2cb17d145f6aba9be6f657542da7414
+zip_size=461479841
+zip_sha256=12f3a5e82d9071e47671c33f3360f1e3b969be42330added102c34f1ce88224c
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign_strict_exit=1
+codesign_posture=LOCAL_UNSIGNED_EXPECTED
+new_app_running=NO_PASS
+test_dmg_mounted=NO_PASS
+FINAL=PASS

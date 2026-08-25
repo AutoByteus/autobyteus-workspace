@@ -5,9 +5,10 @@ import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-ag
 import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 
 describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
-  it("attributes current team-agent events through the producer envelope and filters selected members", () => {
+  it("attributes nested current team-agent events through the closed producer envelope and filters selected members", () => {
     let listener!: (event: { changeSequence: number; event: any }) => void;
     const runtimeSource = new ApplicationAgentStreamRuntimeSource({
+      agentRunManager: { getActiveRun: () => null },
       teamRunManager: {
         getActiveTeamRun: () => ({ subscribeToEvents: (next: typeof listener) => { listener = next; return () => undefined; } }),
       },
@@ -25,16 +26,32 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
       changeSequence: 1,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
-        execution: { rootTeamRunId: "team-run-1", memberAddress: "/researcher", agentRunId: "task-run-1" },
-        payload: { eventType: AgentRunEventType.TURN_STARTED, statusHint: null, details: { turnId: "turn-1" } },
+        execution: {
+          rootTeamRunId: "team-run-1",
+          memberAddress: "/researcher/task-worker",
+          agentRunId: "task-run-1",
+        },
+        payload: {
+          eventType: AgentRunEventType.TURN_STARTED,
+          statusHint: null,
+          details: { turnId: "turn-1", providerThreadId: "secret" },
+        },
       },
     });
     listener({
       changeSequence: 2,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
-        execution: { rootTeamRunId: "team-run-1", memberAddress: "/writer", agentRunId: "writer-run" },
-        payload: { eventType: AgentRunEventType.TURN_STARTED, statusHint: null, details: { turnId: "drop" } },
+        execution: {
+          rootTeamRunId: "team-run-1",
+          memberAddress: "/writer",
+          agentRunId: "writer-run",
+        },
+        payload: {
+          eventType: AgentRunEventType.TURN_STARTED,
+          statusHint: null,
+          details: { turnId: "drop" },
+        },
       },
     });
 
@@ -55,7 +72,7 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
         producer: null,
         event: {
           eventSourceType,
-          payload: {},
+          payload: { providerSecret: "must-not-cross" },
         } as never,
       })).toBeNull();
     }

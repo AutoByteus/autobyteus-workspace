@@ -1,0 +1,380 @@
+{
+  "scenarioId": "APIE2E-ELECTRON-CLASSROOM-001",
+  "result": "blocked",
+  "classification": "external provider account balance",
+  "packagedExecutable": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "isolatedDataRoot": "/private/tmp/api-rev005-electron-classroom-20260822194413",
+  "agentPackageRoot": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "teamHistory": {
+    "teamRunId": "classroom_simulation_team_4546771832f1495e8e23af139e5cb0cc",
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "workspaceRootPath": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace",
+    "summary": "Demonstrate the classroom team with one short arithmetic exercise. Use run_bash to create a file-...",
+    "createdAt": "2026-08-22T18:12:22.940Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  "members": [
+    {
+      "address": "/professor",
+      "agentRunId": "professor_06b13ba3a5a54626abaeea0ef91d18ca",
+      "platformAgentRunId": "01a02aac-8052-7c33-9280-6321e75e565c",
+      "runtimeKind": "CODEX",
+      "modelIdentifier": "gpt-5.6-luna",
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+    },
+    {
+      "address": "/student",
+      "agentRunId": "student_cf6c7c24eb8140efa4c68d17d1d03f55",
+      "platformAgentRunId": null,
+      "runtimeKind": "AUTOBYTEUS",
+      "modelIdentifier": "deepseek-v4-flash",
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+    }
+  ],
+  "taskExecutions": [
+    {
+      "address": "/student",
+      "agentRunId": "student_35665eb41da147e5ad5fcbb59e24c586",
+      "platformAgentRunId": null,
+      "startedAt": "2026-08-22T18:13:28.577Z",
+      "settledAt": "2026-08-22T18:15:24.435Z"
+    }
+  ],
+  "communication": [
+    {
+      "senderAgentRunId": "professor_06b13ba3a5a54626abaeea0ef91d18ca",
+      "receiverAgentRunId": "student_cf6c7c24eb8140efa4c68d17d1d03f55",
+      "messageType": "assignment",
+      "referenceFiles": [
+        "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+      ],
+      "createdAt": "2026-08-22T18:12:43.541Z"
+    },
+    {
+      "senderAgentRunId": "professor_06b13ba3a5a54626abaeea0ef91d18ca",
+      "receiverAgentRunId": "student_35665eb41da147e5ad5fcbb59e24c586",
+      "messageType": "follow-up",
+      "referenceFiles": [
+        "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+      ],
+      "createdAt": "2026-08-22T18:13:57.832Z"
+    },
+    {
+      "senderAgentRunId": "professor_06b13ba3a5a54626abaeea0ef91d18ca",
+      "receiverAgentRunId": "student_cf6c7c24eb8140efa4c68d17d1d03f55",
+      "messageType": "completion-request",
+      "referenceFiles": [
+        "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+      ],
+      "createdAt": "2026-08-22T18:14:26.821Z"
+    }
+  ],
+  "assignment": {
+    "path": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md",
+    "exists": true,
+    "content": "# Arithmetic Exercise\n\nCompute: **27 + 16 = ?**\n\nReply with a file-backed answer containing the result and one short line of working.\n"
+  },
+  "traceSummary": {
+    "student_cf6c7c24eb8140efa4c68d17d1d03f55": {
+      "eventCount": 5,
+      "toolCalls": [],
+      "toolResults": [],
+      "llmRequestRecoveries": [
+        "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response",
+        "LLM request 'turn_0002:llm:1' rolled back: provider or response ingestion failed before a usable response"
+      ],
+      "assistantResponses": []
+    },
+    "student_35665eb41da147e5ad5fcbb59e24c586": {
+      "eventCount": 5,
+      "toolCalls": [],
+      "toolResults": [],
+      "llmRequestRecoveries": [
+        "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response",
+        "LLM request 'turn_0002:llm:1' rolled back: provider or response ingestion failed before a usable response"
+      ],
+      "assistantResponses": []
+    },
+    "professor_06b13ba3a5a54626abaeea0ef91d18ca": {
+      "eventCount": 43,
+      "toolCalls": [
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc pwd",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"mkdir -p '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo' && cat > '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md' <<'EOF'\n# Arithmetic Exercise\n\nCompute: **27 + 16 = ?**\n\nReply with a file-backed answer containing the result and one short line of working.\nEOF\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "send_message_to",
+          "args": {
+            "recipient_address": "/student",
+            "content": "Please complete the concise arithmetic exercise in /private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md. Read that file, write your result and one short line of working to a file under the same run folder, and reply to /professor with the absolute answer-file path in both your message and reference_files.",
+            "reference_files": [
+              "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+            ],
+            "message_type": "assignment"
+          }
+        },
+        {
+          "name": "get_handoff_rules",
+          "args": {}
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 1; find '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo' -maxdepth 1 -type f -printf '%f\\\\n' | sort\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 1; ls -1 '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo'\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 5; ls -la '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo'\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "delegate_task",
+          "args": {
+            "recipient_address": "/student",
+            "description": "Complete the arithmetic assignment in the referenced file. Read it first, write the answer (result plus one short line of working) to an absolute file under the same run folder, and send that answer-file path back to /professor via send_message_to.",
+            "reference_files": [
+              "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+            ]
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 10; ls -1 '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo'\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "send_message_to",
+          "args": {
+            "target_agent_run_id": "student_35665eb41da147e5ad5fcbb59e24c586",
+            "content": "Reminder: complete the assignment now. Read /private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md, write the file-backed answer under that run folder, and reply to /professor with its absolute path in the message and reference_files.",
+            "reference_files": [
+              "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+            ],
+            "message_type": "follow-up"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 10; ls -la '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo'\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"find '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace' -type f -maxdepth 6 -print\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        },
+        {
+          "name": "send_message_to",
+          "args": {
+            "recipient_address": "/student",
+            "content": "Please finish the pending classroom reply. The only required task is 27 + 16; write the result and one short working line to an answer file in /private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/ and send that file path to /professor.",
+            "reference_files": [
+              "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo/assignment.md"
+            ],
+            "message_type": "completion-request"
+          }
+        },
+        {
+          "name": "run_bash",
+          "args": {
+            "command": "/bin/bash -lc \"sleep 15; find '/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace/classroom-runs/arithmetic-demo' -maxdepth 1 -type f -print\"",
+            "cwd": "/private/tmp/api-rev005-electron-classroom-20260822194413/server-data/temp_workspace"
+          }
+        }
+      ],
+      "toolResults": [
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "send_message_to",
+          "error": null
+        },
+        {
+          "name": "get_handoff_rules",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "delegate_task",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "send_message_to",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        },
+        {
+          "name": "send_message_to",
+          "error": null
+        },
+        {
+          "name": "run_bash",
+          "error": null
+        }
+      ],
+      "llmRequestRecoveries": [],
+      "assistantResponses": [
+        "Assignment sent to `/student` and confirmed delivered. However, no student answer file or reply was received, so I cannot verify correctness. The expected result is **43**."
+      ]
+    }
+  },
+  "providerProbe": {
+    "model": "deepseek-v4-flash",
+    "credentialPresent": true,
+    "httpStatus": 402,
+    "providerError": {
+      "type": "unknown_error",
+      "code": "invalid_request_error",
+      "message": "Insufficient Balance"
+    }
+  },
+  "electronHarness": {
+    "result": "fail",
+    "error": {
+      "message": "Timed out waiting for Classroom team run metadata; last=null",
+      "stack": "Error: Timed out waiting for Classroom team run metadata; last=null\n    at waitFor (file:///private/tmp/api-rev005-electron-classroom.mjs:64:9)\n    at async file:///private/tmp/api-rev005-electron-classroom.mjs:268:15"
+    },
+    "steps": [
+      {
+        "at": "2026-08-22T18:11:04.627Z",
+        "name": "packaged renderer ready",
+        "details": {
+          "baseUrl": "http://127.0.0.1:54491",
+          "nodeId": "embedded-local"
+        }
+      },
+      {
+        "at": "2026-08-22T18:11:04.946Z",
+        "name": "agent package visible in Electron settings",
+        "details": {
+          "importStatus": "already-present-after-supported-UI-import"
+        }
+      },
+      {
+        "at": "2026-08-22T18:12:21.083Z",
+        "name": "requested models present",
+        "details": {
+          "professor": "gpt-5.6-luna",
+          "student": "deepseek-v4-flash"
+        }
+      },
+      {
+        "at": "2026-08-22T18:12:21.095Z",
+        "name": "non-business update notice dismissed",
+        "details": null
+      },
+      {
+        "at": "2026-08-22T18:12:21.314Z",
+        "name": "Classroom Simulation Team selected from Electron catalog",
+        "details": null
+      },
+      {
+        "at": "2026-08-22T18:12:22.907Z",
+        "name": "per-member runtime/model configuration selected",
+        "details": {
+          "professorRuntime": "codex_app_server",
+          "professorModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+          "studentRuntime": "autobyteus",
+          "studentModelLabel": "DeepSeek / deepseek-v4-flash",
+          "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600",
+          "workspacePath": "/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace"
+        }
+      },
+      {
+        "at": "2026-08-22T18:12:23.115Z",
+        "name": "real classroom prompt sent to Professor",
+        "details": null
+      }
+    ],
+    "launch": {
+      "selectedConfig": {
+        "professorRuntime": "codex_app_server",
+        "professorModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+        "studentRuntime": "autobyteus",
+        "studentModelLabel": "DeepSeek / deepseek-v4-flash",
+        "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600",
+        "workspacePath": "/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace"
+      },
+      "prompt": "Demonstrate the classroom team with one short arithmetic exercise. Use run_bash to create a file-backed assignment under this workspace, send it to /student with send_message_to and the file reference, require the student to write a file-backed answer and reply to /professor, then read the answer and report to me whether it is correct. Keep the exercise concise."
+    },
+    "cleanup": {
+      "processTreeCompletion": {
+        "status": "complete",
+        "identity": "posix-process-group:5730",
+        "forced": false,
+        "gracefulError": null
+      },
+      "portObservation": {
+        "status": "available",
+        "port": 54491,
+        "detail": null
+      }
+    }
+  },
+  "conclusion": [
+    "Packaged Electron, isolated backend, UI package registry, exact team selection, Codex professor, and AutoByteus DeepSeek student creation were exercised.",
+    "The professor used run_bash and send_message_to and persisted the assignment.",
+    "Every DeepSeek student request rolled back before a usable response; no answer file or /student -> /professor reply was produced.",
+    "A direct value-safe provider probe with the same source credential and exact model returned HTTP 402 Insufficient Balance.",
+    "The requested complete two-way team business journey therefore cannot pass until provider balance/access is restored."
+  ]
+}

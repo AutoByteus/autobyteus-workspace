@@ -1,0 +1,19 @@
+2026-07-31T09:25:19Z
+--- port 43126 after stop ---
+--- owned processes after stop ---
+--- prior host/codex pids alive ---
+32782 stopped
+34886 stopped
+39934 stopped
+--- bindings after stop ---
+binding_id                            status    run_id                                              created_at                updated_at                terminated_at  last_error_message
+------------------------------------  --------  --------------------------------------------------  ------------------------  ------------------------  -------------  ------------------
+2bd76077-ac2d-42ba-8569-0042cd9d7514  ATTACHED  brief_studio_team_1487ab0c74944eb7877e84028c263447  2026-07-31T09:19:54.669Z  2026-07-31T09:19:54.669Z                                   
+4b7527cc-4338-44ee-85c0-b527111ed84f  ATTACHED  brief_studio_team_157100ee9e824586a27b9a8d39cd40f4  2026-07-31T09:24:40.609Z  2026-07-31T09:24:40.609Z                                   
+7a4c855d-80d9-4e7d-9d00-4b36e27d2b2b  ATTACHED  brief_studio_team_57067c7c27b0437993f52d580f3d4ba0  2026-07-31T09:24:40.641Z  2026-07-31T09:24:40.641Z                                   
+--- app records after stop ---
+brief_id                                    title                                                       status       latest_binding_status  latest_run_id                                     
+------------------------------------------  ----------------------------------------------------------  -----------  ---------------------  --------------------------------------------------
+brief-8061558c-f896-477b-8da0-5163cac371bb  API REV 012 worker exit publication recovery 1785489587234  in_review    ATTACHED               brief_studio_team_1487ab0c74944eb7877e84028c263447
+brief-c8c95034-1a8e-4b5c-a365-4fdfbab34a80  API REV 012 active shutdown A 1785489878491                 not_started  ATTACHED               brief_studio_team_157100ee9e824586a27b9a8d39cd40f4
+brief-23579585-bb7c-4e44-ba9c-6516635e39ef  API REV 012 active shutdown B 1785489878492                 not_started  ATTACHED               brief_studio_team_57067c7c27b0437993f52d580f3d4ba0

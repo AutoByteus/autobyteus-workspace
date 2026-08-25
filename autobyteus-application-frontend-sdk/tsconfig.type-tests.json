@@ -4,5 +4,5 @@
     "noEmit": true,
     "rootDir": "."
   },
-  "include": ["tests/hosted-application-startup.type-test.ts"]
+  "include": ["tests/application-startup.type-test.ts"]
 }

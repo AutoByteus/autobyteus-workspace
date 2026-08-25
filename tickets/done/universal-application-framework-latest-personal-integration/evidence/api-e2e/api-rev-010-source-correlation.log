@@ -1,0 +1,24 @@
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:24:  getStudioAgentDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:25:  getStudioAgentTeamDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:248:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:263:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:275:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:287:      await getStudioAgentDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:288:      await getStudioAgentTeamDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:301:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:337:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:376:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:12:import { getStudioAgentDefinitionService } from "../studio-application-api-services.js";
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:208:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:223:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:237:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:251:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:265:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:294:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:325:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:12:import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:122:  private readonly teamRunService = getTeamRunService();
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts:13:import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts:141:  private agentRunService = getAgentRunService();
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:289:    cachedAgentRunService = new AgentRunService(
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:232:export const getTeamRunService = (): TeamRunService => cached ??= new TeamRunService();

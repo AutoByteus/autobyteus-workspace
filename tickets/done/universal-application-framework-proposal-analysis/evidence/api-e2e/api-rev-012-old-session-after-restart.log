@@ -1,0 +1,9 @@
+Recovered a pre-restart session identifier from the pre-restart server access log; identifier and credential excluded.
+HTTP/1.1 404 Not Found
+content-type: application/json; charset=utf-8
+content-length: 82
+Date: Fri, 31 Jul 2026 09:33:13 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"session_unavailable","message":"Agent tool MCP session is unavailable."}

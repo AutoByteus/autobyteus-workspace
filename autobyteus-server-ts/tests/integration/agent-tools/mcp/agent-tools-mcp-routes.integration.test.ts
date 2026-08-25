@@ -124,7 +124,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
     const projectionStore = new PublishedArtifactProjectionStore();
     const snapshotStore = new PublishedArtifactSnapshotStore();
     const publicationService = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue({
           runId,
           config: {
@@ -145,7 +145,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       snapshotStore,
     });
     const catalog = new AgentToolMcpCatalog({
-      providers: [new PublishArtifactsMcpAdapterProvider(publicationService)],
+      providers: [new PublishArtifactsMcpAdapterProvider()],
     });
     const app = fastify();
     const registry = new AgentToolMcpSessionRegistry();
@@ -171,6 +171,10 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       executionContext: {
         workingDirectory: workspaceRoot,
         memoryDir,
+      },
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: publicationService,
       },
     });
     const sessionUrl = `/mcp/agent-tools/${session.sessionId}`;
@@ -320,12 +324,13 @@ describe("Agent Tools MCP route configured MCP integration", () => {
       registry,
       catalog,
       getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
+      executionCapabilities: {
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
     });
     const created = sessionService.createAgentToolMcpSession({
       owner: {
         runId: "run-configured-mcp",
-        memberRunId: "member-configured-mcp",
-        agentRunId: "member-configured-mcp",
       },
       sender,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -370,7 +375,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
         _meta: { remoteToolName: "query" },
       });
       expect(calls).toEqual([
-        { agentId: "member-configured-mcp", args: { sql: "select 1" } },
+        { agentId: "run-configured-mcp", args: { sql: "select 1" } },
       ]);
 
       const remoteFailure = await post({
@@ -801,6 +806,10 @@ describe("Agent Tools MCP route", () => {
       owner: { runId: `owner-${enabledTools.join("-") || "none"}` },
       sender,
       runtimeExposure: buildRuntimeAgentToolExposure(enabledTools),
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
       enabledTools,
       toolRoutes: Object.fromEntries(enabledTools.map((toolName) => [
         toolName,

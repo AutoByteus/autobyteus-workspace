@@ -1,0 +1,86 @@
+$ pnpm -C autobyteus-web exec vitest --run <5 current service files>
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (20 tests) 10ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts (6 tests) 9ms
+ ✓ services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts (35 tests) 12ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (11 tests) 28ms
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:258:38
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > serializes and exactly matches an admitted standalone interrupt
+Ignoring unmatched interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'client_interrupt_1',
+  state: 'accepted',
+  target: { target_kind: 'standalone_run', run_id: 'wrong-run' }
+}
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > completes reentrant disconnect-plus-send-throw exactly once
+Agent WebSocket disconnected: socket closed
+Agent WebSocket disconnected: again
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > keeps immediately projected content on each context across replacement and remote disconnect
+Agent WebSocket disconnected: remote closed
+
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (34 tests) 27ms
+
+ Test Files  5 passed (5)
+      Tests  106 passed (106)
+   Start at  07:50:34
+   Duration  9.14s (transform 4.36s, setup 37.54s, collect 759ms, tests 86ms, environment 1.89s, prepare 1.31s)
+

@@ -34,6 +34,7 @@ type Projection = {
 
 const ROOT_TEAM_RUN_ID = "team-run-root";
 const LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
+const EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 const EXTERNAL_SNAPSHOT_MIGRATION_ID = "20260731_remove_external_runtime_working_context_snapshots";
 const NATIVE_SNAPSHOT_MIGRATION_ID = "20260731_migrate_native_working_context_snapshots_v5";
 const FIXTURE_ROOT = path.resolve(
@@ -380,6 +381,10 @@ describe("nested TeamRun history startup/restart hydration", () => {
       summary: expect.stringMatching(/^Scanned \d+; migrated 1; skipped \d+; failed 1\.$/),
       errorMessage: "1 Team Agent memory location could not be established.",
     });
+    expect(await requireStatus(server.serverUrl, EXECUTION_TREE_V2_MIGRATION_ID)).toMatchObject({
+      status: "NOT_RUN",
+      attempts: 0,
+    });
     expect(fs.existsSync(alreadyMovable.memberDir)).toBe(false);
     expect(fs.readFileSync(path.join(movedCanonical, "restart-owned-sentinel.bin"))).toEqual(alreadyMovable.sentinelBytes);
     expect(fs.existsSync(blocked.memberDir)).toBe(true);
@@ -424,6 +429,30 @@ describe("nested TeamRun history startup/restart hydration", () => {
     });
     expect(fs.existsSync(blocked.memberDir)).toBe(false);
     expect(fs.readFileSync(path.join(blockedCanonical, "raw_traces_active.jsonl"))).toEqual(blocked.traceBytes);
+
+    const v2Admission = await executeGraphql<{
+      runAppDataMigration: {
+        success: boolean;
+        migration: MigrationStatus | null;
+      };
+    }>(server.serverUrl, `
+      mutation AdmitRetriedNestedHistoryV2($migrationId: String!) {
+        runAppDataMigration(migrationId: $migrationId) {
+          success
+          migration { migrationId status recoveryAction canRetry attempts summary errorMessage }
+        }
+      }
+    `, { migrationId: EXECUTION_TREE_V2_MIGRATION_ID });
+    expect(v2Admission.runAppDataMigration).toMatchObject({
+      success: true,
+      migration: {
+        migrationId: EXECUTION_TREE_V2_MIGRATION_ID,
+        status: "SUCCEEDED",
+        attempts: 1,
+        recoveryAction: "NONE",
+        canRetry: false,
+      },
+    });
     expectProjectionTokenSet(await projection(server.serverUrl, "agent-run-architect"), "BLOCKED_UNTIL_RETRY", false);
 
     const dependent = await executeGraphql<{

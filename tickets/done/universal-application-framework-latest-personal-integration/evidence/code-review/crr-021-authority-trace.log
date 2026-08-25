@@ -1,0 +1,102 @@
+== SR-011 host definition/public/general/application authority trace ==
+autobyteus-server-ts/src/compositions/build-studio-server.ts:27:import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+autobyteus-server-ts/src/compositions/build-studio-server.ts:29:import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
+autobyteus-server-ts/src/compositions/build-studio-server.ts:42:  createGeneralProcessRunSupervisor,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:46:  createHostDefinitionServices,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:56:type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
+autobyteus-server-ts/src/compositions/build-studio-server.ts:124:  const applicationRuntime = buildApplicationPlatformRuntime({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:150:  const hostDefinitionServices = createHostDefinitionServices({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:174:    generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:176:      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:177:      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:188:    studioApiHandle = configureStudioApplicationApiServices({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:195:      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:196:      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:197:      agentRunService: generalProcessRunSupervisor.agentRunService,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:198:      teamRunService: generalProcessRunSupervisor.teamRunService,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:24:import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:41:  createGeneralProcessRunSupervisor,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:51:  createHostDefinitionServices,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:224:    hostDefinitionServices = createHostDefinitionServices({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:234:      createGeneralProcessRunSupervisor({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:236:        agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:237:        agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:240:    const applicationRuntime = buildApplicationPlatformRuntime({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:243:      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:244:      agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
+\n== public GraphQL exact registered subjects ==
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:12:import { getStudioAgentDefinitionService } from "../studio-application-api-services.js";
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:208:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:223:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:237:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:251:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:265:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:294:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts:325:      const service = getStudioAgentDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts:12:import { getStudioAgentRunService } from "../studio-application-api-services.js";
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts:140:  private readonly agentRunService = getStudioAgentRunService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:12:import { getStudioTeamRunService } from "../studio-application-api-services.js";
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:122:  private readonly teamRunService = getStudioTeamRunService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:24:  getStudioAgentDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:25:  getStudioAgentTeamDefinitionService,
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:248:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:263:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:275:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:287:      await getStudioAgentDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:288:      await getStudioAgentTeamDefinitionService().refreshCache();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:301:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:337:      const service = getStudioAgentTeamDefinitionService();
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts:376:      const service = getStudioAgentTeamDefinitionService();
+\n== general supervisor explicit definitions/managers/services ==
+17:  bindProcessAgentRunService,
+27:  bindProcessTeamRunService,
+56:    || !input.agentDefinitionService
+57:    || !input.agentTeamDefinitionService
+88:        input.agentDefinitionService,
+101:        input.agentDefinitionService,
+103:      agentRunManager = AgentRunManager.initializeProcessInstance({
+105:          agentDefinitionService: input.agentDefinitionService,
+124:        input.agentTeamDefinitionService,
+127:      agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+133:              taskRootResolver: callbacks.taskRootResolver,
+150:        agentDefinitionService: input.agentDefinitionService,
+154:        agentDefinitionService: input.agentDefinitionService,
+190:        teamDefinitionService: input.agentTeamDefinitionService,
+202:      bindProcessAgentRunService(agentRunService);
+204:      bindProcessTeamRunService(teamRunService);
+\n== migration/validation isolation ==
+autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts:4:import { createBundleBackedDefinitionServices } from "../definitions/create-bundle-backed-definition-services.js";
+autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts:76:  const definitionServices = createBundleBackedDefinitionServices({
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts:366:      const service = this.agentDefinitionService ?? await this.loadAgentDefinitionService();
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts:373:  private async loadAgentDefinitionService(): Promise<AgentDefinitionLookup> {
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts:374:    const { AgentDefinitionPersistenceProvider } = await import(
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts:377:    const provider = new AgentDefinitionPersistenceProvider();
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts:515:    const { AgentTeamDefinitionPersistenceProvider } = await import(
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts:518:    const provider = new AgentTeamDefinitionPersistenceProvider();
+\n== SR-012/013 exact task-root trace ==
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts:147:        rootResolver: member.taskRootResolver,
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:133:              taskRootResolver: callbacks.taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:37:  taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:54:  requireMemberTaskRootResolver(callbacks.taskRootResolver);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:106:          taskRootResolver: input.callbacks.taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:236:    const taskRootResolver: MemberTaskRootResolver = Object.freeze({
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:237:      resolveActiveRoot: async () => {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:240:            "TEAM_ROOT_NOT_BOUND",
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:246:            "TEAM_RUN_NOT_ACTIVE",
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:254:      taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:257:        if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts:7:    return context.rootResolver.resolveActiveRoot();
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:58:      taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:64:    const taskRootResolver = requireMemberTaskRootResolver(options.taskRootResolver);
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:75:      taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts:88:      taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts:21:    taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts:38:      taskRootResolver: input.taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts:16:  readonly taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts:22:    taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts:27:    this.taskRootResolver = requireMemberTaskRootResolver(input.taskRootResolver);
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts:134:          taskRootResolver: callbacks.taskRootResolver,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:77:    taskRootResolver: MemberTaskRootResolver;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:441:      taskRootResolver: this.options.taskRootResolver,
+\n== forbidden task ambient/noop trace ==
+none

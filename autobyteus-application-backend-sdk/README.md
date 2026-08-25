@@ -19,7 +19,7 @@ For new external applications, use `@autobyteus/application-devkit` and the guid
 import { defineApplication } from '@autobyteus/application-backend-sdk'
 
 export default defineApplication({
-  definitionContractVersion: '4',
+  definitionContractVersion: '6',
   graphql: {
     execute: async (request, context) => {
       if (request.operationName === 'StatusQuery') {
@@ -63,13 +63,18 @@ import {
 
 const agentAddress = createApplicationAgentTargetAddress(agentBinding)
 const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+const reviewer = teamBinding.runtime.members.find(
+  (member) => member.memberAddress === '/reviewer',
+)
+if (!reviewer) throw new Error('Reviewer is not part of this binding')
+
 const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
   teamBinding,
-  'reviewer',
+  reviewer.agentRunId,
 )
 ```
 
-The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. They do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. The team-member builder accepts the exact binding-owned `agentRunId`, not the logical `memberAddress`; application code may select a configured role by `memberAddress` and must then project the matching member's `agentRunId`. The builders do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
 
 The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
 
@@ -86,7 +91,7 @@ await context.agentExecution.sendInput({
 ## Bundle expectations
 
 - The worker loads a self-contained ESM backend module.
-- The exported definition contract version must be `"4"`; stale definitions are rejected before handler invocation.
+- The exported definition contract version must be `"6"`; unsupported definitions are rejected before handler invocation.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Optional `webSocketRoutes` require the bundle manifest's `webSockets` exposure flag and remain separate from standard agent communication.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.

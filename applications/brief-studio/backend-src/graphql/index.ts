@@ -88,8 +88,6 @@ export const executeBriefStudioGraphql: ApplicationGraphqlExecutor = async (
         const input = requireObject(variables.input, "input");
         return runLaunchService.launchDraftRun({
           briefId: typeof input.briefId === "string" ? input.briefId : "",
-          llmModelIdentifier:
-            typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : null,
         });
       });
     case "ApproveBriefMutation":

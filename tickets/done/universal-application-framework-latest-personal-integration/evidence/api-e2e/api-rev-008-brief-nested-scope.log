@@ -1,0 +1,70 @@
+root=/private/tmp/api-rev008-brief-standalone-1787560452
+execution tree
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-24T08:34:47.608Z",
+  "archivedAt": null,
+  "applicationBinding": {
+    "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "bindingId": "1c64c373-4008-431b-a446-fde7c5d9579b"
+  },
+  "handoffs": [],
+  "rootTeam": {
+    "teamDefinitionId": "bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "teamDefinitionName": "Brief Studio Team",
+    "teamRunId": "brief_studio_team_180ff011dc8f412399f9efb305d3c098",
+    "coordinatorAddress": "/researcher",
+    "members": [
+      {
+        "address": "/researcher",
+        "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+        "role": null,
+        "description": null,
+        "agentRunId": "brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817",
+        "platformAgentRunId": "01a032e8-6b3f-7493-813f-a9864f403a00",
+        "launchConfiguration": {
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/private/tmp/api-rev008-brief-standalone-1787560452/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+        }
+      },
+      {
+        "address": "/writer",
+        "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+        "role": null,
+        "description": null,
+        "agentRunId": "brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e",
+        "platformAgentRunId": "01a032e9-ae9e-7a43-b6b6-0ce2c2c800f4",
+        "launchConfiguration": {
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/private/tmp/api-rev008-brief-standalone-1787560452/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}
+
+memory dirs
+/private/tmp/api-rev008-brief-standalone-1787560452/memory
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817/published_artifacts
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817/published_artifacts/revisions
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_researcher_321f14a6e2ce4b868fdfad3023a8e817/published_artifacts/revisions/49f80856-e315-4638-9825-c16fbd79a123
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e/published_artifacts
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e/published_artifacts/revisions
+/private/tmp/api-rev008-brief-standalone-1787560452/memory/agent_teams/brief_studio_team_180ff011dc8f412399f9efb305d3c098/brief_studio_writer_2778d21c11ee48ce823cad4e64dbfb8e/published_artifacts/revisions/6a67c355-1203-4e9b-ab29-bcb841a26773
+runtime files
+/private/tmp/api-rev008-brief-standalone-1787560452/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md
+/private/tmp/api-rev008-brief-standalone-1787560452/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md
+/private/tmp/api-rev008-brief-standalone-1787560452/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/engine-status.json

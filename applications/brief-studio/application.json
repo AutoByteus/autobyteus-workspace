@@ -23,10 +23,12 @@
         "AGENT_TEAM": {
           "runtimeKind": true,
           "llmModelIdentifier": true,
+          "llmConfig": true,
           "workspaceRootPath": true,
           "memberOverrides": {
             "runtimeKind": true,
-            "llmModelIdentifier": true
+            "llmModelIdentifier": true,
+            "llmConfig": true
           }
         }
       },

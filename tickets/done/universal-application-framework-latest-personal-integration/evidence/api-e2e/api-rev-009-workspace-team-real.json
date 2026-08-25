@@ -1,0 +1,929 @@
+{
+  "scenario": "APIE2E-WORKSPACE-TEAM-009",
+  "assertions": {
+    "pathAfterEntry": "/private/tmp/api-rev009-team-workspace-final",
+    "pathAfterRuntime": "/private/tmp/api-rev009-team-workspace-final",
+    "pathAfterGlobalModel": "/private/tmp/api-rev009-team-workspace-final",
+    "globalAutoApproveClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600",
+    "pathAfterMemberRuntime": "/private/tmp/api-rev009-team-workspace-final",
+    "pathAfterMemberModel": "/private/tmp/api-rev009-team-workspace-final",
+    "studentRuntime": "autobyteus",
+    "studentModelButton": "DeepSeek / deepseek-v4-flash",
+    "globalModelButton": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+    "teamRunId": "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968",
+    "communicationMessages": [
+      {
+        "messageId": "teammsg_1doqaVlSZ8VNHXUdYTgcd4RcbvzaSbzB",
+        "senderAgentRunId": "professor_82dea6998cdf4f409d5bcbc4f12fca2a",
+        "receiverAgentRunId": "student_3a8bb02904ae464fb9728e3b22bbb001",
+        "content": "Please complete the addition assignment in /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md and reply to /professor with your answer.",
+        "messageType": "classroom_assignment",
+        "createdAt": "2026-08-24T11:10:10.635Z",
+        "referenceFiles": [
+          {
+            "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md",
+            "type": "file"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_IVQ2UVwGnNe8aqq0Rua1GrPlN6jSbP6-",
+        "senderAgentRunId": "student_3a8bb02904ae464fb9728e3b22bbb001",
+        "receiverAgentRunId": "professor_82dea6998cdf4f409d5bcbc4f12fca2a",
+        "content": "Hi Professor, I completed the addition assignment. My answer is 4: 2 + 2 equals 4 because combining two groups of two items gives a total of 4. The full answer with reasoning is in my answer file — please review and let me know if you'd like any changes.",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-24T11:10:15.576Z",
+        "referenceFiles": [
+          {
+            "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md",
+            "type": "file"
+          }
+        ]
+      }
+    ],
+    "launchMembers": [
+      {
+        "address": "/professor",
+        "agentRunId": "professor_82dea6998cdf4f409d5bcbc4f12fca2a",
+        "runtimeKind": "CODEX",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+      },
+      {
+        "address": "/student",
+        "agentRunId": "student_3a8bb02904ae464fb9728e3b22bbb001",
+        "runtimeKind": "AUTOBYTEUS",
+        "llmModelIdentifier": "deepseek-v4-flash",
+        "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+      }
+    ],
+    "memberProjectionSummaries": {
+      "/professor": {
+        "conversation": [
+          {
+            "kind": "message",
+            "role": "user",
+            "content": "Create one classroom assignment asking the student to answer 2 + 2. Follow the team instructions: write the assignment file under the current workspace, send it to /student with the file reference, wait for the student reply, then confirm the answer in one sentence.",
+            "media": null,
+            "ts": 1787569793.742
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Discovering deferred tools via ALL_TOOLS**\n\n**Investigating exec_command equivalence**\n\n**Running pwd and creating folder**",
+            "media": null,
+            "ts": 1787569802.755
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-03fb1bc1-82cb-48b7-838e-56cc6e432369",
+            "role": null,
+            "content": "",
+            "toolName": "run_bash",
+            "toolArgs": {
+              "command": "/bin/bash -lc pwd",
+              "cwd": "/private/tmp/api-rev009-team-workspace-final"
+            },
+            "toolResult": "/private/tmp/api-rev009-team-workspace-final\n",
+            "toolError": null,
+            "media": null,
+            "ts": 1787569802.757
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Creating assignment directory and file**",
+            "media": null,
+            "ts": 1787569807.009
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-c349e325-760e-48c7-8af3-da758c88c734",
+            "role": null,
+            "content": "",
+            "toolName": "run_bash",
+            "toolArgs": {
+              "command": "/bin/bash -lc \"mkdir -p /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics && cat > /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md <<'EOF'\n# Classroom Assignment: Addition\n\nAnswer the following question:\n\n**What is 2 + 2?**\n\nExpected response format: write the answer as a number and include one brief sentence explaining your reasoning.\nEOF\"",
+              "cwd": "/private/tmp/api-rev009-team-workspace-final"
+            },
+            "toolResult": null,
+            "toolError": null,
+            "media": null,
+            "ts": 1787569807.011
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Sending message to student**",
+            "media": null,
+            "ts": 1787569810.632
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-421d9dd4-4a81-4211-a1dd-bedd95a27840",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/student",
+              "content": "Please complete the addition assignment in /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md and reply to /professor with your answer.",
+              "reference_files": [
+                "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md"
+              ],
+              "message_type": "classroom_assignment"
+            },
+            "toolResult": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student.",
+              "result": null
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1787569810.706
+          }
+        ],
+        "toolNames": [
+          "run_bash",
+          "run_bash",
+          "send_message_to"
+        ]
+      },
+      "/student": {
+        "conversation": [
+          {
+            "kind": "message",
+            "role": "user",
+            "content": "You received a message from sender name: professor, sender id: professor_82dea6998cdf4f409d5bcbc4f12fca2a\nmessage:\nPlease complete the addition assignment in /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md and reply to /professor with your answer.\n\nReference files:\n- /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md",
+            "media": null,
+            "ts": 1787569810.696
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "The professor sent me an assignment. I need to:\n1. Run `pwd` to confirm the workspace root\n2. Read the assignment file\n3. Write my answer to a file\n4. Reply to /professor using send_message_to\n\nLet me start by running pwd and reading the assignment file. These are independent, so I can do them in parallel. Actually, reading the file requires the path which I already have, so I can do both in parallel.",
+            "media": null,
+            "ts": 1787569812.316
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "",
+            "media": null,
+            "ts": 1787569812.316
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "call_00_5DLkgwVO5ZaHMW2oIiWQ5058",
+            "role": null,
+            "content": "",
+            "toolName": "run_bash",
+            "toolArgs": {
+              "command": "pwd"
+            },
+            "toolResult": {
+              "exitCode": 0,
+              "effectiveCwd": "/private/tmp/api-rev009-team-workspace-final",
+              "stdout": "/private/tmp/api-rev009-team-workspace-final\n"
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1787569812.476
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "call_01_ACu4kGoSTFuK4z1C9dzY9583",
+            "role": null,
+            "content": "",
+            "toolName": "read_file",
+            "toolArgs": {
+              "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md"
+            },
+            "toolResult": "1: # Classroom Assignment: Addition\n2: \n3: Answer the following question:\n4: \n5: **What is 2 + 2?**\n6: \n7: Expected response format: write the answer as a number and include one brief sentence explaining your reasoning.\n",
+            "toolError": null,
+            "media": null,
+            "ts": 1787569812.476
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "The assignment asks: What is 2 + 2? I need to write the answer as a number and include one brief sentence explaining my reasoning.\n\nLet me write the answer file in the same run folder: /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md",
+            "media": null,
+            "ts": 1787569814.085
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "",
+            "media": null,
+            "ts": 1787569814.085
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "call_00_J5Qm4pmOHyEta8mJtd2D6942",
+            "role": null,
+            "content": "",
+            "toolName": "write_file",
+            "toolArgs": {
+              "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md",
+              "content": "# Student Answer: Addition\n\n**Question:** What is 2 + 2?\n\n**Answer:** 4\n\n**Reasoning:** Adding 2 and 2 means combining two groups of two items, which gives a total of 4.\n"
+            },
+            "toolResult": "File created/updated at /private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md",
+            "toolError": null,
+            "media": null,
+            "ts": 1787569814.094
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "",
+            "media": null,
+            "ts": 1787569815.57
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "call_00_ET_wEC7UtYSjzJsiO8MDQ8E0074",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/professor",
+              "content": "Hi Professor, I completed the addition assignment. My answer is 4: 2 + 2 equals 4 because combining two groups of two items gives a total of 4. The full answer with reasoning is in my answer file — please review and let me know if you'd like any changes.",
+              "reference_files": [
+                "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md"
+              ]
+            },
+            "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /professor.\",\"result\":null}",
+            "toolError": null,
+            "media": null,
+            "ts": 1787569815.605
+          }
+        ],
+        "toolNames": [
+          "run_bash",
+          "read_file",
+          "write_file",
+          "send_message_to"
+        ]
+      }
+    },
+    "historyMatch": [
+      {
+        "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final",
+        "teamDefinitionName": "Classroom Simulation Team",
+        "run": {
+          "teamRunId": "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968",
+          "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final",
+          "isActive": true,
+          "members": [
+            {
+              "memberAddress": "/professor",
+              "agentRunId": "professor_82dea6998cdf4f409d5bcbc4f12fca2a",
+              "runtimeKind": "CODEX",
+              "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+            },
+            {
+              "memberAddress": "/student",
+              "agentRunId": "student_3a8bb02904ae464fb9728e3b22bbb001",
+              "runtimeKind": "AUTOBYTEUS",
+              "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+            }
+          ]
+        }
+      }
+    ],
+    "operationDelta": {
+      "createWorkspace": 1,
+      "createAgentTeamRun": 1
+    },
+    "fileProof": [
+      {
+        "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-2-plus-2/assignment.md",
+        "missing": true
+      },
+      {
+        "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-2-plus-2/student-answer.md",
+        "missing": true
+      }
+    ],
+    "consoleErrorCount": 0,
+    "fileProofCorrection": {
+      "reason": "Initial harness guessed addition-2-plus-2; the live professor validly chose addition-basics. These are the dispatched exact paths.",
+      "files": [
+        {
+          "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/assignment.md",
+          "content": "# Classroom Assignment: Addition\n\nAnswer the following question:\n\n**What is 2 + 2?**\n\nExpected response format: write the answer as a number and include one brief sentence explaining your reasoning.\n"
+        },
+        {
+          "path": "/private/tmp/api-rev009-team-workspace-final/classroom-runs/addition-basics/student-answer.md",
+          "content": "# Student Answer: Addition\n\n**Question:** What is 2 + 2?\n\n**Answer:** 4\n\n**Reasoning:** Adding 2 and 2 means combining two groups of two items, which gives a total of 4.\n"
+        }
+      ]
+    }
+  },
+  "trace": [
+    {
+      "phase": "request",
+      "operationName": "GetApplicationsCapability",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetServerSettings",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAllWorkspaces",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentDefinitions",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetApplicationsCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentTeamDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetServerSettings",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAllWorkspaces",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "agent_ws_0352e41210e3a07b563733611af4fb72c68c5f08823150269fed6073a76942e7"
+        ],
+        [
+          "workspaceId",
+          "agent_ws_e400e6a398190763a45726127db312ce940382c8028c6c80b7ea0c0ab45b0c82"
+        ],
+        [
+          "workspaceId",
+          "agent_ws_71bbbef6fff4956cdbf94526aea762c4f539c6af9a62752e98eb7b42c82d3483"
+        ],
+        [
+          "workspaceId",
+          "agent_ws_6d2fd027ebd9eaa3f80801c09d7f9a72c6229423141c3ee50d6073971b993398"
+        ],
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ],
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetFolderChildren",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetFolderChildren",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/private/tmp/api-rev009-team-workspace-final"
+        }
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "classroom-simulation-team",
+          "memberConfigs": [
+            {
+              "memberAddress": "/professor",
+              "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceId": "agent_ws_99d0bfa39e66361532a9372932cb96fff4314d55b02c75adc9b01e51e90489ef",
+              "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+            },
+            {
+              "memberAddress": "/student",
+              "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceId": "agent_ws_99d0bfa39e66361532a9372932cb96fff4314d55b02c75adc9b01e51e90489ef",
+              "workspaceRootPath": "/private/tmp/api-rev009-team-workspace-final"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetFolderChildren",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "CreateWorkspace",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "agent_ws_99d0bfa39e66361532a9372932cb96fff4314d55b02c75adc9b01e51e90489ef"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetFolderChildren",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "CreateAgentTeamRun",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTaskDelegationRecords",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamRunResumeConfig",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTaskDelegationRecords",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamCommunicationMessages",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberRunProjection",
+      "status": 200,
+      "ids": [
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberRunProjection",
+      "status": 200,
+      "ids": [
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetSkillImprovementCapability",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberSkillImprovementEligibility",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetSkillImprovementCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberSkillImprovementEligibility",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetRunProjection",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetRunFileChanges",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "ListWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "runId",
+          "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+        ],
+        [
+          "teamRunId",
+          "classroom_simulation_team_b14b0d215fce4755aab598863d9f4179"
+        ],
+        [
+          "agentRunId",
+          "professor_5d8f317e16254611a47de0ca5860cafd"
+        ],
+        [
+          "agentRunId",
+          "student_675866d98bbd4fd39f59837f666d2694"
+        ],
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRunFileChanges",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRunProjection",
+      "status": 200,
+      "ids": [
+        [
+          "runId",
+          "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentRunResumeConfig",
+      "status": 200,
+      "ids": [
+        [
+          "runId",
+          "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "teamRunId",
+          "classroom_simulation_team_f63ce7b6004447198d1aa056e619a968"
+        ],
+        [
+          "agentRunId",
+          "professor_82dea6998cdf4f409d5bcbc4f12fca2a"
+        ],
+        [
+          "agentRunId",
+          "student_3a8bb02904ae464fb9728e3b22bbb001"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    }
+  ],
+  "consoleErrors": []
+}

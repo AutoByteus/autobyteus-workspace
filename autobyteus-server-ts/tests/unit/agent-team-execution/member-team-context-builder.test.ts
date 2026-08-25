@@ -10,7 +10,7 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testAgentTeamNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const buildBuilder = (definitions: Record<string, { name?: string; instructions?: string }> = {}) =>
   new MemberTeamContextBuilder({
@@ -77,6 +77,7 @@ const buildContext = (input: {
 
 describe("MemberTeamContextBuilder", () => {
   it("builds one root-canonical execution identity and filters outgoing handoffs", async () => {
+    const taskRootResolver = testMemberTaskRootResolver();
     const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
     const productManager = testAgentNode("/product_manager", { agentRunId: "run-product-manager" });
     const researchLead = testAgentNode("/research_team/research_lead", { agentRunId: "run-research-lead" });
@@ -101,13 +102,16 @@ describe("MemberTeamContextBuilder", () => {
       ],
     });
 
-    const result = await buildBuilder({
+    const builder = buildBuilder({
       "team-def-1": { name: "Product Team", instructions: "Coordinate carefully." },
-    }).build({
+    });
+    const build = (resolver: typeof taskRootResolver | null | undefined) => builder.build({
       teamContext: buildContext({ config, teamRunId: "team-1", teamAddress: "/", agentNode: productManager }),
       agentNode: productManager,
       deliverInterAgentMessage,
-    });
+      taskRootResolver: resolver,
+    } as never);
+    const result = await build(taskRootResolver);
 
     expect(result.authoredTeamInstruction).toBe("Coordinate carefully.");
     expect(result.identity).toEqual({
@@ -117,10 +121,13 @@ describe("MemberTeamContextBuilder", () => {
     });
     expect(result.collaboration.outgoingHandoffs).toEqual([effectiveHandoffs[0]]);
     expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
+    expect(result.taskRootResolver).toBe(taskRootResolver);
     expect(Object.isFrozen(result.identity)).toBe(true);
     expect(Object.keys(result.identity).sort()).toEqual(["agentRunId", "memberAddress", "rootTeamRunId"]);
     expect(Object.isFrozen(result.collaboration.outgoingHandoffs)).toBe(true);
     expect(result).not.toHaveProperty("executionAddress");
+    await expect(build(undefined)).rejects.toThrow("MemberTaskRootResolver is required");
+    await expect(build(null)).rejects.toThrow("MemberTaskRootResolver is required");
   });
 
   it("uses the exact root-visible child address with the local AgentRun ID", async () => {
@@ -154,6 +161,7 @@ describe("MemberTeamContextBuilder", () => {
     const result = await buildBuilder({ "field-team-def": { name: "Field Team" } }).build({
       teamContext: buildContext({ config, teamRunId: "field-team-run", teamAddress: "/research_team/field_team", agentNode: interviewer }),
       agentNode: interviewer,
+      taskRootResolver: testMemberTaskRootResolver(),
     });
 
     expect(result.identity).toEqual({
@@ -173,6 +181,7 @@ describe("MemberTeamContextBuilder", () => {
       teamContext: buildContext({ config, teamRunId: "team-solo", teamAddress: "/", agentNode: solo }),
       agentNode: solo,
       deliverInterAgentMessage,
+      taskRootResolver: testMemberTaskRootResolver(),
     });
 
     expect(result.collaboration.outgoingHandoffs).toEqual([]);
@@ -209,6 +218,7 @@ describe("MemberTeamContextBuilder", () => {
     const result = await buildBuilder().build({
       teamContext: buildContext({ config, teamRunId: "research-run", teamAddress: "/research_team", agentNode: researchLead }),
       agentNode: researchLead,
+      taskRootResolver: testMemberTaskRootResolver(),
     });
 
     rules[0] = "mutated";
@@ -221,4 +231,5 @@ describe("MemberTeamContextBuilder", () => {
       rules: ["When field research is required."],
     }]);
   });
+
 });

@@ -1,14 +1,17 @@
-import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { buildUnavailableInheritedModelMessage } from '~/utils/teamRunConfigUtils'
 
 export type TeamLaunchProfileMemberReadinessInput = {
   displayName: string
   runtimeKind?: string | null
   llmModelIdentifier?: string | null
+  inheritedRuntimeKind?: string | null
+  inheritedLlmModelIdentifier?: string | null
 }
 
 export type TeamLaunchReadinessBlockingIssueCode =
   | 'MODEL_CATALOG_PENDING'
+  | 'RUNTIME_REQUIRED'
   | 'MODEL_REQUIRED'
   | 'MODEL_UNAVAILABLE'
   | 'UNRESOLVED_INHERITED_MODEL'
@@ -29,10 +32,10 @@ export type TeamLaunchProfileRuntimeModelCatalogs = Record<string, string[]>
 
 const normalizeRuntimeKind = (value: string | null | undefined): string => {
   const normalized = (value || '').trim()
-  return normalized || DEFAULT_AGENT_RUNTIME_KIND
+  return normalized
 }
 
-const normalizeModelIdentifier = (value: string | null | undefined): string => (
+const normalizeOptionalString = (value: string | null | undefined): string => (
   typeof value === 'string' ? value.trim() : ''
 )
 
@@ -50,15 +53,31 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     }
   }
 
-  const defaultRuntimeKind = normalizeRuntimeKind(input.defaultRuntimeKind)
-  const defaultLlmModelIdentifier = normalizeModelIdentifier(input.defaultLlmModelIdentifier)
+  const defaultRuntimeKind = normalizeOptionalString(input.defaultRuntimeKind)
+  const defaultLlmModelIdentifier = normalizeOptionalString(input.defaultLlmModelIdentifier)
   const blockingIssues: TeamLaunchReadinessBlockingIssue[] = []
 
   input.memberProfiles.forEach((memberProfile) => {
-    const effectiveRuntimeKind = normalizeRuntimeKind(memberProfile.runtimeKind || defaultRuntimeKind)
+    const effectiveRuntimeKind = normalizeRuntimeKind(
+      memberProfile.runtimeKind
+      || defaultRuntimeKind
+      || memberProfile.inheritedRuntimeKind,
+    )
     const runtimeCatalog = input.runtimeModelCatalogs[effectiveRuntimeKind] ?? null
-    const explicitModelIdentifier = normalizeModelIdentifier(memberProfile.llmModelIdentifier)
-    const effectiveModelIdentifier = explicitModelIdentifier || defaultLlmModelIdentifier
+    const explicitModelIdentifier = normalizeOptionalString(memberProfile.llmModelIdentifier)
+    const effectiveModelIdentifier = explicitModelIdentifier
+      || defaultLlmModelIdentifier
+      || normalizeOptionalString(memberProfile.inheritedLlmModelIdentifier)
+
+    if (!effectiveRuntimeKind) {
+      blockingIssues.push({
+        code: 'RUNTIME_REQUIRED',
+        memberName: memberProfile.memberName,
+        runtimeKind: '',
+        message: `${memberProfile.memberName} needs a runtime before this team setup can be saved.`,
+      })
+      return
+    }
 
     if (!runtimeCatalog) {
       blockingIssues.push({

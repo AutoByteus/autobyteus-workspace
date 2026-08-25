@@ -138,6 +138,15 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `providers/`
 - `services/`
 
+Application-framework dependency directions are additionally enforced by the
+test-only `tests/architecture/application-framework-boundaries.test.ts` rules
+`AFB-001`, `AFB-002`, `AFB-003`, `AFB-004`, and `AFB-005`. They cover transport/runtime projections, Studio
+GraphQL and application presentation, package/bundle ownership, complete
+application-scoped run/session/publication/team construction, and maintained
+application/template imports. The canonical policy table, project/manifest
+resolution rules, injection families, and remediation guidance are in
+[`docs/modules/applications.md`](./modules/applications.md#executable-application-framework-boundaries).
+
 
 ## Native Working-Context Compaction
 

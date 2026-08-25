@@ -1,0 +1,506 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /private/tmp/api-rev011-studio-20260825
+AppConfig instance created.
+Config file path: /private/tmp/api-rev011-studio-20260825/.env
+Loading environment from: /private/tmp/api-rev011-studio-20260825/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../private/tmp/api-rev011-studio-20260825/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8051
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8051
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev011-studio-20260825
+DB DIRECTORY: /private/tmp/api-rev011-studio-20260825/db
+LOGS DIRECTORY: /private/tmp/api-rev011-studio-20260825/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev011-studio-20260825/download
+MEMORY DIRECTORY: /private/tmp/api-rev011-studio-20260825/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev011-studio-20260825/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:81635) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T18:11:13.728Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev011-studio-20260825/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev011-studio-20260825/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-25T18:11:13.913Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:11:13.953Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+{"level":30,"time":1787681475016,"pid":81635,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:8051"}
+[2026-08-25T18:11:15.017Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8051
+[2026-08-25T18:11:15.019Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8051
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: d8d4df92-f599-4fd7-a7a1-606f51c15298 for workspace temp_ws_default
+Created file explorer session d8d4df92-f599-4fd7-a7a1-606f51c15298 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: d8d4df92-f599-4fd7-a7a1-606f51c15298 for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: d8d4df92-f599-4fd7-a7a1-606f51c15298
+Closed file explorer session d8d4df92-f599-4fd7-a7a1-606f51c15298. Active sessions: 0
+File explorer WebSocket disconnected: d8d4df92-f599-4fd7-a7a1-606f51c15298
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Discovering Ollama models from host: http://127.0.0.1:11434
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af for workspace temp_ws_default
+Created file explorer session 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af
+Closed file explorer session 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af. Active sessions: 0
+File explorer WebSocket disconnected: 9f9bfcdb-f4f1-4a0e-b0db-c54a960ec4af
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b5b9963d-93b8-41be-8534-c62c8423d2c1 for workspace temp_ws_default
+Created file explorer session b5b9963d-93b8-41be-8534-c62c8423d2c1 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: b5b9963d-93b8-41be-8534-c62c8423d2c1 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: b5b9963d-93b8-41be-8534-c62c8423d2c1
+Closed file explorer session b5b9963d-93b8-41be-8534-c62c8423d2c1. Active sessions: 0
+File explorer WebSocket disconnected: b5b9963d-93b8-41be-8534-c62c8423d2c1
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 611137a0-15b2-4c7f-909f-f0b7a07b1bab for workspace temp_ws_default
+Created file explorer session 611137a0-15b2-4c7f-909f-f0b7a07b1bab for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 611137a0-15b2-4c7f-909f-f0b7a07b1bab for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 611137a0-15b2-4c7f-909f-f0b7a07b1bab
+Closed file explorer session 611137a0-15b2-4c7f-909f-f0b7a07b1bab. Active sessions: 0
+File explorer WebSocket disconnected: 611137a0-15b2-4c7f-909f-f0b7a07b1bab
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 499bd824-1c72-423f-bb53-f97b8b5ad214 for workspace temp_ws_default
+Created file explorer session 499bd824-1c72-423f-bb53-f97b8b5ad214 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 499bd824-1c72-423f-bb53-f97b8b5ad214 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 499bd824-1c72-423f-bb53-f97b8b5ad214
+Closed file explorer session 499bd824-1c72-423f-bb53-f97b8b5ad214. Active sessions: 0
+File explorer WebSocket disconnected: 499bd824-1c72-423f-bb53-f97b8b5ad214
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 920a1973-8df7-4218-aa29-eddbaab322ac for workspace temp_ws_default
+Created file explorer session 920a1973-8df7-4218-aa29-eddbaab322ac for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 920a1973-8df7-4218-aa29-eddbaab322ac for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 920a1973-8df7-4218-aa29-eddbaab322ac
+Closed file explorer session 920a1973-8df7-4218-aa29-eddbaab322ac. Active sessions: 0
+File explorer WebSocket disconnected: 920a1973-8df7-4218-aa29-eddbaab322ac
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 38cf0835-51b2-48f8-8440-b55f582be62b for workspace temp_ws_default
+Created file explorer session 38cf0835-51b2-48f8-8440-b55f582be62b for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 38cf0835-51b2-48f8-8440-b55f582be62b for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 38cf0835-51b2-48f8-8440-b55f582be62b
+Closed file explorer session 38cf0835-51b2-48f8-8440-b55f582be62b. Active sessions: 0
+File explorer WebSocket disconnected: 38cf0835-51b2-48f8-8440-b55f582be62b
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: a48ef9f4-156d-49e6-8bc9-d9fd2e64672a for workspace temp_ws_default
+Created file explorer session a48ef9f4-156d-49e6-8bc9-d9fd2e64672a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: a48ef9f4-156d-49e6-8bc9-d9fd2e64672a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: a48ef9f4-156d-49e6-8bc9-d9fd2e64672a
+Closed file explorer session a48ef9f4-156d-49e6-8bc9-d9fd2e64672a. Active sessions: 0
+File explorer WebSocket disconnected: a48ef9f4-156d-49e6-8bc9-d9fd2e64672a
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8a4fe020-67aa-41af-96a0-33d49795c18a for workspace temp_ws_default
+Created file explorer session 8a4fe020-67aa-41af-96a0-33d49795c18a for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 8a4fe020-67aa-41af-96a0-33d49795c18a for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 8a4fe020-67aa-41af-96a0-33d49795c18a
+Closed file explorer session 8a4fe020-67aa-41af-96a0-33d49795c18a. Active sessions: 0
+File explorer WebSocket disconnected: 8a4fe020-67aa-41af-96a0-33d49795c18a
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63 for workspace temp_ws_default
+Created file explorer session 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63
+Closed file explorer session 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63. Active sessions: 0
+File explorer WebSocket disconnected: 7d79dca6-2f34-4397-9ee0-eaf1f3b38b63
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+FileSystemWatcher initialized for '/private/tmp/api-rev011-studio-20260825/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7dc5e598-9d3f-4684-9e7b-079ebb3854a8 for workspace temp_ws_default
+Created file explorer session 7dc5e598-9d3f-4684-9e7b-079ebb3854a8 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 7dc5e598-9d3f-4684-9e7b-079ebb3854a8 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /private/tmp/api-rev011-studio-20260825/memory/agent_teams/classroom_simulation_team_cbec0217785c43859ae300308901a2b0/professor_4b3f2536589e40d2999e60ece26d6d10/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev011-studio-20260825/memory/agent_teams/classroom_simulation_team_cbec0217785c43859ae300308901a2b0/student_5109c0399ea74454937cfe86ea735deb/raw_traces_active.jsonl
+Released file watcher lease for /private/tmp/api-rev011-studio-20260825/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev011-studio-20260825/temp_workspace
+FileExplorerSession closed: 7dc5e598-9d3f-4684-9e7b-079ebb3854a8
+Closed file explorer session 7dc5e598-9d3f-4684-9e7b-079ebb3854a8. Active sessions: 0
+File explorer WebSocket disconnected: 7dc5e598-9d3f-4684-9e7b-079ebb3854a8
+Agent team websocket attached for team run classroom_simulation_team_cbec0217785c43859ae300308901a2b0
+Created agent session ccb45c67-fa77-44ee-9cde-5d54c1988805 for run classroom_simulation_team_cbec0217785c43859ae300308901a2b0
+Agent Team WebSocket connected: session=ccb45c67-fa77-44ee-9cde-5d54c1988805, run=classroom_simulation_team_cbec0217785c43859ae300308901a2b0
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'professor_4b3f2536589e40d2999e60ece26d6d10'.
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /private/tmp/api-rev011-studio-20260825/media
+AgentRuntimeState initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_5109c0399ea74454937cfe86ea735deb' with config: 'Student'.
+AgentWorker initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'.
+Registered AgentContext for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Context registered.
+Agent facade initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'.
+Agent 'student_5109c0399ea74454937cfe86ea735deb' created and stored successfully.
+Agent 'student_5109c0399ea74454937cfe86ea735deb' requesting runtime to start.
+AgentRuntime for 'student_5109c0399ea74454937cfe86ea735deb': Starting worker.
+AgentWorker 'student_5109c0399ea74454937cfe86ea735deb': Starting...
+AgentWorker 'student_5109c0399ea74454937cfe86ea735deb' asyncRun(): Starting.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Runtime init completed (event store initialized).
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Runtime init completed (status deriver initialized).
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_5109c0399ea74454937cfe86ea735deb' to become idle (timeout: 30s)...
+AgentEventStream (ID: bb78bad3-060b-42aa-b1f9-006a7d3b4848) initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Subscribed to notifier.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Bootstrapper starting direct lifecycle execution.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Executing McpServerPrewarmingStep.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Executing SystemPromptProcessingStep.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': No configured skills. Skipping skill catalog.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Final processed system prompt configured and captured. Trace ID: rt_1787682049737_3b56fb86-3226-4f65-9e41-42452e865744. Final length: 13832.
+Agent 'student_5109c0399ea74454937cfe86ea735deb': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_5109c0399ea74454937cfe86ea735deb' initialized successfully. Entering main event scheduler loop.
+Agent 'student_5109c0399ea74454937cfe86ea735deb' has become idle.
+AgentEventStream (ID: bb78bad3-060b-42aa-b1f9-006a7d3b4848) for 'student_5109c0399ea74454937cfe86ea735deb': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: e7650033-1488-46e3-8c06-add4be5ce80e) initialized for agent_id 'student_5109c0399ea74454937cfe86ea735deb'. Subscribed to notifier.
+Published autobyteus agent run 'student_5109c0399ea74454937cfe86ea735deb'.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': UserInputContextBuildingProcessor completed. Final content length: 400
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_5109c0399ea74454937cfe86ea735deb',
+  prompt_tokens: 5658,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': UserInputContextBuildingProcessor completed. Final content length: 69
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_5109c0399ea74454937cfe86ea735deb',
+  prompt_tokens: 5915,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': UserInputContextBuildingProcessor completed. Final content length: 48
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_5109c0399ea74454937cfe86ea735deb',
+  prompt_tokens: 6160,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': UserInputContextBuildingProcessor completed. Final content length: 53
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_5109c0399ea74454937cfe86ea735deb',
+  prompt_tokens: 6395,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': UserInputContextBuildingProcessor completed. Final content length: 55
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session ccb45c67-fa77-44ee-9cde-5d54c1988805
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'student_5109c0399ea74454937cfe86ea735deb',
+  prompt_tokens: 6603,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  trigger_headroom_tokens: 49260,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 215510,
+  budget_key: '615744:492595:215510:49260:215510',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_5109c0399ea74454937cfe86ea735deb': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 20ba4af9-c832-486e-b610-2d3c9968a6c3, AgentID: student_5109c0399ea74454937cfe86ea735deb) emitted agent_status. Kwarg keys for emit: agent_id,payload

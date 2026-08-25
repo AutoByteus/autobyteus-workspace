@@ -1,1 +1,0 @@
-{"version":3,"file":"frontend-builder.d.ts","sourceRoot":"","sources":["../../src/package/frontend-builder.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,+BAA+B,EAAE,MAAM,uCAAuC,CAAC;AAgD7F,eAAO,MAAM,mBAAmB,GAAU,OAAO;IAC/C,KAAK,EAAE,+BAA+B,CAAC;IACvC,MAAM,CAAC,EAAE,MAAM,CAAC;CACjB,KAAG,OAAO,CAAC;IAAE,MAAM,EAAE,MAAM,CAAC;IAAC,WAAW,EAAE,MAAM,CAAA;CAAE,CA8BlD,CAAC"}

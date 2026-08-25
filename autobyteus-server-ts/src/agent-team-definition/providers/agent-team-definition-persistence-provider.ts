@@ -11,7 +11,10 @@ export type AgentTeamDefinitionProviderContract = {
 };
 
 export class AgentTeamDefinitionPersistenceProvider {
-  private readonly provider: AgentTeamDefinitionProviderContract = new FileAgentTeamDefinitionProvider();
+  constructor(
+    private readonly provider: AgentTeamDefinitionProviderContract =
+      new FileAgentTeamDefinitionProvider(),
+  ) {}
 
   async create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
     return this.provider.create(domainObj);

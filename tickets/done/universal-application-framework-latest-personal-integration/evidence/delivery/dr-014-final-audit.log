@@ -1,0 +1,18 @@
+# DR-014 final audit
+timestamp_utc=2026-08-25T19:48:34Z
+branch=personal
+source_merge=887611bb372bc4d63b0dea496d2eaa3bf639f7e8
+origin_personal=887611bb372bc4d63b0dea496d2eaa3bf639f7e8
+source_merge_matches_origin=yes
+ticket_remote=025e26d84c05671e9195edade786143bc4f2162f
+ticket_archive_exists=yes
+in_progress_ticket_absent=yes
+build_log_pass=yes
+verification_log_pass=yes
+dmg_hash=e23959eca0e3a2af4fe76692192bfb862ab81b96a8508ed35e456ada9633920a
+zip_hash=bc13485cdf6024623b0f32f0d7400faa4ce22e9c5fa607dc12b1b362843b70a7
+tracked_non_ticket_delta=0
+unmerged_paths=0
+version_bump=none
+release_or_deployment=none
+audit_result=Pass

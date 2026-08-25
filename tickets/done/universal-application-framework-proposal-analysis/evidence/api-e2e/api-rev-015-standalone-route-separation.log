@@ -1,0 +1,8 @@
+utc=2026-08-13T11:22:03Z
+root=200
+internal_unauth=401
+external_gateway=404
+internal_body={"error":"unauthorized","message":"Unauthorized"}
+gateway_body={"message":"Route POST:/mcp/gateway not found","error":"Not Found","statusCode":404}
+assert_internal_401=pass
+assert_standalone_gateway_absent=pass

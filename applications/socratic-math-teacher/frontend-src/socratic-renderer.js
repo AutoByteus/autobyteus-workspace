@@ -42,13 +42,13 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
         <div class="meta-grid">
           <div>
             <span class="label">Application</span>
-            <div id="application-name" class="value">Waiting for hosted application context…</div>
+            <div id="application-name" class="value">Waiting for runtime context…</div>
             <div id="application-ids" class="muted">—</div>
           </div>
           <div>
-            <span class="label">Launch</span>
-            <div id="iframe-launch-id" class="value">—</div>
-            <div id="request-context" class="muted">—</div>
+            <span class="label">Runtime</span>
+            <div id="runtime-contract-version" class="value">—</div>
+            <div id="canonical-application-id" class="muted">—</div>
           </div>
           <div>
             <span class="label">Backend mount</span>
@@ -396,31 +396,33 @@ export const renderLessonDetail = ({
 };
 
 export const renderMetadata = ({ state, elements }) => {
-  const bootstrap = state.bootstrap;
-  if (!bootstrap) {
+  const runtimeBootstrap = state.runtimeBootstrap;
+  if (!runtimeBootstrap) {
     return;
   }
   if (elements.applicationName) {
-    elements.applicationName.textContent = bootstrap.application.name;
+    elements.applicationName.textContent = runtimeBootstrap.application.name;
   }
   if (elements.applicationIds) {
     elements.applicationIds.textContent = [
-      `app ${bootstrap.application.applicationId}`,
-      `local ${bootstrap.application.localApplicationId}`,
-      `package ${bootstrap.application.packageId}`,
+      `app ${runtimeBootstrap.application.applicationId}`,
+      `local ${runtimeBootstrap.application.localApplicationId}`,
+      `package ${runtimeBootstrap.application.packageId}`,
     ].join(" · ");
   }
-  if (elements.iframeLaunchId) {
-    elements.iframeLaunchId.textContent = bootstrap.iframeLaunchId;
+  if (elements.contractVersion) {
+    elements.contractVersion.textContent = `contract ${runtimeBootstrap.contractVersion}`;
   }
-  if (elements.requestContext) {
-    elements.requestContext.textContent = `applicationId ${bootstrap.requestContext.applicationId}`;
+  if (elements.canonicalApplicationId) {
+    elements.canonicalApplicationId.textContent =
+      `applicationId ${runtimeBootstrap.application.applicationId}`;
   }
   if (elements.backendBaseUrl) {
-    elements.backendBaseUrl.textContent = bootstrap.transport.backendBaseUrl || "—";
+    elements.backendBaseUrl.textContent = runtimeBootstrap.transport.backendBaseUrl || "—";
   }
   if (elements.backendNotificationsUrl) {
-    elements.backendNotificationsUrl.textContent = bootstrap.transport.backendNotificationsUrl || "—";
+    elements.backendNotificationsUrl.textContent =
+      runtimeBootstrap.transport.backendNotificationsUrl || "—";
   }
 };
 

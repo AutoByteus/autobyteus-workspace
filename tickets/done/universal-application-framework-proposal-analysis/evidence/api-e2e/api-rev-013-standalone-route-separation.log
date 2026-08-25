@@ -1,0 +1,14 @@
+utc=2026-07-31T13:00:59Z
+--- health/root ---
+root=200
+--- internal unauthenticated ---
+HTTP/1.1 401 Unauthorized
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Fri, 31 Jul 2026 13:00:59 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}--- external gateway absence ---
+external_gateway_status=404
+{"message":"Route POST:/mcp/gateway not found","error":"Not Found","statusCode":404}

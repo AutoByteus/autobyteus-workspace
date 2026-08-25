@@ -16,7 +16,6 @@ import {
   ChunkResponse,
   CompleteResponse,
 } from "autobyteus-ts/llm/utils/response-types.js";
-import { registerTools } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -27,7 +26,8 @@ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-co
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
-import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
+import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
+import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 
 class DeterministicLLM extends BaseLLM {
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
@@ -75,8 +75,9 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
 
     registrySnapshot = defaultToolRegistry.snapshot();
     defaultToolRegistry.clear();
-    registerTools();
-    await loadAllAgentTools();
+    await new AgentToolRegistryReadiness({
+      publishedArtifactPublicationService: getGeneralProcessPublishedArtifactPublisher(),
+    }).registerRequiredGroups();
     loadAgentCustomizations();
 
     schema = await buildGraphqlSchema();

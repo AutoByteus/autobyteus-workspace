@@ -1,0 +1,25 @@
+DR-011 BRANCH-ONLY FINALIZATION
+user_initial_verification=PASS (user reported: I have tested it works)
+user_finalization_scope=ticket branch only
+user_extended_verification=fetch and test on another machine
+branch=codex/universal-application-framework-proposal-analysis
+origin_personal=54890a07f74e941a7a12b6daaa26364f4c927b72
+pre_finalization_head=939090de2a17f735b6b3e0844fb8563de6648ca1
+pre_finalization_divergence=110/0
+base_ancestor=PASS
+archive_target=tickets/done/universal-application-framework-proposal-analysis
+personal_merge=NOT_AUTHORIZED
+personal_push=NOT_AUTHORIZED
+release_or_deployment=NOT_AUTHORIZED
+branch_cleanup=NOT_AUTHORIZED
+ignored_electron_artifacts_transferred_by_git=NO
+other_machine_action=rebuild Electron from pushed ticket branch
+archive_commit=6987f173a4d8f60c90acdb4749ac0035fdc3b98c
+commit_result=PASS
+branch_push_result=PASS
+remote_ticket_after_first_push=6987f173a4d8f60c90acdb4749ac0035fdc3b98c
+remote_ticket_equals_local_after_first_push=PASS
+remote_personal_after_push=54890a07f74e941a7a12b6daaa26364f4c927b72
+remote_personal_unchanged=PASS
+remote_verification=PASS
+FINAL=PASS

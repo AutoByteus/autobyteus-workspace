@@ -28,12 +28,17 @@ export type ApplicationDevkitDevConfig = {
   port?: number | null;
 };
 
+export type ApplicationDevkitStandaloneConfig = {
+  enabled?: boolean | null;
+};
+
 export type ApplicationDevkitConfig = {
   source?: ApplicationDevkitSourceConfig | null;
   output?: ApplicationDevkitOutputConfig | null;
   frontend?: ApplicationDevkitFrontendConfig | null;
   backend?: ApplicationDevkitBackendConfig | null;
   dev?: ApplicationDevkitDevConfig | null;
+  standalone?: ApplicationDevkitStandaloneConfig | null;
 };
 
 export type ResolvedApplicationDevkitConfig = {
@@ -59,6 +64,9 @@ export type ResolvedApplicationDevkitConfig = {
   };
   dev: {
     port: number;
+  };
+  standalone: {
+    enabled: boolean;
   };
 };
 
@@ -95,6 +103,9 @@ export const DEFAULT_APPLICATION_DEVKIT_CONFIG: ResolvedApplicationDevkitConfig 
   },
   dev: {
     port: 43124,
+  },
+  standalone: {
+    enabled: false,
   },
 };
 
@@ -156,6 +167,9 @@ export const resolveApplicationDevkitConfig = (
     },
     dev: {
       port: readPort(config?.dev?.port, defaults.dev.port),
+    },
+    standalone: {
+      enabled: config?.standalone?.enabled === true,
     },
   };
 };

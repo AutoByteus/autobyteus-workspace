@@ -43,10 +43,13 @@ export const stopDefaultAgentRunEventPipeline = async (): Promise<void> => {
   cachedTokenUsagePersistenceTransformer?.quiesce();
 };
 
-export const resetDefaultAgentRunEventPipelineForTests = async (): Promise<void> => {
+export const resetDefaultAgentRunEventPipeline = async (): Promise<void> => {
   await stopDefaultAgentRunEventPipeline();
   cachedDefaultAgentRunEventPipeline = null;
   cachedTokenUsageEnrichmentTransformer = null;
   cachedTokenUsagePersistenceTransformer = null;
   tokenUsageLifecycleState = "accepting";
 };
+
+export const resetDefaultAgentRunEventPipelineForTests =
+  resetDefaultAgentRunEventPipeline;

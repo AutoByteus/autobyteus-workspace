@@ -6,7 +6,9 @@
   "scripts": {
     "build": "autobyteus-app pack",
     "validate": "autobyteus-app validate --package-root dist/importable-package",
-    "dev": "autobyteus-app dev"
+    "dev": "autobyteus-app dev",
+    "dev:studio": "autobyteus-app dev --host studio",
+    "start": "autobyteus-app start"
   },
   "dependencies": {
     "@autobyteus/application-backend-sdk": "^0.1.0",

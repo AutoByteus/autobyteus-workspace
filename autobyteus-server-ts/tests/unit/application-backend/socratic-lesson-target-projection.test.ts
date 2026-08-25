@@ -29,14 +29,12 @@ const buildTeamBinding = (
   ...overrides,
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-lesson-1",
+    teamRunId: "team-run-lesson-1",
     definitionId: "socratic-math-team",
     members: [{
-      memberName: "tutor",
-      memberRouteKey: "tutor",
+      memberAddress: "/tutor",
       displayName: "Tutor",
-      teamPath: [],
-      runId: "team-run-lesson-1::tutor",
+      agentRunId: "team-run-lesson-1::tutor",
       runtimeKind: "AGENT_TEAM_MEMBER",
     }],
   },
@@ -54,7 +52,7 @@ describe("Socratic lesson tutor target projection", () => {
       bindingId: "binding-lesson-1",
       target: {
         kind: "AGENT_TEAM_MEMBER",
-        memberRouteKey: "tutor",
+        agentRunId: "team-run-lesson-1::tutor",
       },
     });
 
@@ -89,7 +87,7 @@ describe("Socratic lesson tutor target projection", () => {
       },
       runtime: {
         subject: "AGENT_RUN",
-        runId: "agent-run-1",
+        agentRunId: "agent-run-1",
         definitionId: "wrong-agent",
         members: [],
       },
@@ -97,21 +95,22 @@ describe("Socratic lesson tutor target projection", () => {
     const teamWithoutTutor = buildTeamBinding();
     teamWithoutTutor.runtime.members[0] = {
       ...teamWithoutTutor.runtime.members[0]!,
-      memberRouteKey: "other-member",
+      memberAddress: "/other-member",
+      agentRunId: "team-run-lesson-1::other-member",
     };
 
     expect(() => deriveTutorTargetAddress(activeLesson, agentBinding)).toThrow(
       "Socratic tutor binding must be an agent-team binding.",
     );
     expect(() => deriveTutorTargetAddress(activeLesson, teamWithoutTutor)).toThrow(
-      "Application agent-team binding 'binding-lesson-1' does not contain memberRouteKey 'tutor'.",
+      "Socratic tutor binding must contain configured memberAddress '/tutor'.",
     );
   });
 
   it("requests and carries the shared target address through the generated GraphQL client", async () => {
     const tutorTargetAddress = {
       bindingId: "binding-lesson-1",
-      target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-lesson-1::tutor" },
     };
     const graphql = vi.fn(async () => ({
       data: {

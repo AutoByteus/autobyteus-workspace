@@ -1,0 +1,55 @@
+root=/private/tmp/api-rev008-socratic-standalone-1787560196
+team-run execution tree:
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-24T08:30:59.235Z",
+  "archivedAt": null,
+  "applicationBinding": {
+    "applicationId": "bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572",
+    "bindingId": "5e9bf8ac-3cb1-4f3d-ab3f-f2f5572b8da7"
+  },
+  "handoffs": [],
+  "rootTeam": {
+    "teamDefinitionId": "bundle-team__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d",
+    "teamDefinitionName": "Socratic Math Team",
+    "teamRunId": "socratic_math_team_8d4731eaee3b4125a98637627ab51056",
+    "coordinatorAddress": "/tutor",
+    "members": [
+      {
+        "address": "/tutor",
+        "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d:socratic-math-tutor",
+        "role": null,
+        "description": null,
+        "agentRunId": "socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64",
+        "platformAgentRunId": "01a032e4-ef60-7a63-ad81-a8ee35b03d7b",
+        "launchConfiguration": {
+          "runtimeKind": "CODEX",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/private/tmp/api-rev008-socratic-standalone-1787560196/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}
+
+memory directories:
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/published_artifacts
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/published_artifacts/revisions
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/published_artifacts/revisions/43c56491-d633-4c0f-a1e2-f8a4d99ec521
+agent files:
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/published_artifacts.json
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/published_artifacts/revisions/43c56491-d633-4c0f-a1e2-f8a4d99ec521/lesson-response.md
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/socratic_math_tutor_0031ad6c3a804f9a85bab48861e6ac64/raw_traces_active.jsonl
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/task_delegation_records.json
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/team_communication_messages.json
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/agent_teams/socratic_math_team_8d4731eaee3b4125a98637627ab51056/team_run_execution_tree.json
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/run_history_index.json
+/private/tmp/api-rev008-socratic-standalone-1787560196/memory/team_run_history_index.json

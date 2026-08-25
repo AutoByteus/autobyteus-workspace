@@ -1,0 +1,112 @@
+{
+  "briefs": [
+    {
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "title": "API REV 003 studio 1787396324892",
+      "status": "in_review",
+      "latest_binding_id": "58e5d863-3c5f-45a7-962a-e9047de659a6",
+      "latest_run_id": "brief_studio_team_656f615ad8c74e86b030940734fbe3b4",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-08-22T10:58:55.808Z",
+      "updated_at": "2026-08-22T11:00:45.077Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "7d4ab649-6ff2-466d-a183-b292ced3af9d",
+      "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md",
+      "description": "Research checkpoint for API REV 003 studio 1787396324892",
+      "body": "# API REV 003 studio 1787396324892 \u2014 Research Checkpoint\n\n## Key findings\n- The request names a reviewable brief but does not specify an API domain, audience, endpoint set, or source materials; the first draft should therefore frame API REV 003 as a revision-planning brief rather than assert product facts.\n- A useful API revision brief should make the change surface explicit: affected endpoints, request/response contracts, authentication, error behavior, compatibility, and rollout/rollback.\n- Reviewability improves when each proposed change has an owner, rationale, evidence/source, validation method, and release status.\n- Backward compatibility and consumer impact are the primary decision lenses; breaking changes need migration guidance and a versioning decision.\n- The brief should separate confirmed facts from assumptions and unresolved decisions so reviewers can approve scope without mistaking placeholders for requirements.\n\n## Risks or open questions\n- No baseline API specification, changelog, traffic/consumer data, or issue links were supplied.\n- \u201c003\u201d may denote a release, experiment, or internal revision; the intended milestone and success metrics are unknown.\n- Security, privacy, latency, rate-limit, and deprecation constraints need confirmation before implementation commitments.\n\n## Recommendations or next steps\n- Draft a compact brief with objective, non-goals, impacted contract areas, compatibility plan, acceptance criteria, and review owners.\n- Mark all missing facts as explicit assumptions and request the canonical OpenAPI/spec and consumer inventory as follow-up inputs.\n- Require contract tests plus staged rollout and rollback criteria before sign-off.\n",
+      "producer_member_address": "/researcher",
+      "updated_at": "2026-08-22T11:00:08.365Z"
+    },
+    {
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "913bbf53-7857-4406-9025-d90bd6148956",
+      "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/final-brief.md",
+      "description": "Concise API REV 003 revision-planning brief",
+      "body": "# API REV 003 \u2014 Revision Planning Brief\n\n**Recommendation.** Treat API REV 003 as a revision-planning checkpoint, not an implementation commitment, until the API domain, baseline specification, intended audience, and meaning of \u201c003\u201d are confirmed. Proceed with a contract-first review that distinguishes confirmed inputs from assumptions, prioritizes backward compatibility, and requires explicit ownership and release evidence for every proposed change.\n\n## Key evidence\n- The current request supplies no OpenAPI/spec, changelog, endpoint inventory, consumer data, issue links, or success metrics; no product facts should be inferred.\n- Define the change surface before approval: affected endpoints, request/response schemas, authentication and authorization, error semantics, rate limits, pagination, and deprecation behavior.\n- For each candidate change, record rationale, evidence/source, owner, validation method, compatibility classification, and release status.\n- Make a versioning decision: non-breaking evolution where feasible; if breaking changes are necessary, document migration guidance, deprecation timing, and consumer sign-off.\n- Validate with schema/contract tests, representative consumer tests, security/privacy review, and performance checks against agreed thresholds.\n- Use staged rollout with monitoring, an explicit rollback trigger, and a tested rollback path.\n\n## Risks or cautions\n- \u201c003\u201d could identify a release, experiment, or internal revision; milestone scope and success measures remain unresolved.\n- Unknown consumer inventory creates risk of silent breakage, including undocumented clients and operational dependencies.\n- Security, privacy, latency, availability, and rate-limit constraints are unconfirmed; implementation estimates and go/no-go decisions should remain provisional.\n- Do not publish endpoint-level requirements or compatibility claims until the canonical baseline is supplied.\n\n## Next actions\n- **API owner:** provide the canonical OpenAPI/spec, changelog, endpoint scope, and definition of \u201c003.\u201d\n- **Product/release owner:** confirm audience, milestone, success metrics, rollout window, and review/approval owners.\n- **Consumer/platform owners:** provide a consumer inventory, traffic patterns, migration needs, and known undocumented integrations.\n- **Security, privacy, and SRE:** confirm required controls and performance/availability thresholds.\n- **Review group:** approve the contract delta, acceptance criteria, staged rollout plan, monitoring dashboard, and rollback criteria before implementation sign-off.\n",
+      "producer_member_address": "/writer",
+      "updated_at": "2026-08-22T11:00:45.077Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "7d4ab649-6ff2-466d-a183-b292ced3af9d",
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "binding_id": "58e5d863-3c5f-45a7-962a-e9047de659a6",
+      "run_id": "brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md",
+      "producer_member_address": "/researcher",
+      "published_at": "2026-08-22T11:00:08.365Z",
+      "projected_at": "2026-08-22T11:00:08.372Z"
+    },
+    {
+      "revision_id": "913bbf53-7857-4406-9025-d90bd6148956",
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "binding_id": "58e5d863-3c5f-45a7-962a-e9047de659a6",
+      "run_id": "brief_studio_writer_6b21fd76c42546c08f5c57fa039a5133",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/final-brief.md",
+      "producer_member_address": "/writer",
+      "published_at": "2026-08-22T11:00:45.077Z",
+      "projected_at": "2026-08-22T11:00:45.091Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "58e5d863-3c5f-45a7-962a-e9047de659a6",
+      "brief_id": "brief-600b85de-2751-4645-a2bb-c3667e419ef6",
+      "launch_request_id": "brief-launch-request-08e0ad61-a845-4149-9f73-ae6c54c3761c",
+      "run_id": "brief_studio_team_656f615ad8c74e86b030940734fbe3b4",
+      "created_at": "2026-08-22T10:58:57.157Z",
+      "updated_at": "2026-08-22T10:58:56.850Z",
+      "artifact_catchup_completed_at": null
+    }
+  ],
+  "publicationJournal": [],
+  "publicationCursor": [
+    {
+      "singleton_id": 1,
+      "last_acked_journal_sequence": 0,
+      "updated_at": "2026-08-22T10:55:58.571Z"
+    }
+  ],
+  "executionJournal": [
+    {
+      "journal_sequence": 1,
+      "event_id": "3cb09e29-3fa2-4446-8a47-8bafa862304b",
+      "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+      "launch_request_id": "brief-launch-request-08e0ad61-a845-4149-9f73-ae6c54c3761c",
+      "family": "RUN_STARTED",
+      "published_at": "2026-08-22T10:58:57.163Z",
+      "binding_json": "{\"bindingId\":\"58e5d863-3c5f-45a7-962a-e9047de659a6\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-08e0ad61-a845-4149-9f73-ae6c54c3761c\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-22T10:58:57.157Z\",\"updatedAt\":\"2026-08-22T10:58:57.157Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"teamRunId\":\"brief_studio_team_656f615ad8c74e86b030940734fbe3b4\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d6c61746573742d706572736f6e616c2d696e746567726174696f6e2532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentRunId\":\"brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentRunId\":\"brief_studio_writer_6b21fd76c42546c08f5c57fa039a5133\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]}}",
+      "producer_json": null,
+      "payload_json": "{}",
+      "acked_at": "2026-08-22T10:58:57.174Z",
+      "last_dispatch_attempt_number": 1,
+      "last_dispatched_at": "2026-08-22T10:58:57.167Z",
+      "last_error_kind": null,
+      "last_error_message": null,
+      "next_attempt_after": null
+    }
+  ],
+  "executionCursor": [
+    {
+      "singleton_id": 1,
+      "last_acked_journal_sequence": 1,
+      "updated_at": "2026-08-22T10:58:57.174Z"
+    }
+  ]
+}

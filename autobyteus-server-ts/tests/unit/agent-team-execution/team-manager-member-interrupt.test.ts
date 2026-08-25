@@ -6,7 +6,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { address, testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const teamRunId = "team-focused-command-1";
 const solutionDesignerAddress = address("/solution_designer");
@@ -79,6 +79,7 @@ const createMixedManager = () => {
   const manager = new MixedTeamManager(context, {
     subTeamRunFactory: { createOrRestore: vi.fn() } as never,
     agentRunManager: { prepareNewAgentRun } as never,
+    taskRootResolver: testMemberTaskRootResolver(),
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
     acceptPlatformBinding: vi.fn(async () => undefined),

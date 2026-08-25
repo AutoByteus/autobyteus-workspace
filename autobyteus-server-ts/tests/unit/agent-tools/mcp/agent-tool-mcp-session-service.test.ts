@@ -16,6 +16,9 @@ import {
   toAgentToolMcpToolResult,
   type AgentToolMcpToolAdapter,
 } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
+import { testMemberTaskRootResolver, testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+
+const createPublisher = () => ({ publishManyForRun: vi.fn(async () => []) });
 
 const buildSender = () => buildAgentRunMessageSenderContext({
   senderRunId: "run-1",
@@ -23,12 +26,16 @@ const buildSender = () => buildAgentRunMessageSenderContext({
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
 });
 
-const buildService = (registry = new AgentToolMcpSessionRegistry()) => new AgentToolMcpSessionService({
+const buildService = (
+  registry = new AgentToolMcpSessionRegistry(),
+  publisher = createPublisher(),
+) => new AgentToolMcpSessionService({
   registry,
   catalog: new AgentToolMcpCatalog({
     adapters: [buildSendMessageAdapter(vi.fn())],
   }),
   getInternalBaseUrl: () => "http://127.0.0.1:8080",
+  executionCapabilities: { publishedArtifactPublisher: publisher },
 });
 
 class FakeConfiguredMcpTool extends BaseTool {
@@ -126,6 +133,7 @@ describe("AgentToolMcpSessionService", () => {
         registry: toolRegistry as any,
       }),
       getInternalBaseUrl: () => "http://127.0.0.1:8080",
+      executionCapabilities: { publishedArtifactPublisher: createPublisher() },
     });
 
     const result = service.createAgentToolMcpSession({
@@ -219,7 +227,7 @@ describe("AgentToolMcpSessionService", () => {
     });
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForAgentRun("member-run-3")).toBe(1);
+    expect(service.revokeAgentToolMcpSessionsForRun("member-run-3")).toBe(1);
     expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",
@@ -250,6 +258,80 @@ describe("AgentToolMcpSessionService", () => {
       bearerToken: oldToken,
     })).toMatchObject({ ok: false, reason: "missing_session" });
   });
+
+  it("derives a frozen Team-member capability with cloned identity and the exact root resolver", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const publisher = createPublisher();
+    const rootResolver = testMemberTaskRootResolver();
+    const memberTeamContext = testMemberTeamContext({
+      rootTeamRunId: "root-team",
+      memberAddress: "/researcher",
+      agentRunId: "researcher-run",
+      taskRootResolver: rootResolver,
+    });
+    const service = buildService(registry, publisher);
+    const result = service.createAgentToolMcpSession({
+      owner: { runId: "researcher-run", teamIdentity: memberTeamContext.identity },
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: "researcher-run",
+        memberTeamContext,
+      }),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    });
+
+    expect(result.session.executionCapabilities).toMatchObject({
+      kind: "team_member",
+      publishedArtifactPublisher: publisher,
+      taskDelegation: { identity: memberTeamContext.identity },
+    });
+    if (result.session.executionCapabilities.kind !== "team_member") {
+      throw new Error("Expected Team-member capabilities.");
+    }
+    expect(result.session.executionCapabilities.taskDelegation.identity)
+      .not.toBe(memberTeamContext.identity);
+    expect(result.session.executionCapabilities.taskDelegation.rootResolver)
+      .toBe(rootResolver);
+    expect(Object.isFrozen(result.session.executionCapabilities.taskDelegation)).toBe(true);
+  });
+
+  it.each([
+    { runId: "other-run", teamIdentity: { rootTeamRunId: "root-team", memberAddress: "/researcher", agentRunId: "researcher-run" } },
+    { runId: "researcher-run", teamIdentity: null },
+    { runId: "researcher-run", teamIdentity: { rootTeamRunId: "other-root", memberAddress: "/researcher", agentRunId: "researcher-run" } },
+    { runId: "researcher-run", teamIdentity: { rootTeamRunId: "root-team", memberAddress: "/writer", agentRunId: "researcher-run" } },
+  ])("rejects inconsistent Team owner identity before session allocation: %j", (owner) => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const memberTeamContext = testMemberTeamContext({
+      rootTeamRunId: "root-team",
+      memberAddress: "/researcher",
+      agentRunId: "researcher-run",
+    });
+    const service = buildService(registry);
+    expect(() => service.createAgentToolMcpSession({
+      owner: owner as never,
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: "researcher-run",
+        memberTeamContext,
+      }),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    })).toThrow("does not match");
+    expect(registry.listSessions()).toEqual([]);
+  });
+
+  it("keeps a null-capability service revoke-only", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const service = new AgentToolMcpSessionService({
+      registry,
+      catalog: new AgentToolMcpCatalog({ adapters: [] }),
+      executionCapabilities: null,
+    });
+    expect(() => service.createAgentToolMcpSession({
+      owner: { runId: "run" },
+      sender: buildSender(),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    })).toThrow("session issuance is unavailable");
+    expect(registry.listSessions()).toEqual([]);
+  });
 });
 
 describe("AgentToolMcpToolExecutor", () => {
@@ -258,10 +340,12 @@ describe("AgentToolMcpToolExecutor", () => {
     const starts = vi.fn();
     const completes = vi.fn();
     const registry = new AgentToolMcpSessionRegistry();
+    const publisher = createPublisher();
     const { session } = registry.createSession({
       owner: { runId: "run-4" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      executionCapabilities: { kind: "agent", publishedArtifactPublisher: publisher },
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
       toolRoutes: {
         [SEND_MESSAGE_TO_TOOL_NAME]: {
@@ -304,6 +388,7 @@ describe("AgentToolMcpToolExecutor", () => {
   it("emits observer completion as rejected for raw MCP error results", async () => {
     const completes = vi.fn();
     const registry = new AgentToolMcpSessionRegistry();
+    const publisher = createPublisher();
     const rawMcpAdapter: AgentToolMcpToolAdapter = {
       definition: {
         name: "db_query",
@@ -320,6 +405,7 @@ describe("AgentToolMcpToolExecutor", () => {
       owner: { runId: "run-raw-mcp" },
       sender: buildSender(),
       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
+      executionCapabilities: { kind: "agent", publishedArtifactPublisher: publisher },
       enabledTools: ["db_query"],
       toolRoutes: {
         db_query: {

@@ -16,6 +16,7 @@ import { ApplicationAgentTargetAuthorizationService } from "../../../src/applica
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-agent-streaming/services/application-agent-stream-runtime-source.js";
 import { ApplicationAgentStreamingService } from "../../../src/application-agent-streaming/services/application-agent-streaming-service.js";
+import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 import { ApplicationAgentCommunicationService } from "../../../src/application-agent-communication/services/application-agent-communication-service.js";
 import {
   createApplicationBackendMountTransport,
@@ -61,14 +62,7 @@ const agentBinding: ApplicationAgentBindingRecord = {
     subject: "AGENT_RUN",
     agentRunId: "agent-run",
     definitionId: "agent-definition",
-    members: [{
-      memberName: "agent",
-      memberRouteKey: "agent",
-      displayName: "Agent",
-      teamPath: [],
-      runId: "agent-run",
-      runtimeKind: "AGENT",
-    }],
+    members: [],
   },
   createdAt: NOW,
   updatedAt: NOW,
@@ -190,6 +184,7 @@ describe("Application agent communication WebSocket integration", () => {
     const streaming = new ApplicationAgentStreamingService({
       orchestrationHostService: orchestration,
       runtimeSource,
+      mapper: new ApplicationAgentEventMapper(),
     });
     communicationState.service = new ApplicationAgentCommunicationService({
       streamingService: streaming,
@@ -198,7 +193,10 @@ describe("Application agent communication WebSocket integration", () => {
 
     app = fastify();
     await app.register(websocket);
-    await registerApplicationAgentCommunicationWebsocket(app);
+    await registerApplicationAgentCommunicationWebsocket(app, {
+      agentCommunicationService: communicationState.service,
+      lifecycle: { awaitReady: async () => undefined },
+    } as never);
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address();
     if (!address || typeof address === "string") throw new Error("Expected an ephemeral TCP address.");
@@ -261,7 +259,7 @@ describe("Application agent communication WebSocket integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ content: "member input" }),
-      "/researcher",
+      "researcher-run",
     );
 
     for (const listener of agentListeners) listener({
@@ -280,6 +278,10 @@ describe("Application agent communication WebSocket integration", () => {
       const sequenced = { changeSequence: ++teamChangeSequence, event };
       for (const listener of teamListeners) listener(sequenced);
     };
+    emitTeam({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      payload: { messageId: "non-agent-event" } as never,
+    });
     for (const [memberRouteKey, memberRunId, turnId] of [
       ["writer", "writer-run", "turn-writer"],
       ["researcher", "researcher-run", "turn-researcher"],
@@ -292,9 +294,9 @@ describe("Application agent communication WebSocket integration", () => {
           agentRunId: memberRunId,
         },
         payload: {
-          eventType: "TURN_STARTED",
+          eventType: AgentRunEventType.TURN_STARTED,
           statusHint: null,
-          details: { turnId },
+          details: { turnId, providerSecret: "must-not-cross" },
         },
       });
     }

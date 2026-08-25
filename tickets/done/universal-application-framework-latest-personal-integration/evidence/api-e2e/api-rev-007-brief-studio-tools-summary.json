@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "researcherTrace": "/private/tmp/api-rev007-studio/memory/agent_teams/brief_studio_team_0a68acc55f3148429c9ea6f5f85ea27a/brief_studio_researcher_de29dc1791224e82bcd5d78f113b817c/raw_traces_active.jsonl",
+  "writerTrace": "/private/tmp/api-rev007-studio/memory/agent_teams/brief_studio_team_0a68acc55f3148429c9ea6f5f85ea27a/brief_studio_writer_30eb5f9036824ff1bd697f5ae387056d/raw_traces_active.jsonl",
+  "publishArtifactsMentions": 24,
+  "sendMessageToMentions": 13,
+  "recipientWriterMentions": 5,
+  "researchPublished": true,
+  "writerPublished": true
+}

@@ -10,7 +10,7 @@ const logBriefStudio = (message) => {
 
 export const mountBriefStudio = ({
   applicationClient,
-  bootstrap,
+  runtimeBootstrap,
   browserWindow,
   createBriefStudioGraphqlClient,
   rootElement,
@@ -111,9 +111,9 @@ export const mountBriefStudio = ({
 
   const refresh = async () => {
     logBriefStudio(
-      `refresh start applicationId=${bootstrap.application.applicationId || "unknown"} iframeLaunch=${bootstrap.iframeLaunchId || "unknown"}`,
+      `refresh start applicationId=${runtimeBootstrap.application.applicationId || "unknown"}`,
     );
-    setStatus("Loading briefs through the hosted GraphQL backend mount…");
+    setStatus("Loading briefs through the application GraphQL backend…");
     const briefs = await client.briefs();
     state.briefs = Array.isArray(briefs) ? briefs : [];
 

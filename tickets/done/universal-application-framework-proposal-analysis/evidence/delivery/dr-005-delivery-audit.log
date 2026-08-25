@@ -1,0 +1,170 @@
+# DR-005 delivery documentation and package audit
+Started UTC: 2026-07-31T10:03:33Z
+Candidate: f25a9646ebb153714bc486cf14519f3530e1f83d
+Integrated base: 80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+Divergence: 83/0
+
+## Reviewed SR-013 long-lived documentation paths
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+autobyteus-server-ts/docs/modules/application_engine.md
+autobyteus-server-ts/docs/modules/application_orchestration.md
+autobyteus-server-ts/docs/modules/application_sessions.md
+autobyteus-server-ts/docs/modules/applications.md
+
+## Retired-boundary scan in current source and long-lived server docs
+PASS: retired broad engine host, bind-once owners, and broad package service absent
+
+## Current narrow runtime contract
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
+import type { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
+import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
+import type { ApplicationReentryService } from "../../application-orchestration/services/application-reentry-service.js";
+import type { ApplicationCatalogReconciliationService } from "./application-catalog-reconciliation-service.js";
+import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
+
+export type ApplicationPlatformLifecycleReadiness = Pick<
+  ApplicationPlatformLifecycle,
+  "awaitReady" | "getState" | "getFailure"
+>;
+
+export type ApplicationBackendRestContract = Pick<
+  ApplicationBackendApiGatewayService,
+  | "getApplicationEngineStatus"
+  | "ensureApplicationReady"
+  | "invokeApplicationQuery"
+  | "invokeApplicationCommand"
+  | "routeApplicationRequest"
+  | "executeApplicationGraphql"
+>;
+
+export type ApplicationAvailabilityRestContract = Pick<
+  ApplicationReentryService,
+  "reloadAndReenter"
+>;
+
+export type ApplicationExecutionResourceRestContract = Pick<
+  ApplicationOrchestrationHostService,
+  | "getApplicationLaunchConfigurationView"
+  | "previewSelectedApplicationResource"
+  | "listAvailableExecutionResources"
+  | "upsertApplicationLaunchOverride"
+  | "removeApplicationLaunchOverride"
+>;
+
+export type ApplicationPlatformRestContracts = Readonly<{
+  assets: Pick<ApplicationBundleService, "resolveUiAsset">;
+  backend: ApplicationBackendRestContract;
+  availability: ApplicationAvailabilityRestContract;
+  executionResources: ApplicationExecutionResourceRestContract;
+}>;
+
+export type ApplicationBackendRealtimeContract = Pick<
+  ApplicationBackendApiGatewayService,
+  "connectApplicationWebSocket"
+>;
+
+export type ApplicationBackendNotificationContract = Pick<
+  ApplicationBackendNotificationHub,
+  "connect" | "disconnect"
+>;
+
+export type ApplicationAgentCommunicationContract = Pick<
+  ApplicationAgentCommunicationService,
+  "connect"
+>;
+
+export type ApplicationPlatformRealtimeContracts = Readonly<{
+  backend: ApplicationBackendRealtimeContract;
+  notifications: ApplicationBackendNotificationContract;
+  agentCommunication: ApplicationAgentCommunicationContract;
+}>;
+
+export type ApplicationPlatformHostManagementContracts = Readonly<{
+  catalogReconciliation: ApplicationCatalogReconciliationService;
+}>;
+
+## Durable docs knowledge checks
+autobyteus-server-ts/docs/modules/application_sessions.md:11:- durable state is now expressed as run bindings plus app-owned pending-launch-request reconciliation, execution-event journals, and global run lookups,
+autobyteus-server-ts/docs/modules/application_sessions.md:31:  drains accepted artifact commands while workers can still be ensured, stops
+autobyteus-server-ts/docs/modules/application_sessions.md:34:  sessions and detaches its file-change, artifact-relay, and memory observers
+autobyteus-server-ts/docs/modules/application_orchestration.md:5:Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound agents and teams, persist durable run bindings keyed by app-owned `launchRequestId`, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+autobyteus-server-ts/docs/modules/application_orchestration.md:25:- `src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts`
+autobyteus-server-ts/docs/modules/application_orchestration.md:31:- `src/application-orchestration/services/application-published-artifact-relay-service.ts`
+autobyteus-server-ts/docs/modules/application_orchestration.md:32:- `src/application-orchestration/services/application-published-artifact-delivery-queue.ts`
+autobyteus-server-ts/docs/modules/application_orchestration.md:33:- `src/application-orchestration/services/application-published-artifact-delivery-service.ts`
+autobyteus-server-ts/docs/modules/application_orchestration.md:46:- Runtime-originated artifact publication is a runtime-wide concern owned by the shared published-artifact subsystem. Application orchestration does not validate the tool payload or persist artifact truth; it only relays bound-run `ARTIFACT_PERSISTED` events and exposes reads through `context.publishedArtifacts`.
+autobyteus-server-ts/docs/modules/application_orchestration.md:47:- Lifecycle journals remain authoritative only for `RUN_STARTED`, `RUN_TERMINATED`, `RUN_FAILED`, and `RUN_ORPHANED`. Published artifacts do not append a second `ARTIFACT` journal family.
+autobyteus-server-ts/docs/modules/application_orchestration.md:78:The orchestration host validates the resource choice and explicit start kind, launches the underlying agent/team run, persists one durable binding together with `launchRequestId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
+autobyteus-server-ts/docs/modules/application_orchestration.md:80:`publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
+autobyteus-server-ts/docs/modules/application_orchestration.md:180:Runtime-visible lifecycle events use the application-owned orchestration journal, not the removed application-session journal. Published artifacts use the shared published-artifact subsystem and only cross the application boundary through best-effort live relay plus app-owned query/reconciliation.
+autobyteus-server-ts/docs/modules/application_orchestration.md:184:- Runtime lifecycle owners append `RUN_STARTED`, `RUN_TERMINATED`, `RUN_FAILED`, and `RUN_ORPHANED` events through `ApplicationExecutionEventIngressService`.
+autobyteus-server-ts/docs/modules/application_orchestration.md:190:- `ApplicationExecutionEventDispatchService` consumes that coalesced wakeup and drains one application journal in order.
+autobyteus-server-ts/docs/modules/application_orchestration.md:196:### Published-artifact relay and query
+autobyteus-server-ts/docs/modules/application_orchestration.md:200:- `ApplicationPublishedArtifactDeliveryService` preserves FIFO per run and independent run lanes. For every accepted command it calls `ApplicationEngineLauncher.ensureReady(applicationId)` before `ApplicationEngineController.invokeApplicationArtifactHandler(...)`, so an exited worker is restarted before delivery.
+autobyteus-server-ts/docs/modules/application_orchestration.md:201:- Live artifact relay is intentionally best-effort. Relay failure logs a warning but does not roll back the published artifact or synthesize retry journal state.
+autobyteus-server-ts/docs/modules/application_orchestration.md:203:- For a full overview of how artifact relay, backend notifications, and named context capabilities relate to each other, see [`application_communication_model.md`](./application_communication_model.md).
+autobyteus-server-ts/docs/modules/application_orchestration.md:211:2. `ApplicationOrchestrationRecoveryService.resumeBindings()` enumerates all installed applications, reloads nonterminal bindings, rebuilds global run lookups, and reattaches lifecycle observers when possible.
+autobyteus-server-ts/docs/modules/application_orchestration.md:212:3. Bindings that cannot be reattached are marked `ORPHANED` and a matching lifecycle event is journaled.
+autobyteus-server-ts/docs/modules/application_orchestration.md:213:4. `ApplicationExecutionEventDispatchService.resumePendingEvents()` resumes pending journal drains without eagerly starting every worker.
+autobyteus-server-ts/docs/modules/application_orchestration.md:216:Live application context-capability calls await this gate before proceeding. Startup recovery also restores the binding/observer state that later published-artifact relay depends on for bound runs.
+autobyteus-server-ts/docs/modules/application_orchestration.md:227:- and the old application-journal `ARTIFACT` delivery path plus `eventHandlers.artifact` callback shape.
+autobyteus-server-ts/docs/modules/application_orchestration.md:239:- [`agent_artifacts.md`](./agent_artifacts.md)
+autobyteus-server-ts/docs/modules/applications.md:7:Application-owned runtime orchestration, backend transport, worker lifecycle, and storage ownership are documented separately in [`application_orchestration.md`](./application_orchestration.md), [`application_backend_api_gateway.md`](./application_backend_api_gateway.md), [`application_engine.md`](./application_engine.md), and [`application_storage.md`](./application_storage.md). Runtime module availability is documented separately in [`application_capability.md`](./application_capability.md).
+autobyteus-server-ts/docs/modules/applications.md:50:The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.
+autobyteus-server-ts/docs/modules/applications.md:99:- When a package is removed or temporarily undiscoverable but platform state still exists, persisted-known reconciliation keeps the real canonical `applicationId` under `QUARANTINED` ownership instead of dropping admission ownership or falling back to the hashed storage-key identity.
+autobyteus-server-ts/docs/modules/applications.md:104:- `ApplicationPackageCommandService` owns import, reload, remove, validation, managed-install cleanup, and rollback.
+autobyteus-server-ts/docs/modules/applications.md:105:- `ApplicationCatalogRefreshCoordinator` is the only owner of the ordered bundle refresh, availability reconciliation, agent-definition refresh, and team-definition refresh sequence.
+autobyteus-server-ts/docs/modules/applications.md:119:- The applications module owns discovery, validation, catalog metadata, app-scoped availability diagnostics, and asset serving only; it does not own live run bindings, event journals, backend request handling, worker lifecycle, or per-app storage.
+autobyteus-server-ts/docs/modules/applications.md:133:and lifecycle owners; it starts no new agent or team run. Its outward boundary
+autobyteus-server-ts/docs/modules/applications.md:134:contains exactly four immutable projections: `lifecycle`, `rest`, `realtime`,
+autobyteus-server-ts/docs/modules/applications.md:135:and `hostManagement`. Application business demand creates new execution, while
+autobyteus-server-ts/docs/modules/application_engine.md:5:Owns the platform-run worker lifecycle for one installed application: prepare storage, apply migrations, spawn the worker, load the backend definition, surface engine status, forward backend invocations, bridge worker context-capability requests back to the host, and stop the worker cleanly.
+autobyteus-server-ts/docs/modules/application_engine.md:24:- `src/application-storage/services/application-storage-lifecycle-service.ts`
+autobyteus-server-ts/docs/modules/application_engine.md:42:For a given `applicationId`, `ApplicationEngineLauncher`:
+autobyteus-server-ts/docs/modules/application_engine.md:57:- The backend definition contract version must be `"4"`; stale definitions are rejected before any handler or lifecycle hook runs.
+autobyteus-server-ts/docs/modules/application_engine.md:66:Once ready, `ApplicationEngineController` is the only owner used to invoke:
+autobyteus-server-ts/docs/modules/application_engine.md:109:3. stop artifact-delivery intake and drain every accepted command through
+autobyteus-server-ts/docs/modules/application_engine.md:114:   run sessions and detaches file/artifact/memory observers;
+autobyteus-server-ts/docs/modules/application_engine.md:121:capability, accepting new runtime-scoped work, or abandoning accepted artifact
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md:88:- `ApplicationEngineLauncher` owns ensure/start/restart/stop; `ApplicationEngineController` owns attached worker handles, status/listeners, and query/command/route/GraphQL/WebSocket/event/artifact invocation.
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md:91:- For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).
+PASS: current long-lived docs expose narrow owners, delivery ordering, and cleanup semantics
+
+## Newly integrated base documentation delta (DR-003 base to DR-005 base)
+M	.github/release-notes/release-notes.md
+M	autobyteus-ts/docs/llm_module_design.md
+M	autobyteus-ts/docs/llm_module_design_nodejs.md
+M	autobyteus-ts/docs/provider_model_catalogs.md
+PASS: v1.4.32 model/pricing docs are independently complete and do not alter the application-framework contract.
+
+## Electron current artifact metadata
+1.4.32
+c160ffc07bd5a03aedab0cd42a6a7512ab70ec0858f8169f5fd962952418f831  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.32.dmg
+250623ca45f82e94a1b44fbec5a8ecf3d1a45a939922c58296ab3e9edbbc56fa  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.32.zip
+
+## Worktree preservation state
+## codex/universal-application-framework-proposal-analysis...origin/personal [ahead 83]
+?? autobyteus-application-devkit/.tmp-tests/
+?? autobyteus-application-devkit/dist/
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-005-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-005-delivery-audit.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-005-electron-macos-arm64-build.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-005-electron-macos-arm64-verification.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-005-post-integration-check.log
+PASS: generated devkit output remains preserved and uncommitted; delivery evidence remains uncommitted.
+
+Completed UTC: 2026-07-31T10:03:36Z
+FINAL: PASS
+
+## Final canonical handoff audit after DR-005 updates
+Audit UTC: 2026-07-31T10:17:45Z
+PASS: current marker in docs-sync-report.md
+PASS: current marker in handoff-summary.md
+PASS: current marker in release-deployment-report.md
+PASS: current marker in delivery-revision-record.md
+PASS: current marker in electron-test-build-report.md
+PASS: canonical records are internally current and whitespace-clean
+PASS: current package remains present and version-matched
+FINAL CANONICAL HANDOFF AUDIT: PASS

@@ -2,6 +2,7 @@
   "toolNames": ["read_file", "write_file", "publish_artifacts", "send_message_to"],
   "skillNames": [],
   "defaultLaunchConfig": {
-    "runtimeKind": "autobyteus"
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-5.6-luna"
   }
 }

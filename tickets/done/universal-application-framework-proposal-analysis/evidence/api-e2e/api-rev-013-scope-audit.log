@@ -1,0 +1,52 @@
+HEAD=53eb73795c616148f01c2f6e0207f6b410410e24
+RETAINED_API_REV_012_HEAD=4266ec7ebd60fbf06981159d6e1f7b0c9e6f6ca5
+
+## SR-016 executable hardening commit paths
+commit=30257a0a896b7f29b09537c16c6021340274f82b subject=test(server): enforce application framework boundaries
+
+M	autobyteus-server-ts/docs/ARCHITECTURE.md
+M	autobyteus-server-ts/docs/modules/applications.md
+M	autobyteus-server-ts/package.json
+A	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+M	pnpm-lock.yaml
+commit=4d5a137b7b61b19811bda61ac090633479187801 subject=test(server): close application boundary checker gaps
+
+M	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+commit=4711c6170ab0a8a1aafd555fce1709eb42095a54 subject=test(server): govern Vue external script targets
+
+M	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+
+## SR-016 executable hardening production-source delta
+30257a0a8=0
+4d5a137b7=0
+4711c6170=0
+
+## Other integrated-base source deltas since API-REV-012 (not attributed to SR-016)
+d03882153 chore(release): bump workspace release version to 1.4.32
+777079e62 Update GPT-5.6 pricing and add Claude Opus 5
+M	autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+M	autobyteus-ts/src/llm/api/anthropic-llm.ts
+M	autobyteus-ts/src/llm/metadata/curated-model-metadata.ts
+M	autobyteus-ts/src/llm/supported-model-definitions.ts
+
+## Current architecture test external-script fixtures
+1873:    const external = writeFixture(root, "autobyteus-web/components/applications/External.vue", "<script src='./missing-script.ts'></script>\n");
+1890:  it("resolves Vue external-script imports from that script while keeping SFC-owned diagnostics", () => {
+1895:      "<script lang='ts' src='./external/script.ts'></script>\n",
+1897:    const externalScript = join(
+1899:      "autobyteus-web/components/applications/external/script.ts",
+1913:      "autobyteus-web/components/applications/external/script.ts",
+1914:      `import { local } from ${JSON.stringify(relativeModuleSpecifier(externalScript, allowedLocal))};\n`
+1915:        + `import { runtime } from ${JSON.stringify(relativeModuleSpecifier(externalScript, forbiddenRuntime))};\n`,
+1925:      "source=autobyteus-web/components/applications/external/script.ts",
+1932:  it("governs Vue external-script targets under AFB-002 and AFB-005", () => {
+1948:      "<script lang='ts' src='./external/allowed.ts'></script>\n",
+1958:      `<script lang='ts' src=${JSON.stringify(forbiddenStudioSpecifier)}></script>\n`,
+1969:      "<script lang='ts' src='./external/allowed.ts'></script>\n",
+1979:      `<script lang='ts' src=${JSON.stringify(forbiddenBriefSpecifier)}></script>\n`,
+
+## Test-only dependency declaration/lock paths
+M	autobyteus-server-ts/package.json
+M	pnpm-lock.yaml
+
+## git diff check

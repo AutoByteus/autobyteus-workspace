@@ -1,0 +1,10 @@
+utc=2026-07-31T13:12:48Z
+head=53eb73795c616148f01c2f6e0207f6b410410e24
+path_count=73
+pre_post_exact=PASS
+staging_residue_count=0
+ports:
+43127=FREE
+8011=FREE
+3011=FREE
+owned_processes:

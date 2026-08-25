@@ -22,10 +22,16 @@ import {
 import { RunFileChangeService, getRunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import {
   ApplicationPublishedArtifactRelayService,
-  getApplicationPublishedArtifactRelayService,
+  createGeneralProcessPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { AgentRunMemoryRecorder, getAgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
-import { getAgentToolMcpSessionService } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { getAgentToolMcpSessionService, type AgentToolMcpSessionManager } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { AgentRunResourceManager } from "./agent-run-resource-manager.js";
+import {
+  AgentRunActivationRegistry,
+  AgentRunRemovalCleanupError,
+  type AgentRunActivationClaim,
+} from "../runtime/agent-run-activation-registry.js";
 import { AgentRunActivationCandidate, type AgentRunCandidateAbortResult } from "./agent-run-activation-candidate.js";
 
 const logger = console;
@@ -40,21 +46,11 @@ type AgentRunManagerOptions = {
   autoByteusBackendFactory?: AgentRunBackendFactory;
   codexBackendFactory?: AgentRunBackendFactory;
   claudeBackendFactory?: AgentRunBackendFactory;
+  activationRegistry?: AgentRunActivationRegistry;
   runFileChangeService?: RunFileChangeService;
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
   memoryRecorder?: AgentRunMemoryRecorder;
-};
-
-type PendingClaim = {
-  token: symbol;
-  state: "constructing" | "prepared" | "quarantined";
-  quarantineError: Error | null;
-};
-
-type ManagerAttachments = {
-  runFiles: () => void;
-  artifacts: () => void;
-  memory: () => void;
+  agentToolMcpSessionManager?: AgentToolMcpSessionManager;
 };
 
 export class AgentRunManager {
@@ -62,24 +58,43 @@ export class AgentRunManager {
   private readonly autoByteusBackendFactory: AgentRunBackendFactory;
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
-  private readonly runFileChangeService: RunFileChangeService;
-  private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
+  private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
-  private readonly activeRuns = new Map<string, AgentRun>();
-  private readonly pendingClaims = new Map<string, PendingClaim>();
-  private readonly attachments = new Map<string, ManagerAttachments>();
+  private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     return AgentRunManager.instance ??= new AgentRunManager(options);
+  }
+
+  static initializeProcessInstance(options: AgentRunManagerOptions): AgentRunManager {
+    if (AgentRunManager.instance) {
+      throw new Error("The process AgentRunManager is already initialized.");
+    }
+    AgentRunManager.instance = new AgentRunManager(options);
+    return AgentRunManager.instance;
+  }
+
+  static releaseProcessInstance(instance: AgentRunManager): void {
+    if (AgentRunManager.instance === instance) AgentRunManager.instance = null;
   }
 
   constructor(options: AgentRunManagerOptions = {}) {
     this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
     this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
     this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
-    this.runFileChangeService = options.runFileChangeService ?? getRunFileChangeService();
-    this.publishedArtifactRelayService = options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
     this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        sessionScope: {
+          revokeForRun: (runId) => (options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService())
+            .revokeAgentToolMcpSessionsForRun(runId),
+        },
+        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
+        publishedArtifactRelayService: options.publishedArtifactRelayService
+          ?? createGeneralProcessPublishedArtifactRelayService(),
+        memoryRecorder: this.memoryRecorder,
+      }),
+    );
     logger.info("AgentRunManager initialized.");
   }
 
@@ -140,18 +155,11 @@ export class AgentRunManager {
   hasActiveRun(runId: string): boolean { return this.getActiveRun(runId) !== null; }
 
   getActiveRun(runId: string): AgentRun | null {
-    const normalizedRunId = runId.trim();
-    const activeRun = this.activeRuns.get(normalizedRunId) ?? null;
-    if (!activeRun) return null;
-    if (!activeRun.isActive()) {
-      this.unregisterActiveRun(normalizedRunId);
-      return null;
-    }
-    return activeRun;
+    return this.activationRegistry.getActiveRun(runId.trim());
   }
 
   listActiveRuns(): string[] {
-    return [...this.activeRuns.keys()].filter((runId) => this.getActiveRun(runId));
+    return this.activationRegistry.listActiveRunIds();
   }
 
   async terminateAgentRun(runId: string): Promise<boolean> {
@@ -161,23 +169,74 @@ export class AgentRunManager {
       if (!activeRun) return false;
       const result = await activeRun.terminate();
       if (!result.accepted || activeRun.isActive()) return false;
-      this.unregisterActiveRun(normalizedRunId);
-      return true;
+      const removal = this.activationRegistry.removeIfCurrent({
+        runId: normalizedRunId,
+        expectedRun: activeRun,
+        reason: "explicit_termination",
+      });
+      this.activationRegistry.assertCleanupSucceeded(removal);
+      return removal.kind === "removed";
     } catch (error) {
       logger.error(`Failed to terminate agent run '${normalizedRunId}': ${String(error)}`);
+      if (error instanceof AgentRunRemovalCleanupError) throw error;
       throw new AgentTerminationError(String(error));
     }
   }
 
-  private async prepareCandidate(input: {
+  async stopAllAgentRuns(): Promise<void> {
+    this.activationRegistry.blockNewClaims();
+    await Promise.allSettled(Array.from(this.inFlightPreparations));
+    const snapshot = this.activationRegistry.snapshotForStop();
+    const errors: unknown[] = [...snapshot.pruningErrors];
+
+    for (const prepared of snapshot.preparedRuns) {
+      const release = this.activationRegistry.releasePrepared(prepared.claim, prepared.run);
+      errors.push(...release.errors);
+      const termination = await this.terminatePrivate(prepared.run);
+      this.activationRegistry.completeAbort(prepared.claim, prepared.run, termination);
+      if (termination.kind === "quarantined") errors.push(termination.error);
+    }
+
+    for (const run of snapshot.activeRuns) {
+      try {
+        const termination = await run.terminate();
+        if (!termination.accepted || run.isActive()) {
+          errors.push(new Error(`Agent run '${run.runId}' did not become inactive during stop.`));
+          continue;
+        }
+        const removal = this.activationRegistry.removeIfCurrent({
+          runId: run.runId,
+          expectedRun: run,
+          reason: "stop_all",
+        });
+        if (removal.kind === "removed") errors.push(...removal.resources.errors);
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    if (errors.length > 0) throw new AggregateError(errors, "Failed to stop all agent runs.");
+  }
+
+  private prepareCandidate(input: {
     runId: string;
     runtimeKind: RuntimeKind;
     createBackend(factory: AgentRunBackendFactory): Promise<AgentRunBackend>;
   }): Promise<AgentRunActivationCandidate> {
-    const claim = this.claim(input.runId);
+    const task = this.prepareCandidateOnce(input);
+    this.inFlightPreparations.add(task);
+    void task.finally(() => this.inFlightPreparations.delete(task)).catch(() => undefined);
+    return task;
+  }
+
+  private async prepareCandidateOnce(input: {
+    runId: string;
+    runtimeKind: RuntimeKind;
+    createBackend(factory: AgentRunBackendFactory): Promise<AgentRunBackend>;
+  }): Promise<AgentRunActivationCandidate> {
+    const claim = this.activationRegistry.claim(input.runId);
     const factory = this.resolveBackendFactory(input.runtimeKind);
     if (!factory) {
-      this.pendingClaims.delete(input.runId);
+      this.activationRegistry.releaseClaim(claim);
       throw new AgentCreationError(`Runtime kind '${input.runtimeKind}' is not supported.`);
     }
 
@@ -189,14 +248,17 @@ export class AgentRunManager {
       if (run.runId !== input.runId) {
         throw new AgentCreationError("The runtime backend returned a different local run identity.");
       }
-      this.attachments.set(input.runId, this.prepareAttachments(run));
-      claim.state = "prepared";
+      this.activationRegistry.markPrepared(claim, run);
       const exactRun = run;
       return new AgentRunActivationCandidate({
         runId: exactRun.runId,
         runtimeKind: exactRun.runtimeKind,
         platformAgentRunId: exactRun.getPlatformAgentRunId(),
-        publish: () => this.publishCandidate(exactRun, claim),
+        publish: () => {
+          const published = this.activationRegistry.publish(claim, exactRun);
+          try { logger.info(`Published ${published.runtimeKind} agent run '${published.runId}'.`); } catch {}
+          return published;
+        },
         abort: () => this.abortCandidate(exactRun, claim),
       });
     } catch (error) {
@@ -206,7 +268,7 @@ export class AgentRunManager {
           error,
         );
       }
-      const cleanup = await this.cleanupFailedPreparation(input.runId, claim, run, backend);
+      const cleanup = await this.cleanupFailedPreparation(claim, run, backend);
       if (cleanup.kind === "quarantined") throw this.cleanupError(input.runId, cleanup.error);
       if (error instanceof AgentCreationError || error instanceof AgentRunActivationError) throw error;
       const failure = new AgentCreationError(`Failed to prepare agent run '${input.runId}'.`);
@@ -215,90 +277,43 @@ export class AgentRunManager {
     }
   }
 
-  private claim(runId: string): PendingClaim {
-    if (this.getActiveRun(runId)) {
-      throw new AgentRunActivationError(
-        "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT",
-        `Agent run '${runId}' is already active.`,
-      );
-    }
-    const existing = this.pendingClaims.get(runId);
-    if (existing) {
-      throw new AgentRunActivationError(
-        existing.state === "quarantined"
-          ? "AGENT_RUN_ACTIVATION_CLEANUP_FAILED"
-          : "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT",
-        existing.state === "quarantined"
-          ? `Agent run '${runId}' is quarantined after uncertain cleanup.`
-          : `Agent run '${runId}' already has a private activation candidate.`,
-        { cause: existing.quarantineError ?? undefined },
-      );
-    }
-    const claim: PendingClaim = { token: Symbol(runId), state: "constructing", quarantineError: null };
-    this.pendingClaims.set(runId, claim);
-    return claim;
-  }
-
-  private publishCandidate(run: AgentRun, claim: PendingClaim): AgentRun {
-    if (claim.state !== "prepared" || this.pendingClaims.get(run.runId)?.token !== claim.token) {
-      this.quarantineClaim(run.runId, claim, new Error("AgentRun publication claim mismatch."));
-      throw this.cleanupError(run.runId, claim.quarantineError!);
-    }
-    if (!run.isActive()) {
-      throw new AgentCreationError(`Private AgentRun '${run.runId}' became inactive before publication.`);
-    }
-    if (this.activeRuns.has(run.runId)) {
-      this.quarantineClaim(run.runId, claim, new Error("AgentRun publication invariant failed."));
-      throw this.cleanupError(run.runId, claim.quarantineError!);
-    }
-    this.activeRuns.set(run.runId, run);
-    this.pendingClaims.delete(run.runId);
-    try { logger.info(`Published ${run.runtimeKind} agent run '${run.runId}'.`); } catch {}
-    return run;
-  }
-
-  private async abortCandidate(run: AgentRun, claim: PendingClaim): Promise<AgentRunCandidateAbortResult> {
-    if (this.pendingClaims.get(run.runId)?.token !== claim.token) {
-      const error = new Error("AgentRun abort claim mismatch.");
-      this.quarantineClaim(run.runId, claim, error);
-      return { kind: "quarantined", error };
-    }
-    const wasQuarantined = claim.state === "quarantined";
-    if (claim.state !== "prepared" && !wasQuarantined) {
-      const error = new Error(`AgentRun candidate cannot be aborted from claim state '${claim.state}'.`);
-      this.quarantineClaim(run.runId, claim, error);
-      return { kind: "quarantined", error };
-    }
-    this.detach(run.runId);
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(run.runId);
-    const cleanup = await this.terminatePrivate(run);
-    if (cleanup.kind === "aborted" && !wasQuarantined) this.pendingClaims.delete(run.runId);
-    else if (cleanup.kind === "quarantined") this.quarantineClaim(run.runId, claim, cleanup.error);
-    if (wasQuarantined) {
-      return {
-        kind: "quarantined",
-        error: claim.quarantineError ?? new Error("AgentRun publication claim is quarantined."),
-      };
-    }
-    return cleanup;
+  private async abortCandidate(
+    run: AgentRun,
+    claim: AgentRunActivationClaim,
+  ): Promise<AgentRunCandidateAbortResult> {
+    const release = this.activationRegistry.releasePrepared(claim, run);
+    const termination = await this.terminatePrivate(run);
+    const errors = [...release.errors];
+    if (termination.kind === "quarantined") errors.push(termination.error);
+    const result: AgentRunCandidateAbortResult = errors.length === 0
+      ? { kind: "aborted" }
+      : { kind: "quarantined", error: new AggregateError(errors, `Agent run '${run.runId}' cleanup failed.`) };
+    this.activationRegistry.completeAbort(claim, run, result);
+    return result;
   }
 
   private async cleanupFailedPreparation(
-    runId: string,
-    claim: PendingClaim,
+    claim: AgentRunActivationClaim,
     run: AgentRun | null,
     backend: AgentRunBackend | null,
   ): Promise<AgentRunCandidateAbortResult> {
-    this.detach(runId);
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId);
+    const release = run
+      ? this.activationRegistry.releasePrepared(claim, run)
+      : null;
     if (!run && !backend) {
-      this.pendingClaims.delete(runId);
+      this.activationRegistry.releaseClaim(claim);
       return { kind: "aborted" };
     }
-    const cleanup = run ? await this.terminatePrivate(run) : await this.terminateBackend(backend!);
-    if (cleanup.kind === "aborted") this.pendingClaims.delete(runId);
-    else this.quarantineClaim(runId, claim, cleanup.error);
-    return cleanup;
+    const termination = run
+      ? await this.terminatePrivate(run)
+      : await this.terminateBackend(backend!);
+    const errors = [...(release?.errors ?? [])];
+    if (termination.kind === "quarantined") errors.push(termination.error);
+    const result: AgentRunCandidateAbortResult = errors.length === 0
+      ? { kind: "aborted" }
+      : { kind: "quarantined", error: new AggregateError(errors, `Agent run '${claim.runId}' cleanup failed.`) };
+    this.activationRegistry.completeAbort(claim, run, result);
+    return result;
   }
 
   private async terminatePrivate(run: AgentRun): Promise<AgentRunCandidateAbortResult> {
@@ -321,40 +336,6 @@ export class AgentRunManager {
       if (!backend.isActive()) return { kind: "aborted" };
       return { kind: "quarantined", error: error instanceof Error ? error : new Error(String(error)) };
     }
-  }
-
-  private prepareAttachments(run: AgentRun): ManagerAttachments {
-    const attached: Array<() => void> = [];
-    try {
-      const runFiles = this.runFileChangeService.attachToRun(run); attached.push(runFiles);
-      const artifacts = this.publishedArtifactRelayService.attachToRun(run); attached.push(artifacts);
-      const memory = this.memoryRecorder.attachToRun(run); attached.push(memory);
-      return { runFiles, artifacts, memory };
-    } catch (error) {
-      [...attached].reverse().forEach((unsubscribe) => { try { unsubscribe(); } catch {} });
-      throw error;
-    }
-  }
-
-  private detach(runId: string): void {
-    const attachments = this.attachments.get(runId);
-    if (!attachments) return;
-    this.attachments.delete(runId);
-    for (const unsubscribe of [attachments.memory, attachments.artifacts, attachments.runFiles]) {
-      try { unsubscribe(); } catch (error) { logger.warn(`AgentRun observer detach failed: ${String(error)}`); }
-    }
-  }
-
-  private unregisterActiveRun(runId: string): void {
-    this.activeRuns.delete(runId);
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId);
-    this.detach(runId);
-  }
-
-  private quarantineClaim(runId: string, claim: PendingClaim, error: Error): void {
-    claim.state = "quarantined";
-    claim.quarantineError = error;
-    this.pendingClaims.set(runId, claim);
   }
 
   private cleanupError(runId: string, cause: Error): AgentRunActivationError {

@@ -53,7 +53,7 @@ import {
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import {
   getAgentToolMcpSessionService,
-  type AgentToolMcpSessionService,
+  type AgentToolMcpSessionManager,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   materializeCodexAgentToolsMcpThreadConfig,
@@ -179,7 +179,7 @@ export class CodexThreadBootstrapper {
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
   private readonly clientManager: CodexAppServerClientManager;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
+  private readonly agentToolMcpSessionService: AgentToolMcpSessionManager;
 
   constructor(
     workspaceSkillMaterializer: WorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
@@ -187,7 +187,7 @@ export class CodexThreadBootstrapper {
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
-    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
+    agentToolMcpSessionService: AgentToolMcpSessionManager = getAgentToolMcpSessionService(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;

@@ -1,0 +1,255 @@
+{
+  "scenario": "APIE2E-WORKSPACE-AGENT-009",
+  "assertions": {
+    "pathAfterEntry": "/private/tmp/api-rev009-agent-workspace-final",
+    "pathAfterRuntime": "/private/tmp/api-rev009-agent-workspace-final",
+    "pathAfterModel": "/private/tmp/api-rev009-agent-workspace-final",
+    "modelButton": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+    "operationDelta": {
+      "createWorkspace": 1,
+      "prepare": 1,
+      "create": 0
+    },
+    "replyVisible": true,
+    "online": false,
+    "workspaceRegistered": true,
+    "runIds": [
+      "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+    ],
+    "historyRequest": true,
+    "consoleErrorCount": 0
+  },
+  "trace": [
+    {
+      "phase": "request",
+      "operationName": "GetApplicationsCapability",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAllWorkspaces",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentDefinitions",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetApplicationsCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAllWorkspaces",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "agent_ws_0352e41210e3a07b563733611af4fb72c68c5f08823150269fed6073a76942e7"
+        ],
+        [
+          "workspaceId",
+          "agent_ws_71bbbef6fff4956cdbf94526aea762c4f539c6af9a62752e98eb7b42c82d3483"
+        ],
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ],
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentTeamDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetServerSettings",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetServerSettings",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": null
+    },
+    {
+      "phase": "request",
+      "operationName": "GetFolderChildren",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetFolderChildren",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/private/tmp/api-rev009-agent-workspace-final"
+        }
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "CreateWorkspace",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "agent_ws_e400e6a398190763a45726127db312ce940382c8028c6c80b7ea0c0ab45b0c82"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetSkillImprovementCapability",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "GetSkillImprovementCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "codex",
+          "workspaceId": "agent_ws_e400e6a398190763a45726127db312ce940382c8028c6c80b7ea0c0ab45b0c82",
+          "workspaceRootPath": "/private/tmp/api-rev009-agent-workspace-final",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "autoExecuteTools": false,
+          "llmConfig": null,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "runtimeKind": "codex_app_server",
+          "initialSummary": "Reply with exactly API-REV-009-AGENT-READY."
+        }
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentRunSkillImprovementEligibility",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "PrepareAgentRun",
+      "status": 200,
+      "ids": [
+        [
+          "runId",
+          "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentRunSkillImprovementEligibility",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": null
+    },
+    {
+      "phase": "response",
+      "operationName": "ListWorkspaceRunHistory",
+      "status": 200,
+      "ids": [
+        [
+          "runId",
+          "codex_e3e3424599df4dbeb3dbd00b2611cc51"
+        ]
+      ],
+      "hasErrors": false,
+      "errors": []
+    }
+  ],
+  "consoleErrors": []
+}

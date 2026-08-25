@@ -27,18 +27,18 @@ interface ProjectionContext {
 }
 
 export class PublishedArtifactProjectionService {
-  private readonly agentRunManager: AgentRunManager;
+  private readonly activeRunReader: Pick<AgentRunManager, "getActiveRun">;
   private readonly metadataService: AgentRunMetadataService;
   private readonly projectionStore: PublishedArtifactProjectionStore;
   private readonly snapshotStore: PublishedArtifactSnapshotStore;
 
   constructor(options: {
-    agentRunManager?: AgentRunManager;
+    activeRunReader?: Pick<AgentRunManager, "getActiveRun">;
     metadataService?: AgentRunMetadataService;
     projectionStore?: PublishedArtifactProjectionStore;
     snapshotStore?: PublishedArtifactSnapshotStore;
   } = {}) {
-    this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
+    this.activeRunReader = options.activeRunReader ?? AgentRunManager.getInstance();
     this.metadataService = options.metadataService ?? getAgentRunMetadataService();
     this.projectionStore = options.projectionStore ?? getPublishedArtifactProjectionStore();
     this.snapshotStore = options.snapshotStore ?? getPublishedArtifactSnapshotStore();
@@ -112,7 +112,7 @@ export class PublishedArtifactProjectionService {
   }
 
   private async readProjectionContext(runId: string): Promise<ProjectionContext> {
-    const activeRun = this.agentRunManager.getActiveRun(runId);
+    const activeRun = this.activeRunReader.getActiveRun(runId);
     if (activeRun) {
       return this.readActiveRunProjectionContext(activeRun);
     }

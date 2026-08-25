@@ -1,0 +1,16 @@
+[api-rev-005] packaged renderer ready {"baseUrl":"http://127.0.0.1:54491","nodeId":"embedded-local"}
+[api-rev-005] agent package visible in Electron settings {"importStatus":"already-present-after-supported-UI-import"}
+[api-rev-005] requested models present {"professor":"gpt-5.6-luna","student":"deepseek-v4-flash"}
+[api-rev-005] non-business update notice dismissed
+[api-rev-005] Classroom Simulation Team selected from Electron catalog
+[api-rev-005] per-member runtime/model configuration selected {"professorRuntime":"codex_app_server","professorModelLabel":"OpenAI / GPT-5.6-Luna (default reasoning: medium)","studentRuntime":"autobyteus","studentModelLabel":"DeepSeek / deepseek-v4-flash","autoExecuteClass":"relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600","workspacePath":"/private/tmp/api-rev005-electron-classroom-20260822194413/classroom-workspace"}
+[api-rev-005] real classroom prompt sent to Professor
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+Error: Timed out waiting for Classroom team run metadata; last=null
+    at waitFor (file:///private/tmp/api-rev005-electron-classroom.mjs:64:9)
+    at async file:///private/tmp/api-rev005-electron-classroom.mjs:268:15
+
+Node.js v22.23.1

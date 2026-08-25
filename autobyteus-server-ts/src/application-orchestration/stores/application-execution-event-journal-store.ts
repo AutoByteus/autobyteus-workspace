@@ -43,6 +43,21 @@ const ensureTables = (db: DatabaseSync): void => {
   ).run(new Date().toISOString());
 };
 
+const hasInitializedJournalState = (db: DatabaseSync): boolean => {
+  const rows = db.prepare(
+    `SELECT name
+       FROM sqlite_master
+      WHERE type = 'table'
+        AND name IN (
+          '__autobyteus_execution_event_journal',
+          '__autobyteus_execution_event_dispatch_cursor'
+        )`,
+  ).all() as Array<{ name: string }>;
+  const tableNames = new Set(rows.map((row) => row.name));
+  return tableNames.has("__autobyteus_execution_event_journal")
+    && tableNames.has("__autobyteus_execution_event_dispatch_cursor");
+};
+
 const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutionEventJournalRecord => ({
   event: {
     eventId: String(row.event_id),
@@ -237,7 +252,9 @@ export class ApplicationExecutionEventJournalStore {
     db: DatabaseSync,
     applicationId: string,
   ): ApplicationExecutionEventJournalRecord | null {
-    ensureTables(db);
+    if (!hasInitializedJournalState(db)) {
+      return null;
+    }
     const cursorRow = db
       .prepare(
         `SELECT last_acked_journal_sequence
@@ -245,7 +262,10 @@ export class ApplicationExecutionEventJournalStore {
           WHERE singleton_id = 1`,
       )
       .get() as { last_acked_journal_sequence: number } | undefined;
-    const lastAckedJournalSequence = cursorRow?.last_acked_journal_sequence ?? 0;
+    if (!cursorRow) {
+      return null;
+    }
+    const lastAckedJournalSequence = cursorRow.last_acked_journal_sequence;
     const row = db
       .prepare(
         `SELECT journal_sequence,
