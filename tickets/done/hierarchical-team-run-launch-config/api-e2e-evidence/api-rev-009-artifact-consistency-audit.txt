@@ -1,0 +1,34 @@
+API-REV-009 artifact consistency audit
+UTC 2026-08-25T08:42:39Z
+HEAD 45cb5e2be6d2bcc325eb49b386f98158663072bb
+
+PASS: git diff --check
+
+27:- Current API/E2E Revision ID: `API-REV-009`
+28:- Current Investigation Round: 9
+31:- Latest Authoritative Investigation: This file, round 9, is the completed current truth for SR-013 / IR-012 at HEAD `45cb5e2be6d2bcc325eb49b386f98158663072bb`: `Fail` / `89%` with `API-E2E-F-003`. The previous rounds are historical evidence only and do not certify the new exact text-control/residual boundary. Delivery remains closed pending failure-origin review and implementation correction.
+856:### API-REV-009 Completed Execution Outcome — Fail / API-E2E-F-003
+867:- **API-E2E-F-003 — critical visual failure:** isolated CR is not visibly preserved. Both CR residuals computed `white-space: pre-wrap`, but browser Range layout reported one visual line and a 16px box. The nested screenshot visibly renders `NESTED firstNESTED second` with no break or other separation. This contradicts the approved exact, truthful, visibly whitespace-preserving fallback contract described by R-044 / AC-038, IR-012, and CRR-019.
+872:- Current result: `Fail`; failure ID `API-E2E-F-003`.
+
+11:- Current API/E2E Revision / Round: `API-REV-009` / 9.
+15:- Current Authoritative Result: **Fail / 89%** — `API-E2E-F-003`.
+76:### API-E2E-F-003 — Critical Failure
+101:- Overall final confidence: **89%** (rounded simple average).
+105:- Final result: **Fail**.
+116:- Failure ID: `API-E2E-F-003`.
+
+15:| API-REV-009 | `code_reviewer` CRR-019 complete IR-012 source/architecture Pass; API/E2E round 9 | SR-013, ARCH-REV-005, IR-012, CRR-019, API-REV-008, CRR-016, DR-004 | Pass / 98% | Fail / 89% |
+291:### API-REV-009 — IR-012 persisted multiline actual-browser validation
+294:- Triggering finding or scenario IDs: CR-013 / MP-CR-010 source resolution; fresh API-E2E-021; new failure `API-E2E-F-003`.
+311:- `API-E2E-F-003`: critical implementation/product presentation defect. `HistoricalModelConfigFallback.vue` relies on `whitespace-pre-wrap`; the actual browser does not make an isolated CR text node visibly distinct. Exact DOM retention passes, but user-visible truthful whitespace fails R-044 / AC-038 and the IR-012/CRR-019 claimed outcome.
+315:- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, and the API-REV-009 evidence package under `api-e2e-evidence/`.
+318:- New or remaining failure IDs: `API-E2E-F-003`.
+
+Product/test working-tree status:
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+PASS: no modified/untracked product or durable-test path
+
+PASS: canonical artifacts agree on API-REV-009 Fail / 89% / API-E2E-F-003

@@ -1,0 +1,33 @@
+API-REV-009 static/hash audit
+UTC 2026-08-25T08:30:33Z
+HEAD 45cb5e2be6d2bcc325eb49b386f98158663072bb
+
+## git diff --check
+PASS
+
+## IR-012 path hashes
+701719bd03fdbec17f6d8f58c62d47224cfa57455381fd073277c514406ab1a5  autobyteus-web/utils/historicalModelConfigFields.ts
+03f1ca0bfd5200b2cfec0345bc742d95471e21e90fce878fae0f8eec2e644686  autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+62a6e931675582d6ed39c3a7f4c1667cafbd05b3556b22ebf75eb38accdff20f  autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts
+19ce4308a62200ea3aa18facea2e918a902008bbe27fa8d1718daa4489f1e420  autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+
+## working-tree source/test deltas (docs are separately delivery-owned)
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+PASS: no modified/untracked product or durable-test path
+
+## singular classifier / residual owner
+autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue:17:        <dd class="min-w-0 whitespace-pre-wrap break-words font-mono text-gray-700">{{ entry.value }}</dd>
+autobyteus-web/utils/historicalModelConfigFields.ts:16:  kind: 'historical_residual'
+autobyteus-web/utils/historicalModelConfigFields.ts:29:const canTextInputRepresentExactly = (value: string): boolean =>
+autobyteus-web/utils/historicalModelConfigFields.ts:39:    return typeof value === 'string' && canTextInputRepresentExactly(value)
+autobyteus-web/utils/historicalModelConfigFields.ts:42:  return typeof value === 'string' && canTextInputRepresentExactly(value)
+autobyteus-web/utils/historicalModelConfigFields.ts:77:      kind: 'historical_residual' as const,
+autobyteus-web/utils/historicalModelConfigFields.ts:86:      kind: 'historical_residual' as const,
+
+## stored projection authoring-dependency guard
+PASS: no forbidden authoring dependency in stored projector
+
+## alternate stored renderer guard
+PASS: rejected alternate stored renderers remain absent

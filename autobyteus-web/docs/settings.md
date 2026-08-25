@@ -904,34 +904,53 @@ for interpreting and canonicalizing an absolute path.
 `components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
 editable new-run launch configuration and inspect-only configuration for an
 already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the Agent form or renders the stored Team snapshot
-instead of treating the selected run's config as a launch buffer.
+passes read-only mode to the Agent form or adapts the stored Team snapshot into
+the shared Team form instead of treating the selected run's config as a launch
+buffer.
 
 Selected existing single-Agent and Team run configuration is intentionally
 inspect-only. Agent runs continue to use the read-only Agent form. Team runs use
-`StoredTeamRunConfigForm.vue` and `StoredTeamRunConfigTree.vue` over the exact
-`STORED_SNAPSHOT` from the V2 execution tree:
+the same `TeamRunConfigForm.vue`, `TeamMemberConfigTree.vue`,
+`TeamScopeConfigEditor.vue`, and `MemberOverrideItem.vue` visual hierarchy as
+editable drafts, backed by a distinct `StoredTeamRunFormModel` projected from
+the exact `STORED_SNAPSHOT` in the V2 execution tree:
 
 - the root and every nested Team display their complete persisted
   `defaultLaunchConfiguration`;
 - every configured Agent displays its complete persisted
   `launchConfiguration`;
-- no Team controls or editable override disclosures are rendered, because
-  historical complete snapshots are not partial authoring intent;
+- controls are disabled, while the outer member, nested Team, and model-detail
+  disclosures remain operable;
+- the stored model contains exact identities, effective values, hierarchy/order,
+  and stored workspace display only; it does not fabricate editable overrides,
+  inherited baselines, workspace selection/operation state, or catalog loading
+  state;
+- no editable **Reset** action is rendered and the launch/run button is absent;
 - Agent form update handlers and shared runtime/model normalization emissions
   no-op in read-only mode so historical context is not locally mutated;
-- the launch/run button is absent while an existing run is selected;
 - localized read-only notices explain that the selected run can be inspected but
   not edited; and
 - complete model configuration, including explicit `null`, remains visible as
   persisted rather than inferred from current catalogs.
 
 The frontend consumes historical model configuration exactly as provided by the
-backend. In a V2 Team snapshot, `llmConfig: null` is a complete recorded value.
-For standalone historical formats where model configuration is genuinely absent,
-the Agent form may show a localized `Not recorded for this historical run` state,
-but it must not infer a current default, recover a runtime value, or materialize
-metadata.
+backend. `projectHistoricalModelConfigFields(...)` walks current-schema fields
+in schema order. An explicit stored value stays in a disabled current control
+only when that control can represent it exactly. A stale enum value or another
+producer-backed unrepresentable value is rendered once through
+`HistoricalModelConfigFallback.vue`; persisted keys removed from the current
+schema follow in stable key order. Whole-schema absence uses the same residual
+rule for every persisted entry. No explicit stored value is replaced by a
+current default, rendered twice, or written back. Synthetic fields introduced
+only through arbitrary GraphQLJSON/catalog injection are not current-product
+acceptance inputs; the runtime classifier itself remains generic and
+provenance-free.
+
+In a V2 Team snapshot, `llmConfig: null` is a complete recorded value. For
+standalone historical formats where model configuration is genuinely absent,
+the Agent form may show a localized `Not recorded for this historical run`
+state, but it must not infer a current default, recover a runtime value, or
+materialize metadata.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -973,17 +992,29 @@ Desktop run-configuration forms use quieter light-blue filled-field controls on
 dense Agent and Team launch surfaces while keeping the shared select components'
 default bordered styling available for callers that do not opt in. The
 light-blue treatment is presentation-only and preserves hover plus
-keyboard-focus affordance. Team launch configuration presents the complete root
-scope first, then recursively renders nested Team scopes and Agent placements.
-Each Team scope exposes its canonical address, effective summary,
-**Inherited**/**Customized** state, and scope reset. Editing a nested Team field
-creates exact-address partial intent; resetting it removes only that scope's
-intent, so descendants resolve through the nearest remaining ancestor. Agent
-rows retain exact placement overrides. Display-only inherited or schema-default
-values must not create overrides. Non-thinking runtime/model parameters render
-through the same advanced schema component; for Codex, a fast-capable model can
-therefore expose `service_tier` with the user-facing label **Fast mode** beside
-reasoning settings.
+keyboard-focus affordance.
+
+Editable Team launch configuration preserves the established root sequence:
+Team Definition, runtime/model/configuration, Workspace Directory, Auto approve
+tools, then the default-collapsed **Team Members Override** disclosure. The root
+shows the configured values in its controls and does not add a Team-scope
+wrapper, root `/`, inheritance badge, divider, or effective-value summary.
+
+Opening the member disclosure recursively reveals Agent placements and nested
+Team groups. Each nested Team editor starts collapsed and keeps the existing
+Team identity, `TEAM` marker, placement address, and indentation. Its header adds
+only actionable **Inherited**/**Customized** state, a chevron, and **Reset** when
+an exact-address override exists. Expanding it renders the actual effective
+runtime/model/configuration/workspace/auto-approve controls; no effective or
+customized-fields summary is shown while collapsed or expanded. Editing a
+nested Team field creates exact-address partial intent; resetting it removes
+only that scope's intent, so descendants resolve through the nearest remaining
+ancestor while the disclosure stays open. Agent rows retain exact placement
+overrides. Display-only inherited or schema-default values must not create
+overrides. Non-thinking runtime/model parameters render through the same
+advanced schema component; for Codex, a fast-capable model can therefore expose
+`service_tier` with the user-facing label **Fast mode** beside reasoning
+settings.
 
 
 ### Skill Improvement Manual Composer Action

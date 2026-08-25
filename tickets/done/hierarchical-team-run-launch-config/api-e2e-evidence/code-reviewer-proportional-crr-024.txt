@@ -1,0 +1,109 @@
+# CRR-024 proportional durable-test audit
+
+## Durable delta
+M	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+PASS: exactly one durable test changed; no production source delta
+
+## Hash
+45bd06f922e3624cab000e602267872b83d52673be1cfae667329826d5c39fda  autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+
+## Corrected scenario
+  it('renders exact stored partial-schema history once and accepts no mutation', async () => {
+    const exactConfig = Object.freeze({
+      temperature: 0.2,
+      reasoning_effort: 'ultra',
+      service_tier: 'fast',
+    })
+    const node = storedNode({
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: exactConfig,
+      autoExecuteTools: true,
+      workspaceRootPath: '/history/reviewer',
+    })
+    const before = JSON.stringify(node)
+    const wrapper = mountItem(node, true)
+    await ready()
+
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('codex_app_server')
+    expect((wrapper.get('input#config--reviewer-temperature').element as HTMLInputElement).value).toBe('0.2')
+    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+    const residuals = wrapper.findAll('[data-test="historical-model-config-residual"]')
+    expect(residuals.map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
+    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(wrapper.text()).not.toContain('Default')
+    expect(wrapper.text()).toContain('Overridden')
+    expect(JSON.stringify(node)).toBe(before)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
+
+  it('uses the same residual algorithm when the whole stored model schema is absent', async () => {
+    const exactConfig = Object.freeze({
+      reasoning_effort: 'ultra',
+      service_tier: 'fast',
+    })
+    const node = storedNode({
+      runtimeKind: 'removed-runtime',
+      llmModelIdentifier: 'removed-agent-model',
+      llmConfig: exactConfig,
+      workspaceRootPath: '/history/reviewer',
+    })
+    const before = JSON.stringify(node)
+    const wrapper = mountItem(node, true)
+    await ready()
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('removed-runtime')
+    expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
+    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
+    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+      .map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
+    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(JSON.stringify(node)).toBe(before)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
+
+PASS: partial and whole-schema Agent scenarios are clearly separated; whole-schema assertions cover exact producer-backed values, one occurrence, stable order, no emitted mutation, and unchanged input.
+
+## Rejected vocabulary
+PASS: rejected synthetic vocabulary absent
+
+## Execution evidence
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (8 tests) 90ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  11:37:03
+   Duration  5.81s (transform 2.98s, setup 4.77s, collect 175ms, tests 90ms, environment 219ms, prepare 161ms)
+
+stdout | utils/__tests__/historicalModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/historicalModelConfigFields.spec.ts (3 tests) 3ms
+ ✓ services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts (2 tests) 5ms
+
+ Test Files  11 passed (11)
+      Tests  112 passed (112)
+   Start at  11:37:18
+   Duration  9.05s (transform 4.22s, setup 57.50s, collect 3.92s, tests 1.06s, environment 3.83s, prepare 2.69s)
+
+PASS: changed file 1/8 and cohort 11/112

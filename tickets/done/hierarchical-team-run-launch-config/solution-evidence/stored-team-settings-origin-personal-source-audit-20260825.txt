@@ -1,0 +1,75 @@
+Hierarchical TeamRun Launch Configuration
+Stored Team settings origin/personal comparison — 2026-08-25
+
+Compared refs
+- Integrated ticket HEAD: 1f1fb12160c809b41bd4b716dc2fa4f920631f6d
+- Current remote personal baseline: origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18
+- Available local personal checkout used for browser/source confirmation: 8d6b06b8cf15d1f355be86b02ef233a111998f07
+
+Commands
+- git show origin/personal:autobyteus-web/components/workspace/config/RunConfigPanel.vue
+- git show origin/personal:autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+- git show origin/personal:autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+- git show origin/personal:autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+- git ls-tree --name-only origin/personal:autobyteus-web/components/workspace/config
+- current-source reads of RunConfigPanel.vue, StoredTeamRunConfigForm.vue,
+  StoredTeamRunConfigTree.vue, StoredLaunchConfigurationCard.vue,
+  TeamRunConfigForm.vue, TeamScopeConfigEditor.vue, and TeamMemberConfigTree.vue
+
+Origin/personal behavior
+1. RunConfigPanel derives the selected existing TeamRun configuration from
+   teamContextsStore.activeTeamContext.view.getConfigurationView().
+2. The selected existing TeamRun goes through TeamRunConfigForm, the same form
+   used for new TeamRun configuration, with readOnly=true.
+3. TeamRunConfigForm preserves Team Definition, runtime/model/model-specific
+   fields, Workspace Directory, Auto approve tools, Team Members Override, and
+   member controls. It disables edits while keeping disclosures operable.
+4. Origin/personal tests explicitly assert that a selected existing TeamRun
+   renders TeamRunConfigForm read-only and does not mutate its stored snapshot.
+5. Origin/personal has no StoredTeamRunConfigForm.vue,
+   StoredTeamRunConfigTree.vue, or StoredLaunchConfigurationCard.vue.
+
+Integrated behavior
+1. RunConfigPanel branches selected existing TeamRuns to
+   StoredTeamRunConfigForm rather than TeamRunConfigForm.
+2. StoredTeamRunConfigForm adds a root wrapper card, “Stored root Team
+   defaults,” '/', a standalone key/value configuration card, a separate
+   “Stored Team and Agent configuration” section, address-heavy Team/Agent
+   cards, and a read-only footer.
+3. StoredTeamRunConfigTree and StoredLaunchConfigurationCard create a second
+   visual language rather than placing exact stored values into the shared
+   configuration controls.
+4. The separate stored components are new on the ticket branch and absent from
+   origin/personal.
+
+Live browser confirmation
+- Started the integrated Nuxt frontend on http://localhost:3003 with
+  BACKEND_NODE_BASE_URL=http://127.0.0.1:29695, using the user-running Electron
+  build's server.
+- Opened Temp Workspace -> Nested Classroom Test Team -> hello -> Teacher ->
+  Edit Config.
+- The resulting live view matches the user screenshot and the current source:
+  it is the separate card/key-value stored inspector.
+- Evidence screenshot:
+  solution-evidence/integrated-stored-team-config-live-20260825.png
+
+Origin/personal live-render limitation
+- Started the personal Nuxt frontend on http://localhost:3002 against the same
+  current Electron server.
+- Workspace/team history loaded, but selecting the V2 TeamRun failed at the
+  old strict stream parser because origin/personal expects schema_version 1 and
+  the current server emits schema_version 2.
+- This is an expected cross-version incompatibility, not evidence about the old
+  presentation. The origin/personal source and focused tests unambiguously show
+  the selected TeamRun used TeamRunConfigForm with readOnly=true.
+
+Finding
+- USER-UX-003 / Requirement Gap / Design Impact.
+- The persisted TeamRunConfigurationView is a correct distinct data contract
+  for exact stored topology and values. It does not justify a distinct visual
+  form. The implementation incorrectly coupled data-model separation to a new
+  read-only card UI.
+- Correct direction: one configuration-form presentation for editable and
+  stored modes. Stored mode consumes the immutable stored view directly,
+  disables mutation, and preserves exact topology/values without converting
+  the snapshot into editable intent or consulting mutable current definitions.

@@ -1,0 +1,29 @@
+Delivery evidence: DR-004 final handoff validation
+Timestamp: 2026-08-25T07:49:14+02:00
+HEAD: cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+divergence: 16	0
+
+=== global tracked diff check ===
+PASS
+
+=== Markdown/artifact assertions ===
+PASS Markdown/link: tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md
+PASS Markdown/link: tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md
+PASS Markdown/link: tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md
+PASS Markdown/link: tickets/in-progress/hierarchical-team-run-launch-config/handoff-summary.md
+PASS Markdown/link: tickets/in-progress/hierarchical-team-run-launch-config/release-deployment-report.md
+PASS Markdown/link: autobyteus-web/docs/agent_teams.md
+PASS Markdown/link: autobyteus-web/docs/settings.md
+PASS Markdown/link: autobyteus-web/docs/agent_execution_architecture.md
+PASS DR-004 authority across delivery artifacts
+PASS rebuilt app/DMG/ZIP existence and SHA-256
+PASS no tracked production-source or durable-test delta from delivery
+
+=== recovery comparison branch containment ===
+PASS: recovery branch tip is not contained in HEAD
+
+PASS build, package integrity, and docs validation evidence
+
+RESULT: PASS — DR-004 handoff is internally consistent and remains on explicit user-verification hold.

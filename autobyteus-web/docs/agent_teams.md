@@ -21,8 +21,7 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 - `components/workspace/config/TeamMemberConfigTree.vue`
 - `components/workspace/config/TeamScopeConfigEditor.vue`
 - `components/workspace/config/MemberOverrideItem.vue`
-- `components/workspace/config/StoredTeamRunConfigForm.vue`
-- `components/workspace/config/StoredTeamRunConfigTree.vue`
+- `components/workspace/config/HistoricalModelConfigFallback.vue`
 - `components/workspace/config/RunConfigPanel.vue`
 - `components/agentTeams/form/useAgentTeamDefinitionFormState.ts`
 - `components/agentTeams/form/AgentTeamMemberDetailsPanel.vue`
@@ -31,6 +30,12 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 - `stores/agentTeamRunStore.ts`
 - `types/agent/TeamLaunchDraft.ts`
 - `types/agent/TeamRunConfig.ts`
+- `types/agent/TeamRunFormModel.ts`
+- `types/agent/EditableTeamRunFormModel.ts`
+- `types/agent/StoredTeamRunFormModel.ts`
+- `services/teamExecution/storedTeamRunFormModel.ts`
+- `utils/editableTeamRunFormModel.ts`
+- `utils/historicalModelConfigFields.ts`
 - `utils/teamRunConfigUtils.ts`
 - `utils/teamRunLaunchHierarchy.ts`
 - `utils/teamRunLaunchReadiness.ts`
@@ -161,15 +166,24 @@ be owned by the root or by an explicitly customized nested Team. Agents inherit
 their containing Team workspace and do not own an Agent workspace override.
 Skill access remains root-authored and inherited across the full hierarchy.
 
-`TeamRunConfigForm.vue` renders the root first and
-`TeamMemberConfigTree.vue` recursively renders nested Team and Agent placements.
-`TeamScopeConfigEditor.vue` gives every Team scope an **Inherited** or
-**Customized** state, effective summary, exact-address workspace/runtime/model/
-configuration/auto-approve controls, and a scope reset. `MemberOverrideItem.vue`
-remains the leaf Agent override editor. Reset removes only the selected scope's
-stored intent; descendants then resolve again through the nearest remaining
-ancestor. Stale Team/Agent addresses are pruned against the current definition
-topology and shown as a repair notice before the user retries launch.
+`TeamRunConfigForm.vue` preserves the familiar root launch form: Team Definition
+flows directly into runtime/model/configuration, Workspace Directory, Auto
+approve tools, and the existing **Team Members Override** disclosure. The root
+does not render hierarchy-specific wrapper chrome, an **Inherited** or
+**Customized** badge, canonical `/`, or a duplicated effective-value summary.
+
+`TeamMemberConfigTree.vue` recursively renders nested Team and Agent placements
+inside the member disclosure. Each nested Team extends the existing indented
+Team group with its name, `TEAM` marker, canonical placement address, one
+actionable **Inherited** or **Customized** state, a disclosure chevron, and a
+conditional **Reset** action. The nested editor starts collapsed. When expanded,
+`TeamScopeConfigEditor.vue` renders the actual effective workspace/runtime/model/
+configuration/auto-approve controls; no separate effective or customized-fields
+summary is rendered in either state. `MemberOverrideItem.vue` remains the leaf
+Agent override editor. Reset removes only the selected scope's stored intent;
+descendants then resolve again through the nearest remaining ancestor. Stale
+Team/Agent addresses are pruned against the current definition topology and
+shown as a repair notice before the user retries launch.
 
 The authoring UI may show schema defaults as effective values, but it does not
 store them merely because they render. Explicit runtime/model changes clear
@@ -177,13 +191,29 @@ only incompatible configuration owned by that scope. For Codex members,
 `service_tier: "fast"` remains valid only while the selected or inherited model
 schema exposes **Fast mode**.
 
-Selected existing Team runs do not reconstruct editable override intent.
-`StoredTeamRunConfigForm.vue` and `StoredTeamRunConfigTree.vue` render the exact
-`STORED_SNAPSHOT` returned from the V2 execution tree: every Team's complete
-`default_launch_configuration` and every Agent's complete
-`launch_configuration`. These cards are inspect-only and do not infer current
-definition defaults, collapse the tree to a representative coordinator, or
-write historical state.
+Selected existing Team runs do not reconstruct editable override intent, but
+they do reuse the same form/tree/control presentation as editable drafts.
+`RunConfigPanel.vue` projects the exact `STORED_SNAPSHOT` returned from the V2
+execution tree through `projectStoredTeamRunFormModel(...)`, while editable
+drafts use `projectEditableTeamRunFormModel(...)`. The resulting
+`TeamRunFormModel` union keeps `mode: 'editable' | 'stored'` discrimination
+through every Team and Agent node.
+
+Only neutral display facts—identity, exact effective configuration, and
+comparison-derived state—are shared. Stored nodes carry stored workspace
+display data and never fabricate editable overrides, inherited baselines,
+workspace selections/operations, or runtime-catalog operation state. The shared
+form renders stored root, nested Team, and Agent values in the same disabled
+controls users configured before launch; disclosures remain operable, while
+mutation events, **Reset**, and **Run Team** are unavailable.
+
+Historical model configuration is field/value exact. Explicit values that a
+current control can represent stay in that disabled control. A producer-backed
+saved value that is no longer selectable, or a key removed from the current
+schema, appears once in the compact field-local historical fallback instead of
+being replaced by a current default. Current-schema fields are considered in
+schema order and removed persisted keys follow in stable key order. The
+projection never mutates the V2 snapshot or renders one persisted key twice.
 
 ## Hierarchical Launch Readiness
 
@@ -338,11 +368,14 @@ and every nested Team carry their complete `defaultLaunchConfiguration`, and
 every configured Agent carries its complete `launchConfiguration`.
 
 The workspace config panel derives one `STORED_SNAPSHOT` view directly from that
-tree and renders it with `StoredTeamRunConfigForm.vue`. Historical values remain
-inspect-only; the frontend does not compare them with current definition
-defaults, infer a representative Team default, or turn complete snapshots back
-into partial overrides. Explicit `llmConfig: null` and
-`workspaceRootPath: null` remain recorded values.
+tree and adapts it to `StoredTeamRunFormModel`. `TeamRunConfigForm.vue`,
+`TeamMemberConfigTree.vue`, `TeamScopeConfigEditor.vue`, and
+`MemberOverrideItem.vue` then render the same visual hierarchy used for a draft
+in structurally read-only mode. Historical values remain inspect-only; the
+frontend does not consult current definitions for topology/order, infer a
+representative Team default, turn complete snapshots back into partial
+overrides, or import authoring state into the stored projector. Explicit
+`llmConfig: null` and `workspaceRootPath: null` remain recorded values.
 
 Logical topology uses canonical AgentTeam addresses. Physical memory resolution
 remains a separate concern based on `rootTeamRunId`, physical ancestor TeamRun

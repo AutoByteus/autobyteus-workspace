@@ -1,0 +1,19 @@
+=== API-REV-008 cleanup audit ===
+2026-08-25T05:33:21Z
+-- listeners 58849/58924/29695 --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 60805 normy   26u  IPv4 0x7e01979191083239      0t0  TCP *:29695 (LISTEN)
+-- HTTP probes --
+58849 000
+58924 000
+29695 200
+-- owned data root before removal --
+/tmp/autobyteus-api-rev-008-owned/server-data/.env
+/tmp/autobyteus-api-rev-008-owned/logs/app.log
+-- owned data root after removal --
+removed
+-- post-removal listeners --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 60805 normy   26u  IPv4 0x7e01979191083239      0t0  TCP *:29695 (LISTEN)
+-- AutoByteus tabs after cleanup --
+sessions: []

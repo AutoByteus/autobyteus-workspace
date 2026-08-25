@@ -1,0 +1,52 @@
+# CRR-019 complete architecture/static audit
+
+## IR-012 committed production delta
+M	autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+M	autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+M	autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts
+M	autobyteus-web/utils/historicalModelConfigFields.ts
+
+## Source commit diff check
+PASS
+
+## Stored type/projector forbidden authoring dependencies or sentinels
+PASS: none found
+
+## Deleted alternate stored renderers remain absent
+PASS: absent
+
+## Singular classifier and exact residual
+autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue:17:        <dd class="min-w-0 whitespace-pre-wrap break-words font-mono text-gray-700">{{ entry.value }}</dd>
+autobyteus-web/utils/historicalModelConfigFields.ts:16:  kind: 'historical_residual'
+autobyteus-web/utils/historicalModelConfigFields.ts:29:const canTextInputRepresentExactly = (value: string): boolean =>
+autobyteus-web/utils/historicalModelConfigFields.ts:39:    return typeof value === 'string' && canTextInputRepresentExactly(value)
+autobyteus-web/utils/historicalModelConfigFields.ts:42:  return typeof value === 'string' && canTextInputRepresentExactly(value)
+autobyteus-web/utils/historicalModelConfigFields.ts:45:export const projectHistoricalModelConfigFields = (
+autobyteus-web/utils/historicalModelConfigFields.ts:77:      kind: 'historical_residual' as const,
+autobyteus-web/utils/historicalModelConfigFields.ts:86:      kind: 'historical_residual' as const,
+
+## Relevant changed production source effective non-empty lines
+ 236 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+ 137 autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+  41 autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+ 312 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+ 277 autobyteus-web/components/workspace/config/ModelConfigSection.vue
+  70 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+ 124 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+ 306 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ 338 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+  77 autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+  45 autobyteus-web/types/agent/EditableTeamRunFormModel.ts
+  30 autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+  16 autobyteus-web/types/agent/TeamRunFormDisplay.ts
+  16 autobyteus-web/types/agent/TeamRunFormModel.ts
+  93 autobyteus-web/utils/editableTeamRunFormModel.ts
+  82 autobyteus-web/utils/historicalModelConfigFields.ts
+ 186 autobyteus-web/utils/llmConfigSchema.ts
+PASS: all relevant implementation sources are <=500 effective non-empty lines
+
+## Worktree production-source audit
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+NOTE: only pre-existing delivery documentation paths are modified in the working tree; reviewed production source matches HEAD.

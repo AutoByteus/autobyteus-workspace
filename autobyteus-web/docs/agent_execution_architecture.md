@@ -756,28 +756,47 @@ canonicalizing the supplied absolute path.
 `components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
 editable new-run launch configuration and inspect-only configuration for an
 already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the agent/team configuration forms instead of treating
-the selected run's config as a launch buffer.
+passes read-only mode to the Agent form or projects the Team V2
+`STORED_SNAPSHOT` through `projectStoredTeamRunFormModel(...)` instead of
+treating the selected run's config as a launch buffer. Editable Team drafts use
+`projectEditableTeamRunFormModel(...)`. Both enter the same
+`TeamRunConfigForm.vue` visual composition through a discriminated
+`TeamRunFormModel`, while editable and stored capabilities remain distinct at
+the root, recursive Team, and Agent boundaries.
 
 Selected existing single-agent and team run configuration is intentionally
 inspect-only:
 
 - runtime, model, workspace, auto-approve, and team-member override controls
   render disabled;
+- the member, nested-Team, and model-detail disclosures remain operable so the
+  stored hierarchy can be inspected through the same layout used before launch;
+- stored nodes carry only neutral display facts and stored workspace display;
+  they do not import or fabricate `TeamLaunchDraft`, editable overrides,
+  inherited editing baselines, workspace authoring state, runtime-catalog
+  operation state, or mutation commands;
 - form update handlers and shared runtime/model normalization emissions no-op in
   read-only mode so historical context is not locally mutated;
-- the launch/run button is absent while an existing run is selected;
+- **Reset** and the launch/run button are absent while an existing run is
+  selected;
 - localized read-only notices explain that the selected run can be inspected but
   not edited; and
-- advanced model/thinking controls remain visible or expandable so persisted
-  values such as backend-provided `reasoning_effort: "xhigh"` can be inspected.
+- stored topology/order and exact root, nested-Team, and Agent effective values
+  come from V2 and do not depend on the current Team definition.
 
 The frontend consumes historical model configuration exactly as provided by the
-backend. If the backend-provided `llmConfig` is missing/null, the model config UI
-may show a localized `Not recorded for this historical run` state, but it must
-not infer a current default, recover a runtime value, or materialize metadata.
-Backend/runtime/history recovery or persistence semantics belong to a separate
-backend ticket, not this frontend inspection boundary.
+backend. `projectHistoricalModelConfigFields(...)` is the single pure classifier
+for stored model fields. In current-schema order it sends exactly representable
+explicit values to disabled normal controls and sends stale/unrepresentable
+explicit values to a compact historical residual. Persisted keys absent from
+the current schema are appended in stable key order. Whole-schema absence uses
+the same algorithm; no explicit key is normalized through an editable default,
+duplicated, or mutated. The accepted exactness boundary is producer-backed
+history from a named supported current/released catalog and normal launch path;
+the classifier remains generic rather than embedding provider or provenance
+branches. If model configuration is genuinely absent, the UI may show a
+localized `Not recorded for this historical run` state, but it must not infer a
+current default, recover a runtime value, or materialize metadata.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -819,21 +838,29 @@ Desktop run-configuration forms use quieter light-blue filled-field controls on
 dense Agent and Team launch surfaces while keeping the shared select components'
 default bordered styling available for callers that do not opt in. The
 light-blue treatment is presentation-only and preserves hover plus
-keyboard-focus affordance. Team launch configuration keeps the global **Auto
-approve tools** switch beside other global
-setup fields, directly after workspace selection, before the member-specific
-override disclosure. The **Team Members Override** disclosure defaults
-collapsed, shows the label followed by a visible chevron plus member/override
-counts, and remains openable in read-only inspection mode; when expanded,
-member rows render as a connected list with stronger shared separators to avoid
-overwhelming large teams. They still display inherited/effective defaults when
-expanded, and explicit member-local runtime or model selections that resolve to
-an effective-ON model can open only that member's **Advanced** controls.
-Display-only inherited or schema-default values must not create member
-overrides. Non-thinking runtime/model parameters render through the same
-advanced schema component; for Codex, a fast-capable model can therefore expose
-`service_tier` with the user-facing label **Fast mode** beside reasoning
-settings.
+keyboard-focus affordance. Team launch configuration keeps the root visually
+equivalent to the established launch form: its global **Auto approve tools**
+switch follows workspace selection, and no hierarchy wrapper, root `/`,
+inheritance badge, or effective-value summary is inserted around the root
+controls.
+
+The **Team Members Override** disclosure defaults collapsed and keeps a visible
+chevron and member count. When opened, Agent rows and nested Team groups render
+recursively as the existing connected, indented hierarchy. Nested Team editors
+also default collapsed; their headers retain Team identity and canonical
+placement address while adding only **Inherited**/**Customized**, a disclosure
+chevron, and conditional **Reset**. Expanding a nested Team shows its real
+effective runtime/model/configuration/workspace/auto-approve controls without a
+duplicate summary. Disclosures expose `aria-expanded`/`aria-controls`, Reset has
+a Team-specific accessible name, scoped loading/error Retry stays associated
+with its Team, and narrow layouts may wrap header content without overlap.
+
+Explicit Team- or Agent-local runtime/model selections that resolve to an
+effective-ON model can open only that scope's **Advanced** controls. Display-only
+inherited or schema-default values must not create overrides. Non-thinking
+runtime/model parameters render through the same advanced schema component; for
+Codex, a fast-capable model can therefore expose `service_tier` with the
+user-facing label **Fast mode** beside reasoning settings.
 
 
 ### Skill Improvement Manual Composer Action

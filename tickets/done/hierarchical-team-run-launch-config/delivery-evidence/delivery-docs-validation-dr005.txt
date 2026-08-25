@@ -1,0 +1,38 @@
+Delivery evidence: DR-005 durable documentation validation
+Timestamp: 2026-08-25T11:44:17+02:00
+HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+
+=== targeted diff check ===
+PASS
+
+PASS fence/link: autobyteus-web/docs/agent_teams.md
+PASS fence/link: autobyteus-web/docs/settings.md
+PASS fence/link: autobyteus-web/docs/agent_integration_minimal_bridge.md
+PASS fence/link: autobyteus-web/docs/agent_execution_architecture.md
+PASS fence/link: autobyteus-web/docs/memory.md
+PASS fence/link: autobyteus-server-ts/docs/modules/agent_team_execution.md
+PASS fence/link: autobyteus-server-ts/docs/modules/run_history.md
+PASS fence/link: autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md
+PASS fence/link: autobyteus-server-ts/README.md
+PASS fence/link: autobyteus-server-ts/docs/modules/agent_memory.md
+PASS fence/link: autobyteus-server-ts/docs/features/memory_sync.md
+PASS fence/link: autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md
+PASS fence/link: autobyteus-server-ts/docs/features/task_agent_identity_future_improvements.md
+PASS fence/link: tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md
+PASS deleted-component scan: autobyteus-web/docs/agent_teams.md
+PASS deleted-component scan: autobyteus-web/docs/settings.md
+PASS deleted-component scan: autobyteus-web/docs/agent_execution_architecture.md
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+PASS implementation reference: autobyteus-web/types/agent/TeamRunFormModel.ts
+PASS implementation reference: autobyteus-web/types/agent/EditableTeamRunFormModel.ts
+PASS implementation reference: autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+PASS implementation reference: autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+PASS implementation reference: autobyteus-web/utils/editableTeamRunFormModel.ts
+PASS implementation reference: autobyteus-web/utils/historicalModelConfigFields.ts
+PASS stored-model forbidden-authoring-dependency spot check
+PASS generic historical classifier/current-scope spot check
+RESULT: PASS — 3 long-lived docs updated, 10 reviewed with no impact.
