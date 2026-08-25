@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "package": "initial-prototype-baseline",
+  "requirementsRevision": "RER-017",
+  "operationOrder": [
+    "fetch both remotes",
+    "restore independent checkout",
+    "materialize and validate independent target",
+    "commit and normal-push independent personal",
+    "verify independent local/remote equality",
+    "remove workspace duplicate",
+    "reconcile active workspace locators",
+    "commit and normal-push workspace personal",
+    "verify dual equality"
+  ],
+  "workspaceBaseCommit": "56397ba1ac0741198ff88387f419bf216d798661",
+  "removedPrototypeTree": "21c400d2903a362737f3ce41d876be3fbe2abab5",
+  "removedTrackedRows": 2010,
+  "independentCommit": "0e43f9d6e638c67f0f82bb1a5d7c7cd2fd930fd9",
+  "independentOriginPersonal": "0e43f9d6e638c67f0f82bb1a5d7c7cd2fd930fd9",
+  "independentClean": true,
+  "workspaceSourceRemovedBeforeIndependentPush": false,
+  "workspaceDuplicatePresent": false,
+  "submoduleOrGitlink": false,
+  "nestedGit": false,
+  "unrelatedWorkspaceSiblingTrees": {
+    "memory-inspector-ux-redesign": "6826a4a074daf29f936852c1497cde26e88fb6fa",
+    "memory-sync-transparency": "cec2f0a6334f7cc58dfdd401bf5eab34bbefa1f0",
+    "mobile-pwa-navigation": "d3fc1d62e56db44b793e63665121106021543901",
+    "taskagent-team-tab-active-tasks": "320c0eef410da34bf2402025583955c0f80a9786",
+    "token-statistics-task-cost": "f39c4858737394968b8f889375d3f56f9c131207"
+  },
+  "activePrototypeRoot": "/home/autobyteus/workspace/autobyteus-web-prototype",
+  "observableChange": false,
+  "finalWorkspaceCommitPolicy": "Live workspace personal/origin equality is terminal proof; this record does not embed its own commit hash."
+}
