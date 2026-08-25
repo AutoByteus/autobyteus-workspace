@@ -5,22 +5,27 @@
 - Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
 - Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
 - Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
-- Integration analysis and contracts:
+- Integration strategy and exact runtime contract:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt`
+- Latest-base semantic analyses:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-3-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-design-analysis.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md`
-- Current round evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-008-base-refresh-and-integration.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-merge-preview.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-conflict-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-overlap-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-4-path-inventory.txt`
-- Revision/review records:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-design-analysis.md`
+- Current merge/conflict authority:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-attempt.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-conflict-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/branch-overlap-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-merge-preview.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-conflict-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-overlap-inventory.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-path-inventory.txt`
+- Revision and review records:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
@@ -34,74 +39,78 @@
 
 ## Current Implementation Summary
 
-`IR-009` implements `SR-008` / `ARCH-REV-008` as the bounded Personal v1.4.57 refresh. The mandatory immediate fetch confirmed `origin/personal` was still exactly `389748b0b9f0dea051aaed18641de131cf0adbbb`. One history-preserving merge was created at `53dd98b53490947ed96d4dda9fb45d9c80719740` with parents `95c63b5a982ba90ccbb8c6345af66a9485fa5a78` and `389748b0b9f0dea051aaed18641de131cf0adbbb`.
+`IR-010` implements `SR-010` / `ARCH-REV-010` as the reviewed Personal v1.4.58 semantic integration. The mandatory immediate fetch confirmed `origin/personal` was still exactly `fb1335867a4223b2499e4513f58c609b6ac33ab4`. The history-preserving source merge is `52ab1fe6f8dfd347b84283370d7c3e76c2f90393`, with parents `c6d74710ad30b680f853fba0e90a68255f112955` and `fb1335867a4223b2499e4513f58c609b6ac33ab4`.
 
-The 95-path incoming Personal change was accepted without a new production refactor. The only two conflicts were the reviewed Agent/Team form specs. Their resolutions combine Personal's complete controlled `WorkspaceSelectionState` relay with the integrated callable provider-selection, provider-snapshot, and dynamic-provider settlement fixtures. The five workspace production/type files exactly match the reviewed Personal tree.
+The implementation follows the reviewed `633/50/13/30/7` source/generated/test disposition. It preserves Personal's current hierarchical TeamRun, provider, workspace, lifecycle, persistence, and UI owners while integrating the application framework's complete Team scope/leaf launch contract, graph-local identity allocation, application binding, and exact validation-before-allocation behavior. The thirty reviewed generated/mirrored conflict targets remain deleted.
 
-- Current revision: `IR-009`
-- Related solution revision: `SR-008` (retaining `SR-001`–`SR-007`)
-- Related architecture review: `ARCH-REV-008` (retaining prior approved rounds)
-- Triggering findings: none; `AR-001`–`AR-005` remain resolved
+- Current revision: `IR-010`
+- Related solution revision: `SR-010` (retaining `SR-001`-`SR-009`)
+- Related architecture review: `ARCH-REV-010`
+- Triggering finding: `AR-006`, resolved in design and implemented
 - Current result: ready for complete source review
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior | Implemented path | Result |
 | --- | --- | --- |
-| `BEH-001`, `BEH-005` | Two-parent merge plus the recorded 95-path, two-conflict, two-overlap disposition. | Exact reviewed ref, parents, conflict count, and clean merge index confirmed. |
-| `BEH-010`, `AC-027` | `RunConfigPanel.vue` owns one `WorkspaceSelectionState`; `WorkspaceSelector.vue` is controlled; Agent/Team forms relay complete replacement events. | Incoming production matches Personal exactly; retired partial selector events are absent. |
-| `BEH-009`, `BEH-010`, `AC-029` | Both conflicted specs retain callable `providersWithModelsForSelection(runtime)`, `providerSnapshots(runtime)`, and `ensureMissingDynamicProviders(runtime)` beside controlled workspace assertions. | Combined focused selection passed `7` files / `94` tests. |
-| `BEH-010`, `AC-028` | `RunConfigPanel` preserves New/path state and registers through `workspaceStore.createWorkspace` before launch; failure keeps the controlled state and prevents stale fallback. | Covered by the accepted Personal panel/selector specs. |
-| `BEH-003`, `BEH-004`, `BEH-008` | No application-platform, run/session/publication, package, storage, migration, route, or runtime source was changed by this refresh. | The previously passed foundation remains structurally untouched. |
+| `BEH-001`, `AC-030` | One exact two-parent merge, semantic resolution of 13 content conflicts, reviewed deletion of 30 generated targets, and audit of marker-free overlaps. | Exact ref, parentage, zero unmerged entries, no changed-source conflict markers, and generated-target absence confirmed. |
+| `BEH-011`, `REQ-012`, `AC-031` | Package baseline, selected-resource effective Team scopes, leaves, host-policy enrichment, and per-field provenance flow through application launch configuration. | Rooted Team scopes and exact leaves retain runtime/model, atomic `llmConfig`, workspace, identity, and provenance; Brief/Socratic defaults are Codex/Luna. |
+| `BEH-011`, `AC-032` | SDK exposes concrete `ApplicationTeamScopeLaunchConfig` and `ApplicationTeamMemberLaunchConfig`; run binding maps explicit Team configs and leaves without a reduced default object. | All Team/member models are validated before Personal allocation/creation; preset launch stays on its dedicated path; the exact graph-local `TeamRunIdentityAllocator` is injected. |
+| `BEH-008`, `AC-033` | Historical V1 remains migration-owned; memory layout repair runs after V1 and before V2; current location/catalog/history readers accept V2 only. | V1 -> nested-memory -> V2 order, atomic V2 conversion, V2 current admission, and the historical memory-layout fixture all pass. |
+| `BEH-010`, `AC-034` | Personal's hierarchical Team editing, stored projection, controlled workspace selection, and provider snapshot/settlement owners are retained. | Scope/member editing, nullable historical values, workspace relay, and provider interactions pass focused rendered-component tests. |
 
-## Key Files
+## Key Implementation Areas
 
-- `autobyteus-web/types/workspace/WorkspaceSelectionState.ts`
-- `autobyteus-web/components/workspace/config/WorkspaceSelector.vue`
-- `autobyteus-web/components/workspace/config/RunConfigPanel.vue`
-- `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue`
-- `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
-- `autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts`
-- `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`
+- `autobyteus-application-sdk-contracts/src/execution-resources.ts`
+- `autobyteus-application-sdk-contracts/src/index.ts`
+- `autobyteus-application-backend-sdk/src/launch-profile.ts`
+- `autobyteus-server-ts/src/application-platform/launch-configuration/`
+- `autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts`
+- `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts`
+- `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts`
+- `autobyteus-server-ts/src/run-history/`
+- `autobyteus-server-ts/tests/unit/application-platform/application-launch-team-scope-projection.test.ts`
+- `autobyteus-web/components/workspace/config/`
+- `applications/brief-studio/agent-teams/brief-studio-team/team-config.json`
+- `applications/socratic-math-teacher/agent-teams/socratic-math-team/team-config.json`
 
 ## Design And Compatibility Checks
 
-- Change posture: reviewed semantic integration; no new production design issue found.
-- Refactor required now: no. Personal's existing panel/selector/form ownership implements the approved boundary.
-- Backward-compatibility paths introduced: none.
-- Retired `select-existing`, `workspace-input-change`, and `initialPath` seams retained: no.
-- Second workspace-selection owner, fallback launch, provider/workspace cross-owner, or migration added: no.
-- Persisted-data decision: `Directly Usable — No Migration`; the added workspace selection state is transient frontend state.
-- Production source size: no implementation-authored production delta; incoming production files are exact reviewed Personal content.
+- Change posture: reviewed semantic integration; no independent product or architecture expansion.
+- Compatibility machinery introduced: none.
+- Application/global fallback, second allocator, reduced Team default projection, inference from definitions, or ID synthesis introduced: none.
+- Persistence decision: existing V1 historical packages are migrated in the existing shared runner; current readers are V2-only. No dual read or new database migration is added.
+- Runtime construction remains side-effect-free for new Team/Agent runs; supported demand or recorded recovery remains the only run trigger.
+- The application/general graph-local authority split, provider ownership, scoped session cleanup, package/wire/database contracts, and controlled workspace owner remain intact.
 
 ## Local Implementation Checks
 
-- Exact-ref guard: passed after fresh fetch; `origin/personal` equaled `389748b0b9f0dea051aaed18641de131cf0adbbb`.
-- Merge structure: passed; commit `53dd98b53...` has the exact protected checkpoint and reviewed Personal parents; zero unmerged paths and zero conflict markers.
-- Production equality: passed; all five reviewed workspace production/type files exactly match Personal.
-- Focused workspace/provider selection: passed, `7` files / `94` tests.
-- Shared contract preparation: `@autobyteus/application-sdk-contracts` and `@autobyteus/team-stream-contracts` builds passed.
-- Nuxt production build: passed after the normal shared-contract build prerequisite.
-- Merge diff check: passed.
-- Full Nuxt suite characterization: `420` files / `2320` tests passed, `1` file/test skipped, and `5` files / `6` tests failed. Every failing path is unchanged by the merge and outside SR-008 (run-history fixture store shape, focused-interrupt transport fixture, platform-server spawn fixture, and zh-CN catalog fixture). These are reported, not reclassified or changed by implementation.
-- `nuxi typecheck`: not usable in the current toolchain because its downloaded `vue-tsc` attempts the non-exported TypeScript `./lib/tsc` subpath. The successful Nuxt build and focused tests are the implementation checks.
+- Exact-ref guard: passed after fresh fetch; `origin/personal` equaled `fb1335867a4223b2499e4513f58c609b6ac33ab4`.
+- Merge structure: passed; source merge `52ab1fe6f...` has the exact protected checkpoint and reviewed Personal parents.
+- Conflict/generated audit: passed; zero unmerged entries, no changed-source conflict markers, and all 30 reviewed generated targets absent.
+- Shared contract/backend SDK builds: passed.
+- Server build-config TypeScript no-emit: passed after the normal shared-contract build prerequisite.
+- Full server production build and sanitized bootstrap: passed.
+- Focused server matrix: passed, `17` files / `117` tests, including AFB-001-AFB-005, V1/memory/V2 migration, V2 catalog, topology, TeamRun allocation, application Team projection/binding, Brief package integration, and startup gating.
+- Focused Studio hierarchy/workspace/provider matrix: passed, `14` files / `103` tests with no unhandled rejections.
+- Backend SDK focused coverage: passed, `2` files / `10` tests.
+- Devkit full coverage: passed, `21/21`, including complete Team-scope packaging, atomic pack behavior, normal output, validation, and rollback.
+- Brief Studio and Socratic Math Teacher pack/validate: passed.
+- Scoped changed-source `git diff --check`: passed. Repository-wide merge diff still reports whitespace carried byte-for-byte in imported Personal prototype/archived evidence; those files were intentionally not rewritten.
 
 ## Frontend Rendered-Result Check
 
-- Affected journey: controlled New/Existing/Temp workspace selection while editing Agent/Team runtime/provider configuration and registering a New path before launch.
-- Interaction validation: Vue component tests exercise controlled value rendering, exact complete replacement events, delayed discovery, explicit-New preservation, browse/disabled/error states, registration-before-launch, and failure/no-fallback.
-- Build validation: the Nuxt static production build completed successfully.
-- Independent live Studio render: not performed in this implementation stage because the exact remote-node/backend scenario requires the downstream API/E2E environment. The incoming Personal ticket includes its own prior rendered evidence, but it is treated only as characterization for this combined commit. Real combined-tree browser interaction remains required downstream.
+- Affected journey: hierarchical Team scope/member runtime/model/workspace editing combined with Personal's controlled New/Existing/Temp workspace selection and asynchronous provider discovery.
+- Render/interaction validation: Vue component mounts exercised root/nested scope presentation, stored historical values, member overrides, controlled workspace events, provider rows/snapshots, and asynchronous settlement. All selected assertions passed without unhandled errors.
+- Independent live Studio/browser execution was not performed at implementation scope. The combined-tree real Studio, standalone, recovery, and Electron journeys remain downstream API/E2E and delivery responsibilities.
 
 ## Known Risks And Downstream Coverage Hints
 
-- Source review should verify the two conflict resolutions against both parents and confirm no production adaptation was introduced.
-- API/E2E should rerun explicit New Team path preservation across runtime/model/member edits and delayed discovery, canonical node registration, launch-once/history projection, and registration failure/no fallback.
-- Retained Studio/standalone, provider, package parity, recovery/cleanup, and Electron v1.4.57 verification remain downstream-owned.
-- The six unrelated full-Nuxt failures should be handled only by their established owners if downstream gates classify them as material; they must not broaden this bounded integration during source review.
+- Source review should verify exact effective-to-SDK-to-Personal field mapping, validation before any allocator invocation, graph-local allocator identity, explicit versus preset Team paths, and V2-only current readers.
+- API/E2E should rerun the complete v1.4.58 Studio/standalone matrix, real provider/model selection, Brief/Socratic starts, nested Team recovery/history, package parity, cleanup, and generated-tree integrity.
+- Proportional web review should retain the hierarchical Team and controlled-workspace/provider coverage without treating old generated output as authority.
+- Fresh Electron v1.4.58 verification remains required downstream.
 
 ## API / E2E / Executable Coverage Still Required
 
-Yes. This handoff is implementation-scoped only. Independent coverage investigation, durable-test reconciliation, real Studio/dual-host execution, package parity, recovery/cleanup, and Electron verification remain required after source review passes.
+Yes. This handoff is implementation-scoped only. Independent coverage investigation/reconciliation, real dual-host/browser execution, migration/recovery, package parity, cleanup, proportional durable-test review, and Electron verification remain required after source review passes.
