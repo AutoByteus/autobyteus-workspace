@@ -11,7 +11,6 @@ const schema: UiModelConfigSchema = Object.freeze({
     default: 'medium',
   }),
   current_only: Object.freeze({ type: 'boolean', default: false }),
-  legacy_shape: Object.freeze({ title: 'Legacy Shape' }),
 })
 
 describe('projectHistoricalModelConfigFields', () => {
@@ -19,9 +18,7 @@ describe('projectHistoricalModelConfigFields', () => {
     const stored = Object.freeze({
       temperature: 0.2,
       reasoning_effort: 'ultra',
-      z_removed: Object.freeze({ exact: true }),
-      removed_parameter: 'persisted-value',
-      legacy_shape: Object.freeze({ exact: true }),
+      service_tier: 'fast',
     })
     const before = JSON.stringify(stored)
 
@@ -39,67 +36,26 @@ describe('projectHistoricalModelConfigFields', () => {
         kind: 'current_control', key: 'current_only', hasExplicitStoredValue: false,
       }),
       expect.objectContaining({
-        kind: 'historical_residual', key: 'legacy_shape', exactStoredValue: { exact: true },
-        reason: 'value_not_representable',
-      }),
-      expect.objectContaining({
-        kind: 'historical_residual', key: 'removed_parameter', exactStoredValue: 'persisted-value',
-        reason: 'removed_key',
-      }),
-      expect.objectContaining({
-        kind: 'historical_residual', key: 'z_removed', exactStoredValue: { exact: true },
+        kind: 'historical_residual', key: 'service_tier', exactStoredValue: 'fast',
         reason: 'removed_key',
       }),
     ])
     expect(fields.filter((field) => field.key === 'reasoning_effort')).toHaveLength(1)
-    expect(fields.filter((field) => field.key === 'removed_parameter')).toHaveLength(1)
+    expect(fields.filter((field) => field.key === 'service_tier')).toHaveLength(1)
     expect(JSON.stringify(stored)).toBe(before)
     expect(Object.isFrozen(fields)).toBe(true)
   })
 
   it('treats whole-schema absence as the same stable residual projection', () => {
-    const fields = projectHistoricalModelConfigFields({ zeta: 2, alpha: 'persisted' }, null)
+    const fields = projectHistoricalModelConfigFields({ service_tier: 'fast', reasoning_effort: 'high' }, null)
     expect(fields).toEqual([
-      expect.objectContaining({ kind: 'historical_residual', key: 'alpha', exactStoredValue: 'persisted' }),
-      expect.objectContaining({ kind: 'historical_residual', key: 'zeta', exactStoredValue: 2 }),
+      expect.objectContaining({ kind: 'historical_residual', key: 'reasoning_effort', exactStoredValue: 'high' }),
+      expect.objectContaining({ kind: 'historical_residual', key: 'service_tier', exactStoredValue: 'fast' }),
     ])
   })
 
   it('keeps current controls in schema order when no explicit historical value exists', () => {
     expect(projectHistoricalModelConfigFields(null, schema).map((field) => field.key))
-      .toEqual(['temperature', 'reasoning_effort', 'current_only', 'legacy_shape'])
-  })
-
-  it('uses the text control only when it preserves the exact stored string', () => {
-    const stringSchema = Object.freeze({
-      ordinary_prompt: Object.freeze({ type: 'string' }),
-      line_feed_prompt: Object.freeze({ type: 'string' }),
-      carriage_return_prompt: Object.freeze({ type: 'string' }),
-    })
-
-    expect(projectHistoricalModelConfigFields({
-      ordinary_prompt: 'line one line two',
-      line_feed_prompt: 'line one\nline two',
-      carriage_return_prompt: 'line one\rline two',
-    }, stringSchema)).toEqual([
-      expect.objectContaining({
-        kind: 'current_control',
-        key: 'ordinary_prompt',
-        hasExplicitStoredValue: true,
-        storedValue: 'line one line two',
-      }),
-      expect.objectContaining({
-        kind: 'historical_residual',
-        key: 'line_feed_prompt',
-        exactStoredValue: 'line one\nline two',
-        reason: 'value_not_representable',
-      }),
-      expect.objectContaining({
-        kind: 'historical_residual',
-        key: 'carriage_return_prompt',
-        exactStoredValue: 'line one\rline two',
-        reason: 'value_not_representable',
-      }),
-    ])
+      .toEqual(['temperature', 'reasoning_effort', 'current_only'])
   })
 })

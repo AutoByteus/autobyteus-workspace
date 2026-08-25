@@ -248,7 +248,7 @@ describe('MemberOverrideItem', () => {
     const exactConfig = Object.freeze({
       temperature: 0.2,
       reasoning_effort: 'ultra',
-      removed_parameter: 'persisted-value',
+      service_tier: 'fast',
     })
     const node = storedNode({
       runtimeKind: 'codex_app_server',
@@ -264,12 +264,12 @@ describe('MemberOverrideItem', () => {
     expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('codex_app_server')
     expect((wrapper.get('input#config--reviewer-temperature').element as HTMLInputElement).value).toBe('0.2')
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
-    expect(wrapper.findAll('[data-historical-key="removed_parameter"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     const residuals = wrapper.findAll('[data-test="historical-model-config-residual"]')
     expect(residuals.map((row) => row.attributes('data-historical-key')))
-      .toEqual(['reasoning_effort', 'removed_parameter'])
+      .toEqual(['reasoning_effort', 'service_tier'])
     expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
-    expect(wrapper.get('[data-historical-key="removed_parameter"]').text()).toContain('persisted-value')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
     expect(wrapper.text()).not.toContain('Default')
     expect(wrapper.text()).toContain('Overridden')
     expect(JSON.stringify(node)).toBe(before)

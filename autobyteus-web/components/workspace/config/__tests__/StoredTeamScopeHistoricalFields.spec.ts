@@ -12,9 +12,7 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStor
 const exactConfig = Object.freeze({
   temperature: 0.2,
   reasoning_effort: 'ultra',
-  ordinary_prompt: 'line one line two',
-  multiline_prompt: 'line one\nline two',
-  removed_parameter: 'persisted-value',
+  service_tier: 'fast',
 })
 const scope = (address: '/' | '/Research'): StoredTeamScopeFormModel => Object.freeze({
   mode: 'stored',
@@ -63,8 +61,6 @@ describe('stored Team historical model configuration', () => {
               type: 'string', title: 'Reasoning Effort',
               enum: ['low', 'medium', 'high', 'xhigh'], default: 'medium',
             },
-            ordinary_prompt: { type: 'string', title: 'Ordinary Prompt' },
-            multiline_prompt: { type: 'string', title: 'Multiline Prompt' },
           },
         },
       }],
@@ -98,19 +94,14 @@ describe('stored Team historical model configuration', () => {
     const temperature = wrapper.get(`input#team-scope-${isRoot ? 'root' : 'Research'}-temperature`)
     expect((temperature.element as HTMLInputElement).value).toBe('0.2')
     expect(temperature.attributes('disabled')).toBeDefined()
-    const ordinaryPrompt = wrapper.get(`input#team-scope-${isRoot ? 'root' : 'Research'}-ordinary_prompt`)
-    expect((ordinaryPrompt.element as HTMLInputElement).value).toBe('line one line two')
-    expect(ordinaryPrompt.attributes('disabled')).toBeDefined()
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
-    expect(wrapper.findAll('[data-historical-key="multiline_prompt"]')).toHaveLength(1)
-    expect(wrapper.findAll('[data-historical-key="removed_parameter"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
-    const multilinePrompt = wrapper.get('[data-historical-key="multiline_prompt"] dd')
-    expect(multilinePrompt.element.textContent).toBe('line one\nline two')
-    expect(multilinePrompt.classes()).toContain('whitespace-pre-wrap')
-    expect(wrapper.get('[data-historical-key="removed_parameter"]').text()).toContain('persisted-value')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+      .map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
     expect(wrapper.find(`select#team-scope-${isRoot ? 'root' : 'Research'}-reasoning_effort`).exists()).toBe(false)
-    expect(wrapper.find(`input#team-scope-${isRoot ? 'root' : 'Research'}-multiline_prompt`).exists()).toBe(false)
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
     expect(wrapper.emitted('update-root')).toBeUndefined()
     expect(wrapper.emitted('update-override')).toBeUndefined()

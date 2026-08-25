@@ -26,20 +26,14 @@ export type HistoricalModelConfigField =
 const hasOwn = (value: Readonly<Record<string, unknown>>, key: string): boolean =>
   Object.prototype.hasOwnProperty.call(value, key)
 
-const canTextInputRepresentExactly = (value: string): boolean =>
-  !/[\r\n]/.test(value)
-
 const canCurrentControlRepresent = (
   value: unknown,
   schema: UiModelConfigParameterSchema,
 ): boolean => {
   if (!isModelConfigValueRepresentable(value, schema)) return false
   if (Array.isArray(schema.enum) && schema.enum.length > 0) return true
-  if (schema.type === 'string') {
-    return typeof value === 'string' && canTextInputRepresentExactly(value)
-  }
-  if (['boolean', 'integer', 'number'].includes(schema.type ?? '')) return true
-  return typeof value === 'string' && canTextInputRepresentExactly(value)
+  if (['boolean', 'string', 'integer', 'number'].includes(schema.type ?? '')) return true
+  return typeof value === 'string'
 }
 
 export const projectHistoricalModelConfigFields = (
