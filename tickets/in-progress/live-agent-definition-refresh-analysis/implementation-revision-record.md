@@ -8,6 +8,7 @@ The current code and implementation-handoff.md remain authoritative. This record
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer; design-review-report.md; ARCH-REV-002 / round 2 | N/A (upstream F-001 was resolved before implementation) | Initial Baseline | SR-003, ARCH-REV-002; CRR-* N/A, API-REV-* N/A, DR-* N/A | Implementation complete and ready for code review. |
 | IR-002 | code_reviewer; code-review-report.md; CRR-001 / round 1 | CR-F-001 | Local Fix | SR-003, ARCH-REV-002, CRR-001; API-REV-* N/A, DR-* N/A | Canonical failure reconciliation corrected and focused regressions pass; ready for source re-review. |
+| IR-003 | architecture_reviewer; design-review-report.md; ARCH-REV-003 / round 3, following code-review CRR-003 | CR-F-002 | Requirement Gap | SR-004, ARCH-REV-003, CRR-003; API-REV-* N/A, DR-* N/A | Superseded SR-003 concurrency policy removed; sequential Settings freshness and independently justified restore lanes implemented; ready for source re-review. |
 
 ## Revision Entries
 
@@ -59,3 +60,29 @@ The current code and implementation-handoff.md remain authoritative. This record
 - Local validation and result: Focused web store/planner regressions passed (2 files / 10 tests), and the extended Agent/Team form/store/planner set passed (4 files / 26 tests); Nuxt production build passed; web boundary and localization guards passed; localization audit passed with zero unresolved findings; git diff --check passed. Existing non-blocking Browserslist, large-chunk, KaTeX test-environment, and module-type warnings remain unchanged.
 - Next recipient or routing: /code_reviewer for source re-review.
 - Remaining limitations or risks: API/E2E still owns real restore/save race execution and the other residual risks already recorded in the authoritative handoff/design review. This state-only correction changes no markup or styling; the prior rendered Agent inspection remains applicable, while full Team rendering remains downstream.
+
+### IR-003 — Sequential Settings freshness and narrow external-restore ordering
+
+- Triggering role, report path, and round: architecture_reviewer; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`; `ARCH-REV-003` / round 3 after code-review `CRR-003` routed `CR-F-002` upstream.
+- Triggering finding IDs: `CR-F-002`.
+- Classification: Requirement Gap.
+- Prior authoritative result: `CRR-003` Fail — Requirement Gap. The source at reviewed HEAD `08b11b3aa4f3826d3360655dfbba6e884dd66d6b` correctly implemented superseded SR-003 but carried optimistic revisions, browser-writer rebasing, Stop-owned freshness, and unrelated Team archive broadening without an approved product path.
+- Current authoritative result: Development commit `72ea90db12e4b10779f10ac9d298bbb8997d25f8` implements approved SR-004 / ARCH-REV-003 as a clean contract cut. Settings owns network freshness, cached lifecycle state can only relock, narrow Agent/Team Save and canonical outcomes remain, and only the independently justified per-run/root restore lanes survive. The implementation is ready for source re-review.
+- Related solution revision IDs: `SR-004` (preserving the valid SR-003 feature and F-001 resolution).
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-003`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: Records the implementation rework required after the supported browser journey was corrected to sequential behavior and exact external-channel/Application Engine resolver paths were established as the only independent restore premise.
+- Approved behavior or requirement IDs affected: `BEH-003`–`BEH-008`; `REQ-005`, `REQ-006`, `REQ-009`–`REQ-014`; `AC-002`–`AC-004`, `AC-007`–`AC-008`, `AC-010`, `AC-013`–`AC-016`; `UXJ-001`–`UXJ-004`; `DS-001`–`DS-007`.
+- Implementation delta:
+  - Removed `configurationRevision`, `expectedConfigurationRevision`, `STALE_REVISION`, `run-model-config-revision.ts`, revision-aware commit/result shapes, forced-baseline/rebase branches, and revision/multi-client tests with no compatibility fields or ignored inputs.
+  - Simplified Agent catalog and Team tree commits to validated narrow config changes, structural no-op detection, atomic write/reread, and canonical determinate/indeterminate results.
+  - Retained standalone and Team lifecycle lanes for external-channel/Application Engine restore ordering, with active rejection and Save-first restore consumption still covered at the lifecycle-owner boundary.
+  - Restored Team archive/delete source and tests to `origin/personal` ownership/naming while leaving stopped Team Save in the manager root lane.
+  - Moved resume freshness out of Agent/Team Stop actions into `ExistingRunConfigEditor` Settings entry. The draft store clears/locks during network-only reads, ignores superseded selection responses, latches newer cached lifecycle locks over in-flight responses, and verifies only transport/physical indeterminacy before another Save.
+  - Preserved Team draft-start propagation/direct-edit rules with no stopped-run Reset, fixed-field presentation, dynamic-schema residual safety, and AutoByteus/Codex/Claude runtime application.
+- Changed files or areas: Server Agent/Team lifecycle, run-history contracts/commit/catalog, GraphQL types, and focused tests; web existing-run editor/store, Stop stores, API documents/generated types, revision-only Team planner code, and focused store/history/Stop tests. See the authoritative implementation handoff for exact key paths.
+- Local validation and result: Server production typecheck and full build passed; focused server 10 files / 88 tests passed. Web current-feature 12 files / 154 tests and final Settings subset 2 files / 37 tests passed; final Nuxt production build and all boundary/localization checks passed. Obsolete-seam search and `git diff --check` passed. A temporary Nuxt/Chromium fixture directly exercised network loading, fixed controls, stopped editability, dirty Save, and success feedback with no console errors; it was removed before commit.
+- Next recipient or routing: `/code_reviewer` for source re-review.
+- Remaining limitations or risks: `/api_e2e_engineer` must revise the pre-SR-004 coverage investigation before durable coverage or execution. Exact live external resolver ordering, full Team browser rendering, transport/physical indeterminacy, dynamic catalog drift, and real Claude provider execution remain downstream. Team override provenance remains intentionally unavailable, and `MP-SR4-005` remains non-authoritative.

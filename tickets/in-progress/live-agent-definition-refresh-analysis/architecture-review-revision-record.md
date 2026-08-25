@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative. This record preserve
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / SR-002 implementation-readiness review requested by solution designer | SR-002 | N/A | Fail — Requirement Gap | F-001 |
 | ARCH-REV-002 | Round 2 / SR-003 re-review after user-approved F-001 correction | SR-003 | Fail — Requirement Gap | Pass | F-001 (resolved) |
+| ARCH-REV-003 | Round 3 / SR-004 re-review after CRR-003 product-reachability correction | SR-004 | Pass | Pass | CR-F-002 (solution basis resolved); F-001 remains resolved |
 
 ## Revision Entries
 
@@ -50,3 +51,25 @@ None.
 - Material classification changes: `F-001` moved from unresolved `Requirement Gap — User Approval Required` to resolved after explicit user approval and verified SR-003 alignment. `MP-001` remains reachable but is now handled without fixed-field mutation or cross-model config copying.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: No blocking uncertainty. Stored override provenance remains intentionally unavailable; dynamic schema availability, lifecycle races, indeterminate Team persistence, and Claude adapter behavior retain the proportionate design and coverage controls already accepted in round 1.
+
+### ARCH-REV-003 — SR-004 grounds retained coordination and removes speculative concurrency policy
+
+- Canonical design review report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
+- Review round and trigger: Round 3; SR-004 re-review after `CRR-003` / `CR-F-002` exposed that the prior browser concurrency basis was unsupported.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`; `CR-F-002`, `MP-CR-001`, and `MP-CR-002`.
+- Relevant solution revision IDs: `SR-004` (preserving the valid SR-003 feature and F-001 correction)
+- Prior authoritative decision: **Pass** (`ARCH-REV-002`, before the downstream requirement-basis correction)
+- Current authoritative decision: **Pass**
+- What changed in the review result or what baseline was established: Verified the user-approved sequential browser journey and independently traced two normal non-Settings resolver families—external-channel ingress and Application Engine input—through the standalone lifecycle service and Team manager. The existing per-run/root lanes are therefore retained only for those paths. The target cleanly removes revision fields/outcomes/digest, frontend rebase/forced-baseline state, concurrent-writer tests, Stop-owned unlock freshness, and unrelated Team archive/delete gate expansion.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-002` | Open — downstream Requirement Gap in `CRR-003` | Resolved at the approved solution/design basis; implementation rework remains required | `SR-004`, `CRR-003`, `ARCH-REV-003`, `MP-SR4-001`–`MP-SR4-007` | REQ-005/REQ-009/REQ-014 and AC-004/AC-008 define the sequential browser path; investigation and direct source reads trace MP-SR4-003/004; design removal/file/sequence/coverage sections delete all writer-revision and archive/delete overreach. |
+| `F-001` | Resolved in `ARCH-REV-002` | Remains resolved | `SR-003`, `SR-004`, `ARCH-REV-002`, `MP-001` | REQ-008, UXJ-003, DS-003, planner responsibilities, examples, and coverage still preserve divergence/direct-edit boundaries and render no stopped-run Reset. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: The old same-browser `MP-CR-001` timing premise no longer governs behavior; SR-004 classifies same-browser in-flight resume as `MP-SR4-002 Not Reachable`. `MP-CR-002` remains Not Reachable as `MP-SR4-001`. Separate independently originated `MP-SR4-003` external ingress and `MP-SR4-004` Application Engine input are Reachable and justify only the existing owner lanes. `MP-SR4-005` is Unclear and drives no decision. Active-call and physical-outcome contracts remain narrowly reachable as `MP-SR4-006/007`.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Current HEAD `08b11b3aa` still contains the superseded implementation and must be refactored before source re-review. The existing API/E2E investigation is stale and must be revised by its owner before durable coverage edits or execution. Dynamic schemas, Team post-rename indeterminacy, stored Team provenance, and real Claude provider execution remain bounded residual risks; MP-SR4-005 is explicitly non-authoritative.

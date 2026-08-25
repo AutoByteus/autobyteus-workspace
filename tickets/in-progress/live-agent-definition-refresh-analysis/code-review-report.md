@@ -14,14 +14,14 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-002`
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: `/implementation_engineer` submitted development commit `a4c2595f89c029baa3c2723013fa30e7b409596d` and clean handoff commit `574c47954916bd146ca2582adce36b8e05dd81f7` for pre-API/E2E source review.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `3`
+- Trigger: Direct user product-reachability correction after `CRR-002`: the intended workflow is sequential Stop completion -> open Settings -> edit -> Save, and imagined same-run multi-tab/multi-user concurrency is not an accepted product journey.
+- Prior Review Round Reviewed: `CRR-002` / implementation-review round `2`
+- Latest Authoritative Round: `3`
+- Coverage Investigation Reviewed (failure-origin entry point): `N/A` for this entry point; the current draft `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md` was reviewed as evidence that the disputed premises had already propagated into planned durable coverage.
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
 - Relevant API/E2E Revision IDs: `N/A`
@@ -33,18 +33,18 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the complete `9d0fd7c57..a4c2595f8` implementation delta for stopped-only Agent/Team model-config editing, lifecycle lanes, canonical revisions, validation, GraphQL contracts, Team draft propagation, Claude thinking/effort application, frontend reconciliation, cleanup, and focused tests.
-- Files / areas reviewed: all 83 changed paths, with detailed source review of the server lifecycle/persistence/validation/API/runtime paths and web draft/store/form/schema/history paths; the reviewed package and removal set were also checked.
-- Explicit exclusions: API/E2E environment setup and execution remain downstream. Generated GraphQL output, localization catalogs, and test files are excluded from implementation-source size thresholds but were reviewed proportionately for consistency.
+- Changed implementation and behavior reviewed: no new source delta. This round re-evaluates the product reachability and governing basis for the concurrency-specific lifecycle/revision/reconciliation machinery after the user rejected the assumed same-run multi-client journey.
+- Files / areas reviewed: `requirements.md` (`REQ-009`, `REQ-012`, `REQ-014`), `design-spec.md` (`DS-005`–`DS-007` and concurrent-tabs risk), the prior material-premise records, `IR-002`, current reconciliation source/tests, and the draft API/E2E coverage investigation that had begun encoding those premises. Unaffected `CRR-002` source evidence is preserved.
+- Explicit exclusions: no API/E2E execution or implementation correction should proceed from the disputed concurrency premise until the solution basis is revised. No source defect is attributed in this round.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. The governing behavior is explicit Stop -> current-schema draft edit -> narrow Save while stopped -> automatic restore of the same logical/provider run, with fixed identity and canonical reconciliation.
-- Design-spec behavior map verified against the implementation: Mostly. Server lifecycle, validation, persistence, Team mutation, and runtime-adapter paths match the map; the frontend return/reconciliation path contradicts the approved active-race recovery behavior.
-- Design review report and round confirmed: Yes — passing `ARCH-REV-002` over `SR-003`, including confirmed `MP-001`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. `CR-F-001` is an implementation defect against existing `BEH-006`, not a new product behavior.
-- Remaining material ambiguity, if any: None.
+- Approved requirements basis understood: Partially. The core sequential Stop -> Settings -> edit -> Save behavior remains clear, but the user has rejected the added same-run multi-client/concurrent-message premise that currently governs `REQ-009`, `DS-006`/`DS-007`, and prior review machinery.
+- Design-spec behavior map verified against the implementation: The implementation matches the current design, but the design’s concurrency spine is no longer an adequate intended-behavior authority because no supported initiating product journey was established and the user explicitly rejected the imagined multi-client case.
+- Design review report and round confirmed: Yes — `ARCH-REV-002` passed `SR-003`, but neither round challenged the product reachability of “concurrent tabs/messages”; that basis must now return upstream.
+- Behavior-basis status: `Unclear`
+- Changed or newly discovered behavior, if any: Direct user clarification: the normal supported journey is sequential Stop completion followed by Settings editing and Save; technical ability to open multiple browser clients does not establish a supported same-run concurrency journey.
+- Remaining material ambiguity, if any: Whether any independent product-supported system, operational, or user trigger can resume or concurrently update the same run during the Settings Save lifecycle. Until established, the concurrency contract cannot govern implementation or coverage.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
@@ -53,16 +53,16 @@
 | `BEH-003` | Confirmed | Active Agent/managed Team checks occur inside the per-identity transition owner; no hot provider mutation was added. | N/A |
 | `BEH-004` | Confirmed | Standalone fixed fields remain disabled; only current-schema `llmConfig` emits into the dedicated draft and narrow mutation path. | N/A |
 | `BEH-005` | Confirmed | Team draft-start equality/direct-edit planning, per-target server validation, configured-scope mutation, and no stopped-run Reset match `REQ-008`. | N/A |
-| `BEH-006` | Contradicted | Server responses contain canonical state/revision, but failed Agent/Team saves replace the draft's revision token without applying the returned canonical payload, and `RUN_ACTIVE` is excluded from reconciliation. A later Stop refresh with that same revision takes the short-circuit path and preserves the rejected/stale draft. | `MP-CR-001` and `MP-CR-002`; `existingRunModelConfigStore.ts:200-201,226-227,246-265`, plus same-revision shortcuts at `83-90` and `110-117`. |
+| `BEH-006` | Unclear | Server-authoritative stopped Save remains aligned with the sequential journey, but its concurrent-tab/message revision and reconciliation requirements depend on `MP-CR-001`/`MP-CR-002`, whose supported initiating paths are no longer established after the user correction. | The current `REQ-009`/design concurrency language conflicts with the user’s clarified product workflow; route as `CR-F-002`. |
 | `BEH-007` | Confirmed | Current catalogs drive UI and server validation; historical residuals fail closed; Claude capabilities and SDK query options are independently mapped. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Lifecycle authority moved to the existing Agent/Team owners; validation, revision, mutation, browser draft, and provider translation have explicit owners. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | `ui-ux-spec.md` UXJ-004 requires canonical reload after an active-race rejection; the same-revision shortcut preserves the rejected draft after Stop. | Resolve `CR-F-001`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-001 through DS-008 remain traceable end to end; the defect is localized to DS-005 result reconciliation. | None beyond `CR-F-001`. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | The assessment names concurrent tabs/messages but does not establish a supported same-run product trigger; user clarification now contradicts that assumed scope. | Return the requirements/investigation/design basis to `/solution_designer`. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Source matches the currently reviewed artifacts; this round identifies that the upstream concurrency basis itself requires correction rather than attributing a source mismatch. | Re-review after the solution package is revised. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-006/DS-007 are technically traceable, but their concurrency applicability is not grounded in a confirmed product journey after the user correction. | Re-establish the supported spine from the real sequential workflow; retain concurrency only with an independent supported trigger. |
 | Ownership boundary preservation and clarity | Pass | GraphQL mutations use subject facades; lifecycle owners recheck eligibility; persistence/mutators remain internal. | None. |
 | Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Schema validation, revision digests, pure planners, GraphQL mapping, and Claude translation remain attached to clear spine owners. | None. |
 | Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing catalog, atomic metadata/tree stores, root lanes, model catalog, and form controls are extended rather than duplicated. | None. |
@@ -80,10 +80,10 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | Cross-subject vocabulary and validation are shared; subject-specific persistence and canonical payloads remain distinct. | None. |
 | Patch-on-patch complexity control | Pass | No compatibility wrapper, dual API, full-tree client replacement, or provider hot-update seam was added. | None. |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | Broad edit flags, browser-only `activeContextStore.updateConfig`, old activation naming, and stored-Team projection files/tests were removed. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Existing focused tests cover lanes, active rejection, propagation, validation, UI locking, and Claude mapping, but not the reachable `RUN_ACTIVE` response + canonical revision + post-Stop refresh sequence that exposes `CR-F-001`. | Add Agent and Team regression coverage with canonical revision unchanged and advanced by another save. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The concurrency regressions are technically coherent, but their product relevance is now unresolved; tests cannot prove their own scenario reachability. | Coverage scope must follow the revised requirements rather than preserve speculative cases by default. |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Builders/mocks are scoped and readable; no test source-size rule was applied. | None. |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests were renamed/removed with obsolete production paths; no compatibility-only assertions remain. | None. |
-| API/E2E readiness for the next workflow stage | Fail | The canonical reconciliation/lost-update defect must be corrected before API/E2E can be authoritative. | Return to `/implementation_engineer`; re-review source before API/E2E. |
+| API/E2E readiness for the next workflow stage | Fail | API/E2E must not encode `MP-CR-001`/`MP-CR-002` as required behavior while their product basis conflicts with direct user clarification. | Pause downstream progression and route to `/solution_designer`. |
 
 ## Source File Size And Structure Audit
 
@@ -131,13 +131,13 @@ Effective counts are non-empty current-source lines. Generated output, localizat
 | `graphql/queries/runHistoryQueries.ts` | 300 | Pass | Assessed; existing query document collection | Pass | Pass | Pass | None |
 | `services/runConfigEditing/existingAgentModelConfigDraft.ts` | 24 | Pass | N/A | Pass | Pass | Pass | None |
 | `services/runConfigEditing/existingRunModelConfigMutationClient.ts` | 51 | Pass | N/A | Pass | Pass | Pass | None |
-| `services/runConfigEditing/existingTeamModelConfigDraft.ts` | 105 | Pass | N/A | Pass | Pass | Pass | None |
+| `services/runConfigEditing/existingTeamModelConfigDraft.ts` | 123 | Pass | N/A | Pass | Pass | Pass | None |
 | `services/runConfigEditing/existingTeamRunFormModel.ts` | 96 | Pass | N/A | Pass | Pass | Pass | None |
 | `services/runHydration/teamRunContextHydrationService.ts` | 297 | Pass | Assessed; small projection replacement | Pass | Pass | Pass | None |
 | `stores/activeContextStore.ts` | 180 | Pass | N/A | Pass | Pass | Pass | None |
 | `stores/agentRunStore.ts` | 385 | Pass | Assessed; targeted Stop refresh | Pass | Pass | Pass | None |
 | `stores/agentTeamRunStore.ts` | 405 | Pass | Assessed; targeted root Stop refresh | Pass | Pass | Pass | None |
-| `stores/existingRunModelConfigStore.ts` | 280 | Pass | Assessed; focused draft/reconciliation owner | Fail (`CR-F-001`) | Pass | Local Fix | Correct failure/canonical baseline handling; no split is required by this finding. |
+| `stores/existingRunModelConfigStore.ts` | 369 | Pass | Assessed; bounded 95-addition/6-removal correction remains cohesive | Pass | Pass | Pass | None; the state/reconciliation owner remains below the hard limit and does not require a split. |
 | `stores/runHistoryStore.ts` | 435 | Pass | Assessed; canonical history/status projection | Pass | Pass | Pass | None |
 | `stores/runHistoryTypes.ts` | 214 | Pass | N/A | Pass | Pass | Pass | None |
 | `types/agent/ExistingRunModelConfigDraft.ts` | 29 | Pass | N/A | Pass | Pass | Pass | None |
@@ -165,7 +165,7 @@ None.
 
 - Docs impact: `Yes`
 - Why: The standalone activation service was renamed and the stored-Team form/projection types were removed/replaced.
-- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_execution.md`; `autobyteus-web/docs/agent_teams.md`; `autobyteus-web/docs/agent_execution_architecture.md`; `autobyteus-web/docs/settings.md`. Delivery-stage documentation work remains appropriate after the implementation passes review and API/E2E.
+- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_execution.md`; `autobyteus-web/docs/agent_teams.md`; `autobyteus-web/docs/agent_execution_architecture.md`; `autobyteus-web/docs/settings.md`. Delivery-stage documentation work remains appropriate only after the revised solution and implementation pass review and API/E2E.
 
 ## Material Premise Validation (Only When Needed)
 
@@ -175,90 +175,90 @@ None.
 | --- | --- | --- |
 | `MP-001` | Confirmed | N/A — fixed runtime/model divergence remains represented by the Team draft planner and per-target validation, with no stopped-run Reset. |
 
-### `MP-CR-001` — A restore-first rejection can be followed by the supported Stop workflow while the canonical revision is unchanged
+### `MP-CR-001` — Restore-first rejection followed by Stop while a Settings draft is open
 
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-005`, `REQ-009`, `REQ-012`, `AC-004`, `AC-013`, and UI/UX journey `UXJ-004`.
+- Origin: `Reclassified from CRR-001/CRR-002`
+- Related approved requirement or established contract: disputed `REQ-009`, `REQ-012`, `UXJ-004`.
 - Relevant behavior ID(s): `BEH-004`, `BEH-005`, `BEH-006`.
 - Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: On the selected stopped-run configuration surface, the user edits a local draft; a user sends a message through the supported composer before Save claims the lane; after the `RUN_ACTIVE` rejection, the user invokes the existing Stop action from the run-history surface.
-- Support evidence: AC-004 explicitly governs restore-first Save rejection; the implementation exposes message send/automatic restore and history Stop actions, and both Stop stores perform a network-only resume-config refresh.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `stopped ExistingRunConfigEditor draft -> message composer -> Agent lifecycle/Team root restore -> Save mutation -> RUN_ACTIVE canonical response -> existingRunModelConfigStore failure path -> history Stop -> refreshAgentResumeConfig/refreshTeamResumeConfig -> selectedCanonical watcher -> same-revision shortcut`.
-- Lifecycle preconditions and material consequence at the claimed point: The restore does not itself change `llmConfig`, so the revision remains the draft-start revision. The failed Save installs that revision on the retained draft. The authoritative Stop refresh then has the same revision and updates only lifecycle/editability, leaving the rejected draft visible and saveable instead of reloading canonical values as UXJ-004 requires.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-F-001` requires a bounded frontend reconciliation correction and focused Agent/Team regression tests. No server lifecycle or API redesign is required.
+- Independent product-supported initiating trigger or applicable governing contract: No longer established. The prior review named the composer and Settings surface, but did not prove that sending a message while retaining an unsaved stopped-run Settings draft is an intended supported journey.
+- Support evidence: The user has clarified the normal journey as sequential Stop completion -> open Settings -> edit -> Save and rejected hand-speed/timing speculation as a product premise.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: The confirmed path ends at `Stop completes -> Settings opens with server-confirmed stopped state -> edit -> Save`. No independent supported trigger has been identified that resumes the same run within this path.
+- Lifecycle preconditions and material consequence at the claimed point: The earlier review inferred an intervening resume from exposed technical surfaces rather than a verified journey. Without such a trigger, the claimed active-race state is not established.
+- Reachability: `Unclear`
+- Review consequence / proportionate response: Remove this premise from findings, score deductions, required machinery, and API/E2E scope until the solution designer proves an independent supported trigger or revises the concurrency requirement away.
 
-### `MP-CR-002` — A restore-first rejection can return a newer canonical revision after another supported concurrent Save
+### `MP-CR-002` — Two ordinary browser clients concurrently operate the same stopped run
 
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-009`, `REQ-012`, `REQ-014`; design risk `Concurrent tabs/messages: lanes, opaque revision, typed outcomes, canonical refresh`.
+- Origin: `Reclassified from CRR-001/CRR-002`
+- Related approved requirement or established contract: disputed `REQ-009`, `REQ-014`, and design risk “Concurrent tabs/messages.”
 - Relevant behavior ID(s): `BEH-006`.
-- Initiating basis kind: `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: The approved optimistic-concurrency contract explicitly covers concurrent updates. Two ordinary web clients can select the same stopped run; one submits the supported Save mutation, and a normal message then restores the run before the other client's Save.
-- Support evidence: The separate Agent/Team Save APIs accept an expected opaque revision specifically to reject stale updates, and the reviewed design names concurrent tabs/messages as an in-scope risk. The message composer and selected configuration are normal product surfaces.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `client A and B load R1 -> client B Save commits canonical R2 -> message composer restores run/team -> client A Save enters lifecycle lane -> server returns RUN_ACTIVE with canonical R2/editability R2 -> client A grafts R2 onto its R1 baseline/draft without applying canonical -> Stop + network refresh returns R2 -> same-revision shortcut -> client A can Save stale draft with R2`.
-- Lifecycle preconditions and material consequence at the claimed point: Because active-state rejection precedes stale-revision classification, `RUN_ACTIVE` legitimately returns the current R2 canonical state. The frontend ignores that canonical state but adopts R2. The next authoritative refresh cannot detect the stale baseline by token, so a later Save can overwrite client B's committed configuration without a stale-revision rejection or accurate canonical presentation.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: The client must never associate a returned/new revision with a baseline it did not obtain from the corresponding canonical payload. Keep Save locked until canonical reconciliation is applied, and add the two-client revision-advance regression for Agent and Team.
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: None. Opening the application in multiple browser tabs is a general technical capability, not evidence that same-run multi-client control is an intended product workflow.
+- Support evidence: The user explicitly rejected the imagined two-tab/two-user same-run operation as an unrealistic/hacking-style scenario and required review to follow real product usage.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: None established. The prior path began from “two ordinary clients” without an exposed product journey or supported collaboration/operational contract that initiates same-run concurrent control.
+- Lifecycle preconditions and material consequence at the claimed point: The two-client lifecycle state was assumed from browser mechanics, so its lost-update consequence cannot establish product reachability.
+- Reachability: `Not Reachable` under the clarified intended workflow.
+- Review consequence / proportionate response: This premise cannot drive a finding, deduction, machinery, or coverage requirement. The current requirements/design conflict with the clarification and must be revised upstream; no source removal is prescribed until that revision is approved.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.1`
-- Overall score (`/100`): `90.6`
-- Score calculation note: Simple average of the ten category scores. The clean-pass rule is not met because API/E2E readiness and runtime correctness are below `9.0` and `CR-F-001` remains open.
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `93.6`
+- Score calculation note: Scores are preserved from `CRR-002` because this round attributes no source defect and an unsupported/unclear premise cannot lower implementation scores. The review still fails the behavior-basis gate due `CR-F-002`; the score does not override that decision.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Agent/Team Save, restore, return, and Claude application spines are explicit and traceable. | DS-005 is implemented incorrectly at one failure-reconciliation branch. | Correct `CR-F-001` without changing the spine ownership. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | Lifecycle/root lanes, persistence, validation, mutation, and browser draft ownership are clear. | No structural boundary defect; only local draft-state handling is wrong. | Preserve the current boundaries during the fix. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Narrow subject-specific inputs and canonical typed results protect fixed identity. | The client fails to consume the canonical result consistently on `RUN_ACTIVE`. | Reconcile the returned canonical payload/token as one unit. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Pure planners/mutators and network/state/presentation responsibilities are separated. | The focused store's failure-state transition is behaviorally incomplete. | Repair within the draft/reconciliation owner; no new coordinator is needed. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Editability, revisions, patches, and Agent/Team variants are tight and non-overlapping. | A revision is treated separately from the canonical baseline it identifies in the frontend. | Maintain a canonical-payload-plus-revision invariant in store transitions. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | Names align well with stopped update, lifecycle, configured scope, and canonical draft concerns. | The semantics of `sync*Canonical`'s same-revision shortcut are too broad for post-rejection refresh. | Make force/reconcile intent explicit in the corrected call path and tests. |
-| `7` | `API/E2E Readiness` | 8.3 | Builds and 88 reviewed focused checks passed; main contracts are testable. | The reachable active-race/canonical-revision sequence is untested and currently fails by inspection. | Fix and add Agent/Team regression coverage before API/E2E handoff. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.0 | Server serialization, validation, persistence, and provider application are otherwise coherent. | `CR-F-001` can retain a rejected draft after Stop and, with a newer returned revision, bypass the intended lost-update protection. | Apply or refresh canonical state before adopting its revision and before later Save. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Obsolete flags, wrappers, projections, and misleading mutation paths were removed cleanly. | Only durable docs remain stale, already assigned to delivery. | No source correction beyond normal docs update later. |
-| `10` | `Cleanup Completeness` | 9.3 | Removed source/tests have no remaining source references; generated/localized contracts are updated. | Delivery docs still reference renamed/removed implementation pieces. | Update the named docs at delivery after integrated-state validation. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implemented spines remain explicit and traceable under the current design. | The product applicability of concurrency-specific DS-006/DS-007 is now an upstream requirement question, not a source defect. | Rebase the spine inventory after the solution designer resolves `CR-F-002`. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | Lifecycle/root lanes, persistence, validation, mutation, and browser draft ownership remain clear. | The focused Pinia owner now coordinates several explicit reconciliation flags, though no boundary leakage was found. | Keep future lifecycle additions within this owner rather than duplicating flags in components. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Narrow subject-specific inputs and canonical typed results protect fixed identity, and failure payload/revision consumption is now coherent. | Agent and Team canonical payload shapes remain necessarily specialized at the transport boundary. | Preserve the atomic canonical/revision invariant in future result variants. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Team rebasing stays pure, while transport, Pinia state, and Vue rendering remain separated. | The store is a moderately sized 369 effective lines because it owns both Agent and Team reconciliation. | Reassess extraction only if another independent state transition materially expands the file. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Editability, revisions, patches, and discriminated Agent/Team drafts remain tight; Team rebase reuses the canonical planner. | Subject-specific canonical payloads prevent total consolidation without weakening types. | Continue sharing policy only where Agent/Team semantics are genuinely identical. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | `apply*FailureCanonical`, `rebaseExistingTeamModelConfigDraft`, and `forceBaselineOnNextStoppedSync` state their intent. | The temporal relation between the force flag and stopped sync requires reading Save and sync actions together. | Keep the new regression names and transition comments/evidence current if this flow changes. |
+| `7` | `API/E2E Readiness` | 9.3 | The implementation remains testable and focused checks passed, but no source deduction is made from the disputed scenarios. | Required API/E2E scenario selection is blocked by the upstream behavior-basis conflict. | Resume coverage planning only after requirements identify real supported journeys. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | Source remains internally correct against the prior contract; this round does not attribute a runtime defect from a disputed premise. | The intended runtime contract must be simplified or independently grounded upstream. | Reassess behavior after the revised solution package is approved. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No wrapper, dual API, old schema branch, or provider fallback was added by the correction. | Durable docs still name earlier implementation paths, as already assigned to delivery. | Update those docs against the integrated state. |
+| `10` | `Cleanup Completeness` | 9.3 | The bounded correction adds no dead flag/helper/test and the prior removal set remains clean. | Delivery-stage durable documentation is not yet refreshed. | Complete the recorded docs work after integrated-state validation. |
 
 ## Findings
 
-### `CR-F-001` — Failed active-race results can attach a canonical revision to a stale draft and survive the post-Stop refresh
+### `CR-F-002` — Concurrency-specific requirements and review machinery lack a verified product-supported initiating path
 
 - Severity: High
-- Classification: `Local Fix`
-- Affected approved behavior: `BEH-006`; `REQ-005`, `REQ-009`, `REQ-012`, `REQ-014`; `AC-004`, `AC-008`, `AC-013`; `UXJ-004`.
-- Material-premise records: `MP-CR-001`, `MP-CR-002`.
+- Classification: `Requirement Gap`
+- Affected approved behavior: `BEH-006`; `REQ-009`, `REQ-012`, `REQ-014`; `DS-005`–`DS-007`; design risk “Concurrent tabs/messages.”
+- Material-premise records: reclassified `MP-CR-001`, `MP-CR-002`.
 - Evidence:
-  - Agent and Team server owners return the current canonical object/tree and current revision on `RUN_ACTIVE` (`standalone-agent-run-lifecycle-service.ts:88-104`; `agent-team-run-manager.ts:183-195`).
-  - On every failed mutation, the web store discards the returned canonical payload and replaces only `isActive` and `editability` on the captured pre-request draft (`existingRunModelConfigStore.ts:200-201`, `226-227`).
-  - `RUN_ACTIVE` is not in `shouldRefreshAfterFailure`, so no immediate canonical refresh is required.
-  - The later network-only Stop refresh is fed through `syncAgentCanonical`/`syncTeamCanonical`; if its revision matches the revision already copied from the failed result, lines `83-90` / `110-117` update only lifecycle/editability and preserve the rejected/stale canonical baseline and draft.
-- Consequence: In the ordinary restore-first path, reopening eligibility after Stop does not reload canonical values as approved. In the concurrent-save variant, the UI can pair revision R2 with an R1 baseline/draft and later overwrite the real R2 config without the stale-revision guard firing.
-- Required action: Treat canonical state and its revision as one invariant. For `RUN_ACTIVE` and any other failure that can return a changed canonical revision, either apply the returned canonical payload as the new baseline while retaining any rejected user input separately for explanation, or keep reconciliation required and Save locked until a network refresh is force-applied. The post-Stop authoritative refresh must not preserve a rejected baseline merely because the token was copied earlier.
-- Required coverage: Add focused Agent and Team store tests for (1) restore-first `RUN_ACTIVE` with unchanged revision followed by Stop refresh, and (2) another Save advancing the canonical revision before `RUN_ACTIVE`, followed by Stop refresh. Assert canonical values/planner are refreshed and no stale draft can Save under the newer token.
+  - `requirements.md` introduces serialization against restore/concurrent updates and optimistic revision behavior, while `design-spec.md` elevates concurrent tabs/messages into lifecycle spines.
+  - The upstream investigation/review package does not identify an independently supported same-run multi-client journey; prior `MP-CR-002` began from generic browser-client capability.
+  - The user has now explicitly clarified the intended sequential journey and rejected same-run multi-tab/multi-user or hand-speed timing speculation as product behavior.
+  - The draft `api-e2e-coverage-investigation.md` already translated both disputed premises into planned durable scenarios `API-E2E-003`/`API-E2E-004`, demonstrating why the basis must be corrected before execution.
+- Consequence: The current requirements/design and prior review result disagree with intended product usage. Continuing to implementation or API/E2E from the disputed basis risks preserving and testing complexity that no supported journey requires.
+- Required action: `/solution_designer` must revise the requirements, investigation notes, design, supplemental UX artifact, and risk/coverage expectations around the real sequential Stop -> Settings -> Save journey. Any retained concurrency behavior must name an independent product-supported user/system/operational trigger and trace its production lifecycle; technical possibility alone is insufficient. Then route the revised package through architecture review and implementation impact assessment.
+- Source attribution: No implementation defect or removal prescription is made in this round. `IR-002` correctly implemented the previously approved contract; source impact depends on the revised solution decision.
 
 ## Classification
 
-`Local Fix`
+`Requirement Gap`
 
 ## Recommended Recipient
 
-`/implementation_engineer`
+`/solution_designer`
 
-Implementation-owned correction must return through implementation source review and then proceed to API/E2E only after a passing result.
+Return the complete package for requirements/product-path correction before further API/E2E work.
 
 ## Residual Risks
 
-- Full API/E2E race execution, Team browser rendering, filesystem-indeterminate behavior, dynamic catalog drift, and real Claude provider execution remain downstream after `CR-F-001` is fixed and re-reviewed.
-- Stored Team override provenance remains intentionally unavailable under the approved value-based draft rule.
-- Durable documentation paths named above remain delivery-stage work, not a source-review blocker.
+- The sequential stopped-edit journey, schema/catalog safety, Team propagation, identity preservation, and provider application remain valid areas unless the revised requirements say otherwise.
+- Concurrency-specific lanes, revisions, reconciliation flags, and tests may or may not remain justified; do not remove or preserve them solely from this review before upstream correction and architecture review.
+- API/E2E scope must not treat `MP-CR-001` or `MP-CR-002` as required scenarios in the interim.
 
 ## Latest Authoritative Result
 
 - Review Decision: **Fail**
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Pass** — both new premises have independent supported triggers/contracts and complete forward production paths.
-- Score Summary: `9.1/10` (`90.6/100`); runtime correctness `8.0` and API/E2E readiness `8.3` are below the clean-pass threshold.
-- Failure Origin (when applicable): `N/A` — this is pre-API/E2E implementation review.
-- Recommended Recipient (when applicable): `/implementation_engineer`
-- Notes: `CR-F-001` is a bounded frontend reconciliation defect. Server lifecycle ownership, narrow persistence, Team propagation, validation, cleanup, and Claude application otherwise align with `SR-003` / `ARCH-REV-002`.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Fail** — `MP-CR-001` is `Unclear`, `MP-CR-002` is `Not Reachable` under the user-clarified workflow, and neither can govern source or coverage.
+- Score Summary: `9.4/10` (`93.6/100`) preserved from `CRR-002`; no source deduction is made from unsupported premises. The behavior-basis failure independently prevents Pass.
+- Failure Origin (when applicable): Upstream `Requirement Gap` exposed by direct user product-path correction; architecture and code review previously accepted/amplified the unsupported concurrency premise.
+- Recommended Recipient (when applicable): `/solution_designer`
+- Notes: `CR-F-002` blocks API/E2E progression. Revise the solution basis around real supported production journeys, re-review architecture, then determine proportionate implementation impact.
