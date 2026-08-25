@@ -10,7 +10,7 @@ import {
 } from "./agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "./agent-tool-mcp-tool-executor.js";
 import {
-  type AgentToolMcpSessionExecutionCapabilities,
+  type AgentToolMcpSessionBaseExecutionCapabilities,
 } from "./agent-tool-mcp-session.js";
 import {
   type AgentToolsMcpRouteDependencies,
@@ -91,7 +91,7 @@ export class AgentToolsMcpRuntime {
 
   createApplicationSessionManager(input: {
     scope: ApplicationAgentToolMcpSessionScope;
-    executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
+    executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities;
     assertExecutionCapabilitiesReady: () => void;
   }): ScopedAgentToolMcpSessionManager {
     this.assertOpen();
@@ -115,7 +115,7 @@ export class AgentToolsMcpRuntime {
 
   private createSessionManager(input: {
     scope: ApplicationAgentToolMcpSessionScope;
-    executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
+    executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities;
   }): ScopedAgentToolMcpSessionManager {
     return new ScopedAgentToolMcpSessionManager(
       this.createSessionService(input.executionCapabilities),
@@ -125,7 +125,7 @@ export class AgentToolsMcpRuntime {
   }
 
   private createSessionService(
-    executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null,
+    executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities | null,
   ): AgentToolMcpSessionService {
     return new AgentToolMcpSessionService({
       registry: this.registry,

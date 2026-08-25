@@ -43,6 +43,7 @@ import type {
   MixedTeamRunContext,
 } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
+import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 export type PreparedMixedTaskAgentActivation = Readonly<{
   stagedPlatformBindings: readonly TeamAgentPlatformBinding[];
@@ -73,6 +74,7 @@ export class MixedAgentMemberHandle {
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    taskRootResolver: MemberTaskRootResolver;
     publish: MixedTeamEventPublish;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
@@ -436,6 +438,7 @@ export class MixedAgentMemberHandle {
       teamContext: this.options.teamContext,
       agentNode: node,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+      taskRootResolver: this.options.taskRootResolver,
     });
     return new AgentRunConfig({
       agentDefinitionId: node.agentDefinitionId,

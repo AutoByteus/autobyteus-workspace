@@ -13,7 +13,7 @@ import { createCodexThreadStartupGate } from "../../../../../../src/agent-execut
 import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { testMemberTaskRootResolver } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -93,27 +93,13 @@ const createThread = (
 
 const createMemberTeamContext = () =>
   new MemberTeamContext({
-    teamRunId: "team-1",
-    teamDefinitionId: "team-def-1",
-    teamName: "Codex team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    teamAddress: "/",
-    memberAddress: "/ping",
-    agentRunId: "ping-run-1",
-    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    coordinatorAddress: "/ping",
-    collaboration: {
-      addressing: {
-        rootTeamRunId: "team-1",
-        memberAddress: "/ping",
-      },
-    },
-    executionAddress: {
+    identity: {
       rootTeamRunId: "team-1",
-      taskTeamRunIds: [],
       memberAddress: "/ping",
-      taskAgentRunId: null,
+      agentRunId: "ping-run-1",
     },
+    collaboration: { outgoingHandoffs: [] },
+    taskRootResolver: testMemberTaskRootResolver(),
   });
 
 const createSpeakApprovalParams = () => ({

@@ -71,6 +71,7 @@ export class GeneralProcessRunSupervisor {
                 (context, subTeamRunFactory, callbacks) =>
                   new MixedTeamManager(context, {
                     subTeamRunFactory,
+                    taskRootResolver: callbacks.taskRootResolver,
                     agentRunManager: this.agentRunManager,
                     agentToolMcpSessionManager:
                       agentToolsSessionManager,

@@ -320,6 +320,10 @@ describe("AgentRunManager candidate lifecycle", () => {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       }),
       runtimeExposure: buildRuntimeAgentToolExposure([]),
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
       enabledTools: [],
       toolRoutes: {},
     });
@@ -331,6 +335,10 @@ describe("AgentRunManager candidate lifecycle", () => {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       }),
       runtimeExposure: buildRuntimeAgentToolExposure([]),
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
       enabledTools: [],
       toolRoutes: {},
     });

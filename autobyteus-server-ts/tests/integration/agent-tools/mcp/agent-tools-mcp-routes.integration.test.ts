@@ -173,6 +173,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
         memoryDir,
       },
       executionCapabilities: {
+        kind: "agent",
         publishedArtifactPublisher: publicationService,
       },
     });
@@ -323,6 +324,9 @@ describe("Agent Tools MCP route configured MCP integration", () => {
       registry,
       catalog,
       getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
+      executionCapabilities: {
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
     });
     const created = sessionService.createAgentToolMcpSession({
       owner: {
@@ -802,6 +806,10 @@ describe("Agent Tools MCP route", () => {
       owner: { runId: `owner-${enabledTools.join("-") || "none"}` },
       sender,
       runtimeExposure: buildRuntimeAgentToolExposure(enabledTools),
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+      },
       enabledTools,
       toolRoutes: Object.fromEntries(enabledTools.map((toolName) => [
         toolName,

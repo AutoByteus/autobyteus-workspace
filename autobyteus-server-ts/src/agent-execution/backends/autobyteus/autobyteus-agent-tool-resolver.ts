@@ -1,4 +1,5 @@
 import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
@@ -13,8 +14,10 @@ import {
   isGetHandoffRulesToolName,
   createAutoByteusGetHandoffRulesToolForSender,
 } from "./agent-communication/autobyteus-send-message-tool-factory.js";
-import { DELEGATE_TASK_TOOL_NAME } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
-import { registerDelegateTaskTool } from "../../../agent-tools/task-delegation/delegate-task.js";
+import {
+  isTaskDelegationToolName,
+} from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
+import { registerTaskDelegationTools } from "../../../agent-tools/task-delegation/register-task-delegation-tools.js";
 
 type ToolResolutionLogger = {
   warn: (...args: unknown[]) => void;
@@ -78,8 +81,30 @@ export const resolveAutoByteusAgentTools = (input: {
       continue;
     }
 
-    if (name === DELEGATE_TASK_TOOL_NAME && !defaultToolRegistry.getToolDefinition(name)) {
-      registerDelegateTaskTool();
+    if (isTaskDelegationToolName(name)) {
+      if (!memberTeamContext) {
+        logger.warn(
+          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a Team-member context. Skipping.`,
+        );
+        continue;
+      }
+      if (!defaultToolRegistry.getToolDefinition(name)) {
+        registerTaskDelegationTools();
+      }
+      try {
+        tools.push(defaultToolRegistry.createTool(name, new ToolConfig({
+          taskDelegation: Object.freeze({
+            identity: memberTeamContext.identity,
+            rootResolver: memberTeamContext.taskRootResolver,
+          }),
+        })));
+        actualToolNames.push(name);
+      } catch (error) {
+        logger.error(
+          `Failed to create tool instance for '${name}' from agent definition '${agentDefinition.name}': ${String(error)}`,
+        );
+      }
+      continue;
     }
 
     if (!defaultToolRegistry.getToolDefinition(name)) {

@@ -131,6 +131,7 @@ export const createApplicationRunServices = (input: {
       createTeamManager: (context, subTeamRunFactory, callbacks) =>
         new MixedTeamManager(context, {
           subTeamRunFactory,
+          taskRootResolver: callbacks.taskRootResolver,
           agentRunManager,
           agentToolMcpSessionManager: agentToolsSessionManager,
           memoryLocationService,

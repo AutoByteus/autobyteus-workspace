@@ -6,6 +6,7 @@ import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/s
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -14,6 +15,7 @@ import { ApplicationExecutionResourceResolver } from "../../../src/application-o
 import { createApplicationDefinitionServices } from "../../../src/application-platform/runtime/create-application-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTaskRootResolver } from "../../fixtures/current-team-run-fixtures.js";
 
 const packageRoot = path.resolve("../applications/brief-studio/dist/importable-package");
 const workspaceRoot = path.resolve("../applications/brief-studio");
@@ -75,7 +77,7 @@ describe("Brief package team prompt authority", () => {
       definitions.agentTeamDefinitionService,
     ).build({
       teamContext: new TeamRunContext({
-        rootTeamRunId: "brief-team-run",
+        physicalScope: createRootTeamRunPhysicalScope("brief-team-run"),
         teamRunId: "brief-team-run",
         teamBackendKind: TeamBackendKind.MIXED,
         teamNode: {
@@ -95,6 +97,7 @@ describe("Brief package team prompt authority", () => {
       }),
       agentNode: researcherNode as never,
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
+      taskRootResolver: testMemberTaskRootResolver(),
     });
     const createAgentToolMcpSession = vi.fn((input: {
       runtimeExposure: { requestedToolNames: string[] };

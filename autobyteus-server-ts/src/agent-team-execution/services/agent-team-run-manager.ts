@@ -19,6 +19,8 @@ import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-de
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
+import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
+import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -231,7 +233,25 @@ export class AgentTeamRunManager {
   }): Promise<RootTeamRun> {
     const publisher = new TeamRunEventPublisher<TeamRunEvent>();
     let root: RootTeamRun | null = null;
+    const taskRootResolver: MemberTaskRootResolver = Object.freeze({
+      resolveActiveRoot: async () => {
+        if (!root) {
+          throw new TaskDelegationError(
+            "TEAM_ROOT_NOT_BOUND",
+            "RootTeamRun construction is incomplete.",
+          );
+        }
+        if (!root.isActive()) {
+          throw new TaskDelegationError(
+            "TEAM_RUN_NOT_ACTIVE",
+            `RootTeamRun '${root.teamRunId}' is not active.`,
+          );
+        }
+        return root;
+      },
+    });
     const callbacks = {
+      taskRootResolver,
       publish: (event: TeamRunEvent) => publisher.publish(event),
       deliverInterAgentMessage: (intent: import("../domain/inter-agent-message-delivery.js").InterAgentMessageDeliveryIntent) => {
         if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });

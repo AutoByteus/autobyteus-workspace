@@ -13,6 +13,7 @@ import type { AgentMemoryLocationService } from "../../../../agent-memory/servic
 import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 export type ConfiguredMemberRegistryAccess = {
   getOrCreate(context: MixedTeamMemberContext): MixedConfiguredMemberHandle;
@@ -32,6 +33,7 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    taskRootResolver: MemberTaskRootResolver;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<import("../../../../agent-execution/domain/agent-operation-result.js").AgentOperationResult>;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
@@ -66,6 +68,7 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
           activityInspector: this.options.activityInspector,
           memberTeamContextBuilder: this.options.memberTeamContextBuilder,
           workspaceManager: this.options.workspaceManager,
+          taskRootResolver: this.options.taskRootResolver,
           publish: this.options.publish,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
           acceptPlatformBinding: this.options.acceptPlatformBinding,

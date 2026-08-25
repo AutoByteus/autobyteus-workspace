@@ -16,6 +16,7 @@ import type { AgentMemoryLocationService } from "../../../../agent-memory/servic
 import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 
@@ -35,6 +36,7 @@ export class MixedTaskAgentExecutionRegistry {
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+    taskRootResolver: MemberTaskRootResolver;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
     acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
@@ -72,6 +74,7 @@ export class MixedTaskAgentExecutionRegistry {
       activityInspector: this.options.activityInspector,
       memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       workspaceManager: this.options.workspaceManager,
+      taskRootResolver: this.options.taskRootResolver,
       publish: (event) => retainedEvents.push(event),
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       acceptPlatformBinding: this.options.acceptPlatformBinding,

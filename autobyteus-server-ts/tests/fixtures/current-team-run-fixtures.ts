@@ -14,6 +14,8 @@ import {
   type TeamRunNode,
 } from "../../src/agent-team-execution/domain/team-run-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-execution/domain/team-run-execution-tree.js";
+import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-team-run.js";
+import type { MemberTaskRootResolver } from "../../src/agent-team-execution/task-delegation/member-task-root-resolver.js";
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 
@@ -107,6 +109,7 @@ export const testMemberTeamContext = (input: {
   deliverInterAgentMessage?: MemberCollaborationContext["deliverInterAgentMessage"];
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
+  taskRootResolver?: MemberTaskRootResolver;
 } = {}): MemberTeamContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
@@ -118,8 +121,20 @@ export const testMemberTeamContext = (input: {
       outgoingHandoffs: input.outgoingHandoffs,
       deliverInterAgentMessage: input.deliverInterAgentMessage,
     }),
+    taskRootResolver: input.taskRootResolver ?? testMemberTaskRootResolver(),
   });
 };
+
+export const testMemberTaskRootResolver = (
+  root: RootTeamRun | null = null,
+): MemberTaskRootResolver => Object.freeze({
+  resolveActiveRoot: async () => {
+    if (!root) {
+      throw new Error("Test MemberTaskRootResolver has no RootTeamRun.");
+    }
+    return root;
+  },
+});
 
 export const address = (value: string): AgentTeamAddress => assertAgentTeamAddress(value);
 

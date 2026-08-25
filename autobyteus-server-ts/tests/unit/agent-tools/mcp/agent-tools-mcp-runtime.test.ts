@@ -8,17 +8,28 @@ import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
 } from "../../../../src/config/server-runtime-endpoints.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  testMemberTaskRootResolver,
+  testMemberTeamContext,
+} from "../../../fixtures/current-team-run-fixtures.js";
 
 const createPublisher = () => ({
   publishManyForRun: vi.fn().mockResolvedValue([]),
 });
 
-const createSessionInput = (runId: string) => ({
-  owner: { runId },
+const createSessionInput = (
+  runId: string,
+  memberTeamContext: ReturnType<typeof testMemberTeamContext> | null = null,
+) => ({
+  owner: {
+    runId,
+    ...(memberTeamContext ? { teamIdentity: memberTeamContext.identity } : {}),
+  },
   sender: buildAgentRunMessageSenderContext({
     senderRunId: runId,
     senderName: runId,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    memberTeamContext,
   }),
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   runtimeExposure: buildRuntimeAgentToolExposure(["publish_artifacts"]),
@@ -67,13 +78,27 @@ describe("AgentToolsMcpRuntime", () => {
           }
         },
       });
+    const generalRootResolver = testMemberTaskRootResolver();
+    const applicationRootResolver = testMemberTaskRootResolver();
+    const generalMember = testMemberTeamContext({
+      rootTeamRunId: "general-root",
+      memberAddress: "/member",
+      agentRunId: "general-run",
+      taskRootResolver: generalRootResolver,
+    });
+    const applicationMember = testMemberTeamContext({
+      rootTeamRunId: "application-root",
+      memberAddress: "/member",
+      agentRunId: "application-run",
+      taskRootResolver: applicationRootResolver,
+    });
 
     const general =
       mcpRuntime.generalProcessSessionManager.createAgentToolMcpSession(
-        createSessionInput("general-run"),
+        createSessionInput("general-run", generalMember),
       );
     const application = applicationSessionManager.createAgentToolMcpSession(
-      createSessionInput("application-run"),
+      createSessionInput("application-run", applicationMember),
     );
     const registry = mcpRuntime.routeDependencies.registry;
 
@@ -86,7 +111,9 @@ describe("AgentToolsMcpRuntime", () => {
       ok: true,
       session: {
         executionCapabilities: {
+          kind: "team_member",
           publishedArtifactPublisher: generalPublisher,
+          taskDelegation: { rootResolver: generalRootResolver },
         },
       },
     });
@@ -99,7 +126,9 @@ describe("AgentToolsMcpRuntime", () => {
       ok: true,
       session: {
         executionCapabilities: {
+          kind: "team_member",
           publishedArtifactPublisher: applicationPublisher,
+          taskDelegation: { rootResolver: applicationRootResolver },
         },
       },
     });

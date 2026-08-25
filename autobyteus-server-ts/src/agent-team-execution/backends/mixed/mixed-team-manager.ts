@@ -29,6 +29,10 @@ import type { AgentMemoryLocationService } from "../../../agent-memory/services/
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import {
+  requireMemberTaskRootResolver,
+  type MemberTaskRootResolver,
+} from "../../task-delegation/member-task-root-resolver.js";
 
 /** Provider/local mechanics for exactly one concrete TeamRun. */
 export class MixedTeamManager {
@@ -51,11 +55,13 @@ export class MixedTeamManager {
       activityInspector?: AgentConversationActivityInspector;
       memberTeamContextBuilder?: MemberTeamContextBuilder;
       workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
+      taskRootResolver: MemberTaskRootResolver;
       publish: (event: TeamRunEvent) => void;
       deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
       acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
     },
   ) {
+    const taskRootResolver = requireMemberTaskRootResolver(options.taskRootResolver);
     this.configured = new MixedConfiguredMemberRegistry({
       teamContext: context,
       configResolver: new MixedTeamMemberConfigResolver(context),
@@ -66,6 +72,7 @@ export class MixedTeamManager {
       activityInspector: options.activityInspector,
       memberTeamContextBuilder: options.memberTeamContextBuilder,
       workspaceManager: options.workspaceManager,
+      taskRootResolver,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
       acceptPlatformBinding: options.acceptPlatformBinding,
@@ -78,6 +85,7 @@ export class MixedTeamManager {
       activityInspector: options.activityInspector,
       memberTeamContextBuilder: options.memberTeamContextBuilder,
       workspaceManager: options.workspaceManager,
+      taskRootResolver,
       publish: options.publish,
       deliverInterAgentMessage: options.deliverInterAgentMessage,
       acceptPlatformBinding: options.acceptPlatformBinding,

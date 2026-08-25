@@ -35,12 +35,7 @@ export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterPr
         execute: async ({ session, rawArguments }) => {
           try {
             const publication =
-              session.executionCapabilities?.publishedArtifactPublisher;
-            if (!publication) {
-              throw new Error(
-                "Published artifact publisher is unavailable for this session.",
-              );
-            }
+              session.executionCapabilities.publishedArtifactPublisher;
             const input = normalizePublishArtifactsToolInput(rawArguments);
             const artifacts = await publication.publishManyForRun({
               runId: session.owner.runId,
