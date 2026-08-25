@@ -1,0 +1,74 @@
+IR-006 CR-007 full renderer/workspace-store instrumentation
+Date: 2026-08-24
+Baseline source HEAD: 5dc5105b14d5c215a70254ce317ad725d130f16e
+Trigger: CRR-009 / CR-007 / API-E2E-F-002
+
+Scope and environment
+---------------------
+Temporary diagnostic events were added to the actual Nuxt RunConfigPanel,
+workspace Pinia store, and Team runtime-catalog sync composable. The normal
+browser renderer ran at http://127.0.0.1:3001/workspace against the locally
+available backend at http://127.0.0.1:8006. The rendered Northstar Operating
+Company draft used AutoByteus/deepseek-v4-flash and active New paths at root /
+and explicit nested Team /engineering_org.
+
+Observed accepted activation
+----------------------------
+The final diagnostic pass used:
+- / -> /tmp/ir006-trace2-root
+- /engineering_org -> /tmp/ir006-trace2-engineering
+
+Ordered event summary from the same Run Team activation:
+1. handle-run:start
+   - draft ID was present
+   - component/store readiness was true before preparation
+2. workspace-create:start + workspace-create:complete for /
+3. team-workspace:canonicalized for /
+   - exact address /
+   - selected draft ID unchanged
+   - canonical workspace ID applied
+   - readiness still true immediately after the store update
+4. workspace-create:start + workspace-create:complete for /engineering_org
+5. team-workspace:canonicalized for /engineering_org
+   - exact address /engineering_org
+   - selected draft ID unchanged
+   - canonical workspace ID applied
+   - readiness still true immediately after the store update
+6. catalog-watch/catalog-reload:start repeated for the unchanged runtime set
+   ["autobyteus"] as the two workspace-only immutable draft replacements
+   propagated through the renderer
+7. handle-run:prepared
+   - workspaceReady: true
+   - selected draft ID still exact and unchanged
+   - storeReady/componentReady: false
+   - blocking issues were MODEL_CATALOG_PENDING for the configured Team and
+     Agent members
+8. No handle-run:launch-owner event occurred. The configuration surface
+   remained open and Run Team later became actionable again after catalog load.
+
+Diagnosis and selected correction
+---------------------------------
+useTeamRunRuntimeCatalogSync watched collectRuntimeKinds(configRef.value), which
+returned a fresh array for every immutable Team config replacement. Vue therefore
+re-ran catalog synchronization after workspace-only canonicalization even though
+the runtime set had not changed. setRuntimeModelCatalogLoading intentionally
+removed the ready catalog; the panel's duplicated post-preparation readiness gate
+then observed MODEL_CATALOG_PENDING and returned before the existing launch owner.
+This is a concrete full-renderer invalidation sequence, not a generic Pinia delay
+and not a reason to add nextTick/timing machinery.
+
+The durable correction is:
+- watch a sorted runtime-kind-set signature, so workspace/model/workspace-metadata
+  replacements with the same runtime set retain ready catalogs;
+- after successful workspace preparation, pass the exact current selected draft
+  directly and exactly once to agentTeamRunStore.launchDraft;
+- keep readiness/admission/create inside that owner, which already reconciles
+  topology, admits the exact snapshot, evaluates readiness from the snapshot and
+  current catalogs, and establishes in-flight duplicate protection synchronously.
+
+Temporary instrumentation status
+--------------------------------
+All __IR006_TRACE__/recordIr006Trace diagnostic code was removed from final
+production source. A final repository source scan found no remaining diagnostic
+symbol. The workspace metadata created for the diagnostic paths was an isolated
+implementation-check side effect; this pass did not create a TeamRun.

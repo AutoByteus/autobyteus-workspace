@@ -18,6 +18,7 @@
       :model-label="$t('workspace.components.workspace.config.AgentRunConfigForm.llm_model')"
       :model-help-text="$t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
       :advanced-initially-expanded="readOnlyMode"
+      :historical-model-config="readOnlyMode"
       :missing-historical-config="missingHistoricalConfig"
       id-prefix="agent-run"
       control-variant="quiet"
@@ -28,9 +29,12 @@
 
     <div class="mt-8">
       <WorkspaceSelector
-        :model-value="workspaceSelection"
-        :is-loading="workspaceLoadingState.isLoading"
-        :error="workspaceLoadingState.error"
+        :model="{
+          mode: 'editable',
+          selection: workspaceSelection,
+          isLoading: workspaceLoadingState.isLoading,
+          error: workspaceLoadingState.error,
+        }"
         :disabled="isFormReadOnly"
         :workspace-locked="workspaceLocked"
         workspace-locked-message="Workspace is fixed for existing runs."

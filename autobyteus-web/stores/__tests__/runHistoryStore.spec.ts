@@ -282,8 +282,9 @@ const {
       isTeamStreamReopenRequired: vi.fn().mockReturnValue(false),
     },
     llmProviderConfigStoreMock: {
-      models: ['model-default'],
+      models: vi.fn(() => ['model-default']),
       fetchProvidersWithModels: vi.fn().mockResolvedValue(undefined),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
     },
     hydrateLiveRunContextMock: vi.fn().mockResolvedValue(undefined),
     hydrateLiveTeamRunContextMock: vi.fn().mockResolvedValue(undefined),
@@ -411,7 +412,7 @@ describe('runHistoryStore', () => {
 
     selectionStoreMock.selectedType = null;
     selectionStoreMock.selectedRunId = null;
-    llmProviderConfigStoreMock.models = ['model-default'];
+    llmProviderConfigStoreMock.models.mockReturnValue(['model-default']);
     llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
     hydrateLiveRunContextMock.mockReset();
     hydrateLiveRunContextMock.mockResolvedValue(undefined);
@@ -1631,7 +1632,7 @@ describe('runHistoryStore', () => {
     workspaceStoreMock.workspacesFetched = true;
     selectionStoreMock.selectedType = 'agent';
     selectionStoreMock.selectedRunId = 'run-selected';
-    llmProviderConfigStoreMock.models = ['model-default'];
+    llmProviderConfigStoreMock.models.mockReturnValue(['model-default']);
 
     agentContextsStoreMock.runs.set('run-selected', {
       config: {

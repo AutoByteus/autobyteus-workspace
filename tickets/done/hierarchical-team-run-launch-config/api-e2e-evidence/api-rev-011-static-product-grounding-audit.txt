@@ -1,0 +1,37 @@
+# API-REV-011 static and product-grounding audit
+
+HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+IR-014 test commit: 4b36f7c5b58ed3ea3fe3cc94ea5d71228913949e
+
+## Diff and scope
+PASS: IR-014 changes exactly one existing durable test: autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+PASS: no production source changed in IR-014.
+
+## Changed scenario assertions
+250:      reasoning_effort: 'ultra',
+281:      reasoning_effort: 'ultra',
+251:      service_tier: 'fast',
+282:      service_tier: 'fast',
+270:      .toEqual(['reasoning_effort', 'service_tier'])
+300:      .toEqual(['reasoning_effort', 'service_tier'])
+296:    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+297:    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+303:    expect(JSON.stringify(node)).toBe(before)
+304:    expect(wrapper.emitted('update:override')).toBeUndefined()
+PASS: exact producer-backed values, one occurrence, stable order, byte-equivalent input, and zero update event are asserted.
+
+## Producer backing
+45:    name: "reasoning_effort",
+60:    name: "service_tier",
+124:      service_tier: { type: 'string', enum: ['fast'] },
+PASS: both retained keys are backed by current Codex model normalization/schema behavior.
+
+## Synthetic/rejected vocabulary
+PASS: rejected synthetic CR/free-text and alpha/zeta vocabulary is absent from scoped current production/tests.
+
+## Hash
+45bd06f922e3624cab000e602267872b83d52673be1cfae667329826d5c39fda  autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+
+## Broader execution decision
+PASS: browser/Electron/provider rerun not required and not performed; IR-014 is test-only and the prohibited synthetic CR/catalog-injection scenario was not resurrected.
+PASS: CRR-022 Nuxt production build is retained because production source is unchanged.

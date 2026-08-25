@@ -1,0 +1,30 @@
+Delivery evidence: DR-004 durable documentation validation
+Timestamp: 2026-08-25T07:41:19+02:00
+HEAD: cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+
+=== git diff --check (three updated docs and docs report) ===
+PASS
+
+=== Markdown fence/link and current-presentation validation ===
+PASS fence/link: autobyteus-web/docs/agent_teams.md
+PASS fence/link: autobyteus-web/docs/settings.md
+PASS fence/link: autobyteus-web/docs/agent_integration_minimal_bridge.md
+PASS fence/link: autobyteus-web/docs/agent_execution_architecture.md
+PASS fence/link: autobyteus-web/docs/memory.md
+PASS fence/link: autobyteus-server-ts/docs/modules/agent_team_execution.md
+PASS fence/link: autobyteus-server-ts/docs/modules/run_history.md
+PASS fence/link: autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md
+PASS fence/link: autobyteus-server-ts/README.md
+PASS fence/link: autobyteus-server-ts/docs/modules/agent_memory.md
+PASS fence/link: autobyteus-server-ts/docs/features/memory_sync.md
+PASS fence/link: autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md
+PASS fence/link: autobyteus-server-ts/docs/features/task_agent_identity_future_improvements.md
+PASS fence/link: tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md
+PASS current SR-011 presentation assertions
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+PASS implementation reference: autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+
+RESULT: PASS — 3 long-lived docs updated, 10 reviewed with no impact.

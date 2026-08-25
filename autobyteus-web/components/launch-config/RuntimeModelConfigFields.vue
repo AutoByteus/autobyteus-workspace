@@ -42,6 +42,13 @@
         :variant="controlVariant"
       />
       <p v-if="modelHelpText" class="mt-1 text-xs text-gray-500">{{ modelHelpText }}</p>
+      <p
+        v-if="selectedModelUnavailable"
+        class="mt-1 text-xs text-amber-600"
+        data-test="historical-model-unavailable"
+      >
+        {{ historicalValueUnavailableMessage }}
+      </p>
     </div>
 
     <ModelConfigSection
@@ -55,6 +62,9 @@
       :id-prefix="idPrefix"
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      :historical="historicalModelConfig"
+      :historical-value-unavailable-message="historicalValueUnavailableMessage"
+      :historical-model-config-title="historicalModelConfigTitle"
       :control-variant="controlVariant"
       @update:config="updateModelConfig"
     />
@@ -95,6 +105,9 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
   controlVariant?: 'default' | 'quiet'
+  historicalValueUnavailableMessage?: string
+  historicalModelConfigTitle?: string
+  historicalModelConfig?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -117,6 +130,8 @@ const blankRuntimeLabelText = computed(
 const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a model')
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
 const controlVariant = computed(() => props.controlVariant ?? 'default')
+const historicalValueUnavailableMessage = computed(() => props.historicalValueUnavailableMessage ?? 'Saved value is unavailable in current options.')
+const historicalModelConfigTitle = computed(() => props.historicalModelConfigTitle ?? 'Saved model configuration')
 const nativeSelectClass = computed(() => [
   'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
   controlVariant.value === 'quiet'
@@ -130,6 +145,7 @@ const {
   ensureModelsForRuntime,
   groupedModelOptions,
   hasModelIdentifier,
+  isLoadingModels,
   modelConfigSchemaByIdentifier,
   normalizedStoredRuntimeKind,
   runtimeOptions,
@@ -205,7 +221,12 @@ watch(
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(props.llmModelIdentifier),
 )
-
+const selectedModelUnavailable = computed(() => Boolean(
+  readOnlyComputed.value &&
+  props.llmModelIdentifier?.trim() &&
+  !isLoadingModels.value &&
+  !hasModelIdentifier(props.llmModelIdentifier),
+))
 const updateRuntimeKind = (value: string) => {
   if (readOnlyComputed.value) return
   const normalizedRuntime = normalizeScopedRuntimeKind(value, allowBlankRuntime.value)

@@ -150,7 +150,7 @@ runtime v1 reader, partial migration, or automatic `.env` import.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` repairs
 the released nested-Team writer regression. For each AgentRun admitted by a
-validated current V1 execution tree, it moves an affected flat nested-member
+validated migration-owned V1 intermediate execution tree, it moves an affected flat nested-member
 directory as one same-filesystem directory into the canonical
 `root TeamRun -> ancestor TeamRun ids -> AgentRun` location. Current runtime
 readers and writers remain canonical-only; direct-root and already-canonical
@@ -160,6 +160,16 @@ existing **Settings -> Server Migrations -> Retry** action. A real canonical
 target beside a preserved flat source records `SUCCEEDED_WITH_WARNINGS`; a
 missing or invalid canonical target is never treated as a warning. See the
 Memory Sync documentation for the approved v1 physical-retention consequence.
+
+Required startup migration `20260824_team_run_execution_tree_v2` then upgrades
+each exact V1 Team execution tree to the current V2 contract. It preserves
+concrete IDs, configured/task topology, handoffs, application binding,
+timestamps, and Agent launch snapshots; adds the canonical root address `/`;
+maps legacy runtime labels; and materializes a complete
+`defaultLaunchConfiguration` on the root and every configured nested Team from
+that Team's unique direct coordinator snapshot. Exact V2 files are skipped
+idempotently. Runtime, history, GraphQL, and stream readers are V2-only and
+admit only complete execution-tree/task/communication packages.
 
 ### Production migration practice
 
@@ -282,7 +292,7 @@ sync can resume after restart.
 See `docs/features/memory_sync.md` for API endpoints, storage files, token
 behavior, current v1 limits, and the documented case where replace-only sync may
 retain both a pre-upgrade flat nested-member path and its canonical replacement
-while semantic local/imported reads continue using only the canonical V1 path.
+while semantic local/imported reads continue using only the canonical V2 path.
 
 ## Docker
 

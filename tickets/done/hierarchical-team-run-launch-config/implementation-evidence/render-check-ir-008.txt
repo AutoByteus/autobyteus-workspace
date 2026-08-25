@@ -1,0 +1,27 @@
+IR-008 rendered frontend interaction check
+Date: 2026-08-24 Europe/Berlin
+Surface: Nuxt workspace renderer at http://localhost:3001/workspace, bound to the supported server at http://127.0.0.1:8006.
+Definition: Northstar Operating Company with nested /engineering_org.
+
+Interaction and observations:
+1. Opened the real Agent Teams surface, selected Run for Northstar Operating Company, and selected deepseek-v4-flash as the root inherited model.
+2. On nested Team /engineering_org, selected New and cleared the workspace path through the rendered WorkspaceSelector.
+   - teamRunConfigStore launch readiness: canLaunch=false.
+   - Rendered Run Team button: disabled.
+   - Rendered blocker: "Enter a workspace path to run this team."
+3. Applied the supported topology-change timing by refreshing the live definition without /engineering_org while the draft remained open.
+   - Stale /engineering_org workspace authoring state remained present before activation.
+   - Current member tree no longer contained /engineering_org.
+   - Derived launch readiness became canLaunch=true and the rendered Run Team button became enabled, allowing the launch owner to reconcile.
+4. Activated Run Team once.
+   - The application remained on /workspace (no Nuxt error page).
+   - Exact stale /engineering_org authoring/config state was removed atomically.
+   - Repair notice addresses were ["/engineering_org"].
+   - The rendered status notice was visible: "Team topology changed. Stale settings were removed. Review these addresses and retry: /engineering_org".
+   - Run Team remained available for the repaired current topology.
+5. Visual inspection: the amber repair status is prominent above Root Team defaults, readable without scrolling, uses the established form language, does not overlap controls, and preserves the existing desktop hierarchy/layout.
+
+Evidence screenshot:
+- hierarchical-team-stale-empty-repair-ir-008.png (2084x1476)
+
+Classification: implementation-scoped rendered validation only; not API/E2E sign-off.

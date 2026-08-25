@@ -543,15 +543,15 @@ describe("mobile Round 4 UX refinements", () => {
       '[data-testid="mobile-run-auto-approve-tools-switch"]',
     );
     expect(switchButton.attributes("aria-checked")).toBe("false");
-    expect(useTeamRunConfigStore().config?.autoExecuteTools).toBe(false);
+    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(false);
 
     await switchButton.trigger("click");
     await nextTick();
 
-    expect(useTeamRunConfigStore().config?.autoExecuteTools).toBe(true);
+    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(true);
     const selectedDraft = useTeamRunConfigStore().selectedDraft;
     expect(selectedDraft).toBeTruthy();
-    expect(selectedDraft?.config.autoExecuteTools).toBe(true);
+    expect(selectedDraft?.config.rootConfig.autoExecuteTools).toBe(true);
     expect(Object.isFrozen(selectedDraft)).toBe(true);
     expect(Object.isFrozen(selectedDraft?.config)).toBe(true);
   });

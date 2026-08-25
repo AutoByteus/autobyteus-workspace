@@ -1,0 +1,8 @@
+API-REV-009 Electron launcher transpile prerequisite
+UTC 2026-08-25T08:31:09Z
+HEAD 45cb5e2be6d2bcc325eb49b386f98158663072bb
+
+> autobyteus@1.4.57 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+PASS: compiled launch-profile boundary present

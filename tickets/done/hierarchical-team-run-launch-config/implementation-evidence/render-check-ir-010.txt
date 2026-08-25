@@ -1,0 +1,25 @@
+IR-010 rendered frontend inspection
+Date: 2026-08-25
+
+Journey
+1. Started the ticket worktree Nuxt application on port 3002 against the running local AutoByteus backend at http://127.0.0.1:29695.
+2. Opened Workspace, selected Temp Workspace, opened Nested Classroom Test Team, selected the existing TeamRun "hello", opened the Teacher member, and activated Edit Config / Settings.
+3. Inspected the stored root configuration, expanded Team Members Override, and expanded the nested /StudentStudyGroup Team and its model Advanced disclosure.
+
+Observed result
+- The Settings surface renders TeamRunConfigForm with data-mode="stored" and the SR-011 shared field composition rather than a stored-only card/tree.
+- The root displays the exact stored runtime, model, model configuration, workspace, and auto-approve values in disabled controls, plus the read-only explanation.
+- The mixed stored member order is Teacher followed by /StudentStudyGroup, matching the V2 member-node sequence instead of regrouping Teams and Agents.
+- The nested Team remains collapsed by default, retains the TEAM marker, address, indentation, and Customized state, and expands through an operable disclosure.
+- Expanded nested fields display the exact stored Codex / GPT-5.6-Luna configuration, workspace, auto-approve value, and Agent values in disabled shared controls.
+- Model Advanced disclosures remain operable while value controls remain disabled.
+- No Reset or Run Team command is rendered in stored mode.
+- No rejected stored cards, stored-only hierarchy renderer, editable draft workspace state, or current Team definition reconstruction is visible.
+- The existing layout remains usable at the inspected desktop window width; the SR-012 delta adds no fixed-width presentation and reuses the already-approved responsive SR-011 controls.
+
+Evidence
+- stored-team-settings-root-ir-010.png
+- stored-team-settings-members-ir-010.png
+- stored-team-settings-nested-ir-010.png
+
+Result: PASS

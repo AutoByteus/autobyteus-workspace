@@ -4,7 +4,7 @@ import {
   getAgentTeamAddressBasename,
 } from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-import type { ConfiguredTeamExecution } from "../domain/team-run-execution-tree.js";
+import type { ConfiguredTeamExecutionNode } from "../domain/team-run-execution-tree.js";
 import type { TeamExecutionIndex } from "./team-execution-index.js";
 import {
   createResolvedAgentRecipient,
@@ -45,7 +45,7 @@ export class TeamRecipientResolver {
       ? createResolvedAgentRecipient(node.address)
       : createResolvedAgentTeamRecipient({
           address: node.address,
-          coordinatorAddress: (node as ConfiguredTeamExecution).coordinatorAddress,
+          coordinatorAddress: (node as ConfiguredTeamExecutionNode).coordinatorAddress,
         });
   }
 

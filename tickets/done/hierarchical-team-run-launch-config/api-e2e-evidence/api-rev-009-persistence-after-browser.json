@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-08-25T08:38:56.895239+00:00",
+  "teamRunId": "nested_classroom_test_team_50b47ce67a654603be2e089b7923a556",
+  "treePath": "/private/tmp/autobyteus-api-rev-009-owned/server-data/memory/agent_teams/nested_classroom_test_team_50b47ce67a654603be2e089b7923a556/team_run_execution_tree.json",
+  "schemaVersion": 2,
+  "treeSha256Before": "367491ac21c2cceced68921b6a764cb2475241c6fad0e91212d53f0aa688eb2d",
+  "treeSha256After": "367491ac21c2cceced68921b6a764cb2475241c6fad0e91212d53f0aa688eb2d",
+  "treeHashUnchanged": true,
+  "persistedConfigUnchanged": true,
+  "actualPersistedLlmConfig": {
+    "/": {
+      "reasoning_effort": "medium",
+      "ordinary_prompt": "ROOT ordinary API-REV-009",
+      "multiline_prompt": "ROOT line one\nROOT line two"
+    },
+    "/Teacher": {
+      "reasoning_effort": "high",
+      "ordinary_prompt": "TEACHER ordinary API-REV-009",
+      "multiline_prompt": "TEACHER alpha\nTEACHER beta"
+    },
+    "/StudentStudyGroup": {
+      "reasoning_effort": "medium",
+      "ordinary_prompt": "NESTED ordinary API-REV-009",
+      "multiline_prompt": "NESTED first\rNESTED second"
+    },
+    "/StudentStudyGroup/student_one": {
+      "reasoning_effort": "low",
+      "ordinary_prompt": "STUDENT ONE ordinary API-REV-009",
+      "multiline_prompt": "STUDENT ONE alpha\rSTUDENT ONE beta"
+    },
+    "/StudentStudyGroup/student_two": {
+      "reasoning_effort": "max",
+      "ordinary_prompt": "STUDENT TWO ordinary API-REV-009",
+      "multiline_prompt": "STUDENT TWO alpha\nSTUDENT TWO beta"
+    }
+  },
+  "resumeIsActive": true,
+  "resumeSchemaVersion": 2,
+  "browserNetworkAfterInstrumentation": []
+}

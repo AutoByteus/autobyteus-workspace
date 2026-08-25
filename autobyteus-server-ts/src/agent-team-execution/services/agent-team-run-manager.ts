@@ -18,7 +18,7 @@ import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinato
 import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
-import { TeamRunV1PackageCatalog } from "../../run-history/services/team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -42,7 +42,7 @@ export class AgentTeamRunManager {
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
-  private readonly packageCatalog: TeamRunV1PackageCatalog;
+  private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
@@ -54,7 +54,7 @@ export class AgentTeamRunManager {
   constructor(options: AgentTeamRunManagerOptions = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
-    this.packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
     this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
@@ -105,7 +105,7 @@ export class AgentTeamRunManager {
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
       if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
-        throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted V1 package.`);
+        throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted current package.`);
       }
       const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
       const loaded = await new TeamRunStatePackageLoader({

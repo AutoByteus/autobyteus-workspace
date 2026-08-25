@@ -479,6 +479,7 @@ export type CreateAgentTeamDefinitionInput = {
 
 export type CreateAgentTeamRunInput = {
   memberConfigs: Array<TeamMemberConfigInput>;
+  teamConfigs: Array<TeamScopeLaunchConfigInput>;
   teamDefinitionId: Scalars['String']['input'];
 };
 
@@ -2408,9 +2409,8 @@ export type TeamMemberConfigInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  runtimeKind: Scalars['String']['input'];
   skillAccessMode: SkillAccessModeEnum;
-  workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2458,6 +2458,16 @@ export type TeamRunResumeConfigPayload = {
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
   teamRunId: Scalars['String']['output'];
+};
+
+export type TeamScopeLaunchConfigInput = {
+  autoExecuteTools: Scalars['Boolean']['input'];
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  skillAccessMode: SkillAccessModeEnum;
+  teamAddress: Scalars['String']['input'];
+  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type TerminateAgentRunResult = {

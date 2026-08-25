@@ -7,6 +7,7 @@ import type {
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
+import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 
 const applicationId = "app-1";
 
@@ -49,11 +50,19 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
   launch: {
     kind: "AGENT_TEAM",
     mode: "memberConfigs",
+    teamDefaultConfig: {
+      workspaceRootPath: "/tmp/team-workspace",
+      llmModelIdentifier: "grok-4.6",
+      runtimeKind: "claude_agent_sdk",
+      autoExecuteTools: false,
+      skillAccessMode: "PRELOADED_ONLY" as never,
+      llmConfig: null,
+    },
     memberConfigs: [],
   },
 });
 
-const buildService = () => {
+const buildService = (teamRunServiceOverride?: TeamRunService) => {
   const executionResourceResolver = {
     resolveExecutionResource: vi.fn(async (
       _applicationId: string,
@@ -70,8 +79,7 @@ const buildService = () => {
     createAgentRun: vi.fn(async () => ({ runId: "agent-run-1" })),
   };
   const teamRunService = {
-    allocateTeamRunId: vi.fn(async () => "team-run-1"),
-    createTeamRun: vi.fn(async () => ({
+    createTeamRunFromRootConfig: vi.fn(async () => ({
       teamRunId: "team-run-1",
       getExecutionTreeSnapshot: () => ({ rootTeam: { members: [] } }),
     })),
@@ -93,7 +101,7 @@ const buildService = () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
+      teamRunService: (teamRunServiceOverride ?? teamRunService) as never,
       agentDefinitionService: agentDefinitionService as never,
       agentTeamDefinitionService: agentTeamDefinitionService as never,
     }),
@@ -121,7 +129,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       },
     });
     expect(agentRunService.createAgentRun).toHaveBeenCalledOnce();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).toHaveBeenCalledOnce();
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
   });
@@ -137,7 +145,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       message: "The selected model is no longer supported. Select a current supported model.",
     });
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
   });
 
   it("leaves external runtime model ownership outside the AutoByteus catalog guard", async () => {
@@ -169,20 +177,57 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         definitionId: "team-def-1",
       },
     });
-    expect(teamRunService.createTeamRun).toHaveBeenCalledOnce();
+    expect(teamRunService.createTeamRunFromRootConfig).toHaveBeenCalledOnce();
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).toHaveBeenCalledOnce();
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
   });
 
-  it("validates every AutoByteus team member before allocating a team run", async () => {
+  it("does not allocate, create, or persist an invalid application Team topology", async () => {
+    const teamAllocator = { allocateForTeamDefinitionName: vi.fn(() => "unexpected-team-run") };
+    const agentAllocator = { allocateForAgentDefinition: vi.fn(async () => "unexpected-agent-run") };
+    const manager = { createTeamRun: vi.fn(), terminateTeamRun: vi.fn() };
+    const catalog = { recordTeamRunCreated: vi.fn() };
+    const realTeamRunService = new TeamRunService({
+      teamDefinitionService: {
+        getDefinitionById: vi.fn(async () => ({
+          name: "Application Team",
+          coordinatorMemberName: "writer",
+          nodes: [{ memberName: "writer", refType: "agent", refScope: "shared", ref: "writer-def" }],
+        })),
+      } as never,
+      agentTeamRunManager: manager as never,
+      teamRunHistoryCatalogService: catalog as never,
+      workspaceManager: {
+        ensureWorkspaceByRootPath: vi.fn(async (path: string) => ({ getBasePath: () => path })),
+      } as never,
+      teamRunIdentityAllocator: teamAllocator,
+      agentRunIdentityAllocator: agentAllocator,
+      tokenUsageReadiness: {
+        assertCurrentSchemaReady: vi.fn(),
+        assertExistingRunRestoreReady: vi.fn(),
+      },
+    });
+    const { service, bindingStore, lookupStore } = buildService(realTeamRunService);
+
+    await expect(service.startAgentTeamRunBinding(applicationId, buildTeamInput()))
+      .rejects.toThrow("Launch settings for Team member '/writer' were not provided");
+
+    expect(teamAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(agentAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
+    expect(manager.createTeamRun).not.toHaveBeenCalled();
+    expect(catalog.recordTeamRunCreated).not.toHaveBeenCalled();
+    expect(bindingStore.persistBinding).not.toHaveBeenCalled();
+    expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
+  });
+
+  it("validates every AutoByteus team member before requesting team creation", async () => {
     const { service, teamRunService } = buildService();
 
     await expect(service.startAgentTeamRunBinding(applicationId, {
       ...buildTeamInput(),
       launch: {
-        kind: "AGENT_TEAM",
-        mode: "memberConfigs",
+        ...buildTeamInput().launch,
         memberConfigs: [{
           memberAddress: "/writer",
           agentDefinitionId: "agent-def-1",
@@ -192,8 +237,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         }],
       },
     })).rejects.toMatchObject({ code: "CURRENT_MODEL_SELECTION_REQUIRED" });
-    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
   });
 
   it("rejects an AGENT_TEAM launch passed to startAgent before resolution or side effects", async () => {
@@ -211,7 +255,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     ).rejects.toThrow("startAgent requires launch.kind 'AGENT'.");
     expect(executionResourceResolver.resolveExecutionResource).not.toHaveBeenCalled();
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
     expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
   });
@@ -231,7 +275,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     ).rejects.toThrow("startAgentTeam requires launch.kind 'AGENT_TEAM'.");
     expect(executionResourceResolver.resolveExecutionResource).not.toHaveBeenCalled();
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
     expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
   });
@@ -246,7 +290,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       }),
     ).rejects.toThrow("startAgent requires an 'AGENT' execution resource.");
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
     expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
   });
@@ -261,7 +305,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       }),
     ).rejects.toThrow("startAgentTeam requires an 'AGENT_TEAM' execution resource.");
     expect(agentRunService.createAgentRun).not.toHaveBeenCalled();
-    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRunFromRootConfig).not.toHaveBeenCalled();
     expect(bindingStore.persistBinding).not.toHaveBeenCalled();
     expect(lookupStore.replaceBindingLookups).not.toHaveBeenCalled();
   });

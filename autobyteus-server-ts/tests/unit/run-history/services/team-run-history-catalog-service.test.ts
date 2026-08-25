@@ -6,7 +6,7 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
 import { resetTeamRunHistoryCatalogState, TeamRunHistoryCatalogService } from "../../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
-import { TeamRunV1PackageCatalog } from "../../../../src/run-history/services/team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "../../../../src/run-history/services/team-run-package-catalog.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 const buildTree = (teamRunId = "team-1") => testExecutionTree({
@@ -18,7 +18,7 @@ const buildTree = (teamRunId = "team-1") => testExecutionTree({
   children: [testAgentNode("/planner", { agentRunId: "planner-run", workspaceRootPath: "/tmp/workspace" })],
 });
 
-describe("TeamRunHistoryCatalogService current V1 tree", () => {
+describe("TeamRunHistoryCatalogService current V2 tree", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
   let managed = false;
@@ -75,7 +75,7 @@ describe("TeamRunHistoryCatalogService current V1 tree", () => {
     });
   });
 
-  it("archives the exact V1 execution tree and derived catalog row together", async () => {
+  it("archives the exact V2 execution tree and derived catalog row together", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(rootDir, tree);
@@ -111,7 +111,7 @@ describe("TeamRunHistoryCatalogService current V1 tree", () => {
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, indexStore });
     await service.recordTeamRunCreated({ tree });
-    const packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    const packageCatalog = new TeamRunPackageCatalog(memoryDir);
     packageCatalog.admit("team-1");
     vi.spyOn(indexStore, "writeIndex").mockRejectedValueOnce(new Error("candidate write failed"));
 
@@ -126,7 +126,7 @@ describe("TeamRunHistoryCatalogService current V1 tree", () => {
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(rootDir, tree);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const packageCatalog = new TeamRunV1PackageCatalog(memoryDir);
+    const packageCatalog = new TeamRunPackageCatalog(memoryDir);
     packageCatalog.admit("team-1");
     const service = new TeamRunHistoryCatalogService(memoryDir, {
       teamRunManager: manager,

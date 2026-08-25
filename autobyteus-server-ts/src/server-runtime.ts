@@ -18,7 +18,7 @@ import {
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "./app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
@@ -52,7 +52,7 @@ import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.
 import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
 import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/default-agent-run-event-pipeline.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
-import { TeamRunV1PackageCatalog } from "./run-history/services/team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "./run-history/services/team-run-package-catalog.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
 import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/token-usage-analytics-projection-writer.js";
@@ -258,19 +258,19 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
             logPath: tokenUsageStatus?.logPath ?? null,
           },
     );
-    await new TeamRunV1PackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
-    const teamRunV1Status = statuses.find(
-      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    await new TeamRunPackageCatalog(appConfigProvider.config.getMemoryDir()).rebuild();
+    const teamRunV2Status = statuses.find(
+      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     );
-    if (teamRunV1Status?.status !== "SUCCEEDED") {
+    if (teamRunV2Status?.status !== "SUCCEEDED") {
       logger.warn(
-        `TeamRun V1 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
-          migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
-          displayName: teamRunV1Status?.displayName ?? null,
-          status: teamRunV1Status?.status ?? "MISSING",
-          attempts: teamRunV1Status?.attempts ?? null,
-          errorMessage: teamRunV1Status?.errorMessage ?? null,
-          logPath: teamRunV1Status?.logPath ?? null,
+        `TeamRun execution-tree V2 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
+          migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
+          displayName: teamRunV2Status?.displayName ?? null,
+          status: teamRunV2Status?.status ?? "MISSING",
+          attempts: teamRunV2Status?.attempts ?? null,
+          errorMessage: teamRunV2Status?.errorMessage ?? null,
+          logPath: teamRunV2Status?.logPath ?? null,
         })}`,
       );
     }

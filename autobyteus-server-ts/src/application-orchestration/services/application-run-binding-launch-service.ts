@@ -8,9 +8,10 @@ import type {
   ApplicationStartAgentTeamInput,
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
+  ApplicationTeamRunPreset,
 } from "@autobyteus/application-sdk-contracts";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { ConfiguredAgentExecution, ConfiguredMemberExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamRunService, getTeamRunService, type TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -31,8 +32,8 @@ const skillMode = (value: SkillAccessMode | string | null | undefined): SkillAcc
 const collectRunIds = (binding: ApplicationAgentBindingRecord): string[] => binding.runtime.subject === "AGENT_RUN"
   ? [binding.runtime.agentRunId]
   : [binding.runtime.teamRunId, ...binding.runtime.members.map((member) => member.agentRunId)];
-const configuredAgents = (members: readonly ConfiguredMemberExecution[]): ConfiguredAgentExecution[] => {
-  const result: ConfiguredAgentExecution[] = [];
+const configuredAgents = (members: readonly ConfiguredExecutionNode[]): ConfiguredAgentExecutionNode[] => {
+  const result: ConfiguredAgentExecutionNode[] = [];
   for (const member of members) {
     if ("agentRunId" in member) result.push(member);
     else result.push(...configuredAgents(member.members));
@@ -103,28 +104,20 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startTeam(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationTeamRunLaunch): Promise<ApplicationAgentBindingRecord> {
-    const configs = launch.mode === "preset"
-      ? await this.teams.buildMemberConfigsFromLaunchPreset({ teamDefinitionId: resource.definitionId, launchPreset: {
-          workspaceRootPath: launch.launchPreset.workspaceRootPath,
-          llmModelIdentifier: launch.launchPreset.llmModelIdentifier,
-          autoExecuteTools: Boolean(launch.launchPreset.autoExecuteTools),
-          skillAccessMode: skillMode(launch.launchPreset.skillAccessMode),
-          runtimeKind: (launch.launchPreset.runtimeKind ?? RuntimeKind.AUTOBYTEUS) as RuntimeKind,
-          llmConfig: launch.launchPreset.llmConfig ?? null,
-        } })
-      : launch.memberConfigs.map((config) => this.explicitConfig(config));
-    const normalizedConfigs = configs.map((config) => ({
-      ...config,
-      runtimeKind: normalizeEffectiveRuntimeKind(config.runtimeKind),
-    }));
-    for (const config of normalizedConfigs) {
-      const runtimeKind = config.runtimeKind;
+    const rootConfig = this.explicitRootConfig(
+      launch.mode === "preset" ? launch.launchPreset : launch.teamDefaultConfig,
+    );
+    const normalizedConfigs = launch.mode === "memberConfigs"
+      ? launch.memberConfigs.map((config) => this.explicitConfig(config))
+      : null;
+    await this.validateCurrentModelSelection(rootConfig.runtimeKind, rootConfig.llmModelIdentifier);
+    for (const config of normalizedConfigs ?? []) {
+      const runtimeKind = normalizeEffectiveRuntimeKind(config.runtimeKind);
       await this.validateCurrentModelSelection(runtimeKind, config.llmModelIdentifier);
     }
-    const teamRunId = await this.teams.allocateTeamRunId(resource.definitionId);
-    const teamRun = await this.teams.createTeamRun({
+    const teamRun = await this.teams.createTeamRunFromRootConfig({
       teamDefinitionId: resource.definitionId,
-      teamRunId,
+      rootConfig,
       memberConfigs: normalizedConfigs,
       applicationBinding: { applicationId: seed.applicationId, bindingId: seed.bindingId },
     });
@@ -141,6 +134,17 @@ export class ApplicationRunBindingLaunchService {
       createdAt: now, updatedAt: now, terminatedAt: null, lastErrorMessage: null,
     };
     return this.persist(binding);
+  }
+
+  private explicitRootConfig(input: ApplicationTeamRunPreset) {
+    return {
+      workspaceRootPath: required(input.workspaceRootPath, "teamDefaultConfig.workspaceRootPath"),
+      llmModelIdentifier: required(input.llmModelIdentifier, "teamDefaultConfig.llmModelIdentifier"),
+      autoExecuteTools: Boolean(input.autoExecuteTools),
+      skillAccessMode: skillMode(input.skillAccessMode),
+      runtimeKind: normalizeEffectiveRuntimeKind(input.runtimeKind),
+      llmConfig: input.llmConfig ?? null,
+    };
   }
 
   private explicitConfig(input: ApplicationTeamMemberLaunchConfig): TeamRunMemberConfigInput {

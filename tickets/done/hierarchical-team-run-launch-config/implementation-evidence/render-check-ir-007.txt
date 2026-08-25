@@ -1,0 +1,29 @@
+IR-007 rendered frontend implementation check
+Date: 2026-08-24
+Surface: Nuxt development renderer at http://127.0.0.1:3001/workspace, using the live local server on http://127.0.0.1:8006 through an isolated window-node context.
+Viewport: 1042 x 738 CSS pixels.
+Team definition: Northstar Operating Company.
+
+States exercised through the rendered Workspace Team configuration surface:
+1. Selected the root AutoByteus runtime and DeepSeek / deepseek-v4-flash model.
+2. Selected active New workspaces for both exact Team addresses:
+   - root / -> /tmp/ir007-root
+   - nested /engineering_org -> /tmp/ir007-engineering
+3. Confirmed the draft-owned authoring map contained both exact addresses in new/idle state while the immutable root config still retained its Temp Workspace until launch preparation.
+4. Confirmed launch readiness had zero blockers and Run Team was enabled for both non-empty active New paths.
+5. Switched /engineering_org to Existing and confirmed its inactive New buffer remained /tmp/ir007-engineering, created no readiness blocker, and left Run Team enabled.
+6. Switched /engineering_org back to New and confirmed the preserved path was restored, both exact-address states remained idle, and Run Team remained enabled.
+7. Changed a same-draft root setting (Auto approve) and confirmed the Team workspace authoring entries remained stable.
+8. Normal rendered interactions after instrumentation reset produced no window errors.
+
+Visual inspection:
+- The established Team defaults card, controls, workspace selector, hierarchy scroll area, and sticky Run Team action retained their existing visual hierarchy, spacing, typography, and interaction affordances.
+- The root New-workspace path remained visible and editable without replacing the canonical configured workspace ahead of launch preparation.
+- No new visual overflow, overlap, clipped labels, or disabled-state contradiction was observed at the exercised viewport.
+
+Boundary:
+- Run Team was intentionally not activated; production API/E2E launch execution remains owned by api_e2e_engineer after source review.
+- A Nuxt development-server virtual #app-manifest pre-transform warning appeared in the terminal while the page remained rendered and interactive. The clean production web build passed separately (3,731 modules, 15 routes).
+
+Screenshot:
+- hierarchical-team-draft-owned-workspaces-ir-007.png

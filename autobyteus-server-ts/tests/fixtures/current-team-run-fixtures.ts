@@ -53,12 +53,27 @@ export const testAgentTeamNode = (input: {
 }): TeamRunAgentTeamNode => {
   const address = assertAgentTeamAddress(input.address);
   const name = getAgentTeamAddressBasename(address) ?? "root";
+  const coordinatorAddress = assertAgentTeamAddress(input.coordinatorAddress);
+  const coordinator = input.children.find((child): child is TeamRunAgentNode =>
+    child.kind === "agent" && child.address === coordinatorAddress,
+  );
+  if (!coordinator) {
+    throw new Error(`Test AgentTeam '${address}' requires direct coordinator '${coordinatorAddress}'.`);
+  }
   return {
     kind: "agent_team",
     address,
     teamDefinitionId: input.teamDefinitionId ?? `team-${name}`,
     teamRunId: input.teamRunId ?? `team-run-${name}`,
-    coordinatorAddress: assertAgentTeamAddress(input.coordinatorAddress),
+    coordinatorAddress,
+    defaultLaunchConfiguration: {
+      runtimeKind: coordinator.runtimeKind,
+      llmModelIdentifier: coordinator.llmModelIdentifier,
+      llmConfig: coordinator.llmConfig,
+      autoExecuteTools: coordinator.autoExecuteTools,
+      skillAccessMode: coordinator.skillAccessMode,
+      workspaceRootPath: coordinator.workspaceRootPath,
+    },
     ...(address === "/" ? {} : {
       role: input.role ?? null,
       description: input.description ?? null,
@@ -108,7 +123,7 @@ export const testMemberTeamContext = (input: {
 
 export const address = (value: string): AgentTeamAddress => assertAgentTeamAddress(value);
 
-/** Current strict V1 execution-tree fixture derived through the production builder. */
+/** Current strict V2 execution-tree fixture derived through the production builder. */
 export const testExecutionTree = (input: {
   children: readonly TeamRunNode[];
   coordinatorAddress: string;

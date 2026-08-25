@@ -24,15 +24,16 @@ describe('TeamRunConfig helpers', () => {
 
     expect(config.teamDefinitionId).toBe('team-def-1')
     expect(config.teamDefinitionName).toBe('Research Team')
-    expect(config.runtimeKind).toBe('codex')
-    expect(config.workspaceId).toBeNull()
-    expect(config.llmModelIdentifier).toBe('gpt-5.4')
-    expect(config.llmConfig).toEqual({
+    expect(config.rootConfig.runtimeKind).toBe('codex')
+    expect(config.rootConfig.workspace).toEqual({ workspaceId: null, workspaceMetadata: null })
+    expect(config.rootConfig.llmModelIdentifier).toBe('gpt-5.4')
+    expect(config.rootConfig.llmConfig).toEqual({
       reasoning_effort: 'high',
     })
-    expect(config.autoExecuteTools).toBe(false)
-    expect(config.skillAccessMode).toBe('PRELOADED_ONLY')
-    expect(config.memberOverrides).toEqual({})
+    expect(config.rootConfig.autoExecuteTools).toBe(false)
+    expect(config.rootConfig.skillAccessMode).toBe('PRELOADED_ONLY')
+    expect(config.teamOverrides).toEqual({})
+    expect(config.agentOverrides).toEqual({})
     expect(config.isLocked).toBe(false)
   })
 })

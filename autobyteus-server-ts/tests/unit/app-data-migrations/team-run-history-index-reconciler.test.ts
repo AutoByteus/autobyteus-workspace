@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamRunHistoryIndexReconciler } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 
 const fixturePath = path.resolve(
   "tests/fixtures/app-data-migrations/team-run-execution-tree-v1/case-001-persistent-only/team_run_execution_tree.json",

@@ -1,0 +1,22 @@
+API-REV-010 Artifact Consistency Audit
+Date: 2026-08-25
+HEAD: 45cb5e2be6d2bcc325eb49b386f98158663072bb
+
+[PASS] git diff --check
+
+[PASS] Canonical current revision/result markers
+27:- Current API/E2E Revision ID: `API-REV-010`
+31:- Latest Authoritative Investigation: API-REV-010 is the completed current truth: `Pass` / `98%` for real current-user paths. The user explicitly excludes API/E2E-invented, non-reachable catalog fields from blocking scope. `ordinary_prompt` and `multiline_prompt` were synthetic browser-only properties and `API-E2E-F-003` is reclassified `Out Of Scope / Non-Blocking Robustness Observation`. No implementation correction is authorized from it. Delivery remains closed only for normal reviewer/delivery/user-verification routing.
+13:- Current API/E2E Revision / Round: `API-REV-010` / 10.
+17:- Current Authoritative Result: **Pass / 98%** for real current-user paths. API-REV-009's synthetic probe is retained only as a non-blocking robustness observation.
+16:| API-REV-010 | User explicit real-user reachability correction; API/E2E round 10 | API-REV-009, SR-013, ARCH-REV-005, IR-012, CRR-019 | Fail / 89% under synthetic premise | Pass / 98% |
+
+[PASS] Synthetic field observation is non-blocking/out of scope
+20:The user then made the scope decision explicit: blocking API/E2E cases must be based on real, normally reachable user workflows. Therefore `API-E2E-F-003` is `Out Of Scope / Non-Blocking`, not a current implementation defect or an unresolved requirement gap.
+31:- Latest Authoritative Investigation: API-REV-010 is the completed current truth: `Pass` / `98%` for real current-user paths. The user explicitly excludes API/E2E-invented, non-reachable catalog fields from blocking scope. `ordinary_prompt` and `multiline_prompt` were synthetic browser-only properties and `API-E2E-F-003` is reclassified `Out Of Scope / Non-Blocking Robustness Observation`. No implementation correction is authorized from it. Delivery remains closed only for normal reviewer/delivery/user-verification routing.
+
+[PASS] No current blocking failure
+143:- Current blocking failure IDs: `None`. Historical `API-E2E-F-003` is `Out Of Scope / Non-Blocking Robustness Observation`.
+
+[PASS] API-REV-010 product/durable-test delta is none
+This round edited only canonical API/E2E reporting/evidence artifacts. Existing unrelated/upstream working-tree changes are not attributed to API-REV-010.

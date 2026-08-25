@@ -1,5 +1,6 @@
 import {
   parseTeamStreamServerMessage,
+  type AgentLaunchConfigurationDto,
   type ConfiguredMemberExecutionDto,
   type TaskDelegationRecordDto,
   type TaskExecutionDto,
@@ -12,9 +13,9 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type {
-  ConfiguredMemberExecution,
-  ConfiguredTeamExecution,
-  RootConfiguredTeamExecution,
+  ConfiguredExecutionNode,
+  ConfiguredTeamExecutionNode,
+  RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
   TaskTeamMemberExecution,
@@ -160,7 +161,7 @@ const projectTaskExecutionReference = (reference: TaskExecutionReference): TaskE
   "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };
 
 export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeDto => ({
-  schema_version: 1,
+  schema_version: 2,
   created_at: tree.createdAt,
   archived_at: tree.archivedAt,
   application_binding: tree.applicationBinding ? {
@@ -169,38 +170,45 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
   } : null,
   handoffs: tree.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
   root_team: {
+    address: "/",
     team_definition_id: tree.rootTeam.teamDefinitionId,
     team_definition_name: tree.rootTeam.teamDefinitionName,
     team_run_id: tree.rootTeam.teamRunId,
     coordinator_address: tree.rootTeam.coordinatorAddress,
+    default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
     members: tree.rootTeam.members.map(projectConfiguredMember),
     task_executions: tree.rootTeam.taskExecutions.map(projectTaskExecution),
   },
 });
 
-const projectConfiguredMember = (member: ConfiguredMemberExecution): ConfiguredMemberExecutionDto => {
+const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
   if ("agentRunId" in member) return {
     kind: "configured_agent", address: member.address, agent_definition_id: member.agentDefinitionId,
     role: member.role, description: member.description, agent_run_id: member.agentRunId,
     platform_agent_run_id: member.platformAgentRunId,
-    launch_configuration: {
-      runtime_kind: member.launchConfiguration.runtimeKind,
-      llm_model_identifier: member.launchConfiguration.llmModelIdentifier,
-      llm_config: member.launchConfiguration.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
-      auto_execute_tools: member.launchConfiguration.autoExecuteTools,
-      skill_access_mode: member.launchConfiguration.skillAccessMode,
-      workspace_root_path: member.launchConfiguration.workspaceRootPath,
-    },
+    launch_configuration: projectLaunchConfiguration(member.launchConfiguration),
   };
   return projectConfiguredTeam(member);
 };
 
-const projectConfiguredTeam = (team: ConfiguredTeamExecution): ConfiguredMemberExecutionDto => ({
+const projectConfiguredTeam = (team: ConfiguredTeamExecutionNode): ConfiguredMemberExecutionDto => ({
   kind: "configured_team", address: team.address, team_definition_id: team.teamDefinitionId,
   role: team.role, description: team.description, team_run_id: team.teamRunId,
   coordinator_address: team.coordinatorAddress,
+  default_launch_configuration: projectLaunchConfiguration(team.defaultLaunchConfiguration),
   members: team.members.map(projectConfiguredMember),
   task_executions: team.taskExecutions.map(projectTaskExecution),
+});
+
+const projectLaunchConfiguration = (
+  configuration: import("../../agent-team-execution/domain/team-run-config.js").AgentLaunchConfiguration,
+): AgentLaunchConfigurationDto => ({
+  runtime_kind: configuration.runtimeKind,
+  llm_model_identifier: configuration.llmModelIdentifier,
+  llm_config: configuration.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
+  auto_execute_tools: configuration.autoExecuteTools,
+  skill_access_mode: configuration.skillAccessMode,
+  workspace_root_path: configuration.workspaceRootPath,
 });
 
 const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
@@ -236,7 +244,7 @@ const findTaskExecution = (
   reference: TaskExecutionReference,
 ): { parentTeamRunId: string; execution: TaskExecution } | null => {
   const visit = (
-    team: RootConfiguredTeamExecution | ConfiguredTeamExecution | TaskTeamExecution | TaskTeamNestedTeamExecution,
+    team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
     const own = team.taskExecutions.find((execution) =>
       "agentRunId" in reference

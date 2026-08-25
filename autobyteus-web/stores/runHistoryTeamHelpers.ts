@@ -47,8 +47,8 @@ export const resolveTeamWorkspaceRootPathFromContext = (
   unassignedWorkspaceKey: string,
 ): string => {
   const config = teamContext.view.getConfigurationView();
-  const configured = config.workspaceMetadata?.workspaceRootPath
-    || resolveWorkspaceRootPath(config.workspaceId);
+  const configured = config.root.effectiveConfig.workspaceRootPath
+    || resolveWorkspaceRootPath(config.root.effectiveConfig.workspaceId);
   if (configured) return configured;
   for (const member of leafContexts(teamContext)) {
     const root = member.config.workspaceMetadata?.workspaceRootPath

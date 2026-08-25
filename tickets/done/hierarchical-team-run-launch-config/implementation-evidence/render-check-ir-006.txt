@@ -1,0 +1,36 @@
+IR-006 frontend rendered-result check
+Date: 2026-08-24
+Surface: actual Nuxt /workspace renderer at 1008x738
+Backend: locally available server at http://127.0.0.1:8006
+Definition: Northstar Operating Company (root plus six nested Team scopes)
+
+Post-fix interaction inspected
+------------------------------
+1. Opened Northstar Operating Company from the real Agent Teams catalog.
+2. Selected AutoByteus / deepseek-v4-flash at the root, inherited by nested scopes.
+3. Changed the root / workspace selector to active New and entered
+   /tmp/ir006-post-root.
+4. Changed explicit nested /engineering_org to active New and entered
+   /tmp/ir006-post-engineering.
+5. Confirmed through the live DOM after renderer/store settling:
+   - both New controls retained aria-selected=true;
+   - both exact paths remained visible in their address-qualified controls;
+   - Run Team was enabled;
+   - no Team launch blocking issue was rendered.
+6. Did not activate Run Team in this post-fix pass. CRR-009 requires repeat source
+   review before API/E2E reruns the exact one-click production journey; the same-click
+   continuation is covered locally by deterministic component/store tests.
+
+Visual and interaction result
+-----------------------------
+Pass for the states exercised. Root and nested cards retain the established
+hierarchy, labels, control alignment, path visibility, and footer action. The
+1008x738 viewport showed no clipping or overlapping controls in the inspected
+root and nested states. The browser tool reported no navigation/interaction
+failure during this post-fix check.
+
+Evidence
+--------
+- hierarchical-team-two-new-workspaces-ir-006.png
+- hierarchical-team-two-new-workspaces-nested-ir-006.png
+- renderer-workspace-instrumentation-ir-006.txt

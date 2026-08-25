@@ -1,155 +1,116 @@
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
-import {
-  buildUnavailableInheritedModelMessage,
-  hasExplicitMemberLlmModelOverride,
-  resolveEffectiveMemberLlmModelIdentifier,
-  resolveEffectiveMemberRuntimeKind,
-} from '~/utils/teamRunConfigUtils'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { TeamWorkspaceAuthoringState } from '~/types/agent/TeamLaunchDraft'
+import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
+import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
 export type TeamRunLaunchBlockingIssueCode =
+  | 'TOPOLOGY_REQUIRED'
   | 'WORKSPACE_REQUIRED'
-  | 'TEAM_MODEL_REQUIRED'
-  | 'TEAM_MODEL_CATALOG_PENDING'
-  | 'TEAM_MODEL_UNAVAILABLE'
-  | 'MEMBER_MODEL_CATALOG_PENDING'
-  | 'MEMBER_MODEL_UNAVAILABLE'
-  | 'MEMBER_UNRESOLVED_INHERITED_MODEL'
-
+  | 'MODEL_REQUIRED'
+  | 'MODEL_CATALOG_PENDING'
+  | 'MODEL_UNAVAILABLE'
 export interface TeamRunLaunchBlockingIssue {
   code: TeamRunLaunchBlockingIssueCode
   message: string
+  subjectAddress?: AgentTeamAddress
+  subjectKind?: 'TEAM' | 'AGENT'
   memberName?: string
   runtimeKind?: string
 }
-
 export interface TeamRunLaunchReadiness {
   canLaunch: boolean
   blockingIssues: TeamRunLaunchBlockingIssue[]
-  unresolvedMembers: Array<{
-    memberName: string
-    runtimeKind: string
-    message: string
-  }>
+  unresolvedMembers: Array<{ memberName: string; runtimeKind: string; message: string }>
 }
-
 export type RuntimeModelCatalogs = Record<string, string[]>
+const catalogFor = (catalogs: RuntimeModelCatalogs, runtimeKind: string): string[] | null => catalogs[runtimeKind.trim()] ?? null
+const ownsWorkspaceSelection = (scope: TeamRunConfigurationView['root']): boolean =>
+  scope.address === '/' || Boolean(scope.override && Object.hasOwn(scope.override, 'workspace'))
 
-const normalizeCatalog = (runtimeModelCatalogs: RuntimeModelCatalogs, runtimeKind: string): string[] | null => {
-  const normalizedRuntimeKind = runtimeKind.trim()
-  return runtimeModelCatalogs[normalizedRuntimeKind] ?? null
+export const applyTeamWorkspaceAuthoringReadiness = (
+  issues: readonly TeamRunLaunchBlockingIssue[],
+  values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>,
+  memberTree: readonly TeamDefinitionMemberNode[] | null | undefined,
+): TeamRunLaunchBlockingIssue[] => {
+  const currentTeamAddresses = new Set(memberTree ? indexTeamLaunchTopology(memberTree).teams.keys() : [])
+  const pendingNewEntries = (Object.entries(values) as Array<[AgentTeamAddress, TeamWorkspaceAuthoringState | undefined]>)
+    .filter((entry): entry is [AgentTeamAddress, TeamWorkspaceAuthoringState] =>
+      currentTeamAddresses.has(entry[0]) && entry[1]?.selectionMode === 'new')
+  const emptyPathAddresses = new Set(pendingNewEntries
+    .filter(([, value]) => !value.newWorkspacePath.trim())
+    .map(([address]) => address))
+  const pendingIssues = [...emptyPathAddresses].sort().map((subjectAddress) => ({
+    code: 'WORKSPACE_REQUIRED' as const,
+    message: 'Enter a workspace path to run this team.',
+    subjectAddress,
+    subjectKind: 'TEAM' as const,
+  }))
+  const retainedIssues = issues.filter((issue) => {
+    if (issue.code !== 'WORKSPACE_REQUIRED' || !issue.subjectAddress) return true
+    if (emptyPathAddresses.has(issue.subjectAddress)) return false
+    return values[issue.subjectAddress]?.selectionMode !== 'new'
+  })
+  return [...pendingIssues, ...retainedIssues]
 }
 
 export const evaluateTeamRunLaunchReadiness = (
   config: TeamRunConfig | null | undefined,
   runtimeModelCatalogs: RuntimeModelCatalogs,
+  memberTree?: readonly TeamDefinitionMemberNode[] | null,
 ): TeamRunLaunchReadiness => {
-  if (!config) {
-    return {
-      canLaunch: false,
-      blockingIssues: [],
-      unresolvedMembers: [],
-    }
+  if (!config) return { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
+  if (!memberTree) return {
+    canLaunch: false,
+    blockingIssues: [{ code: 'TOPOLOGY_REQUIRED', message: 'The current Team topology is still loading.' }],
+    unresolvedMembers: [],
   }
-
-  const blockingIssues: TeamRunLaunchBlockingIssue[] = []
-  const unresolvedMembers: TeamRunLaunchReadiness['unresolvedMembers'] = []
-
-  const workspaceId = config.workspaceId?.trim() || ''
-  const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath?.trim() || ''
-  const needsWorkspaceMetadataRootPath =
-    Boolean(config.workspaceMetadata) || workspaceId.startsWith('agent_ws_')
-
-  if (!workspaceId || (needsWorkspaceMetadataRootPath && !workspaceRootPath)) {
-    blockingIssues.push({
+  const view = resolveTeamRunConfiguration(config, memberTree)
+  const subjects = [
+    ...Object.values(view.teamsByAddress).map((scope) => ({
+      kind: 'TEAM' as const,
+      address: scope.address,
+      name: scope.displayName,
+      config: scope.effectiveConfig,
+      validatesWorkspace: ownsWorkspaceSelection(scope),
+    })),
+    ...Object.values(view.agentsByAddress).map((scope) => ({
+      kind: 'AGENT' as const,
+      address: scope.address,
+      name: scope.displayName,
+      config: scope.effectiveConfig,
+      validatesWorkspace: false,
+    })),
+  ]
+  const issues: TeamRunLaunchBlockingIssue[] = []
+  for (const subject of subjects) {
+    const workspaceId = subject.config.workspaceId?.trim() || ''
+    const rootPath = subject.config.workspaceMetadata?.workspaceRootPath?.trim() || ''
+    if (subject.validatesWorkspace && (!workspaceId || !rootPath)) issues.push({
       code: 'WORKSPACE_REQUIRED',
-      message: needsWorkspaceMetadataRootPath
-        ? 'Workspace root path is required to run a filesystem workspace metadata team.'
-        : 'Workspace is required to run a team.',
+      subjectAddress: subject.address,
+      subjectKind: subject.kind,
+      memberName: subject.name,
+      message: `${subject.kind === 'TEAM' ? 'Team' : 'Agent'} ${subject.address} needs a workspace before launch.`,
     })
-  }
-
-  if (!config.llmModelIdentifier) {
-    blockingIssues.push({
-      code: 'TEAM_MODEL_REQUIRED',
-      message: 'A default team model is required before running this team.',
-    })
-  }
-
-  const teamCatalog = normalizeCatalog(runtimeModelCatalogs, config.runtimeKind)
-  if (!teamCatalog) {
-    blockingIssues.push({
-      code: 'TEAM_MODEL_CATALOG_PENDING',
-      message: `Models for ${runtimeKindToLabel(config.runtimeKind)} are still loading.`,
-      runtimeKind: config.runtimeKind,
-    })
-  } else if (
-    config.llmModelIdentifier &&
-    !teamCatalog.includes(config.llmModelIdentifier)
-  ) {
-    blockingIssues.push({
-      code: 'TEAM_MODEL_UNAVAILABLE',
-      message: `Default team model ${config.llmModelIdentifier} is unavailable for ${runtimeKindToLabel(config.runtimeKind)}.`,
-      runtimeKind: config.runtimeKind,
-    })
-  }
-
-  for (const [memberName, override] of Object.entries(config.memberOverrides || {})) {
-    const effectiveRuntimeKind = resolveEffectiveMemberRuntimeKind(override, config.runtimeKind)
-    const runtimeCatalog = normalizeCatalog(runtimeModelCatalogs, effectiveRuntimeKind)
-    const explicitMemberModelIdentifier = hasExplicitMemberLlmModelOverride(override)
-      ? resolveEffectiveMemberLlmModelIdentifier(override, '')
-      : ''
-
-    if (!runtimeCatalog) {
-      blockingIssues.push({
-        code: 'MEMBER_MODEL_CATALOG_PENDING',
-        memberName,
-        runtimeKind: effectiveRuntimeKind,
-        message: `Models for ${runtimeKindToLabel(effectiveRuntimeKind)} are still loading.`,
-      })
+    const runtimeKind = subject.config.runtimeKind
+    const model = subject.config.llmModelIdentifier.trim()
+    if (!model) {
+      issues.push({ code: 'MODEL_REQUIRED', subjectAddress: subject.address, subjectKind: subject.kind, memberName: subject.name, runtimeKind,
+        message: `${subject.kind === 'TEAM' ? 'Team' : 'Agent'} ${subject.address} needs a model before launch.` })
       continue
     }
-
-    if (explicitMemberModelIdentifier) {
-      if (!runtimeCatalog.includes(explicitMemberModelIdentifier)) {
-        blockingIssues.push({
-          code: 'MEMBER_MODEL_UNAVAILABLE',
-          memberName,
-          runtimeKind: effectiveRuntimeKind,
-          message: `${memberName} model ${explicitMemberModelIdentifier} is unavailable for ${runtimeKindToLabel(effectiveRuntimeKind)}.`,
-        })
-      }
-      continue
-    }
-
-    const inheritedModelIdentifier = resolveEffectiveMemberLlmModelIdentifier(undefined, config.llmModelIdentifier)
-    if (inheritedModelIdentifier && runtimeCatalog.includes(inheritedModelIdentifier)) {
-      continue
-    }
-
-    const message = buildUnavailableInheritedModelMessage({
-      globalLlmModelIdentifier: config.llmModelIdentifier,
-      runtimeKind: effectiveRuntimeKind,
-      memberName,
-    })
-
-    unresolvedMembers.push({
-      memberName,
-      runtimeKind: effectiveRuntimeKind,
-      message,
-    })
-    blockingIssues.push({
-      code: 'MEMBER_UNRESOLVED_INHERITED_MODEL',
-      memberName,
-      runtimeKind: effectiveRuntimeKind,
-      message,
-    })
+    const catalog = catalogFor(runtimeModelCatalogs, runtimeKind)
+    if (!catalog) issues.push({ code: 'MODEL_CATALOG_PENDING', subjectAddress: subject.address, subjectKind: subject.kind, memberName: subject.name, runtimeKind,
+      message: `Models for ${runtimeKindToLabel(runtimeKind)} are still loading (${subject.address}).` })
+    else if (!catalog.includes(model)) issues.push({ code: 'MODEL_UNAVAILABLE', subjectAddress: subject.address, subjectKind: subject.kind, memberName: subject.name, runtimeKind,
+      message: `${model} is unavailable for ${runtimeKindToLabel(runtimeKind)} at ${subject.address}.` })
   }
-
-  return {
-    canLaunch: blockingIssues.length === 0,
-    blockingIssues,
-    unresolvedMembers,
-  }
+  const unresolvedMembers = issues.filter((issue) => issue.subjectKind === 'AGENT').map((issue) => ({
+    memberName: issue.subjectAddress || issue.memberName || '',
+    runtimeKind: issue.runtimeKind || '',
+    message: issue.message,
+  }))
+  return { canLaunch: issues.length === 0, blockingIssues: issues, unresolvedMembers }
 }

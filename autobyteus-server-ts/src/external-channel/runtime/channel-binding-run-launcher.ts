@@ -122,13 +122,9 @@ export class ChannelBindingRunLauncher {
       }
     }
 
-    const memberConfigs = await this.teamRunService.buildMemberConfigsFromLaunchPreset({
+    const run = await this.teamRunService.createTeamRunFromRootConfig({
       teamDefinitionId: launchTarget.teamDefinitionId,
-      launchPreset: launchTarget.teamLaunchPreset,
-    });
-    const run = await this.teamRunService.createTeamRun({
-      teamDefinitionId: launchTarget.teamDefinitionId,
-      memberConfigs,
+      rootConfig: launchTarget.teamLaunchPreset,
     });
     const teamRunId = run.teamRunId;
     await this.bindingService.upsertBindingTeamRunId(binding.id, teamRunId);

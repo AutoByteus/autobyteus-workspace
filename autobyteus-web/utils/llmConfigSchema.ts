@@ -50,7 +50,7 @@ const firstString = (...values: unknown[]): string | undefined => {
   return undefined;
 };
 
-const isValidValueForParam = (
+export const isModelConfigValueRepresentable = (
   value: unknown,
   param: UiModelConfigParameterSchema,
 ): boolean => {
@@ -110,14 +110,14 @@ export const getValidSchemaDefault = (
   if (!param || param.default === undefined) {
     return undefined;
   }
-  return isValidValueForParam(param.default, param) ? param.default : undefined;
+  return isModelConfigValueRepresentable(param.default, param) ? param.default : undefined;
 };
 
 export const resolveEffectiveConfigValue = (
   param: UiModelConfigParameterSchema,
   explicitValue: unknown,
 ): unknown | undefined => {
-  if (explicitValue !== undefined && isValidValueForParam(explicitValue, param)) {
+  if (explicitValue !== undefined && isModelConfigValueRepresentable(explicitValue, param)) {
     return explicitValue;
   }
   return getValidSchemaDefault(param);
@@ -205,7 +205,7 @@ export const sanitizeModelConfigAgainstSchema = (
     if (!param) {
       continue;
     }
-    if (!isValidValueForParam(value, param)) {
+    if (!isModelConfigValueRepresentable(value, param)) {
       continue;
     }
     sanitized[key] = value;

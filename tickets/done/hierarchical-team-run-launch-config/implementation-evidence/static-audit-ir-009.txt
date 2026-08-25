@@ -1,0 +1,31 @@
+IR-009 static implementation audit
+Date: 2026-08-25 (Europe/Berlin)
+
+$ git show --check --oneline --stat 84c94496f
+84c94496f fix(web): preserve team launch presentation baseline
+
+$ git diff --check
+PASS: no whitespace errors in the current unstaged cumulative artifact delta.
+
+$ git diff --name-only --diff-filter=U
+
+PASS: no unmerged paths.
+
+$ git show --name-only --format= 84c94496f -- autobyteus-web/stores autobyteus-web/utils autobyteus-server-ts
+
+PASS: IR-009 changed no functional store, readiness, launch, backend, GraphQL, migration, or identity-allocation owner.
+
+$ rg -n "Root Team defaults|Effective:|Customized fields:" editable production components
+
+PASS: prohibited editable root/nested summaries and root chrome are absent.
+
+$ source effective line counts
+24 autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+276 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+146 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+129 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+PASS: production component source sizes remain within the 500-effective-line hard limit.
+
+$ git show --numstat --format= 84c94496f -- autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+129	70	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+PASS: the specialized editor revision is a bounded presentation change; no architecture refactor was introduced.

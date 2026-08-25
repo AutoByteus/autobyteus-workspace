@@ -1,0 +1,208 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:35652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-6JwbSx/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-aRqAGW/app-data
+
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-frontend-sdk.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-url.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.js" points to missing source files
+Sourcemap for "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.js" points to missing source files
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-lHfQcm/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 2 failed) 367ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 146ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 140ms
+     ✓ rejects unexpected Brief Studio producers without committing projection state 80ms
+(node:35672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests | 1 failed) 79ms
+     × executes all named capabilities and both explicit starts through the real worker/host boundary 60ms
+     ✓ creates only canonical launch-request tables and columns from both built-in fresh baselines 18ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Error: Application 'built-in:applications__context-capability-app' backend entry '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-context-capabilities-aAkl04/bundle/applications/context-capability-app/backend/dist/entry.mjs' exports definitionContractVersion '5', but '6' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.
+ ❯ ApplicationEngineClient.handleLine src/application-engine/runtime/application-engine-client.ts:247:22
+    245|           ? errorPayload.message
+    246|           : "Application worker request failed.";
+    247|       pending.reject(new Error(message));
+       |                      ^
+    248|       return;
+    249|     }
+ ❯ ApplicationEngineClient.onStdout src/application-engine/runtime/application-engine-client.ts:196:12
+ ❯ Socket.<anonymous> src/application-engine/runtime/application-engine-client.ts:48:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Error: Brief Studio launchDraftRun mutation returned GraphQL errors: The selected model is no longer supported. Select a current supported model.
+ ❯ expectGraphqlField tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:251:11
+    249| 
+    250|   if (Array.isArray(payload.result.errors) && payload.result.errors.le…
+    251|     throw new Error(
+       |           ^
+    252|       `${label} returned GraphQL errors: ${payload.result.errors.map((…
+    253|     );
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:899:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Error: The selected model is no longer supported. Select a current supported model.
+ ❯ readGraphqlField ../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js:106:11
+    104|   const result = await promise;
+    105|   if (Array.isArray(result?.errors) && result.errors.length > 0) {
+    106|     throw new Error(result.errors.map((error) => error.message || Stri…
+       |           ^
+    107|   }
+    108|   if (!result?.data || !(fieldName in result.data)) {
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:1451:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 2 passed (5)
+   Start at  23:11:31
+   Duration  5.77s (transform 2.80s, setup 19ms, import 4.75s, tests 446ms, environment 0ms)
+
+APPLICATION_INTEGRATION_EXIT_STATUS=1

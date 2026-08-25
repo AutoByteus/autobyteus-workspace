@@ -53,6 +53,6 @@ describe('teamRunConfigUtils', () => {
       globalLlmModelIdentifier: 'gpt-5.4',
       runtimeKind: 'claude_agent_sdk',
       memberName: 'Reviewer',
-    })).toBe('Global model gpt-5.4 is unavailable for Claude Agent SDK; choose a compatible Reviewer model or clear the runtime override.')
+    })).toBe('Inherited model gpt-5.4 is unavailable for Claude Agent SDK; choose a compatible Reviewer model or reset the runtime override.')
   })
 })

@@ -4,6 +4,7 @@ import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-ru
 import { getTeamRunService, type TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { getTeamLiveMessagePublisher, type TeamLiveMessagePublisher } from "../../services/agent-streaming/team-live-message-publisher.js";
 import type { ChannelBinding } from "../domain/models.js";
+import { resolveTeamBindingCurrentOutputIdentity } from "../services/channel-team-output-target-identity.js";
 import { buildAgentInputMessage } from "./channel-agent-input-message-builder.js";
 import { ChannelBindingRunLauncher } from "./channel-binding-run-launcher.js";
 import { ChannelDispatchLockRegistry, getChannelDispatchLockRegistry } from "./channel-dispatch-lock-registry.js";
@@ -29,10 +30,10 @@ export class ChannelTeamRunFacade {
     return this.locks.runExclusive(`team:${teamRunId}`, async () => {
       const run = await this.teams.resolveActiveTeamRun(teamRunId);
       if (!run) throw new Error(`Team run '${teamRunId}' is not active.`);
-      const target = this.targetAddress(binding, run);
-      const capture = startTeamDispatchTurnCapture(run.subscribeToEvents.bind(run), target);
+      const target = this.targetExecution(binding, run);
+      const capture = startTeamDispatchTurnCapture(run.subscribeToEvents.bind(run), target.memberAddress);
       let result;
-      try { result = await run.postMessage(buildAgentInputMessage(envelope), target); }
+      try { result = await run.postMessage(buildAgentInputMessage(envelope), target.agentRunId); }
       catch (error) { capture.dispose(); throw error; }
       if (!result.accepted) { capture.dispose(); throw new Error(result.message ?? `Team run '${teamRunId}' rejected the message.`); }
       const directTurnId = result.turnId?.trim() || null;
@@ -49,18 +50,25 @@ export class ChannelTeamRunFacade {
           teamRunId,
           envelope,
           agentRunId,
-          memberAddress: run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target,
-          displayName: getAgentTeamAddressBasename(run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target),
+          memberAddress: run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target.memberAddress,
+          displayName: getAgentTeamAddressBasename(run.getAgentExecution(agentRunId)?.identity.memberAddress ?? target.memberAddress),
         });
       } catch (error) { console.warn(`Team run '${teamRunId}': failed to publish external input to the live stream.`, error); }
       return { dispatchTargetType: "TEAM", teamRunId, agentRunId, turnId, dispatchedAt: new Date() };
     });
   }
 
-  private targetAddress(binding: ChannelBinding, run: RootTeamRun): AgentTeamAddress {
-    if (binding.targetMemberAddress) return assertAgentTeamAddress(binding.targetMemberAddress);
-    const coordinator = run.getAgentExecution(run.getCoordinatorAgentRunId())?.identity.memberAddress;
-    if (!coordinator) throw new Error(`Team run '${run.teamRunId}' has no coordinator.`);
-    return coordinator;
+  private targetExecution(binding: ChannelBinding, run: RootTeamRun): Readonly<{
+    agentRunId: string;
+    memberAddress: AgentTeamAddress;
+  }> {
+    if (binding.targetMemberAddress) assertAgentTeamAddress(binding.targetMemberAddress);
+    const agentRunId = resolveTeamBindingCurrentOutputIdentity(binding, run).entryAgentRunId;
+    const execution = agentRunId ? run.getAgentExecution(agentRunId) : null;
+    if (!execution) throw new Error(`Team run '${run.teamRunId}' has no configured entry Agent.`);
+    return Object.freeze({
+      agentRunId: execution.identity.agentRunId,
+      memberAddress: execution.identity.memberAddress,
+    });
   }
 }

@@ -424,9 +424,9 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 
 ### Agent Teams
 
-`TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
+`TeamMemoryExplorerService` reads the V2 Team execution tree and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
 
-Team-run summaries include TeamRun metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from schema-v3 recursive metadata and `AgentMemoryLocationService`: logical selection uses rooted `memberAddress`, while physical lookup uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened Team/member assumption.
+Team-run summaries include V2 TeamRun execution facts, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from the recursive execution tree and `AgentMemoryLocationService`: logical selection uses rooted `memberAddress`, while physical lookup uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened Team/member assumption.
 
 When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
 its topology/readback collaborators must use the same memory root. Do not mix a

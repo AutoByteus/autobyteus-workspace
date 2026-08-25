@@ -1,0 +1,44 @@
+CRR-015 IR-009 complete-source static audit
+
+$ git status --short
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-presentation-focused-crr-015.txt
+
+$ git diff --check 84c94496f^..84c94496f
+
+$ changed paths
+A	autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+M	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+M	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+M	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+M	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+A	autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+M	autobyteus-web/localization/messages/en/workspace.ts
+M	autobyteus-web/localization/messages/zh-CN/workspace.ts
+
+$ changed functional owners outside approved boundary
+
+$ prohibited presentation text in editable production components
+PASS: absent
+
+$ obsolete localization keys/call sites
+PASS: absent
+
+$ source effective line counts
+24 autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+129 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+146 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+276 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+
+$ 84c source numstat
+25	0	autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+7	4	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+37	9	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+129	70	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+21	5	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+296	0	autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+3	8	autobyteus-web/localization/messages/en/workspace.ts
+3	8	autobyteus-web/localization/messages/zh-CN/workspace.ts
+
+PASS

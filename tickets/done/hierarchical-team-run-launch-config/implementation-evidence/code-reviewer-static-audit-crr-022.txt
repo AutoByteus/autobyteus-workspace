@@ -1,0 +1,141 @@
+# CRR-022 complete source-review static audit
+
+## Repository state
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-test-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/delivery-integrated-state-refresh.log
+ M tickets/in-progress/hierarchical-team-run-launch-config/delivery-integration-blocker.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/delivery-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/design-spec.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/docs-sync-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/handoff-summary.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/hierarchical-launch-configuration-behavior.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/investigation-notes.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/release-deployment-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/requirements.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/ui-ux-spec.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-browser-presentation-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-cleanup-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-backend-session-final.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-backend-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-transpile.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-nuxt-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-desktop-root-collapsed.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-members-nested-collapsed.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-narrow-nested-customized.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-customized.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-expanded-inherited.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-new-empty.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-presentation-evidence.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-read-only.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-static-hash-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-web-presentation-focused.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-artifact-consistency-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-browser-persisted-multiline-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-cleanup-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-cr-visible-whitespace-failure.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-electron-backend-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-electron-transpile.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-nuxt-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-persisted-fixture-before.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-persistence-after-browser.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-static-hash-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-stored-multiline-desktop.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-stored-multiline-nested-desktop.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-terminate-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-user-reachability-correction.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-009-web-stored-settings-focused.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-010-artifact-consistency-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-010-real-user-scope-resolution.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/code-reviewer-no-durable-delta-crr-016.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-docs-validation-dr004.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-electron-sr011-macos-arm64-build.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-final-handoff-validation-dr004.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-017.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-018.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-019.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-022.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stored-control-losslessness-crr-018.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stored-control-losslessness-crr-019.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stored-schema-drift-crr-017.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-017.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-018.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-019.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-022.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-guards-crr-019.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-presentation-focused-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-017.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-018.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-019.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-stored-settings-focused-crr-022.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/integrated-stored-team-config-live-20260825.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/stored-team-settings-origin-personal-source-audit-20260825.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/user-existing-team-run-settings-entry-20260825.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/solution-evidence/user-stored-team-config-cards-20260825.png
+
+## IR-013 cleanup diff check
+PASS: git diff --check
+
+## Unsupported IR-012-only terms across scoped paths
+PASS: no prohibited IR-012-only term remains
+
+## Retained fixture production grounding
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:7:  reasoning_effort: Object.freeze({
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:20:      reasoning_effort: 'ultra',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:21:      service_tier: 'fast',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:32:        kind: 'historical_residual', key: 'reasoning_effort', exactStoredValue: 'ultra',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:39:        kind: 'historical_residual', key: 'service_tier', exactStoredValue: 'fast',
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:43:    expect(fields.filter((field) => field.key === 'reasoning_effort')).toHaveLength(1)
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:44:    expect(fields.filter((field) => field.key === 'service_tier')).toHaveLength(1)
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:50:    const fields = projectHistoricalModelConfigFields({ service_tier: 'fast', reasoning_effort: 'high' }, null)
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:52:      expect.objectContaining({ kind: 'historical_residual', key: 'reasoning_effort', exactStoredValue: 'high' }),
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:53:      expect.objectContaining({ kind: 'historical_residual', key: 'service_tier', exactStoredValue: 'fast' }),
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:59:      .toEqual(['temperature', 'reasoning_effort', 'current_only'])
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:52:    reasoning_effort: {
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:184:      baseline: { runtimeKind: 'codex_app_server', llmConfig: { reasoning_effort: 'high' } },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:185:      override: { llmModelIdentifier: 'gpt-5.4', llmConfig: { reasoning_effort: 'medium' } },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:186:      effective: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { reasoning_effort: 'medium' } },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:214:        llmConfig: { reasoning_effort: 'medium' },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:218:        llmConfig: { reasoning_effort: 'medium' },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:237:    expect((wrapper.get('select#config--reviewer-reasoning_effort').element as HTMLSelectElement).value).toBe('medium')
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:250:      reasoning_effort: 'ultra',
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:251:      service_tier: 'fast',
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:266:    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:267:    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:269:    expect(residuals.map((row) => row.attributes('data-historical-key')))
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:270:      .toEqual(['reasoning_effort', 'service_tier'])
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:271:    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:272:    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:283:      llmConfig: { zeta: 2, alpha: 'persisted' },
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:292:      .map((row) => row.attributes('data-historical-key'))).toEqual(['alpha', 'zeta'])
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:14:  reasoning_effort: 'ultra',
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:15:  service_tier: 'fast',
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:60:            reasoning_effort: {
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:97:    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:98:    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:99:    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:100:    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:102:      .map((row) => row.attributes('data-historical-key')))
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:103:      .toEqual(['reasoning_effort', 'service_tier'])
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts:104:    expect(wrapper.find(`select#team-scope-${isRoot ? 'root' : 'Research'}-reasoning_effort`).exists()).toBe(false)
+
+FAIL: MemberOverrideItem whole-schema Agent fixture still uses invented alpha/zeta keys, contradicting SR-015 design-spec steps 11 and 13 and the IR-013 claim that all retained Agent coverage uses reasoning_effort/service_tier.
+
+## Stored-authoring boundary
+PASS: stored type/projector have no forbidden authoring dependency
+
+## Changed implementation-source effective non-empty lines
+autobyteus-web/utils/historicalModelConfigFields.ts: 77
+autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue: 41

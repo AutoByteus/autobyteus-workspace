@@ -1,0 +1,35 @@
+=== post-electron cleanup verification ===
+2026-08-24T17:09:42Z
+-- owned listener 53559 --
+-- owned nuxt listener 53612 --
+-- owned packaged process matches --
+79299
+79605
+-- data root exists? --
+YES
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/browser-artifacts
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/external-channel
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/llm
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/memory
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/agents
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/application-packages
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/extensions
+-- ordinary 29695 listener and health --
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 33760 normy   26u  IPv4 0xb9ce9ee4fee8d5f      0t0  TCP *:29695 (LISTEN)
+{"status":"ok","message":"Server is running"}
+-- private package source stat/status --
+/Users/normy/autobyteus_org/autobyteus-private-agents inode=84778192 mode=drwxr-xr-x size=352 mtime=Aug 24 11:19:22 2026
+?? .codex/
+-- open tabs --
+=== final cleanup audit ===
+2026-08-24T17:10:01Z
+owned data root: removed
+owned Electron backend listener: stopped
+owned Nuxt listener: stopped
+ordinary listener PID: unchanged (33760)
+{"status":"ok","message":"Server is running"}
+tool-managed browser sessions: closed (verified separately with list_tabs => [])

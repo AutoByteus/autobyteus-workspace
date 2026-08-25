@@ -47,6 +47,23 @@ const messages = {
     "Team Members Override",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
     "{{count}} overridden",
+  "workspace.components.workspace.config.TeamRunConfigForm.topology_repaired":
+    "Team topology changed. Stale settings were removed. Review these addresses and retry:",
+  "workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable": "Saved value is unavailable in current options.",
+  "workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration": "Saved model configuration",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "Customized",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.team_marker": "Team",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.reset": "Reset",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria": "Reset settings for {{name}} ({{address}})",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help": "Runtime used by this Team scope.",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model": "Default LLM Model",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.model_help": "Nested Teams and Agents inherit this value unless customized.",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve": "Auto approve tools",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_help": "Inherited by descendant scopes without an override.",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading": "Loading models for {{address}}…",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error": "Could not load models for {{address}}: {{error}}",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.retry": "Retry",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":

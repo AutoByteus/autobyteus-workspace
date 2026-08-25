@@ -1,0 +1,105 @@
+IR-007 static audit
+
+== git diff --check ==
+PASS
+
+== unmerged entries ==
+PASS: none
+
+== conflict markers in changed source/test files ==
+PASS: none
+
+== obsolete production authority symbols ==
+PASS: none
+
+== production source effective non-empty line counts ==
+ 500 autobyteus-web/stores/teamRunConfigStore.ts
+ 401 autobyteus-web/stores/agentTeamRunStore.ts
+ 410 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ 118 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+ 126 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+ 221 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ 122 autobyteus-web/utils/teamWorkspaceLaunchPreparation.ts
+ 241 autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts
+ 242 autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+   7 autobyteus-server-ts/src/agent-team-execution/services/team-run-identity-allocator.ts
+
+== diff summary ==
+ .../services/team-definition-topology-planner.ts   |   9 +-
+ .../services/team-run-service.ts                   |  27 +-
+ .../application-run-binding-launch-service.ts      |   2 -
+ .../team-run-service.integration.test.ts           |  12 +-
+ ...cation-context-capabilities.integration.test.ts |   6 +-
+ ...ief-studio-imported-package.integration.test.ts |  45 +--
+ .../team-definition-topology-planner.test.ts       |  73 +++-
+ .../agent-team-execution/team-run-service.test.ts  |  50 ++-
+ .../application-run-binding-launch-service.test.ts |  47 ++-
+ .../components/workspace/config/RunConfigPanel.vue | 111 +-----
+ .../workspace/config/TeamMemberConfigTree.vue      |   7 +-
+ .../workspace/config/TeamRunConfigForm.vue         |  26 +-
+ .../workspace/config/TeamScopeConfigEditor.vue     |  11 +-
+ .../config/__tests__/RunConfigPanel.spec.ts        | 383 +++++---------------
+ .../config/__tests__/TeamRunConfigForm.spec.ts     |  29 +-
+ .../stores/__tests__/agentTeamRunStore.spec.ts     | 126 ++++++-
+ .../stores/__tests__/teamRunConfigStore.spec.ts    | 164 ++++++++-
+ autobyteus-web/stores/agentTeamRunStore.ts         | 104 ++++--
+ autobyteus-web/stores/teamRunConfigStore.ts        | 400 ++++++++++++++++-----
+ autobyteus-web/types/agent/TeamLaunchDraft.ts      |  45 +++
+ autobyteus-web/utils/teamRunLaunchReadiness.ts     |  14 +-
+ .../architecture-review-revision-record.md         |  23 ++
+ .../code-review-report.md                          | 293 ++++++++++-----
+ .../code-review-revision-record.md                 |  28 ++
+ .../design-review-report.md                        | 298 +++++++--------
+ .../design-spec.md                                 | 289 ++++++++++-----
+ .../hierarchical-launch-configuration-behavior.md  |  18 +-
+ .../investigation-notes.md                         | 143 ++++----
+ .../requirements.md                                |   6 +-
+ .../solution-revision-record.md                    |  26 ++
+ 30 files changed, 1765 insertions(+), 1050 deletions(-)
+
+== branch and HEAD ==
+## codex/hierarchical-team-run-launch-config...origin/codex/hierarchical-team-run-launch-config [ahead 28, behind 1]
+ M autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+ M autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+ M autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ M autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+ M autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+ M autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ M autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+ M autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M autobyteus-web/stores/__tests__/teamRunConfigStore.spec.ts
+ M autobyteus-web/stores/agentTeamRunStore.ts
+ M autobyteus-web/stores/teamRunConfigStore.ts
+ M autobyteus-web/types/agent/TeamLaunchDraft.ts
+ M autobyteus-web/utils/teamRunLaunchReadiness.ts
+ M tickets/in-progress/hierarchical-team-run-launch-config/architecture-review-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/design-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/design-spec.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/hierarchical-launch-configuration-behavior.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/investigation-notes.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/requirements.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/solution-revision-record.md
+?? autobyteus-server-ts/src/agent-team-execution/services/team-run-identity-allocator.ts
+?? autobyteus-web/utils/teamWorkspaceLaunchPreparation.ts
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-architecture-static-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-root-identity-order-probe-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-topology-workspace-probe-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-010.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/server-application-integration-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/server-build-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/server-planner-focused-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/static-audit-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-build-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-guards-ir-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-workspace-focused-ir-007.txt
+e0af033e8a25e83f218db357514f79dc99ded706

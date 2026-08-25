@@ -1,0 +1,57 @@
+CRR-012 complete architecture/source static audit
+
+== current HEAD and reviewer-only worktree artifacts ==
+426bdf81ae5efcaf7e97e041c36a94d7349e610b
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-full-static-crr-012.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-server-planner-focused-crr-012.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-012.txt
+
+== IR-008 implementation-source diff check ==
+PASS
+
+== changed production source size and delta ==
+ 499 +1/-2        autobyteus-web/stores/teamRunConfigStore.ts
+ 414 +6/-2        autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ 401 +6/-6        autobyteus-web/stores/agentTeamRunStore.ts
+ 113 +5/-2        autobyteus-web/utils/teamRunLaunchReadiness.ts
+  88 +16/-0       autobyteus-web/types/agent/TeamLaunchDraft.ts
+
+== Team workspace and launch ownership guards ==
+-- panel owner-sensitive matches --
+309:    const workspaceId = await workspaceStore.createWorkspace({ root_path: pendingPath })
+Expected result: only line 309 standalone Agent createWorkspace; no Team map/reconcile sequence.
+-- one production Team launch delegation --
+366:        await teamRunStore.launchDraft(draft)
+-- current topology supplied to derived workspace readiness --
+221:      const blockingIssues = applyTeamWorkspaceAuthoringReadiness(
+222-        base.blockingIssues, this.selectedDraft?.teamWorkspaceAuthoringByTeamAddress ?? {}, this.memberTree,
+223-      )
+224-      return { ...base, canLaunch: blockingIssues.length === 0, blockingIssues }
+225-    },
+37:  const currentTeamAddresses = new Set(memberTree ? indexTeamLaunchTopology(memberTree).teams.keys() : [])
+38-  const pendingNewEntries = (Object.entries(values) as Array<[AgentTeamAddress, TeamWorkspaceAuthoringState | undefined]>)
+39-    .filter((entry): entry is [AgentTeamAddress, TeamWorkspaceAuthoringState] =>
+40:      currentTeamAddresses.has(entry[0]) && entry[1]?.selectionMode === 'new')
+41-  const emptyPathAddresses = new Set(pendingNewEntries
+42-    .filter(([, value]) => !value.newWorkspacePath.trim())
+43-    .map(([address]) => address))
+44-  const pendingIssues = [...emptyPathAddresses].sort().map((subjectAddress) => ({
+45-    code: 'WORKSPACE_REQUIRED' as const,
+46-    message: 'Enter a workspace path to run this team.',
+47-    subjectAddress,
+48-    subjectKind: 'TEAM' as const,
+49-  }))
+50-  const retainedIssues = issues.filter((issue) => {
+
+== backend configured-root allocation guards ==
+PASS: no obsolete configured root preallocation symbol
+-- planner allocator dependencies --
+70:    private readonly teamRunIdentityAllocator: TeamIdAllocator,
+90:      this.teamRunIdentityAllocator.allocateForTeamDefinitionName(definition.name),
+240:        this.teamRunIdentityAllocator.allocateForTeamDefinitionName(member.team.definition.name),
+
+== legacy/current-path guards ==
+PASS: no current-source V1/root-only legacy reference outside migration
+
+== focused durable API/E2E files unchanged by IR-008 ==
+PASS: unchanged

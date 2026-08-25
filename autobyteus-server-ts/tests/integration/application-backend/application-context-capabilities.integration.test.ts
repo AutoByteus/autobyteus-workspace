@@ -6,11 +6,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type {
   ApplicationBundle,
 } from "../../../src/application-bundles/domain/models.js";
-import type {
-  ApplicationExecutionResourceRef,
-  ApplicationExecutionResourceSummary,
-  ApplicationAgentBinding,
-  ApplicationAgentTeamBinding,
+import {
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+  type ApplicationExecutionResourceRef,
+  type ApplicationExecutionResourceSummary,
+  type ApplicationAgentBinding,
+  type ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
@@ -103,8 +105,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "5",
-      frontendSdkContractVersion: "5",
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
+      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
     },
     supportedExposures: {
       queries: false,
@@ -131,7 +133,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
     `import { DatabaseSync } from 'node:sqlite'
 
 export default {
-  definitionContractVersion: '5',
+  definitionContractVersion: '6',
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
@@ -143,7 +145,7 @@ export default {
         launch: {
           kind: 'AGENT',
           workspaceRootPath: context.storage.runtimePath,
-          llmModelIdentifier: 'gpt-test',
+          llmModelIdentifier: 'grok-4.6',
           autoExecuteTools: true,
         },
         initialInput: {
@@ -158,9 +160,15 @@ export default {
         launch: {
           kind: 'AGENT_TEAM',
           mode: 'memberConfigs',
+          teamDefaultConfig: {
+            workspaceRootPath: context.storage.runtimePath,
+            llmModelIdentifier: 'grok-4.6',
+            autoExecuteTools: true,
+            skillAccessMode: 'PRELOADED_ONLY',
+          },
           memberConfigs: [{
             memberAddress: '/researcher',
-            llmModelIdentifier: 'gpt-test',
+            llmModelIdentifier: 'grok-4.6',
             autoExecuteTools: true,
             skillAccessMode: 'PRELOADED_ONLY',
             workspaceRootPath: context.storage.runtimePath,
@@ -173,9 +181,11 @@ export default {
         },
       })
 
+      const researcherMember = team.runtime.members.find((member) => member.memberAddress === '/researcher')
+      if (!researcherMember) throw new Error('Expected the researcher Team member binding.')
       const teamAddress = {
         bindingId: team.bindingId,
-        target: { kind: 'AGENT_TEAM_MEMBER', memberAddress: '/researcher' },
+        target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: researcherMember.agentRunId },
       }
       const sent = await context.agentExecution.sendInput({
         address: teamAddress,
@@ -247,9 +257,15 @@ export default {
           launch: {
             kind: 'AGENT_TEAM',
             mode: 'memberConfigs',
+            teamDefaultConfig: {
+              workspaceRootPath: context.storage.runtimePath,
+              llmModelIdentifier: 'grok-4.6',
+              autoExecuteTools: true,
+              skillAccessMode: 'PRELOADED_ONLY',
+            },
             memberConfigs: [{
               memberAddress: '/researcher',
-              llmModelIdentifier: 'gpt-test',
+              llmModelIdentifier: 'grok-4.6',
               autoExecuteTools: true,
               skillAccessMode: 'PRELOADED_ONLY',
               workspaceRootPath: context.storage.runtimePath,
@@ -397,32 +413,25 @@ describe("Application context capability integration", () => {
     };
     let teamRunCount = 0;
     const teamRunService = {
-      allocateTeamRunId: vi.fn(async () => `team-run-${teamRunCount + 1}`),
-      createTeamRun: vi.fn(async ({
-        teamRunId,
+      createTeamRunFromRootConfig: vi.fn(async ({
         memberConfigs,
       }: {
-        teamRunId: string;
         memberConfigs: Array<{ memberAddress: string }>;
       }) => {
         teamRunCount += 1;
+        const teamRunId = `team-run-${teamRunCount}`;
         return {
-        teamRunId,
-        config: {
-          rootTeam: {
-            kind: "agent_team",
-            address: "/",
-            teamRunId,
-            teamDefinitionId: "team-def-1",
-            coordinatorAddress: "/researcher",
-            children: memberConfigs.map((memberConfig) => ({
-              kind: "agent",
-              address: memberConfig.memberAddress,
-              agentRunId: `${teamRunId}::researcher`,
-            })),
-          },
-        },
-      }; }),
+          teamRunId,
+          getExecutionTreeSnapshot: () => ({
+            rootTeam: {
+              members: memberConfigs.map((memberConfig) => ({
+                address: memberConfig.memberAddress,
+                agentRunId: `${teamRunId}::researcher`,
+              })),
+            },
+          }),
+        };
+      }),
       resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
       terminateTeamRun: vi.fn(async () => undefined),
     };
@@ -518,7 +527,7 @@ describe("Application context capability integration", () => {
         subscribe: vi.fn(async (input: {
           applicationId: string;
           subscriptionId: string;
-          address: { bindingId: string; target: { kind: string; memberAddress?: string } };
+          address: { bindingId: string; target: { kind: string; agentRunId?: string } };
           emitter: { emitEvent: (event: unknown) => Promise<void> };
         }) => {
           await input.emitter.emitEvent({
@@ -560,7 +569,7 @@ describe("Application context capability integration", () => {
       observedEvents: Array<{
         sequence: number;
         applicationId: string;
-        address: { bindingId: string; target: { kind: string; memberAddress?: string } };
+        address: { bindingId: string; target: { kind: string; agentRunId?: string } };
         runtimeSubject: string;
         producer: unknown;
         event: { type: string };
@@ -614,7 +623,7 @@ describe("Application context capability integration", () => {
       applicationId: APPLICATION_ID,
       address: {
         bindingId: result.team.bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/researcher" },
+        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::researcher" },
       },
       runtimeSubject: "TEAM_RUN",
       producer: {
@@ -655,10 +664,10 @@ describe("Application context capability integration", () => {
 
     expect(agentRunService.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionId: "agent-def-1",
-      llmModelIdentifier: "gpt-test",
-      applicationExecutionContext: expect.objectContaining({ applicationId: APPLICATION_ID }),
+      llmModelIdentifier: "grok-4.6",
+      applicationBinding: expect.objectContaining({ applicationId: APPLICATION_ID }),
     }));
-    expect(teamRunService.createTeamRun).toHaveBeenCalledTimes(2);
+    expect(teamRunService.createTeamRunFromRootConfig).toHaveBeenCalledTimes(2);
     expect(agentPostUserMessage).toHaveBeenCalledWith(expect.objectContaining({
       content: "agent initial input",
       metadata: { phase: "initial-agent" },

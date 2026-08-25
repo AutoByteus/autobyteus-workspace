@@ -1,0 +1,26 @@
+# IR-013 static audit
+
+> **Historical correction after CRR-022:** the IR-013 claim that all Agent history coverage used producer-backed vocabulary was inaccurate. `MemberOverrideItem.spec.ts` still contained one whole-schema-absence fixture using invented `alpha`/`zeta` keys. CR-014 identified that test-only miss; IR-014 supersedes this claim and retargets the fixture. All other IR-013 audit results remain unchanged.
+
+Source commit: 554e1baaa2e455ca8c73e0414a100e1c8e24829a
+
+## Unsupported multiline scope removed cleanly
+PASS: the five SR-015 paths contain none of: `canTextInputRepresentExactly`, `ordinary_prompt`, `multiline_prompt`, `line_feed_prompt`, `carriage_return_prompt`, `removed_parameter`, `legacy_shape`, `whitespace-pre-wrap`.
+PASS: `historicalModelConfigFields.ts` has no CR/LF-specific predicate or classification branch.
+PASS: `HistoricalModelConfigFallback.vue` retains its compact residual layout without multiline-only whitespace styling.
+PASS: the affected direct/mounted suites contain no ordinary/LF/CR synthetic fixture or assertion and no renamed equivalent.
+
+## Producer-backed retained fixture vocabulary
+PARTIAL: the direct classifier, root/nested-Team consumer, and Agent partial-schema coverage use stale `reasoning_effort` plus removed optional `service_tier=fast`, with stable ordering, one occurrence, and zero mutation. The Agent whole-schema fixture miss recorded above remained in IR-013 and is corrected by IR-014.
+
+## Stored authoring boundary preserved
+PASS: `autobyteus-web/types/agent/StoredTeamRunFormModel.ts` and `autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts` contain no imports/references to `TeamLaunchDraft`, `WorkspaceSelectionState`, `TeamWorkspaceOperationState`, `teamRunConfigStore`.
+PASS: the stored type/projector fabricate none of the prior authoring selection/operation/catalog/null-override sentinels.
+
+## Changed production source effective non-empty lines
+- 77: `autobyteus-web/utils/historicalModelConfigFields.ts`
+- 41: `autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue`
+PASS: both changed production files remain below 500 effective non-empty lines, and this cleanup reduces rather than grows their responsibilities.
+
+## Source commit whitespace
+PASS: `git diff --check 003413b05..HEAD` for all five SR-015 source/test paths.

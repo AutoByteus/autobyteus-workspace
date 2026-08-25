@@ -1,0 +1,88 @@
+CRR-009 focused failure-origin evidence
+Date: 2026-08-24
+Integrated source HEAD reviewed: 5dc5105b14d5c215a70254ce317ad725d130f16e
+API/E2E trigger: API-REV-005 / API-E2E-014 / API-E2E-F-002
+
+Approved and reachable trigger
+------------------------------
+The exposed Workspace Team run form supports selecting New for the root and an
+explicit nested Team, entering non-empty paths, editing other launch settings,
+and activating Run Team once. Current-base FR-003, FR-005, AC-001 and DS-001
+require that accepted activation to register/resolve the displayed paths, apply
+their canonical identities, and then create exactly one TeamRun.
+
+Observed normal production trace
+--------------------------------
+Actual AutoByteus open_tab -> current Nuxt RunConfigPanel -> isolated packaged
+backend -> CreateWorkspace(root) -> CreateWorkspace(/StudentStudyGroup) -> both
+controlled selections become canonical Existing -> no TeamRun mutation/history
+record -> panel becomes actionable again -> second Run Team activation -> one
+TeamRun created with the exact eventual V2 configuration.
+
+Primary evidence:
+- api-e2e-evidence/api-rev-005-team-registration-continuation-failure.md
+- api-e2e-evidence/api-rev-005-team-first-and-second-click-server-excerpt.txt
+- api-e2e-evidence/api-rev-005-open-tab-integrated-browser-evidence.md
+- api-e2e-evidence/api-rev-005-launched-disk-v2.json
+
+Smallest relevant source trace
+------------------------------
+- RunConfigPanel.vue:440-443 awaits ensurePendingWorkspaceLoadedForRun().
+- RunConfigPanel.vue:318-347 makes
+  successful registrations canonical through teamRunConfigStore.setWorkspaceLoaded
+  and changes the address-qualified controlled selection to Existing.
+- RunConfigPanel.vue:445-454 then gates continuation on the component's
+  teamLaunchReadiness computed projection and returns before calling the launch
+  owner when that projection reports not ready.
+- RunConfigPanel.vue:455-461 reads the current selected draft and delegates only
+  after that gate.
+- agentTeamRunStore.ts:301-345 is the post-preparation launch owner. It admits the
+  exact selected draft and directly evaluates launch readiness from that draft at
+  lines 313 and 320-321 before issuing the create mutation.
+
+The production evidence localizes the defect to the frontend handoff after
+successful preparation and before TeamRun creation. It does not support a
+backend, provider, persisted-projection, fixture, or registration-loss origin.
+
+Focused Pinia isolation probe
+-----------------------------
+A temporary non-durable Vitest probe used the real teamRunConfigStore, real
+definition store, both root and nested missing workspaces, two runtime catalogs,
+and a Vue computed wrapper around store.launchReadiness. Immediately after two
+setWorkspaceLoaded calls, the computed read was launch-ready.
+
+Command:
+  pnpm exec vitest run stores/__tests__/__crr009_probe.spec.ts --no-watch
+
+Result:
+  Test Files 1 passed (1)
+  Tests      1 passed (1)
+
+The temporary probe file was removed after execution. This result prevents an
+overclaim that Pinia getters categorically refresh asynchronously. The exact
+full-renderer trigger for the stale/early continuation decision still requires
+implementation instrumentation. It does not change ownership: the shipped
+panel/launch handoff must carry one accepted activation from successful
+canonical preparation into exactly one launch without depending on a second
+render/user activation.
+
+Smallest relevant durable-test observation
+------------------------------------------
+RunConfigPanel.spec.ts:628-710 models root and nested registration. Its mocked
+setWorkspaceLoaded implementation explicitly assigns a newly evaluated
+launchReadiness object synchronously before expecting launchDraft once
+(lines 667-675). That test proves the intended path under its mock, but not the
+full Pinia/Vue/workspace-store handoff observed by API-E2E. API-REV-005 changed
+this file but the overall run failed, so no successful proportional test-code
+review is recorded in CRR-009. Preserve the current durable delta as a pending
+regression boundary; do not weaken it to make the rerun pass.
+
+Failure-origin conclusion
+-------------------------
+Origin: implementation-owned frontend continuation defect, runtime-observable.
+Classification: Local Fix -> /implementation_engineer.
+Earlier reviewer gap: none established. The previously inspected source and
+focused tests asserted same-activation continuation, and the isolated real
+Pinia getter boundary refreshes synchronously. The contradictory consequence
+required the full current renderer + real workspace-store + packaged-backend
+sequence that API/E2E correctly supplied.

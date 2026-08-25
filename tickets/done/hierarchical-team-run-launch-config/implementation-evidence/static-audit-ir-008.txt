@@ -1,0 +1,49 @@
+IR-008 static audit
+
+== git diff --check ==
+PASS
+
+== unmerged entries ==
+PASS: none
+
+== conflict markers in changed source/test files ==
+PASS: none
+
+== production source effective non-empty line counts ==
+ 499 autobyteus-web/stores/teamRunConfigStore.ts
+ 401 autobyteus-web/stores/agentTeamRunStore.ts
+ 414 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+  88 autobyteus-web/types/agent/TeamLaunchDraft.ts
+ 113 autobyteus-web/utils/teamRunLaunchReadiness.ts
+
+== bounded IR-008 implementation diff summary ==
+ .../components/workspace/config/RunConfigPanel.vue |  8 ++-
+ .../stores/__tests__/agentTeamRunStore.spec.ts     | 58 ++++++++++++++++++----
+ .../stores/__tests__/teamRunConfigStore.spec.ts    | 37 ++++++++++++++
+ autobyteus-web/stores/agentTeamRunStore.ts         | 12 ++---
+ autobyteus-web/stores/teamRunConfigStore.ts        |  3 +-
+ autobyteus-web/types/agent/TeamLaunchDraft.ts      | 16 ++++++
+ autobyteus-web/utils/teamRunLaunchReadiness.ts     |  7 ++-
+ 7 files changed, 120 insertions(+), 21 deletions(-)
+
+== branch and HEAD ==
+## codex/hierarchical-team-run-launch-config...origin/codex/hierarchical-team-run-launch-config [ahead 30, behind 1]
+ M autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M autobyteus-web/stores/__tests__/teamRunConfigStore.spec.ts
+ M autobyteus-web/stores/agentTeamRunStore.ts
+ M autobyteus-web/stores/teamRunConfigStore.ts
+ M autobyteus-web/types/agent/TeamLaunchDraft.ts
+ M autobyteus-web/utils/teamRunLaunchReadiness.ts
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-server-planner-focused-crr-011.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-stale-empty-topology-crr-011.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-011.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/hierarchical-team-stale-empty-repair-ir-008.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/render-check-ir-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/static-audit-ir-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-build-ir-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-guards-ir-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/web-workspace-focused-ir-008.txt
+ef370a80b68f324df55f36342d99787f1f5071ad

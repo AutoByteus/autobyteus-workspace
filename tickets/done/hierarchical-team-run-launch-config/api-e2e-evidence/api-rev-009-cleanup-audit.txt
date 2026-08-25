@@ -1,0 +1,15 @@
+API-REV-009 cleanup audit
+UTC 2026-08-25T08:39:39Z
+
+PASS: owned port 59049 free
+PASS: owned port 59124 free
+
+User-owned port 29695:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 58117 normy   26u  IPv4 0x60f188759d6b3685      0t0  TCP *:29695 (LISTEN)
+{"status":"ok","message":"Server is running"}
+PASS: user-owned process remained healthy
+
+PASS: removed owned root /private/tmp/autobyteus-api-rev-009-owned only
+PASS: API-REV-009 tab 4ce41d closed; unrelated existing tab b2df06 remained open (AutoByteus list_tabs evidence observed after close)
+PASS: private package source and user profile were not modified

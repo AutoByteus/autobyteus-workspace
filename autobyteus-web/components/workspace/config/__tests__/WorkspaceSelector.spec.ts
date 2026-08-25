@@ -55,13 +55,16 @@ describe('WorkspaceSelector', () => {
   });
 
   const defaultProps = {
-    modelValue: {
-      mode: 'new' as const,
-      existingWorkspaceId: null,
-      newWorkspacePath: '',
+    model: {
+      mode: 'editable' as const,
+      selection: {
+        mode: 'new' as const,
+        existingWorkspaceId: null,
+        newWorkspacePath: '',
+      },
+      isLoading: false,
+      error: null,
     },
-    isLoading: false,
-    error: null,
     disabled: false,
   };
 
@@ -88,10 +91,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'existing',
           existingWorkspaceId: 'temp-ws',
           newWorkspacePath: '/workspace/inactive-buffer',
+          },
         },
       },
     });
@@ -110,11 +116,11 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.find('input[type="text"]').exists()).toBe(false);
 
     await wrapper.setProps({
-      modelValue: {
+      model: { ...defaultProps.model, selection: {
         mode: 'new',
         existingWorkspaceId: 'temp-ws',
         newWorkspacePath: '/workspace/inactive-buffer',
-      },
+      } },
     });
     expect(wrapper.findAll('[role="tab"]')[1].attributes('aria-selected')).toBe('true');
 
@@ -190,6 +196,23 @@ describe('WorkspaceSelector', () => {
     ]]);
   });
 
+  it('does not create nested-scope intent when default auto-selection is disabled', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: { ...defaultProps, autoSelectDefault: false },
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('select-existing')).toBeFalsy();
+  });
+
   it('does not fetch workspaces or auto-select temp workspace in disabled display mode', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
@@ -203,10 +226,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'new',
           existingWorkspaceId: 'agent_ws_metadata',
           newWorkspacePath: '/tmp/ProjectA',
+          },
         },
         disabled: true,
       },
@@ -231,10 +257,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'new',
           existingWorkspaceId: 'agent_ws_locked_reference',
           newWorkspacePath: '/tmp/LockedProject',
+          },
         },
         workspaceLocked: true,
       },
@@ -260,10 +289,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'existing',
           existingWorkspaceId: 'ws-1',
           newWorkspacePath: '',
+          },
         },
       },
     });
@@ -272,11 +304,11 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     await wrapper.setProps({
-      modelValue: {
+      model: { ...defaultProps.model, selection: {
         mode: 'new',
         existingWorkspaceId: null,
         newWorkspacePath: '',
-      },
+      } },
     });
     await flushPromises();
     await wrapper.vm.$nextTick();
@@ -438,7 +470,7 @@ describe('WorkspaceSelector', () => {
     };
 
     const wrapper = mount(WorkspaceSelector, {
-      props: { ...defaultProps, isLoading: true },
+      props: { ...defaultProps, model: { ...defaultProps.model, isLoading: true } },
     });
     await wrapper.vm.$nextTick();
 
@@ -492,11 +524,71 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        error: 'Workspace path is invalid',
+        model: { ...defaultProps.model, error: 'Workspace path is invalid' },
       },
     });
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain('Workspace path is invalid');
+  });
+
+  it('shows an exact stored Existing workspace without consulting current inventory', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+        model: {
+          mode: 'stored',
+          workspace: {
+            workspaceId: 'historical-workspace-id',
+            displayName: 'Saved Root Workspace',
+            rootPath: '/history/root',
+            availability: 'available',
+          },
+        },
+      },
+    });
+    await flushPromises();
+
+    const storedControl = wrapper.findComponent({ name: 'SearchableSelect' });
+    expect(wrapper.get('[data-test="stored-workspace-value"]').exists()).toBe(true);
+    expect(storedControl.props('modelValue')).toBe('historical-workspace-id');
+    expect(storedControl.props('disabled')).toBe(true);
+    expect(storedControl.props('options')).toContainEqual({
+      id: 'historical-workspace-id',
+      name: 'Saved Root Workspace',
+      description: '/history/root',
+    });
+    expect(wrapper.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false);
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('keeps a historical-only stored path visible in the disabled normal field region', async () => {
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+        model: {
+          mode: 'stored',
+          workspace: {
+            workspaceId: null,
+            displayName: '/history/removed-workspace',
+            rootPath: '/history/removed-workspace',
+            availability: 'historical-only',
+          },
+        },
+        historicalValueUnavailableMessage: 'Saved value is no longer available.',
+      },
+    });
+    await flushPromises();
+
+    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value)
+      .toBe('/history/removed-workspace');
+    expect(wrapper.get('input[type="text"]').attributes('disabled')).toBeDefined();
+    expect(wrapper.get('[data-test="stored-workspace-unavailable"]').text())
+      .toBe('Saved value is no longer available.');
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
   });
 });

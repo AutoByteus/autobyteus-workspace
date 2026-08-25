@@ -1,0 +1,22 @@
+IR-004 static integration audit
+HEAD: 393c27015a4380f77d33f7f55096077f0e1f6b29
+MERGE_HEAD: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+unmerged entries:
+conflict markers in integrated workspace-config source/tests:
+none
+obsolete split workspace events in production workspace config:
+none
+controlled workspace state occurrences:
+      45
+authored implementation effective non-empty line counts:
+autobyteus-web/components/workspace/config/RunConfigPanel.vue 498
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue 130
+autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue 125
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue 220
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue 307
+autobyteus-web/components/workspace/config/AgentRunConfigForm.vue 133
+prototype independent-tree removal retained (tracked paths):
+none
+git diff --check:
+git diff --cached --check:
+PASS

@@ -1,0 +1,38 @@
+Hierarchical Team browser probe: PASS
+{
+  "browser": "Google Chrome via playwright-core",
+  "regularJourney": {
+    "teamRunId": "browser_hierarchy_50985_1787589879892_aaaccfc1e6_25bfe4b82e934224a963098908118ad3",
+    "teamConfigAddresses": [
+      "/",
+      "/Research"
+    ],
+    "agentConfigAddresses": [
+      "/coordinator",
+      "/observer",
+      "/Research/lead",
+      "/Research/reviewer"
+    ],
+    "disclosure": "true -> false -> true",
+    "nestedCustomization": "false -> true -> reset(false) -> true",
+    "rootIsolation": "false",
+    "persistedSchemaVersion": 2,
+    "responsiveOverflow": {
+      "viewport": 900,
+      "documentWidth": 900,
+      "rootWidth": 493,
+      "rootClientWidth": 493
+    },
+    "terminated": true
+  },
+  "recoveryJourney": {
+    "rejectedWorkspaceQueries": 2,
+    "configurationMounted": true,
+    "rootBlockerCountBeforePendingPath": 1,
+    "runDisabledBeforePendingPath": true,
+    "runEnabledAfterPendingPath": true,
+    "workspaceCreatedDuringProbe": false
+  },
+  "pageErrors": [],
+  "consoleErrors": []
+}

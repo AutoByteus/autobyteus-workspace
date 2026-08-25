@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
-import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import { extractSummaryFromRawTraces } from "../../../run-history/services/run-history-service-helpers.js";
-import { projectTeamRunHistoryIndexRow } from "../../../run-history/services/team-run-history-index-row-projector.js";
+import { projectTeamRunHistoryIndexRow } from "./team-run-history-index-v1-row-projector.js";
 import type { TeamRunIndexFileRecord, TeamRunIndexRowRecord } from "../../../run-history/store/team-run-history-index-record-types.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";

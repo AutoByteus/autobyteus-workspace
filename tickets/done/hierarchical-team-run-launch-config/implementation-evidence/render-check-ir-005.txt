@@ -1,0 +1,10 @@
+IR-005 rendered frontend self-validation: PASS
+Route: http://127.0.0.1:3001/workspace
+Backend: http://127.0.0.1:8006
+Definition: Northstar Operating Company (6 nested Teams, 47 displayed scopes/Agents)
+Starting root workspace: Existing / Temp Workspace
+Exercised state: root New selected with an empty path
+Rendered blocker: Enter a workspace path to run this team.
+Run Team disabled: true
+Viewports: 1440x1100 and 900x1000
+Page errors: 0

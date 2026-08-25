@@ -9,6 +9,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import { useWorkspaceStore } from '~/stores/workspace'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { MobileLaunchMode, MobileLaunchPickerItem } from '~/types/mobileLaunch'
@@ -28,6 +29,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
   const teamRunStore = useAgentTeamRunStore()
   const teamRunConfigStore = useTeamRunConfigStore()
   const mobileWorkStore = useMobileWorkStore()
+  const workspaceStore = useWorkspaceStore()
   const { agentItems, teamItems } = useMobileWorkCatalog()
   const launchWorkspaces = useMobileLaunchWorkspaces()
   const { createMobileRunFromConfig } = useMobileRunLaunchCoordinator()
@@ -103,7 +105,10 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     return ''
   })
   const canLaunch = computed(() => !blockingIssue.value)
-  const autoExecuteTools = computed(() => activeConfig.value?.autoExecuteTools ?? false)
+  const autoExecuteTools = computed(() => {
+    const config = activeConfig.value
+    return config && 'rootConfig' in config ? config.rootConfig.autoExecuteTools : config?.autoExecuteTools ?? false
+  })
 
   function choiceGroupForAgent(item: MobileWorkListItem): string {
     const context = options.context.value
@@ -205,7 +210,12 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent' && agentRunConfigStore.config) {
       agentRunConfigStore.updateAgentConfig({ workspaceId })
     } else if (mode.value === 'team' && teamRunConfigStore.config) {
-      teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata: null })
+      const workspace = workspaceId ? workspaceStore.workspaces[workspaceId] || null : null
+      const workspaceMetadata = workspaceId
+        ? workspaceStore.workspaceMetadataById[workspaceId]
+          || (workspace ? workspaceStore.registerWorkspaceInfoMetadata(workspace) : null)
+        : null
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_root_workspace', workspace: { workspaceId, workspaceMetadata } })
     }
   }
 
@@ -260,7 +270,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ autoExecuteTools: checked })
     } else {
-      teamRunConfigStore.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: checked })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_root_auto_execute_tools', autoExecuteTools: checked })
     }
   }
 
@@ -269,7 +279,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ runtimeKind })
     } else {
-      teamRunConfigStore.applyConfigEdit({ kind: 'set_runtime', runtimeKind })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_root_runtime', runtimeKind })
     }
   }
 
@@ -278,7 +288,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmModelIdentifier })
     } else {
-      teamRunConfigStore.applyConfigEdit({ kind: 'set_model', llmModelIdentifier })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier })
     }
   }
 
@@ -287,7 +297,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmConfig })
     } else {
-      teamRunConfigStore.applyConfigEdit({ kind: 'set_llm_config', llmConfig })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_root_llm_config', llmConfig })
     }
   }
 

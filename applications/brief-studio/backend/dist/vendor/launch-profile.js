@@ -50,6 +50,16 @@ export const buildConfiguredAgentRunLaunch = (input) => ({
 });
 const resolveTeamWorkspaceRootPath = (input) => (normalizeOptionalString(input.launchProfile.defaults?.workspaceRootPath)
     ?? requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath"));
+export const buildConfiguredTeamDefaultConfig = (input) => ({
+    workspaceRootPath: resolveTeamWorkspaceRootPath(input),
+    llmModelIdentifier: requireNonEmptyString(normalizeOptionalString(input.launchProfile.defaults?.llmModelIdentifier)
+        ?? normalizeOptionalString(input.llmModelIdentifier), "teamDefaultConfig.llmModelIdentifier"),
+    autoExecuteTools: true,
+    skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
+    runtimeKind: normalizeOptionalString(input.launchProfile.defaults?.runtimeKind)
+        ?? normalizeOptionalString(input.runtimeKind),
+    ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
+});
 export const buildConfiguredTeamMemberLaunchConfigs = (input) => {
     const skillAccessMode = normalizeSkillAccessMode(input.skillAccessMode);
     const defaultLlmModelIdentifier = normalizeOptionalString(input.launchProfile.defaults?.llmModelIdentifier)
@@ -89,6 +99,14 @@ export const buildConfiguredTeamRunLaunch = (input) => {
     return {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamDefaultConfig: buildConfiguredTeamDefaultConfig({
+            launchProfile: input.launchProfile,
+            workspaceRootPath: input.workspaceRootPath,
+            llmModelIdentifier: input.llmModelIdentifier,
+            llmConfig: input.llmConfig,
+            runtimeKind: input.runtimeKind,
+            skillAccessMode: input.skillAccessMode,
+        }),
         memberConfigs: buildConfiguredTeamMemberLaunchConfigs({
             launchProfile: input.launchProfile,
             workspaceRootPath: input.workspaceRootPath,

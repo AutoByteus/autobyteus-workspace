@@ -1,0 +1,50 @@
+API-REV-004 focused execution/audit
+utc=2026-08-24T18:06:14Z
+
+durable_test_hashes:
+bc4fda79a1de7551793c8c6ca3edc952799004f00cd6556ec34f4da2475b2712  autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+3413ed1fd7f44526c9c29cd87a492b6283700bfb6af73b2281e943096f1f968f  autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+expected_hierarchy_sha256=bc4fda79a1de7551793c8c6ca3edc952799004f00cd6556ec34f4da2475b2712
+expected_production_upgrade_sha256=3413ed1fd7f44526c9c29cd87a492b6283700bfb6af73b2281e943096f1f968f
+durable_test_hash_match=PASS
+
+git_diff_check=PASS
+
+hierarchy_summary:
+ ✓ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests) 15558ms
+     ✓ persists root, nested-Team, and exact-Agent configurations and restores them after process restart  3939ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1937ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  2036ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1919ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1926ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1827ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1974ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  20:05:17
+   Duration  16.15s (transform 38ms, setup 20ms, import 33ms, tests 15.56s, environment 0ms)
+
+
+production_upgrade_summary:
+
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 14130ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  4062ms
+     ✓ isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available  3647ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4167ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2252ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  20:05:37
+   Duration  19.10s (transform 3.25s, setup 20ms, import 4.41s, tests 14.13s, environment 0ms)
+
+
+owned_test_artifact_scan:
+none
+
+matching_live_process_scan:
+none
+
+post_report_reconciliation_git_diff_check=PASS
+canonical_report_revision=API-REV-004

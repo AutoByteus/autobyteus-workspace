@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import type { TeamRunExecutionTreeFileV1 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { TeamRunExecutionTreeFileV2 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
   getTeamRunFileCommitWriter,
   type TeamRunFileCommitWriter,
@@ -20,7 +20,7 @@ export class TeamRunExecutionTreeStore {
   async read(
     teamMemoryDir: string,
     rootTeamRunId: string,
-  ): Promise<TeamRunExecutionTreeFileV1 | null> {
+  ): Promise<TeamRunExecutionTreeFileV2 | null> {
     try {
       const value = JSON.parse(
         await fs.readFile(getTeamRunExecutionTreePath(teamMemoryDir), "utf-8"),
@@ -34,7 +34,7 @@ export class TeamRunExecutionTreeStore {
 
   async write(
     teamMemoryDir: string,
-    tree: TeamRunExecutionTreeFileV1,
+    tree: TeamRunExecutionTreeFileV2,
   ): Promise<TeamRunFileWriteResult> {
     const normalized = validateTeamRunExecutionTreePayload(
       tree,

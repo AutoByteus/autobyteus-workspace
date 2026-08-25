@@ -6,6 +6,7 @@ import type {
   ApplicationExecutionResourceRef,
   ApplicationSkillAccessMode,
   ApplicationTeamMemberLaunchConfig,
+  ApplicationTeamRunPreset,
   ApplicationTeamRunLaunch,
 } from "@autobyteus/application-sdk-contracts";
 
@@ -104,6 +105,27 @@ const resolveTeamWorkspaceRootPath = (input: {
   ?? requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath")
 );
 
+export const buildConfiguredTeamDefaultConfig = (input: {
+  launchProfile: ApplicationConfiguredTeamLaunchProfile;
+  workspaceRootPath: string;
+  llmModelIdentifier?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+  runtimeKind?: string | null;
+  skillAccessMode?: ApplicationSkillAccessMode | null;
+}): ApplicationTeamRunPreset => ({
+  workspaceRootPath: resolveTeamWorkspaceRootPath(input),
+  llmModelIdentifier: requireNonEmptyString(
+    normalizeOptionalString(input.launchProfile.defaults?.llmModelIdentifier)
+      ?? normalizeOptionalString(input.llmModelIdentifier),
+    "teamDefaultConfig.llmModelIdentifier",
+  ),
+  autoExecuteTools: true,
+  skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
+  runtimeKind: normalizeOptionalString(input.launchProfile.defaults?.runtimeKind)
+    ?? normalizeOptionalString(input.runtimeKind),
+  ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
+});
+
 export const buildConfiguredTeamMemberLaunchConfigs = (input: {
   launchProfile: ApplicationConfiguredTeamLaunchProfile;
   workspaceRootPath: string;
@@ -163,6 +185,14 @@ export const buildConfiguredTeamRunLaunch = (input: {
   return {
     kind: "AGENT_TEAM",
     mode: "memberConfigs",
+    teamDefaultConfig: buildConfiguredTeamDefaultConfig({
+      launchProfile: input.launchProfile,
+      workspaceRootPath: input.workspaceRootPath,
+      llmModelIdentifier: input.llmModelIdentifier,
+      llmConfig: input.llmConfig,
+      runtimeKind: input.runtimeKind,
+      skillAccessMode: input.skillAccessMode,
+    }),
     memberConfigs: buildConfiguredTeamMemberLaunchConfigs({
       launchProfile: input.launchProfile,
       workspaceRootPath: input.workspaceRootPath,

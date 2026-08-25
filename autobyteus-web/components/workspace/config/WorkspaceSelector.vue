@@ -45,7 +45,11 @@
     </div>
 
     <!-- Existing Workspace Dropdown -->
-    <div v-if="mode === 'existing'" class="transition-all duration-200">
+    <div
+      v-if="mode === 'existing'"
+      class="transition-all duration-200"
+      :data-test="isInteractionDisabled && storedWorkspace ? 'stored-workspace-value' : undefined"
+    >
       <SearchableSelect
         :model-value="modelValue.existingWorkspaceId"
         @update:model-value="handleExistingSelect"
@@ -85,6 +89,14 @@
         </button>
       </div>
     </div>
+
+    <p
+      v-if="isInteractionDisabled && storedWorkspace?.availability === 'historical-only'"
+      class="mt-1 text-xs text-amber-600"
+      data-test="stored-workspace-unavailable"
+    >
+      {{ historicalValueUnavailableMessage }}
+    </p>
     
     <!-- Helper Text Area -->
     <div v-if="showHelperTextArea" class="mt-2.5">
@@ -125,16 +137,30 @@ import type {
   WorkspaceSelectionMode,
   WorkspaceSelectionState,
 } from '~/types/workspace/WorkspaceSelectionState';
+import type { StoredWorkspaceDisplay } from '~/types/agent/StoredTeamRunFormModel';
 
-const props = defineProps<{
-  modelValue: WorkspaceSelectionState;
-  isLoading: boolean;
-  error: string | null;
+const props = withDefaults(defineProps<{
+  model:
+    | Readonly<{
+        mode: 'editable';
+        selection: WorkspaceSelectionState;
+        isLoading: boolean;
+        error: string | null;
+      }>
+    | Readonly<{
+        mode: 'stored';
+        workspace: StoredWorkspaceDisplay | null;
+      }>;
   disabled?: boolean;
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
   controlVariant?: 'default' | 'quiet';
-}>();
+  autoSelectDefault?: boolean;
+  historicalValueUnavailableMessage?: string;
+}>(), {
+  autoSelectDefault: true,
+  historicalValueUnavailableMessage: 'Saved value is unavailable in current options.',
+});
 
 const emit = defineEmits<{
   (e: 'update:modelValue', selection: WorkspaceSelectionState): void;
@@ -148,10 +174,21 @@ const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
   hasElectronFolderDialog: typeof window !== 'undefined' && Boolean(window.electronAPI?.showFolderDialog),
 }));
 
-const mode = computed(() => props.modelValue.mode);
+const storedWorkspace = computed(() => props.model.mode === 'stored' ? props.model.workspace : null);
+const modelValue = computed<WorkspaceSelectionState>(() => {
+  if (props.model.mode === 'editable') return props.model.selection;
+  const workspace = props.model.workspace;
+  return workspace?.workspaceId
+    ? { mode: 'existing', existingWorkspaceId: workspace.workspaceId, newWorkspacePath: workspace.rootPath }
+    : { mode: 'new', existingWorkspaceId: null, newWorkspacePath: workspace?.rootPath ?? '' };
+});
+const isLoading = computed(() => props.model.mode === 'editable' && props.model.isLoading);
+const error = computed(() => props.model.mode === 'editable' ? props.model.error : null);
+const mode = computed(() => modelValue.value.mode);
 const proposedDefaultWorkspaceId = ref<string | null>(null);
 const hasExplicitWorkspaceInteraction = ref(false);
-const isInteractionDisabled = computed(() => (props.disabled ?? false) || (props.workspaceLocked ?? false));
+const isInteractionDisabled = computed(() =>
+  props.model.mode === 'stored' || (props.disabled ?? false) || (props.workspaceLocked ?? false));
 const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
   return props.workspaceLockedMessage || 'Workspace is fixed for this run.';
@@ -162,7 +199,7 @@ const newWorkspaceInputClass = computed(() => [
   controlVariant.value === 'quiet'
     ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
     : 'border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500',
-  props.error ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : '',
+  error.value ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : '',
 ]);
 
 // Computed
@@ -179,32 +216,42 @@ const workspaceOptions = computed(() => {
     }));
   
   // Put temp workspace at top with special styling
-  if (workspaceStore.tempWorkspace) {
-    return [
+  const inventoryOptions = workspaceStore.tempWorkspace
+    ? [
       {
         id: tempId!,
         name: '📁 Temp Workspace (Default)',
         description: 'Default temporary workspace'
       },
       ...regularWorkspaces
-    ];
+    ]
+    : regularWorkspaces;
+  const stored = storedWorkspace.value;
+  if (stored?.workspaceId && !inventoryOptions.some((option) => option.id === stored.workspaceId)) {
+    inventoryOptions.push({
+      id: stored.workspaceId,
+      name: stored.displayName,
+      description: stored.rootPath,
+    });
   }
-  
-  return regularWorkspaces;
+  return inventoryOptions;
 });
 
 const existingDisabled = computed(() => workspaceOptions.value.length === 0);
 
 const selectedWorkspace = computed(() => {
-  if (!props.modelValue.existingWorkspaceId) return null;
-  return workspaceStore.workspaces[props.modelValue.existingWorkspaceId] || null;
+  if (!modelValue.value.existingWorkspaceId) return null;
+  return workspaceStore.workspaces[modelValue.value.existingWorkspaceId] || null;
 });
 const successMessage = computed(() => {
   if (mode.value === 'existing' && selectedWorkspace.value) {
     return `Workspace: ${selectedWorkspace.value.name}`;
   }
-  if (isInteractionDisabled.value && props.modelValue.newWorkspacePath) {
-    return `Workspace: ${props.modelValue.newWorkspacePath}`;
+  if (props.model.mode === 'stored' && storedWorkspace.value) {
+    return `Workspace: ${storedWorkspace.value.displayName}`;
+  }
+  if (isInteractionDisabled.value && modelValue.value.newWorkspacePath) {
+    return `Workspace: ${modelValue.value.newWorkspacePath}`;
   }
   return null;
 });
@@ -214,19 +261,22 @@ const showSuccessMessage = computed(() =>
 );
 const showHelperTextArea = computed(() =>
   workspaceLocked.value ||
-  Boolean(props.error) ||
+  Boolean(error.value) ||
   showSuccessMessage.value ||
   mode.value === 'existing',
 );
 const proposeSelection = (changes: Partial<WorkspaceSelectionState>) => {
   if (isInteractionDisabled.value) return;
-  emit('update:modelValue', { ...props.modelValue, ...changes });
+  if (props.model.mode !== 'editable') return;
+  emit('update:modelValue', { ...props.model.selection, ...changes });
 };
 
 const maybeAutoSelectDefaultWorkspace = (): boolean => {
   if (
-    props.modelValue.existingWorkspaceId
-    || props.modelValue.newWorkspacePath
+    props.autoSelectDefault === false
+    || props.model.mode !== 'editable'
+    || modelValue.value.existingWorkspaceId
+    || modelValue.value.newWorkspacePath
     || hasExplicitWorkspaceInteraction.value
     || isInteractionDisabled.value
   ) {
@@ -266,14 +316,14 @@ onMounted(async () => {
   if (
     workspaceOptions.value.length > 0
     && mode.value === 'new'
-    && !props.modelValue.newWorkspacePath
+    && !modelValue.value.newWorkspacePath
     && !hasExplicitWorkspaceInteraction.value
   ) {
     proposeSelection({ mode: 'existing' });
   }
 });
 
-watch(() => props.modelValue.existingWorkspaceId, (workspaceId) => {
+watch(() => modelValue.value.existingWorkspaceId, (workspaceId) => {
   if (workspaceId) {
     proposedDefaultWorkspaceId.value = null;
   } else {
@@ -295,7 +345,7 @@ watch(workspaceOptions, (newOptions) => {
   if (
     newOptions.length > 0
     && mode.value === 'new'
-    && !props.modelValue.newWorkspacePath
+    && !modelValue.value.newWorkspacePath
     && !hasExplicitWorkspaceInteraction.value
   ) {
     maybeAutoSelectDefaultWorkspace() || proposeSelection({ mode: 'existing' });

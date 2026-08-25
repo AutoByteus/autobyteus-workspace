@@ -1,0 +1,28 @@
+# API-REV-011 artifact consistency audit
+
+HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+
+## Whitespace and current authority
+PASS: git diff --check
+27:- Current API/E2E Revision ID: `API-REV-011`
+31:- Latest Authoritative Investigation: API-REV-011 is complete: `Pass` / `98%`. The changed `MemberOverrideItem.spec.ts` passed alone (1 file / 8 tests) and in the full stored/shared cohort (11 files / 112 tests); static/product-grounding checks passed. API-E2E-F-003 remains `Out Of Scope / Non-Blocking` and was not resurrected or rerun.
+13:- Current API/E2E Revision / Round: `API-REV-011` / 11.
+17:- Current Authoritative Result: **Pass / 98%**. No blocking failure exists.
+17:| API-REV-011 | `code_reviewer` CRR-023 complete IR-014 source Pass; API/E2E round 11 | SR-015, ARCH-REV-007, IR-013–IR-014, CRR-021–CRR-023, API-REV-010 | Pass / 98% | Pass / 98% |
+PASS: all canonical artifacts identify API-REV-011 Pass / 98% as current.
+
+## Executed evidence
+22: Test Files  1 passed (1)
+23:      Tests  8 passed (8)
+109: Test Files  11 passed (11)
+110:      Tests  112 passed (112)
+30:PASS: rejected synthetic CR/free-text and alpha/zeta vocabulary is absent from scoped current production/tests.
+PASS: focused, cohort, and static evidence agree with the report.
+
+## Durable delta and scope
+PASS: IR-014 durable delta is exactly one committed test and its recorded hash matches.
+
+## Reachability guard
+31:- Latest Authoritative Investigation: API-REV-011 is complete: `Pass` / `98%`. The changed `MemberOverrideItem.spec.ts` passed alone (1 file / 8 tests) and in the full stored/shared cohort (11 files / 112 tests); static/product-grounding checks passed. API-E2E-F-003 remains `Out Of Scope / Non-Blocking` and was not resurrected or rerun.
+27:- Explicit exclusion: API-E2E-F-003 and its arbitrary CR/free-text GraphQLJSON plus page-local catalog mutation were not executed.
+PASS: synthetic CR/catalog-injection execution remains excluded.

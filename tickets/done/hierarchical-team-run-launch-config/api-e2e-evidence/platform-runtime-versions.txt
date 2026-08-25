@@ -1,0 +1,9 @@
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+arm64
+v22.23.1
+10.28.2
+Google Chrome 151.0.7922.170 
+42.4.1
+codex-cli 0.149.1

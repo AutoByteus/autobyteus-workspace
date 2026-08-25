@@ -1,0 +1,41 @@
+IR-009 rendered frontend validation
+Date: 2026-08-25 (Europe/Berlin)
+
+Environment
+- Nuxt production-equivalent development renderer: http://127.0.0.1:3001/workspace
+- Supported local backend: http://127.0.0.1:8006
+- Real definition exercised: Northstar Operating Company
+- Root runtime/model exercised: AutoByteUs / deepseek-v4-flash
+- Browser tab and temporary renderer were closed after validation.
+
+Approved visual references inspected
+- solution-evidence/origin-personal-root-launch-form-20260825.png
+- solution-evidence/origin-personal-nested-team-group-20260825.png
+- solution-evidence/dr003-root-presentation-user-review-20260825.png
+
+Root result: PASS
+- The visible sequence is Team Definition -> Runtime -> Default LLM Model (Global) -> model controls -> Workspace Directory -> Auto approve tools -> Team Members Override (41) -> Run Team.
+- Root fields render directly with the original quiet information density and without a hierarchy wrapper/card, Root Team defaults title or badge, root slash address, hierarchy divider, Effective summary, or Customized fields summary.
+- The Team Members Override disclosure starts collapsed and reports aria-expanded="false".
+
+Nested Team result: PASS
+- Opening Team Members Override displayed six nested Team groups in the established indented member-tree treatment.
+- Each nested Team group started collapsed and retained its Team name, localized TEAM marker, canonical address, Inherited state, and disclosure chevron.
+- The /engineering_org disclosure exposed aria-controls="team-scope-engineering_org-panel" and changed aria-expanded from false to true on activation.
+- Expansion rendered the actual inherited Runtime, Default LLM Model, Workspace Directory, and Auto approve tools controls; no effective-value or customized-fields summary was rendered.
+- Changing the exact nested Auto approve tools value changed the state to Customized, exposed Reset with accessible name "Reset settings for engineering_org (/engineering_org)", and kept the group expanded.
+- Reset restored Inherited, removed the Reset action, retained expansion, and restored the inherited value.
+- Address-scoped loading/error/retry and disabled/read-only behavior remain covered by focused rendered component tests.
+
+Narrow/desktop quality
+- Header identity, state, Reset, and disclosure controls remained readable without overlap at the inspected desktop and narrow container widths.
+- Focus order follows document order: outer disclosure, nested disclosure, expanded controls, Reset when present.
+
+Captured evidence
+- implementation-evidence/hierarchical-team-presentation-root-ir-009.png (1384x1476)
+- implementation-evidence/hierarchical-team-presentation-root-members-ir-009.png (2048x1476)
+- implementation-evidence/hierarchical-team-presentation-nested-collapsed-ir-009.png (2048x1476)
+- implementation-evidence/hierarchical-team-presentation-nested-expanded-ir-009.png (2048x1476)
+
+Conclusion
+- PASS: IR-009 matches the SR-011 root and nested presentation contract while preserving the already-approved functional baseline.

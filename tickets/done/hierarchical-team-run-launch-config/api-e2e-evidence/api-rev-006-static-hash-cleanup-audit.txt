@@ -1,0 +1,39 @@
+API-REV-006 static/hash/cleanup audit
+utc=2026-08-24T22:13:59Z
+head=426bdf81ae5efcaf7e97e041c36a94d7349e610b
+git_diff_check:
+non_test_production_diff:
+durable_test_hashes:
+4a52952caa8cf0ac3b917dc219a7a4e578f0e7cae06fd9faffd80e2a9df02dd9  autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+58460952293277ca5e2cf6993e1b5ea6c089a865b18db6aaa0861d2501e8fd81  autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+9cb8d7fa7cd0a9bde32741da1b8ab1c31e3aebea8fc895b30e712031ea9d9df2  autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+bc4fda79a1de7551793c8c6ca3edc952799004f00cd6556ec34f4da2475b2712  autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+3413ed1fd7f44526c9c29cd87a492b6283700bfb6af73b2281e943096f1f968f  autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+browser_image_hashes:
+a1cb3c979749689874800b3163913b3098c02f2d71ef2fcf651eeef6a9b6e3dc  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-root-nested-empty-blocker.png
+d60ca3ab561c88a25b45e6ac706c5b7895c6b8992e2707854bca310c5c20f370  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-stale-empty-repair.png
+f5f5e8bbfeee4247167011812d12a89fa6cfa57f659bd9386ecd776494f2c65d  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-006-open-tab-team-message-task-success.png
+ports_58649_58724:
+58649 free
+58724 free
+owned_process_scan:
+owned_root:
+removed
+browser_tabs:
+AutoByteus list_tabs after close returned sessions=[]
+private_package_git_status:
+?? .codex/
+classification: pre-existing .codex/skills symlink tree, directory mtime 2026-08-24T11:19:22+0200, before this API-REV-006 runtime; no package source file was edited.
+final_artifact_diff_check:
+final_changed_non_test_production_paths:
+final_authoritative_markers:
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md:17:- Current API/E2E Revision ID / Round: `API-REV-006` / 6
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md:20:- Latest Authoritative Round: this report, `API-REV-006` — `Pass` / `98%` for HEAD `426bdf81ae5efcaf7e97e041c36a94d7349e610b`.
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md:186:- Result: `Pass`; final confidence: `98%`; 95% target: `Yes`; category below 90%: `No`.
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:26:- Current API/E2E Revision ID: `API-REV-006`
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:295:- Result: `Pass`
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:296:- Final validation confidence: `99%` (authoritative scorecard in `api-e2e-execution-coverage-report.md`).
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:359:- Result: `Pass`.
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:360:- Final validation confidence: `99%`; all seven categories are at least 98%, no critical criterion is missing or failing, and AC-030 now passes at the representative released-package startup boundary.
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:435:- Final validation confidence: `89%`. Repository checks were substantial, but a critical accepted browser journey fails and the current durable component mock does not reproduce its real Pinia/Vue continuation timing.
+tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md:561:- Current authoritative result: `Pass` / `98%` after the completed execution recorded below. API-REV-005 `Fail` / 89% remains the prior historical result and was rechecked directly rather than overwritten or inferred resolved.

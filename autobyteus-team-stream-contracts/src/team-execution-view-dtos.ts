@@ -20,7 +20,7 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
 }).strict();
 
 export type AgentLaunchConfigurationDto = Readonly<{
-  runtime_kind: "AUTOBYTEUS" | "CLAUDE" | "CODEX";
+  runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server";
   llm_model_identifier: string;
   llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
   auto_execute_tools: boolean;
@@ -85,6 +85,7 @@ export type ConfiguredTeamExecutionDto = Readonly<{
   description: string | null;
   team_run_id: string;
   coordinator_address: string;
+  default_launch_configuration: AgentLaunchConfigurationDto;
   members: readonly ConfiguredMemberExecutionDto[];
   task_executions: readonly TaskExecutionDto[];
 }>;
@@ -92,7 +93,7 @@ export type ConfiguredTeamExecutionDto = Readonly<{
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 
 const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
-  runtime_kind: z.enum(["AUTOBYTEUS", "CLAUDE", "CODEX"]),
+  runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server"]),
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   auto_execute_tools: z.boolean(),
@@ -135,33 +136,38 @@ const configuredTeamSchema: z.ZodType<ConfiguredTeamExecutionDto> = z.lazy(() =>
   kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
   team_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
   team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+  default_launch_configuration: launchConfigurationSchema,
   members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
   task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
 }).strict());
 
 export type TeamRunExecutionTreeDto = Readonly<{
-  schema_version: 1;
+  schema_version: 2;
   created_at: string;
   archived_at: string | null;
   application_binding: Readonly<{ application_id: string; binding_id: string }> | null;
   handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
   root_team: Readonly<{
+    address: "/";
     team_definition_id: string;
     team_definition_name: string;
     team_run_id: string;
     coordinator_address: string;
+    default_launch_configuration: AgentLaunchConfigurationDto;
     members: readonly ConfiguredMemberExecutionDto[];
     task_executions: readonly TaskExecutionDto[];
   }>;
 }>;
 
 export const teamRunExecutionTreeDtoSchema: z.ZodType<TeamRunExecutionTreeDto> = z.object({
-  schema_version: z.literal(1), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
+  schema_version: z.literal(2), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
   application_binding: z.object({ application_id: nonEmptyStringSchema, binding_id: nonEmptyStringSchema }).strict().nullable(),
   handoffs: z.array(z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict()),
   root_team: z.object({
+    address: z.literal("/"),
     team_definition_id: nonEmptyStringSchema, team_definition_name: nonEmptyStringSchema,
     team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+    default_launch_configuration: launchConfigurationSchema,
     members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
   }).strict(),
