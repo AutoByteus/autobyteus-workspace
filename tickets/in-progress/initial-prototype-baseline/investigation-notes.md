@@ -8,9 +8,9 @@
 - Task worktree / branch: Existing isolated worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on `codex/initial-prototype-baseline`. The user explicitly requires worktree isolation for RER-009; `personal` and `origin/personal` must not be modified without later separate authorization.
 - Base or reference revision: Worktree fast-forwarded to fetched `origin/personal` `52b4be02ea793f2071fe5a63a94664ab25196433`. Observable parity remains pinned to source commit `8ef282ba77705180d985e7000d801f0e0068cdc1` because that pin contains the required Agent Team launch behavior.
 - Bootstrap result: Complete current-state prototype accepted cumulatively under PPA-001 and PPA-002. The focused Agent Team launch correction passes exact source/prototype `JRN-050-A`–`JRN-050-E`, adds normative VIS-016/VIS-017, and is explicitly user-confirmed.
-- Bootstrap blocker: None. AC-001–AC-021 are satisfied and the workspace-owned package is terminally verified.
-- Current requirements revision ID: `RER-016`
-- Investigation status: Complete. The approved prototype is ordinary workspace-root content on synchronized `personal`; the sibling checkout is absent, observable approval is unchanged, and no architecture or production engineering is authorized.
+- Bootstrap blocker: Independent return AC-022–AC-024 are pending. The workspace source must remain intact until the independent target is validated, pushed and remotely synchronized.
+- Current requirements revision ID: `RER-017`
+- Investigation status: Prototype Needed. Observable approval remains complete; only canonical root, repository ownership, active paths/provenance and target-first workspace cleanup are reopened.
 
 ## Initial Request And Clarifications
 
@@ -23,7 +23,8 @@
 - Prior ownership decision: RER-013 established independent repository `https://github.com/AutoByteus/autobyteus-web-prototype.git` and sibling checkout `/home/autobyteus/workspace/autobyteus-web-prototype`; RER-014 verified it before the latest reversal.
 - Latest ownership decision: User now explicitly wants the complete approved project returned to `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`, managed and pushed directly on workspace `personal`, and does not intend to use the sibling checkout going forward. The independent remote itself is not to be deleted.
 - Latest ownership result: Workspace `personal`/origin/HEAD equal `bf8ab93490847f5ba894aaed25670f5c69931b55`; the complete prototype is at workspace root and the sibling checkout was removed after push verification. The independent remote remains untouched.
-- Locator provenance policy: Earlier monorepo, task-worktree and independent-root paths in source logs and prior RER rows remain historical facts. Active prototype locators use only `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`.
+- Latest ownership reversal: User now explicitly requires the prototype to belong to its own repository again. Reuse `https://github.com/AutoByteus/autobyteus-web-prototype.git` and sibling root `/home/autobyteus/workspace/autobyteus-web-prototype`; delete the workspace project only after the independent target is complete, validated and pushed.
+- Locator provenance policy: Earlier monorepo, task-worktree and independent-root paths in source logs and prior RER rows remain historical facts. During RER-017 the workspace root is the protected source and the independent sibling root is the target; after successful migration, only the sibling root is active.
 - Initial ambiguity: Resolved as `autobyteus-web`, following the prior recommendation and user's latest-source confirmation. A kickoff fetch must translate “latest” into an exact reproducible commit.
 
 ## Product And Domain Understanding
@@ -74,6 +75,8 @@
 | SRC-033 / 2026-08-24 | Git / Filesystem verification | Ref/status/top-level checks in workspace and sibling repositories; destination existence check | Establish safe RER-015 source and target facts | Workspace `personal`/origin are clean/equal at `6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4`; target root is absent. Sibling `personal`/origin are clean/equal at `0b02b0e1fbdbdefb78b91b1705bd497663694e0f` and its standalone Git metadata remains present. | Preserve sibling as source until focused workspace commit/push and terminal validation succeed. |
 | SRC-034 / 2026-08-24 | Product Prototyper / Git / Validation | RER-015 completion return; `workspace-repository-return.md`; return proof and validation log | Determine whether AC-019–AC-021 are met | Workspace commit `bf8ab934...` is pushed and clean/equal; project has 2,010 ordinary tracked rows with no nested Git/link; 2,001/2,001 approved files, 848/848 binaries, 17/17 visual hashes and JRN-050-A–E are exact; 18 differences are enumerated locator/provenance files; required quality/package/build/browser/HTTP and 62/62 ownership checks pass. Sibling removal occurred only afterward; independent remote is unchanged. | Independently verify terminal refs, placement, package checks and HTTP, then close RER-016. |
 | SRC-035 / 2026-08-24 | Independent command/runtime verification | Fresh workspace fetch/ref/status/Git-owner/index/sibling checks; 20/20, 25/25, 86/86 and terminal 62/62 validators; HTTP probe | Verify returned workspace ownership | HEAD, `personal`, `origin/personal` and `origin/HEAD` equal `bf8ab934...`; workspace is clean; project top level/branch are correct; gitlinks are zero; sibling is absent; all four validators pass and review URL returns HTTP 200. | Close AC-019–AC-021 and restore prototype-only completion. |
+| SRC-036 / 2026-08-25 | User | Explicit request to move the web prototype back to its own repository and delete it from the current workspace repository | Determine whether RER-016 ownership remains authoritative | User reverses DEC-006 and prefers independent repository ownership. The request is a non-observable move/delete operation; no source refresh, redesign or architecture is requested. | Record BEH-009, REQ-022–REQ-024 and target-first migration. |
+| SRC-037 / 2026-08-25 | Git / Filesystem / Remote verification | Fetch/status/divergence/tree inspection for workspace; sibling existence check; `git ls-remote` for independent remote | Establish safe source/target facts | Workspace was clean but 32 commits behind; it fast-forwarded to `fb1335867...`. Those commits changed 599 non-prototype paths and zero prototype paths, so current prototype tree remains `21c400d...` with 2,010 rows. Sibling is absent. Independent remote HEAD/`personal` remain at `0b02b0e1...`. | Preserve workspace source, restore existing independent history, validate/push target first, then remove workspace copy. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -87,6 +90,7 @@
 | BEH-006 | Operational | User authorizes direct integration on `personal` after task-worktree approval | Concurrent remote history and the complete task package were preserved through final rebase, validation, fast-forward and non-force push | Task/local/remote refs equal; canonical project lives at repository root on `personal`; approved evidence remains exact | SRC-024–SRC-027 | High; integration complete |
 | BEH-007 | Operational | User requests independent prototype repository ownership | Complete prototype now lives in the independent synchronized `personal` repository; monorepo copy/index rows are absent after sequenced removal | Keep repositories independently managed with no duplicate/submodule/gitlink or active stale locator | SRC-028–SRC-031 | High; migration complete |
 | BEH-008 | Operational | User reverses independent ownership and requests workspace-root management | Complete project is ordinary workspace-root content at synchronized `bf8ab934...`; sibling checkout is absent after target-first verification; independent remote is untouched | Keep the approved package workspace-owned with active paths only under the workspace root and no nested Git/link/duplicate | SRC-032–SRC-035 | High; complete |
+| BEH-009 | Operational | User reverses workspace ownership and requests the existing independent repository | Workspace is current/clean at `fb1335867...` with unchanged prototype tree `21c400d...`; sibling is absent; independent remote retains `0b02b0e1...` | Move complete current project into the independent repository, validate/push target first, then delete/reconcile/push workspace copy | SRC-036–SRC-037 | High; execution pending |
 
 ## Relevant Codebase And Technical Facts
 
@@ -141,20 +145,20 @@
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — completed, including workspace-ownership return`
-- Decision rationale: Product Prototyper returned the complete accepted independent tree to ordinary workspace content, reconciled active paths/provenance, validated/pushed the target first and removed the sibling checkout afterward without changing the approved experience or losing evidence.
-- Requirement / behavior IDs involved: BEH-008; REQ-019–REQ-021; AC-019–AC-021; SCN-008.
-- Product decisions or uncertainties to resolve: None. Complete preservation, workspace Git ownership, focused direct-personal push, target-first ordering and safe sibling removal are proven.
+- Prototype needed: `Yes — focused independent-ownership move pending`
+- Decision rationale: Product Prototyper owns the canonical prototype project, path-sensitive evidence and repository lifecycle. The current accepted workspace tree must become the next normal commit in the existing independent repository before the workspace copy is removed.
+- Requirement / behavior IDs involved: BEH-009; REQ-022–REQ-024; AC-022–AC-024; SCN-009.
+- Product decisions or uncertainties to resolve: No UI decision remains. Execution must prove preserved independent ancestry, complete current-tree preservation, correct active paths, focused non-force pushes, target-first ordering and final absence of the workspace duplicate.
 - Critical journey and states: Agent Teams populated catalog -> selected team launch draft -> valid workspace/runtime/model/member config -> **Run Team** -> exactly one selected team under the chosen workspace -> expandable/selectable member/coordinator state.
 - Known constraints and non-goals: Current-state parity only; same source technology; deterministic mock boundaries; isolated run; no screenshot/hotspot substitute; no future-state redesign.
 - Alternative evidence path / next action when no prototype is used: N/A; prototype is explicitly requested.
-- Prototype request artifact / message reference: RER-015 request and returned `workspace-repository-return.md`, reconciled in RER-016.
+- Prototype request artifact / message reference: RER-017 user request and cumulative package; current protected source is `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`.
 
 ## Prototype Findings
 
-- Prototype package path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` on synchronized workspace `personal`.
+- Prototype package path: Current protected source `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`; pending independent target `/home/autobyteus/workspace/autobyteus-web-prototype`.
 - Approved UI/UX specification path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/ui-ux-spec.md`, finalized cumulatively under PPA-001 and PPA-002.
-- Review URL: `http://127.0.0.1:3210` from the canonical workspace root; independently returned HTTP 200.
+- Review URL: `http://127.0.0.1:3210` currently runs from the protected workspace source and must return HTTP 200 from the independent target before cutover.
 - Explicit user-confirmation references: **“approved”** on 2026-08-22 for PPA-001; **“done. i checked. thanks”** on 2026-08-24 immediately after the explicit PPA-002 request following direct review of the corrected journey.
 - Journeys and scenarios validated: `JRN-001`–`JRN-050`; `JRN-050-A`–`JRN-050-E` exactly cover catalog Run, valid Team draft, synthetic workspace selection, Run Team, exactly one Team, expand/collapse, and synchronized writer/researcher focus.
 - Final visual-reference paths: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` and `manifest.json`; VIS-001–VIS-015 preserve their approved hashes, while VIS-016 and VIS-017 are new normative PPA-002 anchors.
@@ -162,14 +166,14 @@
 - Alternatives rejected or still open: Android/iOS and packaged-application authoring roots are excluded as independent baselines; no future-state redesign is requested.
 - Mocked boundaries and production gaps: All production services, persistence, authentication, host/native, execution, streaming, files, terminal, Browser/VNC, model/provider/tool/MCP, messaging, application, update/extension, and media boundaries are deterministic local simulations. Production readiness and integration fidelity remain unproven and out of scope.
 - Resolved root causes: RC-001 Map-backed team state is preserved; RC-002 deterministic local `launchDraft` now creates/registers/selects/projects exactly one Team context; RC-003 `JRN-050-A`–`JRN-050-E` and final-package checks terminally enforce the cross-surface journey.
-- Final workspace Product Prototyper commit: `bf8ab93490847f5ba894aaed25670f5c69931b55`; workspace local/remote/HEAD refs equal and clean. Historical independent commit `0b02b0e1...` remains provenance only; its local checkout is absent and remote untouched.
-- Requirements sections affected: Document status, BEH-008 current outcome, acceptance outcome, active artifact locators, provenance, traceability, readiness, and completion classification.
+- Protected workspace source: workspace commit `fb1335867a4223b2499e4513f58c609b6ac33ab4`, unchanged prototype tree `21c400d2903a362737f3ce41d876be3fbe2abab5`; independent remote `personal` remains `0b02b0e1fbdbdefb78b91b1705bd497663694e0f` and the sibling checkout is absent.
+- Requirements sections affected: Document status, BEH-009, ownership requirements/criteria/scenario, current/target artifact locators, provenance, traceability, readiness, and completion classification.
 
 ## Supplemental Artifact Inventory
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current through RER-016 | Informational; approval is recorded in canonical requirements |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/initial-prototype-baseline/requirements-revision-record.md` | Requirements Engineering | Requirements-round history | RER-001 onward | All | Current through RER-017 | Informational; approval is recorded in canonical requirements |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/ui-ux-spec.md` | Product Prototyper | Canonical UI/UX supplement in the personal checkout | Complete current-state baseline including BEH-005 | All | Approved / PPA-001 and PPA-002 | User-approved cumulative baseline |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/README.md` | Product Prototyper | Final visual-reference inventory | VIS-001–VIS-017 | REQ-002, REQ-005, REQ-010–REQ-012 | Final | User-approved baseline references |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/final-reference-screenshots/manifest.json` | Product Prototyper | Reference hashes and clean-capture evidence | 17 final references | REQ-002, REQ-005, REQ-006, REQ-010–REQ-012 | Final / 17 of 17 | User-approved evidence |
@@ -191,7 +195,7 @@
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/personal-integration-record.md` | Product Prototyper | Safe rebase, validation, fast-forward and push record | RER-011 direct personal integration | REQ-014–REQ-015; AC-014–AC-015 | Complete | Requirements-correction evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/integration/rer-011-rebase-preservation.json` | Product Prototyper | Exact history/tree/hash preservation proof | Final seven-remote/six-task rebase | REQ-014–REQ-015; AC-014–AC-015 | Pass | Machine-readable terminal evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/integration/rer-011-final-rebase-prepromotion-validation.txt` | Product Prototyper | Final late-fetch prepromotion validation | Focused/final/build/HTTP candidate | REQ-015; AC-015 | Pass | Terminal evidence |
-| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` | Product Prototyper | Canonical workspace-owned prototype | Complete approved project after RER-015 return | REQ-019–REQ-021; AC-019–AC-021 | Pushed/clean/equal at `bf8ab93490847f5ba894aaed25670f5c69931b55` | PPA-001/PPA-002 and observable evidence unchanged |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` | Product Prototyper | Protected source for independent move | Complete approved project before RER-017 cutover | REQ-019–REQ-024; AC-019–AC-024 | Workspace tree `21c400d2903a362737f3ce41d876be3fbe2abab5`; retain until AC-024 | PPA-001/PPA-002 and observable evidence unchanged |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/workspace-repository-return.md` | Product Prototyper | Return sequencing, ownership, provenance and terminal result | RER-015 workspace ownership | REQ-019–REQ-021; AC-019–AC-021 | Complete | Non-observable completion evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/workspace-ownership/rer-015-return-proof.json` | Product Prototyper | Machine-readable inventory, identity, Git and cleanup proof | RER-015 workspace ownership | REQ-019–REQ-021; AC-019–AC-021 | Pass | Terminal evidence |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/workspace-ownership/rer-015-validation.txt` | Product Prototyper | Cumulative return validation | RER-015 workspace ownership | REQ-020–REQ-021; AC-020–AC-021 | Pass / 62 of 62 plus cumulative gates | Terminal evidence |
@@ -214,6 +218,7 @@
 | RISK-007 | Risk | Pushing the task head directly without first incorporating current `origin/personal` would be non-fast-forward or could tempt unsafe force-push/history loss. | Concurrent remote commits had to survive the prototype integration. | Product Prototyper handled a late remote advance, preserved all seven remote commits and six task patch IDs, validated, fast-forwarded and pushed without force; final refs equal. | Closed in RER-012 |
 | RISK-008 | Risk | Deleting the monorepo copy before the new independent repository is complete, pushed and verified could lose the canonical runnable package or evidence. | The approved project contains thousands of tracked entries and normative hashes/references. | Product Prototyper validated/pushed the independent remote first, then removed the old copy; inventories, hashes, order and dual refs are proven. | Closed in RER-014 |
 | RISK-009 | Risk | Removing the sibling checkout before the returned workspace tree is complete, validated and pushed could leave no local canonical runnable package; copying its `.git` could create nested ownership. | The approved package is large and contains normative evidence and path-sensitive contracts. | Product Prototyper copied without Git metadata, verified inventory/hashes/ownership/build/browser results, pushed workspace `personal`, proved remote equality, and only then removed the sibling checkout. | Closed in RER-016 |
+| RISK-010 | Risk | Deleting the workspace project before the independent repository contains the complete latest package and is remotely synchronized could lose the sole current local project or omit RER-015 evidence. | The existing independent remote predates the latest workspace return artifacts and active-path corrections. | Product Prototyper must preserve independent ancestry, materialize/validate/push the complete current tree first, then remove/reconcile/push workspace and prove dual equality. | Open / controlled by REQ-022–REQ-024 |
 
 ## Requirement Implications
 
@@ -229,8 +234,8 @@
 - The correction worktree was synchronized to latest fetched `origin/personal` `52b4be02...` before RER-009. The approved prototype remains a reproducible snapshot of source pin `8ef282b...`; because later frontend commits exist, any request to refresh the observable baseline itself requires explicit prototype reconciliation rather than silent file replacement.
 - The Agent Team launch requirement did not require that broader refresh because the exact behavior is present at source pin `8ef282b...`; PPA-002 preserves that pin and adds no future-state behavior.
 - The accepted cumulative package is integrated at `0100f78d...` on `personal` after preserving the final fetched remote base `8d6b06b8...`, all six task patch IDs, exact prototype/requirements trees and all approved evidence. RER-012 adds only the final requirements reconciliation and is pushed directly on `personal` under the same explicit authorization.
-- RER-013/RER-014 independent ownership remains verified historical provenance, but RER-015/RER-016 supersede it for active ownership.
-- Ongoing management is workspace `personal`: no nested Git/submodule/gitlink, no second active local checkout, no unrelated workspace changes, and no active stale sibling locator. The independent remote remains untouched and unused.
+- RER-015/RER-016 workspace ownership remains verified historical provenance, but RER-017 supersedes it as the active target based on the user's latest explicit decision.
+- Ongoing management must return to independent `personal`: preserve existing independent history, no imported workspace history/submodule/gitlink, no workspace duplicate after target-first cutover, no unrelated workspace changes, and no active stale workspace locator.
 
 ## Notes For Downstream Architecture Design
 
