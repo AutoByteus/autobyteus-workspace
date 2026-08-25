@@ -23,6 +23,9 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-008` | source `Pass / 95`; prior test review `Pass` | `Not Applicable` | None |
 | `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-009` | test review `Not Applicable`; source baseline `Pass / 95` | `Pass / 95` | None |
 | `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-009` | source `Pass / 95`; prior test review `Not Applicable` | `Not Applicable` | None |
+| `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-010` | `Not Applicable`; source `Pass / 95` | `Fail — Local Fix / 91` | `CR-008`, `CR-009`, `CR-010` |
+| `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-011` | `Fail — Local Fix / 91` | `Pass / 95` | `CR-008`, `CR-009`, `CR-010` |
+| `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-010` | `Pass / 95` | `Fail — Design Impact + API/E2E Local Fix` | `CR-011`; `APIE2E-F005`, `APIE2E-F006` |
 
 ## Revision Entries
 
@@ -564,3 +567,31 @@ No prior proportional test-review finding existed. `CRR-015` remains valid for A
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-build-validation.log`
 - Recommended recipient: `/api_e2e_engineer`
 - Remaining risks or uncertainty: current-head real Studio/standalone provider/model, nested Team execution, V1/V2 migration/recovery/history, Brief/Socratic publication/handoff/projection, restart/remount, package parity, cleanup, browser, and durable-test checks remain API/E2E-owned. Electron v1.4.58 and final-base integration remain delivery-owned. Historical `APIE2E-REPO-005` remains separately `Unclear`.
+
+### CRR-020 — API-REV-010 Studio authority and V2 retry failure-origin review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `20`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`; `API-REV-010`, `APIE2E-F005`, `APIE2E-F006`; new source finding `CR-011`.
+- Relevant solution revision IDs: `SR-001`–`SR-010`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-001`–`IR-011`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-010`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`
+- Prior authoritative result: `CRR-019 — Pass / 95`
+- Current authoritative result: **Fail — Design Impact + API/E2E Local Fix**
+- What changed in the review result and why: API-REV-010 provided a reachable real built-server witness that public Agent/Team definitions created and listed by Studio cannot be launched because definition mutations use the separately constructed Studio/application definition-service family while public run mutations, identity allocation, topology planning, and general-process context construction use process-global definition singletons. This is a structural authoritative-boundary defect, not an IR-011 delta, and resolving it requires an upstream canonical ownership decision. The second failure is not a production defect: the durable test retries only the nested-memory prerequisite and then queries a current V2-only projection before running the separately exposed V2 migration.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-010` | Resolved | Remain resolved within their bounded owning paths | `IR-002`–`IR-011`, `CRR-002`–`CRR-019` | API-REV-010 does not contradict their exact lifecycle, read-only, target identity, process ownership, cwd, dispatch, source-size, fixture-shape, or validation-before-allocation corrections. |
+| historical `APIE2E-REPO-005` definition/run signature | `Unclear / separate` | **Reclassified as reachable Design Impact for the public definition/run authority portion** | `API-REV-003`, `API-REV-007`–`API-REV-010`, `CRR-020` | Public create/list/run actions and a real built server establish the path independently; source shows two cache/service families and disjoint consumers. Other historical repository signatures remain separate. |
+
+- New or remaining finding IDs: `CR-011` / `APIE2E-F005` remains blocking; `APIE2E-F006` requires an API/E2E-owned durable test-sequence correction.
+- Material score or classification changes: no failure-origin scorecard is issued. `CRR-019 / 95` is historical and superseded for readiness. `F005` is `Design Impact`; `F006` is `Local Fix` owned by API/E2E.
+- Validation evidence: API/E2E isolated hierarchy and migration reruns; independent public GraphQL authority probe; source tracing in `crr-020-failure-origin-focused.log`; prepared focused runner/V2 selection `2 files / 25 tests` Pass. Shared build output created for the focused test was removed.
+- Reviewer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-020-failure-origin-focused.log`.
+- Recommended recipients: `/solution_designer` for `CR-011` / `F005`; `/api_e2e_engineer` for `F006` after the reviewed design/source correction is ready.
+- Remaining risks or uncertainty: delivery is blocked. Solution/architecture must define one canonical Studio definition authority without collapsing separate general/application run-manager ownership. API/E2E must then reconcile the migration durable sequence and rerun the full current-head hierarchy, V1 -> memory -> V2, browser/provider, dual-host, restart/remount, parity, and cleanup matrix. Electron remains downstream.

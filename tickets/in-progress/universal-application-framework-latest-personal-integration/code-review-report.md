@@ -2,180 +2,140 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, `integration-path-inventory.txt`, all five latest-base refresh analyses, the round-5 conflict report, and the current solution/delivery merge, conflict, overlap, and path evidence.
+- Supplemental Task Artifacts Reviewed As Context: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, `latest-base-refresh-round-5-design-analysis.md`, and the round-5 conflict/path evidence.
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`–`SR-010`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-003`–`ARCH-REV-010`; current authority `ARCH-REV-010 / Pass`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-003`–`ARCH-REV-010`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`–`IR-011`; current implementation `IR-011`
+- Relevant Implementation Revision IDs: `IR-001`–`IR-011`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-019`
-- Current Review Round: `19`
-- Trigger: `/implementation_engineer` requested affected source and structural re-review of `IR-011` for `CR-008`–`CR-010`.
-- Reviewed Artifact HEAD: `1734f641ce0c5982b25b59b3314ed9bbd75b4747`
-- Reviewed Source/Test Correction: `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`
-- Protected Reviewed Merge Retained: `52ab1fe6f8dfd347b84283370d7c3e76c2f90393`
-- Prior Review Round Reviewed: `CRR-018 — Fail — Local Fix / 91`
-- Latest Authoritative Round: `CRR-019`
-- Coverage Investigation / Execution Context: `API-REV-009 — Pass / 98` applies to the protected pre-v1.4.58 checkpoint only; IR-011 current-head API/E2E execution remains pending.
-- Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-009` retained history; IR-011 current execution `N/A`
-- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md`
+- Current Code Review Revision ID: `CRR-020`
+- Current Review Round: `20`
+- Trigger: `/api_e2e_engineer` reported `API-REV-010 — Fail / 72` and requested focused origin review.
+- Prior Review Round Reviewed: `CRR-019 — Pass / 95`
+- Latest Authoritative Round: `CRR-020`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-010`; current failure authority `API-REV-010`
 - Relevant Delivery Revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`
-- Failing Scenario IDs: `N/A`
-- Review Evidence Paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-source-audit.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-affected-validation.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-recursive-cleanup-characterization.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-019-build-validation.log`
+- Failing Scenario IDs: `APIE2E-HIERARCHY-010 / APIE2E-F005`; `APIE2E-MIGRATION-010 / APIE2E-F006`
+- Exact Failing Commands / Execution Mode:
+  - `pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts`
+  - `pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/run-history/nested-team-history-restart.e2e.test.ts`
+  - independent real built-server public GraphQL definition/create-run probe recorded by API/E2E
+- Failure Evidence Paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-failing-e2e-isolated.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-definition-run-authority-failure.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-source-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-nested-history-failure-detail.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-020-failure-origin-focused.log`
 
 ## Review Scope
 
-- Recheck `CR-008`: changed launch-configuration service size, responsibility, and preservation of package/selected/stored/readiness behavior.
-- Recheck `CR-009`: current V1 -> nested-memory -> V2 -> external ordering fixture and exact recursive V2 Team fixture shape.
-- Recheck `CR-010`: complete Team-scope and Agent-member launch validation before either identity allocator, including manager/persistence side-effect guards.
-- Confirm the correction is bounded to the six expected source/test files plus implementation artifacts and does not reopen the reviewed v1.4.58 merge, application precedence, V2 production migration, hierarchical UI, provider/workspace, graph-local ownership, or generated-output decisions.
-- Explicit downstream exclusions: real current-head Studio/standalone provider and business journeys, migration/restart/recovery/remount, package parity/cleanup, durable API/E2E reconciliation, and Electron packaging/smoke.
+- Confirm whether both failures represent approved, reachable behavior.
+- Trace the public definition-write -> public Agent/Team run-create authority path for `F005`.
+- Trace the failed nested-memory retry -> current V2 projection sequence for `F006` against the approved V1 -> memory -> V2 transition and actual public migration contract.
+- Classify source/design versus test/fixture ownership without reopening the complete IR-011 scorecard.
+- Explicit exclusions: full current-head browser/provider/dual-host execution and Electron packaging, which remain blocked by the current API/E2E Fail.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis remains `BEH-008`, `BEH-011`, `REQ-012`, and `AC-032`–`AC-033`.
-- `AC-032` independently governs the supported Team creation path and requires exact complete Team/Agent inputs to reject before any Team or Agent identity allocation.
-- `AC-033` independently governs startup migration order and current V2 shape.
-- Behavior-basis status: `Confirmed`.
-- Changed or newly discovered supported behavior: none.
-- Remaining material ambiguity: none at affected source-review scope.
+- Approved requirements basis: `BEH-011`, `REQ-004`–`REQ-007`, `REQ-009`–`REQ-012`, `AC-032`–`AC-035`, plus preserved public Studio Agent/Team creation and launch behavior.
+- Design-spec behavior map: confirmed for V2-only current readers and V1 -> nested-memory -> V2 ordering; contradicted at the broader Studio definition/run authority boundary because the design introduced a second definition-service family without mapping the existing general run owners to it.
+- Behavior-basis status: `Confirmed` for both initiating surfaces; the `F006` test's intermediate expected outcome is contradicted by the approved/current migration contract.
+- Changed or newly discovered behavior: none. The supported public Studio definition/save/launch surface already existed.
+- Remaining material ambiguity: none for classification. The canonical definition-service scope/ownership must be revised upstream before implementation because several general-process and application-process consumers participate.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Supported Evidence |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-007`, `BEH-009`–`BEH-010` | Confirmed / unaffected | IR-011 changes no merge topology, host lifecycle, SDK/Agent Tools, provider/workspace, publication, or Studio source. | None. |
-| `BEH-008` | Confirmed | The corrected durable fixture now asserts and executes V1 -> nested-memory -> V2 -> external. Recursive cleanup fixtures carry current V2 Team defaults and no longer fail V2 parsing. | None. |
-| `BEH-011` | Confirmed | `TeamRunService` validates runtime first; planner coverage maps then normalize/freeze every Team and Agent launch value through `cloneAgentLaunchConfiguration` before root compilation invokes either allocator. | None. |
+| Preserved public Studio Agent/Team definition and run lifecycle | `Contradicted` | Studio/public GraphQL definition creation writes through `getStudioAgentDefinitionService` / `getStudioAgentTeamDefinitionService`; public run mutations capture `getAgentRunService()` / `getTeamRunService()`, whose identity allocator/planner use process-global definition singletons. The real built server accepts and lists both definitions, then both run mutations fail to load them. | No supported contract allows a definition that the same Studio process just created and lists to be invisible to that process's run creation. |
+| `BEH-011` / `AC-033` migration transition | `Confirmed` | Startup order is V1 -> memory layout -> V2; current projection resolves only through a current V2 execution tree. `runAppDataMigration(id)` invokes exactly the selected `ANYTIME` migration and rebuilds current-package admission only when the selected ID is V2. | `F006` retries only the memory-layout prerequisite and immediately queries a V2-only projection. It never retries V2, although V2 remains a separately exposed retryable `NOT_RUN` migration. |
 
-## Structural / Design Checks
+## Failure-Origin Findings
 
-| Check | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Implementation matches approved behavior-defining artifacts | Pass | Current validator reuse implements AC-032 ordering; fixture-only changes implement AC-033 without production migration edits. | None. |
-| Data-flow spine inventory clarity and preservation | Pass | Supported Team launch -> TeamRunService runtime normalization -> planner topology/value validation -> identity allocation -> manager/persistence is now ordered correctly. | None. |
-| Ownership boundary preservation | Pass | Launch precedence remains in `ApplicationLaunchConfigurationService`; complete topology/value validation remains in Personal's planner; no caller-only guard or second authority was added. | None. |
-| Existing capability/subsystem reuse | Pass | Planner reuses `cloneAgentLaunchConfiguration`; fixture correction reuses the current V2 node shape and migration registry. | None. |
-| Shared-structure/data-model tightness | Pass | Validated maps retain exact Team/Agent discriminators while replacing raw launch fields with normalized current values. | None. |
-| Separation of concerns and file responsibility | Pass | Launch service is 498 effective lines and still owns one coherent configuration subject; planner remains 248 effective lines and owns topology/value validation plus allocation planning. | Monitor the near-limit launch owner; no speculative split is required. |
-| Dependency and authoritative-boundary direction | Pass | TeamRunService delegates to the planner and injected allocators; application binding still does not allocate or traverse definitions. | None. |
-| Interface/API clarity | Pass | Exact Team addresses, member addresses, runtime, model, config, skill/tool policy, and workspace remain explicit; invalid required models preserve precise diagnostics. | None. |
-| Patch-on-patch complexity control | Pass | Delta adds no fallback, alias, inference, compatibility branch, duplicate validator, or new subsystem. | None. |
-| Relevant tests are requirement-aligned | Pass | Planner and service tests prove invalid Team and Agent values cause zero Team allocation, zero Agent allocation, zero manager creation, and zero persistence. | None. |
-| Stale directly affected fixtures removed | Pass | Native migration assertion includes V2; recursive Team fixture includes exact `defaultLaunchConfiguration`. | None. |
-| API/E2E readiness | Pass | Affected 10-file matrix passes 79/79 including AFB 15/15; server build-config TypeScript and full production build/sanitized bootstrap pass. | Advance to current-head API/E2E. |
+### `CR-011` / `APIE2E-F005` — Studio definition and run creation use different authoritative service families
 
-The complete recursive cleanup file executes the corrected current V2 fixture and reports no V2-shape rejection. It remains `2 passed / 2 failed` only at the previously recorded standalone diagnostic expectations: one expects `SUCCEEDED` despite an intentionally unclassifiable future metadata row, and one expects an older mismatch-specific message. The relevant expectation lines and production diagnostic behavior were not changed by IR-011. This remains separate `APIE2E-REPO-005 / Unclear`, is neither IR-011 attribution nor Pass evidence, and cannot block or inflate this bounded result.
+- Severity: `High`
+- Classification: `Design Impact`
+- Affected behavior: preserved public Studio Agent/Team definition-save and launch lifecycle; current positive hierarchical TeamRun creation.
+- Independent reachable trigger: in the exposed Studio Agent or Team workflow, a user saves a new definition and launches it; the same supported behavior is available through the public GraphQL definition and run mutations.
+- Forward production path: Studio/public create-definition mutation -> configured Studio definition service/cache -> public create-run mutation -> process-global run service -> process-global definition service used by identity allocation/topology planning -> definition not found -> launch rejected.
+- Source evidence:
+  - `buildStudioServer()` initializes `GeneralProcessRunSupervisor` first, then constructs a separate `createApplicationDefinitionServices()` family and configures definition resolvers with it.
+  - `AgentRunResolver` and `AgentTeamRunResolver` capture process-global run services.
+  - `AgentRunIdentityAllocator` and `TeamRunService` default to process-global Agent/Team definition singletons.
+  - API/E2E server output shows two definition cache families and reproduces the failure for both Agent and Team definitions after successful public creation/listing.
+- Why this is not an IR-011 local regression: `ac0e1dea...` changes planner validation and fixtures, not these authority/composition paths. The split predates IR-011 and was previously carried as `APIE2E-REPO-005 / Unclear`.
+- Why this is a design issue rather than only a local wiring defect: the fix must decide one canonical definition authority and lifecycle for both the existing general Studio run graph and the application graph, then carry it consistently through public definition resolvers, general run services/identity allocators/topology planners, supervisor backend/context construction, application definition resolution, refresh, and shutdown. Picking one isolated caller to redirect would leave overlapping authorities and violate the Authoritative Boundary Rule.
+- Required action: revise the reviewed ownership/composition design so one exact host definition-service family is authoritative for every Studio definition write/read and every general/application run construction consumer, while preserving separate general-process and application-scoped run-manager/session ownership. Then implement that reviewed composition without aliases, cache synchronization, fallback reads, or duplicate services.
+- Review-gap attribution: `CRR-018`/`CRR-019` should not have left the known general-run signature as harmless separate debt once current public hierarchical run creation became a required path. The visible source invariant—definition writes and run planning use different service identities—should have triggered supported-path investigation. The current real public API evidence now closes reachability independently; the failing test does not prove its own premise.
 
-## Source File Size And Structure Audit
+### `APIE2E-F006` — stale durable sequence queries a V2-only reader before the V2 migration is retried
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts` | **498** | Pass | Pass (`-5` effective from CRR-018) | One coherent package/selected/stored/readiness coordinator; equivalent `some` validation and compact signature remove only local line pressure. | Correct subsystem. | None | Monitor near limit. |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts` | 248 | Pass | Pass (`+9/-2`) | Reuses the current domain validator before allocation while retaining topology ownership. | Correct subsystem. | None | None. |
-
-Tests, fixtures, ticket artifacts, generated outputs, and evidence logs are excluded from implementation-source thresholds.
-
-## Legacy / Backward-Compatibility Verdict
-
-- Result: `Pass`.
-- V1 remains migration-only; current creation/catalog/location/history stay V2-only.
-- IR-011 adds no dual read/write, old-version branch, compatibility alias, inferred default, global fallback, or restored generated source.
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-
-None in the IR-011 delta. The retired `teamDefaultConfig`, runtime V1 reader, generated conflict targets, and prior process-global seams remain absent.
-
-## Docs-Impact Verdict
-
-- Durable product-documentation impact: `No additional impact`.
-- IR-011 restores already-approved ordering, line-limit compliance, and current test fixtures; it does not change user-visible behavior or public contracts.
-- Canonical implementation and review records are updated for auditability.
+- Classification: `Local Fix` owned by `/api_e2e_engineer`
+- Affected behavior: `BEH-011` / `AC-033` migration failure, manual retry, and current V2 history projection.
+- Independent reachable trigger: Settings -> Server Migrations -> Retry on the failed nested-memory-layout migration.
+- Actual production path: retry action -> `runAppDataMigration(memory-layout-id)` -> only memory migration executes -> V2 remains `NOT_RUN` and separately `canRetry` -> current history projection remains unavailable until V2 is run -> user retries V2 or restarts -> V2 conversion/admission -> projection.
+- Why the current expectation is stale: the test was valid before v1.4.58 when the current location reader could consume the existing tree directly. The approved v1.4.58 contract intentionally makes current readers V2-only and keeps V1 knowledge migration-only. Success of the prerequisite does not state that dependent migrations were cascaded.
+- Source evidence: `AppDataMigrationRunner.runMigration()` runs exactly the requested definition; prerequisites constrain dependents but do not auto-run them. `AppDataMigrationResolver` rebuilds `TeamRunPackageCatalog` only when V2 itself is requested. `TeamMemberRunViewProjectionService` locates the Agent through the current V2 tree. Focused current runner/V2 tests pass `2 files / 25 tests` after the declared shared-build prerequisite.
+- Required action: update the durable E2E to retain the real failed-target/manual-retry proof, then explicitly complete the supported V2 retry (or supported restart-to-run-pending path) before asserting current member projection. Do not add dependent-cascade production machinery or a V1 reader solely to satisfy the stale intermediate assertion.
+- Origin attribution: test expectation/sequence, not an implementation failure and not IR-011.
 
 ## Material Premise Validation
 
-### Upstream Design-Review Material-Premise Decisions
+### `MP-CRR-020-001` — a definition created in Studio must be launchable by the same Studio host
 
-- `MP-ARCH-009-001` remains `Reachable`: supported application Team launch needs the complete scope values before Personal execution.
-- No upstream material-premise status changed.
-
-### `MP-CRR-018-001` — Invalid complete launch values must be rejected before identity allocation
-
-- Origin: `Carried Forward — Resolved`
-- Related approved requirement or established contract: `REQ-012`, `AC-032`
-- Relevant behavior ID(s): `BEH-011`
-- Initiating basis kind: `Contract`
-- Independent basis: AC-032 governs direct Team creation and explicitly places complete value validation before Team/Agent identity allocation.
-- Supported path: Studio Team Run or supported GraphQL client -> `createAgentTeamRun` -> `TeamRunService.createTeamRun` -> planner topology/value validation -> identity allocation -> manager/persistence.
+- Origin: `New`
+- Related contract: preserved Studio Agent/Team definition and run lifecycle; `AC-032`, `AC-035`
+- Relevant behavior: positive public hierarchical TeamRun lifecycle.
+- Initiating basis kind: `User` / `Contract`
+- Independent trigger: a user creates/saves an Agent or Team in Studio and selects Launch; public GraphQL exposes the same supported create-definition and create-run operations.
+- Forward path: Studio definition UI/public mutation -> Studio definition owner -> Studio run UI/public mutation -> run service -> identity/topology resolution -> manager creation.
+- Lifecycle precondition and consequence: definition creation/listing succeeds in the same running host; launch must resolve that definition. Current separate caches reject both Agent and Team launch.
 - Reachability: `Reachable`
-- Current resolution evidence: invalid Team and Agent model inputs now throw from `cloneAgentLaunchConfiguration` while allocator, manager, and catalog spies remain untouched; 10-file affected validation passes 79/79.
-- Review consequence: `CR-010` is resolved; no additional machinery is warranted.
+- Review consequence: `CR-011` is a blocking design/authority finding.
 
-## Review Scorecard
+### `MP-CRR-020-002` — retrying only the nested-memory prerequisite does not complete V2 migration
 
-- Overall score (`/10`): **9.5**
-- Overall score (`/100`): **95**
-- Score calculation note: simple mean of the ten categories is 9.49, rounded to 9.5/10 and 95/100. This is an overall current-tree source/structure result, not a delta-only score and not current-head API/E2E or delivery sign-off.
+- Origin: `New`
+- Related contract: `BEH-011`, `AC-033`; existing `ANYTIME` runner contract.
+- Initiating basis kind: `User` / `Operational`
+- Independent trigger: a user uses Settings -> Server Migrations to retry the failed memory-layout row.
+- Forward path: retry button -> exact migration ID mutation -> runner executes selected definition only -> statuses refresh -> V2 remains a separately retryable `NOT_RUN` row -> later V2 retry/restart creates and admits the current package.
+- Lifecycle precondition and consequence: startup previously stopped dependent migrations because memory failed. Until V2 runs, a V2-only projection correctly has no current execution-tree location.
+- Reachability: `Reachable`
+- Review consequence: the intermediate `F006` expectation is stale; production cascade/fallback machinery is unsupported.
 
-| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Validation now precedes allocation on the generic supported Team creation spine; migration and UI spines remain explicit. | Real current-head host execution remains downstream. | Re-prove the spine through API/E2E. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Precedence, planning, allocation, migration, and UI owners remain distinct and injected. | `teamRunConfigStore.ts` remains a monitored broad store outside this delta. | Keep unrelated concerns out. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.6 | Concrete Team/member inputs and precise invalid-value diagnostics remain intact. | Cross-boundary mapping is necessarily verbose. | Preserve explicit values; avoid inferred defaults. |
-| `4` | `Separation of Concerns and File Placement` | 9.3 | Both changed source files are cohesive and under limits. | Launch service remains near the 500-line threshold at 498. | Prevent unrelated expansion; extract only when a real second owner appears. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | One current launch validator normalizes both Team and Agent variants; V1/V2 remain isolated. | Historical migration shapes remain substantial by necessity. | Keep historical knowledge migration-only. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Planner, launch value, Team scope, Agent member, and V2 fixture names remain precise. | High-density existing launch coordination still requires careful reading. | Prefer named domain operations over compressed new coordination. |
-| `7` | `API/E2E Readiness` | 9.4 | Affected 79/79, AFB 15/15, TypeScript, and production build pass; all current findings are resolved. | Full current-head realistic execution is not yet run. | Execute the complete current v1.4.58 matrix. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.6 | Invalid required runtime/model paths now reject before allocation; manager and persistence remain untouched. | Runtime-only provider/recovery behavior awaits API/E2E. | Validate real nested Team and recovery journeys. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | V1 is migration-only; no fallback, alias, dual read, or generated authority exists. | Historical schemas necessarily remain within migrations. | Keep that isolation. |
-| `10` | `Cleanup Completeness` | 9.4 | Directly stale fixtures are current, scoped diff is clean, and build-created outputs were removed. | Historical `APIE2E-REPO-005` remains separate Unclear repository debt. | Keep it truthful and separately investigated; do not use it as Pass evidence. |
+## Classification And Routing
 
-## Findings
-
-No open implementation findings.
-
-| Finding ID | CRR-018 Status | CRR-019 Status | Verification Evidence |
-| --- | --- | --- | --- |
-| `CR-008` | Open — Medium / Local Fix | **Resolved** | Launch service is 518 physical / 498 effective non-empty lines; owner, API, precedence, and diagnostics remain unchanged. |
-| `CR-009` | Open — Medium / Local Fix | **Resolved** | V1 -> memory -> V2 -> external assertion/execution passes in the 10-file matrix; recursive fixture has exact V2 defaults and reaches cleanup execution without V2 parsing failure. |
-| `CR-010` | Open — High / Local Fix | **Resolved** | Planner normalizes all Team/member launch values before allocation; direct planner and TeamRunService tests prove zero allocator/manager/catalog calls on invalid Team and Agent models. |
-
-Prior `CR-001`–`CR-007` remain resolved; IR-011 does not traverse or alter their owning paths.
-
-## Classification
-
-- Review Decision: `Pass`
-- Classification: `N/A`
-- Why: all three bounded CRR-018 findings are resolved without architecture expansion, compatibility machinery, or unrelated source changes. Every mandatory score category is at least 9.0.
-
-## Recommended Recipient
-
-- `/api_e2e_engineer`
-- Rationale: source and structural review now passes. The current IR-011 head requires the complete current-base coverage investigation, durable-test reconciliation, and realistic v1.4.58 dual-host execution before delivery.
+| Failure | Origin | Classification | Owner / Recipient | Required Gate After Correction |
+| --- | --- | --- | --- | --- |
+| `APIE2E-F005` | inadequate definition/run authority design and current source composition | `Design Impact` | `/solution_designer` | architecture review -> implementation -> source review -> API/E2E |
+| `APIE2E-F006` | stale durable test sequence | `Local Fix` | `/api_e2e_engineer` | preserve until the design/source correction passes, then reconcile the durable test and rerun API/E2E |
 
 ## Residual Risks
 
-- Current-head Studio/standalone provider/model, nested Team execution, V1/V2 migration/recovery/history, Brief/Socratic publication/handoff/projection, restart/remount, package parity, cleanup, and browser evidence remain API/E2E-owned.
-- Electron v1.4.58 packaging/smoke and final tracked-base refresh remain delivery-owned.
-- `ApplicationLaunchConfigurationService` at 498 effective lines remains a monitored pressure point, not a speculative refactoring finding.
-- Historical `APIE2E-REPO-005` remains separately `Unclear`; it cannot be attributed to IR-011 or used as Pass evidence without a supported production-path origin.
+- The current tree is not ready for delivery: current public Agent/Team run creation is broken after definition creation, and API-REV-010 stopped before browser/provider/dual-host validation.
+- The earlier `95/100` source score from CRR-019 is historical and no longer an authoritative current readiness statement; this focused failure-origin round intentionally does not issue a replacement full scorecard.
+- The canonical-definition design must not collapse the intentionally separate general-process and application-scoped run managers/sessions. The problem is definition authority, not a justification for a global application run manager.
+- The corrected migration E2E must prove the entire supported V1 -> failed memory -> manual memory retry -> V2 retry/admission -> V2 projection sequence without adding compatibility reads.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass**
-- Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: **9.5/10; 95/100**. This is the overall current-tree architecture/source score, not a delta-only score.
-- Finding Status: `CR-008`, `CR-009`, and `CR-010` resolved; `CR-001`–`CR-007` remain resolved; no open implementation findings.
-- Recommended Recipient: `/api_e2e_engineer`
-- Notes: the implementation now matches the approved validation-before-allocation and V2 migration contracts. API/E2E may resume on current HEAD `1734f641c...`; delivery remains blocked until that downstream workflow passes.
+- Review Decision: **Fail**
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: **Pass**
+- Score Summary: **Not rescored** for this focused entry point. Prior `CRR-019 / 95` is superseded as a readiness result by the current Fail.
+- Failure Origin:
+  - `APIE2E-F005`: **Design Impact** — split Studio definition/run authorities; new `CR-011`.
+  - `APIE2E-F006`: **Local Fix / API-E2E-owned** — stale pre-V2 completion assertion.
+- Recommended Recipients: `/solution_designer` first for `F005`; `/api_e2e_engineer` for the `F006` durable-test correction after the reviewed design/source path is ready.
+- Notes: do not route to implementation as a standalone local fix until the solution/architecture package defines the canonical definition-service ownership. Do not advance to delivery.
