@@ -17,6 +17,7 @@ import type {
   TeamMemberRunProjectionPayload,
   TeamRunExecutionCheckpointPayload,
   TeamRunResumeConfigPayload,
+  RunModelConfigEditability,
 } from '~/stores/runHistoryTypes';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from './runProjectionConversation';
@@ -62,6 +63,7 @@ interface ResumeGraphqlData {
     teamRunId: string;
     isActive: boolean;
     executionTree: unknown;
+    modelConfigEditability: RunModelConfigEditability;
   } | null;
 }
 
@@ -276,7 +278,12 @@ const hydrateCurrentTeamRunContext = async (
   return {
     teamRunId: input.teamRunId,
     focusedAgentRunId: view.getFocusedAgentRunId(),
-    resumeConfig: { teamRunId: input.teamRunId, isActive: raw.isActive, executionTree: tree },
+    resumeConfig: {
+      teamRunId: input.teamRunId,
+      isActive: raw.isActive,
+      executionTree: tree,
+      modelConfigEditability: raw.modelConfigEditability,
+    },
     projectionByAgentRunId,
     hydratedContext: Object.freeze({ view }),
   };

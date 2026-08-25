@@ -19,6 +19,18 @@ import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-de
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
+import { ModelConfigValidationService } from "../../llm-management/services/model-config-validation-service.js";
+import { computeTeamRunModelConfigRevision } from "../../run-history/domain/run-model-config-revision.js";
+import {
+  runModelConfigEditability,
+  type RunModelConfigUpdateResult,
+} from "../../run-history/domain/run-model-config.js";
+import {
+  applyTeamRunModelConfigPatches,
+  resolveTeamRunModelConfigTargets,
+  type TeamRunModelConfigPatch,
+} from "./team-run-model-config-mutator.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -32,6 +44,7 @@ type AgentTeamRunManagerOptions = Readonly<{
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
+  modelConfigValidator?: Pick<ModelConfigValidationService, "validate">;
 }>;
 
 /** Process-wide catalog and lifecycle owner for root executions only. */
@@ -43,6 +56,7 @@ export class AgentTeamRunManager {
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
+  private readonly modelConfigValidator: Pick<ModelConfigValidationService, "validate">;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
@@ -59,6 +73,7 @@ export class AgentTeamRunManager {
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+    this.modelConfigValidator = options.modelConfigValidator ?? new ModelConfigValidationService();
   }
 
   async createTeamRun(input: {
@@ -148,7 +163,7 @@ export class AgentTeamRunManager {
 
   listManagedTeamRunIds(): string[] { return [...this.managedRoots.keys()]; }
 
-  async withUnmanagedHistoryDeletion<T>(
+  async withUnmanagedRootPersistence<T>(
     rootTeamRunIdInput: string,
     operation: () => Promise<T>,
   ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }> {
@@ -156,6 +171,117 @@ export class AgentTeamRunManager {
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) return { kind: "managed" };
       return { kind: "completed", value: await operation() };
+    });
+  }
+
+  async updateStoppedModelConfigs(input: {
+    teamRunId: string;
+    expectedConfigurationRevision: string;
+    patches: readonly TeamRunModelConfigPatch[];
+  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
+    const teamRunId = required(input.teamRunId, "teamRunId");
+    return this.withRootTransition(teamRunId, async () => {
+      const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
+      if (!tree) return this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false);
+      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(teamRunId)) {
+        return this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false);
+      }
+      if (this.hasManagedTeamRun(teamRunId)) {
+        return this.modelConfigUpdateResult(
+          "RUN_ACTIVE",
+          "This team resumed before settings were saved. Stop it and try again.",
+          tree,
+          true,
+        );
+      }
+      if (tree.archivedAt) {
+        return this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true);
+      }
+      const currentRevision = computeTeamRunModelConfigRevision(tree);
+      if (input.expectedConfigurationRevision !== currentRevision) {
+        return this.modelConfigUpdateResult("STALE_REVISION", "Team model settings changed in another window.", tree, false);
+      }
+      let targets;
+      try {
+        targets = resolveTeamRunModelConfigTargets(tree, input.patches);
+      } catch (error) {
+        return this.modelConfigUpdateResult(
+          "VALIDATION_FAILED",
+          "Team model-setting targets are invalid.",
+          tree,
+          false,
+          false,
+          [{ path: "patches", message: error instanceof Error ? error.message : String(error) }],
+        );
+      }
+      const validations = await Promise.all(targets.map(async (target) => ({
+        target,
+        result: await this.modelConfigValidator.validate({
+          runtimeKind: target.launchConfiguration.runtimeKind,
+          llmModelIdentifier: target.launchConfiguration.llmModelIdentifier,
+          llmConfig: target.patch.llmConfig,
+        }),
+      })));
+      const unavailable = validations.find(({ result }) =>
+        result.kind === "model_unavailable" || result.kind === "schema_unavailable");
+      if (unavailable) {
+        const outcome = unavailable.result.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE";
+        return this.modelConfigUpdateResult(
+          outcome,
+          `Current model options for '${unavailable.target.patch.scopeAddress}' are unavailable; saved settings were not changed.`,
+          tree,
+          false,
+        );
+      }
+      const invalid = validations.filter((entry) => entry.result.kind === "invalid");
+      if (invalid.length) {
+        return this.modelConfigUpdateResult(
+          "VALIDATION_FAILED",
+          "One or more Team model settings are invalid.",
+          tree,
+          false,
+          false,
+          invalid.flatMap(({ target, result }) => result.kind === "invalid"
+            ? result.errors.map((error) => ({
+                path: `patches[${target.patch.scopeAddress}].${error.path}`,
+                message: error.message,
+              }))
+            : []),
+        );
+      }
+      const normalizedTargets = targets.map((target, index) => ({
+        ...target,
+        patch: {
+          ...target.patch,
+          llmConfig: validations[index]!.result.kind === "valid"
+            ? validations[index]!.result.config
+            : target.patch.llmConfig,
+        },
+      }));
+      const nextTree = applyTeamRunModelConfigPatches(tree, normalizedTargets);
+      if (computeTeamRunModelConfigRevision(nextTree) === currentRevision) {
+        return this.modelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
+      }
+      const write = await this.executionTreeStore.write(this.teamMemoryDir(teamRunId), nextTree);
+      const canonical = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
+      if (write.outcome === "renamed_finalization_indeterminate") {
+        return this.modelConfigUpdateResult(
+          "PERSISTENCE_INDETERMINATE",
+          "Update outcome is being verified. Refresh the Team configuration before saving again.",
+          canonical ?? tree,
+          false,
+        );
+      }
+      if (write.outcome !== "committed" || !canonical ||
+          computeTeamRunModelConfigRevision(canonical) !== computeTeamRunModelConfigRevision(nextTree)) {
+        return this.modelConfigUpdateResult("PERSISTENCE_FAILED", "Team model settings were not saved.", canonical ?? tree, false);
+      }
+      return this.modelConfigUpdateResult(
+        "UPDATED",
+        "Team model settings updated. They will be used when this team resumes.",
+        canonical,
+        false,
+      );
     });
   }
 
@@ -238,6 +364,30 @@ export class AgentTeamRunManager {
       },
     });
     return root;
+  }
+
+  private modelConfigUpdateResult(
+    outcome: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["outcome"],
+    message: string,
+    tree: TeamRunExecutionTreeSnapshot | null,
+    isActive: boolean,
+    archived = false,
+    fieldErrors: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["fieldErrors"] = [],
+  ): RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null> {
+    return Object.freeze({
+      success: outcome === "UPDATED" || outcome === "UNCHANGED",
+      outcome,
+      message,
+      isActive,
+      editability: runModelConfigEditability({
+        isActive,
+        archived,
+        available: outcome !== "NOT_FOUND",
+        configurationRevision: tree ? computeTeamRunModelConfigRevision(tree) : "",
+      }),
+      canonical: tree,
+      fieldErrors: Object.freeze([...fieldErrors]),
+    });
   }
 
   private register(root: RootTeamRun): void {

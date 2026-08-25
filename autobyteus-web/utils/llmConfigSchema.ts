@@ -35,6 +35,12 @@ export type UiModelConfigParameterSchema = {
 
 export type UiModelConfigSchema = Record<string, UiModelConfigParameterSchema>;
 
+export type UiModelConfigValidationIssue = Readonly<{
+  key: string;
+  code: 'required' | 'type' | 'enum' | 'minimum' | 'maximum' | 'pattern' | 'schema_pattern';
+  expected?: string | number;
+}>;
+
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
@@ -102,6 +108,50 @@ export const isModelConfigValueRepresentable = (
   }
 
   return true;
+};
+
+export const validateUiModelConfig = (
+  schema: UiModelConfigSchema | null | undefined,
+  config: Record<string, unknown> | null | undefined,
+): readonly UiModelConfigValidationIssue[] => {
+  if (!schema) return [];
+  const value = config ?? {};
+  const issues: UiModelConfigValidationIssue[] = [];
+  for (const [key, parameter] of Object.entries(schema)) {
+    if (!Object.hasOwn(value, key)) {
+      if (parameter.required === true) issues.push({ key, code: 'required' });
+      continue;
+    }
+    const candidate = value[key];
+    const validType = parameter.type === undefined ||
+      (parameter.type === 'string' && typeof candidate === 'string') ||
+      (parameter.type === 'boolean' && typeof candidate === 'boolean') ||
+      (parameter.type === 'number' && isFiniteNumber(candidate)) ||
+      (parameter.type === 'integer' && isFiniteNumber(candidate) && Number.isInteger(candidate));
+    if (!validType) {
+      issues.push({ key, code: 'type', expected: parameter.type ?? 'supported value' });
+      continue;
+    }
+    if (Array.isArray(parameter.enum) && !parameter.enum.some((entry) => Object.is(entry, candidate))) {
+      issues.push({ key, code: 'enum' });
+    }
+    if (isFiniteNumber(candidate)) {
+      if (typeof parameter.minimum === 'number' && candidate < parameter.minimum) {
+        issues.push({ key, code: 'minimum', expected: parameter.minimum });
+      }
+      if (typeof parameter.maximum === 'number' && candidate > parameter.maximum) {
+        issues.push({ key, code: 'maximum', expected: parameter.maximum });
+      }
+    }
+    if (typeof candidate === 'string' && typeof parameter.pattern === 'string' && parameter.pattern.length > 0) {
+      try {
+        if (!new RegExp(parameter.pattern).test(candidate)) issues.push({ key, code: 'pattern' });
+      } catch {
+        issues.push({ key, code: 'schema_pattern' });
+      }
+    }
+  }
+  return issues;
 };
 
 export const getValidSchemaDefault = (

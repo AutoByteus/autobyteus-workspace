@@ -20,7 +20,7 @@ type CatalogState = {
 };
 type TeamRunHistoryManager = {
   hasManagedTeamRun(teamRunId: string): boolean;
-  withUnmanagedHistoryDeletion<T>(
+  withUnmanagedRootPersistence<T>(
     teamRunId: string,
     operation: () => Promise<T>,
   ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }>;
@@ -151,7 +151,7 @@ export class TeamRunHistoryCatalogService {
     const identity = this.resolveIdentity(rawTeamRunId, true);
     if (!identity) return { success: false, message: "Invalid team run ID path." };
     return this.enqueueValue(async () => {
-      const transition = await this.manager.withUnmanagedHistoryDeletion(identity.teamRunId, async () => {
+      const transition = await this.manager.withUnmanagedRootPersistence(identity.teamRunId, async () => {
         const originalRows = new Map(this.state.rows);
         const originalRow = originalRows.get(identity.teamRunId) ?? null;
         if (!originalRow) {
@@ -188,19 +188,23 @@ export class TeamRunHistoryCatalogService {
   private async setArchived(rawTeamRunId: string, archived: boolean): Promise<TeamCatalogMutationResultMessage> {
     const identity = this.resolveIdentity(rawTeamRunId, true);
     if (!identity) return { success: false, message: "Invalid team run ID path." };
-    if (this.manager.hasManagedTeamRun(identity.teamRunId)) return { success: false, message: "Team run is active. Terminate it before archiving history." };
     return this.enqueueValue(async () => {
-      const tree = await this.treeStore.read(identity.teamDirPath, identity.teamRunId);
-      if (!tree) return { success: false, message: `Team run execution tree not found for '${identity.teamRunId}'.` };
-      const next = { ...tree, archivedAt: archived ? tree.archivedAt ?? new Date().toISOString() : null };
-      const write = await this.treeStore.write(identity.teamDirPath, next);
-      if (write.outcome !== "committed") return { success: false, message: `Team run archive change did not commit (${write.outcome}).` };
-      const rows = new Map(this.state.rows);
-      const current = rows.get(identity.teamRunId) ?? null;
-      rows.set(identity.teamRunId, projectTeamRunHistoryIndexRow({ tree: next, existingRow: current }));
-      await this.flush(rows);
-      this.state.rows = rows;
-      return { success: true, message: `Team run '${identity.teamRunId}' ${archived ? "archived" : "unarchived"}.` };
+      const transition = await this.manager.withUnmanagedRootPersistence(identity.teamRunId, async () => {
+        const tree = await this.treeStore.read(identity.teamDirPath, identity.teamRunId);
+        if (!tree) return { success: false, message: `Team run execution tree not found for '${identity.teamRunId}'.` };
+        const next = { ...tree, archivedAt: archived ? tree.archivedAt ?? new Date().toISOString() : null };
+        const write = await this.treeStore.write(identity.teamDirPath, next);
+        if (write.outcome !== "committed") return { success: false, message: `Team run archive change did not commit (${write.outcome}).` };
+        const rows = new Map(this.state.rows);
+        const current = rows.get(identity.teamRunId) ?? null;
+        rows.set(identity.teamRunId, projectTeamRunHistoryIndexRow({ tree: next, existingRow: current }));
+        await this.flush(rows);
+        this.state.rows = rows;
+        return { success: true, message: `Team run '${identity.teamRunId}' ${archived ? "archived" : "unarchived"}.` };
+      });
+      return transition.kind === "managed"
+        ? { success: false, message: "Team run is active. Terminate it before archiving history." }
+        : transition.value;
     });
   }
 

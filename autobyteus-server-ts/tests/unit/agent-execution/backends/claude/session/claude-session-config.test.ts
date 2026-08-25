@@ -27,4 +27,24 @@ describe("Claude session config", () => {
       autoExecuteTools: true,
     });
   });
+
+  it("maps validated model settings to Claude SDK thinking and effort options", () => {
+    expect(
+      buildClaudeSessionConfig({
+        model: "opus",
+        workingDirectory: "/tmp/claude-session-config",
+        llmConfig: {
+          thinking_enabled: true,
+          reasoning_effort: "high",
+        },
+      }),
+    ).toEqual({
+      model: "opus",
+      workingDirectory: "/tmp/claude-session-config",
+      permissionMode: "default",
+      autoExecuteTools: false,
+      thinking: { type: "adaptive" },
+      effort: "high",
+    });
+  });
 });

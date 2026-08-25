@@ -6,15 +6,9 @@ import {
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
-
-type RunEditableFieldFlags = {
-  llmModelIdentifier: boolean;
-  llmConfig: boolean;
-  autoExecuteTools: boolean;
-  skillAccessMode: boolean;
-  workspaceRootPath: boolean;
-  runtimeKind: boolean;
-};
+import { AgentRunHistoryCatalogService } from "./agent-run-history-catalog-service.js";
+import { computeAgentRunModelConfigRevision } from "../domain/run-model-config-revision.js";
+import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 
 type RunRuntimeReference = {
   runtimeKind: RuntimeKind;
@@ -31,16 +25,22 @@ type RunResumeConfig = {
   runId: string;
   isActive: boolean;
   metadataConfig: RunResumeMetadataConfig;
-  editableFields: RunEditableFieldFlags;
+  modelConfigEditability: RunModelConfigEditability;
 };
 
 export class AgentRunResumeConfigService {
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly statusProjectionService: AgentRunStatusProjectionService;
+  private readonly historyCatalog: AgentRunHistoryCatalogService;
 
-  constructor(memoryDir: string) {
-    this.metadataStore = new AgentRunMetadataStore(memoryDir);
-    this.statusProjectionService = getAgentRunStatusProjectionService();
+  constructor(memoryDir: string, dependencies: {
+    metadataStore?: AgentRunMetadataStore;
+    statusProjectionService?: AgentRunStatusProjectionService;
+    historyCatalog?: AgentRunHistoryCatalogService;
+  } = {}) {
+    this.metadataStore = dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
+    this.statusProjectionService = dependencies.statusProjectionService ?? getAgentRunStatusProjectionService();
+    this.historyCatalog = dependencies.historyCatalog ?? new AgentRunHistoryCatalogService(memoryDir);
   }
 
   async getAgentRunResumeConfig(runId: string): Promise<RunResumeConfig> {
@@ -51,14 +51,13 @@ export class AgentRunResumeConfigService {
 
     const projection = await this.statusProjectionService.getRunStatusProjection(runId);
     const isActive = projection.isActive;
-    const editableFields: RunEditableFieldFlags = {
-      llmModelIdentifier: !isActive,
-      llmConfig: !isActive,
-      autoExecuteTools: !isActive,
-      skillAccessMode: !isActive,
-      workspaceRootPath: false,
-      runtimeKind: false,
-    };
+    const row = await this.historyCatalog.getCatalogRow(runId);
+    const modelConfigEditability = runModelConfigEditability({
+      isActive,
+      available: Boolean(row),
+      archived: Boolean(row?.archivedAt),
+      configurationRevision: computeAgentRunModelConfigRevision(metadata),
+    });
 
     return {
       runId,
@@ -67,7 +66,7 @@ export class AgentRunResumeConfigService {
         ...metadata,
         runtimeReference: this.buildRuntimeReference(metadata),
       },
-      editableFields,
+      modelConfigEditability,
     };
   }
 

@@ -11,6 +11,10 @@ import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
+import {
+  RunModelConfigEditabilityObject,
+  RunModelConfigFieldErrorObject,
+} from "./run-model-config.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -110,6 +114,42 @@ export class CancelPreparedAgentRunResult {
 
   @Field(() => String)
   message!: string;
+}
+
+@InputType()
+export class UpdateStoppedAgentRunModelConfigInput {
+  @Field(() => String)
+  agentRunId!: string;
+
+  @Field(() => String)
+  expectedConfigurationRevision!: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig!: Record<string, unknown> | null;
+}
+
+@ObjectType()
+export class UpdateStoppedAgentRunModelConfigResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  outcome!: string;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  editability!: RunModelConfigEditabilityObject;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  canonicalLlmConfig?: Record<string, unknown> | null;
+
+  @Field(() => [RunModelConfigFieldErrorObject])
+  fieldErrors!: RunModelConfigFieldErrorObject[];
 }
 
 @InputType()
@@ -257,6 +297,43 @@ export class AgentRunResolver {
         success: false,
         message: String(error),
         runId: null,
+      };
+    }
+  }
+
+  @Mutation(() => UpdateStoppedAgentRunModelConfigResult)
+  async updateStoppedAgentRunModelConfig(
+    @Arg("input", () => UpdateStoppedAgentRunModelConfigInput)
+    input: UpdateStoppedAgentRunModelConfigInput,
+  ): Promise<UpdateStoppedAgentRunModelConfigResult> {
+    try {
+      if (!Object.hasOwn(input, "llmConfig")) {
+        throw new Error("llmConfig must be present and may be null.");
+      }
+      const result = await this.agentRunService.updateStoppedModelConfig({
+        agentRunId: input.agentRunId,
+        expectedConfigurationRevision: input.expectedConfigurationRevision,
+        llmConfig: input.llmConfig,
+      });
+      return {
+        success: result.success,
+        outcome: result.outcome,
+        message: result.message,
+        isActive: result.isActive,
+        editability: result.editability,
+        canonicalLlmConfig: result.canonical?.llmConfig ?? null,
+        fieldErrors: [...result.fieldErrors],
+      };
+    } catch (error) {
+      logger.error("Stopped Agent model-config update failed unexpectedly.", error);
+      return {
+        success: false,
+        outcome: "INTERNAL_ERROR",
+        message: "Model settings could not be updated.",
+        isActive: false,
+        editability: { editable: false, reason: "INTERNAL_ERROR", configurationRevision: "" },
+        canonicalLlmConfig: null,
+        fieldErrors: [],
       };
     }
   }

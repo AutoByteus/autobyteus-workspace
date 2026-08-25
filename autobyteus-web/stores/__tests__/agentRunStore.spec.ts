@@ -42,6 +42,7 @@ const {
     getResumeConfig: vi.fn().mockReturnValue(null),
     markRunAsActive: vi.fn(),
     markRunAsInactive: vi.fn(),
+    refreshAgentResumeConfig: vi.fn().mockResolvedValue(undefined),
     refreshTreeQuietly: vi.fn(),
     refreshRunNavigationTopology: vi.fn(),
     applyRunNavigationEffect: vi.fn(),
@@ -487,6 +488,7 @@ describe('agentRunStore', () => {
         expect(result).toBe(true);
         expect(mockDisconnect).toHaveBeenCalled();
         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
+        expect(runHistoryStoreMock.refreshAgentResumeConfig).toHaveBeenCalledWith('run-1');
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
     });
 

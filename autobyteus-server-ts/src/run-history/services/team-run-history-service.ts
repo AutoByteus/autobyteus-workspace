@@ -10,6 +10,8 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from "./team-run-history-catalog-service.js";
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
+import { computeTeamRunModelConfigRevision } from "../domain/run-model-config-revision.js";
+import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 
 export interface DeleteStoredTeamRunResult { success: boolean; message: string }
 export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
@@ -17,6 +19,7 @@ export interface TeamRunResumeConfig {
   teamRunId: string;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeSnapshot;
+  modelConfigEditability: RunModelConfigEditability;
 }
 
 export class TeamRunHistoryService {
@@ -54,7 +57,19 @@ export class TeamRunHistoryService {
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
     const tree = await this.readTree(teamRunId);
     if (!tree) throw new Error(`Team run execution tree not found for '${teamRunId}'.`);
-    return { teamRunId, isActive: this.manager.hasManagedTeamRun(teamRunId), executionTree: tree };
+    const isActive = this.manager.hasManagedTeamRun(teamRunId);
+    const row = await this.catalog.getCatalogRow(teamRunId);
+    return {
+      teamRunId,
+      isActive,
+      executionTree: tree,
+      modelConfigEditability: runModelConfigEditability({
+        isActive,
+        available: Boolean(row),
+        archived: Boolean(tree.archivedAt),
+        configurationRevision: computeTeamRunModelConfigRevision(tree),
+      }),
+    };
   }
 
   archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {

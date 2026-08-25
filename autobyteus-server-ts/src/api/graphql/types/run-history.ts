@@ -16,6 +16,7 @@ import { getAgentRunResumeConfigService } from "../../../run-history/services/ag
 import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -168,27 +169,6 @@ class RunProjectionPayload {
 }
 
 @ObjectType()
-class RunEditableFieldFlagsObject {
-  @Field(() => Boolean)
-  llmModelIdentifier!: boolean;
-
-  @Field(() => Boolean)
-  llmConfig!: boolean;
-
-  @Field(() => Boolean)
-  autoExecuteTools!: boolean;
-
-  @Field(() => Boolean)
-  skillAccessMode!: boolean;
-
-  @Field(() => Boolean)
-  workspaceRootPath!: boolean;
-
-  @Field(() => Boolean)
-  runtimeKind!: boolean;
-}
-
-@ObjectType()
 class RunRuntimeReferenceObject {
   @Field(() => String)
   runtimeKind!: string;
@@ -241,8 +221,8 @@ class RunResumeConfigPayload {
   @Field(() => RunMetadataConfigObject)
   metadataConfig!: RunMetadataConfigObject;
 
-  @Field(() => RunEditableFieldFlagsObject)
-  editableFields!: RunEditableFieldFlagsObject;
+  @Field(() => RunModelConfigEditabilityObject)
+  modelConfigEditability!: RunModelConfigEditabilityObject;
 }
 
 @ObjectType()

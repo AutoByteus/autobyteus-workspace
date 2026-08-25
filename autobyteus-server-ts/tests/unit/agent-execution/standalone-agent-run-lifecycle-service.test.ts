@@ -2,8 +2,9 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { describe, expect, it, vi } from "vitest";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { StandaloneAgentRunActivationService } from "../../../src/agent-execution/services/standalone-agent-run-activation-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { computeAgentRunModelConfigRevision } from "../../../src/run-history/domain/run-model-config-revision.js";
 
 const RUN_ID = "standalone-run-1";
 const CLAUDE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
@@ -53,6 +54,9 @@ const harness = (input: {
   preparedCandidate?: ReturnType<typeof candidate>;
   restoredCandidate?: ReturnType<typeof candidate>;
   recordRunStarted?: ReturnType<typeof vi.fn>;
+  getCatalogRow?: ReturnType<typeof vi.fn>;
+  commitRunModelConfig?: ReturnType<typeof vi.fn>;
+  validateModelConfig?: ReturnType<typeof vi.fn>;
 }) => {
   const states = [...input.metadataStates];
   const metadataService = {
@@ -66,20 +70,28 @@ const harness = (input: {
   };
   const historyCatalogService = {
     recordRunStarted: input.recordRunStarted ?? vi.fn(async (target: AgentRunMetadata) => target),
+    getCatalogRow: input.getCatalogRow ?? vi.fn(async () => ({ archivedAt: null })),
+    commitRunModelConfig: input.commitRunModelConfig ?? vi.fn(),
   };
   const workspaceManager = {
     ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })),
   };
-  const service = new StandaloneAgentRunActivationService("/unused", {
+  const service = new StandaloneAgentRunLifecycleService("/unused", {
     metadataService: metadataService as never,
     agentRunManager: agentRunManager as never,
     historyCatalogService: historyCatalogService as never,
     workspaceManager: workspaceManager as never,
+    modelConfigValidator: {
+      validate: input.validateModelConfig ?? vi.fn(async ({ llmConfig }) => ({
+        kind: "valid" as const,
+        config: llmConfig,
+      })),
+    },
   });
   return { service, metadataService, agentRunManager, historyCatalogService, workspaceManager };
 };
 
-describe("StandaloneAgentRunActivationService", () => {
+describe("StandaloneAgentRunLifecycleService", () => {
   it("rejects a pre-existing run before any provider candidate is constructed while history is degraded", async () => {
     configureTokenUsageMigrationReadiness({
       kind: "CURRENT_SCHEMA_DEGRADED",
@@ -117,6 +129,11 @@ describe("StandaloneAgentRunActivationService", () => {
       preparedCandidate,
       recordRunStarted,
     });
+    preparedCandidate.commitPublication.mockImplementation(() => {
+      order.push("publish");
+      current.agentRunManager.getActiveRun.mockReturnValue(run);
+      return run;
+    });
 
     const first = current.service.activatePreparedRun(RUN_ID);
     const second = current.service.resolveCommandReadyAgentRun(RUN_ID);
@@ -125,7 +142,7 @@ describe("StandaloneAgentRunActivationService", () => {
     release();
 
     await expect(Promise.all([first, second])).resolves.toEqual([run, run]);
-    expect(current.metadataService.readMetadataState).toHaveBeenCalledOnce();
+    expect(current.metadataService.readMetadataState).toHaveBeenCalledTimes(2);
     expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledOnce();
     expect(current.agentRunManager.prepareNewAgentRun).toHaveBeenCalledWith({
       runId: RUN_ID,
@@ -248,5 +265,128 @@ describe("StandaloneAgentRunActivationService", () => {
       code: "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
     });
     expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledOnce();
+  });
+
+  it("validates and commits only the model configuration of an inactive run", async () => {
+    const stopped = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      llmConfig: { effort: "low" },
+    });
+    const updated = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      llmConfig: { effort: "high" },
+    });
+    const commitRunModelConfig = vi.fn(async () => ({
+      kind: "committed" as const,
+      metadata: updated,
+    }));
+    const validateModelConfig = vi.fn(async () => ({
+      kind: "valid" as const,
+      config: { effort: "high" },
+    }));
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: stopped }],
+      commitRunModelConfig,
+      validateModelConfig,
+    });
+
+    await expect(current.service.updateStoppedModelConfig({
+      agentRunId: RUN_ID,
+      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
+      llmConfig: { effort: "high" },
+    })).resolves.toMatchObject({
+      success: true,
+      outcome: "UPDATED",
+      canonical: updated,
+      editability: { editable: true },
+    });
+    expect(validateModelConfig).toHaveBeenCalledWith({
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      llmModelIdentifier: "haiku",
+      llmConfig: { effort: "high" },
+    });
+    expect(commitRunModelConfig).toHaveBeenCalledWith({
+      runId: RUN_ID,
+      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
+      llmConfig: { effort: "high" },
+    });
+  });
+
+  it("refuses a model-configuration update when the run became active", async () => {
+    const stopped = metadata({ startedAt: "2026-08-17T20:05:00.000Z" });
+    const validateModelConfig = vi.fn();
+    const commitRunModelConfig = vi.fn();
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: stopped }],
+      commitRunModelConfig,
+      validateModelConfig,
+    });
+    current.agentRunManager.getActiveRun.mockReturnValue({ runId: RUN_ID });
+
+    await expect(current.service.updateStoppedModelConfig({
+      agentRunId: RUN_ID,
+      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
+      llmConfig: { effort: "high" },
+    })).resolves.toMatchObject({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      isActive: true,
+      editability: { editable: false, reason: "RUN_ACTIVE" },
+    });
+    expect(validateModelConfig).not.toHaveBeenCalled();
+    expect(commitRunModelConfig).not.toHaveBeenCalled();
+  });
+
+  it("holds restore behind a stopped-model-config commit in the same per-run lane", async () => {
+    const stopped = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      platformAgentRunId: CLAUDE_SESSION_ID,
+      llmConfig: { effort: "low" },
+    });
+    const updated = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      platformAgentRunId: CLAUDE_SESSION_ID,
+      llmConfig: { effort: "high" },
+    });
+    let releaseValidation!: () => void;
+    const validationBarrier = new Promise<void>((resolve) => { releaseValidation = resolve; });
+    const validateModelConfig = vi.fn(async () => {
+      await validationBarrier;
+      return { kind: "valid" as const, config: { effort: "high" } };
+    });
+    const commitRunModelConfig = vi.fn(async () => ({
+      kind: "committed" as const,
+      metadata: updated,
+    }));
+    const restoredCandidate = candidate();
+    const current = harness({
+      metadataStates: [
+        { kind: "present", metadata: stopped },
+        { kind: "present", metadata: updated },
+      ],
+      restoredCandidate,
+      commitRunModelConfig,
+      validateModelConfig,
+    });
+
+    const save = current.service.updateStoppedModelConfig({
+      agentRunId: RUN_ID,
+      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
+      llmConfig: { effort: "high" },
+    });
+    await vi.waitFor(() => expect(validateModelConfig).toHaveBeenCalledOnce());
+    const restore = current.service.restorePersistedRun(RUN_ID);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+
+    releaseValidation();
+    await expect(save).resolves.toMatchObject({ outcome: "UPDATED", canonical: updated });
+    await expect(restore).resolves.toMatchObject({ metadata: updated });
+    expect(commitRunModelConfig).toHaveBeenCalledOnce();
+    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+      runId: RUN_ID,
+      config: expect.objectContaining({ llmConfig: { effort: "high" } }),
+      platformAgentRunId: CLAUDE_SESSION_ID,
+    });
   });
 });

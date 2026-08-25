@@ -201,8 +201,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         team?.view.listAgentContextEntries().forEach(({ agentContext }) => {
           applyOfflineOrTerminalCleanup(agentContext); useAgentActivityStore().clearActivities(agentContext.state.runId);
         });
-        useRunHistoryStore().markTeamAsInactive(rootTeamRunId);
-        void useRunHistoryStore().refreshTreeQuietly();
+        const history = useRunHistoryStore();
+        history.markTeamAsInactive(rootTeamRunId);
+        await history.refreshTeamResumeConfig(rootTeamRunId).catch((refreshError) => {
+          console.warn(`Team '${rootTeamRunId}' stopped, but its editable configuration could not be refreshed.`, refreshError);
+        });
+        void history.refreshTreeQuietly();
         return true;
       } catch (error) { console.error(`Error terminating Team '${rootTeamRunId}':`, error); return false; }
       finally { const next = { ...this.stopPendingTeamIds }; delete next[rootTeamRunId]; this.stopPendingTeamIds = next; }

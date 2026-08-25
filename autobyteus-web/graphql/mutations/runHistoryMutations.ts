@@ -35,3 +35,24 @@ export const ArchiveStoredTeamRun = gql`
     }
   }
 `;
+
+export const UpdateStoppedAgentRunModelConfig = gql`
+  mutation UpdateStoppedAgentRunModelConfig($input: UpdateStoppedAgentRunModelConfigInput!) {
+    updateStoppedAgentRunModelConfig(input: $input) {
+      success
+      outcome
+      message
+      isActive
+      editability {
+        editable
+        reason
+        configurationRevision
+      }
+      canonicalLlmConfig
+      fieldErrors {
+        path
+        message
+      }
+    }
+  }
+`;

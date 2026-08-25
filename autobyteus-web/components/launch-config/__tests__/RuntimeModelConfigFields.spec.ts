@@ -14,12 +14,14 @@ const flushPromises = async () => {
 }
 
 describe('RuntimeModelConfigFields stored historical values', () => {
+  let providers: any[]
   beforeEach(() => {
     setActivePinia(createPinia())
+    providers = []
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
-      providersWithModelsForSelection: vi.fn().mockReturnValue([]),
+      providersWithModelsForSelection: vi.fn(() => providers),
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
       availabilities: [],
@@ -62,5 +64,38 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
     expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     expect(wrapper.emitted('update:llmConfig')).toBeUndefined()
+  })
+
+  it('keeps an editable numeric draft rendered while reporting current-schema validation errors', async () => {
+    providers = [{
+      provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
+      models: [{
+        modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4',
+        providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api',
+        configSchema: {
+          type: 'object',
+          properties: { budget: { type: 'integer', minimum: 1, maximum: 10 } },
+        },
+      }],
+    }]
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'gpt-4',
+        llmConfig: { budget: 0 },
+        runtimeSelectionLocked: true,
+        modelSelectionLocked: true,
+        historicalModelConfig: true,
+      },
+    })
+    await flushPromises()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('input[type="number"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Value must be at least 1.')
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
+      status: 'invalid',
+      message: 'Value must be at least 1.',
+    }])
   })
 })

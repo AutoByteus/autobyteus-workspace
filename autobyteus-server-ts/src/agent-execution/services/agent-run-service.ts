@@ -19,7 +19,8 @@ import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
-import { StandaloneAgentRunActivationService } from "./standalone-agent-run-activation-service.js";
+import { StandaloneAgentRunLifecycleService } from "./standalone-agent-run-lifecycle-service.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -77,7 +78,7 @@ export class AgentRunService {
   private metadataService: AgentRunMetadataService;
   private historyCatalogService: AgentRunHistoryCatalogService;
   private readonly provisioningService: AgentRunProvisioningService;
-  private readonly activationService: StandaloneAgentRunActivationService;
+  private readonly lifecycleService: StandaloneAgentRunLifecycleService;
 
   constructor(
     memoryDir: string,
@@ -87,7 +88,7 @@ export class AgentRunService {
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-      activationService?: StandaloneAgentRunActivationService;
+      lifecycleService?: StandaloneAgentRunLifecycleService;
     } = {},
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
@@ -103,7 +104,7 @@ export class AgentRunService {
       workspaceManager,
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
-    this.activationService = deps.activationService ?? new StandaloneAgentRunActivationService(memoryDir, {
+    this.lifecycleService = deps.lifecycleService ?? new StandaloneAgentRunLifecycleService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,
@@ -212,7 +213,7 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = await this.activationService.activatePreparedRun(prepared.runId);
+    const activeRun = await this.lifecycleService.activatePreparedRun(prepared.runId);
     return { runId: activeRun.runId };
   }
 
@@ -223,11 +224,11 @@ export class AgentRunService {
   }
 
   async activatePreparedRun(runId: string): Promise<AgentRun> {
-    return this.activationService.activatePreparedRun(runId);
+    return this.lifecycleService.activatePreparedRun(runId);
   }
 
   resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
-    return this.activationService.resolveCommandReadyAgentRun(runId);
+    return this.lifecycleService.resolveCommandReadyAgentRun(runId);
   }
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
@@ -259,7 +260,15 @@ export class AgentRunService {
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
-    return this.activationService.restorePersistedRun(normalizeRequiredRunId(runId));
+    return this.lifecycleService.restorePersistedRun(normalizeRequiredRunId(runId));
+  }
+
+  updateStoppedModelConfig(input: {
+    agentRunId: string;
+    expectedConfigurationRevision: string;
+    llmConfig: Readonly<Record<string, unknown>> | null;
+  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    return this.lifecycleService.updateStoppedModelConfig(input);
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {

@@ -4,6 +4,7 @@ import {
   normalizeModelConfigSchema,
   resolveEffectiveConfigValue,
   sanitizeModelConfigAgainstSchema,
+  validateUiModelConfig,
 } from '~/utils/llmConfigSchema';
 
 describe('normalizeModelConfigSchema', () => {
@@ -175,5 +176,25 @@ describe('sanitizeModelConfigAgainstSchema', () => {
     });
 
     expect(result).toBeNull();
+  });
+
+  it('reports required, range, pattern, enum, and type issues without changing the draft', () => {
+    const config = { budget: 0, mode: 'turbo', code: 'lower', enabled: 'yes' };
+    const issues = validateUiModelConfig({
+      required_value: { type: 'string', required: true },
+      budget: { type: 'integer', minimum: 1 },
+      mode: { type: 'string', enum: ['default', 'fast'] },
+      code: { type: 'string', pattern: '^[A-Z]+$' },
+      enabled: { type: 'boolean' },
+    }, config);
+
+    expect(issues).toEqual([
+      { key: 'required_value', code: 'required' },
+      { key: 'budget', code: 'minimum', expected: 1 },
+      { key: 'mode', code: 'enum' },
+      { key: 'code', code: 'pattern' },
+      { key: 'enabled', code: 'type', expected: 'boolean' },
+    ]);
+    expect(config).toEqual({ budget: 0, mode: 'turbo', code: 'lower', enabled: 'yes' });
   });
 });

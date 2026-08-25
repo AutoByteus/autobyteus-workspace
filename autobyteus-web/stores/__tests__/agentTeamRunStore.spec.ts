@@ -65,6 +65,7 @@ const {
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
     markTeamAsInactive: vi.fn(),
+    refreshTeamResumeConfig: vi.fn().mockResolvedValue(undefined),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
     applyRunNavigationEffect: vi.fn(),
   },
@@ -421,6 +422,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
     expect(worker.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
+    expect(runHistoryStoreMock.refreshTeamResumeConfig).toHaveBeenCalledWith('team-terminate')
   })
 
   it('does not mutate local lifecycle when backend termination rejects', async () => {

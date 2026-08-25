@@ -5,6 +5,7 @@ import { getTeamMemberRunViewProjectionService } from "../../../run-history/serv
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
+import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -16,6 +17,9 @@ class TeamRunResumeConfigPayload {
 
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  modelConfigEditability!: RunModelConfigEditabilityObject;
 }
 
 @ObjectType()
@@ -83,6 +87,7 @@ export class TeamRunHistoryResolver {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree),
+      modelConfigEditability: config.modelConfigEditability,
     };
   }
 

@@ -11,20 +11,25 @@
       :runtime-kind="config.runtimeKind"
       :llm-model-identifier="config.llmModelIdentifier"
       :llm-config="config.llmConfig"
-      :disabled="isFormReadOnly"
-      :read-only="isFormReadOnly"
+      :disabled="!existingRun && isFormReadOnly"
+      :read-only="!existingRun && isFormReadOnly"
       :runtime-selection-locked="runtimeSelectionLocked"
-      :runtime-help-text="$t('workspace.components.workspace.config.AgentRunConfigForm.selects_the_runtime_backend_used_for')"
+      :model-selection-locked="existingRun || isFormReadOnly"
+      :model-config-disabled="modelConfigReadOnly"
+      :model-config-read-only="modelConfigReadOnly"
+      :runtime-help-text="existingRun ? $t('workspace.runModelConfig.fixedIdentity') : $t('workspace.components.workspace.config.AgentRunConfigForm.selects_the_runtime_backend_used_for')"
       :model-label="$t('workspace.components.workspace.config.AgentRunConfigForm.llm_model')"
-      :model-help-text="$t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
-      :advanced-initially-expanded="readOnlyMode"
-      :historical-model-config="readOnlyMode"
+      :model-help-text="existingRun ? $t('workspace.runModelConfig.fixedIdentity') : $t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
+      :advanced-initially-expanded="existingRun"
+      :historical-model-config="existingRun"
       :missing-historical-config="missingHistoricalConfig"
+      :validation-errors="modelConfigFieldErrors"
       id-prefix="agent-run"
       control-variant="quiet"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
       @update:llm-config="updateLlmConfig"
+      @schema-state="emit('schema-state', $event)"
     />
 
     <div class="mt-8">
@@ -37,7 +42,7 @@
         }"
         :disabled="isFormReadOnly"
         :workspace-locked="workspaceLocked"
-        workspace-locked-message="Workspace is fixed for existing runs."
+        :workspace-locked-message="$t('workspace.runModelConfig.fixedWorkspace')"
         control-variant="quiet"
         @update:model-value="handleWorkspaceSelectionChange"
       />
@@ -67,11 +72,10 @@
       </button>
     </div>
 
-    <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600">
-      <span class="i-heroicons-eye-20-solid mr-1 h-4 w-4"></span>
-      <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.selected_run_configuration_read_only') }}</span>
+    <div v-if="existingRun" class="flex items-center rounded p-2 text-xs" :class="existingModelConfigEditable ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'">
+      <span aria-hidden="true" class="mr-1">{{ existingModelConfigEditable ? '●' : '🔒' }}</span>
+      <span>{{ existingRunStatusMessage }}</span>
     </div>
-
     <div v-else-if="config.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-600">
       <span class="i-heroicons-lock-closed-20-solid mr-1 h-4 w-4"></span>
       <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
@@ -96,6 +100,7 @@ import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
+import { useLocalization } from '~/composables/useLocalization'
 
 interface WorkspaceLoadingState {
   isLoading: boolean;
@@ -105,27 +110,43 @@ interface WorkspaceLoadingState {
 
 const props = defineProps<{
   config: AgentRunConfig | any;
-  agentDefinition: AgentDefinition;
+  agentDefinition: Pick<AgentDefinition, 'name'>;
   workspaceLoadingState: WorkspaceLoadingState;
   workspaceSelection: WorkspaceSelectionState;
   workspaceLocked?: boolean;
   runtimeLocked?: boolean;
-  readOnly?: boolean;
+  existingRun?: boolean;
+  existingModelConfigEditable?: boolean;
+  existingModelConfigReason?: string | null;
+  saving?: boolean;
+  modelConfigFieldErrors?: Readonly<Record<string, string>>;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:workspaceSelection', selection: WorkspaceSelectionState): void;
+  (e: 'update:llmConfig', value: Record<string, unknown> | null): void;
+  (e: 'schema-state', value: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void;
 }>();
+const { t } = useLocalization()
 
 const workspaceLocked = computed(() => props.workspaceLocked === true)
 const runtimeLocked = computed(() => props.runtimeLocked === true)
-const readOnlyMode = computed(() => props.readOnly === true)
-const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
+const existingRun = computed(() => props.existingRun === true)
+const existingModelConfigEditable = computed(() => props.existingModelConfigEditable === true)
+const existingRunStatusMessage = computed(() => props.existingModelConfigReason === 'REFRESH_REQUIRED'
+  ? t('workspace.runModelConfig.refreshRequired')
+  : existingModelConfigEditable.value
+    ? t('workspace.runModelConfig.agentStopped')
+    : t('workspace.runModelConfig.agentActive'))
+const modelConfigFieldErrors = computed(() => props.modelConfigFieldErrors ?? {})
+const isFormReadOnly = computed(() => props.config.isLocked)
+const modelConfigReadOnly = computed(() => props.saving === true || (existingRun.value
+  ? !existingModelConfigEditable.value
+  : isFormReadOnly.value))
 const missingHistoricalConfig = computed(() =>
-  readOnlyMode.value &&
-  props.config.llmConfig == null,
+  existingRun.value && props.config.llmConfig == null,
 )
-const runtimeSelectionLocked = computed(() => isFormReadOnly.value || runtimeLocked.value)
+const runtimeSelectionLocked = computed(() => existingRun.value || isFormReadOnly.value || runtimeLocked.value)
 
 const updateAutoExecute = (checked: boolean) => {
   if (isFormReadOnly.value) return
@@ -143,8 +164,9 @@ const updateLlmModelIdentifier = (value: string) => {
 }
 
 const updateLlmConfig = (value: Record<string, unknown> | null) => {
-  if (isFormReadOnly.value) return
-  props.config.llmConfig = value
+  if (modelConfigReadOnly.value) return
+  if (existingRun.value) emit('update:llmConfig', value)
+  else props.config.llmConfig = value
 }
 
 const handleWorkspaceSelectionChange = (selection: WorkspaceSelectionState) => {

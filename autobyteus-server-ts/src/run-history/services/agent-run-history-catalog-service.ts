@@ -10,6 +10,10 @@ import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import {
+  commitAgentRunModelConfig,
+  type AgentRunModelConfigCommitResult,
+} from "./agent-run-model-config-commit.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -217,6 +221,25 @@ export class AgentRunHistoryCatalogService {
         rows.set(input.runId, normalizeRow({ ...row, terminatedAt: null }));
       }
       return { value: nextMetadata, shouldFlush };
+    });
+  }
+
+  async commitRunModelConfig(input: {
+    runId: string;
+    expectedConfigurationRevision: string;
+    llmConfig: Readonly<Record<string, unknown>> | null;
+  }): Promise<AgentRunModelConfigCommitResult> {
+    return this.enqueueValue(async () => {
+      const runId = input.runId.trim();
+      const row = this.state.rows.get(runId) ?? null;
+      return commitAgentRunModelConfig({
+        metadataStore: this.metadataStore,
+        runId,
+        cataloged: Boolean(row),
+        archived: Boolean(row?.archivedAt),
+        expectedConfigurationRevision: input.expectedConfigurationRevision,
+        llmConfig: input.llmConfig,
+      });
     });
   }
 
