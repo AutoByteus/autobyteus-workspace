@@ -69,4 +69,37 @@ describe('projectHistoricalModelConfigFields', () => {
     expect(projectHistoricalModelConfigFields(null, schema).map((field) => field.key))
       .toEqual(['temperature', 'reasoning_effort', 'current_only', 'legacy_shape'])
   })
+
+  it('uses the text control only when it preserves the exact stored string', () => {
+    const stringSchema = Object.freeze({
+      ordinary_prompt: Object.freeze({ type: 'string' }),
+      line_feed_prompt: Object.freeze({ type: 'string' }),
+      carriage_return_prompt: Object.freeze({ type: 'string' }),
+    })
+
+    expect(projectHistoricalModelConfigFields({
+      ordinary_prompt: 'line one line two',
+      line_feed_prompt: 'line one\nline two',
+      carriage_return_prompt: 'line one\rline two',
+    }, stringSchema)).toEqual([
+      expect.objectContaining({
+        kind: 'current_control',
+        key: 'ordinary_prompt',
+        hasExplicitStoredValue: true,
+        storedValue: 'line one line two',
+      }),
+      expect.objectContaining({
+        kind: 'historical_residual',
+        key: 'line_feed_prompt',
+        exactStoredValue: 'line one\nline two',
+        reason: 'value_not_representable',
+      }),
+      expect.objectContaining({
+        kind: 'historical_residual',
+        key: 'carriage_return_prompt',
+        exactStoredValue: 'line one\rline two',
+        reason: 'value_not_representable',
+      }),
+    ])
+  })
 })

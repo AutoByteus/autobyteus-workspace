@@ -14,7 +14,7 @@
         :data-historical-key="entry.key"
       >
         <dt class="break-words font-medium text-gray-500">{{ entry.key }}</dt>
-        <dd class="min-w-0 break-words font-mono text-gray-700">{{ entry.value }}</dd>
+        <dd class="min-w-0 whitespace-pre-wrap break-words font-mono text-gray-700">{{ entry.value }}</dd>
       </div>
     </dl>
   </div>
