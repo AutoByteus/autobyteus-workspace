@@ -297,3 +297,30 @@ User signal: explicit hands-on completion/verification and explicit authorizatio
    Release method: documented scripts/desktop-release.sh flow after repository finalization.
    Intended next version: 1.4.58, the next unused patch after current v1.4.57.
    Recovery safety: origin/codex/hierarchical-team-run-launch-config-recovery-20260824 remains comparison-only and will not be merged or cherry-picked.
+
+4. Repository finalization
+   Ticket archive/finalization commit: f0b9ba0ad0c59bbd52693997456ed46f39475516.
+   Remote ticket-history reconciliation: b9806ef7d7d0ad14b73d710c020a0784287400b4; ours strategy; identical tree before/after.
+   Ticket branch push: Pass.
+   Finalization-target refresh: personal fast-forwarded to origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18.
+   Target merge: a43e8ceea83274d0724533144281806e7acf68b0.
+   Target push: Pass.
+
+5. Release and rollout
+   Command: scripts/desktop-release.sh release 1.4.58 --release-notes tickets/done/hierarchical-team-run-launch-config/release-notes.md
+   Release commit/tag: a6c79a669923b569f82adb2b9d1b31da5ceac3de / v1.4.58.
+   Release branch/tag push: Pass.
+   Workflow result: Desktop, Android, iOS App Store Connect, messaging gateway, and server Docker all completed successfully.
+   GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.58; non-draft/non-prerelease; 21 assets.
+   Updater/managed metadata: exact 1.4.58/v1.4.58 validation Pass.
+   Server Docker: 1.4.58 and latest resolve to the same amd64+arm64 digest sha256:a9ba057c7615742a4bafc98540556fb485fcbe3ae2ef2696507618c70eceefef.
+   User rollout verification: Pass; user confirmed the released version is already running.
+
+6. Cleanup and final result
+   Dedicated ticket worktree removed: Pass.
+   Local ticket branch deleted: Pass.
+   Remote ticket branch deleted: Pass.
+   Worktree prune: Pass.
+   Dated configured-recovery comparison branch: retained and untouched.
+   DR-006 result: Pass — finalization, release, publication, rollout verification, and cleanup complete.
+   Evidence: tickets/done/hierarchical-team-run-launch-config/delivery-evidence/delivery-release-v1.4.58-rollout-dr006.txt

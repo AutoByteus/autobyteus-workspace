@@ -13,6 +13,7 @@ sync, user verification, repository finalization, release, or deployment.
 | `DR-003` | User requested a README-guided Electron build for hands-on verification | `DR-002 Pass` | Pass — local macOS arm64 Electron app, DMG, and ZIP built and integrity-checked; candidate remains held for explicit user verification | `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/delivery-electron-macos-arm64-build.txt` |
 | `DR-004` | `CRR-016` cumulative readiness after the user-approved `SR-011` presentation correction, `ARCH-REV-003`, `IR-009`, `CRR-015`, and `API-REV-008` | `DR-003 Pass`, subsequently rejected for presentation | Pass — base already current, three durable frontend docs synchronized, and a new SR-011 macOS arm64 candidate built and integrity-checked for mandatory hands-on user verification | `delivery-integrated-state-refresh.log`; `delivery-integration-blocker.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/delivery-docs-validation-dr004.txt`; `delivery-evidence/delivery-electron-sr011-macos-arm64-build.txt`; `delivery-evidence/delivery-final-handoff-validation-dr004.txt` |
 | `DR-005` | `CRR-024 Pass` after the approved shared stored-Settings chain `SR-015`, `ARCH-REV-007`, `IR-014`, `CRR-023`, and `API-REV-011` | `DR-004 Pass`, subsequently superseded by `USER-UX-003` and stored-history corrections | Pass — base already current, three frontend docs synchronized to shared editable/stored form architecture, and a new SR-015 macOS arm64 candidate built and integrity-checked for mandatory hands-on user verification | `delivery-integrated-state-refresh.log`; `delivery-integration-blocker.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/delivery-docs-validation-dr005.txt`; `delivery-evidence/delivery-electron-sr015-macos-arm64-build.txt`; `delivery-evidence/delivery-final-handoff-validation-dr005.txt` |
+| `DR-006` | User completed hands-on verification and authorized finalization/release; post-signal target refresh unchanged | `DR-005 Pass` on verification hold | Pass — ticket archived, ticket branch pushed and merged into `personal`, v1.4.58 published, all five release workflows passed, rollout verified, and ticket worktree/branches cleaned | `delivery-integrated-state-refresh.log`; `delivery-integration-blocker.md`; `handoff-summary.md`; `release-deployment-report.md`; `release-notes.md`; `delivery-evidence/delivery-release-v1.4.58-rollout-dr006.txt` |
 
 ## Revision Entries
 
@@ -254,3 +255,56 @@ sync, user verification, repository finalization, release, or deployment.
   for that user signal.
 - Finalization hold: no push, ticket archival, target-branch merge, version
   change, tag, release, publication, deployment, or cleanup was performed.
+
+### DR-006 — User-verified candidate finalized and released as v1.4.58
+
+- Date and trigger: 2026-08-25; the user explicitly reported the task complete,
+  authorized finalization and a new release, and later confirmed the released
+  version was already running.
+- Prior authoritative result: `DR-005 Pass — rebuilt SR-015 candidate ready for
+  explicit hands-on user verification`.
+- Finalization-target refresh: after the user signal, `git fetch --prune origin`
+  left `origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18`
+  unchanged. It remained the merge base and ancestor of verified HEAD
+  `5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f`, at 26 ahead / 0 behind.
+  No re-integration, rerun, effective behavior change, or renewed verification
+  was required.
+- Archive/finalization commit: the complete ticket package moved to
+  `tickets/done/hierarchical-team-run-launch-config/` in
+  `f0b9ba0ad0c59bbd52693997456ed46f39475516`.
+- Ticket remote reconciliation: the existing remote ticket tip contained only
+  the historical bootstrap commit. Merge
+  `b9806ef7d7d0ad14b73d710c020a0784287400b4` used the `ours` strategy to retain
+  the finalized tree while making that remote history an ancestor; the tree
+  hash was identical before and after. The ticket branch was then pushed.
+- Target finalization: local `personal` fast-forwarded to current
+  `origin/personal`, merged the ticket branch at
+  `a43e8ceea83274d0724533144281806e7acf68b0`, and pushed successfully.
+- Release method: documented
+  `scripts/desktop-release.sh release 1.4.58 --release-notes
+  tickets/done/hierarchical-team-run-launch-config/release-notes.md`.
+  Release commit/tag target is
+  `a6c79a669923b569f82adb2b9d1b31da5ceac3de` / `v1.4.58`.
+- Release result: all five tag-triggered workflows completed successfully:
+  Desktop Release `32835663514`, Android APK Release `32835663543`, iOS App
+  Store Connect Release `32835663837`, Release Messaging Gateway `32835663595`,
+  and Server Docker Release `32835663580`.
+- Publication result: the non-draft, non-prerelease GitHub Release published 21
+  assets, including macOS arm64/x64, Linux arm64/x64, Windows, Android,
+  messaging-gateway, updater metadata, and release manifest artifacts. Every
+  updater manifest reports 1.4.58 and the managed manifest reports v1.4.58.
+- Server rollout: Docker Hub tags `autobyteus/autobyteus-server:1.4.58` and
+  `:latest` resolve to the same linux/amd64 + linux/arm64 OCI index digest
+  `sha256:a9ba057c7615742a4bafc98540556fb485fcbe3ae2ef2696507618c70eceefef`.
+- User rollout verification: the user explicitly confirmed the released version
+  is already running. This is accepted as post-release hands-on rollout proof.
+- Cleanup: the remote and local
+  `codex/hierarchical-team-run-launch-config` branches and the dedicated ticket
+  worktree were removed after merge/release success. The dated configured-
+  recovery comparison branch remains intact and was never merged or
+  cherry-picked.
+- Scope safety: `API-E2E-F-003` remains `Out Of Scope / Non-Blocking`; no
+  synthetic CR/catalog-injection path was restored or used for release.
+- Evidence: `delivery-evidence/delivery-release-v1.4.58-rollout-dr006.txt`.
+- Current authoritative result: `Pass — finalized, released, rollout-verified,
+  and cleaned up`; no open delivery blocker remains.
