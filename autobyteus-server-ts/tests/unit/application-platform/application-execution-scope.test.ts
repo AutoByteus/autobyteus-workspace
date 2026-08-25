@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
+import * as claudeSdkClientModule from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 
 const tempRoots: string[] = [];
 
@@ -307,6 +308,72 @@ describe("ApplicationExecutionScope", () => {
       .toThrow("session manager construction failed");
     expect(closeRawSessionScope).toHaveBeenCalledTimes(1);
     expect(processOwnerClose).not.toHaveBeenCalled();
+  });
+
+  it("closes manager ownership once and aggregates cleanup when later scope construction fails", () => {
+    const constructionFailure = new Error("late scope construction failed");
+    const cleanupFailure = new Error("session manager cleanup failed");
+    vi.spyOn(claudeSdkClientModule, "getClaudeSdkClient")
+      .mockImplementation(() => { throw constructionFailure; });
+    const closeRawSessionScope = vi.fn();
+    const closeSessionManager = vi.fn(() => { throw cleanupFailure; });
+    const processOwnerClosers = {
+      definitions: vi.fn(),
+      teamDefinitions: vi.fn(),
+      sessionRuntime: vi.fn(),
+      workspace: vi.fn(),
+    };
+    const sessionManager = {
+      assertReady: vi.fn(),
+      createAgentToolMcpSession: vi.fn(),
+      revokeAgentToolMcpSession: vi.fn(),
+      revokeAgentToolMcpSessionsForRun: vi.fn(),
+      revokeAgentToolMcpSessionsForOwner: vi.fn(),
+      redactAgentToolMcpDescriptor: vi.fn(),
+      blockNewSessions: vi.fn(),
+      close: closeSessionManager,
+    };
+    const createApplicationSessionManager = vi.fn(() => sessionManager as never);
+
+    let thrown: unknown;
+    try {
+      ApplicationExecutionScope.create({
+        scopeIdentity: "application:test",
+        memoryDir: "/tmp/memory",
+        agentDefinitionService: { close: processOwnerClosers.definitions } as never,
+        agentTeamDefinitionService: {
+          close: processOwnerClosers.teamDefinitions,
+        } as never,
+        workspaceManager: { close: processOwnerClosers.workspace } as never,
+        bindingReader: { getBinding: vi.fn(async () => null) },
+        artifactDeliverySink: { accept: vi.fn(async () => undefined) },
+        agentToolsSessionFactory: {
+          close: processOwnerClosers.sessionRuntime,
+          createApplicationSessionScope: vi.fn(() => ({
+            recordIssuedSession: vi.fn(),
+            revokeForRun: vi.fn(() => 0),
+            revokeForOwner: vi.fn(() => 0),
+            blockNewSessions: vi.fn(),
+            close: closeRawSessionScope,
+          })),
+          createApplicationSessionManager,
+        } as never,
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toMatchObject({
+      name: "AggregateError",
+      message: "Application execution scope construction failed.",
+      errors: [constructionFailure, cleanupFailure],
+    });
+    expect(createApplicationSessionManager).toHaveBeenCalledTimes(1);
+    expect(closeSessionManager).toHaveBeenCalledTimes(1);
+    expect(closeRawSessionScope).not.toHaveBeenCalled();
+    for (const closeProcessOwner of Object.values(processOwnerClosers)) {
+      expect(closeProcessOwner).not.toHaveBeenCalled();
+    }
   });
 
   it("validates every required construction field before creating a session scope", async () => {

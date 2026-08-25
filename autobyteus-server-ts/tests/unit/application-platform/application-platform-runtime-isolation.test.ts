@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildApplicationPlatformRuntime } from "../../../src/application-platform/runtime/build-application-platform-runtime.js";
+import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import {
   createAgentToolsMcpRuntime,
   type AgentToolsMcpRuntime,
@@ -114,5 +115,83 @@ describe("application platform runtime isolation", () => {
     expect(runtimeB.lifecycle.getState()).toBe("constructed");
     await runtimeB.lifecycle.stop();
     expect(runtimeB.lifecycle.getState()).toBe("stopped");
+  });
+
+  it("aborts a completed scope when later platform assembly fails without closing process owners", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-runtime-unwind-"));
+    tempRoots.push(root);
+    const assemblyFailure = new Error("platform assembly failed");
+    const closeRawSessionScope = vi.fn();
+    const closeSessionManager = vi.fn();
+    const closeProcessMcpRuntime = vi.fn();
+    const sessionManager = {
+      assertReady: vi.fn(),
+      createAgentToolMcpSession: vi.fn(),
+      revokeAgentToolMcpSession: vi.fn(),
+      revokeAgentToolMcpSessionsForRun: vi.fn(),
+      revokeAgentToolMcpSessionsForOwner: vi.fn(),
+      redactAgentToolMcpDescriptor: vi.fn(),
+      blockNewSessions: vi.fn(),
+      close: closeSessionManager,
+    };
+    const agentToolsSessionFactory = {
+      close: closeProcessMcpRuntime,
+      createApplicationSessionScope: vi.fn(() => ({
+        recordIssuedSession: vi.fn(),
+        revokeForRun: vi.fn(() => 0),
+        revokeForOwner: vi.fn(() => 0),
+        blockNewSessions: vi.fn(),
+        close: closeRawSessionScope,
+      })),
+      createApplicationSessionManager: vi.fn(() => sessionManager as never),
+    };
+    const processOwners = {
+      agentDefinitions: { close: vi.fn() },
+      teamDefinitions: { close: vi.fn() },
+      workspace: { close: vi.fn() },
+      runtimeAvailability: { close: vi.fn() },
+      modelCatalog: { close: vi.fn() },
+      modelAvailability: { close: vi.fn() },
+      llmProvider: { close: vi.fn() },
+      codexClient: { close: vi.fn() },
+    };
+    const abortConstruction = vi.spyOn(
+      ApplicationExecutionScope.prototype,
+      "abortConstruction",
+    );
+    let publishedRuntime: unknown;
+
+    expect(() => {
+      publishedRuntime = buildApplicationPlatformRuntime({
+        appConfig: {
+          getAppDataDir: () => root,
+          getMemoryDir: () => path.join(root, "memory"),
+          getSkillsDir: () => { throw assemblyFailure; },
+        } as never,
+        bundleService: {} as never,
+        agentDefinitionService: processOwners.agentDefinitions as never,
+        agentTeamDefinitionService: processOwners.teamDefinitions as never,
+        agentToolsSessionFactory: agentToolsSessionFactory as never,
+        workspaceManager: processOwners.workspace as never,
+        runtimeAvailabilityService: processOwners.runtimeAvailability as never,
+        modelCatalogService: processOwners.modelCatalog as never,
+        modelAvailabilityService: processOwners.modelAvailability as never,
+        llmProviderService: processOwners.llmProvider as never,
+        codexClientManager: processOwners.codexClient as never,
+        requireCurrentModelIdentifier: vi.fn(async () => undefined),
+        selectedApplicationIds: new Set(["app-a"]),
+      });
+    }).toThrow(assemblyFailure);
+
+    expect(publishedRuntime).toBeUndefined();
+    expect(abortConstruction).toHaveBeenCalledTimes(1);
+    expect(agentToolsSessionFactory.createApplicationSessionManager)
+      .toHaveBeenCalledTimes(1);
+    expect(closeSessionManager).toHaveBeenCalledTimes(1);
+    expect(closeRawSessionScope).not.toHaveBeenCalled();
+    expect(closeProcessMcpRuntime).not.toHaveBeenCalled();
+    for (const owner of Object.values(processOwners)) {
+      expect(owner.close).not.toHaveBeenCalled();
+    }
   });
 });

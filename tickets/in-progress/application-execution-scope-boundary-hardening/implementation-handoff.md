@@ -13,7 +13,13 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A — initial implementation after ARCH-REV-003 Pass.`
+- Triggering rework report, revision record, or evidence, when applicable:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/code-review-report.md` (`CRR-001`, `CR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/crr-001-source-audit.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/crr-001-server-build.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/crr-001-prerequisite-build.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/crr-001-affected-tests-final.log`
 
 ## Current Implementation Summary
 
@@ -21,15 +27,17 @@ The reviewed execution boundary is implemented as one concrete `ApplicationExecu
 
 The old broad `createApplicationRunServices` bag is deleted, the shutdown coordinator is moved under the execution owner, ambient application-path selectors and the stream fallback are removed, and Studio/standalone pass the reviewed named process inputs. Platform construction now creates the four outer stores, then the scope, then outer orchestration; a later construction failure aborts only the created scope. Public platform projections, wire contracts, data, migrations, providers, and one-scope-per-current-runtime multiplicity are unchanged.
 
-- Implementation cycle: `Initial`
+IR-002 closes CR-001 without changing production source. Focused injected tests now prove both later construction boundaries required by REQ-005/AC-006: post-session-manager scope failure closes manager ownership exactly once and aggregates cleanup failure without raw-scope/process-owner closure; post-scope/pre-publication platform failure invokes `abortConstruction` exactly once, returns no runtime, closes the scoped manager exactly once, and leaves canonical definitions, the process MCP runtime, workspace, and readiness owners open. The existing pre-manager/raw-session-scope proof remains.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -53,7 +61,7 @@ The old broad `createApplicationRunServices` bag is deleted, the shutdown coordi
   - `autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle-contracts.ts`
 - Exact capability consumers: application launch, orchestration host, bound-run lifecycle gateway, streaming source/service/subscription, publication relay ports.
 - Explicit composition inputs: Studio and standalone host roots.
-- Durable structural/focused proof: `tests/architecture/application-framework-boundaries.test.ts`, renamed scope/shutdown unit suites, affected lifecycle/orchestration/streaming/standalone unit suites, and three focused application-backend integration suites.
+- Durable structural/focused proof: `tests/architecture/application-framework-boundaries.test.ts`, renamed scope/shutdown unit suites, platform runtime isolation/construction-unwind proof, affected lifecycle/orchestration/streaming/standalone unit suites, and three focused application-backend integration suites.
 - Removed: `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts` and the old runtime-folder shutdown path.
 
 ## Important Assumptions
@@ -65,7 +73,7 @@ The old broad `createApplicationRunServices` bag is deleted, the shutdown coordi
 
 ## Known Risks
 
-- No implementation-blocking risk was found.
+- No implementation-blocking risk remains after the IR-002 construction-unwind proof correction.
 - `application-execution-scope.ts` is a cohesive new owner at 427 effective non-empty lines. It is below the 500-line limit; its new-file delta exceeds the 220-line pressure signal but matches the reviewed single-owner responsibility (construction, capabilities, admission, unwind, and close), so it was assessed rather than split into a pass-through construction layer.
 - Full realistic dual-host, provider, nested-task, reload/reentry, and package parity execution remains downstream-owned.
 
@@ -109,8 +117,8 @@ The old broad `createApplicationRunServices` bag is deleted, the shutdown coordi
 - Shared SDK builds (`@autobyteus/application-sdk-contracts`, backend SDK, frontend SDK), application devkit build, and Brief Studio package assembly through the built devkit CLI — passed.
 - `pnpm -C autobyteus-server-ts build` — passed, including shared preparation, Prisma generation, TypeScript production build, managed assets, and sanitized built-in-agent bootstrap smoke.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed after the final source edit.
-- Focused affected selection across architecture, scope/shutdown, lifecycle, runtime isolation, streaming, launch/input/host, publication/journal, standalone lifecycle, application communication, context capabilities, and imported Brief package — 16 files / 88 tests passed.
-- Final post-format scope guard selection — 3 files / 30 tests passed (`application-framework-boundaries`, `application-execution-scope`, `application-execution-shutdown-coordinator`).
+- Focused affected selection across architecture, scope/shutdown, lifecycle, runtime isolation, streaming, launch/input/host, publication/journal, standalone lifecycle, application communication, context capabilities, and imported Brief package — 16 files / 90 tests passed after adding the two CR-001 construction-unwind cases.
+- Final focused construction-unwind selection — 2 files / 11 tests passed (`application-execution-scope`, `application-platform-runtime-isolation`).
 - `git diff --check` — passed.
 - Static boundary/removal checks — passed: no retired production paths/symbols, no live aggregate method calls in orchestration/streaming/platform-runtime consumers, no ambient process selectors below the two host roots, and all changed production files remain below 500 effective lines.
 - `pnpm -C autobyteus-server-ts typecheck` — not a passing check because of the pre-existing `rootDir: src` / included-tests TS6059 configuration conflict described above; no production error appears in the passing build-config check.
