@@ -1126,7 +1126,6 @@ describe('RunConfigPanel', () => {
     expect(form.props('model')).toEqual(expect.objectContaining({
       mode: 'stored',
       definitionLabel: 'Team team-def-1',
-      isLocked: true,
       root: expect.objectContaining({
         effectiveConfig: expect.objectContaining({
           workspaceId: 'ws-original',

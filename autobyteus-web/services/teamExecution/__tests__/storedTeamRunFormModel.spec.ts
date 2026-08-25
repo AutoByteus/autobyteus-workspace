@@ -97,9 +97,15 @@ describe('projectStoredTeamRunFormModel', () => {
     expect(research.kind).toBe('agent_team')
     if (research.kind !== 'agent_team') throw new Error('Expected stored Research Team.')
     expect(research.scope.isCustomized).toBe(true)
-    expect(research.scope.override).toBeNull()
-    expect(research.scope.workspaceSelection).toEqual({
-      mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/history/research',
+    expect(research.scope).not.toHaveProperty('override')
+    expect(research.scope).not.toHaveProperty('workspaceSelection')
+    expect(research.scope).not.toHaveProperty('workspaceOperation')
+    expect(research.scope).not.toHaveProperty('runtimeCatalogState')
+    expect(research.scope.storedWorkspace).toEqual({
+      workspaceId: null,
+      displayName: '/history/research',
+      rootPath: '/history/research',
+      availability: 'historical-only',
     })
     expect(Object.isFrozen(model)).toBe(true)
     expect(Object.isFrozen(model.members)).toBe(true)

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasSchema" class="mt-4">
+  <div v-if="hasPresentation" class="mt-4">
     <!-- Thinking Toggle Row -->
     <template v-if="thinkingControlState.supported">
       <div
@@ -53,7 +53,7 @@
     >
       <ModelConfigAdvanced
         :schema="advancedSchema"
-        :config="modelConfig"
+        :config="presentedModelConfig"
         :disabled="disabled"
         :compact="compact"
         :id-prefix="idPrefix"
@@ -63,6 +63,12 @@
         @update:config="emitConfig"
       />
     </div>
+    <HistoricalModelConfigFallback
+      v-if="historicalResiduals.length"
+      :entries="historicalResiduals"
+      :title="historicalModelConfigTitle"
+      :unavailable-message="historicalValueUnavailableMessage"
+    />
   </div>
 </template>
 
@@ -71,6 +77,10 @@ import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import {
+  projectHistoricalModelConfigFields,
+  type HistoricalModelConfigResidualField,
+} from '~/utils/historicalModelConfigFields';
+import {
   applyThinkingToggle,
   getThinkingControlState,
   getThinkingParamKeys,
@@ -78,6 +88,7 @@ import {
 } from '~/utils/llmThinkingConfigAdapter';
 import ModelConfigBasic from './ModelConfigBasic.vue';
 import ModelConfigAdvanced from './ModelConfigAdvanced.vue';
+import HistoricalModelConfigFallback from './HistoricalModelConfigFallback.vue';
 
 const props = defineProps<{
   schema: UiModelConfigSchema | null;
@@ -92,6 +103,9 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean;
   missingHistoricalConfig?: boolean;
   controlVariant?: 'default' | 'quiet';
+  historical?: boolean;
+  historicalValueUnavailableMessage?: string;
+  historicalModelConfigTitle?: string;
 }>();
 
 const emit = defineEmits<{
@@ -112,15 +126,44 @@ const advancedContainerClass = computed(() => [
     : '',
 ]);
 
-const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
+const historicalFields = computed(() => props.historical
+  ? projectHistoricalModelConfigFields(props.modelConfig, props.schema)
+  : []);
+const presentedSchema = computed<UiModelConfigSchema | null>(() => {
+  if (!props.historical) return props.schema;
+  const entries = historicalFields.value
+    .filter((field) => field.kind === 'current_control')
+    .map((field) => [field.key, field.schema]);
+  return entries.length ? Object.fromEntries(entries) : null;
+});
+const presentedModelConfig = computed<Record<string, unknown> | null>(() => {
+  if (!props.historical) return props.modelConfig ?? null;
+  const entries = historicalFields.value
+    .filter((field) => field.kind === 'current_control' && field.hasExplicitStoredValue)
+    .map((field) => [field.key, field.storedValue]);
+  return entries.length ? Object.fromEntries(entries) : null;
+});
+const historicalResiduals = computed<readonly HistoricalModelConfigResidualField[]>(() =>
+  historicalFields.value.filter(
+    (field): field is HistoricalModelConfigResidualField => field.kind === 'historical_residual',
+  ),
+);
+const historicalValueUnavailableMessage = computed(() =>
+  props.historicalValueUnavailableMessage ?? 'Saved value is unavailable in current options.',
+);
+const historicalModelConfigTitle = computed(() =>
+  props.historicalModelConfigTitle ?? 'Saved model configuration',
+);
+const hasSchema = computed(() => !!presentedSchema.value && Object.keys(presentedSchema.value).length > 0);
+const hasPresentation = computed(() => hasSchema.value || historicalResiduals.value.length > 0);
 
 const thinkingControlState = computed(() =>
-  getThinkingControlState(props.schema ?? null, props.modelConfig ?? null),
+  getThinkingControlState(presentedSchema.value, presentedModelConfig.value),
 );
 
 const advancedSchema = computed<UiModelConfigSchema>(() => {
-  const schema = props.schema ?? {};
-  const toggleOwnedKeys = new Set(getThinkingToggleOwnedParamKeys(props.schema ?? null));
+  const schema = presentedSchema.value ?? {};
+  const toggleOwnedKeys = new Set(getThinkingToggleOwnedParamKeys(presentedSchema.value));
   return Object.fromEntries(
     Object.entries(schema).filter(([key]) => !toggleOwnedKeys.has(key)),
   );
@@ -189,6 +232,7 @@ const thinkingEnabled = computed({
 });
 
 const applyDefaultsIfNeeded = () => {
+  if (props.historical || props.readOnly) return;
   if (!hasSchema.value) return;
   if (!props.applyDefaults) return;
 
@@ -217,6 +261,7 @@ const applyDefaultsIfNeeded = () => {
 };
 
 const sanitizeConfigIfNeeded = (): boolean => {
+  if (props.historical || props.readOnly) return false;
   if (!hasSchema.value) return false;
   const sanitized = sanitizeModelConfigAgainstSchema(props.schema ?? null, props.modelConfig ?? null);
   if (configsEqual(sanitized, props.modelConfig ?? null)) {

@@ -5,7 +5,7 @@ import TeamMemberConfigTree from '../TeamMemberConfigTree.vue'
 import TeamScopeConfigEditor from '../TeamScopeConfigEditor.vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
-import type { TeamRunFormRuntimeCatalogState } from '~/types/agent/TeamRunFormModel'
+import type { EditableRuntimeCatalogOperationState } from '~/types/agent/EditableTeamRunFormModel'
 import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
 import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
 import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures'
@@ -58,7 +58,7 @@ const definitions = new Map([
   [rootDefinition.id, rootDefinition],
   [nestedDefinition.id, nestedDefinition],
 ])
-const idleCatalog: TeamRunFormRuntimeCatalogState = { status: 'idle', error: null }
+const idleCatalog: EditableRuntimeCatalogOperationState = { status: 'idle', error: null }
 const editableModel = (input: {
   config?: TeamRunConfig
   definition?: AgentTeamDefinition
@@ -111,10 +111,13 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
     expect(directChildren[1]?.tagName.toLowerCase()).toBe('team-scope-config-editor-stub')
     expect(directChildren[2]?.querySelector('[data-test="team-member-overrides-toggle"]')).not.toBeNull()
     expect(root.props()).toEqual(expect.objectContaining({
-      address: '/', isRoot: true, disabled: false,
-      workspaceSelection: { mode: 'existing', existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/root' },
-      effectiveConfig: expect.objectContaining({
-        runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', skillAccessMode: 'PRELOADED_ONLY',
+      isRoot: true, disabled: false,
+      scope: expect.objectContaining({
+        address: '/',
+        workspaceSelection: { mode: 'existing', existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/root' },
+        effectiveConfig: expect.objectContaining({
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', skillAccessMode: 'PRELOADED_ONLY',
+        }),
       }),
     }))
     const members = tree.props('memberNodes') as any[]
@@ -187,7 +190,7 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
   it('disables the complete editable form while a launch is pending', () => {
     const wrapper = mountForm(editableModel({ forceReadOnly: true }))
     expect(wrapper.findComponent(TeamScopeConfigEditor).props('disabled')).toBe(true)
-    expect(wrapper.findComponent(TeamMemberConfigTree).props()).toEqual(expect.objectContaining({ disabled: true, readOnlyMode: false }))
+    expect(wrapper.findComponent(TeamMemberConfigTree).props()).toEqual(expect.objectContaining({ disabled: true }))
     expect(wrapper.text()).toContain('configuration_locked_because_execution_has_start')
   })
 
@@ -199,10 +202,13 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
 
     expect(wrapper.attributes('data-mode')).toBe('stored')
     expect(root.props()).toEqual(expect.objectContaining({
-      readOnly: true, disabled: true,
-      effectiveConfig: expect.objectContaining({
-        runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
-        llmConfig: { reasoning_effort: 'high' }, workspaceRootPath: '/workspace/root',
+      disabled: true,
+      scope: expect.objectContaining({
+        mode: 'stored',
+        effectiveConfig: expect.objectContaining({
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
+          llmConfig: { reasoning_effort: 'high' }, workspaceRootPath: '/workspace/root',
+        }),
       }),
     }))
     const members = tree.props('memberNodes') as any[]
@@ -214,7 +220,7 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
         llmConfig: { temperature: 0.2 }, workspaceRootPath: '/workspace/student',
       }),
     }))
-    expect(tree.props()).toEqual(expect.objectContaining({ disabled: true, readOnlyMode: true }))
+    expect(tree.props()).toEqual(expect.objectContaining({ disabled: true }))
     expect(wrapper.text()).toContain('selected_team_run_configuration_read_only')
     expect(wrapper.text()).not.toContain('Stored root Team defaults')
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)

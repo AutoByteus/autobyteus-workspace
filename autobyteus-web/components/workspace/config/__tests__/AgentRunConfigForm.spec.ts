@@ -9,7 +9,7 @@ vi.mock('../WorkspaceSelector.vue', () => ({
   default: {
     name: 'WorkspaceSelector',
     template: '<div class="workspace-selector-stub"></div>',
-    props: ['modelValue', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
+    props: ['model', 'disabled', 'workspaceLocked'],
     emits: ['update:modelValue'],
   },
 }))
@@ -158,7 +158,10 @@ describe('AgentRunConfigForm', () => {
     })
     const selector = wrapper.findComponent({ name: 'WorkspaceSelector' })
 
-    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+    expect(selector.props('model')).toEqual(expect.objectContaining({
+      mode: 'editable',
+      selection: workspaceSelection,
+    }))
 
     const nextSelection = {
       mode: 'existing' as const,

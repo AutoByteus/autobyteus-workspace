@@ -41,6 +41,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
         runtimeSelectionLocked: true,
         historicalValueUnavailableMessage: 'Saved value is no longer available.',
         historicalModelConfigTitle: 'Saved model configuration',
+        historicalModelConfig: true,
       },
     })
     await flushPromises()
@@ -56,6 +57,8 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     expect(fallback.text()).toContain('temperature')
     expect(fallback.text()).toContain('0.2')
     expect(fallback.text()).toContain('{"enabled":true}')
+    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+      .map((row) => row.attributes('data-historical-key'))).toEqual(['nested', 'temperature'])
     expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
     expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     expect(wrapper.emitted('update:llmConfig')).toBeUndefined()

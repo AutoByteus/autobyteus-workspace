@@ -55,13 +55,16 @@ describe('WorkspaceSelector', () => {
   });
 
   const defaultProps = {
-    modelValue: {
-      mode: 'new' as const,
-      existingWorkspaceId: null,
-      newWorkspacePath: '',
+    model: {
+      mode: 'editable' as const,
+      selection: {
+        mode: 'new' as const,
+        existingWorkspaceId: null,
+        newWorkspacePath: '',
+      },
+      isLoading: false,
+      error: null,
     },
-    isLoading: false,
-    error: null,
     disabled: false,
   };
 
@@ -88,10 +91,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'existing',
           existingWorkspaceId: 'temp-ws',
           newWorkspacePath: '/workspace/inactive-buffer',
+          },
         },
       },
     });
@@ -110,11 +116,11 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.find('input[type="text"]').exists()).toBe(false);
 
     await wrapper.setProps({
-      modelValue: {
+      model: { ...defaultProps.model, selection: {
         mode: 'new',
         existingWorkspaceId: 'temp-ws',
         newWorkspacePath: '/workspace/inactive-buffer',
-      },
+      } },
     });
     expect(wrapper.findAll('[role="tab"]')[1].attributes('aria-selected')).toBe('true');
 
@@ -220,10 +226,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'new',
           existingWorkspaceId: 'agent_ws_metadata',
           newWorkspacePath: '/tmp/ProjectA',
+          },
         },
         disabled: true,
       },
@@ -248,10 +257,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'new',
           existingWorkspaceId: 'agent_ws_locked_reference',
           newWorkspacePath: '/tmp/LockedProject',
+          },
         },
         workspaceLocked: true,
       },
@@ -277,10 +289,13 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        modelValue: {
+        model: {
+          ...defaultProps.model,
+          selection: {
           mode: 'existing',
           existingWorkspaceId: 'ws-1',
           newWorkspacePath: '',
+          },
         },
       },
     });
@@ -289,11 +304,11 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     await wrapper.setProps({
-      modelValue: {
+      model: { ...defaultProps.model, selection: {
         mode: 'new',
         existingWorkspaceId: null,
         newWorkspacePath: '',
-      },
+      } },
     });
     await flushPromises();
     await wrapper.vm.$nextTick();
@@ -455,7 +470,7 @@ describe('WorkspaceSelector', () => {
     };
 
     const wrapper = mount(WorkspaceSelector, {
-      props: { ...defaultProps, isLoading: true },
+      props: { ...defaultProps, model: { ...defaultProps.model, isLoading: true } },
     });
     await wrapper.vm.$nextTick();
 
@@ -509,7 +524,7 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        error: 'Workspace path is invalid',
+        model: { ...defaultProps.model, error: 'Workspace path is invalid' },
       },
     });
     await wrapper.vm.$nextTick();
@@ -522,16 +537,14 @@ describe('WorkspaceSelector', () => {
       props: {
         ...defaultProps,
         disabled: true,
-        modelValue: {
-          mode: 'existing',
-          existingWorkspaceId: 'historical-workspace-id',
-          newWorkspacePath: '/history/root',
-        },
-        storedWorkspace: {
-          workspaceId: 'historical-workspace-id',
-          displayName: 'Saved Root Workspace',
-          rootPath: '/history/root',
-          availability: 'available',
+        model: {
+          mode: 'stored',
+          workspace: {
+            workspaceId: 'historical-workspace-id',
+            displayName: 'Saved Root Workspace',
+            rootPath: '/history/root',
+            availability: 'available',
+          },
         },
       },
     });
@@ -556,16 +569,14 @@ describe('WorkspaceSelector', () => {
       props: {
         ...defaultProps,
         disabled: true,
-        modelValue: {
-          mode: 'new',
-          existingWorkspaceId: null,
-          newWorkspacePath: '/history/removed-workspace',
-        },
-        storedWorkspace: {
-          workspaceId: null,
-          displayName: '/history/removed-workspace',
-          rootPath: '/history/removed-workspace',
-          availability: 'historical-only',
+        model: {
+          mode: 'stored',
+          workspace: {
+            workspaceId: null,
+            displayName: '/history/removed-workspace',
+            rootPath: '/history/removed-workspace',
+            availability: 'historical-only',
+          },
         },
         historicalValueUnavailableMessage: 'Saved value is no longer available.',
       },

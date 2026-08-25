@@ -2,19 +2,19 @@
   <div class="bg-white p-3" data-test="member-override-item">
     <div class="mb-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-[0.95rem] font-semibold text-slate-800">{{ memberName }}</span>
-        <span v-if="isCoordinator" class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">
+        <span class="text-[0.95rem] font-semibold text-slate-800">{{ node.displayName }}</span>
+        <span v-if="node.isCoordinator" class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">
           {{ t('workspace.components.workspace.config.MemberOverrideItem.coordinator') }}
         </span>
       </div>
-      <span v-if="hasOverride" class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">
+      <span v-if="node.isCustomized" class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">
         {{ t('workspace.components.workspace.config.MemberOverrideItem.overridden') }}
       </span>
     </div>
     <p
-      v-if="memberBreadcrumb && memberBreadcrumb !== memberName"
+      v-if="memberBreadcrumb && memberBreadcrumb !== node.displayName"
       class="-mt-2 mb-3 truncate font-mono text-xs text-gray-500"
-      :title="memberAddress"
+      :title="node.address"
       data-test="member-override-breadcrumb"
     >
       {{ memberBreadcrumb }}
@@ -25,37 +25,30 @@
       <select
         :id="`override-runtime-${inputIdSuffix}`"
         :value="runtimeSelectionValue"
-        :disabled="disabled"
+        :disabled="isInteractionDisabled"
         class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="handleRuntimeChange(($event.target as HTMLSelectElement).value)"
       >
-        <option v-if="mode === 'editable'" value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
-        <option
-          v-for="option in runtimeOptions"
-          :key="option.value"
-          :value="option.value"
-          :disabled="!option.enabled"
-        >
+        <option v-if="editableNode" value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
+        <option v-for="option in runtimeOptions" :key="option.value" :value="option.value" :disabled="!option.enabled">
           {{ option.label }}
         </option>
       </select>
-      <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
-        {{ selectedRuntimeUnavailableReason }}
-      </p>
+      <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">{{ selectedRuntimeUnavailableReason }}</p>
       <p
-        v-if="runtimeCatalogState?.status === 'loading'"
+        v-if="editableNode?.runtimeCatalogState.status === 'loading'"
         role="status"
         class="mt-2 rounded border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700"
         data-test="agent-runtime-catalog-loading"
-      >{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address: memberAddress }) }}</p>
+      >{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading', { address: node.address }) }}</p>
       <div
-        v-else-if="runtimeCatalogState?.status === 'error'"
+        v-else-if="editableNode?.runtimeCatalogState.status === 'error'"
         role="alert"
         class="mt-2 flex items-start justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"
         data-test="agent-runtime-catalog-error"
       >
-        <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address: memberAddress, error: runtimeCatalogState.error || '' }) }}</span>
-        <button type="button" class="font-semibold underline" @click="$emit('retry-runtime-catalog', effectiveRuntimeKind)">
+        <span>{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error', { address: node.address, error: editableNode.runtimeCatalogState.error || '' }) }}</span>
+        <button type="button" class="font-semibold underline disabled:opacity-50" :disabled="isInteractionDisabled" @click="retryRuntimeCatalog">
           {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.retry') }}
         </button>
       </div>
@@ -69,13 +62,13 @@
       <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
       <SearchableGroupedSelect
         :model-value="selectedModelIdentifier"
-        @update:modelValue="handleModelChange"
         :options="groupedModelOptions"
-        :disabled="disabled"
+        :disabled="isInteractionDisabled"
         :placeholder="modelPlaceholder"
         :search-placeholder="t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
         variant="quiet"
         class="w-full"
+        @update:model-value="handleModelChange"
       />
       <p v-if="storedModelUnavailable" class="mt-1 text-xs text-amber-600" data-test="historical-agent-model-unavailable">
         {{ historicalUnavailableMessage }}
@@ -83,119 +76,86 @@
     </div>
 
     <WorkspaceSelector
-      v-if="isStored"
+      v-if="storedNode"
       class="mb-3"
-      :model-value="storedWorkspaceSelection"
-      :is-loading="false"
-      :error="null"
+      :model="{ mode: 'stored', workspace: storedNode.storedWorkspace }"
       :disabled="true"
-      :stored-workspace="storedWorkspace"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :auto-select-default="false"
       control-variant="quiet"
     />
 
     <div class="mb-3">
-      <div class="mb-1 text-xs text-gray-500">
-        {{ t('workspace.components.workspace.config.MemberOverrideItem.auto_approve') }}
-      </div>
+      <div class="mb-1 text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.auto_approve') }}</div>
       <input
         :id="`override-auto-${inputIdSuffix}`"
         type="checkbox"
-        :checked="autoExecuteValue === true"
-        :indeterminate="mode === 'editable' && override?.autoExecuteTools === undefined"
-        @change="handleAutoExecuteChange"
-        :disabled="disabled"
+        :checked="node.effectiveConfig.autoExecuteTools"
+        :indeterminate="Boolean(editableNode && editableNode.override?.autoExecuteTools === undefined)"
+        :disabled="isInteractionDisabled"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+        @change="handleAutoExecuteChange"
       />
-      <label :for="`override-auto-${inputIdSuffix}`" class="ml-2 select-none text-xs text-gray-600">
-        {{ autoExecuteStateLabel }}
-      </label>
+      <label :for="`override-auto-${inputIdSuffix}`" class="ml-2 select-none text-xs text-gray-600">{{ autoExecuteStateLabel }}</label>
     </div>
 
     <ModelConfigSection
       v-if="effectiveModelIdentifier"
       :schema="modelConfigSchema"
-      :model-config="effectiveModelConfig"
-      :disabled="disabled"
-      :read-only="disabled"
+      :model-config="node.effectiveConfig.llmConfig"
+      :disabled="isInteractionDisabled"
+      :read-only="isInteractionDisabled"
       :compact="true"
       :id-prefix="`config-${inputIdSuffix}`"
-      :advanced-initially-expanded="effectiveAdvancedInitiallyExpanded"
-      :missing-historical-config="missingHistoricalConfig"
+      :advanced-initially-expanded="Boolean(storedNode) || memberAdvancedExplicitlyExpanded"
+      :historical="Boolean(storedNode)"
+      :historical-value-unavailable-message="historicalUnavailableMessage"
+      :historical-model-config-title="t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration')"
       control-variant="quiet"
       @update:config="emitOverrideWithConfig"
-    />
-    <HistoricalModelConfigFallback
-      v-if="showHistoricalConfigFallback"
-      :config="effectiveModelConfig!"
-      :title="t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration')"
-      :unavailable-message="historicalUnavailableMessage"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
+import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { TeamFormAgentNode } from '~/types/agent/TeamRunFormModel'
 import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
-import HistoricalModelConfigFallback from './HistoricalModelConfigFallback.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import {
-  loadRuntimeProviderGroupsForSelection,
-  useRuntimeScopedModelSelection,
-} from '~/composables/useRuntimeScopedModelSelection'
+import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {
   buildUnavailableInheritedModelMessage,
   hasExplicitMemberLlmConfigOverride,
   hasExplicitMemberLlmModelOverride,
   hasMeaningfulMemberOverride,
   modelConfigsEqual,
-  resolveEffectiveMemberLlmConfig,
   resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
-import type { RuntimeModelCatalogState } from '~/stores/teamRunConfigStore'
-import type { StoredWorkspaceDisplay } from '~/types/agent/TeamRunFormModel'
 
-const props = withDefaults(defineProps<{
-  mode?: 'editable' | 'stored'
-  memberName: string
-  memberAddress: string
+const props = defineProps<{
+  node: Readonly<TeamFormAgentNode>
   memberBreadcrumb?: string
-  override: AgentConfigOverride | undefined
-  globalRuntimeKind: string
-  globalLlmModel: string
-  globalLlmConfig?: Record<string, unknown> | null
   disabled: boolean
-  isCoordinator?: boolean
-  advancedInitiallyExpanded?: boolean
-  missingHistoricalConfig?: boolean
-  runtimeCatalogState?: RuntimeModelCatalogState
-  effectiveConfig?: Readonly<ResolvedTeamRunLaunchConfig>
-  storedWorkspace?: StoredWorkspaceDisplay | null
-  storedCustomized?: boolean
-}>(), { mode: 'editable' })
-
+}>()
 const emit = defineEmits<{
   (e: 'update:override', memberAddress: string, override: AgentConfigOverride | null): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
 const { t } = useLocalization()
-const mode = computed(() => props.mode)
-const isStored = computed(() => props.mode === 'stored')
+const editableNode = computed(() => props.node.mode === 'editable' ? props.node : null)
+const storedNode = computed(() => props.node.mode === 'stored' ? props.node : null)
+const isInteractionDisabled = computed(() => props.disabled || props.node.mode === 'stored')
 const historicalUnavailableMessage = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable'))
-const storedWorkspaceSelection = computed(() => {
-  const workspaceId = props.storedWorkspace?.workspaceId ?? props.effectiveConfig?.workspaceId ?? null
-  const rootPath = props.storedWorkspace?.rootPath ?? props.effectiveConfig?.workspaceRootPath ?? ''
-  return workspaceId
-    ? { mode: 'existing' as const, existingWorkspaceId: workspaceId, newWorkspacePath: rootPath }
-    : { mode: 'new' as const, existingWorkspaceId: null, newWorkspacePath: rootPath }
-})
+const memberAdvancedExplicitlyExpanded = ref(false)
+const inputIdSuffix = computed(() => props.node.address.replace(/[^a-zA-Z0-9_-]+/g, '-'))
+const editableOverride = computed(() => editableNode.value?.override)
+const baselineConfig = computed(() => editableNode.value?.baselineConfig ?? props.node.effectiveConfig)
 
 const {
   effectiveRuntimeKind,
@@ -205,149 +165,53 @@ const {
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({
-  runtimeKind: computed(() => isStored.value
-    ? props.effectiveConfig?.runtimeKind
-    : resolveEffectiveMemberRuntimeKind(props.override, props.globalRuntimeKind)),
+  runtimeKind: computed(() => editableNode.value
+    ? resolveEffectiveMemberRuntimeKind(editableNode.value.override, editableNode.value.baselineConfig.runtimeKind)
+    : props.node.effectiveConfig.runtimeKind),
 })
 
-const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
-const runtimeSelectionValue = computed(() => isStored.value
-  ? (props.effectiveConfig?.runtimeKind || '')
-  : storedRuntimeOverrideValue.value)
-const inputIdSuffix = computed(() => props.memberAddress.replace(/[^a-zA-Z0-9_-]+/g, '-'))
-const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
-const memberAdvancedExplicitlyExpanded = ref(false)
-const hasOverride = computed(() => isStored.value
-  ? props.storedCustomized === true
-  : hasMeaningfulMemberOverride(props.override))
-const globalModelIdentifier = computed(() => props.globalLlmModel || '')
-const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(props.override))
-const inheritedGlobalModelAvailable = computed(() => {
-  if (!globalModelIdentifier.value) {
-    return false
-  }
-  return hasModelIdentifier(globalModelIdentifier.value)
-})
-
-const isUnresolvedInheritedModel = computed(() =>
-  Boolean(
-    props.override?.runtimeKind &&
-      !hasExplicitModelOverride.value &&
-      globalModelIdentifier.value &&
-      !inheritedGlobalModelAvailable.value,
-  ),
-)
-
-const unresolvedInheritedModelMessage = computed(() =>
-  buildUnavailableInheritedModelMessage({
-    globalLlmModelIdentifier: globalModelIdentifier.value,
-    runtimeKind: effectiveRuntimeKind.value,
-    memberName: props.memberName,
-  }),
-)
-
-const effectiveModelIdentifier = computed(() => {
-  if (isStored.value) return props.effectiveConfig?.llmModelIdentifier || ''
-  if (hasExplicitModelOverride.value) {
-    return explicitModelIdentifier.value
-  }
-  if (isUnresolvedInheritedModel.value) {
-    return ''
-  }
-  return globalModelIdentifier.value
-})
-
-const effectiveModelConfig = computed(() => {
-  if (isStored.value) return props.effectiveConfig?.llmConfig ?? null
-  if (isUnresolvedInheritedModel.value) {
-    return null
-  }
-  return resolveEffectiveMemberLlmConfig(props.override, props.globalLlmConfig)
-})
-
-const modelConfigSchema = computed(() =>
-  modelConfigSchemaByIdentifier(effectiveModelIdentifier.value),
-)
-const selectedModelIdentifier = computed(() => isStored.value
-  ? effectiveModelIdentifier.value
-  : explicitModelIdentifier.value)
+const runtimeSelectionValue = computed(() => editableNode.value
+  ? editableNode.value.override?.runtimeKind || ''
+  : props.node.effectiveConfig.runtimeKind)
+const explicitModelIdentifier = computed(() => editableOverride.value?.llmModelIdentifier || '')
+const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(editableOverride.value))
+const globalModelIdentifier = computed(() => baselineConfig.value.llmModelIdentifier || '')
+const inheritedGlobalModelAvailable = computed(() => Boolean(globalModelIdentifier.value && hasModelIdentifier(globalModelIdentifier.value)))
+const isUnresolvedInheritedModel = computed(() => Boolean(
+  editableOverride.value?.runtimeKind &&
+  !hasExplicitModelOverride.value &&
+  globalModelIdentifier.value &&
+  !inheritedGlobalModelAvailable.value,
+))
+const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
+  globalLlmModelIdentifier: globalModelIdentifier.value,
+  runtimeKind: effectiveRuntimeKind.value,
+  memberName: props.node.displayName,
+}))
+const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
+const selectedModelIdentifier = computed(() => storedNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
+const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value))
 const storedModelUnavailable = computed(() => Boolean(
-  isStored.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
+  storedNode.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
 ))
-const showHistoricalConfigFallback = computed(() => Boolean(
-  isStored.value &&
-  effectiveModelConfig.value &&
-  Object.keys(effectiveModelConfig.value).length > 0 &&
-  !modelConfigSchema.value,
-))
-const effectiveAdvancedInitiallyExpanded = computed(() =>
-  props.advancedInitiallyExpanded === true || memberAdvancedExplicitlyExpanded.value,
-)
-
-const shouldOpenAdvancedForSchema = (
-  schema: UiModelConfigSchema | null,
-  config: Record<string, unknown> | null | undefined,
-) => {
-  const thinkingState = getThinkingControlState(schema, config)
-  return thinkingState.supported && thinkingState.enabled
-}
-
-const modelConfigSchemaFromRows = (
-  rows: ProviderWithModels[],
-  modelIdentifier: string | null | undefined,
-): UiModelConfigSchema | null => {
-  const normalizedIdentifier = (modelIdentifier || '').trim()
-  if (!normalizedIdentifier) {
-    return null
-  }
-
-  for (const row of rows) {
-    const model = row.models.find((entry) => entry.modelIdentifier === normalizedIdentifier)
-    if (!model?.configSchema) {
-      continue
-    }
-    const normalized = normalizeModelConfigSchema(model.configSchema)
-    if (normalized && Object.keys(normalized).length > 0) {
-      return normalized
-    }
-  }
-
-  return null
-}
-
-const maybeOpenMemberAdvancedForSchema = (
-  schema: UiModelConfigSchema | null,
-  config: Record<string, unknown> | null | undefined,
-) => {
-  if (shouldOpenAdvancedForSchema(schema, config)) {
-    memberAdvancedExplicitlyExpanded.value = true
-  }
-}
-
-const modelPlaceholder = computed(() =>
-  isStored.value
-    ? selectedModelIdentifier.value
-    : isUnresolvedInheritedModel.value
-      ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
-      : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
-)
-
+const modelPlaceholder = computed(() => storedNode.value
+  ? selectedModelIdentifier.value
+  : isUnresolvedInheritedModel.value
+    ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
+    : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'))
 const autoExecuteStateLabel = computed(() => {
-  if (isStored.value) {
-    return props.effectiveConfig?.autoExecuteTools
+  if (storedNode.value) {
+    return props.node.effectiveConfig.autoExecuteTools
       ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
       : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
   }
-  if (props.override?.autoExecuteTools === undefined) {
+  if (editableOverride.value?.autoExecuteTools === undefined) {
     return t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global')
   }
-  return props.override.autoExecuteTools
+  return editableOverride.value.autoExecuteTools
     ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
     : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
 })
-const autoExecuteValue = computed(() => isStored.value
-  ? props.effectiveConfig?.autoExecuteTools === true
-  : props.override?.autoExecuteTools)
 
 const buildOverride = (input: {
   runtimeKind?: string
@@ -356,159 +220,107 @@ const buildOverride = (input: {
   llmConfig?: Record<string, unknown> | null
 }): AgentConfigOverride | null => {
   const override: AgentConfigOverride = {}
-
-  if (input.runtimeKind) {
-    override.runtimeKind = input.runtimeKind
-  }
-
-  if (input.llmModelIdentifier) {
-    override.llmModelIdentifier = input.llmModelIdentifier
-  }
-
-  if (input.autoExecuteTools !== undefined) {
-    override.autoExecuteTools = input.autoExecuteTools
-  }
-
-  if (input.llmConfig !== undefined) {
-    override.llmConfig = input.llmConfig
-  }
-
+  if (input.runtimeKind) override.runtimeKind = input.runtimeKind
+  if (input.llmModelIdentifier) override.llmModelIdentifier = input.llmModelIdentifier
+  if (input.autoExecuteTools !== undefined) override.autoExecuteTools = input.autoExecuteTools
+  if (input.llmConfig !== undefined) override.llmConfig = input.llmConfig
   return hasMeaningfulMemberOverride(override) ? override : null
+}
+const emitEditableOverride = (override: AgentConfigOverride | null) => {
+  if (!isInteractionDisabled.value && editableNode.value) emit('update:override', props.node.address, override)
+}
+
+const shouldOpenAdvancedForSchema = (
+  schema: UiModelConfigSchema | null,
+  config: Record<string, unknown> | null | undefined,
+) => {
+  const state = getThinkingControlState(schema, config)
+  return state.supported && state.enabled
+}
+const modelConfigSchemaFromRows = (
+  rows: ProviderWithModels[],
+  modelIdentifier: string | null | undefined,
+): UiModelConfigSchema | null => {
+  const identifier = (modelIdentifier || '').trim()
+  for (const row of rows) {
+    const normalized = normalizeModelConfigSchema(row.models.find((model) => model.modelIdentifier === identifier)?.configSchema)
+    if (normalized && Object.keys(normalized).length) return normalized
+  }
+  return null
+}
+const maybeOpenAdvanced = (schema: UiModelConfigSchema | null, config: Record<string, unknown> | null | undefined) => {
+  if (shouldOpenAdvancedForSchema(schema, config)) memberAdvancedExplicitlyExpanded.value = true
 }
 
 watch(
   () => [effectiveRuntimeKind.value, explicitModelIdentifier.value],
-  async () => {
-    if (props.disabled) {
-      return
-    }
-
-    if (!hasExplicitModelOverride.value || !explicitModelIdentifier.value) {
-      return
-    }
-
-    if (hasModelIdentifier(explicitModelIdentifier.value)) {
-      return
-    }
-
-    emit(
-      'update:override',
-      props.memberAddress,
-      buildOverride({
-        runtimeKind: props.override?.runtimeKind,
-        autoExecuteTools: props.override?.autoExecuteTools,
-      }),
-    )
+  () => {
+    const editable = editableNode.value
+    if (!editable || isInteractionDisabled.value || !hasExplicitModelOverride.value || !explicitModelIdentifier.value) return
+    if (hasModelIdentifier(explicitModelIdentifier.value)) return
+    emitEditableOverride(buildOverride({
+      runtimeKind: editable.override?.runtimeKind,
+      autoExecuteTools: editable.override?.autoExecuteTools,
+    }))
   },
 )
 
 const handleRuntimeChange = async (value: string) => {
-  if (props.disabled) return
+  const editable = editableNode.value
+  if (!editable || isInteractionDisabled.value) return
   const nextRuntimeKind = value || undefined
-  const runtimeChanged = nextRuntimeKind !== (props.override?.runtimeKind || undefined)
-  const effectiveNextRuntimeKind = nextRuntimeKind || props.globalRuntimeKind
-  const nextRows = await loadRuntimeProviderGroupsForSelection(effectiveNextRuntimeKind)
-  const nextModelIdentifiers = nextRows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
-  const retainedExplicitModel = explicitModelIdentifier.value && nextModelIdentifiers.includes(explicitModelIdentifier.value)
+  const runtimeChanged = nextRuntimeKind !== (editable.override?.runtimeKind || undefined)
+  const nextRows = await loadRuntimeProviderGroupsForSelection(nextRuntimeKind || editable.baselineConfig.runtimeKind)
+  const identifiers = nextRows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+  const retainedModel = explicitModelIdentifier.value && identifiers.includes(explicitModelIdentifier.value)
     ? explicitModelIdentifier.value
     : undefined
-  const effectiveNextModel = retainedExplicitModel ||
-    (nextModelIdentifiers.includes(globalModelIdentifier.value) ? globalModelIdentifier.value : undefined)
-  const retainedExplicitConfig =
-    !runtimeChanged &&
-    retainedExplicitModel &&
-    hasExplicitMemberLlmConfigOverride(props.override)
-      ? (props.override?.llmConfig ?? null)
-      : undefined
-  const effectiveNextConfig = retainedExplicitConfig ?? (props.globalLlmConfig ?? null)
-
-  emit(
-    'update:override',
-    props.memberAddress,
-    buildOverride({
-      runtimeKind: nextRuntimeKind,
-      llmModelIdentifier: retainedExplicitModel,
-      autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig:
-        !runtimeChanged && retainedExplicitModel && hasExplicitMemberLlmConfigOverride(props.override)
-          ? (props.override?.llmConfig ?? null)
-          : undefined,
-    }),
-  )
-
-  if (runtimeChanged) {
-    maybeOpenMemberAdvancedForSchema(
-      modelConfigSchemaFromRows(nextRows, effectiveNextModel),
-      effectiveNextConfig,
-    )
-  }
+  const effectiveModel = retainedModel || (identifiers.includes(globalModelIdentifier.value) ? globalModelIdentifier.value : undefined)
+  const retainedConfig = !runtimeChanged && retainedModel && hasExplicitMemberLlmConfigOverride(editable.override)
+    ? editable.override?.llmConfig ?? null
+    : undefined
+  emitEditableOverride(buildOverride({
+    runtimeKind: nextRuntimeKind,
+    llmModelIdentifier: retainedModel,
+    autoExecuteTools: editable.override?.autoExecuteTools,
+    llmConfig: retainedConfig,
+  }))
+  if (runtimeChanged) maybeOpenAdvanced(modelConfigSchemaFromRows(nextRows, effectiveModel), retainedConfig ?? editable.baselineConfig.llmConfig)
 }
-
-const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
-  if (props.disabled) return
-  const explicitConfig = modelConfigsEqual(nextConfig ?? null, props.globalLlmConfig ?? null)
-    ? undefined
-    : (nextConfig ?? null)
-
-  emit(
-    'update:override',
-    props.memberAddress,
-    buildOverride({
-      runtimeKind: props.override?.runtimeKind,
-      llmModelIdentifier: props.override?.llmModelIdentifier,
-      autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: explicitConfig,
-    }),
-  )
+const emitOverrideWithConfig = (config: Record<string, unknown> | null | undefined) => {
+  const editable = editableNode.value
+  if (!editable || isInteractionDisabled.value) return
+  emitEditableOverride(buildOverride({
+    runtimeKind: editable.override?.runtimeKind,
+    llmModelIdentifier: editable.override?.llmModelIdentifier,
+    autoExecuteTools: editable.override?.autoExecuteTools,
+    llmConfig: modelConfigsEqual(config ?? null, editable.baselineConfig.llmConfig ?? null) ? undefined : config ?? null,
+  }))
 }
-
 const handleModelChange = (value: string) => {
-  if (props.disabled) return
-  const modelChanged = value !== explicitModelIdentifier.value
-  if (modelChanged && value) {
-    maybeOpenMemberAdvancedForSchema(
-      modelConfigSchemaByIdentifier(value),
-      props.globalLlmConfig ?? null,
-    )
-  }
-
-  emit(
-    'update:override',
-    props.memberAddress,
-    buildOverride({
-      runtimeKind: props.override?.runtimeKind,
-      llmModelIdentifier: value || undefined,
-      autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig:
-        !modelChanged && hasExplicitMemberLlmConfigOverride(props.override)
-          ? (props.override?.llmConfig ?? null)
-          : undefined,
-    }),
-  )
+  const editable = editableNode.value
+  if (!editable || isInteractionDisabled.value) return
+  const changed = value !== explicitModelIdentifier.value
+  if (changed && value) maybeOpenAdvanced(modelConfigSchemaByIdentifier(value), editable.baselineConfig.llmConfig)
+  emitEditableOverride(buildOverride({
+    runtimeKind: editable.override?.runtimeKind,
+    llmModelIdentifier: value || undefined,
+    autoExecuteTools: editable.override?.autoExecuteTools,
+    llmConfig: !changed && hasExplicitMemberLlmConfigOverride(editable.override) ? editable.override?.llmConfig ?? null : undefined,
+  }))
 }
-
 const handleAutoExecuteChange = () => {
-  if (props.disabled) return
-  let newValue: boolean | undefined
-  if (props.override?.autoExecuteTools === undefined) {
-    newValue = true
-  } else if (props.override.autoExecuteTools === true) {
-    newValue = false
-  } else {
-    newValue = undefined
-  }
-
-  emit(
-    'update:override',
-    props.memberAddress,
-    buildOverride({
-      runtimeKind: props.override?.runtimeKind,
-      llmModelIdentifier: props.override?.llmModelIdentifier,
-      autoExecuteTools: newValue,
-      llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
-        ? (props.override?.llmConfig ?? null)
-        : undefined,
-    }),
-  )
+  const editable = editableNode.value
+  if (!editable || isInteractionDisabled.value) return
+  const current = editable.override?.autoExecuteTools
+  emitEditableOverride(buildOverride({
+    runtimeKind: editable.override?.runtimeKind,
+    llmModelIdentifier: editable.override?.llmModelIdentifier,
+    autoExecuteTools: current === undefined ? true : current ? false : undefined,
+    llmConfig: hasExplicitMemberLlmConfigOverride(editable.override) ? editable.override?.llmConfig ?? null : undefined,
+  }))
+}
+const retryRuntimeCatalog = () => {
+  if (!isInteractionDisabled.value && editableNode.value) emit('retry-runtime-catalog', effectiveRuntimeKind.value)
 }
 </script>

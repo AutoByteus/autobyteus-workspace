@@ -5,21 +5,14 @@
       <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">{{ model.definitionLabel }}</div>
     </div>
 
-    <div v-if="model.repairAddresses.length" role="status" class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800" data-test="team-topology-repair-notice">
+    <div v-if="model.mode === 'editable' && model.repairAddresses.length" role="status" class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800" data-test="team-topology-repair-notice">
       {{ t('workspace.components.workspace.config.TeamRunConfigForm.topology_repaired') }} <span class="font-mono">{{ model.repairAddresses.join(', ') }}</span>
     </div>
 
     <TeamScopeConfigEditor
-      :address="model.root.address"
-      :display-name="model.root.displayName"
-      :effective-config="model.root.effectiveConfig"
-      :workspace-selection="model.root.workspaceSelection"
-      :stored-workspace="model.root.storedWorkspace"
+      :scope="model.root"
       :is-root="true"
       :disabled="isFormReadOnly"
-      :read-only="readOnlyMode"
-      :workspace-operation="model.root.workspaceOperation"
-      :runtime-catalog-state="model.root.runtimeCatalogState"
       @update-root="handleRootUpdate"
       @update:workspace-selection="forwardWorkspaceSelection"
       @retry-runtime-catalog="retryRuntimeCatalog"
@@ -66,7 +59,6 @@
         <TeamMemberConfigTree
           :member-nodes="model.members"
           :disabled="isFormReadOnly"
-          :read-only-mode="readOnlyMode"
           @update-team="handleTeamUpdate"
           @reset-team="handleTeamReset"
           @update-agent="handleAgentUpdate"
@@ -79,7 +71,7 @@
     <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600" data-test="team-run-read-only-notice">
       <span aria-hidden="true" class="mr-1">◉</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.selected_team_run_configuration_read_only') }}</span>
     </div>
-    <div v-else-if="model.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-700">
+    <div v-else-if="model.mode === 'editable' && model.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-700">
       <span aria-hidden="true" class="mr-1">🔒</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
   </div>
@@ -107,7 +99,7 @@ const membersExpanded = ref(false)
 const memberOverridesPanelId = 'team-member-overrides-panel'
 const model = computed(() => props.model)
 const readOnlyMode = computed(() => model.value.mode === 'stored')
-const isFormReadOnly = computed(() => readOnlyMode.value || model.value.isLocked)
+const isFormReadOnly = computed(() => readOnlyMode.value || (model.value.mode === 'editable' && model.value.isLocked))
 const countAgents = (nodes: readonly TeamRunFormMemberNode[]): number => nodes.reduce(
   (count, node) => count + (node.kind === 'agent' ? 1 : countAgents(node.children)),
   0,

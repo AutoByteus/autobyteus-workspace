@@ -50,6 +50,7 @@ const RuntimeModelConfigFieldsStub = defineComponent({
     idPrefix: String,
     advancedInitiallyExpanded: Boolean,
     controlVariant: String,
+    historicalModelConfig: Boolean,
   },
   emits: ['update:runtimeKind', 'update:llmModelIdentifier', 'update:llmConfig'],
   template: '<div data-test="runtime-model-fields" />',
@@ -58,9 +59,7 @@ const RuntimeModelConfigFieldsStub = defineComponent({
 const WorkspaceSelectorStub = defineComponent({
   name: 'WorkspaceSelector',
   props: {
-    modelValue: Object,
-    isLoading: Boolean,
-    error: String,
+    model: Object,
     disabled: Boolean,
     autoSelectDefault: Boolean,
     controlVariant: String,
@@ -93,11 +92,18 @@ const workspaceSelection: WorkspaceSelectionState = {
 
 const mountEditor = (props: Record<string, unknown> = {}) => mount(TeamScopeConfigEditor, {
   props: {
-    address: '/StudentStudyGroup',
-    displayName: 'StudentStudyGroup',
-    effectiveConfig: inheritedConfig,
-    workspaceSelection,
-    inheritedConfig,
+    scope: {
+      mode: 'editable',
+      address: '/StudentStudyGroup',
+      displayName: 'StudentStudyGroup',
+      effectiveConfig: inheritedConfig,
+      isCustomized: false,
+      workspaceSelection,
+      inheritedConfig,
+      override: null,
+      workspaceOperation: { status: 'idle', error: null },
+      runtimeCatalogState: { status: 'idle', error: null },
+    },
     ...props,
   },
   global: {
@@ -111,10 +117,19 @@ const mountEditor = (props: Record<string, unknown> = {}) => mount(TeamScopeConf
 describe('TeamScopeConfigEditor presentation', () => {
   it('renders the root as the original quiet field sequence without hierarchy chrome', async () => {
     const wrapper = mountEditor({
-      address: '/',
-      displayName: 'Nested Classroom',
+      scope: {
+        mode: 'editable',
+        address: '/',
+        displayName: 'Nested Classroom',
+        effectiveConfig: inheritedConfig,
+        isCustomized: false,
+        workspaceSelection,
+        inheritedConfig: null,
+        override: null,
+        workspaceOperation: { status: 'idle', error: null },
+        runtimeCatalogState: { status: 'idle', error: null },
+      },
       isRoot: true,
-      inheritedConfig: null,
     })
     const root = wrapper.get('[data-test="root-team-config-fields"]')
     const runtime = wrapper.getComponent(RuntimeModelConfigFieldsStub)
@@ -136,7 +151,7 @@ describe('TeamScopeConfigEditor presentation', () => {
       controlVariant: 'quiet',
     }))
     expect(workspace.props()).toEqual(expect.objectContaining({
-      modelValue: workspaceSelection,
+      model: expect.objectContaining({ mode: 'editable', selection: workspaceSelection }),
       autoSelectDefault: true,
       controlVariant: 'quiet',
     }))
@@ -190,7 +205,7 @@ describe('TeamScopeConfigEditor presentation', () => {
       controlVariant: 'quiet',
     }))
     expect(wrapper.getComponent(WorkspaceSelectorStub).props()).toEqual(expect.objectContaining({
-      modelValue: workspaceSelection,
+      model: expect.objectContaining({ mode: 'editable', selection: workspaceSelection }),
       autoSelectDefault: false,
       controlVariant: 'quiet',
     }))
@@ -199,9 +214,18 @@ describe('TeamScopeConfigEditor presentation', () => {
   it('shows actionable customized/reset state and keeps the disclosure open after reset', async () => {
     const override: TeamScopeConfigOverride = { autoExecuteTools: true }
     const wrapper = mountEditor({
-      effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
-      override,
-      isCustomized: true,
+      scope: {
+        mode: 'editable',
+        address: '/StudentStudyGroup',
+        displayName: 'StudentStudyGroup',
+        effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
+        isCustomized: true,
+        workspaceSelection,
+        inheritedConfig,
+        override,
+        workspaceOperation: { status: 'idle', error: null },
+        runtimeCatalogState: { status: 'idle', error: null },
+      },
     })
     const disclosure = wrapper.get('button[aria-controls="team-scope-StudentStudyGroup-panel"]')
     const reset = wrapper.get('[data-test="reset-team-scope"]')
@@ -215,9 +239,12 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(wrapper.emitted('reset')).toEqual([[]])
 
     await wrapper.setProps({
-      effectiveConfig: inheritedConfig,
-      override: null,
-      isCustomized: false,
+      scope: {
+        ...wrapper.props('scope'),
+        effectiveConfig: inheritedConfig,
+        override: null,
+        isCustomized: false,
+      },
     })
     expect(disclosure.attributes('aria-expanded')).toBe('true')
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
@@ -226,8 +253,18 @@ describe('TeamScopeConfigEditor presentation', () => {
 
   it('preserves exact-address edits and scoped catalog error recovery', async () => {
     const wrapper = mountEditor({
-      runtimeCatalogState: { status: 'error', error: 'catalog offline' },
-      workspaceOperation: { status: 'error', error: 'workspace registration failed' },
+      scope: {
+        mode: 'editable',
+        address: '/StudentStudyGroup',
+        displayName: 'StudentStudyGroup',
+        effectiveConfig: inheritedConfig,
+        isCustomized: false,
+        workspaceSelection,
+        inheritedConfig,
+        override: null,
+        runtimeCatalogState: { status: 'error', error: 'catalog offline' },
+        workspaceOperation: { status: 'error', error: 'workspace registration failed' },
+      },
     })
     const alert = wrapper.get('[data-test="team-runtime-catalog-error"]')
 
@@ -257,26 +294,37 @@ describe('TeamScopeConfigEditor presentation', () => {
       }],
     ])
     expect(workspace.props()).toEqual(expect.objectContaining({
-      error: 'workspace registration failed',
-      isLoading: false,
+      model: expect.objectContaining({ error: 'workspace registration failed', isLoading: false }),
     }))
 
     await wrapper.setProps({
-      runtimeCatalogState: { status: 'loading', error: null },
-      workspaceOperation: { status: 'loading', error: null },
+      scope: {
+        ...wrapper.props('scope'),
+        runtimeCatalogState: { status: 'loading', error: null },
+        workspaceOperation: { status: 'loading', error: null },
+      },
     })
     expect(wrapper.get('[data-test="team-runtime-catalog-loading"]').isVisible()).toBe(true)
     expect(wrapper.get('[data-test="team-runtime-catalog-loading"]').text()).toContain('/StudentStudyGroup')
-    expect(workspace.props('isLoading')).toBe(true)
+    expect(workspace.props('model')).toEqual(expect.objectContaining({ isLoading: true }))
   })
 
   it('keeps disclosure access while disabling nested edits and omitting stored Reset', async () => {
     const wrapper = mountEditor({
       disabled: true,
-      readOnly: true,
-      isCustomized: true,
-      override: { autoExecuteTools: true },
-      runtimeCatalogState: { status: 'error', error: 'catalog offline' },
+      scope: {
+        mode: 'stored',
+        address: '/StudentStudyGroup',
+        displayName: 'StudentStudyGroup',
+        effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
+        isCustomized: true,
+        storedWorkspace: {
+          workspaceId: 'temp-workspace',
+          displayName: 'Temp Workspace',
+          rootPath: '/tmp/autobyteus',
+          availability: 'available',
+        },
+      },
     })
     const disclosure = wrapper.get('button[aria-controls="team-scope-StudentStudyGroup-panel"]')
 
@@ -284,13 +332,14 @@ describe('TeamScopeConfigEditor presentation', () => {
     await disclosure.trigger('click')
     expect(disclosure.attributes('aria-expanded')).toBe('true')
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
-    expect(wrapper.get('[data-test="team-runtime-catalog-error"] button').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('[data-test="team-runtime-catalog-error"]').exists()).toBe(false)
     expect(wrapper.getComponent(RuntimeModelConfigFieldsStub).props()).toEqual(expect.objectContaining({
       disabled: true,
       readOnly: true,
       runtimeSelectionLocked: true,
     }))
     expect(wrapper.getComponent(WorkspaceSelectorStub).props('disabled')).toBe(true)
+    expect(wrapper.getComponent(WorkspaceSelectorStub).props('model')).toEqual(expect.objectContaining({ mode: 'stored' }))
     expect(wrapper.get('[role="switch"]').attributes('disabled')).toBeDefined()
   })
 })

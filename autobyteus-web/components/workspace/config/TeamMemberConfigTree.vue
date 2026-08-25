@@ -3,18 +3,8 @@
     <template v-for="node in memberNodes" :key="node.address">
       <TeamScopeConfigEditor
         v-if="node.kind === 'agent_team'"
-        :address="node.scope.address"
-        :display-name="node.scope.displayName"
-        :effective-config="node.scope.effectiveConfig"
-        :workspace-selection="node.scope.workspaceSelection"
-        :stored-workspace="node.scope.storedWorkspace"
-        :inherited-config="node.scope.inheritedConfig"
-        :override="node.scope.override"
-        :is-customized="node.scope.isCustomized"
+        :scope="node.scope"
         :disabled="disabled"
-        :read-only="readOnlyMode"
-        :workspace-operation="node.scope.workspaceOperation"
-        :runtime-catalog-state="node.scope.runtimeCatalogState"
         @update-override="emit('update-team', node.address, $event)"
         @reset="emit('reset-team', node.address)"
         @update:workspace-selection="forwardWorkspaceSelection"
@@ -24,7 +14,6 @@
           <TeamMemberConfigTree
             :member-nodes="node.children"
             :disabled="disabled"
-            :read-only-mode="readOnlyMode"
             :nested="true"
             @update-team="forwardTeamUpdate"
             @reset-team="forwardTeamReset"
@@ -37,21 +26,9 @@
 
       <MemberOverrideItem
         v-else
-        :mode="node.mode"
-        :member-name="node.displayName"
-        :member-address="node.address"
+        :node="node"
         :member-breadcrumb="breadcrumb(node.address)"
-        :override="node.mode === 'editable' ? node.override : undefined"
-        :effective-config="node.mode === 'stored' ? node.effectiveConfig : undefined"
-        :stored-workspace="node.mode === 'stored' ? node.storedWorkspace : undefined"
-        :global-runtime-kind="node.mode === 'editable' ? node.baselineConfig.runtimeKind : node.effectiveConfig.runtimeKind"
-        :global-llm-model="node.mode === 'editable' ? node.baselineConfig.llmModelIdentifier : node.effectiveConfig.llmModelIdentifier"
-        :global-llm-config="node.mode === 'editable' ? node.baselineConfig.llmConfig : node.effectiveConfig.llmConfig"
-        :stored-customized="node.mode === 'stored' ? node.isCustomized : undefined"
-        :is-coordinator="node.isCoordinator"
         :disabled="disabled"
-        :advanced-initially-expanded="readOnlyMode"
-        :runtime-catalog-state="node.runtimeCatalogState"
         @update:override="forwardAgentUpdate"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
       />
@@ -71,9 +48,8 @@ import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
 const props = withDefaults(defineProps<{
   memberNodes: readonly TeamRunFormMemberNode[]
   disabled: boolean
-  readOnlyMode?: boolean
   nested?: boolean
-}>(), { readOnlyMode: false, nested: false })
+}>(), { nested: false })
 const emit = defineEmits<{
   (e: 'update-team', address: AgentTeamAddress, override: TeamScopeConfigOverride | null): void
   (e: 'reset-team', address: AgentTeamAddress): void

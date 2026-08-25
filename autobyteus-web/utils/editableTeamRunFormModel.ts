@@ -5,15 +5,16 @@ import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type {
   EditableTeamFormMemberNode,
   EditableTeamRunFormModel,
-  TeamRunFormRuntimeCatalogState,
-  TeamScopeFormModel,
-} from '~/types/agent/TeamRunFormModel'
+  EditableRuntimeCatalogOperationState,
+  EditableTeamScopeFormModel,
+} from '~/types/agent/EditableTeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import {
   buildTeamMemberTreeFromDefinition,
   type TeamDefinitionMemberNode,
 } from '~/utils/teamDefinitionMembers'
 import { resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
+import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils'
 
 export const projectEditableTeamRunFormModel = (input: {
   config: Readonly<TeamRunConfig>
@@ -22,7 +23,7 @@ export const projectEditableTeamRunFormModel = (input: {
   repairAddresses: readonly AgentTeamAddress[]
   workspaceOperationFor: (address: AgentTeamAddress) => TeamWorkspaceOperationState
   workspaceSelectionFor: (address: AgentTeamAddress) => Readonly<WorkspaceSelectionState>
-  runtimeCatalogStateFor: (runtimeKind: string) => TeamRunFormRuntimeCatalogState
+  runtimeCatalogStateFor: (runtimeKind: string) => EditableRuntimeCatalogOperationState
   forceReadOnly?: boolean
 }): Readonly<EditableTeamRunFormModel> => {
   const memberTree = buildTeamMemberTreeFromDefinition(input.teamDefinition, {
@@ -32,20 +33,20 @@ export const projectEditableTeamRunFormModel = (input: {
   const scopeModel = (
     address: AgentTeamAddress,
     inheritedAddress: AgentTeamAddress | null,
-  ): TeamScopeFormModel => {
+  ): EditableTeamScopeFormModel => {
     const scope = view.teamsByAddress[address]
     if (!scope) throw new Error(`Editable Team view is missing '${address}'.`)
     return Object.freeze({
+      mode: 'editable' as const,
       address,
       displayName: scope.displayName,
       effectiveConfig: scope.effectiveConfig,
+      isCustomized: scope.isCustomized,
       workspaceSelection: input.workspaceSelectionFor(address),
       inheritedConfig: inheritedAddress ? view.teamsByAddress[inheritedAddress]?.effectiveConfig ?? null : null,
       override: scope.override,
-      isCustomized: scope.isCustomized,
       workspaceOperation: input.workspaceOperationFor(address),
       runtimeCatalogState: input.runtimeCatalogStateFor(scope.effectiveConfig.runtimeKind),
-      storedWorkspace: null,
     })
   }
   const visit = (
@@ -63,6 +64,7 @@ export const projectEditableTeamRunFormModel = (input: {
         address: node.address,
         displayName: node.displayName,
         isCoordinator: node.address === coordinatorAddress,
+        isCustomized: hasMeaningfulMemberOverride(agent.override),
         override: input.config.agentOverrides[node.address],
         baselineConfig: baseline.effectiveConfig,
         effectiveConfig: agent.effectiveConfig,

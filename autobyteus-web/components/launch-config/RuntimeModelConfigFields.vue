@@ -62,14 +62,11 @@
       :id-prefix="idPrefix"
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      :historical="historicalModelConfig"
+      :historical-value-unavailable-message="historicalValueUnavailableMessage"
+      :historical-model-config-title="historicalModelConfigTitle"
       :control-variant="controlVariant"
       @update:config="updateModelConfig"
-    />
-    <HistoricalModelConfigFallback
-      v-if="showHistoricalConfigFallback"
-      :config="llmConfig!"
-      :title="historicalModelConfigTitle"
-      :unavailable-message="historicalValueUnavailableMessage"
     />
   </div>
 </template>
@@ -78,7 +75,6 @@
 import { computed, toRef, watch } from 'vue'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
-import HistoricalModelConfigFallback from '~/components/workspace/config/HistoricalModelConfigFallback.vue'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRuntimeKind,
@@ -111,6 +107,7 @@ const props = defineProps<{
   controlVariant?: 'default' | 'quiet'
   historicalValueUnavailableMessage?: string
   historicalModelConfigTitle?: string
+  historicalModelConfig?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -230,13 +227,6 @@ const selectedModelUnavailable = computed(() => Boolean(
   !isLoadingModels.value &&
   !hasModelIdentifier(props.llmModelIdentifier),
 ))
-const showHistoricalConfigFallback = computed(() => Boolean(
-  readOnlyComputed.value &&
-  props.llmConfig &&
-  Object.keys(props.llmConfig).length > 0 &&
-  !modelConfigSchema.value,
-))
-
 const updateRuntimeKind = (value: string) => {
   if (readOnlyComputed.value) return
   const normalizedRuntime = normalizeScopedRuntimeKind(value, allowBlankRuntime.value)

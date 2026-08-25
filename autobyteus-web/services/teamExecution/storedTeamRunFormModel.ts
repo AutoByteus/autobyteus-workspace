@@ -7,13 +7,10 @@ import type {
 import type {
   StoredTeamFormMemberNode,
   StoredTeamRunFormModel,
+  StoredTeamScopeFormModel,
   StoredWorkspaceDisplay,
-  TeamScopeFormModel,
-} from '~/types/agent/TeamRunFormModel'
+} from '~/types/agent/StoredTeamRunFormModel'
 import { resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
-
-const idleCatalog = Object.freeze({ status: 'idle' as const, error: null })
-const idleWorkspace = Object.freeze({ status: 'idle' as const, error: null })
 
 const workspaceDisplay = (
   config: Readonly<ResolvedTeamRunLaunchConfig>,
@@ -29,33 +26,14 @@ const workspaceDisplay = (
   })
 }
 
-const workspaceSelection = (config: Readonly<ResolvedTeamRunLaunchConfig>) => {
-  const workspaceId = config.workspaceMetadata?.workspaceId ?? config.workspaceId
-  if (workspaceId) return Object.freeze({
-    mode: 'existing' as const,
-    existingWorkspaceId: workspaceId,
-    newWorkspacePath: config.workspaceRootPath ?? '',
-  })
-  return Object.freeze({
-    mode: 'new' as const,
-    existingWorkspaceId: null,
-    newWorkspacePath: config.workspaceRootPath ?? '',
-  })
-}
-
 const scopeModel = (input: {
   scope: StoredTeamRunConfigurationView['root']
-  inheritedConfig: Readonly<ResolvedTeamRunLaunchConfig> | null
-}): TeamScopeFormModel => Object.freeze({
+}): StoredTeamScopeFormModel => Object.freeze({
+  mode: 'stored' as const,
   address: input.scope.address,
   displayName: input.scope.displayName,
   effectiveConfig: input.scope.effectiveConfig,
-  workspaceSelection: workspaceSelection(input.scope.effectiveConfig),
-  inheritedConfig: input.inheritedConfig,
-  override: null,
   isCustomized: input.scope.isCustomized,
-  workspaceOperation: idleWorkspace,
-  runtimeCatalogState: idleCatalog,
   storedWorkspace: workspaceDisplay(input.scope.effectiveConfig),
 })
 
@@ -82,7 +60,6 @@ export const projectStoredTeamRunFormModel = (
         isCustomized: !resolvedTeamRunLaunchConfigsEqual(agent.effectiveConfig, parent.effectiveConfig),
         effectiveConfig: agent.effectiveConfig,
         storedWorkspace: workspaceDisplay(agent.effectiveConfig),
-        runtimeCatalogState: idleCatalog,
       })
     }
 
@@ -92,7 +69,7 @@ export const projectStoredTeamRunFormModel = (
       mode: 'stored' as const,
       kind: 'agent_team' as const,
       address: node.address,
-      scope: scopeModel({ scope: team, inheritedConfig: parent.effectiveConfig }),
+      scope: scopeModel({ scope: team }),
       children: visit(node.children, node.address, node.coordinatorAddress),
     })
   }))
@@ -100,9 +77,7 @@ export const projectStoredTeamRunFormModel = (
   return Object.freeze({
     mode: 'stored' as const,
     definitionLabel: view.teamDefinitionName,
-    root: scopeModel({ scope: view.root, inheritedConfig: null }),
+    root: scopeModel({ scope: view.root }),
     members: visit(view.memberNodes, '/', view.coordinatorAddress),
-    repairAddresses: Object.freeze([]) as readonly [],
-    isLocked: true as const,
   })
 }
