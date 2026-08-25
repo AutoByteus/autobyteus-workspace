@@ -1,6 +1,6 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
-import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-execution-index.js";
+import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
+import { TeamExecutionIndex } from "./team-execution-v1-index.js";
 import type {
   TeamCommunicationMessageV1,
   TeamCommunicationMessagesSnapshot,

@@ -1,0 +1,50 @@
+{
+  "tabId": "2d23c2",
+  "browserTool": "mcp__autobyteus_agent_tools__open_tab",
+  "url": "http://127.0.0.1:58724/",
+  "backend": "http://127.0.0.1:58649",
+  "packageId": "nested-classroom-test",
+  "runActivationCount": 1,
+  "currentTeamEmptyNew": {
+    "rootInput": "",
+    "nestedInput": "   ",
+    "runDisabled": true,
+    "message": "Enter a workspace path to run this team."
+  },
+  "configuredLaunch": {
+    "root": {
+      "address": "/",
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "workspaceRootPath": "/private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna",
+      "autoExecuteTools": true
+    },
+    "nested": {
+      "address": "/StudentStudyGroup",
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "workspaceRootPath": "/private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek",
+      "autoExecuteTools": true
+    }
+  },
+  "before": {
+    "teamRunHistoryCount": 0,
+    "filesystemWorkspaceCount": 0
+  },
+  "after": {
+    "teamRunHistoryCount": 1,
+    "filesystemWorkspaceCount": 2,
+    "teamRunId": "nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68"
+  },
+  "sameAcceptedActivation": {
+    "workspaceRegistrations": 2,
+    "teamRunsCreated": 1,
+    "secondClickRequired": false,
+    "secondRunButtonAvailableAfterAcceptedActivation": false
+  },
+  "diskSchemaVersion": 2,
+  "ordinaryMessageReply": "API_REV_006_SUBTEAM_MESSAGE_OK",
+  "formalTaskSubmission": "API_REV_006_SUBTEAM_TASK_OK",
+  "formalTaskFinalStatus": "accepted",
+  "teacherCompletion": "API_REV_006_TEACHER_DONE"
+}

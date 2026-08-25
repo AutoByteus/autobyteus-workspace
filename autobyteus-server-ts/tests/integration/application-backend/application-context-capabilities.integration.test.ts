@@ -162,12 +162,23 @@ export default {
         launch: {
           kind: 'AGENT_TEAM',
           mode: 'memberConfigs',
-          memberConfigs: [{
-            memberAddress: '/researcher',
+          teamConfigs: [{
+            teamAddress: '/',
             llmModelIdentifier: 'gpt-test',
             autoExecuteTools: true,
             skillAccessMode: 'PRELOADED_ONLY',
             workspaceRootPath: context.storage.runtimePath,
+            runtimeKind: 'autobyteus',
+          }],
+          memberConfigs: [{
+            memberAddress: '/researcher',
+            displayName: 'Researcher',
+            agentDefinitionId: 'agent-def-1',
+            llmModelIdentifier: 'gpt-test',
+            autoExecuteTools: true,
+            skillAccessMode: 'PRELOADED_ONLY',
+            workspaceRootPath: context.storage.runtimePath,
+            runtimeKind: 'autobyteus',
           }],
         },
         initialInput: {
@@ -251,12 +262,23 @@ export default {
           launch: {
             kind: 'AGENT_TEAM',
             mode: 'memberConfigs',
-            memberConfigs: [{
-              memberAddress: '/researcher',
+            teamConfigs: [{
+              teamAddress: '/',
               llmModelIdentifier: 'gpt-test',
               autoExecuteTools: true,
               skillAccessMode: 'PRELOADED_ONLY',
               workspaceRootPath: context.storage.runtimePath,
+              runtimeKind: 'autobyteus',
+            }],
+            memberConfigs: [{
+              memberAddress: '/researcher',
+              displayName: 'Researcher',
+              agentDefinitionId: 'agent-def-1',
+              llmModelIdentifier: 'gpt-test',
+              autoExecuteTools: true,
+              skillAccessMode: 'PRELOADED_ONLY',
+              workspaceRootPath: context.storage.runtimePath,
+              runtimeKind: 'autobyteus',
             }],
           },
         })
@@ -402,15 +424,13 @@ describe("Application context capability integration", () => {
     };
     let teamRunCount = 0;
     const teamRunService = {
-      allocateTeamRunId: vi.fn(async () => `team-run-${teamRunCount + 1}`),
       createTeamRun: vi.fn(async ({
-        teamRunId,
         memberConfigs,
       }: {
-        teamRunId: string;
         memberConfigs: Array<{ memberAddress: string }>;
       }) => {
         teamRunCount += 1;
+        const teamRunId = `team-run-${teamRunCount}`;
         return {
           teamRunId,
           getExecutionTreeSnapshot: () => ({

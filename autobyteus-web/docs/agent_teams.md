@@ -18,16 +18,27 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 - `components/launch-config/DefinitionLaunchPreferencesSection.vue`
 - `components/launch-config/RuntimeModelConfigFields.vue`
 - `components/workspace/config/TeamRunConfigForm.vue`
+- `components/workspace/config/TeamMemberConfigTree.vue`
+- `components/workspace/config/TeamScopeConfigEditor.vue`
 - `components/workspace/config/MemberOverrideItem.vue`
+- `components/workspace/config/HistoricalModelConfigFallback.vue`
 - `components/workspace/config/RunConfigPanel.vue`
 - `components/agentTeams/form/useAgentTeamDefinitionFormState.ts`
 - `components/agentTeams/form/AgentTeamMemberDetailsPanel.vue`
 - `stores/teamRunConfigStore.ts`
 - `stores/agentTeamContextsStore.ts`
 - `stores/agentTeamRunStore.ts`
+- `types/agent/TeamLaunchDraft.ts`
+- `types/agent/TeamRunConfig.ts`
+- `types/agent/TeamRunFormModel.ts`
+- `types/agent/EditableTeamRunFormModel.ts`
+- `types/agent/StoredTeamRunFormModel.ts`
+- `services/teamExecution/storedTeamRunFormModel.ts`
+- `utils/editableTeamRunFormModel.ts`
+- `utils/historicalModelConfigFields.ts`
 - `utils/teamRunConfigUtils.ts`
+- `utils/teamRunLaunchHierarchy.ts`
 - `utils/teamRunLaunchReadiness.ts`
-- `utils/teamRunMemberConfigBuilder.ts`
 - `utils/catalog/featuredCatalogItems.ts`
 - `utils/definitionOwnership.ts`
 
@@ -95,7 +106,10 @@ Those values are used in two places:
 - direct native team launches, and
 - application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
-Definition editors can leave runtime blank to mean “choose when launching”, while workspace run-config forms resolve one effective team default immediately and let individual leaf members diverge when mixed-runtime launch is needed.
+Definition editors can leave runtime blank to mean “choose when launching”. Only
+the root-selected definition seeds a new launch draft. Embedded Team definition
+defaults do not activate independently: every nested Team inherits from its
+containing Team until the user records an exact-address Team override.
 
 Team launch forms do not expose a team-level skill-access selector. Each
 leaf member uses the skills configured on that member's agent definition; a leaf
@@ -127,102 +141,125 @@ the same valid focused leaf-member boundary used by the shared composer target
 and prevents stale history rows or whole-team containers from becoming improvement
 targets.
 
-That surface owns:
+That surface stores authoring intent rather than a partially materialized runtime tree:
 
-- the team-level default runtime/model/config selection,
-- shared workspace and team-level **Auto approve tools** (`autoExecuteTools`)
-  field, rendered directly after workspace selection so the global approval
-  setting stays visible before member-specific controls,
-- a collapsed-by-default **Team Members Override** disclosure with the label
-  followed by a visible chevron, leaf-member count, optional active-override
-  count, and a recursive member override tree for nested team definitions, with
-  subteam group rows and leaf-member override controls keyed by canonical rooted
-  `memberAddress`, and
-- runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
+- `TeamRunConfig.rootConfig` is the complete root Team scope.
+- `teamOverrides` stores only meaningful partial overrides keyed by canonical
+  rooted Team address.
+- `agentOverrides` stores only meaningful partial overrides keyed by canonical
+  rooted Agent address.
+- `TeamLaunchDraft` adds one stable draft id, exact-address Team workspace
+  authoring state, focused Agent address, and pending composer input.
 
-`MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
-`MemberOverrideItem.vue`, the authoritative row owner for per-member launch
-overrides. Each leaf member can:
+`resolveTeamRunConfiguration(...)` is the only frontend hierarchy-resolution
+owner. It walks the selected definition graph and resolves every field with this
+precedence:
 
-- inherit the global runtime/model/config,
-- choose an explicit runtime override,
-- choose a compatible explicit model when the inherited global model is invalid for that runtime,
-- override auto-execute behavior, and
-- carry an explicit member `llmConfig` (including explicit `null`) only when that row truly owns the divergence.
+```text
+Agent override -> containing Team -> ancestor Teams -> root Team
+```
 
-Member `llmConfig` values use the same schema-driven shape as the team default.
-The team-global model config initializes **Advanced** from effective **Thinking**
-state: ON opens by default, while OFF or unavailable starts collapsed. The
-**Team Members Override** disclosure itself starts collapsed to keep large teams
-scannable; when expanded, leaf rows render in one connected list with stronger
-shared separators rather than separate bordered cards. Team, agent, workspace,
-member override, and **Advanced** model-parameter controls can opt into a quiet
-light-blue filled-field variant on this dense run-configuration surface while
-the shared select components keep their default bordered styling for other
-callers. That light-blue treatment is presentation-only and preserves hover and
-keyboard-focus affordance. Inherited member controls may display effective
-schema defaults such as reasoning effort values, but display-only defaults do
-not create member overrides.
-Explicit member-local runtime/model selections that resolve to an effective-ON
-model may open only that member's **Advanced** controls. For Codex members,
-`service_tier: "fast"` is valid only while the selected or inherited Codex model
-schema exposes **Fast mode**; stale values are cleared when the owning
-runtime/model context changes.
+The result is a complete immutable view for every configured Team and Agent.
+Runtime kind, model, `llmConfig`, auto-approve, and workspace inherit together;
+`llmConfig: null` remains an explicit value rather than "missing". Workspace can
+be owned by the root or by an explicitly customized nested Team. Agents inherit
+their containing Team workspace and do not own an Agent workspace override.
+Skill access remains root-authored and inherited across the full hierarchy.
 
-When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
+`TeamRunConfigForm.vue` preserves the familiar root launch form: Team Definition
+flows directly into runtime/model/configuration, Workspace Directory, Auto
+approve tools, and the existing **Team Members Override** disclosure. The root
+does not render hierarchy-specific wrapper chrome, an **Inherited** or
+**Customized** badge, canonical `/`, or a duplicated effective-value summary.
 
-When the team-level runtime or model changes, `TeamRunConfigForm.vue` also clears
-member `llmConfig` values that were only meaningful because the member inherited
-the previous team-level runtime/model. Explicit member runtime/model overrides
-and unrelated member fields such as auto-execute are preserved.
+`TeamMemberConfigTree.vue` recursively renders nested Team and Agent placements
+inside the member disclosure. Each nested Team extends the existing indented
+Team group with its name, `TEAM` marker, canonical placement address, one
+actionable **Inherited** or **Customized** state, a disclosure chevron, and a
+conditional **Reset** action. The nested editor starts collapsed. When expanded,
+`TeamScopeConfigEditor.vue` renders the actual effective workspace/runtime/model/
+configuration/auto-approve controls; no separate effective or customized-fields
+summary is rendered in either state. `MemberOverrideItem.vue` remains the leaf
+Agent override editor. Reset removes only the selected scope's stored intent;
+descendants then resolve again through the nearest remaining ancestor. Stale
+Team/Agent addresses are pruned against the current definition topology and
+shown as a repair notice before the user retries launch.
 
-When `RunConfigPanel.vue` is showing a selected existing team run rather than a
-new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
-mode the team-level runtime/model/workspace/auto-approve controls and all
-`MemberOverrideItem.vue` rows render as disabled, direct update handlers no-op,
-and the **Run Team** action is not shown. The **Team Members Override**
-disclosure remains operable for inspection even though inner controls are
-disabled, and advanced model/thinking sections are expanded or available so
-persisted backend values such as `reasoning_effort: "xhigh"` are visible for the
-global team config and per-member overrides.
+The authoring UI may show schema defaults as effective values, but it does not
+store them merely because they render. Explicit runtime/model changes clear
+only incompatible configuration owned by that scope. For Codex members,
+`service_tier: "fast"` remains valid only while the selected or inherited model
+schema exposes **Fast mode**.
 
-Read-only selected-team config is display-only. It does not save edited
-historical settings, recover missing `llmConfig`, materialize runtime history, or
-infer current defaults. If backend metadata has no recorded model-thinking
-config, the frontend can show the localized `Not recorded for this historical
-run` state to make the absence explicit.
+Selected existing Team runs do not reconstruct editable override intent, but
+they do reuse the same form/tree/control presentation as editable drafts.
+`RunConfigPanel.vue` projects the exact `STORED_SNAPSHOT` returned from the V2
+execution tree through `projectStoredTeamRunFormModel(...)`, while editable
+drafts use `projectEditableTeamRunFormModel(...)`. The resulting
+`TeamRunFormModel` union keeps `mode: 'editable' | 'stored'` discrimination
+through every Team and Agent node.
 
-The workspace header add/new-run action can use a selected existing team run as
-the template for a new editable team launch. That draft is a deep-cloned copy of
-the selected team's config, including team-level `llmConfig` and member override
-`llmConfig`, so editing the draft cannot mutate the selected historical/live run.
-Runtime model catalog loading must not clear copied thinking/reasoning fields;
-only explicit user runtime/model changes own stale config cleanup.
+Only neutral display facts—identity, exact effective configuration, and
+comparison-derived state—are shared. Stored nodes carry stored workspace
+display data and never fabricate editable overrides, inherited baselines,
+workspace selections/operations, or runtime-catalog operation state. The shared
+form renders stored root, nested Team, and Agent values in the same disabled
+controls users configured before launch; disclosures remain operable, while
+mutation events, **Reset**, and **Run Team** are unavailable.
 
-## Mixed-Runtime Launch Readiness
+Historical model configuration is field/value exact. Explicit values that a
+current control can represent stay in that disabled control. A producer-backed
+saved value that is no longer selectable, or a key removed from the current
+schema, appears once in the compact field-local historical fallback instead of
+being replaced by a current default. Current-schema fields are considered in
+schema order and removed persisted keys follow in stable key order. The
+projection never mutates the V2 snapshot or renders one persisted key twice.
 
-`teamRunLaunchReadiness.ts` is the frontend owner for mixed-runtime launch gating.
+## Hierarchical Launch Readiness
 
-It evaluates:
+`teamRunLaunchReadiness.ts` evaluates the complete resolved hierarchy, not only
+leaf overrides. Launch is blocked while topology is unavailable; when any exact
+Team or Agent lacks a valid runtime/model; while a required runtime catalog is
+pending or failed; or when an effective model is unavailable for its runtime.
+Workspace readiness belongs only to the root and to nested Teams that explicitly
+own a workspace override. Inherited Teams and Agents do not emit duplicate
+workspace blockers.
 
-- workspace presence,
-- team default model availability for the selected team runtime,
-- runtime-catalog readiness for each explicit member runtime override, and
-- whether any member is trying to inherit a global model that is unavailable for that member's effective runtime.
+Each current Team scope has one draft-owned controlled workspace selection.
+Existing mode uses its selected workspace immediately. New mode can remain
+unregistered while the user edits: a non-empty absolute path is launch-ready and
+an empty path produces one exact Team-scoped blocker. A stale selection for a
+Team removed or changed in the definition no longer deadlocks the only repair
+action; activation prunes stale configuration/workspace state, reports the
+sorted repaired addresses, performs no workspace registration or GraphQL create,
+and asks the user to review and retry.
 
-`RunConfigPanel.vue` uses that result to disable **Run Team** and surface the first blocking issue directly in the workspace panel. The key user-facing rule is:
+## Draft Workspace Preparation And Launch
 
-- if a member overrides runtime but the inherited global model is incompatible for that runtime, the row stays unresolved and the user must either choose a compatible member model or clear the runtime override.
+`teamRunConfigStore` owns the immutable Team launch draft and the authorization
+for every workspace-preparation step. `agentTeamRunStore.launchDraft()` is the
+single orchestration owner:
 
-## Temp-Team Materialization And Launch
+1. reconcile the current definition topology and create a plan bound to the
+   draft id plus topology fingerprint;
+2. group active New-workspace Team selections by canonical path;
+3. immediately before each asynchronous registration, re-authorize the same
+   draft, topology, and exact Team addresses;
+4. write the registered workspace metadata back to those Team scopes and repeat
+   topology authorization;
+5. finalize preparation, evaluate complete launch readiness, and admit the
+   immutable draft exactly once;
+6. project one complete `teamConfigs[]` entry for every Team and one complete
+   `memberConfigs[]` entry for every Agent; and
+7. call `createAgentTeamRun`, hydrate the returned V2 execution tree, focus the
+   exact Agent address, transfer pending input, and promote the draft once.
 
-The frontend still creates a local temporary team context first, but mixed-runtime launches now preserve divergent member runtime/model identity through that path.
-
-- `agentTeamContextsStore.createRunFromTemplate()` materializes the local temp team from the current run-config buffer using `buildTeamRunMemberConfigRecords(...)`.
-- `agentTeamRunStore.sendMessageToFocusedMember()` re-evaluates mixed-runtime launch readiness on first send, builds GraphQL `memberConfigs` from the shared member-config builder, creates the permanent backend team run, and promotes the local temp team id to the real backend `teamRunId`.
-- That promotion keeps per-member runtime/model identity intact instead of collapsing all members back to the team default runtime.
-
-This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
+Registration failure preserves the user's New mode/path and exposes the error.
+Topology drift before or during preparation stops the launch with a visible
+repair-required result. While a draft is admitted, edits, selection/focus/input
+changes, removal, clear, and duplicate launch allocation are rejected. The
+frontend does not create a temporary runtime Team or infer missing Team/Agent
+settings at the GraphQL boundary.
 
 For nested team definitions, the backend launches through the mixed topology
 path even when all leaf members use the same runtime. Leaf launch configs carry
@@ -283,12 +320,23 @@ keeps Team liveness, leaf status, focus, and interrupt authority independent.
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
 
-- temporary teams still create and promote a permanent backend `teamRunId` before first send;
+- launch drafts call `launchDraft()` before the first send and hydrate the permanent
+  V2 execution tree returned by `createAgentTeamRun`;
 - persisted teams with cached inactive resume config call `RestoreAgentTeamRun` before send;
-- the backend team WebSocket connect and `SEND_MESSAGE` paths also resolve through `TeamRunService.resolveTeamRun(...)`, so the server can restore and rebind the stream session even when the frontend's resume cache is stale or absent; and
+- the backend team WebSocket connect and `SEND_MESSAGE` paths also resolve through
+  `TeamRunService.resolveActiveTeamRun(...)`, so the server can restore and rebind
+  the stream session even when the frontend's resume cache is stale or absent; and
 - after a successful follow-up send, the run history cache is marked active and refreshed.
 
-`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. Stop is available only while root `isActive` is true and that run has no `stopPending` request. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store clears pending, returns `false`, and leaves root activity, local member state, and run-history activity unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally. `isSubscribed` remains a separate transport fact and must not be used as liveness.
+`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority
+for a hydrated Team execution. Stop is available only while root `isActive` is
+true and that run has no `stopPending` request. It tears down local stream/member
+state and marks the team resume config inactive only after
+`TerminateAgentTeamRun` succeeds. If backend termination fails, the store clears
+pending, returns `false`, and leaves root activity, local member state, and
+run-history activity unchanged. An unlaunched draft has no backend runtime and
+is discarded through draft actions rather than Team termination. `isSubscribed`
+remains a separate transport fact and must not be used as liveness.
 
 The focused member interrupt/Stop action is separate from root termination.
 The store creates a fresh client interrupt command id and sends the exact
@@ -306,36 +354,33 @@ the accepted interrupt reaches its canonical terminal.
 Workspace team history is backed by the server V2 team catalog, not by durable
 live-status fields. `listWorkspaceRunHistory` returns team rows with
 `createdAt`, `archivedAt`, `terminatedAt`, manager-owned `isActive`, exact leaf
-member statuses, and recursive `memberTree`; no root status is derived. Frontend team tree rows may still expose
+member statuses, and recursive `rootTeam`; no root status is derived. Frontend team tree rows may still expose
 local view-model `lastActivityAt`, `lastKnownStatus`, and delete-readiness
 fields for shared UI components, but those values are derived from the V2
 catalog row plus live status and are not persisted backend team-history fields.
 
 ## Reopen / Hydration Behavior
 
-`reconstructTeamRunConfigFromMetadata()` is the authoritative frontend reopen/hydration rule for existing team runs.
+Current Team reopen and history hydration consume the V2 execution tree rather
+than reconstructing editable override intent. `hydrateLiveTeamRunContext(...)`
+and the Team execution view preserve the exact configured hierarchy: the root
+and every nested Team carry their complete `defaultLaunchConfiguration`, and
+every configured Agent carries its complete `launchConfiguration`.
 
-It rebuilds one dominant team-level default from persisted member metadata, then preserves only the member-level divergences, including:
+The workspace config panel derives one `STORED_SNAPSHOT` view directly from that
+tree and adapts it to `StoredTeamRunFormModel`. `TeamRunConfigForm.vue`,
+`TeamMemberConfigTree.vue`, `TeamScopeConfigEditor.vue`, and
+`MemberOverrideItem.vue` then render the same visual hierarchy used for a draft
+in structurally read-only mode. Historical values remain inspect-only; the
+frontend does not consult current definitions for topology/order, infer a
+representative Team default, turn complete snapshots back into partial
+overrides, or import authoring state into the stored projector. Explicit
+`llmConfig: null` and `workspaceRootPath: null` remain recorded values.
 
-- divergent member runtime overrides,
-- divergent member model identifiers,
-- divergent auto-execute values, and
-- explicit member `llmConfig` differences, including explicit `null` cleanup cases.
-
-This keeps reopened mixed-runtime teams truthful in the run-config surface instead of flattening them back to one runtime/model pair.
-
-Reopen/hydration supplies the values that selected read-only team config
-displays. The frontend treats non-null metadata from the backend as authoritative
-for inspection and treats null metadata as not recorded; backend recovery,
-materialization, or backfill is outside the Agent Teams frontend module.
-
-Backend TeamRun metadata is schema-v3 and recursive. It contains one `rootTeam`
-tree whose Agent nodes carry rooted `address`, stable `agentRunId`, launch
-settings, and physical-memory metadata. Child Team nodes carry their own
-`teamRunId`. Logical topology uses AgentTeam addresses; physical persistence uses
-`rootTeamRunId` plus `ancestorTeamRunIds`. The frontend projects this metadata
-into a stable topology model and a separate execution model keyed only by
-serialized `TeamExecutionAddress`.
+Logical topology uses canonical AgentTeam addresses. Physical memory resolution
+remains a separate concern based on `rootTeamRunId`, physical ancestor TeamRun
+IDs, and AgentRun identity. The frontend projects the V2 tree into stable and
+task execution models keyed by exact serialized `TeamExecutionAddress`.
 
 Every Team Agent stream event carries one strict `agent_execution` binding:
 
@@ -391,12 +436,17 @@ resolved.
 
 `teamRunConfigStore` owns:
 
-- the current team launch buffer,
+- the collection of immutable Team launch drafts and the selected draft,
+- root, nested-Team, and exact-Agent authoring intent keyed by canonical address,
+- per-Team workspace selection state, topology reconciliation/repair, and
+  authorization-bound workspace-preparation plans,
 - runtime-scoped model catalogs for launch readiness,
-- workspace-loading state for new team launches, and
 - the derived `launchReadiness` view consumed by the workspace panel.
 
-`agentTeamContextsStore` and `agentTeamRunStore` own the live temp/permanent team lifecycle after the user leaves definition editing and enters runtime work.
+`agentTeamRunStore` owns draft launch orchestration, permanent Team creation,
+V2 hydration, streaming, restore, focused sends, and termination.
+`agentTeamContextsStore` owns hydrated live execution contexts. There is no
+temporary runtime Team between draft authoring and `createAgentTeamRun`.
 
 ## Package Refresh Behavior
 

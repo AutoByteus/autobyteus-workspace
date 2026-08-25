@@ -71,6 +71,97 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   ]);
 });
 
+test('standalone pack requires complete Team-scope defaults in addition to Agent leaves', async () => {
+  const target = path.join(await createTempDirectory('team-scope-defaults'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  await rewriteApplicationManifest(target, {
+    executionResourceSlots: [{
+      slotKey: 'team',
+      name: 'Team',
+      allowedExecutionResourceKinds: ['AGENT_TEAM'],
+      allowedExecutionResourceSources: ['bundle'],
+      required: true,
+      supportedLaunchConfig: {
+        AGENT_TEAM: {
+          runtimeKind: true,
+          llmModelIdentifier: true,
+          llmConfig: true,
+          workspaceRootPath: true,
+          memberOverrides: {
+            runtimeKind: true,
+            llmModelIdentifier: true,
+            llmConfig: true,
+          },
+        },
+      },
+      defaultExecutionResourceRef: {
+        source: 'bundle',
+        kind: 'AGENT_TEAM',
+        localId: 'sample-team',
+      },
+    }],
+  });
+
+  const teamRoot = path.join(target, 'src/agent-teams/sample-team');
+  const agentRoot = path.join(teamRoot, 'agents/lead');
+  await fs.mkdir(agentRoot, { recursive: true });
+  await fs.writeFile(
+    path.join(teamRoot, 'team.md'),
+    '---\nname: Sample Team\ndescription: Validates complete Team launch defaults.\ncategory: Testing\n---\nCoordinate the sample Agent.\n',
+    'utf8',
+  );
+  await fs.writeFile(
+    path.join(agentRoot, 'agent.md'),
+    '---\nname: Lead\ndescription: Leads the sample Team.\ncategory: Testing\nrole: Lead\n---\nLead the sample Team.\n',
+    'utf8',
+  );
+  await fs.writeFile(path.join(agentRoot, 'agent-config.json'), `${JSON.stringify({
+    toolNames: [],
+    skillNames: [],
+    defaultLaunchConfig: {
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-test',
+    },
+  }, null, 2)}\n`, 'utf8');
+  const teamConfigPath = path.join(teamRoot, 'team-config.json');
+  const teamConfig = {
+    coordinatorMemberName: 'lead',
+    members: [{
+      memberName: 'lead',
+      ref: 'lead',
+      refType: 'agent',
+      refScope: 'team_local',
+    }],
+  };
+  await fs.writeFile(teamConfigPath, `${JSON.stringify(teamConfig, null, 2)}\n`, 'utf8');
+
+  await assert.rejects(
+    () => packApplicationProject({ projectRoot: target }),
+    /slot 'team' has unknown package runtime 'null'/,
+  );
+
+  await fs.writeFile(teamConfigPath, `${JSON.stringify({
+    ...teamConfig,
+    defaultLaunchConfig: {
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-test',
+    },
+  }, null, 2)}\n`, 'utf8');
+  const result = await packApplicationProject({ projectRoot: target });
+  assert.equal(result.validation.valid, true);
+  assert.equal(
+    await fileExists(path.join(
+      result.applicationRoot,
+      'agent-teams/sample-team/team-config.json',
+    )),
+    true,
+  );
+});
+
 test('atomic development pack keeps generated package metadata canonical after staging rename', async () => {
   const { packApplicationProjectAtomically } = await import(
     '../dist/development/atomic-application-pack.js'

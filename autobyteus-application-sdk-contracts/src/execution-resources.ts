@@ -83,13 +83,35 @@ export type ApplicationResolvedLaunchBaselineLeaf = {
   };
 };
 
-export type ApplicationResolvedResourceLaunchBaseline = {
+export type ApplicationResolvedTeamLaunchBaselineScope = Readonly<{
+  teamAddress: string;
+  displayName: string;
+  teamDefinitionId: string;
+  runtimeKind: string | null;
+  llmModelIdentifier: string | null;
+  llmConfig: Record<string, unknown> | null;
+  provenance: Readonly<{
+    runtimeKind: ApplicationLaunchDefinitionValueSource | null;
+    llmModelIdentifier: ApplicationLaunchDefinitionValueSource | null;
+    llmConfig: ApplicationLaunchDefinitionValueSource | null;
+  }>;
+}>;
+
+type ApplicationResolvedResourceLaunchBaselineFields = {
   slotKey: string;
   executionResourceRef: ApplicationExecutionResourceRef;
   resourceDefinitionId: string;
-  resourceKind: ApplicationExecutionResourceKind;
   leaves: ApplicationResolvedLaunchBaselineLeaf[];
 };
+
+export type ApplicationResolvedResourceLaunchBaseline =
+  | (ApplicationResolvedResourceLaunchBaselineFields & {
+      resourceKind: "AGENT";
+    })
+  | (ApplicationResolvedResourceLaunchBaselineFields & {
+      resourceKind: "AGENT_TEAM";
+      teamScopes: ApplicationResolvedTeamLaunchBaselineScope[];
+    });
 
 export type ApplicationEffectiveLeafLaunchProfile = {
   memberAddress: string | null;
@@ -98,7 +120,7 @@ export type ApplicationEffectiveLeafLaunchProfile = {
   runtimeKind: string;
   llmModelIdentifier: string;
   llmConfig: Record<string, unknown> | null;
-  workspaceRootPath: string | null;
+  workspaceRootPath: string;
   provenance: {
     runtimeKind: ApplicationLaunchValueSource;
     llmModelIdentifier: ApplicationLaunchValueSource;
@@ -107,13 +129,37 @@ export type ApplicationEffectiveLeafLaunchProfile = {
   };
 };
 
-export type ApplicationEffectiveLaunchConfiguration = {
+export type ApplicationEffectiveTeamLaunchProfile = Readonly<{
+  teamAddress: string;
+  displayName: string;
+  teamDefinitionId: string;
+  runtimeKind: string;
+  llmModelIdentifier: string;
+  llmConfig: Record<string, unknown> | null;
+  workspaceRootPath: string;
+  provenance: Readonly<{
+    runtimeKind: ApplicationLaunchValueSource;
+    llmModelIdentifier: ApplicationLaunchValueSource;
+    llmConfig: ApplicationLaunchValueSource | null;
+    workspaceRootPath: "HOST_OVERRIDE" | "APPLICATION_RUNTIME";
+  }>;
+}>;
+
+type ApplicationEffectiveLaunchConfigurationFields = {
   slotKey: string;
   executionResourceRef: ApplicationExecutionResourceRef;
   resourceDefinitionId: string;
-  resourceKind: ApplicationExecutionResourceKind;
   leaves: ApplicationEffectiveLeafLaunchProfile[];
 };
+
+export type ApplicationEffectiveLaunchConfiguration =
+  | (ApplicationEffectiveLaunchConfigurationFields & {
+      resourceKind: "AGENT";
+    })
+  | (ApplicationEffectiveLaunchConfigurationFields & {
+      resourceKind: "AGENT_TEAM";
+      teamScopes: ApplicationEffectiveTeamLaunchProfile[];
+    });
 
 export type ApplicationLaunchIssueScope =
   | "PACKAGE"

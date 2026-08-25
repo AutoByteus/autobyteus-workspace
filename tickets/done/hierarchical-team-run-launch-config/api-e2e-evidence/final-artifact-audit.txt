@@ -1,0 +1,17 @@
+=== final artifact audit ===
+present tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+present tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md
+present tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md
+present tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/electron-open-tab-nested-classroom-evidence.md
+-- unresolved template tokens --
+-- diff check --
+-- changed durable coverage --
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/team-run-history-service.test.ts
+?? autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+-- final source package status --
+?? .codex/

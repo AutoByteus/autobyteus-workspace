@@ -1,6 +1,6 @@
 # Prototype Evidence Index
 
-Package `initial-prototype-baseline`, current requirements revision `RER-011`
+Package `initial-prototype-baseline`, current requirements revision `RER-015`
 (baseline pin established under `RER-002`; prior reviewed evidence preserved), pinned source
 `8ef282ba77705180d985e7000d801f0e0068cdc1`. Current status: accepted user-approved current-state baseline including the RER-009 `PP-GAP-009`/`PP-GAP-010` correction under `PPA-002`.
 
@@ -23,6 +23,9 @@ Package `initial-prototype-baseline`, current requirements revision `RER-011`
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/product-prototyper-review/rer-009-direct-review.txt` | Direct Product Prototyper replay, `PPA-002`, and user-confirmation record |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/repository-placement-correction.md` | Cumulative RER-004/RER-007 owning-repository placement, integrity and provenance record |
 | `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/personal-integration-record.md` | RER-011 rebase, canonical-locator, validation and direct-personal integration record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/independent-repository-migration.md` | RER-013 independent ownership, approved-tree provenance, path policy and validation record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/workspace-repository-return.md` | RER-015 workspace ownership, authorized locator changes, preservation totals and terminal validation record |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype/evidence/workspace-ownership/rer-015-return-proof.json` | Machine-readable RER-015 ownership, history, identity, binary/hash, sibling-tree and validation proof |
 
 ## Rendered Parity Evidence
 
@@ -109,6 +112,10 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 | `evidence/integration/rer-011-initial-rebase-prepromotion-validation.txt` | Historical runtime log for the initial rebase validation before a late remote advance was detected |
 | `evidence/integration/rer-011-initial-candidate-validation.txt` | Historical locator-candidate validation against the initial fetched remote head |
 | `evidence/integration/rer-011-final-rebase-prepromotion-validation.txt` | Terminal task-worktree runtime log for the final rebase: 20/20, 25/25, 86/86, production build and HTTP 200 |
+| `evidence/repository-independence/rer-013-approved-tree-inventory.json` | Exact 2,001-file approved source-tree inventory rooted at tree `ca1d3f9e...` |
+| `evidence/repository-independence/rer-013-migration-proof.json` | Machine-readable identity, permitted locator updates, approved hashes and independent-history proof |
+| `evidence/repository-independence/rer-013-validation.txt` | Independent-root typecheck, lint, tests, 13/13 boundaries, 369/369 presentation, 20/20, 25/25, 86/86, build, HTTP and ownership checks |
+| `evidence/workspace-ownership/rer-015-validation.txt` | Workspace-root typecheck, lint, tests, 13/13 boundaries, 369/369 presentation, 20/20, 25/25, 86/86, build, HTTP and ownership checks |
 
 ## Manual Browser-Tool Evidence
 
@@ -130,4 +137,10 @@ Each record contains the post-interaction route, body, dialogs, focused element,
 
 These two files substantiate the original rejected baseline and are not current evidence. The corrected `HOST-*` rows and manual Electron screenshot demonstrate that the fallback no longer occurs.
 
-Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review. RER-009 correction evidence and post-confirmation `VIS-016`/`VIS-017` substantiate the launch and member-focus journey accepted under `PPA-002` on 2026-08-24. RER-011 changes repository provenance only; no renewed UI review is required because all approved visual hashes and observable behavior remain exact.
+Bootstrap screenshots remain current-state parity evidence. Historical Product Prototyper artifacts record the prior 2026-08-22 review. RER-009 correction evidence and post-confirmation `VIS-016`/`VIS-017` substantiate the launch and member-focus journey accepted under `PPA-002` on 2026-08-24. RER-011, RER-013 and RER-015 change repository provenance only; no renewed UI review is required because all approved visual hashes and observable behavior remain exact.
+
+Historical runtime logs and the explicitly historical
+`repository-placement-correction.md` / `personal-integration-record.md` may
+contain prior workspace or task-worktree paths as capture provenance. They are
+not active artifact locators. Every active locator in this index resolves under
+`/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`.

@@ -740,6 +740,24 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId: parentTeamDefinitionId,
+          teamConfigs: [
+            {
+              teamAddress: "/",
+              llmModelIdentifier: autoByteusModelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              workspaceRootPath,
+            },
+            {
+              teamAddress: "/BuildSquad",
+              llmModelIdentifier: codexModelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+              workspaceRootPath,
+            },
+          ],
           memberConfigs: [
             {
               memberAddress: "/program_manager",

@@ -10,12 +10,14 @@
 - Approved baseline: `PPA-001` and the user's confirmation from `2026-08-22`
   remain authoritative
 - Source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
-- Active RER-011 canonical root:
+- Current RER-015 canonical root:
   `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
-- Active RER-011 branch: `personal`
+- Current RER-015 repository/branch:
+  `/home/autobyteus/workspace/autobyteus-workspace` / `personal`
 - Supersession: the ownership facts below describe the completed RER-007 stage;
-  they are retained as provenance. RER-011 restores this same repository-root
-  ownership after the isolated RER-009 correction and review.
+  they are retained only as explicitly historical provenance. RER-013
+  temporarily superseded workspace ownership; RER-015 returns the accepted
+  package to the same ordinary repository-root project location.
 
 ## Historical RER-007 Canonical Ownership
 

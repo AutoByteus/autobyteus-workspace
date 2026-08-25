@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-24T09:44:58.555Z",
+  "generatedAt": "2026-08-24T19:57:55.400Z",
   "approvalReference": "User message \"approved\" on 2026-08-22 for the complete baseline, plus user message \"done. i checked. thanks\" on 2026-08-24 immediately following the explicit RER-009 corrected-journey approval request.",
   "fixedCaptureClock": "2026-08-22T16:50:00.000Z",
-  "prototypeBaseUrl": "http://127.0.0.1:3210",
+  "prototypeBaseUrl": "http://127.0.0.1:3220",
   "sourceCommit": "8ef282ba77705180d985e7000d801f0e0068cdc1",
   "result": "17/17 captured without browser errors or external resources",
   "results": [

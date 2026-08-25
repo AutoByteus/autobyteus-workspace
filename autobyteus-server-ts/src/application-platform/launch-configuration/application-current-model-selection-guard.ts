@@ -11,7 +11,10 @@ export const requireApplicationCurrentModelSelections = async (
   configuration: ApplicationEffectiveLaunchConfiguration,
 ): Promise<void> => {
   const issues = [];
-  for (const leaf of configuration.leaves) {
+  const subjects = configuration.resourceKind === "AGENT_TEAM"
+    ? [...configuration.teamScopes, ...configuration.leaves]
+    : configuration.leaves;
+  for (const leaf of subjects) {
     const runtimeKind = policy.normalizeRuntimeKind(leaf.runtimeKind);
     if (!runtimeKind) continue;
     try {
@@ -33,7 +36,7 @@ export const requireApplicationCurrentModelSelections = async (
           ? "CURRENT_MODEL_SELECTION_REQUIRED" as const
           : "MODEL_UNAVAILABLE" as const,
         slotKey: configuration.slotKey,
-        memberAddress: leaf.memberAddress,
+        memberAddress: "memberAddress" in leaf ? leaf.memberAddress : leaf.teamAddress,
         message: error.message,
       });
     }

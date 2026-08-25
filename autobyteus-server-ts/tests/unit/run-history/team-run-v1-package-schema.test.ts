@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { validateTaskDelegationRecordsV1Payload } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamRunStatePackage } from "../../../src/run-history/services/team-run-state-package-validator.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../src/services/team-communication/team-communication-v1-schema.js";
 
 const scenarioRoot = path.resolve(

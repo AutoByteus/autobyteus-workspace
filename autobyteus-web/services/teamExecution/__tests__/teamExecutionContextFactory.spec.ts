@@ -1,264 +1,222 @@
-import { describe, expect, it } from 'vitest';
-import type {
-  AgentLaunchConfigurationDto,
-  ConfiguredAgentExecutionDto,
-  ConfiguredTeamExecutionDto,
-  TeamRunExecutionTreeDto,
-} from '@autobyteus/team-stream-contracts';
-import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { createTeamConfigurationView } from '~/services/teamExecution/teamExecutionContextFactory';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
+import { describe, expect, it } from 'vitest'
+import type { AgentLaunchConfigurationDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
+import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults'
+import {
+  configuredAgentAtAddress,
+  createTeamAgentContext,
+  createTeamConfigurationView,
+} from '~/services/teamExecution/teamExecutionContextFactory'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 
-const launchConfiguration = (
-  overrides: Partial<AgentLaunchConfigurationDto> = {},
-): AgentLaunchConfigurationDto => ({
-  runtime_kind: 'CODEX',
-  llm_model_identifier: 'old-model',
-  llm_config: {
-    reasoning: {
-      effort: 'low',
-      flags: { plan: true, search: false },
-    },
-  },
+const launch = (overrides: Partial<AgentLaunchConfigurationDto> = {}): AgentLaunchConfigurationDto => ({
+  runtime_kind: 'codex_app_server',
+  llm_model_identifier: 'gpt-5.6-luna',
+  llm_config: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
   auto_execute_tools: false,
   skill_access_mode: 'PRELOADED_ONLY',
-  workspace_root_path: '/workspace/team',
+  workspace_root_path: '/workspace/root',
   ...overrides,
-});
+})
 
-const configuredAgent = (input: {
-  address: string;
-  definitionId: string;
-  launch?: AgentLaunchConfigurationDto;
-}): ConfiguredAgentExecutionDto => ({
-  kind: 'configured_agent',
-  address: input.address,
-  agent_definition_id: input.definitionId,
-  role: null,
-  description: null,
-  agent_run_id: `${input.definitionId}-run`,
-  platform_agent_run_id: null,
-  launch_configuration: input.launch ?? launchConfiguration(),
-});
-
-const configuredTeam = (
-  address: string,
-  coordinatorAddress: string,
-  members: ConfiguredTeamExecutionDto['members'],
-): ConfiguredTeamExecutionDto => ({
-  kind: 'configured_team',
-  address,
-  team_definition_id: `${address}-definition`,
-  role: null,
-  description: null,
-  team_run_id: `${address}-run`,
-  coordinator_address: coordinatorAddress,
-  members,
-  task_executions: [],
-});
-
-const executionTree = (input: {
-  coordinator: ConfiguredAgentExecutionDto;
-  otherMembers: TeamRunExecutionTreeDto['root_team']['members'];
-}): TeamRunExecutionTreeDto => ({
-  schema_version: 1,
-  created_at: '2026-08-21T12:00:00.000Z',
+const tree = (): TeamRunExecutionTreeDto => ({
+  schema_version: 2,
+  created_at: '2026-08-24T12:00:00.000Z',
   archived_at: null,
   application_binding: null,
   handoffs: [],
   root_team: {
-    team_definition_id: 'software-team-definition',
-    team_definition_name: 'Software Team',
-    team_run_id: 'source-team-run',
-    coordinator_address: input.coordinator.address,
-    members: [input.coordinator, ...input.otherMembers],
+    address: '/',
+    team_definition_id: 'root-def',
+    team_definition_name: 'Nested Classroom',
+    team_run_id: 'root-run',
+    coordinator_address: '/teacher',
+    default_launch_configuration: launch(),
+    members: [
+      {
+        kind: 'configured_agent',
+        address: '/teacher',
+        agent_definition_id: 'teacher-def',
+        role: null,
+        description: null,
+        agent_run_id: 'teacher-run',
+        platform_agent_run_id: null,
+        launch_configuration: launch(),
+      },
+      {
+        kind: 'configured_team',
+        address: '/StudentStudyGroup',
+        team_definition_id: 'study-def',
+        role: 'Students',
+        description: null,
+        team_run_id: 'study-run',
+        coordinator_address: '/StudentStudyGroup/student_one',
+        default_launch_configuration: launch({
+          runtime_kind: 'claude_agent_sdk',
+          llm_model_identifier: 'claude-sonnet',
+          llm_config: null,
+          auto_execute_tools: true,
+          skill_access_mode: 'NONE',
+          workspace_root_path: '/workspace/study',
+        }),
+        members: [
+          {
+            kind: 'configured_agent',
+            address: '/StudentStudyGroup/student_one',
+            agent_definition_id: 'student-one-def',
+            role: null,
+            description: null,
+            agent_run_id: 'student-one-run',
+            platform_agent_run_id: null,
+            launch_configuration: launch({
+              runtime_kind: 'claude_agent_sdk',
+              llm_model_identifier: 'claude-opus',
+              llm_config: { temperature: 0.2 },
+              auto_execute_tools: true,
+              skill_access_mode: 'NONE',
+              workspace_root_path: '/workspace/student-one',
+            }),
+          },
+        ],
+        task_executions: [],
+      },
+    ],
     task_executions: [],
   },
-});
+})
 
-const editableConfig = (
-  source: Readonly<TeamRunConfig>,
-  edits: Partial<TeamRunConfig>,
-): TeamRunConfig => Object.assign(buildEditableTeamRunSeed(source), edits);
+const metadata = (
+  workspaceId: string,
+  workspaceRootPath: string,
+): WorkspaceMetadata => ({
+  workspaceId,
+  workspaceRootPath,
+  displayName: workspaceId,
+  kind: 'filesystem',
+})
 
-const leafDefinitions = (agents: ConfiguredAgentExecutionDto[]) => agents.map((agent) => ({
-  displayName: agent.address.split('/').at(-1) ?? agent.address,
-  address: agent.address,
-  agentDefinitionId: `current:${agent.agent_definition_id}`,
-}));
+const workspaceMetadataByAddress = (): ReadonlyMap<AgentTeamAddress, WorkspaceMetadata> => new Map([
+  ['/', metadata('root-ws', '/workspace/root')],
+  ['/StudentStudyGroup', metadata('study-ws', '/workspace/study')],
+  ['/StudentStudyGroup/student_one', metadata('student-ws', '/workspace/student-one')],
+])
 
-describe('createTeamConfigurationView', () => {
-  it('projects a uniform schema-v1 execution as pure inheritance so edited globals reach every payload record', () => {
-    const coordinator = configuredAgent({ address: '/coordinator', definitionId: 'coordinator-old' });
-    const reviewer = configuredAgent({ address: '/reviewer', definitionId: 'reviewer-old' });
-    const tree = executionTree({ coordinator, otherMembers: [reviewer] });
-    const sourceSnapshot = structuredClone(tree);
+describe('teamExecutionContextFactory stored V2 projection', () => {
+  it('builds a deeply immutable complete stored snapshot without coordinator inference', () => {
+    const source = tree()
+    const original = structuredClone(source)
+    const view = createTeamConfigurationView({
+      tree: source,
+      workspaceMetadataByAddress: workspaceMetadataByAddress(),
+    })
 
-    const projected = createTeamConfigurationView({
-      tree,
-      workspaceMetadataByAddress: new Map(),
-    });
-
-    expect(projected.memberOverrides).toEqual({});
-    expect(Object.isFrozen(projected)).toBe(true);
-    expect(Object.isFrozen(projected.memberOverrides)).toBe(true);
-
-    const edited = editableConfig(projected, {
-      runtimeKind: 'claude_agent_sdk',
-      llmModelIdentifier: 'new-model',
-      llmConfig: { thinking: { budget: 8192, mode: 'enabled' } },
-      autoExecuteTools: true,
-    });
-    const records = buildTeamRunMemberConfigRecords({
-      config: edited,
-      leafMembers: leafDefinitions([coordinator, reviewer]),
-    });
-
-    expect(records).toEqual([
-      expect.objectContaining({
-        memberAddress: '/coordinator',
-        agentDefinitionId: 'current:coordinator-old',
+    expect(view.source).toBe('STORED_SNAPSHOT')
+    if (view.source !== 'STORED_SNAPSHOT') throw new Error('Expected stored Team configuration view.')
+    expect(view.coordinatorAddress).toBe('/teacher')
+    expect(view.memberNodes.map((member) => [member.kind, member.address])).toEqual([
+      ['agent', '/teacher'],
+      ['agent_team', '/StudentStudyGroup'],
+    ])
+    expect(view.memberNodes[1]).toEqual(expect.objectContaining({
+      kind: 'agent_team',
+      coordinatorAddress: '/StudentStudyGroup/student_one',
+      children: [expect.objectContaining({ address: '/StudentStudyGroup/student_one' })],
+    }))
+    expect(view.root.effectiveConfig).toEqual(expect.objectContaining({
+      runtimeKind: 'codex_app_server',
+      workspaceRootPath: '/workspace/root',
+      skillAccessMode: 'PRELOADED_ONLY',
+    }))
+    expect(view.teamsByAddress['/StudentStudyGroup']).toEqual(expect.objectContaining({
+      parentAddress: '/',
+      isCustomized: true,
+      effectiveConfig: expect.objectContaining({
         runtimeKind: 'claude_agent_sdk',
-        llmModelIdentifier: 'new-model',
-        llmConfig: { thinking: { budget: 8192, mode: 'enabled' } },
-        autoExecuteTools: true,
+        workspaceRootPath: '/workspace/study',
+        skillAccessMode: 'NONE',
+        llmConfig: null,
       }),
-      expect.objectContaining({
-        memberAddress: '/reviewer',
-        agentDefinitionId: 'current:reviewer-old',
-        runtimeKind: 'claude_agent_sdk',
-        llmModelIdentifier: 'new-model',
-        llmConfig: { thinking: { budget: 8192, mode: 'enabled' } },
-        autoExecuteTools: true,
-      }),
-    ]);
-    expect(tree).toEqual(sourceSnapshot);
-  });
+    }))
+    expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig).toEqual(expect.objectContaining({
+      llmModelIdentifier: 'claude-opus',
+      workspaceRootPath: '/workspace/student-one',
+      skillAccessMode: 'NONE',
+      llmConfig: { temperature: 0.2 },
+    }))
+    expect(Object.isFrozen(view)).toBe(true)
+    expect(Object.isFrozen(view.memberNodes)).toBe(true)
+    expect(Object.isFrozen(view.memberNodes[1])).toBe(true)
+    expect(Object.isFrozen(view.teamsByAddress)).toBe(true)
+    expect(Object.isFrozen(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig)).toBe(true)
+    expect(source).toEqual(original)
+  })
 
-  it('retains only genuine field deltas and no-edit materialization recreates effective settings', () => {
-    const coordinator = configuredAgent({ address: '/coordinator', definitionId: 'coordinator-old' });
-    const matchingMember = configuredAgent({
-      address: '/implementation_engineer',
-      definitionId: 'implementation-old',
-      launch: launchConfiguration({
-        llm_config: {
-          reasoning: {
-            flags: { search: false, plan: true },
-            effort: 'low',
-          },
+  it('converts stored history one way into only fields supported by new-run authoring', () => {
+    const view = createTeamConfigurationView({
+      tree: tree(),
+      workspaceMetadataByAddress: workspaceMetadataByAddress(),
+    })
+    const seed = buildEditableTeamRunSeed(view)
+
+    expect(seed).toEqual(expect.objectContaining({
+      rootConfig: expect.objectContaining({
+        runtimeKind: 'codex_app_server',
+        workspace: expect.objectContaining({ workspaceId: 'root-ws' }),
+        skillAccessMode: 'PRELOADED_ONLY',
+      }),
+      teamOverrides: {
+        '/StudentStudyGroup': {
+          runtimeKind: 'claude_agent_sdk',
+          workspace: expect.objectContaining({
+            workspaceId: 'study-ws',
+            workspaceMetadata: expect.objectContaining({ workspaceRootPath: '/workspace/study' }),
+          }),
+          llmModelIdentifier: 'claude-sonnet',
+          llmConfig: null,
+          autoExecuteTools: true,
         },
-      }),
-    });
-    const runtimeOnlyMember = configuredAgent({
-      address: '/reviewers/code_reviewer',
-      definitionId: 'reviewer-old',
-      launch: launchConfiguration({ runtime_kind: 'CLAUDE' }),
-    });
-    const modelOnlyMember = configuredAgent({
-      address: '/reviewers/architecture_reviewer',
-      definitionId: 'architecture-old',
-      launch: launchConfiguration({ llm_model_identifier: 'member-model' }),
-    });
-    const nestedTeam = configuredTeam(
-      '/reviewers',
-      runtimeOnlyMember.address,
-      [runtimeOnlyMember, modelOnlyMember],
-    );
-    const tree = executionTree({ coordinator, otherMembers: [matchingMember, nestedTeam] });
-
-    const projected = createTeamConfigurationView({
-      tree,
-      workspaceMetadataByAddress: new Map(),
-    });
-
-    expect(projected.memberOverrides).toEqual({
-      '/reviewers/code_reviewer': { runtimeKind: 'claude_agent_sdk' },
-      '/reviewers/architecture_reviewer': { llmModelIdentifier: 'member-model' },
-    });
-    expect(Object.isFrozen(projected.memberOverrides['/reviewers/code_reviewer'])).toBe(true);
-
-    const sourceAgents = [coordinator, matchingMember, runtimeOnlyMember, modelOnlyMember];
-    const noEditRecords = buildTeamRunMemberConfigRecords({
-      config: buildEditableTeamRunSeed(projected),
-      leafMembers: leafDefinitions(sourceAgents),
-    });
-    expect(noEditRecords.map((record) => ({
-      memberAddress: record.memberAddress,
-      runtimeKind: record.runtimeKind,
-      llmModelIdentifier: record.llmModelIdentifier,
-      llmConfig: record.llmConfig,
-      autoExecuteTools: record.autoExecuteTools,
-    }))).toEqual([
-      {
-        memberAddress: '/coordinator',
-        runtimeKind: 'codex_app_server',
-        llmModelIdentifier: 'old-model',
-        llmConfig: launchConfiguration().llm_config,
-        autoExecuteTools: false,
       },
-      {
-        memberAddress: '/implementation_engineer',
-        runtimeKind: 'codex_app_server',
-        llmModelIdentifier: 'old-model',
-        llmConfig: launchConfiguration().llm_config,
-        autoExecuteTools: false,
+      agentOverrides: {
+        '/StudentStudyGroup/student_one': {
+          llmModelIdentifier: 'claude-opus',
+          llmConfig: { temperature: 0.2 },
+        },
       },
-      {
-        memberAddress: '/reviewers/code_reviewer',
-        runtimeKind: 'claude_agent_sdk',
-        llmModelIdentifier: 'old-model',
-        llmConfig: launchConfiguration().llm_config,
-        autoExecuteTools: false,
-      },
-      {
-        memberAddress: '/reviewers/architecture_reviewer',
-        runtimeKind: 'codex_app_server',
-        llmModelIdentifier: 'member-model',
-        llmConfig: launchConfiguration().llm_config,
-        autoExecuteTools: false,
-      },
-    ]);
+      isLocked: false,
+    }))
+    expect(seed.agentOverrides['/StudentStudyGroup/student_one']).not.toHaveProperty('workspace')
+    expect(seed.agentOverrides['/StudentStudyGroup/student_one']).not.toHaveProperty('skillAccessMode')
+    expect(seed.teamOverrides['/StudentStudyGroup']).not.toHaveProperty('skillAccessMode')
 
-    const edited = editableConfig(projected, {
-      llmModelIdentifier: 'new-model',
-      llmConfig: { reasoning: { effort: 'xhigh' } },
-      autoExecuteTools: true,
-    });
-    expect(buildTeamRunMemberConfigRecords({
-      config: edited,
-      leafMembers: leafDefinitions(sourceAgents),
-    })).toEqual(sourceAgents.map((agent) => expect.objectContaining({
-      memberAddress: agent.address,
-      runtimeKind: agent.address === runtimeOnlyMember.address
-        ? 'claude_agent_sdk'
-        : 'codex_app_server',
-      llmModelIdentifier: agent.address === modelOnlyMember.address
-        ? 'member-model'
-        : 'new-model',
-      llmConfig: { reasoning: { effort: 'xhigh' } },
-      autoExecuteTools: true,
-    })));
-  });
+    ;(seed.agentOverrides['/StudentStudyGroup/student_one'].llmConfig as { temperature: number }).temperature = 0.9
+    expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig).toEqual({ temperature: 0.2 })
+  })
 
-  it('keeps explicit null config and false auto-approval deltas when the coordinator baseline differs', () => {
-    const coordinator = configuredAgent({
-      address: '/coordinator',
-      definitionId: 'coordinator-old',
-      launch: launchConfiguration({ auto_execute_tools: true }),
-    });
-    const reviewer = configuredAgent({
-      address: '/reviewer',
-      definitionId: 'reviewer-old',
-      launch: launchConfiguration({ llm_config: null, auto_execute_tools: false }),
-    });
-    const projected = createTeamConfigurationView({
-      tree: executionTree({ coordinator, otherMembers: [reviewer] }),
-      workspaceMetadataByAddress: new Map(),
-    });
+  it('creates one locked Agent context from the exact configured Agent snapshot', () => {
+    const source = tree()
+    expect(configuredAgentAtAddress(source, '/StudentStudyGroup/student_one')?.agent_run_id).toBe('student-one-run')
 
-    expect(projected.memberOverrides).toEqual({
-      '/reviewer': { llmConfig: null, autoExecuteTools: false },
-    });
-  });
-});
+    const context = createTeamAgentContext({
+      tree: source,
+      agentRunId: 'student-one-run',
+      address: '/StudentStudyGroup/student_one',
+      workspaceMetadata: metadata('student-ws', '/workspace/student-one'),
+    })
+
+    expect(context?.config).toEqual(expect.objectContaining({
+      agentDefinitionId: 'student-one-def',
+      runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-opus',
+      workspaceId: 'student-ws',
+      skillAccessMode: 'NONE',
+      llmConfig: { temperature: 0.2 },
+      isLocked: true,
+    }))
+    expect(createTeamAgentContext({
+      tree: source,
+      agentRunId: 'missing-run',
+      address: '/missing',
+      workspaceMetadata: null,
+    })).toBeNull()
+  })
+})

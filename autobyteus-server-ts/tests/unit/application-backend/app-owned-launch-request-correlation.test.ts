@@ -64,6 +64,10 @@ const buildRunnableTeamConfiguration = (input: {
     workspaceRootPath: string;
   }>;
 }): ApplicationEffectiveLaunchConfiguration => {
+  const rootProfile = input.leaves[0];
+  if (!rootProfile) {
+    throw new Error("A runnable Team configuration requires at least one launch profile.");
+  }
   const executionResourceRef = input.definitionId
     ? {
         source: "shared" as const,
@@ -80,6 +84,21 @@ const buildRunnableTeamConfiguration = (input: {
     executionResourceRef,
     resourceDefinitionId: input.definitionId ?? `bundle-team__${input.localId}`,
     resourceKind: "AGENT_TEAM",
+    teamScopes: [{
+      teamAddress: "/",
+      displayName: "Root Team",
+      teamDefinitionId: input.definitionId ?? `bundle-team__${input.localId}`,
+      runtimeKind: rootProfile.runtimeKind,
+      llmModelIdentifier: rootProfile.llmModelIdentifier,
+      llmConfig: rootProfile.llmConfig ?? null,
+      workspaceRootPath: rootProfile.workspaceRootPath,
+      provenance: {
+        runtimeKind: { kind: "HOST_SLOT_OVERRIDE" },
+        llmModelIdentifier: { kind: "HOST_SLOT_OVERRIDE" },
+        llmConfig: rootProfile.llmConfig ? { kind: "HOST_SLOT_OVERRIDE" } : null,
+        workspaceRootPath: "HOST_OVERRIDE",
+      },
+    }],
     leaves: input.leaves.map((leaf) => ({
       ...leaf,
       llmConfig: leaf.llmConfig ?? null,
@@ -462,6 +481,11 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-test",
+        })],
         memberConfigs: expect.arrayContaining([
           expect.objectContaining({ memberAddress: "/researcher", llmModelIdentifier: "gpt-test" }),
           expect.objectContaining({ memberAddress: "/writer", llmModelIdentifier: "gpt-test" }),
@@ -559,6 +583,12 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/brief-studio",
+        })],
         memberConfigs: expect.arrayContaining([
           expect.objectContaining({
             memberAddress: "/researcher",
@@ -809,6 +839,11 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-test",
+        })],
         memberConfigs: [expect.objectContaining({
           memberAddress: "/tutor",
           llmModelIdentifier: "gpt-test",
@@ -967,6 +1002,12 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/lessons",
+        })],
         memberConfigs: [
           expect.objectContaining({
             memberAddress: "/tutor",

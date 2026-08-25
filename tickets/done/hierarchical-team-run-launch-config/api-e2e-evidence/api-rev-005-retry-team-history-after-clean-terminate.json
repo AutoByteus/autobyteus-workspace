@@ -1,0 +1,32 @@
+[
+  {
+    "teamRunId": "nested_classroom_test_team_e26871fc1da44bd5b98a9c74e45da32d",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005",
+    "summary": "Use the required tools for two independent checks. First call send_message_to with recipient_addr...",
+    "createdAt": "2026-08-24T19:30:12.369Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-24T19:34:52.237Z"
+  },
+  {
+    "teamRunId": "nested_classroom_test_team_f739998d23044a7699f2d5f9c07834a7",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005",
+    "summary": "",
+    "createdAt": "2026-08-24T19:29:08.447Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-24T19:29:39.745Z"
+  },
+  {
+    "teamRunId": "nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005",
+    "summary": "",
+    "createdAt": "2026-08-24T19:19:17.573Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-24T19:23:04.254Z"
+  }
+]

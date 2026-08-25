@@ -1,0 +1,26 @@
+CRR-016 no-durable-delta and reporting audit
+HEAD cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+
+## API-REV-008 declared durable/production delta
+130:- Repository-resident durable coverage added/updated/removed in API-REV-008: `None`.
+131:- Production source changed by API/E2E in API-REV-008: `None`.
+172:- Durable coverage changed: `No`.
+
+## Modified tracked paths outside ticket artifacts
+PASS: none
+
+## Untracked paths outside reviewer/API-E2E evidence
+PASS: none
+
+## Browser result essentials
+PASS: API-REV-008 pass durableCoverageChanged= False userVerificationStillRequired= True
+
+## Cleanup essentials
+7:58849 000
+8:58924 000
+9:29695 200
+14:removed
+19:sessions: []
+
+## Diff whitespace audit
+PASS

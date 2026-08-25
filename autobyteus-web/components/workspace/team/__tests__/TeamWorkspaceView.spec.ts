@@ -115,25 +115,30 @@ describe('TeamWorkspaceView current aggregate', () => {
   });
 
   it('seeds an editable new Team configuration without sharing nested LLM config state', async () => {
-    state.activeTeamContext = buildTeamContext({ configuration: {
-      teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
-      llmModelIdentifier: 'gpt-5.4', runtimeKind: 'codex_app_server', workspaceId: 'ws-1',
-      autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: true,
+    const professor = testAgentNode('/Professor', {
+      displayName: 'Professor', agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def',
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4',
       llmConfig: { reasoning_effort: 'xhigh', nested: { values: ['xhigh'] } },
-      memberOverrides: { '/Professor': {
-        llmModelIdentifier: 'gpt-5.3-codex',
-        llmConfig: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
-      } },
-    } });
+    });
+    const student = testAgentNode('/Student', {
+      displayName: 'Student', agentRunId: 'student-run', agentDefinitionId: 'agent-student-def',
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.3-codex',
+      llmConfig: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
+    });
+    state.activeTeamContext = buildTestTeamContext({
+      teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
+      rootChildren: [professor, student], coordinatorAddress: '/Professor', isActive: true,
+      workspaceRootPath: '/workspace/team', configuration: { workspaceId: 'ws-1' },
+    });
     const sourceConfig = state.activeTeamContext.view.getConfigurationView();
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
     const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
     expect(seed).toEqual(expect.objectContaining({ isLocked: false }));
-    seed.llmConfig.nested.values.push('mutated');
-    seed.memberOverrides['/Professor'].llmConfig.nested.values.push('mutated');
-    expect((sourceConfig.llmConfig as any).nested.values).toEqual(['xhigh']);
-    expect((sourceConfig.memberOverrides['/Professor']!.llmConfig as any).nested.values).toEqual(['medium']);
+    seed.rootConfig.llmConfig.nested.values.push('mutated');
+    seed.agentOverrides['/Student'].llmConfig.nested.values.push('mutated');
+    expect((sourceConfig.root.effectiveConfig.llmConfig as any).nested.values).toEqual(['xhigh']);
+    expect((sourceConfig.agentsByAddress['/Student'].effectiveConfig.llmConfig as any).nested.values).toEqual(['medium']);
     expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
   });

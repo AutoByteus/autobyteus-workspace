@@ -309,8 +309,11 @@ export class ApplicationLaunchConfigurationService {
         executionResourceRef: ref,
         provenance: "PACKAGE",
       });
-      const incomplete = baseline.leaves.find(
-        (leaf) => !leaf.runtimeKind?.trim() || !leaf.llmModelIdentifier?.trim(),
+      const subjects = baseline.resourceKind === "AGENT_TEAM"
+        ? [...baseline.teamScopes, ...baseline.leaves]
+        : baseline.leaves;
+      const incomplete = subjects.find(
+        (subject) => !subject.runtimeKind?.trim() || !subject.llmModelIdentifier?.trim(),
       );
       if (incomplete) {
         throw new ApplicationLaunchResourceBaselineError(

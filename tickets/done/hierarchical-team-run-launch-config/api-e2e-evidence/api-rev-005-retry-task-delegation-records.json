@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_e26871fc1da44bd5b98a9c74e45da32d",
+  "records": [
+    {
+      "taskId": "task_3c72af3ba48f48ef8aa7492fb6d942a2",
+      "delegatorAgentRunId": "test_teacher_0cd6b563c7c144b4b7028dfb1afb5824",
+      "recipientAddress": "/StudentStudyGroup",
+      "taskExecution": {
+        "teamRunId": "team_local_team_nested_classroom_test_student_st_01083d4129da4876ba2f2722ee1aab42"
+      },
+      "description": "Return exactly INTEGRATED_SUBTEAM_TASK_OK. No extra words or punctuation. Submit this exact token as the formal task result.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_5cea61fdbc364b0e93f25b0a9eb36e7d",
+          "message": "INTEGRATED_SUBTEAM_TASK_OK",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T19:33:48.838Z"
+        },
+        {
+          "reviewId": "review_63cd8b77bb5b41f1ad5f64fa30a9da6d",
+          "reviewedSubmissionId": "submission_5cea61fdbc364b0e93f25b0a9eb36e7d",
+          "decision": "accept",
+          "comment": "Accepted: the submitted result exactly matches INTEGRATED_SUBTEAM_TASK_OK.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T19:34:29.483Z"
+        }
+      ],
+      "createdAt": "2026-08-24T19:30:59.334Z"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+{"name":"ordinary","original":"line one line two","textInputValue":"line one line two","textInputExact":true,"residualTextContent":"line one line two","residualExact":true,"residualWhitespaceClass":true}
+{"name":"lf","original":"line one\nline two","textInputValue":"line oneline two","textInputExact":false,"residualTextContent":"line one\nline two","residualExact":true,"residualWhitespaceClass":true}
+{"name":"cr","original":"line one\rline two","textInputValue":"line oneline two","textInputExact":false,"residualTextContent":"line one\rline two","residualExact":true,"residualWhitespaceClass":true}

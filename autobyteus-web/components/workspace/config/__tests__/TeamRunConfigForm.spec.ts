@@ -1,620 +1,245 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
+import { describe, expect, it, vi } from 'vitest'
+import { shallowMount } from '@vue/test-utils'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import TeamMemberConfigTree from '../TeamMemberConfigTree.vue'
+import TeamScopeConfigEditor from '../TeamScopeConfigEditor.vue'
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { EditableRuntimeCatalogOperationState } from '~/types/agent/EditableTeamRunFormModel'
+import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
+import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures'
 
-vi.mock('~/stores/llmProviderConfig', () => ({
-  useLLMProviderConfigStore: vi.fn(),
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({
+    t: (key: string, params?: Record<string, unknown>) => params
+      ? `${key} ${Object.values(params).join(' ')}`
+      : key,
+  }),
 }))
 
-vi.mock('~/stores/runtimeAvailabilityStore', () => ({
-  useRuntimeAvailabilityStore: vi.fn(),
-}))
-
-vi.mock('~/stores/agentTeamDefinitionStore', () => ({
-  useAgentTeamDefinitionStore: vi.fn(),
-}))
-
-
-const mockTeamDef = {
-  id: 'team-1',
-  name: 'Test Team',
+const nestedDefinition: AgentTeamDefinition = {
+  id: 'study-def', name: 'Student Study Group', description: '', instructions: '',
+  coordinatorMemberName: 'student_one',
   nodes: [
-    { memberName: 'Member A', refType: 'AGENT', ref: 'agent-a' },
-    { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
+    { memberName: 'student_one', ref: 'student-one-def', refType: 'AGENT' },
+    { memberName: 'student_two', ref: 'student-two-def', refType: 'AGENT' },
   ],
-  coordinatorMemberName: 'Member A',
 }
-
-const sixMemberTeamDef = {
-  id: 'team-6',
-  name: 'Six Member Team',
+const rootDefinition: AgentTeamDefinition = {
+  id: 'classroom-def', name: 'Nested Classroom', description: '', instructions: '',
+  coordinatorMemberName: 'teacher',
   nodes: [
-    { memberName: 'solution_designer', refType: 'AGENT', ref: 'agent-solution' },
-    { memberName: 'architecture_reviewer', refType: 'AGENT', ref: 'agent-architecture' },
-    { memberName: 'implementation_engineer', refType: 'AGENT', ref: 'agent-implementation' },
-    { memberName: 'code_reviewer', refType: 'AGENT', ref: 'agent-code' },
-    { memberName: 'api_e2e_engineer', refType: 'AGENT', ref: 'agent-api' },
-    { memberName: 'delivery_engineer', refType: 'AGENT', ref: 'agent-delivery' },
+    { memberName: 'teacher', ref: 'teacher-def', refType: 'AGENT' },
+    { memberName: 'StudentStudyGroup', ref: 'study-def', refType: 'AGENT_TEAM' },
   ],
-  coordinatorMemberName: 'solution_designer',
 }
-
-const nestedTeamDef = {
-  id: 'team-nested',
-  name: 'Nested Team',
-  nodes: [
-    { memberName: 'program_manager', refType: 'AGENT', ref: 'agent-pm' },
-    { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
-  ],
-  coordinatorMemberName: 'program_manager',
-}
-
-const mockConfig = {
-  teamDefinitionId: 'team-1',
-  teamDefinitionName: 'Test Team',
-  runtimeKind: 'autobyteus',
-  llmModelIdentifier: 'gpt-5.4',
-  llmConfig: null,
-  autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
-  isLocked: false,
-  workspaceId: null,
-  memberOverrides: {},
-}
-
-const flushPromises = async () => {
-  await Promise.resolve()
-  await new Promise<void>((resolve) => setTimeout(resolve, 0))
-}
-
-describe('TeamRunConfigForm', () => {
-  let llmStore: any
-  let runtimeStore: any
-  let teamDefinitionStore: any
-
-  const runtimeProviders: Record<string, any[]> = {
-    autobyteus: [
-      {
-        provider: {
-          id: 'OPENAI',
-          name: 'OpenAI',
-          providerType: 'OPENAI',
-          isCustom: false,
-          baseUrl: null,
-          apiKeyConfigured: true,
-          status: 'NOT_APPLICABLE',
-          statusMessage: null,
-        },
-        models: [
-          { modelIdentifier: 'gpt-5.4', name: 'GPT-5.4', value: 'gpt-5.4', canonicalName: 'gpt-5.4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'autobyteus' },
-          {
-            modelIdentifier: 'gpt-5.5-responses',
-            name: 'GPT-5.5 Responses',
-            value: 'gpt-5.5-responses',
-            canonicalName: 'gpt-5.5-responses',
-            providerId: 'OPENAI',
-            providerName: 'OpenAI',
-            providerType: 'OPENAI',
-            runtime: 'autobyteus',
-            configSchema: {
-              parameters: [
-                {
-                  name: 'reasoning_effort',
-                  type: 'string',
-                  title: 'Reasoning Effort',
-                  default_value: 'none',
-                  enum_values: ['none', 'low', 'medium', 'high'],
-                },
-                {
-                  name: 'reasoning_summary',
-                  type: 'string',
-                  title: 'Reasoning Summary',
-                  default_value: 'none',
-                  enum_values: ['none', 'auto', 'concise'],
-                },
-              ],
-            },
-          },
-        ],
+const config = (changes: Partial<TeamRunConfig> = {}): TeamRunConfig => ({
+  teamDefinitionId: 'classroom-def',
+  teamDefinitionName: 'Nested Classroom',
+  rootConfig: {
+    runtimeKind: 'codex_app_server',
+    workspace: {
+      workspaceId: 'root-ws',
+      workspaceMetadata: {
+        workspaceId: 'root-ws', workspaceRootPath: '/workspace/root',
+        displayName: 'root', kind: 'filesystem',
       },
-    ],
-    codex_app_server: [
-      {
-        provider: {
-          id: 'OPENAI',
-          name: 'OpenAI',
-          providerType: 'OPENAI',
-          isCustom: false,
-          baseUrl: null,
-          apiKeyConfigured: true,
-          status: 'NOT_APPLICABLE',
-          statusMessage: null,
-        },
-        models: [
-          {
-            modelIdentifier: 'gpt-5.5',
-            name: 'GPT-5.5 (default reasoning: medium)',
-            value: 'gpt-5.5',
-            canonicalName: 'gpt-5.5',
-            providerId: 'OPENAI',
-            providerName: 'OpenAI',
-            providerType: 'OPENAI',
-            runtime: 'codex_app_server',
-            configSchema: {
-              parameters: [
-                {
-                  name: 'reasoning_effort',
-                  type: 'string',
-                  title: 'Reasoning Effort',
-                  default_value: 'medium',
-                  enum_values: ['low', 'medium', 'high', 'xhigh'],
-                },
-                {
-                  name: 'service_tier',
-                  type: 'string',
-                  title: 'Fast mode',
-                  enum_values: ['fast'],
-                },
-              ],
-            },
-          },
-          { modelIdentifier: 'gpt-5.3-codex', name: 'GPT-5.3 Codex', value: 'gpt-5.3-codex', canonicalName: 'gpt-5.3-codex', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
-        ],
-      },
-    ],
-    claude_agent_sdk: [
-      {
-        provider: {
-          id: 'ANTHROPIC',
-          name: 'Anthropic',
-          providerType: 'ANTHROPIC',
-          isCustom: false,
-          baseUrl: null,
-          apiKeyConfigured: true,
-          status: 'NOT_APPLICABLE',
-          statusMessage: null,
-        },
-        models: [
-          { modelIdentifier: 'claude-sonnet', name: 'Claude Sonnet', value: 'claude-sonnet', canonicalName: 'claude-sonnet', providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'claude_agent_sdk' },
-        ],
-      },
-    ],
-  }
-
-  beforeEach(() => {
-    setActivePinia(createPinia())
-
-    llmStore = {
-      providersWithModels: [],
-      providersWithModelsForSelection: vi.fn((runtimeKind: string) =>
-        (runtimeProviders[runtimeKind] ?? []).filter((provider: any) => provider.models.length > 0),
-      ),
-      providerSnapshots: vi.fn(() => []),
-      fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
-        const rows = runtimeProviders[runtimeKind] ?? []
-        llmStore.providersWithModels = rows
-        return rows
+    },
+    llmModelIdentifier: 'gpt-5.6-luna',
+    llmConfig: { reasoning_effort: 'medium' },
+    autoExecuteTools: false,
+    skillAccessMode: 'PRELOADED_ONLY',
+  },
+  teamOverrides: {}, agentOverrides: {}, isLocked: false,
+  ...changes,
+})
+const definitions = new Map([
+  [rootDefinition.id, rootDefinition],
+  [nestedDefinition.id, nestedDefinition],
+])
+const idleCatalog: EditableRuntimeCatalogOperationState = { status: 'idle', error: null }
+const editableModel = (input: {
+  config?: TeamRunConfig
+  definition?: AgentTeamDefinition
+  repairs?: string[]
+  forceReadOnly?: boolean
+  selections?: Record<string, { mode: 'existing' | 'new'; existingWorkspaceId: string | null; newWorkspacePath: string }>
+} = {}) => projectEditableTeamRunFormModel({
+  config: input.config ?? config(),
+  teamDefinition: input.definition ?? rootDefinition,
+  getTeamDefinitionById: (id) => definitions.get(id) ?? null,
+  repairAddresses: input.repairs ?? [],
+  workspaceOperationFor: () => ({ status: 'idle', error: null }),
+  workspaceSelectionFor: (address) => input.selections?.[address] ?? {
+    mode: 'existing', existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/root',
+  },
+  runtimeCatalogStateFor: () => idleCatalog,
+  forceReadOnly: input.forceReadOnly,
+})
+const storedModel = () => projectStoredTeamRunFormModel(buildTestTeamContext({
+  teamRunId: 'stored-root-run',
+  teamDefinitionId: 'classroom-def',
+  teamDefinitionName: 'Nested Classroom',
+  coordinatorAddress: '/teacher',
+  rootChildren: [
+    testAgentNode('/teacher', {
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
+      llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false,
+      skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace/root',
+    }),
+    testSubTeamNode('/StudentStudyGroup', [
+      testAgentNode('/StudentStudyGroup/student_one', {
+        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'historical-student-model',
+        llmConfig: { temperature: 0.2 }, workspaceRootPath: '/workspace/student',
       }),
-      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
-    }
+      testAgentNode('/StudentStudyGroup/student_two'),
+    ], { teamDefinitionId: 'study-def', displayName: 'StudentStudyGroup' }),
+  ],
+  workspaceRootPath: '/workspace/root',
+}).view.getConfigurationView())
+const mountForm = (model = editableModel()) => shallowMount(TeamRunConfigForm, { props: { model } })
 
-    runtimeStore = {
-      availabilities: [
-        { runtimeKind: 'autobyteus', enabled: true, reason: null },
-        { runtimeKind: 'codex_app_server', enabled: true, reason: null },
-        { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
-      ],
-      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
-      availabilityByKind: vi.fn((runtimeKind: string) =>
-        runtimeStore.availabilities.find((availability: any) => availability.runtimeKind === runtimeKind) ?? null,
-      ),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) =>
-        runtimeStore.availabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
-      ),
-      runtimeReason: vi.fn((runtimeKind: string) =>
-        runtimeStore.availabilityByKind(runtimeKind)?.reason ?? null,
-      ),
-    }
+describe('TeamRunConfigForm shared editable/stored presentation', () => {
+  it('preserves the personal-baseline root order and projects inherited nested Team/Agent values', () => {
+    const wrapper = mountForm()
+    const root = wrapper.findComponent(TeamScopeConfigEditor)
+    const tree = wrapper.findComponent(TeamMemberConfigTree)
+    const directChildren = Array.from(wrapper.element.children)
 
-    teamDefinitionStore = {
-      getAgentTeamDefinitionById: vi.fn((id: string) => {
-        if (id === 'sub-team-1') {
-          return {
-            id: 'sub-team-1',
-            name: 'Sub Team',
-            coordinatorMemberName: 'Leaf A',
-            nodes: [
-              { memberName: 'review_lead', refType: 'AGENT', ref: 'agent-review' },
-              { memberName: 'qa_specialist', refType: 'AGENT', ref: 'agent-qa' },
-            ],
-          }
-        }
-        return null
+    expect(directChildren[0]?.querySelector('label')?.textContent).toContain('team_definition')
+    expect(directChildren[1]?.tagName.toLowerCase()).toBe('team-scope-config-editor-stub')
+    expect(directChildren[2]?.querySelector('[data-test="team-member-overrides-toggle"]')).not.toBeNull()
+    expect(root.props()).toEqual(expect.objectContaining({
+      isRoot: true, disabled: false,
+      scope: expect.objectContaining({
+        address: '/',
+        workspaceSelection: { mode: 'existing', existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/root' },
+        effectiveConfig: expect.objectContaining({
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', skillAccessMode: 'PRELOADED_ONLY',
+        }),
       }),
-    }
-
-    ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
-    ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore)
-    ;(useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore)
+    }))
+    const members = tree.props('memberNodes') as any[]
+    expect(members[1].scope).toEqual(expect.objectContaining({
+      address: '/StudentStudyGroup', isCustomized: false,
+      effectiveConfig: expect.objectContaining({ llmModelIdentifier: 'gpt-5.6-luna' }),
+    }))
+    expect(members[1].children[1]).toEqual(expect.objectContaining({
+      address: '/StudentStudyGroup/student_two',
+      effectiveConfig: expect.objectContaining({ runtimeKind: 'codex_app_server', skillAccessMode: 'PRELOADED_ONLY' }),
+    }))
   })
 
-  const buildWrapper = (
-    configOverrides: Record<string, unknown> = {},
-    teamDefinition = mockTeamDef,
-    propOverrides: Record<string, unknown> = {},
-  ) => {
-    const config = { ...mockConfig, ...configOverrides } as any
-    const wrapper = mount(TeamRunConfigForm, {
-      props: {
-        config,
-        teamDefinition: teamDefinition as any,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
-        ...propOverrides,
-      },
-      global: {
-        stubs: {
-          WorkspaceSelector: true,
-          SearchableGroupedSelect: {
-            name: 'SearchableGroupedSelect',
-            template: '<div class="searchable-select-stub"></div>',
-            props: ['modelValue', 'disabled', 'options'],
-            emits: ['update:modelValue'],
-          },
-          MemberOverrideItem: {
-            name: 'MemberOverrideItem',
-            template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'memberAddress', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
-            emits: ['update:override'],
-          },
+  it('emits exact typed editable Team/reset/Agent/root/workspace commands', async () => {
+    const nestedSelection = { mode: 'new' as const, existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/study' }
+    const wrapper = mountForm(editableModel({
+      config: config({
+        teamOverrides: {
+          '/StudentStudyGroup': { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null },
         },
-      },
-    })
-    return { wrapper, config }
-  }
+      }),
+      selections: { '/StudentStudyGroup': nestedSelection },
+    }))
+    const root = wrapper.findComponent(TeamScopeConfigEditor)
+    const tree = wrapper.findComponent(TeamMemberConfigTree)
+    const members = tree.props('memberNodes') as any[]
+    expect(members[1].scope.isCustomized).toBe(true)
+    expect(members[1].scope.workspaceSelection).toEqual(nestedSelection)
 
-  const expandMemberOverrides = async (wrapper: any) => {
-    await wrapper.get('[data-test="team-member-overrides-toggle"]').trigger('click')
-    await wrapper.vm.$nextTick()
-  }
-
-  const emittedConfigEdits = (wrapper: any) =>
-    (wrapper.emitted('edit-config') ?? []).map(([edit]: [unknown]) => edit)
-
-  it('places team auto approve before a collapsed accessible member override disclosure', async () => {
-    const { wrapper } = buildWrapper({}, sixMemberTeamDef)
-
-    const renderedHtml = wrapper.html()
-    expect(renderedHtml.indexOf('data-test="team-auto-approve-row"')).toBeGreaterThan(-1)
-    expect(renderedHtml.indexOf('data-test="team-member-overrides-toggle"')).toBeGreaterThan(-1)
-    expect(renderedHtml.indexOf('data-test="team-auto-approve-row"')).toBeLessThan(
-      renderedHtml.indexOf('data-test="team-member-overrides-toggle"'),
-    )
-
-    const toggle = wrapper.get('[data-test="team-member-overrides-toggle"]')
-    const panel = wrapper.get('[data-test="team-member-overrides-panel"]')
-    const chevron = wrapper.get('[data-test="team-member-overrides-chevron"]')
-
-    expect(toggle.text()).toContain('Team Members Override (6)')
-    expect(toggle.attributes('aria-expanded')).toBe('false')
-    expect(toggle.attributes('aria-controls')).toBe('team-member-overrides-panel')
-    expect(panel.attributes('id')).toBe('team-member-overrides-panel')
-    expect(panel.attributes('style')).toContain('display: none')
-    expect(chevron.classes()).toContain('-rotate-90')
-    expect(wrapper.find('[data-test="team-member-overrides-count"]').exists()).toBe(false)
-
-    await toggle.trigger('click')
-
-    expect(toggle.attributes('aria-expanded')).toBe('true')
-    expect(panel.attributes('style') ?? '').not.toContain('display: none')
-    expect(chevron.classes()).not.toContain('-rotate-90')
-  })
-
-  it('toggles the member override disclosure without mutating config fields', async () => {
-    const { wrapper, config } = buildWrapper({
-      autoExecuteTools: true,
-      memberOverrides: {
-        'Member B': {
-          autoExecuteTools: false,
-        },
-      },
-    })
-
-    expect(wrapper.get('[data-test="team-member-overrides-count"]').text()).toContain('1 overridden')
-    const initialMemberOverrides = JSON.parse(JSON.stringify(config.memberOverrides))
-
-    await expandMemberOverrides(wrapper)
-    await wrapper.get('[data-test="team-member-overrides-toggle"]').trigger('click')
-
-    expect(wrapper.get('[data-test="team-member-overrides-toggle"]').attributes('aria-expanded')).toBe('false')
-    expect(config.autoExecuteTools).toBe(true)
-    expect(config.memberOverrides).toEqual(initialMemberOverrides)
-  })
-
-  it('renders runtime selector and member override entries', () => {
-    const { wrapper } = buildWrapper()
-
-    expect(wrapper.text()).toContain('Test Team')
-    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
-    expect(items).toHaveLength(2)
-    expect(items[0].props('memberName')).toBe('Member A')
-    expect(items[0].props('globalRuntimeKind')).toBe('autobyteus')
-    expect(items[0].props('globalLlmModel')).toBe('gpt-5.4')
-  })
-
-  it('relays the complete controlled workspace selection without retaining a local copy', () => {
-    const workspaceSelection = {
-      mode: 'new' as const,
-      existingWorkspaceId: 'temp-ws',
-      newWorkspacePath: '/workspace/pending',
-    }
-    const { wrapper } = buildWrapper({}, mockTeamDef, { workspaceSelection })
-    const selector = wrapper.findComponent({ name: 'WorkspaceSelector' })
-
-    expect(selector.props('modelValue')).toEqual(workspaceSelection)
-
-    const nextSelection = {
-      mode: 'existing' as const,
-      existingWorkspaceId: 'workspace-two',
-      newWorkspacePath: '/workspace/pending',
-    }
-    selector.vm.$emit('update:modelValue', nextSelection)
-
-    expect(wrapper.emitted('update:workspaceSelection')).toEqual([[nextSelection]])
-  })
-
-  it('loads models for the team runtime and syncs runtime catalogs for explicit member runtimes', async () => {
-    const { wrapper } = buildWrapper({
-      memberOverrides: {
-        'Member B': {
-          runtimeKind: 'claude_agent_sdk',
-        },
-      },
-    })
-
-    await wrapper.vm.$nextTick()
+    root.vm.$emit('update-root', 'model', 'gpt-5.5')
+    root.vm.$emit('update:workspace-selection', '/', { mode: 'existing', existingWorkspaceId: 'ws-next', newWorkspacePath: '' })
+    tree.vm.$emit('update-team', '/StudentStudyGroup', { autoExecuteTools: true })
+    tree.vm.$emit('reset-team', '/StudentStudyGroup')
+    tree.vm.$emit('update-agent', '/StudentStudyGroup/student_two', { llmModelIdentifier: 'claude-haiku' })
+    tree.vm.$emit('update:workspace-selection', '/StudentStudyGroup', nestedSelection)
+    tree.vm.$emit('retry-runtime-catalog', 'claude_agent_sdk')
     await wrapper.vm.$nextTick()
 
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('autobyteus')
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('claude_agent_sdk')
-
-    const store = useTeamRunConfigStore()
-    expect(store.runtimeModelCatalogs.autobyteus).toEqual(['gpt-5.4', 'gpt-5.5-responses'])
-    expect(store.runtimeModelCatalogs.claude_agent_sdk).toEqual(['claude-sonnet'])
-  })
-
-  it('changes runtime kind and reloads runtime-scoped models', async () => {
-    const { wrapper, config } = buildWrapper({
-      runtimeKind: 'autobyteus',
-      llmModelIdentifier: 'gpt-5.4',
-    })
-
-    await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
-    await wrapper.vm.$nextTick()
-
-    expect(emittedConfigEdits(wrapper)).toEqual([
-      { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
-      { kind: 'set_model', llmModelIdentifier: '' },
-      { kind: 'set_llm_config', llmConfig: null },
+    expect(wrapper.emitted('edit-config')).toEqual([
+      [{ kind: 'set_root_model', llmModelIdentifier: 'gpt-5.5' }],
+      [{ kind: 'set_team_override', teamAddress: '/StudentStudyGroup', override: { autoExecuteTools: true } }],
+      [{ kind: 'reset_team_override', teamAddress: '/StudentStudyGroup' }],
+      [{ kind: 'set_agent_override', agentAddress: '/StudentStudyGroup/student_two', override: { llmModelIdentifier: 'claude-haiku' } }],
     ])
-    expect(config.runtimeKind).toBe('autobyteus')
-    expect(config.llmModelIdentifier).toBe('gpt-5.4')
-
-    await wrapper.setProps({
-      config: {
-        ...config,
-        runtimeKind: 'codex_app_server',
-        llmModelIdentifier: '',
-        llmConfig: null,
-      },
-    })
-    await wrapper.vm.$nextTick()
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
-  })
-
-
-  it('renders Codex effort-only reasoning defaults visibly on the team-global config path', async () => {
-    const { wrapper, config } = buildWrapper({
-      runtimeKind: 'codex_app_server',
-      llmModelIdentifier: 'gpt-5.5',
-      llmConfig: null,
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    const reasoningSelect = wrapper.get('select#team-run-reasoning_effort')
-    const serviceTierSelect = wrapper.get('select#team-run-service_tier')
-    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-
-    expect(thinkingRow.props('enabled')).toBe(true)
-    expect(thinkingRow.get('button').element.disabled).toBe(true)
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
-    expect(reasoningSelect.isVisible()).toBe(true)
-    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
-    expect((serviceTierSelect.element as HTMLSelectElement).value).toBe('__default__')
-    expect(config.llmConfig).toBeNull()
-
-    await thinkingRow.get('button').trigger('click')
-    expect(config.llmConfig).toBeNull()
-
-    await reasoningSelect.setValue('xhigh')
-
-    expect(emittedConfigEdits(wrapper)).toContainEqual({
-      kind: 'set_llm_config',
-      llmConfig: { reasoning_effort: 'xhigh' },
-    })
-    expect(config.llmConfig).toBeNull()
-  })
-
-  it('starts team-global advanced collapsed for OpenAI Responses off defaults', async () => {
-    const { wrapper, config } = buildWrapper({
-      runtimeKind: 'autobyteus',
-      llmModelIdentifier: 'gpt-5.5-responses',
-      llmConfig: null,
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-
-    expect(thinkingRow.props('enabled')).toBe(false)
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
-    expect((wrapper.get('select#team-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
-    expect((wrapper.get('select#team-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
-    expect(config.llmConfig).toBeNull()
-  })
-
-  it('emits the closed model edit while leaving inherited-config pruning to the store owner', async () => {
-    const { wrapper, config } = buildWrapper({
-      runtimeKind: 'codex_app_server',
-      llmModelIdentifier: 'gpt-5.4',
-      llmConfig: { reasoning_effort: 'high' },
-      memberOverrides: {
-        'Member A': {
-          llmConfig: { reasoning_effort: 'xhigh' },
-        },
-        'Member B': {
-          autoExecuteTools: true,
-          llmConfig: { reasoning_effort: 'medium' },
-        },
-      },
-    })
-
-    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
-    await wrapper.vm.$nextTick()
-
-    expect(emittedConfigEdits(wrapper)).toEqual([
-      { kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' },
-      { kind: 'set_llm_config', llmConfig: null },
+    expect(wrapper.emitted('update:workspaceSelection')).toEqual([
+      ['/', { mode: 'existing', existingWorkspaceId: 'ws-next', newWorkspacePath: '' }],
+      ['/StudentStudyGroup', nestedSelection],
     ])
-    expect(config.llmModelIdentifier).toBe('gpt-5.4')
-    expect(config.llmConfig).toEqual({ reasoning_effort: 'high' })
-    expect(config.memberOverrides['Member A'].llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+    expect(wrapper.emitted('retry-runtime-catalog')).toEqual([['claude_agent_sdk']])
   })
 
-  it('emits the closed runtime edit while leaving inherited-config pruning to the store owner', async () => {
-    const { wrapper, config } = buildWrapper({
-      runtimeKind: 'autobyteus',
-      llmModelIdentifier: 'gpt-5.4',
-      llmConfig: { thinking_level: 5 },
-      memberOverrides: {
-        'Member A': {
-          llmConfig: { thinking_level: 3 },
-        },
-        'Member B': {
-          llmModelIdentifier: 'gpt-5.4',
-          llmConfig: { thinking_level: 4 },
-        },
-      },
-    })
-
-    await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
-    await wrapper.vm.$nextTick()
-
-    expect(emittedConfigEdits(wrapper)).toEqual([
-      { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
-      { kind: 'set_model', llmModelIdentifier: '' },
-      { kind: 'set_llm_config', llmConfig: null },
-    ])
-    expect(config.runtimeKind).toBe('autobyteus')
-    expect(config.llmModelIdentifier).toBe('gpt-5.4')
-    expect(config.llmConfig).toEqual({ thinking_level: 5 })
-    expect(config.memberOverrides['Member A'].llmConfig).toEqual({ thinking_level: 3 })
+  it('shows sorted topology repairs and exposes an operable members disclosure', async () => {
+    const wrapper = mountForm(editableModel({ repairs: ['/Removed', '/StudentStudyGroup/old'] }))
+    expect(wrapper.get('[data-test="team-topology-repair-notice"]').text()).toContain('/Removed, /StudentStudyGroup/old')
+    const disclosure = wrapper.get('button[aria-controls="team-member-overrides-panel"]')
+    expect(disclosure.text()).toContain('team_members_override (3)')
+    expect(disclosure.attributes('aria-expanded')).toBe('false')
+    expect(wrapper.get('#team-member-overrides-panel').attributes('style')).toContain('display: none')
+    await disclosure.trigger('click')
+    expect(disclosure.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('#team-member-overrides-panel').attributes('style')).toBeUndefined()
   })
 
-  it('renders nested leaf overrides under their subteam group and keeps canonical-address override identity', async () => {
-    const { wrapper } = buildWrapper({}, nestedTeamDef)
-    await wrapper.vm.$nextTick()
-    await expandMemberOverrides(wrapper)
-
-    const groups = wrapper.findAll('[data-test="member-override-group"]')
-    expect(groups).toHaveLength(1)
-    expect(groups[0].text()).toContain('BuildSquad')
-    expect(groups[0].text()).toContain('BuildSquad')
-
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
-    const itemTexts = groups[0].findAllComponents({ name: 'MemberOverrideItem' })
-
-    expect(items).toHaveLength(3)
-    expect(items[0].props('memberAddress')).toBe('/program_manager')
-    expect(itemTexts).toHaveLength(2)
-    expect(itemTexts[0].props('memberName')).toBe('review_lead')
-    expect(itemTexts[0].props('memberAddress')).toBe('/BuildSquad/review_lead')
-    expect(itemTexts[0].props('memberBreadcrumb')).toBe('BuildSquad / review_lead')
-    expect(itemTexts[1].props('memberName')).toBe('qa_specialist')
-    expect(itemTexts[1].props('memberAddress')).toBe('/BuildSquad/qa_specialist')
-
-    itemTexts[0].vm.$emit('update:override', '/BuildSquad/review_lead', {
-      runtimeKind: 'codex_app_server',
-    })
-    expect(emittedConfigEdits(wrapper)).toContainEqual({
-      kind: 'set_member_override',
-      memberAddress: '/BuildSquad/review_lead',
-      override: {
-        runtimeKind: 'codex_app_server',
-      },
-    })
-    expect((wrapper.props('config') as any).memberOverrides).toEqual({})
+  it('renders no hierarchy placeholder for a root-only Team definition', () => {
+    const wrapper = mountForm(editableModel({ definition: { ...rootDefinition, nodes: [] } }))
+    expect(wrapper.find('[data-test="team-member-overrides-toggle"]').exists()).toBe(false)
+    expect(wrapper.findComponent(TeamMemberConfigTree).exists()).toBe(false)
   })
 
-  it('renders selected existing team run configuration as read-only while keeping member overrides inspectable', async () => {
-    const { wrapper, config } = buildWrapper({
-      llmConfig: { reasoning_effort: 'high' },
-    }, mockTeamDef, { readOnly: true })
-
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.find('select#team-run-runtime-kind').element.disabled).toBe(true)
-    expect(wrapper.find('button#team-auto-execute').element.disabled).toBe(true)
-    expect(wrapper.find('select#team-skill-access-mode').exists()).toBe(false)
-    expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
-
-    const overrideDisclosure = wrapper.get('[data-test="team-member-overrides-toggle"]')
-    expect(overrideDisclosure.attributes('disabled')).toBeUndefined()
-    expect(overrideDisclosure.attributes('aria-expanded')).toBe('false')
-
-    await overrideDisclosure.trigger('click')
-    expect(overrideDisclosure.attributes('aria-expanded')).toBe('true')
-
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
-    expect(items).toHaveLength(2)
-    expect(items[0].props('disabled')).toBe(true)
-    expect(items[0].props('advancedInitiallyExpanded')).toBe(true)
-    expect(items[0].props('missingHistoricalConfig')).toBe(false)
-    expect(wrapper.text()).toContain('Selected team run configuration read only')
-
-    items[0].vm.$emit('update:override', 'Member A', {
-      llmModelIdentifier: 'changed-model',
-    })
-    expect(config.memberOverrides).toEqual({})
-    expect(emittedConfigEdits(wrapper)).toEqual([])
+  it('disables the complete editable form while a launch is pending', () => {
+    const wrapper = mountForm(editableModel({ forceReadOnly: true }))
+    expect(wrapper.findComponent(TeamScopeConfigEditor).props('disabled')).toBe(true)
+    expect(wrapper.findComponent(TeamMemberConfigTree).props()).toEqual(expect.objectContaining({ disabled: true }))
+    expect(wrapper.text()).toContain('configuration_locked_because_execution_has_start')
   })
 
-  it('marks historical team member config as missing when read-only metadata has null llmConfig', async () => {
-    const { wrapper } = buildWrapper({
-      llmConfig: null,
-      isLocked: true,
-    })
+  it('renders an immutable stored snapshot through the same form with exact values and no commands', async () => {
+    const model = storedModel()
+    const wrapper = mountForm(model)
+    const root = wrapper.findComponent(TeamScopeConfigEditor)
+    const tree = wrapper.findComponent(TeamMemberConfigTree)
 
-    await wrapper.setProps({ readOnly: true })
+    expect(wrapper.attributes('data-mode')).toBe('stored')
+    expect(root.props()).toEqual(expect.objectContaining({
+      disabled: true,
+      scope: expect.objectContaining({
+        mode: 'stored',
+        effectiveConfig: expect.objectContaining({
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
+          llmConfig: { reasoning_effort: 'high' }, workspaceRootPath: '/workspace/root',
+        }),
+      }),
+    }))
+    const members = tree.props('memberNodes') as any[]
+    expect(members.map((node) => node.address)).toEqual(['/teacher', '/StudentStudyGroup'])
+    expect(members[1].children[0]).toEqual(expect.objectContaining({
+      mode: 'stored', address: '/StudentStudyGroup/student_one',
+      effectiveConfig: expect.objectContaining({
+        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'historical-student-model',
+        llmConfig: { temperature: 0.2 }, workspaceRootPath: '/workspace/student',
+      }),
+    }))
+    expect(tree.props()).toEqual(expect.objectContaining({ disabled: true }))
+    expect(wrapper.text()).toContain('selected_team_run_configuration_read_only')
+    expect(wrapper.text()).not.toContain('Stored root Team defaults')
+    expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
+    const disclosure = wrapper.get('button[aria-controls="team-member-overrides-panel"]')
+    expect(disclosure.attributes('aria-expanded')).toBe('false')
+    expect(disclosure.attributes('disabled')).toBeUndefined()
+    await disclosure.trigger('click')
+    expect(disclosure.attributes('aria-expanded')).toBe('true')
+
+    root.vm.$emit('update-root', 'model', 'replacement')
+    root.vm.$emit('update:workspace-selection', '/', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/other' })
+    tree.vm.$emit('update-team', '/StudentStudyGroup', { autoExecuteTools: false })
+    tree.vm.$emit('reset-team', '/StudentStudyGroup')
+    tree.vm.$emit('update-agent', '/teacher', { autoExecuteTools: true })
+    tree.vm.$emit('retry-runtime-catalog', 'codex_app_server')
     await wrapper.vm.$nextTick()
-    await expandMemberOverrides(wrapper)
 
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
-    expect(items).toHaveLength(2)
-    expect(items[0].props('missingHistoricalConfig')).toBe(true)
-    expect(items[1].props('missingHistoricalConfig')).toBe(true)
+    expect(wrapper.emitted('edit-config')).toBeUndefined()
+    expect(wrapper.emitted('update:workspaceSelection')).toBeUndefined()
+    expect(wrapper.emitted('retry-runtime-catalog')).toBeUndefined()
   })
 })

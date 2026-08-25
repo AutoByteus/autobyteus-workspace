@@ -3,10 +3,12 @@ import {
   buildTeamRunTemplate,
   cloneAgentConfig,
   cloneTeamConfig,
+} from '~/composables/useDefinitionLaunchDefaults'
+import {
   normalizeModelConfig,
   normalizeModelIdentifier,
   normalizeRuntimeKind,
-} from '~/composables/useDefinitionLaunchDefaults'
+} from '~/utils/teamRunConfigUtils'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type {
   TeamRunConfig,
@@ -18,7 +20,6 @@ import type {
 } from '~/stores/applicationStore'
 import type { useWorkspaceStore } from '~/stores/workspace'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
 
 export type PreparedAgentApplicationLaunch = {
   kind: 'AGENT'
@@ -97,13 +98,4 @@ export const buildPreparedTeamLaunch = (
       getTeamDefinitionById(teamDefinitionId) ?? null,
   }),
   config: cloneTeamConfig(buildTeamRunTemplate(teamDefinition)),
-})
-
-export const buildTeamMemberConfigs = (
-  preparedLaunch: PreparedTeamApplicationLaunch,
-  workspaceRootPath: string | null,
-) => buildTeamRunMemberConfigRecords({
-  config: preparedLaunch.config,
-  leafMembers: preparedLaunch.leafMembers,
-  workspaceRootPath,
 })

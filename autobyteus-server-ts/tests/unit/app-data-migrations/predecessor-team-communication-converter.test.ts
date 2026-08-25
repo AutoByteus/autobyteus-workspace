@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunExecutionTreePayload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import { convertPredecessorTeamCommunication } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.js";
 
 const fixturePath = path.resolve(

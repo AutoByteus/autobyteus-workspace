@@ -10,12 +10,12 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import { createTeamExecutionViewState } from '../teamExecutionViewState';
+import { createTeamConfigurationView } from '../teamExecutionContextFactory';
 
 const createdAt = '2026-08-14T12:00:00.000Z';
 const launch = {
-  runtime_kind: 'AUTOBYTEUS' as const,
+  runtime_kind: 'autobyteus' as const,
   llm_model_identifier: 'provider:model',
   llm_config: null,
   auto_execute_tools: false,
@@ -24,16 +24,18 @@ const launch = {
 };
 
 const tree = (): TeamRunExecutionTreeDto => ({
-  schema_version: 1,
+  schema_version: 2,
   created_at: createdAt,
   archived_at: null,
   application_binding: null,
   handoffs: [{ from: '/Teacher', to: '/StudentStudyGroup', rules: ['Delegate study work.'] }],
   root_team: {
+    address: '/',
     team_definition_id: 'classroom-definition',
     team_definition_name: 'Classroom',
     team_run_id: 'root-team-1',
     coordinator_address: '/Teacher',
+    default_launch_configuration: launch,
     members: [
       {
         kind: 'configured_agent', address: '/Teacher', agent_definition_id: 'teacher-definition',
@@ -44,6 +46,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
         kind: 'configured_team', address: '/StudentStudyGroup', team_definition_id: 'study-definition',
         role: 'Study group', description: null, team_run_id: 'study-team-persistent',
         coordinator_address: '/StudentStudyGroup/Coordinator', task_executions: [],
+        default_launch_configuration: launch,
         members: [
           {
             kind: 'configured_agent', address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition',
@@ -82,10 +85,9 @@ const context = (agentRunId: string, address: AgentTeamAddress): AgentContext =>
   }, state);
 };
 
-const config = (): TeamRunConfig => ({
-  teamDefinitionId: 'classroom-definition', teamDefinitionName: 'Classroom', runtimeKind: 'autobyteus',
-  workspaceId: null, workspaceMetadata: null, llmModelIdentifier: 'provider:model', llmConfig: null,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', memberOverrides: {}, isLocked: true,
+const config = (executionTree: TeamRunExecutionTreeDto) => createTeamConfigurationView({
+  tree: executionTree,
+  workspaceMetadataByAddress: new Map(),
 });
 
 const task = (input: {
@@ -125,7 +127,7 @@ const createStateFixture = (input: {
   const dynamicallyCreatedContexts = new Map<string, AgentContext>();
   const state = createTeamExecutionViewState({
     rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree,
-    tasks: input.tasks ?? [], messages: [], configuration: config(),
+    tasks: input.tasks ?? [], messages: [], configuration: config(initialTree),
     initialFocusedAgentRunId: input.initialFocusedAgentRunId ?? 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({
       agentRunId, memberAddress, agentContext: initialContexts.get(agentRunId)!,

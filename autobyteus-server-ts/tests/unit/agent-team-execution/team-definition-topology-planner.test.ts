@@ -8,11 +8,16 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamDefinitionTopologyPlanner } from "../../../src/agent-team-execution/services/team-definition-topology-planner.js";
 
-const buildPlanner = (definitions: Map<string, unknown>): TeamDefinitionTopologyPlanner =>
-  new TeamDefinitionTopologyPlanner(
+const buildPlanner = (definitions: Map<string, unknown>) => {
+  const teamAllocator = { allocateForTeamDefinitionName: vi.fn((name: string) => `team-${name.replaceAll(" ", "-").toLowerCase()}`) };
+  const agentAllocator = { allocateForAgentDefinition: vi.fn(async (id: string) => `run-${id}`) };
+  const planner = new TeamDefinitionTopologyPlanner(
     { getDefinitionById: vi.fn(async (id: string) => definitions.get(id) ?? null) } as never,
-    { allocateForAgentDefinition: vi.fn(async (id: string) => `run-${id}`) } as never,
+    teamAllocator,
+    agentAllocator,
   );
+  return { planner, teamAllocator, agentAllocator };
+};
 
 const buildLeafConfig = (memberAddress: string) => ({
   memberAddress,
@@ -23,6 +28,16 @@ const buildLeafConfig = (memberAddress: string) => ({
   workspaceRootPath: "/tmp/workspace",
   llmConfig: null,
   applicationExecutionContext: null,
+});
+
+const buildTeamConfig = (teamAddress: string) => ({
+  teamAddress,
+  llmModelIdentifier: "gpt-test",
+  autoExecuteTools: false,
+  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  workspaceRootPath: "/tmp/workspace",
+  llmConfig: null,
 });
 
 const rootAndReviewDefinitions = () => new Map<string, unknown>([
@@ -48,9 +63,9 @@ const rootAndReviewDefinitions = () => new Map<string, unknown>([
 
 describe("TeamDefinitionTopologyPlanner", () => {
   it("allocates exact recursive Agent/AgentTeam nodes and canonical handoffs", async () => {
-    const plan = await buildPlanner(rootAndReviewDefinitions()).buildPlan({
+    const plan = await buildPlanner(rootAndReviewDefinitions()).planner.buildPlan({
       teamDefinitionId: "root-team",
-      teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [
         buildLeafConfig("/Lead"),
         buildLeafConfig("/ReviewTeam/Reviewer"),
@@ -62,7 +77,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
     expect(plan.config.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(plan.config.rootTeam).toMatchObject({
       address: "/",
-      teamRunId: "root-run",
+      teamRunId: "team-root-team",
       coordinatorAddress: "/Lead",
       children: [
         { kind: "agent", address: "/Lead", agentDefinitionId: "agent-lead", agentRunId: "run-agent-lead" },
@@ -96,9 +111,9 @@ describe("TeamDefinitionTopologyPlanner", () => {
       rules: ["Root duplicate."],
     });
 
-    await expect(buildPlanner(definitions).buildPlan({
+    await expect(buildPlanner(definitions).planner.buildPlan({
       teamDefinitionId: "root-team",
-      teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [
         buildLeafConfig("/Lead"),
         buildLeafConfig("/ReviewTeam/Reviewer"),
@@ -108,7 +123,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
   });
 
   it("requires exact addresses for duplicate leaf names instead of choosing by a bare name", async () => {
-    const planner = buildPlanner(new Map([
+    const { planner } = buildPlanner(new Map([
       ["root-team", {
         name: "Root Team",
         coordinatorMemberName: "Worker",
@@ -126,7 +141,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
 
     await expect(planner.buildPlan({
       teamDefinitionId: "root-team",
-      teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/SubTeam")],
       memberConfigs: [buildLeafConfig("/Worker")],
     })).rejects.toThrow("Launch settings for Team member '/SubTeam/Worker' were not provided");
   });
@@ -134,7 +149,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
   it("resolves team-local subteams and agents from the containing Team definition", async () => {
     const localTeamId = buildTeamLocalTeamDefinitionId("root-team", "review-team");
     const localAgentId = buildTeamLocalAgentDefinitionId(localTeamId, "reviewer");
-    const planner = buildPlanner(new Map([
+    const { planner } = buildPlanner(new Map([
       ["root-team", {
         name: "Root Team",
         coordinatorMemberName: "Lead",
@@ -152,7 +167,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
 
     const plan = await planner.buildPlan({
       teamDefinitionId: "root-team",
-      teamRunId: "root-run",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
       memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer")],
     });
 
@@ -162,5 +177,53 @@ describe("TeamDefinitionTopologyPlanner", () => {
       address: "/ReviewTeam",
       children: [{ agentDefinitionId: localAgentId, address: "/ReviewTeam/Reviewer" }],
     });
+  });
+
+  it.each([
+    {
+      name: "duplicate Team coverage",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer"), buildLeafConfig("/ReviewTeam/Approver")],
+    },
+    {
+      name: "noncanonical Team address",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam/")],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer"), buildLeafConfig("/ReviewTeam/Approver")],
+    },
+    {
+      name: "Team/Agent kind mismatch",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/Lead")],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer"), buildLeafConfig("/ReviewTeam/Approver")],
+    },
+    {
+      name: "missing Agent coverage",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer")],
+    },
+    {
+      name: "wrong Agent definition",
+      teamConfigs: [buildTeamConfig("/"), buildTeamConfig("/ReviewTeam")],
+      memberConfigs: [
+        { ...buildLeafConfig("/Lead"), agentDefinitionId: "wrong-agent" },
+        buildLeafConfig("/ReviewTeam/Reviewer"),
+        buildLeafConfig("/ReviewTeam/Approver"),
+      ],
+    },
+    {
+      name: "divergent root skill policy",
+      teamConfigs: [buildTeamConfig("/"), { ...buildTeamConfig("/ReviewTeam"), skillAccessMode: SkillAccessMode.NONE }],
+      memberConfigs: [buildLeafConfig("/Lead"), buildLeafConfig("/ReviewTeam/Reviewer"), buildLeafConfig("/ReviewTeam/Approver")],
+    },
+  ])("rejects $name before allocating any configured identity", async ({ teamConfigs, memberConfigs }) => {
+    const { planner, teamAllocator, agentAllocator } = buildPlanner(rootAndReviewDefinitions());
+
+    await expect(planner.buildPlan({
+      teamDefinitionId: "root-team",
+      teamConfigs,
+      memberConfigs,
+    })).rejects.toThrow();
+
+    expect(teamAllocator.allocateForTeamDefinitionName).not.toHaveBeenCalled();
+    expect(agentAllocator.allocateForAgentDefinition).not.toHaveBeenCalled();
   });
 });

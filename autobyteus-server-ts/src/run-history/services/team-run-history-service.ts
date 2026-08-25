@@ -1,5 +1,5 @@
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { ConfiguredAgentExecution, ConfiguredMemberExecution, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -107,8 +107,8 @@ export class TeamRunHistoryService {
   }
 }
 
-const collectConfiguredAgents = (members: readonly ConfiguredMemberExecution[]): ConfiguredAgentExecution[] => {
-  const output: ConfiguredAgentExecution[] = [];
+const collectConfiguredAgents = (members: readonly ConfiguredExecutionNode[]): ConfiguredAgentExecutionNode[] => {
+  const output: ConfiguredAgentExecutionNode[] = [];
   for (const member of members) {
     if ("agentRunId" in member) output.push(member);
     else output.push(...collectConfiguredAgents(member.members));

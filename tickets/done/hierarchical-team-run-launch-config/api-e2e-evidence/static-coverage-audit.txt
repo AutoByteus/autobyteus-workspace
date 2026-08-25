@@ -1,0 +1,47 @@
+=== git diff --check ===
+=== stale removed helper in updated coverage ===
+=== current V2 and current runtime assertions ===
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:178:      schemaVersion: 2,
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:212:      schemaVersion: 2,
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:251:  runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:598:  `, { runtimeKind: "autobyteus" });
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:618:      runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:658:    schemaVersion: 2,
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:664:        runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:676:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:779:      schema_version: 2,
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:832:  `, { runtimeKind: "autobyteus" });
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:853:      runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:893:      teamConfigs: [{
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:898:        runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:907:        runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:80:          schemaVersion: 2,
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:184:      teamConfigs: [
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:235:        schemaVersion: 2,
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:255:        schemaVersion: 2,
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:272:      teamConfigs: [
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:93:  `, { runtimeKind: "autobyteus" });
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:169:        teamConfigs: [
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:176:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:185:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:197:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:207:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:217:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:227:            runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:244:      schemaVersion: 2,
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:248:          runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:260:        runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:284:        schema_version: 2,
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:313:        schema_version: 2,
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:357:      teamConfigs: [
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:365:            : { runtimeKind: "autobyteus" }),
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:373:          runtimeKind: "autobyteus",
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:390:          : { runtimeKind: "autobyteus" }),
+=== updated durable coverage paths ===
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+autobyteus-server-ts/tests/unit/run-history/services/team-run-history-service.test.ts
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts

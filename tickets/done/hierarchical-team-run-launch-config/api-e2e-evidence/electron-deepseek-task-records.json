@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+  "records": [
+    {
+      "taskId": "task_86a98cacede2468484e56e77f82e82c2",
+      "delegatorAgentRunId": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+      "recipientAddress": "/StudentStudyGroup",
+      "taskExecution": {
+        "teamRunId": "team_local_team_nested_classroom_test_student_st_7a1cec02eaef487993914f3e5bda3575"
+      },
+      "description": "Please have the subteam coordinator complete this bounded nested-team task and submit exactly SUBTEAM_DEEPSEEK_TASK_OK using submit_task_result. The exact required answer/token is SUBTEAM_DEEPSEEK_TASK_OK; do not return any other token.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_5fecb8a011d641399883c19d7bc10907",
+          "message": "SUBTEAM_DEEPSEEK_TASK_OK",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T17:29:29.456Z"
+        },
+        {
+          "reviewId": "review_5f4d573a6a2849e991a94814df67e57a",
+          "reviewedSubmissionId": "submission_5fecb8a011d641399883c19d7bc10907",
+          "decision": "accept",
+          "comment": "Accepted because the submitted result matches exactly SUBTEAM_DEEPSEEK_TASK_OK.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-24T17:29:38.788Z"
+        }
+      ],
+      "createdAt": "2026-08-24T17:29:28.190Z"
+    }
+  ]
+}

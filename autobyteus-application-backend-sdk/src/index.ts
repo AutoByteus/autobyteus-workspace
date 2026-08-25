@@ -70,6 +70,7 @@ export type {
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
   ApplicationStorageContext,
+  ApplicationTeamScopeLaunchConfig,
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
   ApplicationTeamRunPreset,

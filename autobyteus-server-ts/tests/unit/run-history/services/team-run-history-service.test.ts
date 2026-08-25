@@ -50,7 +50,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
 };
 
 describe("TeamRunHistoryService current execution tree", () => {
-  it("projects history from the derived catalog plus exact V1 execution tree", async () => {
+  it("projects history from the derived catalog plus exact current V2 execution tree", async () => {
     const { service } = harness();
     await expect(service.listTeamRunHistory()).resolves.toEqual([expect.objectContaining({
       teamRunId: "team-1",
@@ -74,7 +74,7 @@ describe("TeamRunHistoryService current execution tree", () => {
     ]);
   });
 
-  it("skips catalog rows whose strict V1 tree is missing", async () => {
+  it("skips catalog rows whose strict current V2 tree is missing", async () => {
     const { service } = harness({ storedTree: null });
     await expect(service.listTeamRunHistory()).resolves.toEqual([]);
   });

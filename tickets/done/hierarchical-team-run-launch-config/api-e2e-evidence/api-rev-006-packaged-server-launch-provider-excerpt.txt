@@ -1,0 +1,39 @@
+15:Creating temp workspace at: /private/tmp/autobyteus-api-rev-006-owned/server-data/temp_workspace
+16:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/server-data/temp_workspace.
+17:Initialized TempWorkspace at /private/tmp/autobyteus-api-rev-006-owned/server-data/temp_workspace with fixed ID 'temp_ws_default'
+18:Temp workspace created and cached with ID: temp_ws_default
+31:Loading workspace packages to trigger registration...
+46:Successfully loaded workspace packages.
+59:Successfully registered tool definition: 'submit_task_result'
+60:Successfully registered tool definition: 'review_task_result'
+61:Loaded tool group: Task Delegation Tools
+93:GraphQL mutation to create workspace metadata
+94:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek
+95:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek.
+96:Created and registered workspace ID: agent_ws_64bf4b370ba8f76d6896c75696f8267831f5b75de388ed42ae8f91fabdc60812
+97:GraphQL mutation to create workspace metadata
+98:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna
+99:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna.
+100:Created and registered workspace ID: agent_ws_d8e1ab06e40417e6bb7282ad90c05610dc81154926120b1a8f264faecd0cdf86
+101:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna
+102:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna.
+103:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek
+104:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek.
+105:Reusing registered workspace ID: agent_ws_d8e1ab06e40417e6bb7282ad90c05610dc81154926120b1a8f264faecd0cdf86
+106:Reusing registered workspace ID: agent_ws_64bf4b370ba8f76d6896c75696f8267831f5b75de388ed42ae8f91fabdc60812
+107:Memory file missing: /private/tmp/autobyteus-api-rev-006-owned/server-data/memory/agent_teams/nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68/test_teacher_ffccb620bd11420c81808b370b1303ac/raw_traces_active.jsonl
+108:Memory file missing: /private/tmp/autobyteus-api-rev-006-owned/server-data/memory/agent_teams/nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68/student_study_group_9912f26d192c4b1e8403c6419a0ae404/student_one_885e94f54ecd4a61ac2fcab65883a009/raw_traces_active.jsonl
+109:Memory file missing: /private/tmp/autobyteus-api-rev-006-owned/server-data/memory/agent_teams/nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68/student_study_group_9912f26d192c4b1e8403c6419a0ae404/student_two_d2d215da57aa42c290d4e9fc6e6581fb/raw_traces_active.jsonl
+110:Agent team websocket attached for team run nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68
+111:Created agent session 0fff211b-8668-48eb-8255-bb072b2e36f7 for run nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68
+112:Agent Team WebSocket connected: session=0fff211b-8668-48eb-8255-bb072b2e36f7, run=nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68
+113:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna
+114:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna.
+115:Reusing registered workspace ID: agent_ws_d8e1ab06e40417e6bb7282ad90c05610dc81154926120b1a8f264faecd0cdf86
+116:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek
+117:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek.
+118:Reusing registered workspace ID: agent_ws_64bf4b370ba8f76d6896c75696f8267831f5b75de388ed42ae8f91fabdc60812
+216:Creating new workspace for rootPath: /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek
+217:Created metadata-only FileSystemWorkspace at /private/tmp/autobyteus-api-rev-006-owned/workspaces/nested-deepseek.
+218:Reusing registered workspace ID: agent_ws_64bf4b370ba8f76d6896c75696f8267831f5b75de388ed42ae8f91fabdc60812
+256:AgentExternalEventNotifier (NotifierID: 03df572f-45a3-4072-a4fb-a266b9809d50, AgentID: student_one_5398d86a09f44a00ad1f56ed9d7318f0) emitted agent_data_system_task_notification_received. Kwarg keys for emit: agent_id,payload

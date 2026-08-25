@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2",
+  "messages": [
+    {
+      "messageId": "teammsg_b-N9ydMIA_stEHHqEEaBj9HgDZZSijIc",
+      "senderAgentRunId": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+      "receiverAgentRunId": "student_one_9132b1db849f44538ca07bec97e57621",
+      "content": "Please reply to /Teacher via send_message_to with exactly SUBTEAM_DEEPSEEK_MESSAGE_OK.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T17:29:00.043Z"
+    },
+    {
+      "messageId": "teammsg_LBlXsjtFp08_MnABy4Uef-P7m44WzV_-",
+      "senderAgentRunId": "student_one_9132b1db849f44538ca07bec97e57621",
+      "receiverAgentRunId": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+      "content": "SUBTEAM_DEEPSEEK_MESSAGE_OK",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T17:29:01.600Z"
+    },
+    {
+      "messageId": "teammsg_kwt_JrovADJ_esE3_yBOEGPBCf_dm9nt",
+      "senderAgentRunId": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+      "receiverAgentRunId": "student_two_14f752071824489fa2f0a8e095161090",
+      "content": "Please reply to /Teacher via send_message_to with exactly SUBTEAM_SECOND_MEMBER_OK.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T17:31:28.903Z"
+    },
+    {
+      "messageId": "teammsg_mXo36Qqy3czEHWpjKi2YF8eFGnh6QMjz",
+      "senderAgentRunId": "student_two_14f752071824489fa2f0a8e095161090",
+      "receiverAgentRunId": "test_teacher_c31f6263160248d78ef9dc0566067adb",
+      "content": "SUBTEAM_SECOND_MEMBER_OK",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-24T17:31:31.837Z"
+    }
+  ]
+}

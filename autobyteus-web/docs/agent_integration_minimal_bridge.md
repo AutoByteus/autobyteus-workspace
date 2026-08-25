@@ -148,17 +148,22 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 
 ### Additional building blocks
 
-1) **Team GraphQL sender**
-- Mutation: `sendMessageToTeam`
-- Required on first message:
+1) **Team GraphQL creation**
+- Mutation: `createAgentTeamRun`
+- Required launch input:
   - `teamDefinitionId`
-  - `memberConfigs[]`
-  - `userInput.content`
+  - complete `teamConfigs[]` for the root and every nested Team
+  - complete `memberConfigs[]` for every configured Agent
+- The frontend resolves editable root/Team/Agent intent before this boundary;
+  GraphQL does not infer missing scoped configuration.
 
 2) **Team run store**
-- Creates an `AgentTeamContext` with member contexts
-- Sends the initial team message
-- Opens `/ws/agent-team/<teamRunId>` stream
+- Reconciles and admits the immutable launch draft
+- Prepares each Team-owned New workspace before creation
+- Calls `createAgentTeamRun`, hydrates the returned V2 execution tree into an
+  `AgentTeamContext`, and focuses the exact Agent address
+- Opens `/ws/agent-team/<teamRunId>` and sends the initial message to that exact
+  hydrated Agent execution
 
 3) **Team streaming service**
 - Routes incoming events to the exact member with path/route/run identity; name
@@ -198,14 +203,18 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 ### Minimal team file checklist
 
 - Team GraphQL sender
-  - `services/agentTeamGraphql.ts`
+  - `graphql/mutations/agentTeamRunMutations.ts`
 - Team run store
-  - `stores/agent/agentTeamRunStore.ts`
+  - `stores/agentTeamRunStore.ts`
 - Team streaming service
   - `services/agentStreaming/TeamStreamingService.ts`
 - Team types
   - `types/agent/AgentTeamContext.ts`
+  - `types/agent/TeamLaunchDraft.ts`
   - `types/agent/TeamRunConfig.ts`
+- Team hierarchy projection/readiness
+  - `utils/teamRunLaunchHierarchy.ts`
+  - `utils/teamRunLaunchReadiness.ts`
 
 ### Team runtime config
 

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-08-24T19:19:17.573Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/Teacher",
+      "to": "/StudentStudyGroup",
+      "rules": [
+        "When a bounded classroom task is ready to be delegated to the nested student study group.",
+        "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+      ]
+    },
+    {
+      "from": "/Teacher",
+      "to": "/StudentStudyGroup/student_one",
+      "rules": [
+        "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/Teacher",
+      "rules": [
+        "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+        "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/StudentStudyGroup/student_two",
+      "rules": [
+        "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_two",
+      "to": "/StudentStudyGroup/student_one",
+      "rules": [
+        "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+      ]
+    }
+  ],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "teamRunId": "nested_classroom_test_team_11122136fdbb4ad48c3bb22c29360d65",
+    "coordinatorAddress": "/Teacher",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005"
+    },
+    "members": [
+      {
+        "address": "/Teacher",
+        "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+        "role": null,
+        "description": null,
+        "agentRunId": "test_teacher_2f66be30e21945c682e53011d072cc92",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/root-api-rev-005"
+        }
+      },
+      {
+        "address": "/StudentStudyGroup",
+        "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+        "role": null,
+        "description": null,
+        "teamRunId": "student_study_group_b8d3d47d923d4b3b8301160ab7276e8c",
+        "coordinatorAddress": "/StudentStudyGroup/student_one",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005"
+        },
+        "members": [
+          {
+            "address": "/StudentStudyGroup/student_one",
+            "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+            "role": null,
+            "description": null,
+            "agentRunId": "student_one_f54108a3d6564a609167345f324f36fd",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005"
+            }
+          },
+          {
+            "address": "/StudentStudyGroup/student_two",
+            "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+            "role": null,
+            "description": null,
+            "agentRunId": "student_two_fbdcbf23c8944dc5a165b84852eff699",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/students-api-rev-005"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

@@ -1,0 +1,708 @@
+{
+    "data": {
+        "getTeamRunResumeConfig": {
+            "teamRunId": "nested_classroom_test_team_8db52ca1f739455099a70b7d4bc4060f",
+            "isActive": true,
+            "executionTree": {
+                "schema_version": 2,
+                "created_at": "2026-08-24T17:05:47.091Z",
+                "archived_at": null,
+                "application_binding": null,
+                "handoffs": [
+                    {
+                        "from": "/Teacher",
+                        "to": "/StudentStudyGroup",
+                        "rules": [
+                            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+                            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+                        ]
+                    },
+                    {
+                        "from": "/Teacher",
+                        "to": "/StudentStudyGroup/student_one",
+                        "rules": [
+                            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+                        ]
+                    },
+                    {
+                        "from": "/StudentStudyGroup/student_one",
+                        "to": "/Teacher",
+                        "rules": [
+                            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+                            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+                        ]
+                    },
+                    {
+                        "from": "/StudentStudyGroup/student_one",
+                        "to": "/StudentStudyGroup/student_two",
+                        "rules": [
+                            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+                        ]
+                    },
+                    {
+                        "from": "/StudentStudyGroup/student_two",
+                        "to": "/StudentStudyGroup/student_one",
+                        "rules": [
+                            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+                        ]
+                    }
+                ],
+                "root_team": {
+                    "address": "/",
+                    "team_definition_id": "nested-classroom-test",
+                    "team_definition_name": "Nested Classroom Test Team",
+                    "team_run_id": "nested_classroom_test_team_8db52ca1f739455099a70b7d4bc4060f",
+                    "coordinator_address": "/Teacher",
+                    "default_launch_configuration": {
+                        "runtime_kind": "codex_app_server",
+                        "llm_model_identifier": "gpt-5.6-luna",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "PRELOADED_ONLY",
+                        "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace"
+                    },
+                    "members": [
+                        {
+                            "kind": "configured_agent",
+                            "address": "/Teacher",
+                            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+                            "role": null,
+                            "description": null,
+                            "agent_run_id": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+                            "platform_agent_run_id": "01a034bc-e691-76a0-8b37-237fa13b5147",
+                            "launch_configuration": {
+                                "runtime_kind": "codex_app_server",
+                                "llm_model_identifier": "gpt-5.6-luna",
+                                "llm_config": null,
+                                "auto_execute_tools": true,
+                                "skill_access_mode": "PRELOADED_ONLY",
+                                "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace"
+                            }
+                        },
+                        {
+                            "kind": "configured_team",
+                            "address": "/StudentStudyGroup",
+                            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+                            "role": null,
+                            "description": null,
+                            "team_run_id": "student_study_group_1852b66c11a0427c984a6d24533487b3",
+                            "coordinator_address": "/StudentStudyGroup/student_one",
+                            "default_launch_configuration": {
+                                "runtime_kind": "codex_app_server",
+                                "llm_model_identifier": "gpt-5.6-luna",
+                                "llm_config": null,
+                                "auto_execute_tools": true,
+                                "skill_access_mode": "PRELOADED_ONLY",
+                                "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace"
+                            },
+                            "members": [
+                                {
+                                    "kind": "configured_agent",
+                                    "address": "/StudentStudyGroup/student_one",
+                                    "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                                    "role": null,
+                                    "description": null,
+                                    "agent_run_id": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+                                    "platform_agent_run_id": "01a034bd-47bb-7d92-aa73-fe0898a1545e",
+                                    "launch_configuration": {
+                                        "runtime_kind": "codex_app_server",
+                                        "llm_model_identifier": "gpt-5.6-luna",
+                                        "llm_config": null,
+                                        "auto_execute_tools": true,
+                                        "skill_access_mode": "PRELOADED_ONLY",
+                                        "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace"
+                                    }
+                                },
+                                {
+                                    "kind": "configured_agent",
+                                    "address": "/StudentStudyGroup/student_two",
+                                    "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                                    "role": null,
+                                    "description": null,
+                                    "agent_run_id": "student_two_3e6f85e9c2b24af19b3ebd6730f647c9",
+                                    "platform_agent_run_id": null,
+                                    "launch_configuration": {
+                                        "runtime_kind": "codex_app_server",
+                                        "llm_model_identifier": "gpt-5.6-luna",
+                                        "llm_config": null,
+                                        "auto_execute_tools": true,
+                                        "skill_access_mode": "PRELOADED_ONLY",
+                                        "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-yHnpKJ/server-data/temp_workspace"
+                                    }
+                                }
+                            ],
+                            "task_executions": []
+                        }
+                    ],
+                    "task_executions": [
+                        {
+                            "kind": "task_team",
+                            "address": "/StudentStudyGroup",
+                            "team_run_id": "team_local_team_nested_classroom_test_student_st_dbd4e13ac176487bb7eb2433a5214118",
+                            "members": [
+                                {
+                                    "kind": "task_team_agent",
+                                    "address": "/StudentStudyGroup/student_one",
+                                    "agent_run_id": "student_one_1d687eb0e64748999e7f35ef6e1e302e",
+                                    "platform_agent_run_id": "01a034bd-0571-77e0-8a23-5e3592520507"
+                                },
+                                {
+                                    "kind": "task_team_agent",
+                                    "address": "/StudentStudyGroup/student_two",
+                                    "agent_run_id": "student_two_cd13941bf78749b6b4182a5c21a79000",
+                                    "platform_agent_run_id": null
+                                }
+                            ],
+                            "task_executions": [
+                                {
+                                    "kind": "task_agent",
+                                    "address": "/StudentStudyGroup/student_two",
+                                    "agent_run_id": "student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2",
+                                    "platform_agent_run_id": "01a034bd-2ab3-7360-93d3-406020341173",
+                                    "started_at": "2026-08-24T17:06:47.585Z",
+                                    "settled_at": null
+                                }
+                            ],
+                            "started_at": "2026-08-24T17:06:38.011Z",
+                            "settled_at": null
+                        }
+                    ]
+                }
+            }
+        },
+        "getTeamRunExecutionCheckpoint": {
+            "rootTeamRunId": "nested_classroom_test_team_8db52ca1f739455099a70b7d4bc4060f",
+            "changeSequence": 449,
+            "hasOpenExecutionWork": true
+        },
+        "getTaskDelegationRecords": [
+            {
+                "taskId": "task_68f735462a71437e830b9263499f7f49",
+                "delegatorAgentRunId": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+                "recipientAddress": "/StudentStudyGroup",
+                "targetAgentRunId": null,
+                "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_dbd4e13ac176487bb7eb2433a5214118",
+                "status": "accepted",
+                "description": "Please complete this bounded nested-team delegation task. Ask the students to return exactly the token NESTED_CLASSROOM_OK. The required final answer must contain exactly NESTED_CLASSROOM_OK and no alternative token. Submit the task result through the formal task lifecycle so the requesting coordinator can review it.",
+                "updates": [
+                    {
+                        "kind": "submission",
+                        "submissionId": "submission_fc729d20932d4b63a8cf5fd18d0f0c6e",
+                        "reviewId": null,
+                        "interruptionId": null,
+                        "reviewedSubmissionId": null,
+                        "decision": null,
+                        "content": "NESTED_CLASSROOM_OK",
+                        "createdAt": "2026-08-24T17:06:50.720Z",
+                        "referenceFiles": []
+                    },
+                    {
+                        "kind": "review",
+                        "submissionId": null,
+                        "reviewId": "review_13870f649e1e459f8e1355ba9fd4d84a",
+                        "interruptionId": null,
+                        "reviewedSubmissionId": "submission_fc729d20932d4b63a8cf5fd18d0f0c6e",
+                        "decision": "accept",
+                        "content": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK.",
+                        "createdAt": "2026-08-24T17:06:54.725Z",
+                        "referenceFiles": []
+                    }
+                ],
+                "createdAt": "2026-08-24T17:06:38.011Z"
+            },
+            {
+                "taskId": "task_7c225e9212904ebb87c992c117283f02",
+                "delegatorAgentRunId": "student_one_1d687eb0e64748999e7f35ef6e1e302e",
+                "recipientAddress": "/StudentStudyGroup/student_two",
+                "targetAgentRunId": "student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2",
+                "targetTeamRunId": null,
+                "status": "active",
+                "description": "Return exactly the token NESTED_CLASSROOM_OK. Your complete response/result must contain exactly NESTED_CLASSROOM_OK and no alternative token or extra text.",
+                "updates": [],
+                "createdAt": "2026-08-24T17:06:47.585Z"
+            }
+        ],
+        "getTeamCommunicationMessages": [
+            {
+                "messageId": "teammsg_Jt_h5gWzKIdPWgLaD-3f81AZJeNRjgDA",
+                "senderAgentRunId": "student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2",
+                "receiverAgentRunId": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+                "content": "NESTED_CLASSROOM_OK",
+                "messageType": "agent_message",
+                "createdAt": "2026-08-24T17:06:55.021Z"
+            },
+            {
+                "messageId": "teammsg_v9sIXo9YyRcmPWerYit57rKDoPpyTsmG",
+                "senderAgentRunId": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+                "receiverAgentRunId": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+                "content": "NESTED_CLASSROOM_OK",
+                "messageType": "agent_message",
+                "createdAt": "2026-08-24T17:07:10.962Z"
+            }
+        ],
+        "teacher": {
+            "agentRunId": "test_teacher_6e936a5a13e940b78b589b6c971feba6",
+            "summary": "Please test nested team delegation. Delegate one task to /StudentStudyGroup and ask the students ...",
+            "lastActivityAt": "2026-08-24T17:07:13.092Z",
+            "conversation": [
+                {
+                    "kind": "message",
+                    "role": "user",
+                    "content": "Please test nested team delegation. Delegate one task to /StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.",
+                    "media": null,
+                    "ts": 1787591191.281
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Inspecting delegation tool metadata**\n\n**Calling delegate for task initiation**",
+                    "media": null,
+                    "ts": 1787591198.009
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-02ae4fe3-dd3e-4d07-b1ff-8124322e164e",
+                    "role": null,
+                    "content": "",
+                    "toolName": "delegate_task",
+                    "toolArgs": {
+                        "recipient_address": "/StudentStudyGroup",
+                        "description": "Please complete this bounded nested-team delegation task. Ask the students to return exactly the token NESTED_CLASSROOM_OK. The required final answer must contain exactly NESTED_CLASSROOM_OK and no alternative token. Submit the task result through the formal task lifecycle so the requesting coordinator can review it."
+                    },
+                    "toolResult": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "status": "active",
+                        "target_agent_run_id": "student_one_1d687eb0e64748999e7f35ef6e1e302e"
+                    },
+                    "toolError": null,
+                    "media": null,
+                    "ts": 1787591198.053
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Planning task status polling**\n\n**Planning tool result handling**",
+                    "media": null,
+                    "ts": 1787591206.956
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-0274c881-461e-4347-8a07-89f6976e6c57",
+                    "role": null,
+                    "content": "",
+                    "toolName": "review_task_result",
+                    "toolArgs": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "decision": "accept",
+                        "comment": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK."
+                    },
+                    "toolResult": null,
+                    "toolError": "Task 'task_68f735462a71437e830b9263499f7f49' is not awaiting review.",
+                    "media": null,
+                    "ts": 1787591206.96
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Planning delayed execution with sleep**",
+                    "media": null,
+                    "ts": 1787591214.723
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-a37c2cc8-9e9a-4389-9646-3bdfac03bdd2",
+                    "role": null,
+                    "content": "",
+                    "toolName": "review_task_result",
+                    "toolArgs": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "decision": "accept",
+                        "comment": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK."
+                    },
+                    "toolResult": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "status": "accepted"
+                    },
+                    "toolError": null,
+                    "media": null,
+                    "ts": 1787591214.742
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Planning to call get_handoff_rules**",
+                    "media": null,
+                    "ts": 1787591217.115
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-9169b821-549d-4c44-a7ba-f1b6bc76ce14",
+                    "role": null,
+                    "content": "",
+                    "toolName": "get_handoff_rules",
+                    "toolArgs": {},
+                    "toolResult": {
+                        "handoffs": [
+                            {
+                                "when": "When a bounded classroom task is ready to be delegated to the nested student study group.",
+                                "recipient_address": "/StudentStudyGroup"
+                            },
+                            {
+                                "when": "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup.",
+                                "recipient_address": "/StudentStudyGroup"
+                            },
+                            {
+                                "when": "When an ordinary classroom test message must be sent directly to Student One at the exact member address.",
+                                "recipient_address": "/StudentStudyGroup/student_one"
+                            }
+                        ]
+                    },
+                    "toolError": null,
+                    "media": null,
+                    "ts": 1787591217.117
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Confirming no notification needed after delegation**",
+                    "media": null,
+                    "ts": 1787591220.014
+                },
+                {
+                    "kind": "message",
+                    "role": "assistant",
+                    "content": "Nested delegation completed and accepted. The result matched exactly: `NESTED_CLASSROOM_OK`.",
+                    "media": null,
+                    "ts": 1787591220.153
+                },
+                {
+                    "kind": "message",
+                    "role": "user",
+                    "content": "Task task_68f735462a71437e830b9263499f7f49 result submitted:\nNESTED_CLASSROOM_OK",
+                    "media": null,
+                    "ts": 1787591220.282
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Confirming accepted submission**",
+                    "media": null,
+                    "ts": 1787591223.778
+                },
+                {
+                    "kind": "message",
+                    "role": "assistant",
+                    "content": "Confirmed: `task_68f735462a71437e830b9263499f7f49` was accepted with the exact result `NESTED_CLASSROOM_OK`.",
+                    "media": null,
+                    "ts": 1787591224.182
+                },
+                {
+                    "kind": "message",
+                    "role": "user",
+                    "content": "You received a message from sender name: student_one, sender id: student_one_1cf2ec6a0254436d9d1dc663f3af540b\nmessage:\nNESTED_CLASSROOM_OK",
+                    "media": null,
+                    "ts": 1787591230.989
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Acknowledging user message**",
+                    "media": null,
+                    "ts": 1787591233.018
+                },
+                {
+                    "kind": "message",
+                    "role": "assistant",
+                    "content": "Received from `student_one`: `NESTED_CLASSROOM_OK`.",
+                    "media": null,
+                    "ts": 1787591233.092
+                }
+            ],
+            "activities": [
+                {
+                    "kind": "system_instruction",
+                    "activityId": "rt_1787591189720_369105a6-a892-4cd0-8f42-1b16685b76a7",
+                    "content": "## Agent Identity\n\n- Name: Test Teacher\n- Description: Top-level teacher coordinator for nested task-team delegation tests.\n\n### Responsibilities and Boundaries\n\nYou are `Teacher`, the coordinator of a tiny classroom test team.\n\nYour purpose is to test three independent nested-team interactions. Follow the user's requested route exactly; never replace it with another available tool or address.\n\n#### Ordinary Team-Address Message Behavior\n\nWhen the user explicitly asks for an ordinary message to the nested team address:\n\n1. Call `send_message_to` with `recipient_address: \"/StudentStudyGroup\"`.\n2. Put the user's exact marker in the message.\n3. Ask the receiving coordinator to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.\n4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.\n5. Do not call `delegate_task` and do not address the message directly to `student_one`.\n\n#### Ordinary Direct-Member Message Behavior\n\nWhen the user explicitly asks for an ordinary direct message to Student One:\n\n1. Call `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_one\"`.\n2. Put the user's exact marker in the message.\n3. Ask Student One to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.\n4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.\n5. Do not call `delegate_task` and do not use the `/StudentStudyGroup` team address.\n\n#### Mandatory Nested-Team Delegation Behavior\n\nWhen the user asks you to test nested delegation, delegate one bounded task to the nested team by calling:\n\n`delegate_task({\"recipient_address\":\"/StudentStudyGroup\",\"description\":\"...\"})`\n\nThe task description should be complete and should tell the students what exact answer or token to return.\n\nAfter the task-team submits a result:\n\n- If the result satisfies the user's requested answer/token, call `review_task_result` with `decision: \"accept\"`.\n- If the result is missing or incorrect, call `review_task_result` with `decision: \"request_revision\"` and a short correction message.\n- After acceptance, reply briefly to the user with what happened.\n\n#### Tool Rules\n\n- Use `delegate_task` with `recipient_address` set to an exact canonical rooted address.\n- For this fixture, use the team target `{ \"recipient_address\": \"/StudentStudyGroup\" }`.\n- Use `review_task_result` for accepting or requesting revision of task results.\n- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.\n- Use `send_message_to` for the two ordinary message cases exactly as directed above.\n- A post-restart continuation marker must use the same route/tool as the corresponding pre-restart marker.\n\n## Team Instruction\n\nThis is a deliberately tiny nested-team package for validating three independent nested-team routes:\n\n1. ordinary `send_message_to` addressed to `/StudentStudyGroup`;\n2. ordinary `send_message_to` addressed directly to `/StudentStudyGroup/student_one`;\n3. lifecycle `delegate_task` addressed to `/StudentStudyGroup`.\n\nTests use distinct markers. Never substitute one route or tool for another.\n\n### Members\n\n- `/Teacher` is the top-level coordinator.\n- `/StudentStudyGroup` is a nested agent team with two students.\n  - Its coordinator is `/StudentStudyGroup/student_one`.\n  - `/StudentStudyGroup/student_two` is available for ordinary teammate communication inside the nested team.\n\n### Intended Delegation Test Flow\n\nUse a prompt like:\n\n> Please test nested team delegation. Delegate one task to `/StudentStudyGroup` and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.\n\nExpected behavior:\n\n1. `/Teacher` calls `delegate_task` with the exact rooted team address:\n   `delegate_task({\"recipient_address\":\"/StudentStudyGroup\",\"description\":\"...\"})`.\n2. The runtime creates a task-team execution for `/StudentStudyGroup`.\n3. `/StudentStudyGroup/student_one`, as the nested team coordinator, submits the result with `submit_task_result`.\n4. `/Teacher` reviews the result with `review_task_result` and accepts it when the expected token is present.\n\n### Tool Contract Notes\n\n- `/Teacher` has `delegate_task`, `review_task_result`, and `send_message_to`.\n- `/StudentStudyGroup/student_one` has `submit_task_result` and `send_message_to`.\n- `/StudentStudyGroup/student_two` has `send_message_to` only.\n- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization. Task lifecycle must use `delegate_task`, `submit_task_result`, and `review_task_result`.\n- Ordinary classroom messages to the team address or direct student address must use `send_message_to`, never `delegate_task`.\n- For ordinary messages, `student_one` replies to `/Teacher` with `send_message_to` and preserves the exact requested marker.\n- After a cold restart, each scenario may issue a second distinct marker through the same original route/tool to prove continuation.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n\u251c\u2500\u2500 /A              (Agent)\n\u251c\u2500\u2500 /B              (Agent)\n\u2514\u2500\u2500 /C              (nested AgentTeam)\n    \u251c\u2500\u2500 /C/D         (Agent)\n    \u2514\u2500\u2500 /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/Teacher\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.\n\nUse `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.\n\nWhen you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.\n\nDo not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`\u2014not ordinary message wording\u2014for formal task lifecycle changes.",
+                    "ts": 1787591189.72
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-02ae4fe3-dd3e-4d07-b1ff-8124322e164e",
+                    "toolName": "delegate_task",
+                    "type": "tool_call",
+                    "status": "success",
+                    "contextText": "delegate_task",
+                    "arguments": {
+                        "recipient_address": "/StudentStudyGroup",
+                        "description": "Please complete this bounded nested-team delegation task. Ask the students to return exactly the token NESTED_CLASSROOM_OK. The required final answer must contain exactly NESTED_CLASSROOM_OK and no alternative token. Submit the task result through the formal task lifecycle so the requesting coordinator can review it."
+                    },
+                    "logs": [],
+                    "result": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "status": "active",
+                        "target_agent_run_id": "student_one_1d687eb0e64748999e7f35ef6e1e302e"
+                    },
+                    "error": null,
+                    "ts": 1787591198.053,
+                    "detailLevel": "source_limited"
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-0274c881-461e-4347-8a07-89f6976e6c57",
+                    "toolName": "review_task_result",
+                    "type": "tool_call",
+                    "status": "error",
+                    "contextText": "review_task_result",
+                    "arguments": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "decision": "accept",
+                        "comment": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK."
+                    },
+                    "logs": [],
+                    "result": null,
+                    "error": "Task 'task_68f735462a71437e830b9263499f7f49' is not awaiting review.",
+                    "ts": 1787591206.96,
+                    "detailLevel": "source_limited"
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-a37c2cc8-9e9a-4389-9646-3bdfac03bdd2",
+                    "toolName": "review_task_result",
+                    "type": "tool_call",
+                    "status": "success",
+                    "contextText": "review_task_result",
+                    "arguments": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "decision": "accept",
+                        "comment": "Accepted because the submitted result matches the required token NESTED_CLASSROOM_OK."
+                    },
+                    "logs": [],
+                    "result": {
+                        "task_id": "task_68f735462a71437e830b9263499f7f49",
+                        "status": "accepted"
+                    },
+                    "error": null,
+                    "ts": 1787591214.742,
+                    "detailLevel": "source_limited"
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-9169b821-549d-4c44-a7ba-f1b6bc76ce14",
+                    "toolName": "get_handoff_rules",
+                    "type": "tool_call",
+                    "status": "success",
+                    "contextText": "get_handoff_rules",
+                    "arguments": {},
+                    "logs": [],
+                    "result": {
+                        "handoffs": [
+                            {
+                                "when": "When a bounded classroom task is ready to be delegated to the nested student study group.",
+                                "recipient_address": "/StudentStudyGroup"
+                            },
+                            {
+                                "when": "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup.",
+                                "recipient_address": "/StudentStudyGroup"
+                            },
+                            {
+                                "when": "When an ordinary classroom test message must be sent directly to Student One at the exact member address.",
+                                "recipient_address": "/StudentStudyGroup/student_one"
+                            }
+                        ]
+                    },
+                    "error": null,
+                    "ts": 1787591217.117,
+                    "detailLevel": "source_limited"
+                }
+            ],
+            "hasEarlierActiveTraceEvents": false
+        },
+        "studentOne": {
+            "agentRunId": "student_one_1cf2ec6a0254436d9d1dc663f3af540b",
+            "summary": "You received a message from sender name: student_two, sender id: student_two_bfb01eaf4d974879a5e9...",
+            "lastActivityAt": "2026-08-24T17:07:15.745Z",
+            "conversation": [
+                {
+                    "kind": "message",
+                    "role": "user",
+                    "content": "You received a message from sender name: student_two, sender id: student_two_bfb01eaf4d974879a5e9ddc5cd1e7df2\nmessage:\nNESTED_CLASSROOM_OK",
+                    "media": null,
+                    "ts": 1787591215.184
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Investigating messaging capabilities**\n\n**Deciding to submit test token result****Planning task submission then handoff retrieval**",
+                    "media": null,
+                    "ts": 1787591224.978
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-0ad35111-31a2-4b70-a701-9a308c76ab16",
+                    "role": null,
+                    "content": "",
+                    "toolName": "submit_task_result",
+                    "toolArgs": {
+                        "message": "NESTED_CLASSROOM_OK"
+                    },
+                    "toolResult": null,
+                    "toolError": "The caller has no active assigned task.",
+                    "media": null,
+                    "ts": 1787591224.98
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Planning response routing to Teacher****Preparing to relay marker to Teacher**",
+                    "media": null,
+                    "ts": 1787591230.961
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-600dc00f-3176-4453-a0ca-5efc34a22fd1",
+                    "role": null,
+                    "content": "",
+                    "toolName": "send_message_to",
+                    "toolArgs": {
+                        "recipient_address": "/Teacher",
+                        "content": "NESTED_CLASSROOM_OK"
+                    },
+                    "toolResult": {
+                        "accepted": true,
+                        "code": "DELIVERED",
+                        "message": "Delivered message to /Teacher.",
+                        "result": null
+                    },
+                    "toolError": null,
+                    "media": null,
+                    "ts": 1787591230.978
+                },
+                {
+                    "kind": "reasoning",
+                    "role": null,
+                    "content": "**Planning handoff rules implementation**",
+                    "media": null,
+                    "ts": 1787591233.973
+                },
+                {
+                    "kind": "tool_call",
+                    "invocationId": "exec-31937ad4-e031-4df5-9b52-fdb43ccbeb37",
+                    "role": null,
+                    "content": "",
+                    "toolName": "get_handoff_rules",
+                    "toolArgs": {},
+                    "toolResult": {
+                        "handoffs": [
+                            {
+                                "when": "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+                                "recipient_address": "/Teacher"
+                            },
+                            {
+                                "when": "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher.",
+                                "recipient_address": "/Teacher"
+                            },
+                            {
+                                "when": "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task.",
+                                "recipient_address": "/StudentStudyGroup/student_two"
+                            }
+                        ]
+                    },
+                    "toolError": null,
+                    "media": null,
+                    "ts": 1787591233.974
+                },
+                {
+                    "kind": "message",
+                    "role": "assistant",
+                    "content": "Forwarded `NESTED_CLASSROOM_OK` to `/Teacher`.",
+                    "media": null,
+                    "ts": 1787591235.745
+                }
+            ],
+            "activities": [
+                {
+                    "kind": "system_instruction",
+                    "activityId": "rt_1787591215023_8705fa0e-0ac4-47b6-a234-d13b3e306b5f",
+                    "content": "## Agent Identity\n\n- Name: Student One\n- Description: Coordinator student for the nested Student Study Group test team.\n\n### Responsibilities and Boundaries\n\nYou are `student_one`, coordinator of the nested `/StudentStudyGroup` team.\n\nYour job is to complete delegated classroom test tasks and to answer ordinary classroom messages from `Teacher` through the exact requested protocol.\n\n#### Ordinary Message Behavior\n\nWhen you receive an ordinary message from `/Teacher`, whether it was addressed to `/StudentStudyGroup` or directly to `/StudentStudyGroup/student_one`:\n\n1. Read the exact acknowledgment marker requested in the message.\n2. Call `send_message_to` with `recipient_address: \"/Teacher\"`.\n3. Include that exact acknowledgment marker in the reply.\n4. Do not call `submit_task_result`; ordinary messages are not task lifecycle packets.\n\n#### Delegated Task Behavior\n\nWhen you receive a delegated task packet:\n\n1. Read the requested answer format carefully.\n2. If the task asks for an exact token or exact phrase, prepare exactly that token or phrase.\n3. Call `submit_task_result` with a non-empty `message` containing the final result.\n\nFor the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:\n\n`NESTED_CLASSROOM_OK`\n\n#### Collaboration\n\nYou may use `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_two\"` to ask `/StudentStudyGroup/student_two` for ordinary help, but you remain responsible for submitting the final result.\n\n#### Tool Rules\n\n- Use `submit_task_result` for final task result submission.\n- Do not use `send_message_to` as the task result protocol.\n- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.\n- Use `send_message_to` for ordinary replies to `/Teacher`, including post-restart continuation markers.\n\n## Team Instruction\n\nThis nested team is intentionally simple.\n\n`student_one` coordinates the study group. `student_two` is a supporting student.\n\nWhen this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.\n\nIf the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.\n\nUse `send_message_to` only for ordinary communication. Do not use it for final task result submission.\n\nWhen an ordinary message is addressed to `/StudentStudyGroup`, routing reaches coordinator `student_one`. The coordinator replies to `/Teacher` with `send_message_to` using the exact requested acknowledgment marker. A direct message to `/StudentStudyGroup/student_one` follows the same reply protocol while remaining a distinct addressed route.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n\u251c\u2500\u2500 /A              (Agent)\n\u251c\u2500\u2500 /B              (Agent)\n\u2514\u2500\u2500 /C              (nested AgentTeam)\n    \u251c\u2500\u2500 /C/D         (Agent)\n    \u2514\u2500\u2500 /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/StudentStudyGroup/student_one\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.\n\nUse `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.\n\nWhen you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.\n\nDo not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`\u2014not ordinary message wording\u2014for formal task lifecycle changes.",
+                    "ts": 1787591215.023
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-0ad35111-31a2-4b70-a701-9a308c76ab16",
+                    "toolName": "submit_task_result",
+                    "type": "tool_call",
+                    "status": "error",
+                    "contextText": "submit_task_result",
+                    "arguments": {
+                        "message": "NESTED_CLASSROOM_OK"
+                    },
+                    "logs": [],
+                    "result": null,
+                    "error": "The caller has no active assigned task.",
+                    "ts": 1787591224.98,
+                    "detailLevel": "source_limited"
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-600dc00f-3176-4453-a0ca-5efc34a22fd1",
+                    "toolName": "send_message_to",
+                    "type": "tool_call",
+                    "status": "success",
+                    "contextText": "send_message_to",
+                    "arguments": {
+                        "recipient_address": "/Teacher",
+                        "content": "NESTED_CLASSROOM_OK"
+                    },
+                    "logs": [],
+                    "result": {
+                        "accepted": true,
+                        "code": "DELIVERED",
+                        "message": "Delivered message to /Teacher.",
+                        "result": null
+                    },
+                    "error": null,
+                    "ts": 1787591230.978,
+                    "detailLevel": "source_limited"
+                },
+                {
+                    "kind": "tool",
+                    "invocationId": "exec-31937ad4-e031-4df5-9b52-fdb43ccbeb37",
+                    "toolName": "get_handoff_rules",
+                    "type": "tool_call",
+                    "status": "success",
+                    "contextText": "get_handoff_rules",
+                    "arguments": {},
+                    "logs": [],
+                    "result": {
+                        "handoffs": [
+                            {
+                                "when": "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+                                "recipient_address": "/Teacher"
+                            },
+                            {
+                                "when": "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher.",
+                                "recipient_address": "/Teacher"
+                            },
+                            {
+                                "when": "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task.",
+                                "recipient_address": "/StudentStudyGroup/student_two"
+                            }
+                        ]
+                    },
+                    "error": null,
+                    "ts": 1787591233.974,
+                    "detailLevel": "source_limited"
+                }
+            ],
+            "hasEarlierActiveTraceEvents": false
+        },
+        "studentTwo": {
+            "agentRunId": "student_two_3e6f85e9c2b24af19b3ebd6730f647c9",
+            "summary": null,
+            "lastActivityAt": null,
+            "conversation": [],
+            "activities": [],
+            "hasEarlierActiveTraceEvents": false
+        }
+    }
+}

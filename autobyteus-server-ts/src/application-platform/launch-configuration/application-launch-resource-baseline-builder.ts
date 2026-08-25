@@ -2,6 +2,7 @@ import type {
   ApplicationLaunchDefinitionValueSource,
   ApplicationResolvedLaunchBaselineLeaf,
   ApplicationResolvedResourceLaunchBaseline,
+  ApplicationResolvedTeamLaunchBaselineScope,
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSlotDeclaration,
 } from "@autobyteus/application-sdk-contracts";
@@ -117,6 +118,41 @@ const buildBaselineLeaf = (input: {
   };
 };
 
+const buildBaselineTeamScope = (input: {
+  teamAddress: string;
+  displayName: string;
+  teamDefinitionId: string;
+  layers: LaunchLayer[];
+}): ApplicationResolvedTeamLaunchBaselineScope => {
+  const runtime = resolveStringValue(input.layers, "runtimeKind");
+  const model = resolveStringValue(input.layers, "llmModelIdentifier");
+  const llmConfig = runtime && model
+    ? resolveAtomicLlmConfig({
+        layers: input.layers,
+        runtimeKind: runtime.value,
+        llmModelIdentifier: model.value,
+      })
+    : { value: null, source: null };
+  return {
+    teamAddress: input.teamAddress,
+    displayName: input.displayName,
+    teamDefinitionId: input.teamDefinitionId,
+    runtimeKind: runtime?.value ?? null,
+    llmModelIdentifier: model?.value ?? null,
+    llmConfig: llmConfig.value,
+    provenance: {
+      runtimeKind: runtime?.source ?? null,
+      llmModelIdentifier: model?.source ?? null,
+      llmConfig: llmConfig.source,
+    },
+  };
+};
+
+type TeamBaselineTopology = {
+  teamScopes: ApplicationResolvedTeamLaunchBaselineScope[];
+  leaves: ApplicationResolvedLaunchBaselineLeaf[];
+};
+
 export class ApplicationLaunchResourceBaselineBuilder {
   constructor(private readonly dependencies: {
     executionResourceResolver: ApplicationExecutionResourceResolver;
@@ -143,22 +179,31 @@ export class ApplicationLaunchResourceBaselineBuilder {
         error instanceof Error ? error.message : String(error),
       );
     }
-    const leaves = resource.kind === "AGENT"
-      ? [await this.buildAgentLeaf({
+    if (resource.kind === "AGENT") {
+      const leaves = [await this.buildAgentLeaf({
           agentDefinitionId: resource.definitionId,
           memberAddress: null,
           displayName: resource.name,
           parentLayers: [],
           provenance: input.provenance,
-        })]
-      : await this.buildTeamLeaves({
-          teamDefinitionId: resource.definitionId,
-          memberPath: [],
-          parentLayers: [],
-          provenance: input.provenance,
-          visited: new Set(),
-        });
-    if (leaves.length === 0) {
+        })];
+      return {
+        slotKey: input.slot.slotKey,
+        executionResourceRef: structuredClone(input.executionResourceRef),
+        resourceDefinitionId: resource.definitionId,
+        resourceKind: "AGENT",
+        leaves,
+      };
+    }
+    const topology = await this.buildTeamTopology({
+      teamDefinitionId: resource.definitionId,
+      memberPath: [],
+      displayName: resource.name,
+      parentLayers: [],
+      provenance: input.provenance,
+      visited: new Set(),
+    });
+    if (topology.leaves.length === 0) {
       throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
         `Application slot '${input.slot.slotKey}' selected team has no leaf agents.`,
@@ -168,8 +213,10 @@ export class ApplicationLaunchResourceBaselineBuilder {
       slotKey: input.slot.slotKey,
       executionResourceRef: structuredClone(input.executionResourceRef),
       resourceDefinitionId: resource.definitionId,
-      resourceKind: resource.kind,
-      leaves: leaves.sort((left, right) =>
+      resourceKind: "AGENT_TEAM",
+      teamScopes: topology.teamScopes.sort((left, right) =>
+        left.teamAddress.localeCompare(right.teamAddress)),
+      leaves: topology.leaves.sort((left, right) =>
         (left.memberAddress ?? "").localeCompare(right.memberAddress ?? "")),
     };
   }
@@ -225,13 +272,14 @@ export class ApplicationLaunchResourceBaselineBuilder {
     });
   }
 
-  private async buildTeamLeaves(input: {
+  private async buildTeamTopology(input: {
     teamDefinitionId: string;
     memberPath: string[];
+    displayName: string;
     parentLayers: LaunchLayer[];
     provenance: "PACKAGE" | "SELECTED_RESOURCE";
     visited: Set<string>;
-  }): Promise<ApplicationResolvedLaunchBaselineLeaf[]> {
+  }): Promise<TeamBaselineTopology> {
     if (input.visited.has(input.teamDefinitionId)) {
       throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
@@ -259,6 +307,12 @@ export class ApplicationLaunchResourceBaselineBuilder {
       ...input.parentLayers,
     ];
     const resolutionContext = buildScopedMemberResolutionContext(team, input.teamDefinitionId);
+    const teamScopes: ApplicationResolvedTeamLaunchBaselineScope[] = [buildBaselineTeamScope({
+      teamAddress: createAgentTeamAddress(input.memberPath),
+      displayName: input.displayName || team.name,
+      teamDefinitionId: input.teamDefinitionId,
+      layers: teamLayers,
+    })];
     const leaves: ApplicationResolvedLaunchBaselineLeaf[] = [];
     for (const member of team.nodes) {
       const memberPath = [...input.memberPath, member.memberName.trim()];
@@ -271,15 +325,18 @@ export class ApplicationLaunchResourceBaselineBuilder {
           provenance: input.provenance,
         }));
       } else {
-        leaves.push(...await this.buildTeamLeaves({
+        const nested = await this.buildTeamTopology({
           teamDefinitionId: resolveScopedTeamMemberRef(resolutionContext, member),
           memberPath,
+          displayName: member.memberName.trim(),
           parentLayers: teamLayers,
           provenance: input.provenance,
           visited,
-        }));
+        });
+        teamScopes.push(...nested.teamScopes);
+        leaves.push(...nested.leaves);
       }
     }
-    return leaves;
+    return { teamScopes, leaves };
   }
 }

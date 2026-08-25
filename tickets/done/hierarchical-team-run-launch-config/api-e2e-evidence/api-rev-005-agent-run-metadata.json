@@ -1,0 +1,16 @@
+{
+  "runId": "daily_assistant_a21c458e87b44a59b3699308bd469a49",
+  "agentDefinitionId": "daily-assistant",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/workspaces/agent-api-rev-005",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-v3VrZH/server-data/memory/agents/daily_assistant_a21c458e87b44a59b3699308bd469a49",
+  "llmModelIdentifier": "deepseek-v4-flash",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "skillAccessMode": "PRELOADED_ONLY",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "daily_assistant_a21c458e87b44a59b3699308bd469a49",
+  "preparedAt": "2026-08-24T19:24:57.675Z",
+  "preparedExpiresAt": "2026-08-25T19:24:57.675Z",
+  "startedAt": "2026-08-24T19:24:58.694Z",
+  "applicationExecutionContext": null
+}

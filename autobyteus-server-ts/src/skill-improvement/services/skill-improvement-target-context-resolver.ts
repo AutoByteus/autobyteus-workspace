@@ -5,7 +5,7 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
-import type { ConfiguredAgentExecution } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { SkillImprovementEffectiveConfig, SkillImprovementTargetRef } from "../domain/models.js";
 
@@ -23,7 +23,7 @@ export type SkillImprovementTargetContext = {
   llmConfig: Record<string, unknown> | null;
   skillAccessMode?: string | null;
   effectiveConfig: SkillImprovementEffectiveConfig | null;
-  targetMetadata: AgentRunMetadata | ConfiguredAgentExecution;
+  targetMetadata: AgentRunMetadata | ConfiguredAgentExecutionNode;
 };
 
 export class SkillImprovementTargetContextResolver {

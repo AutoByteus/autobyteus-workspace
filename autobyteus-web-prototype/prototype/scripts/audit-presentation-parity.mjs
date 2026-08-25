@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const prototypeRoot = resolve(new URL('../..', import.meta.url).pathname)
-const sourceRepo = process.env.SOURCE_REPO || resolve(prototypeRoot, '..')
+const sourceRepo = process.env.SOURCE_REPO || '/home/autobyteus/workspace/autobyteus-workspace'
 const sourceCommit = '8ef282ba77705180d985e7000d801f0e0068cdc1'
 const sourceProjectPrefix = 'autobyteus-web'
 const sourceRoot = `git:${sourceRepo}@${sourceCommit}:${sourceProjectPrefix}`

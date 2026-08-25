@@ -1,152 +1,125 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import MemberOverrideItem from '../MemberOverrideItem.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
-import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
-import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness'
-import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
+import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
+import type { EditableTeamFormAgentNode } from '~/types/agent/EditableTeamRunFormModel'
+import type { StoredTeamFormAgentNode } from '~/types/agent/StoredTeamRunFormModel'
 
 const flushPromises = async () => {
   await Promise.resolve()
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
-vi.mock('~/stores/llmProviderConfig', () => ({
-  useLLMProviderConfigStore: vi.fn(),
-}))
+vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: vi.fn() }))
+vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: vi.fn() }))
 
-vi.mock('~/stores/runtimeAvailabilityStore', () => ({
-  useRuntimeAvailabilityStore: vi.fn(),
-}))
-
+const model = (
+  modelIdentifier: string,
+  runtime: string,
+  configSchema: Record<string, unknown>,
+) => ({
+  modelIdentifier,
+  name: modelIdentifier,
+  value: modelIdentifier,
+  canonicalName: modelIdentifier,
+  providerId: runtime === 'claude_agent_sdk' ? 'ANTHROPIC' : 'OPENAI',
+  providerName: runtime === 'claude_agent_sdk' ? 'Anthropic' : 'OpenAI',
+  providerType: runtime === 'claude_agent_sdk' ? 'ANTHROPIC' : 'OPENAI',
+  runtime,
+  configSchema,
+})
+const provider = (runtime: string, models: ReturnType<typeof model>[]) => [{
+  provider: {
+    id: runtime === 'claude_agent_sdk' ? 'ANTHROPIC' : 'OPENAI',
+    name: runtime === 'claude_agent_sdk' ? 'Anthropic' : 'OpenAI',
+    providerType: runtime === 'claude_agent_sdk' ? 'ANTHROPIC' : 'OPENAI',
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: true,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  },
+  models,
+}]
+const codexSchema = {
+  type: 'object',
+  properties: {
+    temperature: { type: 'number', title: 'Temperature' },
+    reasoning_effort: {
+      type: 'string', title: 'Reasoning Effort',
+      enum: ['low', 'medium', 'high', 'xhigh'], default: 'medium',
+    },
+  },
+}
 const runtimeProviders: Record<string, any[]> = {
-  autobyteus: [
-    {
-      provider: {
-        id: 'OPENAI',
-        name: 'OpenAI',
-        providerType: 'OPENAI',
-        isCustom: false,
-        baseUrl: null,
-        apiKeyConfigured: true,
-        status: 'NOT_APPLICABLE',
-        statusMessage: null,
-      },
-      models: [
-        {
-          modelIdentifier: 'gpt-5.4',
-          name: 'GPT-5.4',
-          value: 'gpt-5.4',
-          canonicalName: 'gpt-5.4',
-          providerId: 'OPENAI',
-          providerName: 'OpenAI',
-          providerType: 'OPENAI',
-          runtime: 'autobyteus',
-          configSchema: {
-            type: 'object',
-            properties: {
-              thinking_level: { type: 'integer', description: 'Thinking Level' },
-            },
-          },
-        },
-      ],
-    },
-  ],
-  codex_app_server: [
-    {
-      provider: {
-        id: 'OPENAI',
-        name: 'OpenAI',
-        providerType: 'OPENAI',
-        isCustom: false,
-        baseUrl: null,
-        apiKeyConfigured: true,
-        status: 'NOT_APPLICABLE',
-        statusMessage: null,
-      },
-      models: [
-        {
-          modelIdentifier: 'gpt-5.4',
-          name: 'GPT-5.4',
-          value: 'gpt-5.4',
-          canonicalName: 'gpt-5.4',
-          providerId: 'OPENAI',
-          providerName: 'OpenAI',
-          providerType: 'OPENAI',
-          runtime: 'codex_app_server',
-          configSchema: {
-            type: 'object',
-            properties: {
-              reasoning_effort: {
-                type: 'string',
-                title: 'Reasoning Effort',
-                description: 'Reasoning Effort',
-                enum: ['low', 'medium', 'high', 'xhigh'],
-                default: 'medium',
-              },
-            },
-          },
-        },
-        {
-          modelIdentifier: 'gpt-5.3-codex',
-          name: 'GPT-5.3 Codex',
-          value: 'gpt-5.3-codex',
-          canonicalName: 'gpt-5.3-codex',
-          providerId: 'OPENAI',
-          providerName: 'OpenAI',
-          providerType: 'OPENAI',
-          runtime: 'codex_app_server',
-          configSchema: {
-            type: 'object',
-            properties: {
-              reasoning_effort: {
-                type: 'string',
-                title: 'Reasoning Effort',
-                description: 'Reasoning Effort',
-                enum: ['low', 'medium', 'high', 'xhigh'],
-                default: 'medium',
-              },
-            },
-          },
-        },
-      ],
-    },
-  ],
-  claude_agent_sdk: [
-    {
-      provider: {
-        id: 'ANTHROPIC',
-        name: 'Anthropic',
-        providerType: 'ANTHROPIC',
-        isCustom: false,
-        baseUrl: null,
-        apiKeyConfigured: true,
-        status: 'NOT_APPLICABLE',
-        statusMessage: null,
-      },
-      models: [
-        {
-          modelIdentifier: 'claude-sonnet',
-          name: 'Claude Sonnet',
-          value: 'claude-sonnet',
-          canonicalName: 'claude-sonnet',
-          providerId: 'ANTHROPIC',
-          providerName: 'Anthropic',
-          providerType: 'ANTHROPIC',
-          runtime: 'claude_agent_sdk',
-          configSchema: {
-            type: 'object',
-            properties: {
-              thinking_enabled: { type: 'boolean', description: 'Enable Thinking' },
-            },
-          },
-        },
-      ],
-    },
-  ],
+  autobyteus: provider('autobyteus', [model('gpt-5.4', 'autobyteus', {
+    type: 'object', properties: { thinking_level: { type: 'integer' } },
+  })]),
+  codex_app_server: provider('codex_app_server', [
+    model('gpt-5.4', 'codex_app_server', codexSchema),
+    model('gpt-5.3-codex', 'codex_app_server', codexSchema),
+  ]),
+  claude_agent_sdk: provider('claude_agent_sdk', [model('claude-sonnet', 'claude_agent_sdk', {
+    type: 'object', properties: { thinking_enabled: { type: 'boolean' } },
+  })]),
+}
+
+const resolved = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): ResolvedTeamRunLaunchConfig => ({
+  runtimeKind: 'autobyteus',
+  llmModelIdentifier: 'gpt-5.4',
+  llmConfig: { thinking_level: 5 },
+  autoExecuteTools: false,
+  skillAccessMode: 'PRELOADED_ONLY',
+  workspaceId: null,
+  workspaceMetadata: null,
+  workspaceRootPath: null,
+  ...changes,
+})
+const editableNode = (input: {
+  override?: AgentConfigOverride
+  baseline?: Partial<ResolvedTeamRunLaunchConfig>
+  effective?: Partial<ResolvedTeamRunLaunchConfig>
+} = {}): EditableTeamFormAgentNode => {
+  const baseline = resolved(input.baseline)
+  return {
+    mode: 'editable',
+    kind: 'agent',
+    address: '/reviewer',
+    displayName: 'Reviewer',
+    isCoordinator: false,
+    isCustomized: Boolean(input.override && Object.keys(input.override).length),
+    override: input.override,
+    baselineConfig: baseline,
+    effectiveConfig: resolved({ ...baseline, ...input.effective }),
+    runtimeCatalogState: { status: 'idle', error: null },
+  }
+}
+const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): StoredTeamFormAgentNode => ({
+  mode: 'stored',
+  kind: 'agent',
+  address: '/reviewer',
+  displayName: 'Reviewer',
+  isCoordinator: false,
+  isCustomized: true,
+  effectiveConfig: resolved(changes),
+  storedWorkspace: {
+    workspaceId: null,
+    displayName: '/history/reviewer',
+    rootPath: '/history/reviewer',
+    availability: 'historical-only',
+  },
+})
+const mountItem = (node: EditableTeamFormAgentNode | StoredTeamFormAgentNode, disabled = false) =>
+  mount(MemberOverrideItem, { props: { node, memberBreadcrumb: 'reviewer', disabled } })
+
+const ready = async () => {
+  await nextTick()
+  await flushPromises()
+  await nextTick()
 }
 
 describe('MemberOverrideItem', () => {
@@ -155,543 +128,180 @@ describe('MemberOverrideItem', () => {
 
   beforeEach(() => {
     setActivePinia(createPinia())
-
     llmStore = {
       providersWithModels: [],
-      providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       providerSnapshots: vi.fn(() => []),
-      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+      providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
         llmStore.providersWithModels = rows
         return rows
       }),
+      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
     }
-
     runtimeAvailabilityStore = {
-      availabilities: [
-        { runtimeKind: 'autobyteus', enabled: true, reason: null },
-        { runtimeKind: 'codex_app_server', enabled: true, reason: null },
-        { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
-      ],
+      availabilities: ['autobyteus', 'codex_app_server', 'claude_agent_sdk']
+        .map((runtimeKind) => ({ runtimeKind, enabled: true, reason: null })),
       fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((runtimeKind: string) =>
-        runtimeAvailabilityStore.availabilities.find((row: any) => row.runtimeKind === runtimeKind) ?? null,
-      ),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) =>
-        runtimeAvailabilityStore.availabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
-      ),
-      runtimeReason: vi.fn((runtimeKind: string) =>
-        runtimeAvailabilityStore.availabilityByKind(runtimeKind)?.reason ?? null,
-      ),
+        runtimeAvailabilityStore.availabilities.find((row: any) => row.runtimeKind === runtimeKind) ?? null),
+      isRuntimeEnabled: vi.fn(() => true),
+      runtimeReason: vi.fn(() => null),
     }
-
     ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
     ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeAvailabilityStore)
   })
 
-  const defaultProps = {
-    memberName: 'Reviewer',
-    memberRouteKey: 'reviewer',
-    memberAddress: '/reviewer',
-    override: undefined,
-    globalRuntimeKind: 'autobyteus',
-    globalLlmModel: 'gpt-5.4',
-    globalLlmConfig: { thinking_level: 5 },
-    disabled: false,
-    isCoordinator: false,
-  }
-
-  it('renders concise member override copy', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: defaultProps,
-    })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    const text = wrapper.text()
-    expect(text).toContain('Runtime')
-    expect(text).toContain('LLM Model')
-    expect(text).toContain('Auto approve')
-    expect(text).toContain('Global default')
-    expect(text).not.toContain('Runtime Override')
-    expect(text).not.toContain('LLM Model Override')
-    expect(text).not.toContain('Use global runtime default')
-    expect(text).not.toContain('Use global model (default)')
-    expect(text).not.toContain('Auto-execute')
+  it('renders concise editable member copy and inherited defaults', async () => {
+    const wrapper = mountItem(editableNode())
+    await ready()
+    expect(wrapper.text()).toContain('Runtime')
+    expect(wrapper.text()).toContain('LLM Model')
+    expect(wrapper.text()).toContain('Auto approve')
+    expect(wrapper.text()).toContain('Global default')
+    expect(wrapper.text()).not.toContain('Runtime Override')
+    expect(wrapper.text()).not.toContain('Auto-execute')
   })
 
-  it('renders a blocking warning when a runtime override breaks inherited global model availability', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'claude_agent_sdk',
-        },
-      },
-    })
-
-    await nextTick()
-    await nextTick()
-
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('claude_agent_sdk')
-    expect(wrapper.get('[data-testid="member-override-warning"]').text()).toContain(
-      'Global model gpt-5.4 is unavailable for Claude Agent SDK',
-    )
-  })
-
-  it('emits a resolving explicit model override for an unresolved runtime override', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'claude_agent_sdk',
-        },
-      },
-    })
-
-    await nextTick()
-    await nextTick()
+  it('warns when a runtime override breaks inherited model availability and resolves through an explicit model', async () => {
+    const override = { runtimeKind: 'claude_agent_sdk' }
+    const wrapper = mountItem(editableNode({
+      override,
+      effective: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: '' },
+    }))
+    await ready()
+    expect(wrapper.get('[data-testid="member-override-warning"]').text())
+      .toContain('Inherited model gpt-5.4 is unavailable for Claude Agent SDK')
 
     wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'claude-sonnet')
     await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    expect(events[0]).toEqual([
-      '/reviewer',
-      {
-        runtimeKind: 'claude_agent_sdk',
-        llmModelIdentifier: 'claude-sonnet',
-      },
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      '/reviewer', { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' },
     ])
   })
 
-  it('clears stale explicit member llmConfig when the explicit model changes', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmConfig: { reasoning_effort: 'high' },
-        override: {
-          llmModelIdentifier: 'gpt-5.4',
-          llmConfig: { reasoning_effort: 'medium' },
-        },
-      },
-    })
-
-    await nextTick()
-    await nextTick()
-
+  it('clears stale explicit model configuration when the explicit model changes', async () => {
+    const wrapper = mountItem(editableNode({
+      baseline: { runtimeKind: 'codex_app_server', llmConfig: { reasoning_effort: 'high' } },
+      override: { llmModelIdentifier: 'gpt-5.4', llmConfig: { reasoning_effort: 'medium' } },
+      effective: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', llmConfig: { reasoning_effort: 'medium' } },
+    }))
+    await ready()
     wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    expect(events.at(-1)).toEqual([
-      '/reviewer',
-      {
-        llmModelIdentifier: 'gpt-5.3-codex',
-      },
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      '/reviewer', { llmModelIdentifier: 'gpt-5.3-codex' },
     ])
   })
 
-  it('drops an incompatible explicit model when the runtime override changes', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'autobyteus',
-          llmModelIdentifier: 'gpt-5.4',
-          llmConfig: { thinking_level: 3 },
-        },
+  it('drops an incompatible explicit model and member-only config when runtime changes', async () => {
+    const wrapper = mountItem(editableNode({
+      override: {
+        runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.4', llmConfig: { thinking_level: 3 },
       },
-    })
-
-    await nextTick()
-    await nextTick()
-
+    }))
+    await ready()
     await wrapper.get('#override-runtime--reviewer').setValue('claude_agent_sdk')
-    await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    expect(events.at(-1)).toEqual([
-      '/reviewer',
-      {
-        runtimeKind: 'claude_agent_sdk',
-      },
+    await ready()
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      '/reviewer', { runtimeKind: 'claude_agent_sdk' },
     ])
   })
 
-  it('clears stale member-only llmConfig when invalid explicit model cleanup falls back to the inherited global runtime', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'codex_app_server',
-          llmModelIdentifier: 'gpt-5.3-codex',
-          llmConfig: { reasoning_effort: 'medium' },
-        },
+  it('returns to a null override when explicit runtime/model/config all return to inherited values', async () => {
+    const wrapper = mountItem(editableNode({
+      override: {
+        runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.3-codex',
+        llmConfig: { reasoning_effort: 'medium' },
       },
-    })
-
-    await nextTick()
-    await nextTick()
-
-    await wrapper.get('#override-runtime--reviewer').setValue('')
-    await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    expect(events.at(-1)).toEqual([
-      '/reviewer',
-      null,
-    ])
-  })
-
-  it('clears stale member-only llmConfig when effective runtime changes invalidate the explicit model', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmConfig: { reasoning_effort: 'high' },
-        override: {
-          llmModelIdentifier: 'gpt-5.3-codex',
-          llmConfig: { reasoning_effort: 'medium' },
-        },
+      effective: {
+        runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.3-codex',
+        llmConfig: { reasoning_effort: 'medium' },
       },
-    })
-
-    await nextTick()
-    await nextTick()
-
-    await wrapper.setProps({
-      globalRuntimeKind: 'autobyteus',
-      globalLlmConfig: { thinking_level: 5 },
-    })
-    await nextTick()
-    await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    expect(events.at(-1)).toEqual([
-      '/reviewer',
-      null,
-    ])
-  })
-
-  it('feeds cleaned inherited-global fallback rows into readiness and materialization without stale config', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        override: {
-          runtimeKind: 'codex_app_server',
-          llmModelIdentifier: 'gpt-5.3-codex',
-          llmConfig: { reasoning_effort: 'medium' },
-        },
-      },
-    })
-
-    await nextTick()
-    await nextTick()
-
-    await wrapper.get('#override-runtime--reviewer').setValue('')
-    await nextTick()
-
-    const events = wrapper.emitted('update:override') || []
-    const cleanedOverride = (events.at(-1)?.[1] ?? null) as MemberConfigOverride | null
-    const memberOverrides: Record<string, MemberConfigOverride> = cleanedOverride
-      ? { '/reviewer': cleanedOverride }
-      : {}
-
-    const readiness = evaluateTeamRunLaunchReadiness(
-      {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'autobyteus',
-        workspaceId: 'ws-1',
-        workspaceMetadata: null,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { thinking_level: 5 },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides,
-        isLocked: false,
-      },
-      {
-        autobyteus: ['gpt-5.4'],
-      },
-    )
-
-    expect(readiness.canLaunch).toBe(true)
-    expect(readiness.blockingIssues).toEqual([])
-
-    expect(
-      buildTeamRunMemberConfigRecords({
-        config: {
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Research Team',
-          runtimeKind: 'autobyteus',
-          workspaceId: 'ws-1',
-          workspaceMetadata: null,
-          llmModelIdentifier: 'gpt-5.4',
-          llmConfig: { thinking_level: 5 },
-          autoExecuteTools: false,
-          skillAccessMode: 'PRELOADED_ONLY',
-          memberOverrides,
-          isLocked: false,
-        },
-        leafMembers: [
-          {
-            displayName: 'Reviewer',
-            address: '/reviewer',
-            agentDefinitionId: 'agent-reviewer',
-          },
-        ],
-      }),
-    ).toEqual([
-      {
-        displayName: 'Reviewer',
-        memberAddress: '/reviewer',
-        agentDefinitionId: 'agent-reviewer',
-        runtimeKind: 'autobyteus',
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { thinking_level: 5 },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        workspaceId: 'ws-1',
-        workspaceMetadata: null,
-        workspaceRootPath: undefined,
-      },
-    ])
-  })
-
-  it('serializes team workspace root path from workspace metadata for launch inputs', () => {
-    const workspaceMetadata = {
-      workspaceId: 'agent_ws_metadata',
-      workspaceRootPath: '/tmp/MetadataTeam',
-      displayName: 'MetadataTeam',
-      kind: 'filesystem' as const,
-    }
-
-    const records = buildTeamRunMemberConfigRecords({
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: workspaceMetadata.workspaceId,
-        workspaceMetadata,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-        isLocked: false,
-      },
-      leafMembers: [
-        {
-          displayName: 'Reviewer',
-          address: '/reviewer',
-          agentDefinitionId: 'agent-reviewer',
-        },
-      ],
-    })
-
-    expect(records[0]).toEqual(expect.objectContaining({
-      workspaceId: workspaceMetadata.workspaceId,
-      workspaceMetadata,
-      workspaceRootPath: '/tmp/MetadataTeam',
     }))
+    await ready()
+    await wrapper.get('#override-runtime--reviewer').setValue('')
+    await ready()
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['/reviewer', null])
   })
 
-  it('blocks filesystem workspace metadata team launch readiness when the root path is missing', () => {
-    const readiness = evaluateTeamRunLaunchReadiness(
-      {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Research Team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'agent_ws_metadata_only',
-        workspaceMetadata: null,
-        llmModelIdentifier: 'gpt-5.4',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-        isLocked: false,
-      },
-      {
-        codex_app_server: ['gpt-5.4'],
-      },
-    )
-
-    expect(readiness.canLaunch).toBe(false)
-    expect(readiness.blockingIssues).toContainEqual(expect.objectContaining({
-      code: 'WORKSPACE_REQUIRED',
-      message: 'Workspace root path is required to run a filesystem workspace metadata team.',
+  it('keeps inherited advanced fields compact and opens them for explicit compatible selection', async () => {
+    const wrapper = mountItem(editableNode({
+      baseline: { runtimeKind: 'codex_app_server', llmConfig: null },
+      effective: { runtimeKind: 'codex_app_server', llmConfig: null },
     }))
-  })
-
-  it('passes missing historical config state into member model config display', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmModel: 'gpt-5.4',
-        globalLlmConfig: null,
-        disabled: true,
-        advancedInitiallyExpanded: true,
-        missingHistoricalConfig: true,
-      },
-    })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    expect(wrapper.text()).toContain('Not recorded for this historical run')
-    expect(wrapper.find('[data-testid="missing-historical-config-value"]').exists()).toBe(true)
-    expect(wrapper.find('select[id^="config-reviewer"]').exists()).toBe(false)
-  })
-
-  it('keeps inherited effort-only reasoning compact until expanded and displays the schema default', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmModel: 'gpt-5.4',
-        globalLlmConfig: null,
-        disabled: false,
-        advancedInitiallyExpanded: false,
-      },
-    })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    const reasoningSelect = wrapper.get('select#config--reviewer-reasoning_effort')
-    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
-
-    expect(thinkingRow.props('enabled')).toBe(true)
-    expect(thinkingRow.get('button').element.disabled).toBe(true)
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
-    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
-    expect(wrapper.emitted('update:override')).toBeUndefined()
-
-    await advancedToggle.trigger('click')
-
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
-    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
-    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
-    expect(wrapper.emitted('update:override')).toBeUndefined()
-  })
-
-  it('keeps compact advanced collapsed when inherited global thinking-on model changes', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmModel: 'gpt-5.4',
-        globalLlmConfig: null,
-        disabled: false,
-        advancedInitiallyExpanded: false,
-      },
-    })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
-
-    await wrapper.setProps({ globalLlmModel: 'gpt-5.3-codex' })
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
-    expect(wrapper.emitted('update:override')).toBeUndefined()
-  })
-
-  it('opens compact advanced for an explicit member model selection whose effective thinking is on', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'codex_app_server',
-        globalLlmModel: 'gpt-5.4',
-        globalLlmConfig: null,
-        disabled: false,
-        advancedInitiallyExpanded: false,
-      },
-    })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    await ready()
+    const toggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const container = wrapper.get('[data-testid="advanced-params-container"]')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+    expect(container.attributes('style')).toContain('display: none')
+    expect((wrapper.get('select#config--reviewer-reasoning_effort').element as HTMLSelectElement).value).toBe('medium')
 
     wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await nextTick()
-    await wrapper.setProps({
-      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
-    })
-    await flushPromises()
-    await nextTick()
-
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
-    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect(toggle.attributes('aria-expanded')).toBe('true')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      '/reviewer',
-      {
-        llmModelIdentifier: 'gpt-5.3-codex',
-      },
+      '/reviewer', { llmModelIdentifier: 'gpt-5.3-codex' },
     ])
   })
 
-  it('opens compact advanced for an explicit member runtime selection to an effective-on model', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        globalRuntimeKind: 'autobyteus',
-        globalLlmModel: 'gpt-5.4',
-        globalLlmConfig: null,
-        disabled: false,
-        advancedInitiallyExpanded: false,
-      },
+  it('renders exact stored partial-schema history once and accepts no mutation', async () => {
+    const exactConfig = Object.freeze({
+      temperature: 0.2,
+      reasoning_effort: 'ultra',
+      service_tier: 'fast',
     })
-
-    await nextTick()
-    await flushPromises()
-    await nextTick()
-
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
-    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-
-    await wrapper.get('#override-runtime--reviewer').setValue('codex_app_server')
-    await nextTick()
-    await wrapper.setProps({
-      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+    const node = storedNode({
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: exactConfig,
+      autoExecuteTools: true,
+      workspaceRootPath: '/history/reviewer',
     })
-    await flushPromises()
-    await nextTick()
+    const before = JSON.stringify(node)
+    const wrapper = mountItem(node, true)
+    await ready()
 
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
-    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
-    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      '/reviewer',
-      {
-        runtimeKind: 'codex_app_server',
-      },
-    ])
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('codex_app_server')
+    expect((wrapper.get('input#config--reviewer-temperature').element as HTMLInputElement).value).toBe('0.2')
+    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+    const residuals = wrapper.findAll('[data-test="historical-model-config-residual"]')
+    expect(residuals.map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
+    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(wrapper.text()).not.toContain('Default')
+    expect(wrapper.text()).toContain('Overridden')
+    expect(JSON.stringify(node)).toBe(before)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 
+  it('uses the same residual algorithm when the whole stored model schema is absent', async () => {
+    const exactConfig = Object.freeze({
+      reasoning_effort: 'ultra',
+      service_tier: 'fast',
+    })
+    const node = storedNode({
+      runtimeKind: 'removed-runtime',
+      llmModelIdentifier: 'removed-agent-model',
+      llmConfig: exactConfig,
+      workspaceRootPath: '/history/reviewer',
+    })
+    const before = JSON.stringify(node)
+    const wrapper = mountItem(node, true)
+    await ready()
+    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('removed-runtime')
+    expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
+    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
+    expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
+    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+      .map((row) => row.attributes('data-historical-key')))
+      .toEqual(['reasoning_effort', 'service_tier'])
+    expect(wrapper.get('[data-historical-key="reasoning_effort"]').text()).toContain('ultra')
+    expect(wrapper.get('[data-historical-key="service_tier"]').text()).toContain('fast')
+    expect(JSON.stringify(node)).toBe(before)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+  })
 })

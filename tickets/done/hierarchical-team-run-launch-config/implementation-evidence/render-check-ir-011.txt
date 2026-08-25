@@ -1,0 +1,39 @@
+IR-011 rendered frontend inspection
+Date: 2026-08-25 (Europe/Berlin)
+Surface: browser-rendered Nuxt workspace at http://127.0.0.1:3002 backed by the running packaged server at http://localhost:29695
+Viewport checks: 1440x1000 and 1050x900
+
+Journey exercised
+1. Opened Workspace -> Agent Teams.
+2. Selected Temp Workspace.
+3. Expanded Nested Classroom Test Team and the stored TeamRun named "hello".
+4. Selected stored member Teacher.
+5. Activated the header action with aria-label "Edit Config" to open Team Configuration.
+6. Expanded Team Members Override, then expanded stored nested Team /StudentStudyGroup.
+
+Observed stored root
+- Shared TeamRun form rendered with data-mode="stored" and the approved quiet root sequence.
+- Exact saved runtime, model, model configuration, workspace, and auto-approve values appeared in disabled shared controls.
+- The read-only explanation was present.
+- No Run Team command and no Reset command appeared.
+- Model Advanced disclosure remained operable while values remained disabled.
+
+Observed stored hierarchy
+- Team Members Override disclosure remained operable.
+- Mixed stored hierarchy rendered from the saved run: root Teacher Agent, nested /StudentStudyGroup Team, and nested student_one/student_two Agents.
+- Nested Team identity, TEAM marker, exact address, Customized state, and hierarchy indentation remained visible.
+- Nested Team disclosure changed aria-expanded false -> true and exposed the actual disabled shared controls.
+- Stored Agent values and workspace values remained visible; no stored mutation or catalog/workspace authoring command was exposed.
+- At 1050x900 the nested Team header, address, state, controls, and Agent rows stayed within the configuration column with no horizontal overflow or overlap.
+
+Historical schema-drift state
+- The live stored run uses currently representable values, so partial-schema residual rows were not naturally reachable from this user's stored snapshot.
+- Root, nested-Team, and Agent partial-schema drift were rendered through actual components in focused tests using temperature=0.2, reasoning_effort=ultra, and removed_parameter=persisted-value. Those checks prove exact one-time disabled-control/residual presentation and zero mutation; see web-stored-settings-focused-ir-011.txt.
+
+Visual result
+PASS. Shared stored-form appearance, hierarchy, disclosures, disabled/read-only treatment, spacing, density, focus semantics, and narrow-desktop layout match the approved SR-012/SR-013 presentation contract. No visual defect was observed in the changed boundary.
+
+Evidence images
+- stored-team-settings-ir-011-root.png
+- stored-team-settings-ir-011-desktop.png
+- stored-team-settings-ir-011-narrow.png

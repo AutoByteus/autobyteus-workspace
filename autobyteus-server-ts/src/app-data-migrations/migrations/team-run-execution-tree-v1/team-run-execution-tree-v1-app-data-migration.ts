@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { TokenUsageTeamRunV1MigrationRepository } from "./token-usage-team-run-v1-migration-repository.js";
 import type {
   TokenUsageRuntimeSchemaSnapshot,

@@ -1,0 +1,461 @@
+{
+  "schemaVersion": "api-rev-009-browser-result-v1",
+  "capturedAt": "2026-08-25T08:38:29.350Z",
+  "tabId": "4ce41d",
+  "url": "http://127.0.0.1:59124/workspace?api-rev-009=1",
+  "teamRunId": "nested_classroom_test_team_50b47ce67a654603be2e089b7923a556",
+  "fixture": {
+    "teamDefinitionId": "nested-classroom-test",
+    "teamName": "Nested Classroom Test Team",
+    "runtimeKind": "codex_app_server",
+    "modelIdentifier": "gpt-5.6-luna"
+  },
+  "controlledCatalogCapabilityInjection": {
+    "location": "owned page Pinia llmProviderConfig catalog only",
+    "persistedSnapshotMutated": false,
+    "addedParameters": [
+      {
+        "name": "ordinary_prompt",
+        "label": "Ordinary prompt",
+        "type": "string",
+        "description": "API-REV-009 current single-line text capability",
+        "required": false
+      },
+      {
+        "name": "multiline_prompt",
+        "label": "Multiline prompt",
+        "type": "string",
+        "description": "API-REV-009 current text capability boundary",
+        "required": false
+      }
+    ],
+    "rationale": "Current owned catalog has no free-text property; inject two current type:string capabilities to exercise the actual text-control boundary without changing stored history."
+  },
+  "uiState": {
+    "centerMode": "config",
+    "storedForm": true,
+    "readOnlyNotice": "◉Selected team run configuration is read-only. Start a new team run to use different runtime or model settings.",
+    "outerExpanded": "true",
+    "outerControls": "team-member-overrides-panel",
+    "nestedExpanded": "true",
+    "nestedControls": "team-scope-StudentStudyGroup-panel",
+    "runButtons": [],
+    "resetButtons": [],
+    "teamRunDraftKeys": [],
+    "selectedDraftId": null,
+    "networkAfterInstrumentation": [],
+    "viewport": {
+      "width": 1042,
+      "height": 738,
+      "devicePixelRatio": 2
+    }
+  },
+  "scopes": {
+    "rootTeam": {
+      "address": "/",
+      "ordinary": {
+        "id": "team-scope-root-ordinary_prompt",
+        "exists": true,
+        "value": "ROOT ordinary API-REV-009",
+        "disabled": true,
+        "type": "text",
+        "visible": true,
+        "occurrences": 1
+      },
+      "multiline": {
+        "exists": true,
+        "exactDomText": "ROOT line one\nROOT line two",
+        "codePoints": [
+          82,
+          79,
+          79,
+          84,
+          32,
+          108,
+          105,
+          110,
+          101,
+          32,
+          111,
+          110,
+          101,
+          10,
+          82,
+          79,
+          79,
+          84,
+          32,
+          108,
+          105,
+          110,
+          101,
+          32,
+          116,
+          119,
+          111
+        ],
+        "visible": true,
+        "occurrenceCount": 1,
+        "hasWhitespacePreWrapClass": true,
+        "layout": {
+          "computedWhiteSpace": "pre-wrap",
+          "rects": [
+            {
+              "x": 476,
+              "y": -1326.5,
+              "width": 93.921875,
+              "height": 14
+            },
+            {
+              "x": 569.921875,
+              "y": -1326.5,
+              "width": 0,
+              "height": 14
+            },
+            {
+              "x": 476,
+              "y": -1310.5,
+              "width": 93.921875,
+              "height": 14
+            }
+          ],
+          "uniqueLineYs": [
+            -1326.5,
+            -1310.5
+          ],
+          "renderedLineCount": 2,
+          "box": {
+            "width": 500,
+            "height": 32
+          }
+        }
+      }
+    },
+    "teacherAgent": {
+      "address": "/Teacher",
+      "ordinary": {
+        "id": "config--Teacher-ordinary_prompt",
+        "exists": true,
+        "value": "TEACHER ordinary API-REV-009",
+        "disabled": true,
+        "type": "text",
+        "visible": true,
+        "occurrences": 1
+      },
+      "multiline": {
+        "exists": true,
+        "exactDomText": "TEACHER alpha\nTEACHER beta",
+        "codePoints": [
+          84,
+          69,
+          65,
+          67,
+          72,
+          69,
+          82,
+          32,
+          97,
+          108,
+          112,
+          104,
+          97,
+          10,
+          84,
+          69,
+          65,
+          67,
+          72,
+          69,
+          82,
+          32,
+          98,
+          101,
+          116,
+          97
+        ],
+        "visible": true,
+        "occurrenceCount": 1,
+        "hasWhitespacePreWrapClass": true,
+        "layout": {
+          "computedWhiteSpace": "pre-wrap",
+          "rects": [
+            {
+              "x": 489,
+              "y": -213.1953125,
+              "width": 93.921875,
+              "height": 14
+            },
+            {
+              "x": 582.921875,
+              "y": -213.1953125,
+              "width": 0,
+              "height": 14
+            },
+            {
+              "x": 489,
+              "y": -197.1953125,
+              "width": 86.6953125,
+              "height": 14
+            }
+          ],
+          "uniqueLineYs": [
+            -213.2,
+            -197.2
+          ],
+          "renderedLineCount": 2,
+          "box": {
+            "width": 474,
+            "height": 32
+          }
+        }
+      }
+    },
+    "nestedTeam": {
+      "address": "/StudentStudyGroup",
+      "ordinary": {
+        "id": "team-scope-StudentStudyGroup-ordinary_prompt",
+        "exists": true,
+        "value": "NESTED ordinary API-REV-009",
+        "disabled": true,
+        "type": "text",
+        "visible": true,
+        "occurrences": 1
+      },
+      "multiline": {
+        "exists": true,
+        "exactDomText": "NESTED first\rNESTED second",
+        "codePoints": [
+          78,
+          69,
+          83,
+          84,
+          69,
+          68,
+          32,
+          102,
+          105,
+          114,
+          115,
+          116,
+          13,
+          78,
+          69,
+          83,
+          84,
+          69,
+          68,
+          32,
+          115,
+          101,
+          99,
+          111,
+          110,
+          100
+        ],
+        "visible": true,
+        "occurrenceCount": 1,
+        "hasWhitespacePreWrapClass": true,
+        "layout": {
+          "computedWhiteSpace": "pre-wrap",
+          "rects": [
+            {
+              "x": 489,
+              "y": 399.3046875,
+              "width": 86.6953125,
+              "height": 14
+            },
+            {
+              "x": 575.6953125,
+              "y": 399.3046875,
+              "width": 93.921875,
+              "height": 14
+            }
+          ],
+          "uniqueLineYs": [
+            399.3
+          ],
+          "renderedLineCount": 1,
+          "box": {
+            "width": 474,
+            "height": 16
+          }
+        }
+      }
+    },
+    "studentOneAgent": {
+      "address": "/StudentStudyGroup/student_one",
+      "ordinary": {
+        "id": "config--StudentStudyGroup-student_one-ordinary_prompt",
+        "exists": true,
+        "value": "STUDENT ONE ordinary API-REV-009",
+        "disabled": true,
+        "type": "text",
+        "visible": true,
+        "occurrences": 1
+      },
+      "multiline": {
+        "exists": true,
+        "exactDomText": "STUDENT ONE alpha\rSTUDENT ONE beta",
+        "codePoints": [
+          83,
+          84,
+          85,
+          68,
+          69,
+          78,
+          84,
+          32,
+          79,
+          78,
+          69,
+          32,
+          97,
+          108,
+          112,
+          104,
+          97,
+          13,
+          83,
+          84,
+          85,
+          68,
+          69,
+          78,
+          84,
+          32,
+          79,
+          78,
+          69,
+          32,
+          98,
+          101,
+          116,
+          97
+        ],
+        "visible": true,
+        "occurrenceCount": 1,
+        "hasWhitespacePreWrapClass": true,
+        "layout": {
+          "computedWhiteSpace": "pre-wrap",
+          "rects": [
+            {
+              "x": 514,
+              "y": 1444.609375,
+              "width": 122.8203125,
+              "height": 14
+            },
+            {
+              "x": 636.8203125,
+              "y": 1444.609375,
+              "width": 115.59375,
+              "height": 14
+            }
+          ],
+          "uniqueLineYs": [
+            1444.61
+          ],
+          "renderedLineCount": 1,
+          "box": {
+            "width": 437,
+            "height": 16
+          }
+        }
+      }
+    },
+    "studentTwoAgent": {
+      "address": "/StudentStudyGroup/student_two",
+      "ordinary": {
+        "id": "config--StudentStudyGroup-student_two-ordinary_prompt",
+        "exists": true,
+        "value": "STUDENT TWO ordinary API-REV-009",
+        "disabled": true,
+        "type": "text",
+        "visible": true,
+        "occurrences": 1
+      },
+      "multiline": {
+        "exists": true,
+        "exactDomText": "STUDENT TWO alpha\nSTUDENT TWO beta",
+        "codePoints": [
+          83,
+          84,
+          85,
+          68,
+          69,
+          78,
+          84,
+          32,
+          84,
+          87,
+          79,
+          32,
+          97,
+          108,
+          112,
+          104,
+          97,
+          10,
+          83,
+          84,
+          85,
+          68,
+          69,
+          78,
+          84,
+          32,
+          84,
+          87,
+          79,
+          32,
+          98,
+          101,
+          116,
+          97
+        ],
+        "visible": true,
+        "occurrenceCount": 1,
+        "hasWhitespacePreWrapClass": true,
+        "layout": {
+          "computedWhiteSpace": "pre-wrap",
+          "rects": [
+            {
+              "x": 514,
+              "y": 2222.9140625,
+              "width": 122.8203125,
+              "height": 14
+            },
+            {
+              "x": 636.8203125,
+              "y": 2222.9140625,
+              "width": 0,
+              "height": 14
+            },
+            {
+              "x": 514,
+              "y": 2238.9140625,
+              "width": 115.59375,
+              "height": 14
+            }
+          ],
+          "uniqueLineYs": [
+            2222.91,
+            2238.91
+          ],
+          "renderedLineCount": 2,
+          "box": {
+            "width": 437,
+            "height": 32
+          }
+        }
+      }
+    }
+  },
+  "assertions": {
+    "ordinaryCurrentControlPass": true,
+    "lfResidualPass": true,
+    "crExactDomPass": true,
+    "crVisibleWhitespacePass": false,
+    "noAuthoringAuthorityPass": true,
+    "criticalResult": "FAIL: isolated CR characters retain exact DOM code point 13 but render on one visual line with no visible separation under white-space: pre-wrap."
+  }
+}

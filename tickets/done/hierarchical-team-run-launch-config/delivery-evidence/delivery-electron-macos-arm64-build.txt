@@ -1,0 +1,87 @@
+Delivery evidence: README-guided local Electron verification build
+Delivery revision: DR-003
+Timestamp: 2026-08-25T06:09:07+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+
+README guidance reviewed
+-------------------------
+- Root README setup and packaged Electron API/E2E guidance.
+- autobyteus-web/README.md desktop build instructions.
+- macOS build script selected: pnpm build:electron:mac.
+- NO_TIMESTAMP=1 and an empty APPLE_TEAM_ID selected because this is a local
+  verification package, not a signed/notarized release artifact.
+
+Build environment
+-----------------
+Host: Darwin arm64 (Apple silicon)
+Node: v22.23.1
+pnpm: 10.28.2
+Electron: 42.4.1
+Application version: 1.4.57
+Build flavor: enterprise
+
+Command
+-------
+env -u ELECTRON_RUN_AS_NODE NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+
+Result
+------
+PASS (exit code 0)
+
+Completed stages included:
+- web-boundary guard: Pass
+- localization-boundary guard: Pass
+- localization literal audit: Pass (zero findings)
+- server preparation/build/bootstrap smoke: Pass
+- Prisma client generation: Pass
+- Electron native module rebuild: Pass
+- Nuxt/Electron generation: Pass
+- TypeScript compilation: Pass
+- electron-builder packaging: Pass
+
+Non-blocking build notices
+--------------------------
+- caniuse-lite/browser data was reported as six months old.
+- Vite reported several chunks above its 500 kB advisory threshold.
+- pnpm reported an ignored build script for the file-linked autobyteus-ts
+  dependency; the server build/bootstrap smoke and final package completed.
+- Developer ID code signing was skipped by explicit local-build configuration.
+
+Artifacts
+---------
+Application:
+/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Unpacked app size: approximately 1.4 GB
+Executable format: Mach-O 64-bit arm64
+CFBundleShortVersionString: 1.4.57
+CFBundleIdentifier: com.autobyteus.app
+Signature: ad-hoc/linker-signed only; TeamIdentifier not set; not notarized
+
+DMG:
+/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.57.dmg
+Displayed size: 442 MB
+SHA-256: 56136720649c1197ba4ec34c5b95c0884ab24d07f8cec9bd9656e6ccd753fcbe
+hdiutil verify: PASS (VALID)
+
+ZIP:
+/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.57.zip
+Displayed size: 437 MB
+SHA-256: 5de07e3c89e04d2457ae8de497d0bb7e208d9fd14e764195062924b6536ad471
+unzip -tq: PASS (no errors detected)
+
+Direct local launch command
+---------------------------
+open "/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app"
+
+Repository-state check
+----------------------
+Packaging produced no unexpected tracked production-source or durable-test
+change. The already recorded 13 long-lived documentation changes plus delivery
+artifacts/evidence remain the only tracked uncommitted delivery-stage changes.
+
+Delivery constraint
+-------------------
+This package enables explicit user verification. It is not a release or
+deployment, and no push, archival transition, target merge, tag, version
+change, publication, deployment, or cleanup was performed.

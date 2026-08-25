@@ -5,12 +5,12 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
-import type { ConfiguredAgentExecution, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getTeamRunExecutionTreePath } from "../store/team-run-execution-tree-path.js";
 import { validateTeamRunExecutionTreePayload } from "../store/team-run-execution-tree-schema.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
-import { TeamRunV1PackageCatalog } from "./team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
 
 export type LocatedTeamAgentExecution = Readonly<{
   rootTeamRunId: string;
@@ -18,7 +18,7 @@ export type LocatedTeamAgentExecution = Readonly<{
   ancestorTeamRunIds: readonly string[];
   agentRunId: string;
   memberAddress: AgentTeamAddress;
-  configuredPlacement: ConfiguredAgentExecution | null;
+  configuredPlacement: ConfiguredAgentExecutionNode | null;
   memoryDir: string;
   tree: TeamRunExecutionTreeSnapshot;
   isActive: boolean;
@@ -31,13 +31,13 @@ const STORED_TEAM_RUNS_ONLY: Manager = Object.freeze({
   listManagedTeamRunIds: () => [],
 });
 
-/** Derives physical/history context from the exact V1 tree without another identity model. */
+/** Derives physical/history context from the exact current V2 tree without another identity model. */
 export class TeamRunExecutionTreeLocationService {
   private readonly memoryDir: string;
   private readonly layout: AgentMemoryLayout;
   private readonly manager: Manager;
   private readonly store: TeamRunExecutionTreeStore;
-  private readonly packageCatalog: TeamRunV1PackageCatalog;
+  private readonly packageCatalog: TeamRunPackageCatalog;
 
   constructor(input: {
     memoryDir?: string;
@@ -48,7 +48,7 @@ export class TeamRunExecutionTreeLocationService {
     this.layout = new AgentMemoryLayout(this.memoryDir);
     this.manager = input.manager ?? DefaultManager.getInstance();
     this.store = input.store ?? new TeamRunExecutionTreeStore();
-    this.packageCatalog = new TeamRunV1PackageCatalog(this.memoryDir);
+    this.packageCatalog = new TeamRunPackageCatalog(this.memoryDir);
   }
 
   async findAgent(input: {

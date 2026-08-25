@@ -4,7 +4,6 @@ import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/m
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
-import { fromTeamRunRuntimeKind } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
   runtimeKindFromString,
   type RuntimeKind,
@@ -177,7 +176,7 @@ export class RuntimeMemoryLocationClassifier {
               WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
             ),
             runtimeKind: exact.configuredPlacement
-              ? fromTeamRunRuntimeKind(exact.configuredPlacement.launchConfiguration.runtimeKind)
+              ? exact.configuredPlacement.launchConfiguration.runtimeKind
               : null,
             snapshotAgentId: exact.agentRunId,
             subject: {

@@ -1,0 +1,40 @@
+IR-005 CR-006 static audit
+current HEAD: 77b7649d55313012e3df7eed8c8fd6e37b794b93
+current branch: codex/hierarchical-team-run-launch-config
+unmerged entries:
+conflict markers in changed source/test:
+none
+CR-006 active-New readiness policy:
+autobyteus-web/utils/teamRunLaunchReadiness.ts:32:export const applyPendingTeamWorkspaceReadiness = (
+autobyteus-web/utils/teamRunLaunchReadiness.ts:43:    message: 'Enter a workspace path to run this team.',
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:104:import { applyPendingTeamWorkspaceReadiness } from '~/utils/teamRunLaunchReadiness'
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:393:  return applyPendingTeamWorkspaceReadiness(
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:367:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:372:    workspaceStoreMock.workspaces.temp_ws_default = {
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:373:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:387:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:415:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:420:    workspaceStoreMock.workspaces.temp_ws_default = {
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:421:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:436:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:485:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:497:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:600:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:617:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:640:    teamStore.config = editableTeamConfig({ workspaceId: 'temp_ws_default' }) as any
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:656:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:667:    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('temp_ws_default')
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:757:      workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:759:        workspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:774:      existingWorkspaceId: 'temp_ws_default',
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:779:    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('temp_ws_default')
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts:782:      'Enter a workspace path to run this team.',
+changed source effective non-empty line counts:
+autobyteus-web/utils/teamRunLaunchReadiness.ts 110
+autobyteus-web/components/workspace/config/RunConfigPanel.vue 497
+source/test diff against current HEAD:
+5	6	autobyteus-web/components/workspace/config/RunConfigPanel.vue
+36	0	autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+24	0	autobyteus-web/utils/teamRunLaunchReadiness.ts
+git diff --check:
+PASS

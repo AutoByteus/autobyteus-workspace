@@ -40,6 +40,21 @@ const buildTeamConfiguration = (
   executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" },
   resourceDefinitionId: "team-1",
   resourceKind: "AGENT_TEAM",
+  teamScopes: [{
+    teamAddress: "/",
+    displayName: "Team",
+    teamDefinitionId: "team-1",
+    runtimeKind: "codex_app_server",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig,
+    workspaceRootPath: "/workspace/team",
+    provenance: {
+      ...provenance,
+      runtimeKind: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+      llmModelIdentifier: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+      llmConfig: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+    },
+  }],
   leaves: ["researcher", "writer"].map((memberName) => ({
     memberAddress: `/${memberName}`,
     displayName: memberName === "researcher" ? "Researcher" : "Writer",
@@ -91,6 +106,17 @@ describe("effective application launch translation", () => {
 
     expect(launch).toMatchObject({ kind: "AGENT_TEAM", mode: "memberConfigs" });
     if (launch.mode !== "memberConfigs") throw new Error("Expected memberConfigs launch.");
+    expect(launch.teamConfigs).toEqual([{
+      teamAddress: "/",
+      workspaceRootPath: "/workspace/team",
+      runtimeKind: "codex_app_server",
+      llmModelIdentifier: "gpt-5.6-luna",
+      llmConfig,
+      autoExecuteTools: true,
+      skillAccessMode: "PRELOADED_ONLY",
+    }]);
+    expect(launch.teamConfigs[0]?.llmConfig).not.toBe(llmConfig);
+    expect(launch.teamConfigs[0]?.llmConfig?.nested).not.toBe(llmConfig.nested);
     expect(launch.memberConfigs.map(({ memberAddress, displayName, agentDefinitionId }) => ({
       memberAddress,
       displayName,

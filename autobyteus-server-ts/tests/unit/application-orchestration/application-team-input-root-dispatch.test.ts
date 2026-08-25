@@ -165,6 +165,7 @@ describe("application team input RootTeamRun dispatch", () => {
       launch: {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [],
         memberConfigs: [],
       },
       initialInput: {
@@ -188,6 +189,7 @@ describe("application team input RootTeamRun dispatch", () => {
       launch: {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [],
         memberConfigs: [],
       },
       initialInput: {

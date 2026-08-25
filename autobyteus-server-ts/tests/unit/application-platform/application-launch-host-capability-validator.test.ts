@@ -20,6 +20,7 @@ const configuration = (
   executionResourceRef: { source: "bundle", kind: "AGENT", localId: "researcher" },
   resourceDefinitionId: "agent-definition-1",
   resourceKind: leaves.length === 1 ? "AGENT" : "AGENT_TEAM",
+  ...(leaves.length === 1 ? {} : { teamScopes: [] }),
   leaves: leaves.map((leaf, index) => ({
     memberAddress: leaf.memberAddress ?? null,
     displayName: `Leaf ${index + 1}`,
@@ -227,5 +228,55 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       llmModelIdentifier,
     }))))).resolves.toEqual([]);
     expect(credentials.getReadiness).toHaveBeenCalledTimes(2);
+  });
+
+  it("evaluates a Team scope as a mandatory readiness subject", async () => {
+    const listLlmModels = vi.fn(async () => []);
+    const credentials = credentialPort();
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async (identifier) => {
+          if (identifier === "removed-team-default") {
+            throw new CurrentModelSelectionRequiredError(identifier);
+          }
+        },
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { listLlmModels },
+      providerCredentialReadiness: credentials,
+    });
+    const base = configuration([{
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      llmModelIdentifier: "leaf-model",
+      memberAddress: "/researcher",
+    }]);
+    const teamConfiguration = {
+      ...base,
+      executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" } as const,
+      resourceKind: "AGENT_TEAM" as const,
+      teamScopes: [{
+        teamAddress: "/",
+        displayName: "Root Team",
+        teamDefinitionId: "team-def-1",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        llmModelIdentifier: "removed-team-default",
+        llmConfig: null,
+        workspaceRootPath: "/runtime/app",
+        provenance: {
+          runtimeKind: { kind: "PACKAGE_TEAM_DEFAULT" as const, teamDefinitionId: "team-def-1" },
+          llmModelIdentifier: { kind: "PACKAGE_TEAM_DEFAULT" as const, teamDefinitionId: "team-def-1" },
+          llmConfig: null,
+          workspaceRootPath: "APPLICATION_RUNTIME" as const,
+        },
+      }],
+    };
+
+    const issues = await validator.validate(teamConfiguration);
+
+    expect(issues).toContainEqual(expect.objectContaining({
+      code: "CURRENT_MODEL_SELECTION_REQUIRED",
+      memberAddress: "/",
+    }));
   });
 });

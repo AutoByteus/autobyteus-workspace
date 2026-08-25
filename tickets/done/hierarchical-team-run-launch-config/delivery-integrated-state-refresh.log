@@ -1,0 +1,326 @@
+Delivery integrated-state refresh
+Date: 2026-08-24
+Ticket: hierarchical-team-run-launch-config
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal
+
+1. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Post-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Result: Pass; tracked remote refs were current.
+
+2. Pre-integration ancestry
+   Reviewed historical base: 52b4be02ea793f2071fe5a63a94664ab25196433
+   Pre-checkpoint ticket HEAD: c915a065377f2982abfc2d7638830085c86b6cc1
+   Ticket/base divergence before checkpoint: 1 ahead / 18 behind
+   Merge base: 52b4be02ea793f2071fe5a63a94664ab25196433
+   Result: origin/personal advanced by 18 commits since the reviewed historical base.
+
+3. Reviewed-state protection
+   Transient untracked test output removed: autobyteus-application-devkit/.tmp-tests
+   Pre-checkpoint check: git diff --check -> Pass
+   Command: git add -A && git commit -m "chore(delivery): checkpoint reviewed hierarchical launch candidate"
+   Checkpoint: 393c27015a4380f77d33f7f55096077f0e1f6b29
+   Result: Pass; 290 reviewed/evidence paths were protected in a local delivery-safety commit.
+   Publication: None. The checkpoint was not pushed.
+
+4. Latest-base integration attempt
+   Command: git merge --no-edit origin/personal
+   Merge HEAD: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Result: Blocked; automatic merge stopped with six content conflicts.
+
+   Unmerged paths:
+   - autobyteus-web/components/workspace/config/RunConfigPanel.vue
+   - autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+   - autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+   - autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+   - autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+   - autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+   Base commits touching the conflict set:
+   - bfbeb0810 fix workspace selection state for team launches
+   - 2950019a3 preserve explicit workspace mode during discovery
+
+5. Post-integration verification
+   Executable check rerun: No.
+   Rationale: the integration did not complete and the worktree is intentionally retained in an unmerged state for implementation-owned conflict resolution. Running candidate tests or synchronizing durable docs would not establish an integrated result.
+
+6. Safety and holds
+   - The dated origin/codex/hierarchical-team-run-launch-config-recovery-20260824 branch was not merged or cherry-picked.
+   - No source conflict was resolved by delivery.
+   - No ticket archive, push, finalization-target update, release, deployment, tag, or cleanup occurred.
+   - Delivery result: Blocked / Local Fix to /implementation_engineer.
+
+================================================================================
+DR-002 delivery re-entry integrated-state refresh
+Date: 2026-08-25
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal -> personal
+
+1. Reviewed re-entry state
+   Reviewed repository HEAD: 426bdf81ae5efcaf7e97e041c36a94d7349e610b
+   Additional reviewed working-tree package: 52 durable-test/report/evidence paths
+   Authoritative gates: SR-008; ARCH-REV-002; IR-008; CRR-012 Pass (9.4/10); API-REV-007 Pass (98%); CRR-014 Pass
+   Corrected capability-test SHA-256: 00ebf8044550437dda210de8c3e2289aea5f004a3e955f2f142f479e09a6a700
+   Prior delivery status: DR-001 historical Blocked; upstream rework/review cycle completed before this re-entry.
+
+2. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Post-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Reviewed-head/base divergence after fetch: 12 ahead / 3 behind
+   Merge base: 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+   Incoming commits:
+   - dfe8922e4 docs(requirements): return prototype ownership to workspace
+   - bf8ab9349 prototype: return web baseline to workspace ownership
+   - 87b1b5845 docs(requirements): close workspace prototype return
+   Incoming scope: autobyteus-web-prototype/** and tickets/in-progress/initial-prototype-baseline/** only.
+   Reviewed source/test overlap: None.
+
+3. Reviewed-state protection
+   Targeted durable-test/report diff check: Pass.
+   Note: captured API/E2E evidence logs retain their observed trailing whitespace/EOF formatting; no production source, durable test, or Markdown report failed the targeted check.
+   Command: git add <exact 52-path reviewed package> && git commit -m "chore(delivery): checkpoint API-REV-007 handoff"
+   Checkpoint: a50cb6e4187f74a55c7349d8a352848f5fab09e7
+   Result: Pass; the reviewed handoff was protected in an allowed local checkpoint.
+   Publication: None. The checkpoint was not pushed.
+
+4. Latest-base integration
+   Command: git merge --no-edit origin/personal
+   Result: Pass; no conflicts.
+   Integrated HEAD: 1f1fb12160c809b41bd4b716dc2fa4f920631f6d
+   First parent: a50cb6e4187f74a55c7349d8a352848f5fab09e7
+   Second parent: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Integrated merge base with origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Final divergence: 14 ahead / 0 behind
+
+5. Post-integration executable verification
+   Working directory: autobyteus-server-ts
+   Command: pnpm exec vitest run tests/integration/application-backend/application-context-capabilities.integration.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts --no-watch
+   Result: Pass; 2 files / 5 tests; duration 6.22s.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-post-integration-api-rev-007.txt
+
+6. Docs-sync validation
+   Long-lived docs updated: 13.
+   Checks: targeted git diff --check; Markdown fence balance; relative link resolution; stale current-contract name scan; updated implementation-reference existence.
+   Result: Pass.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-docs-validation.txt
+
+7. Final remote confirmation
+   Command: git fetch --prune origin
+   Pre/post origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Result: Pass; tracked base remained unchanged and is the integrated merge base.
+
+8. Safety and holds
+   - The dated configured-recovery branch was not merged or cherry-picked.
+   - No reviewed production source or durable test was changed during delivery.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Delivery result: Pass / ready for explicit user verification.
+
+================================================================================
+DR-004 delivery re-entry integrated-state refresh
+Date: 2026-08-25T07:39:29+02:00
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal -> personal
+
+1. Reviewed re-entry state
+   Reviewed repository HEAD: cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+   Reviewed presentation source commit: 84c94496f6c0acacb12619e2314027acbb5fcf6a
+   Additional reviewed working-tree package: 26 API/E2E/code-review report and evidence paths; zero production-source or repository-resident durable-test delta.
+   Authoritative gates: SR-011; ARCH-REV-003; IR-009; CRR-015 Pass (9.4/10, 94.1/100); API-REV-008 Pass (98%); CRR-016 proportional test-code review Not Applicable.
+   Prior delivery status: DR-003 local Electron verification package was superseded by the user-approved SR-011 presentation correction and is not the current candidate.
+
+2. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Post-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Reviewed-head/base divergence after fetch: 16 ahead / 0 behind
+   Merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Incoming commits: None.
+   Result: Pass; the reviewed ticket HEAD already contains the latest tracked remote base.
+
+3. Reviewed-state protection and integration
+   New local checkpoint: Not required; the tracked base did not advance and no integration operation was needed.
+   Integration command: Not run.
+   Rationale: origin/personal is already an ancestor and the merge base equals current origin/personal. The 26-path uncommitted review/evidence package remains undisturbed.
+   Integrated/current HEAD: cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+   Result: Pass; no conflict, source change, durable-test change, or effective-behavior change was introduced by delivery refresh.
+
+4. Post-refresh executable verification decision
+   Additional base-integration rerun: Not required because no new base commit was integrated.
+   Candidate rebuild: Required separately for hands-on user verification because DR-003 predates the final SR-011 presentation source. Delivery will build and validate a fresh local Electron artifact from the current HEAD after final docs assessment.
+
+5. Safety and holds
+   - The dated configured-recovery comparison branch was not merged or cherry-picked.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Explicit hands-on user verification of the rebuilt SR-011 candidate remains mandatory.
+
+6. DR-004 docs sync
+   Long-lived docs reviewed: 13.
+   Updated: autobyteus-web/docs/agent_teams.md; autobyteus-web/docs/settings.md; autobyteus-web/docs/agent_execution_architecture.md.
+   No impact: 10 integration/server/memory/history/migration documents; SR-011 changed no functional or persisted-data owner.
+   Validation: Pass; diff, Markdown fence, relative link, stale-presentation, and implementation-reference checks.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-docs-validation-dr004.txt
+
+7. SR-011 candidate rebuild
+   Working directory: autobyteus-web
+   Command: env -u ELECTRON_RUN_AS_NODE NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+   Result: Pass; exit code 0.
+   Application: electron-dist/mac-arm64/AutoByteus.app (version 1.4.57; com.autobyteus.app; arm64).
+   DMG SHA-256: 5049f562e7c37c39c9c578117d588c0778b45eae489019d4a1537dd2b208e65c
+   ZIP SHA-256: 59554dd81a37c9cd3efc109c7731675407530d6858bd0c086410a26775ae7779
+   Integrity: hdiutil verify Pass; unzip -tq Pass.
+   Signing/notarization: intentionally omitted for local hands-on verification; ad-hoc/linker-signed only.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-electron-sr011-macos-arm64-build.txt
+   Source-state audit: packaging produced no tracked production-source or durable-test delta.
+
+8. Final remote confirmation
+   Command: git fetch --prune origin
+   Pre/post origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Final divergence: 16 ahead / 0 behind
+   Result: Pass; the tracked base remained unchanged throughout DR-004.
+
+9. Final DR-004 safety and hold
+   - The prior DR-003 package is superseded by this rebuilt SR-011 candidate.
+   - API-REV-008 independent browser evidence is not hands-on user acceptance.
+   - The dated configured-recovery comparison branch was not merged or cherry-picked.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Delivery result: Pass / rebuilt candidate ready for explicit hands-on user verification.
+
+================================================================================
+DR-005 delivery re-entry integrated-state refresh
+Date: 2026-08-25T11:41:58+02:00
+Ticket branch: codex/hierarchical-team-run-launch-config
+Recorded bootstrap/finalization target: origin/personal -> personal
+
+1. Reviewed re-entry state
+   Reviewed repository HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+   Current implementation test-fix commit: 4b36f7c5b58ed3ea3fe3cc94ea5d71228913949e
+   Preserved stored-settings production chain: 9d176e5bb (shared stored form), ab7d8eedf (exact stored model config history), 003413b05 (later superseded multiline delta), 554e1baaa (producer-bounded cleanup).
+   Additional reviewed working-tree package on entry: 90 report/evidence/docs paths (23 tracked modifications and 67 untracked paths); no uncommitted production-source path.
+   Authoritative gates: SR-015; ARCH-REV-007; IR-014; CRR-023 Pass (9.6/10, 95.8/100); API-REV-011 Pass (98%); CRR-024 proportional durable-test Pass.
+   Durable test SHA-256: 45bd06f922e3624cab000e602267872b83d52673be1cfae667329826d5c39fda.
+   API-E2E-F-003 status: Out Of Scope / Non-Blocking; the synthetic CR/catalog-injection scenario must not be rerun or treated as current product scope.
+   Prior delivery status: DR-004 is historical and its Electron artifact predates the approved shared stored-Settings presentation/corrections.
+
+2. Remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Post-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Reviewed-head/base divergence after fetch: 26 ahead / 0 behind
+   Merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Incoming commits: None.
+   Result: Pass; the reviewed ticket HEAD already contains the latest tracked remote base.
+
+3. Reviewed-state protection and integration
+   New local checkpoint: Not required; the tracked base did not advance and no integration operation was needed.
+   Integration command: Not run.
+   Rationale: origin/personal is already an ancestor and the merge base equals current origin/personal. The reviewed working-tree package remains undisturbed.
+   Integrated/current HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+   Result: Pass; no conflict, source change, durable-test change, or effective-behavior change was introduced by delivery refresh.
+
+4. Post-refresh executable verification decision
+   Additional base-integration rerun: Not required because no new base commit was integrated.
+   Candidate rebuild: Required separately for hands-on user verification because DR-004 predates SR-012–SR-015 and the current shared stored-Settings production state.
+
+5. Safety and holds
+   - The dated configured-recovery comparison branch was not merged or cherry-picked.
+   - No synthetic CR/catalog-injection API/E2E scenario was executed.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Explicit hands-on user verification of a rebuilt current candidate remains mandatory.
+
+6. DR-005 docs sync
+   Long-lived docs reviewed: 13.
+   Updated: autobyteus-web/docs/agent_teams.md; autobyteus-web/docs/settings.md; autobyteus-web/docs/agent_execution_architecture.md.
+   No impact: 10 integration/server/history/memory/migration documents.
+   Current documentation: shared editable/stored Team form appearance; discriminated capabilities; immutable V2 topology/order/values; disabled stored controls with operable disclosures and no Reset/Run/mutation; exact producer-backed historical field fallback; synthetic CR/catalog-injection scenario excluded from current-product acceptance.
+   Validation: Pass; diff, Markdown fence, relative link, deleted-component/current-path, implementation-reference, forbidden-authoring-dependency, and generic-classifier checks.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-docs-validation-dr005.txt
+
+7. SR-015 candidate rebuild
+   Working directory: autobyteus-web
+   Command: env -u ELECTRON_RUN_AS_NODE NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+   Result: Pass; exit code 0.
+   Application: electron-dist/mac-arm64/AutoByteus.app (version 1.4.57; com.autobyteus.app; arm64).
+   DMG SHA-256: 670ff4bac76995d2a992a7a095e2543fd3151f3c092906dfa73218a9c77635f6
+   ZIP SHA-256: ae56a3c6f4f41d4b4b09c2387e07f0f4536fce412e74105d406e1c705512d452
+   Integrity: hdiutil verify Pass; unzip -tq Pass.
+   Signing/notarization: intentionally omitted for local hands-on verification; ad-hoc/linker-signed only.
+   Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-electron-sr015-macos-arm64-build.txt
+   Source-state audit: packaging produced no tracked production-source or durable-test delta.
+
+8. Final remote confirmation
+   Command: git fetch --prune origin
+   Pre/post origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Final divergence: 26 ahead / 0 behind
+   Result: Pass; the tracked base remained unchanged throughout DR-005.
+
+9. Final DR-005 safety and hold
+   - The DR-004 package is superseded by this rebuilt SR-015 candidate.
+   - API-REV-011/CRR-024 evidence is not hands-on user acceptance.
+   - API-E2E-F-003 remains Out Of Scope / Non-Blocking and was not executed.
+   - The dated configured-recovery comparison branch was not merged or cherry-picked.
+   - No ticket archive, push, finalization-target merge, release, deployment, tag, version change, or cleanup occurred.
+   - Delivery result: Pass / rebuilt current candidate ready for explicit hands-on user verification.
+
+10. DR-005 final handoff validation
+    Checks: global tracked diff; Markdown/link balance; DR-005 authority; deleted stored-card path absence; app/DMG/ZIP hashes; no delivery production/test delta; synthetic CR/catalog-injection path absence; recovery branch containment; build/docs evidence consistency.
+    Result: Pass.
+    Evidence: tickets/in-progress/hierarchical-team-run-launch-config/delivery-evidence/delivery-final-handoff-validation-dr005.txt
+
+================================================================================
+DR-006 post-user-verification finalization-target refresh
+Date: 2026-08-25T12:05:48+02:00
+User signal: explicit hands-on completion/verification and explicit authorization to finalize and release a new version.
+
+1. Finalization-target remote refresh
+   Command: git fetch --prune origin
+   Pre-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Post-fetch origin/personal: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   User-verified ticket HEAD: 5305bfa2049ed56e6ff917dbee8c17e3a8ac3a8f
+   Merge base: 87b1b584592be95b1c8ee076f1d0ab3986a13f18
+   Divergence: 26 ahead / 0 behind
+   Incoming base commits: None.
+   Result: Pass; the recorded finalization target did not advance beyond the user-verified candidate.
+
+2. Verification-renewal decision
+   Integration command: Not required.
+   Additional executable rerun: Not required; no base commit, source path, durable-test path, or user-facing artifact changed after verification.
+   Renewed user verification: Not required.
+
+3. Finalization/release authorization
+   Ticket transition: authorized to move from tickets/in-progress to tickets/done before the final ticket commit.
+   Finalization target: personal.
+   Release method: documented scripts/desktop-release.sh flow after repository finalization.
+   Intended next version: 1.4.58, the next unused patch after current v1.4.57.
+   Recovery safety: origin/codex/hierarchical-team-run-launch-config-recovery-20260824 remains comparison-only and will not be merged or cherry-picked.
+
+4. Repository finalization
+   Ticket archive/finalization commit: f0b9ba0ad0c59bbd52693997456ed46f39475516.
+   Remote ticket-history reconciliation: b9806ef7d7d0ad14b73d710c020a0784287400b4; ours strategy; identical tree before/after.
+   Ticket branch push: Pass.
+   Finalization-target refresh: personal fast-forwarded to origin/personal@87b1b584592be95b1c8ee076f1d0ab3986a13f18.
+   Target merge: a43e8ceea83274d0724533144281806e7acf68b0.
+   Target push: Pass.
+
+5. Release and rollout
+   Command: scripts/desktop-release.sh release 1.4.58 --release-notes tickets/done/hierarchical-team-run-launch-config/release-notes.md
+   Release commit/tag: a6c79a669923b569f82adb2b9d1b31da5ceac3de / v1.4.58.
+   Release branch/tag push: Pass.
+   Workflow result: Desktop, Android, iOS App Store Connect, messaging gateway, and server Docker all completed successfully.
+   GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.58; non-draft/non-prerelease; 21 assets.
+   Updater/managed metadata: exact 1.4.58/v1.4.58 validation Pass.
+   Server Docker: 1.4.58 and latest resolve to the same amd64+arm64 digest sha256:a9ba057c7615742a4bafc98540556fb485fcbe3ae2ef2696507618c70eceefef.
+   User rollout verification: Pass; user confirmed the released version is already running.
+
+6. Cleanup and final result
+   Dedicated ticket worktree removed: Pass.
+   Local ticket branch deleted: Pass.
+   Remote ticket branch deleted: Pass.
+   Worktree prune: Pass.
+   Dated configured-recovery comparison branch: retained and untouched.
+   DR-006 result: Pass — finalization, release, publication, rollout verification, and cleanup complete.
+   Evidence: tickets/done/hierarchical-team-run-launch-config/delivery-evidence/delivery-release-v1.4.58-rollout-dr006.txt

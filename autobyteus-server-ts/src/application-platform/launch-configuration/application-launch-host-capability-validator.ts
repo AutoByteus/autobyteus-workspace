@@ -1,5 +1,7 @@
 import type {
   ApplicationEffectiveLaunchConfiguration,
+  ApplicationEffectiveLeafLaunchProfile,
+  ApplicationEffectiveTeamLaunchProfile,
   ApplicationLaunchIssue,
 } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
@@ -18,10 +20,13 @@ type RuntimeAvailabilityReader = Pick<
   "getRuntimeAvailability"
 >;
 type ModelCatalogReader = Pick<ModelCatalogService, "listLlmModels">;
+type EffectiveLaunchSubject =
+  | ApplicationEffectiveTeamLaunchProfile
+  | ApplicationEffectiveLeafLaunchProfile;
 
 const issue = (
   configuration: ApplicationEffectiveLaunchConfiguration,
-  leaf: ApplicationEffectiveLaunchConfiguration["leaves"][number],
+  leaf: EffectiveLaunchSubject,
   code: ApplicationLaunchIssue["code"],
   message: string,
 ): ApplicationLaunchIssue => ({
@@ -29,7 +34,7 @@ const issue = (
   scope: "HOST_CAPABILITY",
   code,
   slotKey: configuration.slotKey,
-  memberAddress: leaf.memberAddress,
+  memberAddress: "memberAddress" in leaf ? leaf.memberAddress : leaf.teamAddress,
   message,
 });
 
@@ -49,7 +54,10 @@ export class ApplicationLaunchHostCapabilityValidator {
       string,
       Awaited<ReturnType<ApplicationProviderCredentialReadinessPort["getReadiness"]>>
     >();
-    for (const leaf of configuration.leaves) {
+    const subjects: EffectiveLaunchSubject[] = configuration.resourceKind === "AGENT_TEAM"
+      ? [...configuration.teamScopes, ...configuration.leaves]
+      : configuration.leaves;
+    for (const leaf of subjects) {
       const runtimeKind = this.dependencies.currentModelSelectionPolicy
         .normalizeRuntimeKind(leaf.runtimeKind);
       if (!runtimeKind) {
@@ -161,8 +169,9 @@ export class ApplicationLaunchHostCapabilityValidator {
   }
 
   private describeLeaf(
-    leaf: ApplicationEffectiveLaunchConfiguration["leaves"][number],
+    leaf: EffectiveLaunchSubject,
   ): string {
+    if ("teamAddress" in leaf) return `team ${leaf.teamAddress}`;
     return leaf.memberAddress
       ? `team member ${leaf.memberAddress}`
       : `agent ${leaf.agentDefinitionId}`;

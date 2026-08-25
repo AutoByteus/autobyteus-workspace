@@ -2,16 +2,23 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import {
   TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID,
   TeamAgentMemoryLayoutAppDataMigration,
 } from "../../../src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import type {
+  AgentLaunchConfiguration,
+  ConfiguredAgentExecution,
+  ConfiguredTeamExecution,
+  TeamRunExecutionTreeFileV1,
+} from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
 import { MigrateNativeWorkingContextSnapshotsV5Migration } from "../../../src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
-import { testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 type Candidate = Readonly<{
   teamRunId: string;
@@ -42,23 +49,53 @@ describe("TeamAgentMemoryLayoutAppDataMigration", () => {
     rootTeamRunId: string,
     candidates: readonly Candidate[],
   ): Promise<void> => {
-    const tree = testExecutionTree({
-      rootTeamRunId,
-      coordinatorAddress: "/lead",
-      children: [
-        testAgentNode("/lead", { agentRunId: `${rootTeamRunId}-lead` }),
-        ...candidates.map((candidate, index) => {
-          const teamAddress = `/team_${index}`;
-          const agentAddress = `${teamAddress}/worker`;
-          return testAgentTeamNode({
-            address: teamAddress,
-            coordinatorAddress: agentAddress,
-            teamRunId: candidate.teamRunId,
-            children: [testAgentNode(agentAddress, { agentRunId: candidate.agentRunId })],
-          });
-        }),
-      ],
+    const launchConfiguration: AgentLaunchConfiguration = {
+      runtimeKind: "AUTOBYTEUS",
+      llmModelIdentifier: "test-model",
+      llmConfig: null,
+      autoExecuteTools: true,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      workspaceRootPath: null,
+    };
+    const agent = (address: string, agentRunId: string): ConfiguredAgentExecution => ({
+      address: assertAgentTeamAddress(address),
+      agentDefinitionId: `definition-${agentRunId}`,
+      role: null,
+      description: null,
+      agentRunId,
+      platformAgentRunId: null,
+      launchConfiguration,
     });
+    const rootCoordinator = agent("/lead", `${rootTeamRunId}-lead`);
+    const nestedTeams: ConfiguredTeamExecution[] = candidates.map((candidate, index) => {
+      const teamAddress = `/team_${index}`;
+      const coordinatorAddress = `${teamAddress}/worker`;
+      return {
+        address: assertAgentTeamAddress(teamAddress),
+        teamDefinitionId: `definition-${candidate.teamRunId}`,
+        role: null,
+        description: null,
+        teamRunId: candidate.teamRunId,
+        coordinatorAddress: assertAgentTeamAddress(coordinatorAddress),
+        members: [agent(coordinatorAddress, candidate.agentRunId)],
+        taskExecutions: [],
+      };
+    });
+    const tree: TeamRunExecutionTreeFileV1 = {
+      schemaVersion: 1,
+      createdAt: "2026-08-23T00:00:00.000Z",
+      archivedAt: null,
+      applicationBinding: null,
+      handoffs: [],
+      rootTeam: {
+        teamDefinitionId: `definition-${rootTeamRunId}`,
+        teamDefinitionName: "Memory layout migration fixture",
+        teamRunId: rootTeamRunId,
+        coordinatorAddress: rootCoordinator.address,
+        members: [rootCoordinator, ...nestedTeams],
+        taskExecutions: [],
+      },
+    };
     const rootDir = layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
     await fs.mkdir(rootDir, { recursive: true });
     await Promise.all([

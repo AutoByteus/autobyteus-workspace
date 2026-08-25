@@ -22,6 +22,7 @@ import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixe
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { ApplicationPublishedArtifactDeliveryQueue } from "../../application-orchestration/services/application-published-artifact-delivery-queue.js";
 import type { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
@@ -186,6 +187,7 @@ export const createApplicationRunServices = (input: {
     agentTeamRunManager,
     teamDefinitionService: input.agentTeamDefinitionService,
     agentRunIdentityAllocator,
+    teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
     teamRunHistoryCatalogService: new TeamRunHistoryCatalogService(memoryDir, {
       teamRunManager: agentTeamRunManager,
     }),

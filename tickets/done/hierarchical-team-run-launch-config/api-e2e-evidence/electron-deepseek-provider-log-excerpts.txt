@@ -1,0 +1,128 @@
+--- server log selected ---
+95:Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-Ymjjtk/server-data/memory/agent_teams/nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2/student_study_group_76fc1dcfd04a4effac1a2eaee42af368/student_one_9132b1db849f44538ca07bec97e57621/raw_traces_active.jsonl
+103:AgentRuntimeState initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+104:Agent 'student_one_9132b1db849f44538ca07bec97e57621': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+105:AgentContext composed for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Config and State linked.
+106:Instantiating AgentRuntime for agent_id: 'student_one_9132b1db849f44538ca07bec97e57621' with config: 'Student One'.
+107:AgentWorker initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'.
+108:Registered AgentContext for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Total registered contexts: 1
+109:AgentRuntime initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Context registered.
+110:Agent facade initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'.
+111:Agent 'student_one_9132b1db849f44538ca07bec97e57621' created and stored successfully.
+112:Agent 'student_one_9132b1db849f44538ca07bec97e57621' requesting runtime to start.
+113:AgentRuntime for 'student_one_9132b1db849f44538ca07bec97e57621': Starting worker.
+114:AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621': Starting...
+115:AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621' asyncRun(): Starting.
+116:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (event store initialized).
+117:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (status deriver initialized).
+118:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (AgentEventInbox initialized).
+119:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (AgentEventScheduler initialized).
+120:Waiting for agent 'student_one_9132b1db849f44538ca07bec97e57621' to become idle (timeout: 30s)...
+121:AgentEventStream (ID: 79b28e7c-056d-4dd3-adbc-55b8df171f43) initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Subscribed to notifier.
+122:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Starting direct runtime bootstrap lifecycle.
+123:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+124:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Bootstrapper starting direct lifecycle execution.
+125:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 0 (McpServerPrewarmingStep).
+126:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Executing McpServerPrewarmingStep.
+127:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 1 (SystemPromptProcessingStep).
+128:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Executing SystemPromptProcessingStep.
+129:Agent 'student_one_9132b1db849f44538ca07bec97e57621': No configured skills. Skipping skill catalog.
+130:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Final processed system prompt configured and captured. Trace ID: rt_1787592540056_33210427-f286-4fbb-a667-0a6426b4c6e2. Final length: 7749.
+131:Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+132:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+133:AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621' initialized successfully. Entering main event scheduler loop.
+134:Agent 'student_one_9132b1db849f44538ca07bec97e57621' has become idle.
+135:AgentEventStream (ID: 79b28e7c-056d-4dd3-adbc-55b8df171f43) for 'student_one_9132b1db849f44538ca07bec97e57621': close() called. Unsubscribing all listeners and signaling.
+136:AgentEventStream (ID: 45142e61-b19f-4822-a82e-1f5139876739) initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Subscribed to notifier.
+137:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+138:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+139:Agent run 'student_one_9132b1db849f44538ca07bec97e57621': UserInputContextBuildingProcessor completed. Final content length: 202
+140:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+142:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+144:  agent_id: 'student_one_9132b1db849f44538ca07bec97e57621',
+163:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+164:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+165:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+166:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+167:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+168:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+169:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+170:Agent run 'student_one_9132b1db849f44538ca07bec97e57621': UserInputContextBuildingProcessor completed. Final content length: 53
+171:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+172:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+173:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+175:  agent_id: 'student_one_9132b1db849f44538ca07bec97e57621',
+194:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+195:Agent run 'student_one_9132b1db849f44538ca07bec97e57621': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+196:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+197:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+198:AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+--- app log selected ---
+254:[2026-08-24T17:27:41.979Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-Ymjjtk/server-data/memory/agent_teams/nested_classroom_test_team_ed6f465924784489a6e7d69f511578b2/student_study_group_76fc1dcfd04a4effac1a2eaee42af368/student_one_9132b1db849f44538ca07bec97e57621/raw_traces_active.jsonl
+263:[2026-08-24T17:29:00.054Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+264:[2026-08-24T17:29:00.054Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+265:[2026-08-24T17:29:00.054Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Config and State linked.
+266:[2026-08-24T17:29:00.054Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'student_one_9132b1db849f44538ca07bec97e57621' with config: 'Student One'.
+267:[2026-08-24T17:29:00.054Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'.
+268:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Total registered contexts: 1
+269:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Context registered.
+270:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'.
+271:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621' created and stored successfully.
+272:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621' requesting runtime to start.
+273:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'student_one_9132b1db849f44538ca07bec97e57621': Starting worker.
+274:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621': Starting...
+275:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621' asyncRun(): Starting.
+276:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (event store initialized).
+277:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (status deriver initialized).
+278:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (AgentEventInbox initialized).
+279:[2026-08-24T17:29:00.055Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Runtime init completed (AgentEventScheduler initialized).
+280:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'student_one_9132b1db849f44538ca07bec97e57621' to become idle (timeout: 30s)...
+281:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 79b28e7c-056d-4dd3-adbc-55b8df171f43) initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Subscribed to notifier.
+282:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Starting direct runtime bootstrap lifecycle.
+283:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+284:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Bootstrapper starting direct lifecycle execution.
+285:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 0 (McpServerPrewarmingStep).
+286:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Executing McpServerPrewarmingStep.
+287:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 1 (SystemPromptProcessingStep).
+288:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Executing SystemPromptProcessingStep.
+289:[2026-08-24T17:29:00.056Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': No configured skills. Skipping skill catalog.
+290:[2026-08-24T17:29:00.057Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Final processed system prompt configured and captured. Trace ID: rt_1787592540056_33210427-f286-4fbb-a667-0a6426b4c6e2. Final length: 7749.
+291:[2026-08-24T17:29:00.057Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+292:[2026-08-24T17:29:00.057Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+293:[2026-08-24T17:29:00.057Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_one_9132b1db849f44538ca07bec97e57621' initialized successfully. Entering main event scheduler loop.
+294:[2026-08-24T17:29:00.066Z] [INFO] [electron.embedded-server.stdout] Agent 'student_one_9132b1db849f44538ca07bec97e57621' has become idle.
+295:[2026-08-24T17:29:00.066Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 79b28e7c-056d-4dd3-adbc-55b8df171f43) for 'student_one_9132b1db849f44538ca07bec97e57621': close() called. Unsubscribing all listeners and signaling.
+296:[2026-08-24T17:29:00.066Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 45142e61-b19f-4822-a82e-1f5139876739) initialized for agent_id 'student_one_9132b1db849f44538ca07bec97e57621'. Subscribed to notifier.
+297:[2026-08-24T17:29:00.066Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'student_one_9132b1db849f44538ca07bec97e57621'.
+298:[2026-08-24T17:29:00.081Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+299:[2026-08-24T17:29:00.081Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+300:[2026-08-24T17:29:00.081Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_one_9132b1db849f44538ca07bec97e57621': UserInputContextBuildingProcessor completed. Final content length: 202
+301:[2026-08-24T17:29:00.083Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+303:[2026-08-24T17:29:01.593Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+305:[2026-08-24T17:29:01.599Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'student_one_9132b1db849f44538ca07bec97e57621',
+324:[2026-08-24T17:29:01.600Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+325:[2026-08-24T17:29:01.600Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+326:[2026-08-24T17:29:01.600Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+327:[2026-08-24T17:29:01.615Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+328:[2026-08-24T17:29:01.616Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+329:[2026-08-24T17:29:01.616Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+330:[2026-08-24T17:29:01.616Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+331:[2026-08-24T17:29:01.618Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_one_9132b1db849f44538ca07bec97e57621': UserInputContextBuildingProcessor completed. Final content length: 53
+332:[2026-08-24T17:29:01.618Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+333:[2026-08-24T17:29:01.618Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+334:[2026-08-24T17:29:03.083Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+336:[2026-08-24T17:29:03.084Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'student_one_9132b1db849f44538ca07bec97e57621',
+355:[2026-08-24T17:29:03.086Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+356:[2026-08-24T17:29:03.086Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_one_9132b1db849f44538ca07bec97e57621': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+357:[2026-08-24T17:29:03.086Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+358:[2026-08-24T17:29:03.086Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+359:[2026-08-24T17:29:03.086Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ad41f3c7-50e6-42f1-b47f-60cd0ff49f07, AgentID: student_one_9132b1db849f44538ca07bec97e57621) emitted agent_status. Kwarg keys for emit: agent_id,payload
+--- additional live-selected server log lines captured before owned-root cleanup ---
+202:Agent 'student_one_198db10e8cfd4682bbf0f79020a0a3e0': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+241:AgentExternalEventNotifier (AgentID: student_one_198db10e8cfd4682bbf0f79020a0a3e0) emitted agent_token_usage_updated.
+263:AgentExternalEventNotifier (AgentID: student_one_198db10e8cfd4682bbf0f79020a0a3e0) emitted agent_tool_execution_started.
+267:AgentExternalEventNotifier (AgentID: student_one_198db10e8cfd4682bbf0f79020a0a3e0) emitted agent_tool_execution_succeeded.
+314:Agent 'student_two_14f752071824489fa2f0a8e095161090': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+352:AgentExternalEventNotifier (AgentID: student_two_14f752071824489fa2f0a8e095161090) emitted agent_token_usage_updated.
+374:AgentExternalEventNotifier (AgentID: student_two_14f752071824489fa2f0a8e095161090) emitted agent_tool_execution_started.
+378:AgentExternalEventNotifier (AgentID: student_two_14f752071824489fa2f0a8e095161090) emitted agent_tool_execution_succeeded.

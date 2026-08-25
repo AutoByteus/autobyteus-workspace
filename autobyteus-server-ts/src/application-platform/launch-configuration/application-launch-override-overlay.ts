@@ -1,10 +1,12 @@
 import type {
   ApplicationEffectiveLaunchConfiguration,
   ApplicationEffectiveLeafLaunchProfile,
+  ApplicationEffectiveTeamLaunchProfile,
   ApplicationLaunchOverride,
   ApplicationLaunchValueSource,
   ApplicationResolvedLaunchBaselineLeaf,
   ApplicationResolvedResourceLaunchBaseline,
+  ApplicationResolvedTeamLaunchBaselineScope,
   ApplicationTeamLaunchOverrideDefaults,
   ApplicationTeamMemberLaunchOverride,
 } from "@autobyteus/application-sdk-contracts";
@@ -154,6 +156,54 @@ const applyTeamLeafOverride = (input: {
   };
 };
 
+const applyTeamScopeOverride = (input: {
+  scope: ApplicationResolvedTeamLaunchBaselineScope;
+  defaults: ApplicationTeamLaunchOverrideDefaults | null;
+  workspaceRootPath: string;
+}): ApplicationEffectiveTeamLaunchProfile => {
+  const { scope, defaults } = input;
+  const defaultRuntime = defaults?.runtimeKind?.trim() || null;
+  const defaultModel = defaults?.llmModelIdentifier?.trim() || null;
+  const changesRuntime = Boolean(defaultRuntime);
+  const changesModel = Boolean(defaultModel);
+  const llmConfigExplicit = hasOwn(defaults, "llmConfig");
+  const runtime = requireValue(
+    defaultRuntime || scope.runtimeKind,
+    defaultRuntime ? slotSource() : scope.provenance.runtimeKind,
+    `Team '${scope.teamAddress}' runtimeKind`,
+  );
+  const model = requireValue(
+    defaultModel || scope.llmModelIdentifier,
+    defaultModel ? slotSource() : scope.provenance.llmModelIdentifier,
+    `Team '${scope.teamAddress}' llmModelIdentifier`,
+  );
+  return {
+    teamAddress: scope.teamAddress,
+    displayName: scope.displayName,
+    teamDefinitionId: scope.teamDefinitionId,
+    runtimeKind: runtime.value,
+    llmModelIdentifier: model.value,
+    llmConfig: llmConfigExplicit
+      ? cloneConfig(defaults?.llmConfig)
+      : changesRuntime || changesModel
+        ? null
+        : cloneConfig(scope.llmConfig),
+    workspaceRootPath: defaults?.workspaceRootPath?.trim() || input.workspaceRootPath,
+    provenance: {
+      runtimeKind: runtime.source,
+      llmModelIdentifier: model.source,
+      llmConfig: llmConfigExplicit
+        ? slotSource()
+        : changesRuntime || changesModel
+          ? null
+          : structuredClone(scope.provenance.llmConfig),
+      workspaceRootPath: defaults?.workspaceRootPath?.trim()
+        ? "HOST_OVERRIDE"
+        : "APPLICATION_RUNTIME",
+    },
+  };
+};
+
 export const applyApplicationLaunchOverride = (input: {
   baseline: ApplicationResolvedResourceLaunchBaseline;
   launchOverride: ApplicationLaunchOverride | null;
@@ -185,6 +235,11 @@ export const applyApplicationLaunchOverride = (input: {
   );
   return {
     ...structuredClone(input.baseline),
+    teamScopes: input.baseline.teamScopes.map((scope) => applyTeamScopeOverride({
+      scope,
+      defaults,
+      workspaceRootPath: input.workspaceRootPath,
+    })),
     leaves: input.baseline.leaves.map((leaf) => applyTeamLeafOverride({
       leaf,
       defaults,

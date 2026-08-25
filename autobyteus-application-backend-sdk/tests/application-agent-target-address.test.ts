@@ -121,11 +121,11 @@ describe("application agent target-address builders", () => {
     )).toThrow("Application agent-team target address requires a TEAM_RUN binding.");
     expect(() => createApplicationAgentTeamMemberTargetAddress(
       buildAgentBinding() as unknown as ApplicationAgentTeamBinding,
-      "tutor",
+      "team-run-1::tutor",
     )).toThrow("Application agent-team target address requires a TEAM_RUN binding.");
   });
 
-  it("rejects blank and unknown run identities without falling back to member metadata", () => {
+  it("rejects blank and unknown AgentRun IDs without falling back to logical member identities", () => {
     const binding = buildTeamBinding();
 
     expect(() => createApplicationAgentTeamMemberTargetAddress(binding, "   ")).toThrow(

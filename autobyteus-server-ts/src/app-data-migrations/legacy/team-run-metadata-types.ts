@@ -10,7 +10,7 @@ export type TeamRunAgentMemberMetadata = Readonly<TeamRunAgentNode & {
 }>;
 
 export type TeamRunSubTeamMemberMetadata = Readonly<
-  Omit<TeamRunAgentTeamNode, "children"> & {
+  Omit<TeamRunAgentTeamNode, "children" | "defaultLaunchConfiguration"> & {
     children: readonly TeamRunMemberMetadata[];
   }
 >;

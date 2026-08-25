@@ -1,0 +1,24 @@
+IR-003 static implementation audit: PASS
+
+Migration binding extraction ownership:
+37:export const applicationBindingFromMetadata = (
+59:  rootTeam.children.forEach(visit);
+60:  if (pairs.size > 1) throw new Error("Predecessor TeamRun contains contradictory application bindings.");
+113:    applicationBinding: applicationBindingFromMetadata(metadata.rootTeam),
+
+Focused source coverage:
+64:  it("returns one consistent binding found in nested Agent records", () => {
+70:  it("returns null when every nested Agent has no application binding", () => {
+74:  it("rejects contradictory bindings from distinct nested Agent records", () => {
+
+API-REV-003 durable regression boundaries retained:
+bc4fda79a1de7551793c8c6ca3edc952799004f00cd6556ec34f4da2475b2712  autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+3413ed1fd7f44526c9c29cd87a492b6283700bfb6af73b2281e943096f1f968f  autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+297:  applicationExecutionContext: APPLICATION_BINDING,
+744:    applicationBinding: APPLICATION_BINDING,
+
+Changed-source guardrails:
+effective non-empty lines: 138
+git diff numstat: 69	21	autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts
+
+git diff --check: PASS

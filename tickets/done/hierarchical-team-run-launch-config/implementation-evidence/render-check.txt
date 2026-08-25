@@ -1,0 +1,10 @@
+Rendered frontend self-validation: PASS
+Route: http://127.0.0.1:3001/workspace
+Definition: Nested Classroom Test Team
+Initial nested scope: inherited with no teamOverrides mutation
+Disclosure: aria-expanded true -> false -> true
+Exact-address customization: /StudentStudyGroup autoExecuteTools=true
+Root isolation: rootConfig.autoExecuteTools remained false
+Reset: removed nested override and restored inheritance
+Viewports: 1440x1100 and 900x1000
+Page errors: 0

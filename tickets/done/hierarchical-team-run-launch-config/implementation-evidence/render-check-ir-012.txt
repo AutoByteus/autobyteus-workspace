@@ -1,0 +1,33 @@
+IR-012 rendered frontend inspection
+Date: 2026-08-25 (Europe/Berlin)
+Surface: browser-rendered Nuxt workspace at http://127.0.0.1:3002 backed by the running packaged server at http://localhost:29695
+Viewport checks: 1440x1000 and 1050x900
+
+Actual stored-settings journey
+1. Opened Workspace -> Temp Workspace.
+2. Expanded Nested Classroom Test Team and the stored TeamRun named "hello".
+3. Selected the stored Teacher member and activated the header Edit Config action.
+4. Inspected the shared stored Team configuration form and toggled its Advanced disclosure.
+
+Observed actual stored form
+- team-run-config-form retained data-mode="stored".
+- Eight actual shared input/select controls were rendered and all remained disabled.
+- The read-only explanation remained visible.
+- No Run Team or Reset command rendered.
+- The Advanced disclosure remained operable and changed aria-expanded from true to false.
+- At 1050x900 the form had clientWidth=645 and scrollWidth=645, with no horizontal overflow.
+- Direct screenshot inspection confirmed the approved quiet form order, density, disabled treatment, help copy, workspace presentation, disclosure, and read-only notice remain visually coherent.
+
+CR-013 multiline historical state
+- The live stored "hello" snapshot does not contain a multiline current-schema string, so user data was not mutated to fabricate that history.
+- Mounted root and nested-Team consumers render ordinary_prompt="line one line two" once through the normal disabled text input.
+- The same mounted consumers render multiline_prompt="line one\nline two" once as a historical residual, render no text input for that key, retain the exact newline in textContent, apply whitespace-pre-wrap for visual line preservation, and emit no mutation.
+- The direct classifier also covers both LF and CR values and retains ordinary single-line strings as current controls.
+
+Visual result
+PASS. The bounded classifier correction preserves the actual stored Settings journey and makes multiline historical strings lossless in the shared residual presentation without adding component-local classification.
+
+Evidence
+- render-browser-ir-012.json
+- stored-team-settings-ir-012.png
+- web-stored-settings-focused-ir-012.txt

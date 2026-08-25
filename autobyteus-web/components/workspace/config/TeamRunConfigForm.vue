@@ -1,78 +1,35 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4" data-test="team-run-config-form" :data-mode="model.mode">
     <div>
-      <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
-      <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">
-        {{ teamDefinition.name }}
-      </div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">{{ t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
+      <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">{{ model.definitionLabel }}</div>
     </div>
 
-    <RuntimeModelConfigFields
-      :runtime-kind="config.runtimeKind"
-      :llm-model-identifier="config.llmModelIdentifier"
-      :llm-config="config.llmConfig"
+    <div v-if="model.mode === 'editable' && model.repairAddresses.length" role="status" class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800" data-test="team-topology-repair-notice">
+      {{ t('workspace.components.workspace.config.TeamRunConfigForm.topology_repaired') }} <span class="font-mono">{{ model.repairAddresses.join(', ') }}</span>
+    </div>
+
+    <TeamScopeConfigEditor
+      :scope="model.root"
+      :is-root="true"
       :disabled="isFormReadOnly"
-      :read-only="isFormReadOnly"
-      :runtime-selection-locked="runtimeSelectionLocked"
-      :runtime-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
-      :model-label="$t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
-      :model-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
-      :advanced-initially-expanded="readOnlyMode"
-      :missing-historical-config="missingHistoricalGlobalConfig"
-      id-prefix="team-run"
-      control-variant="quiet"
-      @update:runtime-kind="updateRuntimeKind"
-      @update:llm-model-identifier="updateLlmModelIdentifier"
-      @update:llm-config="updateLlmConfig"
+      @update-root="handleRootUpdate"
+      @update:workspace-selection="forwardWorkspaceSelection"
+      @retry-runtime-catalog="retryRuntimeCatalog"
     />
 
-    <div class="mt-8">
-      <WorkspaceSelector
-        :model-value="workspaceSelection"
-        :is-loading="workspaceLoadingState.isLoading"
-        :error="workspaceLoadingState.error"
-        :disabled="isFormReadOnly"
-        control-variant="quiet"
-        @update:model-value="handleWorkspaceSelectionChange"
-      />
-    </div>
-
-    <div class="mt-4 flex items-center justify-between gap-4 py-2" data-test="team-auto-approve-row">
-      <div class="min-w-0">
-        <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
-        <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
-        </p>
-      </div>
-      <button
-        id="team-auto-execute"
-        type="button"
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-        :disabled="isFormReadOnly"
-        @click="updateAutoExecute(!config.autoExecuteTools)"
-      >
-        <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-          :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
-        />
-      </button>
-    </div>
-
-    <div v-if="leafMembers.length > 0" class="mt-4">
+    <div v-if="model.members.length" class="mt-4">
       <button
         type="button"
         class="flex w-full items-center justify-between rounded-md px-1 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
         data-test="team-member-overrides-toggle"
-        :aria-expanded="overridesExpanded"
+        :aria-expanded="membersExpanded"
         :aria-controls="memberOverridesPanelId"
-        @click="overridesExpanded = !overridesExpanded"
+        @click="membersExpanded = !membersExpanded"
       >
         <span class="flex min-w-0 items-center gap-1.5">
           <span class="truncate">
-            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ leafMembers.length }})
+            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ memberCount }})
           </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -85,153 +42,90 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             class="h-4 w-4 flex-shrink-0 transform text-gray-600 transition-transform duration-300"
-            :class="overridesExpanded ? '' : '-rotate-90'"
+            :class="membersExpanded ? '' : '-rotate-90'"
             data-test="team-member-overrides-chevron"
             aria-hidden="true"
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
-        <span
-          v-if="meaningfulOverrideCount > 0"
-          class="ml-3 flex-shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-100"
-          data-test="team-member-overrides-count"
-        >
-          {{ t('workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count', { count: meaningfulOverrideCount }) }}
-        </span>
       </button>
-
       <div
-        v-show="overridesExpanded"
+        v-show="membersExpanded"
         :id="memberOverridesPanelId"
         class="mt-3"
         data-test="team-member-overrides-panel"
       >
-        <MemberOverrideTree
-          :member-nodes="memberTree"
-          :config="config"
-          :global-runtime-kind="config.runtimeKind"
-          :global-llm-model="config.llmModelIdentifier"
-          :global-llm-config="config.llmConfig"
-          :coordinator-address="coordinatorAddress"
+        <TeamMemberConfigTree
+          :member-nodes="model.members"
           :disabled="isFormReadOnly"
-          :advanced-initially-expanded="readOnlyMode"
-          :read-only-mode="readOnlyMode"
-          @update:override="handleOverrideUpdate"
+          @update-team="handleTeamUpdate"
+          @reset-team="handleTeamReset"
+          @update-agent="handleAgentUpdate"
+          @update:workspace-selection="forwardWorkspaceSelection"
+          @retry-runtime-catalog="retryRuntimeCatalog"
         />
       </div>
     </div>
 
-
-    <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600">
-      <span class="i-heroicons-eye-20-solid mr-1 h-4 w-4"></span>
-      <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.selected_team_run_configuration_read_only') }}</span>
+    <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600" data-test="team-run-read-only-notice">
+      <span aria-hidden="true" class="mr-1">◉</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.selected_team_run_configuration_read_only') }}</span>
     </div>
-
-    <div v-else-if="config.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-600">
-      <span class="i-heroicons-lock-closed-20-solid mr-1 h-4 w-4"></span>
-      <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
+    <div v-else-if="model.mode === 'editable' && model.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-700">
+      <span aria-hidden="true" class="mr-1">🔒</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue'
-import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
-import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import { computed, ref } from 'vue'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { AgentConfigOverride, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
+import type { TeamRunFormMemberNode, TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
-import WorkspaceSelector from './WorkspaceSelector.vue'
-import MemberOverrideTree from './MemberOverrideTree.vue'
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
+import TeamMemberConfigTree from './TeamMemberConfigTree.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
-import {
-  buildTeamMemberTreeFromDefinition,
-  flattenLeafAgentMemberNodes,
-} from '~/utils/teamDefinitionMembers'
-import {
-  hasMeaningfulMemberOverride,
-} from '~/utils/teamRunConfigUtils'
 
-interface WorkspaceLoadingState {
-  isLoading: boolean
-  error: string | null
-  loadedPath: string | null
-}
-
-const props = defineProps<{
-  config: Readonly<TeamRunConfig>
-  teamDefinition: AgentTeamDefinition
-  workspaceLoadingState: WorkspaceLoadingState
-  workspaceSelection: WorkspaceSelectionState
-  readOnly?: boolean
-}>()
-
+const props = defineProps<{ model: Readonly<TeamRunFormModel> }>()
 const emit = defineEmits<{
-  (e: 'update:workspaceSelection', selection: WorkspaceSelectionState): void
+  (e: 'update:workspaceSelection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'edit-config', edit: TeamLaunchConfigEdit): void
+  (e: 'retry-runtime-catalog', runtimeKind: string): void
 }>()
-
-const teamDefinitionStore = useAgentTeamDefinitionStore()
 const { t } = useLocalization()
-const overridesExpanded = ref(false)
+const membersExpanded = ref(false)
 const memberOverridesPanelId = 'team-member-overrides-panel'
-const readOnlyMode = computed(() => props.readOnly === true)
-const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
-const missingHistoricalGlobalConfig = computed(() =>
-  readOnlyMode.value &&
-  props.config.llmConfig == null,
+const model = computed(() => props.model)
+const readOnlyMode = computed(() => model.value.mode === 'stored')
+const isFormReadOnly = computed(() => readOnlyMode.value || (model.value.mode === 'editable' && model.value.isLocked))
+const countAgents = (nodes: readonly TeamRunFormMemberNode[]): number => nodes.reduce(
+  (count, node) => count + (node.kind === 'agent' ? 1 : countAgents(node.children)),
+  0,
 )
-const runtimeSelectionLocked = computed(() => isFormReadOnly.value)
-const memberTree = computed(() =>
-  buildTeamMemberTreeFromDefinition(props.teamDefinition, {
-    getTeamDefinitionById: (teamDefinitionId: string) =>
-      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
-  }),
-)
-const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
-const meaningfulOverrideCount = computed(() =>
-  Object.values(props.config.memberOverrides || {}).filter((override) =>
-    hasMeaningfulMemberOverride(override),
-  ).length,
-)
-const coordinatorAddress = computed(() => {
-  const coordinatorMemberName = props.teamDefinition.coordinatorMemberName?.trim() || ''
-  if (!coordinatorMemberName) return ''
-  return memberTree.value.find((node) => node.displayName === coordinatorMemberName)?.address || coordinatorMemberName
-})
+const memberCount = computed(() => countAgents(model.value.members))
 
-useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
-
-const handleOverrideUpdate = (memberAddress: string, override: MemberConfigOverride | null) => {
-  if (isFormReadOnly.value) return
-  emit('edit-config', { kind: 'set_member_override', memberAddress, override })
+const handleRootUpdate = (field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: unknown) => {
+  if (model.value.mode !== 'editable' || isFormReadOnly.value) return
+  if (field === 'runtime') emit('edit-config', { kind: 'set_root_runtime', runtimeKind: value as string })
+  else if (field === 'model') emit('edit-config', { kind: 'set_root_model', llmModelIdentifier: value as string })
+  else if (field === 'llmConfig') emit('edit-config', { kind: 'set_root_llm_config', llmConfig: value as Record<string, unknown> | null })
+  else emit('edit-config', { kind: 'set_root_auto_execute_tools', autoExecuteTools: value as boolean })
 }
-
-const updateAutoExecute = (checked: boolean) => {
-  if (isFormReadOnly.value) return
-  emit('edit-config', { kind: 'set_auto_execute_tools', autoExecuteTools: checked })
+const handleTeamUpdate = (teamAddress: AgentTeamAddress, override: TeamScopeConfigOverride | null) => {
+  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'set_team_override', teamAddress, override })
 }
-
-const updateRuntimeKind = (value: string) => {
-  if (isFormReadOnly.value) return
-  emit('edit-config', { kind: 'set_runtime', runtimeKind: value })
+const handleTeamReset = (teamAddress: AgentTeamAddress) => {
+  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'reset_team_override', teamAddress })
 }
-
-const updateLlmModelIdentifier = (value: string) => {
-  if (isFormReadOnly.value) return
-  emit('edit-config', { kind: 'set_model', llmModelIdentifier: value })
+const handleAgentUpdate = (agentAddress: AgentTeamAddress, override: AgentConfigOverride | null) => {
+  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'set_agent_override', agentAddress, override })
 }
-
-const updateLlmConfig = (value: Record<string, unknown> | null) => {
-  if (isFormReadOnly.value) return
-  emit('edit-config', { kind: 'set_llm_config', llmConfig: value })
+const forwardWorkspaceSelection = (address: AgentTeamAddress, selection: WorkspaceSelectionState) => {
+  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('update:workspaceSelection', address, selection)
 }
-
-const handleWorkspaceSelectionChange = (selection: WorkspaceSelectionState) => {
-  if (isFormReadOnly.value) return
-  emit('update:workspaceSelection', selection)
+const retryRuntimeCatalog = (runtimeKind: string) => {
+  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('retry-runtime-catalog', runtimeKind)
 }
 </script>

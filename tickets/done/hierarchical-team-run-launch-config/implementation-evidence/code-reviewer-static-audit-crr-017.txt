@@ -1,0 +1,168 @@
+$ git rev-parse HEAD
+9497a5ea6c6c22e73f94aea090f2ef488ac9d298
+\n$ git diff --check cf527998f..9d176e5bb
+\n$ git show --check --oneline --no-patch 9d176e5bb
+9d176e5bb feat(web): unify stored team settings form
+\n$ changed paths
+M	autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+A	autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+A	autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+M	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+M	autobyteus-web/components/workspace/config/RunConfigPanel.vue
+D	autobyteus-web/components/workspace/config/StoredLaunchConfigurationCard.vue
+D	autobyteus-web/components/workspace/config/StoredTeamRunConfigForm.vue
+D	autobyteus-web/components/workspace/config/StoredTeamRunConfigTree.vue
+M	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+M	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+M	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+M	autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+M	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+M	autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+M	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+M	autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+M	autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+M	autobyteus-web/localization/messages/en/workspace.ts
+M	autobyteus-web/localization/messages/zh-CN/workspace.ts
+A	autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts
+M	autobyteus-web/services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts
+A	autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+M	autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts
+M	autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+M	autobyteus-web/types/agent/TeamRunConfig.ts
+A	autobyteus-web/types/agent/TeamRunFormModel.ts
+A	autobyteus-web/utils/editableTeamRunFormModel.ts
+M	autobyteus-web/utils/teamRunConfigUtils.ts
+\n$ changed production paths
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+autobyteus-web/components/workspace/config/RunConfigPanel.vue
+autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts
+autobyteus-web/types/agent/TeamRunConfig.ts
+autobyteus-web/types/agent/TeamRunFormModel.ts
+autobyteus-web/utils/editableTeamRunFormModel.ts
+autobyteus-web/utils/teamRunConfigUtils.ts
+\n$ effective nonblank/non-comment-only source line counts
+     472 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+     432 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+     316 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+     289 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+     245 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+     151 autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts
+     132 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+     100 autobyteus-web/types/agent/TeamRunConfig.ts
+     100 autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+      94 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+      91 autobyteus-web/utils/editableTeamRunFormModel.ts
+      88 autobyteus-web/types/agent/TeamRunFormModel.ts
+      69 autobyteus-web/utils/teamRunConfigUtils.ts
+      34 autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+\n$ numstat production churn
+31	0	autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+37	0	autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+84	14	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+34	16	autobyteus-web/components/workspace/config/RunConfigPanel.vue
+0	33	autobyteus-web/components/workspace/config/StoredLaunchConfigurationCard.vue
+0	39	autobyteus-web/components/workspace/config/StoredTeamRunConfigForm.vue
+0	84	autobyteus-web/components/workspace/config/StoredTeamRunConfigTree.vue
+23	58	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+45	58	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+14	1	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+30	6	autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+108	0	autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+31	27	autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts
+38	7	autobyteus-web/types/agent/TeamRunConfig.ts
+99	0	autobyteus-web/types/agent/TeamRunFormModel.ts
+93	0	autobyteus-web/utils/editableTeamRunFormModel.ts
+14	1	autobyteus-web/utils/teamRunConfigUtils.ts
+\n$ rejected Stored components/keys outside docs
+autobyteus-web/docs/agent_teams.md:24:- `components/workspace/config/StoredTeamRunConfigForm.vue`
+autobyteus-web/docs/agent_teams.md:25:- `components/workspace/config/StoredTeamRunConfigTree.vue`
+autobyteus-web/docs/agent_teams.md:190:`StoredTeamRunConfigForm.vue` and `StoredTeamRunConfigTree.vue` render the exact
+autobyteus-web/docs/agent_teams.md:350:tree and renders it with `StoredTeamRunConfigForm.vue`. Historical values remain
+autobyteus-web/docs/settings.md:912:`StoredTeamRunConfigForm.vue` and `StoredTeamRunConfigTree.vue` over the exact
+\n$ stored adapter forbidden dependencies
+autobyteus-web/types/agent/TeamRunFormModel.ts:2:import type { TeamWorkspaceOperationState } from './TeamLaunchDraft'
+\n$ RunConfigPanel shared path and owner checks
+39:      <TeamRunConfigForm
+87:import TeamRunConfigForm from './TeamRunConfigForm.vue'
+89:import type { StoredTeamRunConfigurationView, TeamRunConfig } from '~/types/agent/TeamRunConfig'
+94:import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+95:import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
+133:const storedTeamConfiguration = computed((): Readonly<StoredTeamRunConfigurationView> | null => {
+254:    return projectStoredTeamRunFormModel(storedTeamConfiguration.value)
+259:  return projectEditableTeamRunFormModel({
+299:const ensurePendingWorkspaceLoadedForRun = async (): Promise<boolean> => {
+327:    const workspaceId = await workspaceStore.createWorkspace({ root_path: pendingPath })
+384:        await teamRunStore.launchDraft(draft)
+392:      const workspaceReady = await ensurePendingWorkspaceLoadedForRun()
+\n$ model-config fallback conditions
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-2-  <div :class="advancedListClass">
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-3-    <!-- Clean grid layout for advanced parameters -->
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue:4:    <div v-for="(paramSchema, key) in schema" :key="key" :class="advancedRowClass">
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-5-      <label :for="inputId(key)" class="text-sm font-normal text-gray-700" :title="key">
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-6-        {{ displayLabel(String(key), paramSchema) }}
+--
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-19-          v-else-if="paramSchema.enum"
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-20-          :id="inputId(key)"
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue:21:          :value="selectValue(key, paramSchema)"
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-22-          :disabled="disabled"
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-23-          :class="advancedSelectClass"
+--
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-145-  getValidSchemaDefault(paramSchema) === undefined;
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-146-
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue:147:const selectValue = (
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-148-  key: string,
+autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue-149-  paramSchema: UiModelConfigSchema[string],
+--
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-127-      @update:config="emitOverrideWithConfig"
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-128-    />
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:129:    <HistoricalModelConfigFallback
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:130:      v-if="showHistoricalConfigFallback"
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-131-      :config="effectiveModelConfig!"
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-132-      :title="t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration')"
+--
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-142-import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-143-import ModelConfigSection from './ModelConfigSection.vue'
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:144:import HistoricalModelConfigFallback from './HistoricalModelConfigFallback.vue'
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-145-import WorkspaceSelector from './WorkspaceSelector.vue'
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-146-import { useLocalization } from '~/composables/useLocalization'
+--
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-275-  isStored.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-276-))
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:277:const showHistoricalConfigFallback = computed(() => Boolean(
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-278-  isStored.value &&
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-279-  effectiveModelConfig.value &&
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-280-  Object.keys(effectiveModelConfig.value).length > 0 &&
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:281:  !modelConfigSchema.value,
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-282-))
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue-283-const effectiveAdvancedInitiallyExpanded = computed(() =>
+--
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-66-      @update:config="updateModelConfig"
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-67-    />
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:68:    <HistoricalModelConfigFallback
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:69:      v-if="showHistoricalConfigFallback"
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-70-      :config="llmConfig!"
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-71-      :title="historicalModelConfigTitle"
+--
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-79-import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-80-import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:81:import HistoricalModelConfigFallback from '~/components/workspace/config/HistoricalModelConfigFallback.vue'
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-82-import {
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-83-  DEFAULT_AGENT_RUNTIME_KIND,
+--
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-231-  !hasModelIdentifier(props.llmModelIdentifier),
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-232-))
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:233:const showHistoricalConfigFallback = computed(() => Boolean(
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-234-  readOnlyComputed.value &&
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-235-  props.llmConfig &&
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-236-  Object.keys(props.llmConfig).length > 0 &&
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue:237:  !modelConfigSchema.value,
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-238-))
+autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue-239-
+\n$ unmerged entries

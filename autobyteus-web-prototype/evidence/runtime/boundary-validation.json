@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-24T09:45:58.237Z",
-  "root": "/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype",
+  "generatedAt": "2026-08-24T19:56:23.103Z",
+  "root": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype",
   "checks": [
     {
       "name": "No Electron/native runtime dependency",

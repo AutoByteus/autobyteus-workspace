@@ -1,0 +1,168 @@
+CRR-008 IR-005 repeat source-review static audit
+HEAD:
+5dc5105b14d5c215a70254ce317ad725d130f16e
+IR-005 implementation commit:
+be6c9182b477d0c0d265cbe007c30d466c566a93
+IR-005 artifact follow-up:
+5dc5105b14d5c215a70254ce317ad725d130f16e
+merge commit and parents:
+bd4e2403fd6630622e7789967e2f2815cc6f37f5 393c27015a4380f77d33f7f55096077f0e1f6b29 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+status before reviewer artifacts:
+## codex/hierarchical-team-run-launch-config...origin/codex/hierarchical-team-run-launch-config [ahead 26, behind 1]
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-008.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-008.txt
+unmerged entries:
+diff check:
+prototype tracked paths:
+recovery ancestor status (1 means not ancestor):
+1
+IR-005 exact source/test numstat:
+5	6	autobyteus-web/components/workspace/config/RunConfigPanel.vue
+36	0	autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+24	0	autobyteus-web/utils/teamRunLaunchReadiness.ts
+effective non-empty source lines:
+autobyteus-web/utils/teamRunLaunchReadiness.ts 110
+autobyteus-web/components/workspace/config/RunConfigPanel.vue 497
+conflict markers:
+
+readiness helper:
+    28	const catalogFor = (catalogs: RuntimeModelCatalogs, runtimeKind: string): string[] | null => catalogs[runtimeKind.trim()] ?? null
+    29	const ownsWorkspaceSelection = (scope: TeamRunConfigurationView['root']): boolean =>
+    30	  scope.address === '/' || Boolean(scope.override && Object.hasOwn(scope.override, 'workspace'))
+    31
+    32	export const applyPendingTeamWorkspaceReadiness = (
+    33	  issues: readonly TeamRunLaunchBlockingIssue[],
+    34	  selections: Readonly<Partial<Record<AgentTeamAddress, WorkspaceSelectionState>>>,
+    35	): TeamRunLaunchBlockingIssue[] => {
+    36	  const pendingNewEntries = (Object.entries(selections) as Array<[AgentTeamAddress, WorkspaceSelectionState | undefined]>)
+    37	    .filter((entry): entry is [AgentTeamAddress, WorkspaceSelectionState] => entry[1]?.mode === 'new')
+    38	  const emptyPathAddresses = new Set(pendingNewEntries
+    39	    .filter(([, selection]) => !selection.newWorkspacePath.trim())
+    40	    .map(([address]) => address))
+    41	  const pendingIssues = [...emptyPathAddresses].sort().map((subjectAddress) => ({
+    42	    code: 'WORKSPACE_REQUIRED' as const,
+    43	    message: 'Enter a workspace path to run this team.',
+    44	    subjectAddress,
+    45	    subjectKind: 'TEAM' as const,
+    46	  }))
+    47	  const retainedIssues = issues.filter((issue) => {
+    48	    if (issue.code !== 'WORKSPACE_REQUIRED' || !issue.subjectAddress) return true
+    49	    if (emptyPathAddresses.has(issue.subjectAddress)) return false
+    50	    return selections[issue.subjectAddress]?.mode !== 'new'
+    51	  })
+    52	  return [...pendingIssues, ...retainedIssues]
+    53	}
+    54
+    55	export const evaluateTeamRunLaunchReadiness = (
+    56	  config: TeamRunConfig | null | undefined,
+    57	  runtimeModelCatalogs: RuntimeModelCatalogs,
+    58	  memberTree?: readonly TeamDefinitionMemberNode[] | null,
+
+panel consumption:
+   386	    setActiveWorkspaceError(error?.message || 'Failed to load workspace')
+   387	    return false
+   388	  }
+   389	}
+   390
+   391	const effectiveTeamBlockingIssues = computed(() => {
+   392	  if (!effectiveTeamConfig.value) return []
+   393	  return applyPendingTeamWorkspaceReadiness(
+   394	    teamLaunchReadiness.value.blockingIssues,
+   395	    teamWorkspaceSelections.value,
+   396	  )
+   397	})
+   398
+   399	const canLaunchTeamBeforeRun = computed(() =>
+   400	  Boolean(effectiveTeamConfig.value) && effectiveTeamBlockingIssues.value.length === 0,
+   401	)
+   402
+   403	const firstTeamBlockingIssue = computed(() => effectiveTeamBlockingIssues.value[0]?.message || '')
+   404	const showTeamBlockingIssue = computed(() =>
+   405	  !isSelectionMode.value &&
+
+root/nested regression:
+   742	      newWorkspacePath: '/inactive/new-buffer',
+   743	    })
+   744	    await wrapper.vm.$nextTick()
+   745
+   746	    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+   747	    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Root workspace is required.')
+   748	  })
+   749
+   750	  it.each([
+   751	    { name: 'root Team', address: '/' },
+   752	    { name: 'nested Team', address: '/Research' },
+   753	  ])('disables Run Team for an active empty New workspace on the $name', async ({ address }) => {
+   754	    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+   755	    const teamStore = useTeamRunConfigStore() as any
+   756	    teamStore.config = editableTeamConfig({
+   757	      workspaceId: 'temp_ws_default',
+   758	      workspaceMetadata: {
+   759	        workspaceId: 'temp_ws_default',
+   760	        workspaceRootPath: '/tmp/default',
+   761	        displayName: 'Temp workspace',
+   762	        kind: 'filesystem',
+   763	      },
+   764	    }) as any
+   765	    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+   766
+   767	    const wrapper = mount(RunConfigPanel, {
+   768	      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+   769	    })
+   770	    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+   771
+   772	    wrapper.findComponent(TeamRunConfigForm).vm.$emit('update:workspaceSelection', address, {
+   773	      mode: 'new',
+   774	      existingWorkspaceId: 'temp_ws_default',
+   775	      newWorkspacePath: '   ',
+   776	    })
+   777	    await wrapper.vm.$nextTick()
+   778
+   779	    expect(teamStore.config.rootConfig.workspace.workspaceId).toBe('temp_ws_default')
+   780	    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+   781	    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toBe(
+   782	      'Enter a workspace path to run this team.',
+   783	    )
+   784	  })
+   785
+   786	  it('disables agent run when workspace is missing', async () => {
+   787	    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+   788	    const agentStore = useAgentRunConfigStore() as any
+   789	    agentStore.config = {
+   790	      agentDefinitionId: 'def-1',
+
+inactive-buffer regression:
+   718	        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+   719	      },
+   720	    })
+   721
+   722	    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+   723	    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Workspace is required to run a team.')
+   724	  })
+   725
+   726	  it('does not admit a missing Team workspace from an inactive New-path buffer in Existing mode', async () => {
+   727	    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+   728	    const teamStore = useTeamRunConfigStore() as any
+   729	    teamStore.config = editableTeamConfig({ workspaceId: null, workspaceMetadata: null }) as any
+   730	    teamStore.launchReadiness = {
+   731	      canLaunch: false,
+   732	      blockingIssues: [{ code: 'WORKSPACE_REQUIRED', message: 'Root workspace is required.', subjectAddress: '/' }],
+   733	      unresolvedMembers: [],
+   734	    } as any
+   735
+   736	    const wrapper = mount(RunConfigPanel, {
+   737	      global: { stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true } },
+   738	    })
+   739	    wrapper.findComponent(TeamRunConfigForm).vm.$emit('update:workspaceSelection', '/', {
+   740	      mode: 'existing',
+   741	      existingWorkspaceId: null,
+   742	      newWorkspacePath: '/inactive/new-buffer',
+   743	    })
+   744	    await wrapper.vm.$nextTick()
+   745
+   746	    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+   747	    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Root workspace is required.')
+   748	  })
+   749
+   750	  it.each([

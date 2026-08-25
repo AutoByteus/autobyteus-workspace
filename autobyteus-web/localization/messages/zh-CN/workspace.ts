@@ -47,6 +47,23 @@ const messages = {
     "团队成员覆盖",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
     "{{count}} 个已覆盖",
+  "workspace.components.workspace.config.TeamRunConfigForm.topology_repaired":
+    "团队拓扑已更改，过期设置已移除。请检查以下地址后重试：",
+  "workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable": "已保存的值在当前选项中不可用。",
+  "workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration": "已保存的模型配置",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "已自定义",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.team_marker": "团队",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.reset": "重置",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria": "重置 {{name}}（{{address}}）的设置",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help": "此团队范围使用的运行时。",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model": "默认 LLM 模型",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.model_help": "嵌套团队和智能体会继承此值，除非另行自定义。",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve": "自动批准工具",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_help": "未覆盖的后代范围会继承此设置。",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading": "正在为 {{address}} 加载模型…",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error": "无法为 {{address}} 加载模型：{{error}}",
+  "workspace.components.workspace.config.TeamScopeConfigEditor.retry": "重试",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":

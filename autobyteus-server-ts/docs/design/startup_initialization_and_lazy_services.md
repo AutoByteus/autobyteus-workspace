@@ -55,16 +55,20 @@ The server must execute these steps in order:
   dependent record and attempt count unchanged. Startup reports the typed
   prerequisite diagnostic and continues later independent definitions; explicit
   manual execution propagates the same typed error to its caller.
-- The unreleased `20260814_team_run_execution_tree_v1` migration also reconciles
-  the persisted Team history index after its complete cohort is validated or
-  promoted. It projects exactly one row for every validated current root, uses
-  execution-tree facts for identity/definition/workspace/lifecycle fields, and
-  preserves existing index-only summary/termination fields. A missing index is
-  empty input; malformed input or any pre-commit failure keeps the migration
-  retryable without replacing prior bytes. Changed existing input is protected
-  before the atomic write, while equivalent output creates neither a write nor
-  a backup. Runtime history/API readers remain index-only and do not scan Team
-  package directories as a compatibility fallback.
+- `20260814_team_run_execution_tree_v1` is a predecessor-conversion stage, not
+  the current runtime schema. It promotes admitted released Team roots to a
+  complete migration-owned V1 package and reconciles their history/token
+  evidence. `20260823_repair_team_agent_memory_layout` then uses that validated
+  intermediate to repair physical nested-member storage.
+- Required migration `20260824_team_run_execution_tree_v2` runs after the
+  memory-layout repair and is the current Team package cutover. It validates an
+  exact V1 tree, preserves IDs/topology/tasks/handoffs/application binding and
+  Agent launch snapshots, maps runtime labels, writes root address `/`, and
+  materializes every Team's complete default from its unique direct coordinator
+  snapshot. Exact V2 is idempotently skipped. The migration uses the shared
+  atomic writer and accepts a post-rename warning only when reread validates the
+  canonical file as exact V2. Runtime, history, API, and stream readers are
+  V2-only; they do not scan predecessor metadata or fall back to V1.
 - Shutdown drains the default token persistence processor, closes/zeroizes the
   secret runtime, and only then shuts down the shared repository client.
 
@@ -86,6 +90,9 @@ Use lazy service access patterns to avoid import-time construction:
 - `src/app-data-migrations/app-data-migration-runner.ts`
 - `src/app-data-migrations/app-data-migration-registry.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`
+- `src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts`
+- `src/run-history/services/team-run-package-catalog.ts`
 - `src/run-history/services/team-run-history-index-row-projector.ts`
 - `src/run-history/store/team-run-history-index-store.ts`
 - `src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`

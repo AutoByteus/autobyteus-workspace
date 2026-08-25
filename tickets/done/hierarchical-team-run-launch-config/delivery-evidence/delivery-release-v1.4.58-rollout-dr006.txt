@@ -1,0 +1,95 @@
+Delivery evidence: DR-006 v1.4.58 finalization and rollout
+Timestamp: 2026-08-25T12:42:12+02:00
+User rollout signal: explicit confirmation that the released version is already running.
+
+=== repository finalization ===
+ticket finalization commit: f0b9ba0ad0c59bbd52693997456ed46f39475516
+ticket remote-history reconciliation merge: b9806ef7d7d0ad14b73d710c020a0784287400b4 (ours strategy; identical tree before/after)
+personal merge: a43e8ceea83274d0724533144281806e7acf68b0
+release commit/tag target: a6c79a669923b569f82adb2b9d1b31da5ceac3de / v1.4.58
+origin/personal: a6c79a669923b569f82adb2b9d1b31da5ceac3de
+tag target: a6c79a669923b569f82adb2b9d1b31da5ceac3de
+
+=== tag-triggered workflows ===
+32835663543	Android APK Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32835663543
+32835663514	Desktop Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32835663514
+32835663595	Release Messaging Gateway	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32835663595
+32835663580	Server Docker Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32835663580
+32835663837	iOS App Store Connect Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/32835663837
+
+=== GitHub Release ===
+{"assetCount":21,"assets":[{"digest":"sha256:db56dfcc0b2542cd3cb3efd4fa11fc01473c51f37c9f2210d587f9e425204b5e","name":"autobyteus-message-gateway-1.4.58-node-generic.tar.gz","size":47248976},{"digest":"sha256:3625e94dd22a7b881fa05bb90cedb37c442e9c6ca6dc04f38c63718bd4acfdf2","name":"autobyteus-message-gateway-1.4.58-node-generic.tar.gz.json","size":429},{"digest":"sha256:001dcca66c5a14570066b9ab91882b462e92654e38778725637d886cd67b328a","name":"autobyteus-message-gateway-1.4.58-node-generic.tar.gz.sha256","size":120},{"digest":"sha256:cdd187b1dafa102dcd4d0d8973e2d743bde2657162b1d14ddc6139e53b724a12","name":"AutoByteus_personal_android-1.4.58-release.apk","size":1846691},{"digest":"sha256:4d1a5e2378034738ef19ce17000943fbf3c4ae6a05be47720c18a68a1e7246ee","name":"AutoByteus_personal_android-1.4.58-release.apk.sha256","size":113},{"digest":"sha256:0413f6d455d6fb7eb1b6c1b6d85698e4c4218ae47d864da8811863d4232ad51b","name":"AutoByteus_personal_linux-arm64-1.4.58.AppImage","size":428451606},{"digest":"sha256:7a1ff5f52b9a7ab2bfe70175625c2d3eebcaef9bea2593dd85ed7711308a3d10","name":"AutoByteus_personal_linux-x64-1.4.58.AppImage","size":440904796},{"digest":"sha256:e92d8855030672ec58388b1a443b7bf0b8cfe106bffa0d88762c40fc86f14dc0","name":"AutoByteus_personal_macos-arm64-1.4.58.dmg","size":497681030},{"digest":"sha256:acba22099597e247575e609e60ae7f6d7d4bb648f57c68d9581a6184924dd3b6","name":"AutoByteus_personal_macos-arm64-1.4.58.dmg.blockmap","size":515979},{"digest":"sha256:a9fd6359a0564e79cdd080fe793722ae08463b309602238260c3d81b9bec82e9","name":"AutoByteus_personal_macos-arm64-1.4.58.zip","size":491644382},{"digest":"sha256:efeccbd4c8b291d3b086a4b23c9e0929d116235cbb01227ef2db537bc4e1d1bc","name":"AutoByteus_personal_macos-arm64-1.4.58.zip.blockmap","size":505345},{"digest":"sha256:0c0c406046fb5ced439bc22143d7edf0279f80d14dc15ed0aa393fd2339aaaae","name":"AutoByteus_personal_macos-x64-1.4.58.dmg","size":519764389},{"digest":"sha256:6a70c6ec59bd4b3c0c00d9068312b8453b963609fe1c39fb6de8bc5c057f5b86","name":"AutoByteus_personal_macos-x64-1.4.58.dmg.blockmap","size":545603},{"digest":"sha256:8feef6ea2394bb61075e00b9b6afaf1df37c3327689e75d181d055d820a65211","name":"AutoByteus_personal_macos-x64-1.4.58.zip","size":513283861},{"digest":"sha256:af293431b97e7478982f7f1baa4e6d083c9eca6e5975c214c68d90976d2191f9","name":"AutoByteus_personal_macos-x64-1.4.58.zip.blockmap","size":525335},{"digest":"sha256:771f35f0c25cfb9c221a2617fbe8c1e33925b38072edd7f864b095312c3300d4","name":"AutoByteus_personal_windows-1.4.58.exe","size":319455462},{"digest":"sha256:cd55bd3b7833bba09dfa3b0f4d67d4aa32c2f3469ec30af89a81ecaa28d0435d","name":"latest-linux-arm64.yml","size":417},{"digest":"sha256:4e6a0a6c064d1663fe07cda2f95e25601bd477534f182767975414a38d751b12","name":"latest-linux.yml","size":413},{"digest":"sha256:d98d12be8b75e5c2da146b858661a76a2532f51310752cd8231853380fc361c6","name":"latest-mac.yml","size":897},{"digest":"sha256:64fd6a64fef3f77da710cfafbe6ce7611ae40468939ea51e76d7d471f79b2326","name":"latest.yml","size":354},{"digest":"sha256:edcb12ac3441f3992e3e440decdcd9252b8f894471e6ace3327e10989c33c081","name":"release-manifest.json","size":904}],"isDraft":false,"isPrerelease":false,"name":"v1.4.58","publishedAt":"2026-08-25T10:10:58Z","tagName":"v1.4.58","targetCommitish":"a6c79a669923b569f82adb2b9d1b31da5ceac3de","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.58"}
+
+=== updater and managed manifest validation ===
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/latest-linux-arm64.yml:version: 1.4.58
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/latest-linux.yml:version: 1.4.58
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/latest-mac.yml:version: 1.4.58
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/latest.yml:version: 1.4.58
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/release-manifest.json:      "releaseTag": "v1.4.58",
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/release-manifest.json:      "artifactVersion": "1.4.58",
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/release-manifest.json:      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.58/autobyteus-message-gateway-1.4.58-node-generic.tar.gz",
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/release-manifest.json:      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.58/autobyteus-message-gateway-1.4.58-node-generic.tar.gz.sha256",
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LpAyZdILWA/release-manifest.json:      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.58/autobyteus-message-gateway-1.4.58-node-generic.tar.gz.json",
+
+=== Docker Hub manifest validation ===
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "digest": "sha256:a9ba057c7615742a4bafc98540556fb485fcbe3ae2ef2696507618c70eceefef",
+  "size": 647,
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:6f920f7b6c438a01abf6df6126431a678de4914a968429359dce172616871115",
+      "size": 9562,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f3944de114d149469b418128b481522987cf0fa0123d963f18da2030ecd40c41",
+      "size": 9562,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+}{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "digest": "sha256:a9ba057c7615742a4bafc98540556fb485fcbe3ae2ef2696507618c70eceefef",
+  "size": 647,
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:6f920f7b6c438a01abf6df6126431a678de4914a968429359dce172616871115",
+      "size": 9562,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f3944de114d149469b418128b481522987cf0fa0123d963f18da2030ecd40c41",
+      "size": 9562,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+}
+RESULT: PASS — repository finalized; release/tag published; all five workflows succeeded; 21 release assets and exact updater/managed manifests published; versioned/latest multi-arch server image digests match; user confirmed the released app is running.
+
+=== final record and cleanup audit ===
+web version: 1.4.58
+gateway version: 1.4.58
+6:      "releaseTag": "v1.4.58",
+7:      "artifactVersion": "1.4.58",
+ticket archive/branch/worktree/recovery isolation: PASS
+DR-006 record authority: PASS
+final version/tag/manifest alignment: PASS

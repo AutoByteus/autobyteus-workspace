@@ -93,6 +93,7 @@ const buildBaseline = (input: {
     executionResourceRef: structuredClone(input.ref),
     resourceDefinitionId: input.definitionId,
     resourceKind: "AGENT_TEAM",
+    teamScopes: [],
     leaves: input.provenance === "PACKAGE"
       ? [
           leaf("/researcher", "package-researcher", "codex_app_server", "gpt-5.6-luna"),

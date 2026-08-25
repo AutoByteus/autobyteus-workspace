@@ -1,0 +1,55 @@
+HEAD 036c1e0cde2d5419d5c44b3551e36ce3365b790c
+SOURCE_COMMIT ab7d8eedf5a01d80b616454ed8f4ac441e9844a9
+DIFF_CHECK
+ab7d8eedf fix(web): preserve exact stored model config history
+STORED_TYPE_FORBIDDEN_IMPORTS
+none
+STORED_PROJECTOR_SENTINELS
+none
+REJECTED_STORED_COMPONENTS
+MODE_DISCRIMINATION
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:177:const storedWorkspace = computed(() => props.model.mode === 'stored' ? props.model.workspace : null);
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:179:  if (props.model.mode === 'editable') return props.model.selection;
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:185:const isLoading = computed(() => props.model.mode === 'editable' && props.model.isLoading);
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:186:const error = computed(() => props.model.mode === 'editable' ? props.model.error : null);
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:191:  props.model.mode === 'stored' || (props.disabled ?? false) || (props.workspaceLocked ?? false));
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:250:  if (props.model.mode === 'stored' && storedWorkspace.value) {
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:30:      :historical-model-config="scope.mode === 'stored'"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:35:      :advanced-initially-expanded="scope.mode === 'stored'"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:171:        :historical-model-config="scope.mode === 'stored'"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:176:        :advanced-initially-expanded="scope.mode === 'stored'"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:257:const editableScope = computed(() => props.scope.mode === 'editable' ? props.scope : null)
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:258:const storedScope = computed(() => props.scope.mode === 'stored' ? props.scope : null)
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:259:const isInteractionDisabled = computed(() => props.disabled || props.scope.mode === 'stored')
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:262:  ...(props.scope.mode === 'editable' ? props.scope.override ?? {} : {}),
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:265:  if (scope.mode === 'editable') pendingOverride.value = { ...(scope.override ?? {}) }
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:8:    <div v-if="model.mode === 'editable' && model.repairAddresses.length" role="status" class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800" data-test="team-topology-repair-notice">
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:74:    <div v-else-if="model.mode === 'editable' && model.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-700">
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:101:const readOnlyMode = computed(() => model.value.mode === 'stored')
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:102:const isFormReadOnly = computed(() => readOnlyMode.value || (model.value.mode === 'editable' && model.value.isLocked))
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:117:  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'set_team_override', teamAddress, override })
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:120:  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'reset_team_override', teamAddress })
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:123:  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('edit-config', { kind: 'set_agent_override', agentAddress, override })
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:126:  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('update:workspaceSelection', address, selection)
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:129:  if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('retry-runtime-catalog', runtimeKind)
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:151:const editableNode = computed(() => props.node.mode === 'editable' ? props.node : null)
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:152:const storedNode = computed(() => props.node.mode === 'stored' ? props.node : null)
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:153:const isInteractionDisabled = computed(() => props.disabled || props.node.mode === 'stored')
+SOURCE_EFFECTIVE_NONEMPTY_LINES
+ 353 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+ 312 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+ 306 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ 281 autobyteus-web/components/workspace/config/ModelConfigSection.vue
+ 236 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+ 187 autobyteus-web/utils/llmConfigSchema.ts
+ 137 autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+ 124 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+  93 autobyteus-web/utils/editableTeamRunFormModel.ts
+  77 autobyteus-web/utils/historicalModelConfigFields.ts
+  77 autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+  70 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+  45 autobyteus-web/types/agent/EditableTeamRunFormModel.ts
+  41 autobyteus-web/components/workspace/config/HistoricalModelConfigFallback.vue
+  30 autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+  16 autobyteus-web/types/agent/TeamRunFormModel.ts
+  16 autobyteus-web/types/agent/TeamRunFormDisplay.ts

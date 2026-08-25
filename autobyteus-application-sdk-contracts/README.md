@@ -81,6 +81,8 @@ New external custom applications should start with `@autobyteus/application-devk
 - `ApplicationExecutionResourceRef` / `ApplicationExecutionResourceSummary`
 - `ApplicationExecutionResourceSlotDeclaration`
 - `ApplicationConfiguredExecutionResource` / `ApplicationConfiguredLaunchDefaults`
+- `ApplicationResolvedResourceLaunchBaseline` / `ApplicationEffectiveLaunchConfiguration`
+- `ApplicationTeamScopeLaunchConfig` / `ApplicationTeamMemberLaunchConfig`
 - `ApplicationStartAgentInput` / `ApplicationStartAgentTeamInput`
 - `ApplicationAgentBinding` / `ApplicationAgentTeamBinding`
 - `ApplicationAgentTargetAddress` / `ApplicationAgentInput` / `ApplicationAgentEvent` / `ApplicationAgentStreamEvent`
@@ -104,6 +106,10 @@ by assigning the desired skill names to the agent definition rather than by
 requesting a broader launch-time mode.
 
 SDK consumers use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and `agentResources.listAvailable(...)` / `agentResources.getConfigured(...)`.
+
+For a Team resource, the resolved baseline and effective launch configuration contain two complete projections: `teamScopes` for the rooted Team hierarchy and `leaves` for rooted Agent members. Baseline runtime/model/config fields may be absent and retain per-field provenance for diagnostics. A runnable effective configuration requires runtime, model, resolved workspace, atomic `llmConfig`, and provenance for every Team scope and Agent leaf.
+
+The explicit Team launch branch (`mode: "memberConfigs"`) carries both `teamConfigs` and `memberConfigs`; it has no parallel root-default field. The separate `mode: "preset"` branch remains the compact root-inherited launch form for callers that intentionally select that behavior.
 
 ### Engine status
 

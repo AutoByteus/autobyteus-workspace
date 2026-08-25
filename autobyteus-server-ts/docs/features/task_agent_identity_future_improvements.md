@@ -112,4 +112,4 @@ These future notes do not propose:
 
 Prioritize invariant coverage and cohesive extraction only when concrete change
 pressure appears. The current canonical address, strict stream binding, and
-schema-v3 persistence contracts should remain the stable boundary.
+V2 execution-tree persistence contract should remain the stable boundary.

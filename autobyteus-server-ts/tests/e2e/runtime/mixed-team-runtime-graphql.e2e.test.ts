@@ -799,9 +799,19 @@ Rules:
     }>(createTeamRunMutation, {
       input: {
         teamDefinitionId,
+        teamConfigs: [
+          {
+            teamAddress: "/",
+            llmModelIdentifier: autoByteusModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            workspaceRootPath,
+          },
+        ],
         memberConfigs: [
           {
-            memberName: "coordinator",
+            memberAddress: "/coordinator",
             agentDefinitionId: coordinatorAgentDefinitionId,
             llmModelIdentifier: autoByteusModelIdentifier,
             autoExecuteTools: true,
@@ -810,7 +820,7 @@ Rules:
             workspaceRootPath,
           },
           {
-            memberName: "specialist",
+            memberAddress: "/specialist",
             agentDefinitionId: specialistAgentDefinitionId,
             llmModelIdentifier: codexModelIdentifier,
             autoExecuteTools: true,

@@ -1,0 +1,54 @@
+$ git diff --check
+
+$ git ls-files -u
+
+$ rg rejected stored component and localization symbols outside docs
+No rejected stored component/key references found outside docs.
+
+$ implementation boundary scan
+autobyteus-web/utils/teamRunConfigUtils.ts:22:export const resolvedTeamRunLaunchConfigsEqual = (
+autobyteus-web/types/agent/TeamRunConfig.ts:108:  source: 'STORED_SNAPSHOT'
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts:13:import { resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts:59:  storedWorkspace: workspaceDisplay(input.scope.effectiveConfig),
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts:62:export const projectStoredTeamRunFormModel = (
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts:82:        isCustomized: !resolvedTeamRunLaunchConfigsEqual(agent.effectiveConfig, parent.effectiveConfig),
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts:84:        storedWorkspace: workspaceDisplay(agent.effectiveConfig),
+autobyteus-web/types/agent/TeamRunFormModel.ts:33:  storedWorkspace: StoredWorkspaceDisplay | null
+autobyteus-web/types/agent/TeamRunFormModel.ts:56:  storedWorkspace: StoredWorkspaceDisplay | null
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:88:      :model-value="storedWorkspaceSelection"
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:92:      :stored-workspace="storedWorkspace"
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:180:  storedWorkspace?: StoredWorkspaceDisplay | null
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:192:const storedWorkspaceSelection = computed(() => {
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:193:  const workspaceId = props.storedWorkspace?.workspaceId ?? props.effectiveConfig?.workspaceId ?? null
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue:194:  const rootPath = props.storedWorkspace?.rootPath ?? props.effectiveConfig?.workspaceRootPath ?? ''
+autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue:10:        :stored-workspace="node.scope.storedWorkspace"
+autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue:46:        :stored-workspace="node.mode === 'stored' ? node.storedWorkspace : undefined"
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:17:      :stored-workspace="model.root.storedWorkspace"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:49:        :stored-workspace="storedWorkspace"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:180:          :stored-workspace="storedWorkspace"
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:236:  storedWorkspace?: StoredWorkspaceDisplay | null
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue:246:  storedWorkspace: null,
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:51:      :data-test="isInteractionDisabled && storedWorkspace ? 'stored-workspace-value' : undefined"
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:94:      v-if="isInteractionDisabled && storedWorkspace?.availability === 'historical-only'"
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:151:  storedWorkspace?: StoredWorkspaceDisplay | null;
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:155:  storedWorkspace: null,
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:212:  const stored = props.storedWorkspace;
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:94:import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:254:    return projectStoredTeamRunFormModel(storedTeamConfiguration.value)
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:563:        storedWorkspace: {
+autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts:530:        storedWorkspace: {
+autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts:564:        storedWorkspace: {
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:10:import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:80:const storedModel = () => projectStoredTeamRunFormModel(buildTestTeamContext({
+
+$ effective source line counts (nonblank, non-comment-only)
+ 472 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+ 432 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ 289 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+ 132 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+  94 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+ 245 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+ 321 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+ 100 autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+  91 autobyteus-web/utils/editableTeamRunFormModel.ts
+  69 autobyteus-web/utils/teamRunConfigUtils.ts

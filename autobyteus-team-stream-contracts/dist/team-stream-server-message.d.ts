@@ -7,7 +7,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
     execution_tree: z.ZodType<Readonly<{
-        schema_version: 1;
+        schema_version: 2;
         created_at: string;
         archived_at: string | null;
         application_binding: Readonly<{
@@ -20,15 +20,17 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             rules: readonly string[];
         }>[];
         root_team: Readonly<{
+            address: "/";
             team_definition_id: string;
             team_definition_name: string;
             team_run_id: string;
             coordinator_address: string;
+            default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
             members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
-        schema_version: 1;
+        schema_version: 2;
         created_at: string;
         archived_at: string | null;
         application_binding: Readonly<{
@@ -41,10 +43,12 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             rules: readonly string[];
         }>[];
         root_team: Readonly<{
+            address: "/";
             team_definition_id: string;
             team_definition_name: string;
             team_run_id: string;
             coordinator_address: string;
+            default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
             members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
@@ -688,7 +692,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         root_team_run_id: z.ZodString;
         base_change_sequence: z.ZodNumber;
         execution_tree: z.ZodType<Readonly<{
-            schema_version: 1;
+            schema_version: 2;
             created_at: string;
             archived_at: string | null;
             application_binding: Readonly<{
@@ -701,15 +705,17 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 rules: readonly string[];
             }>[];
             root_team: Readonly<{
+                address: "/";
                 team_definition_id: string;
                 team_definition_name: string;
                 team_run_id: string;
                 coordinator_address: string;
+                default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
                 members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
-            schema_version: 1;
+            schema_version: 2;
             created_at: string;
             archived_at: string | null;
             application_binding: Readonly<{
@@ -722,10 +728,12 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 rules: readonly string[];
             }>[];
             root_team: Readonly<{
+                address: "/";
                 team_definition_id: string;
                 team_definition_name: string;
                 team_run_id: string;
                 coordinator_address: string;
+                default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
                 members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;

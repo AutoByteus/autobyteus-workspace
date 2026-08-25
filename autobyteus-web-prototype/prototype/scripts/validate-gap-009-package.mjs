@@ -8,7 +8,10 @@ const root = resolve(new URL('../..', import.meta.url).pathname)
 const repoRoot = resolve(root, '..')
 const sourcePin = '8ef282ba77705180d985e7000d801f0e0068cdc1'
 const currentRoot = '/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype'
-const staleRoot = '/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype'
+const staleRoots = [
+  '/home/autobyteus/workspace/autobyteus-web-prototype',
+  '/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web-prototype',
+]
 const docs = [
   'README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md', 'parity-inventory.md',
   'comparison-report.md', 'evidence-index.md', 'prototype-scenarios.md', 'mock-boundaries.md', 'prototype-runbook.md',
@@ -21,8 +24,9 @@ const check = (name, pass, detail = '') => {
 }
 const textByDoc = Object.fromEntries(await Promise.all(docs.map(async path => [path, await readFile(resolve(root, path), 'utf8')])))
 const allText = Object.values(textByDoc).join('\n')
+const activeLocatorText = docs.filter(path => path !== 'product-prototyper-baseline-review.md').map(path => textByDoc[path]).join('\n')
 
-check('Canonical personal-checkout root is current in bootstrap-owned docs', allText.includes(currentRoot) && !allText.includes(staleRoot))
+check('Canonical workspace-repository root is current in active prototype docs', activeLocatorText.includes(currentRoot) && staleRoots.every(staleRoot => !activeLocatorText.includes(staleRoot)))
 check('Source pin is stable across identity and evidence docs', [
   'README.md', 'prototype-bootstrap-report.md', 'pp-gap-009-correction.md',
   'parity-inventory.md', 'comparison-report.md', 'evidence-index.md', 'prototype-runbook.md',
@@ -66,15 +70,15 @@ check('All focused validation logs exist', logsExist)
 check('Final build log is successful', (await readFile(resolve(root, 'evidence/validation/pp-gap-009-build.txt'), 'utf8')).includes('Build complete!'))
 check('Focused browser log contains all four passes', ['JRN-050-A', 'JRN-050-B', 'JRN-050-C', 'JRN-050-D'].every(id => (textByDoc['prototype-bootstrap-report.md'].includes(id))) && (await readFile(resolve(root, 'evidence/validation/pp-gap-009-gap-009.txt'), 'utf8')).match(/PASS JRN-050-[A-D]/g)?.length === 4)
 
-const gitRaw = (...args) => execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8' })
+const gitRaw = (...args) => execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
 const git = (...args) => gitRaw(...args).trim()
-check('Validation runs on the integration candidate or canonical personal branch', ['codex/initial-prototype-baseline', 'personal'].includes(git('branch', '--show-current')))
-check('Approved source pin exists in the repository', git('cat-file', '-e', `${sourcePin}^{commit}`) === '')
+check('Validation runs on workspace personal', git('branch', '--show-current') === 'personal')
+check('Approved source pin exists in the owning repository', git('cat-file', '-e', `${sourcePin}^{commit}`) === '')
 const changedPaths = gitRaw('status', '--porcelain').trimEnd().split('\n').filter(Boolean).map(line => line.slice(3))
 check('Working tree is clean or changes are isolated to prototype root', changedPaths.every(path => path.startsWith('autobyteus-web-prototype/')), changedPaths.length ? `${changedPaths.length} prototype path(s)` : 'clean')
 check('Product-owned spec and final references are finalized for RER-009', textByDoc['ui-ux-spec.md'].includes('17/17') && textByDoc['final-reference-screenshots/README.md'].includes('done. i checked. thanks'))
 
-const absolutePaths = [...new Set(allText.match(/\/home\/autobyteus\/workspace\/[A-Za-z0-9_./-]+/g) || [])]
+const absolutePaths = [...new Set(activeLocatorText.match(/\/home\/autobyteus\/workspace\/[A-Za-z0-9_./-]+/g) || [])]
 let absolutePathsExist = true
 for (const path of absolutePaths) {
   const cleanPath = path.replace(/[.),;:]$/, '')

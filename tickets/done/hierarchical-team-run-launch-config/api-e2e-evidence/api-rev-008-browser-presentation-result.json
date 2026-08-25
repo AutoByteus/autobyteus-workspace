@@ -1,0 +1,153 @@
+{
+  "revision": "API-REV-008",
+  "result": "pass",
+  "head": "cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5",
+  "browser": {
+    "tool": "AutoByteus open_tab",
+    "tabId": "3efdcb",
+    "url": "http://127.0.0.1:58924/workspace",
+    "backend": "http://127.0.0.1:58849",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team"
+  },
+  "rootPresentation": {
+    "orderedLabels": [
+      "Team Definition",
+      "Runtime",
+      "Default LLM Model (Global)",
+      "Workspace Directory",
+      "Auto approve tools",
+      "Team Members Override (3)"
+    ],
+    "labelYPositions": [16, 94, 190.5, 288.5, 484.5, 575.5],
+    "strictlyIncreasing": true,
+    "prohibitedTextAbsent": {
+      "Root Team defaults": true,
+      "rootSlashIdentity": true,
+      "Effective": true,
+      "Customized fields": true
+    },
+    "outerDisclosureDefault": {
+      "ariaExpanded": "false",
+      "ariaControls": "team-member-overrides-panel"
+    }
+  },
+  "nestedPresentation": {
+    "address": "/StudentStudyGroup",
+    "default": {
+      "ariaExpanded": "false",
+      "ariaControls": "team-scope-StudentStudyGroup-panel",
+      "visibleIdentity": "StudentStudyGroup",
+      "teamMarker": "TEAM",
+      "state": "Inherited"
+    },
+    "expandedActualControls": [
+      "Runtime",
+      "Default LLM Model",
+      "Workspace Directory",
+      "Auto approve tools"
+    ],
+    "summaryTextAbsent": {
+      "Effective": true,
+      "Customized fields": true
+    },
+    "customization": {
+      "initialAriaChecked": "true",
+      "customizedAriaChecked": "false",
+      "stateAfterEdit": "Customized",
+      "resetAccessibleName": "Reset settings for StudentStudyGroup (/StudentStudyGroup)",
+      "expandedAfterEdit": "true",
+      "stateAfterReset": "Inherited",
+      "resetAbsentAfterReset": true,
+      "restoredAriaChecked": "true",
+      "expandedAfterReset": "true",
+      "teamOverridesAfterReset": {}
+    }
+  },
+  "scopedNonHappyStates": {
+    "workspace": {
+      "rootSelection": "existing",
+      "nestedSelection": "new",
+      "nestedDraftPath": "   ",
+      "blockingIssue": {
+        "code": "WORKSPACE_REQUIRED",
+        "subjectAddress": "/StudentStudyGroup",
+        "subjectKind": "TEAM",
+        "message": "Enter a workspace path to run this team."
+      },
+      "runDisabled": true,
+      "restoredToExisting": true
+    },
+    "runtimeCatalog": {
+      "setup": "owned-page public Pinia action setRuntimeModelCatalogError; restored immediately",
+      "nestedAlert": "Could not load models for /StudentStudyGroup: API-REV-008 scoped catalog probe",
+      "nestedRetryEnabled": true,
+      "restoredState": {
+        "status": "ready",
+        "error": null
+      }
+    }
+  },
+  "disabledReadOnly": {
+    "setup": "owned-page in-flight launch-state injection; no provider or GraphQL launch",
+    "notice": "Selected team run configuration is read-only. Start a new team run to use different runtime or model settings.",
+    "rootControlsDisabled": true,
+    "nestedControlsDisabled": true,
+    "resetDisabled": true,
+    "nestedDisclosureDisabled": false,
+    "nestedDisclosureStillExpanded": "true",
+    "stateRestored": true
+  },
+  "accessibilityAndFocus": {
+    "outerControlsExistingPanel": true,
+    "nestedControlsExistingPanel": true,
+    "nestedSectionLabelledByExistingHeading": true,
+    "expandedDocumentOrder": [
+      "root runtime",
+      "root model",
+      "root Existing",
+      "root New",
+      "root workspace",
+      "root auto approve",
+      "Team Members Override",
+      "Teacher controls",
+      "StudentStudyGroup disclosure",
+      "nested runtime",
+      "nested model",
+      "nested Existing",
+      "nested New",
+      "nested workspace",
+      "nested auto approve",
+      "nested Agent controls"
+    ],
+    "nestedCollapsedVisibleFocusable": [
+      "StudentStudyGroup disclosure"
+    ],
+    "outerCollapsedDescendantVisibleFocusableCount": 0
+  },
+  "narrowGeometry": {
+    "viewportCssPixels": {
+      "width": 1040,
+      "height": 738,
+      "devicePixelRatio": 2
+    },
+    "configPanelCssPixels": {
+      "width": 667,
+      "scrollWidth": 667,
+      "clientWidth": 667
+    },
+    "nestedSectionCssPixels": {
+      "width": 633,
+      "scrollWidth": 633,
+      "clientWidth": 633
+    },
+    "headerDisclosureResetOverlapArea": 0,
+    "documentHorizontalOverflow": false,
+    "lastControlToStickyRunClearanceCssPixels": 72.0859375,
+    "lastControlCoveredByStickyRun": false
+  },
+  "durableCoverageChanged": false,
+  "providerRunPerformed": false,
+  "functionalBaselineRetained": "API-REV-007 / CRR-014 and API-REV-006 real provider/API/disk evidence",
+  "userVerificationStillRequired": true
+}

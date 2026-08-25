@@ -1,15 +1,26 @@
 import fs from "node:fs/promises";
 import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../agent-team-execution/domain/team-run-config.js";
-import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
-import { buildInitialTeamRunExecutionTree } from "../../../agent-team-execution/services/team-run-execution-tree-builder.js";
-import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
-import { buildTokenExecutionEvidence, object, text } from "./predecessor-team-run-evidence.js";
+import type {
+  AgentLaunchConfiguration,
+  TeamRunApplicationBinding,
+  TeamRunAgentNode,
+  TeamRunAgentTeamNode,
+  TeamRunNode,
+} from "../../../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
+import { buildInitialTeamRunExecutionTree } from "./team-run-execution-tree-v1-builder.js";
+import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
+import { buildTokenExecutionEvidence, text } from "./predecessor-team-run-evidence.js";
 import { PredecessorPhysicalRunIndex } from "./predecessor-physical-run-index.js";
 import { convertPredecessorTeamPackageSubjects } from "./predecessor-task-package-converter.js";
 import { convertLegacyTeamRunMetadata } from "./predecessor-team-metadata-converter.js";
 import { convertPredecessorTaskDelegationFile } from "./predecessor-task-delegation-converter.js";
 import type { TeamRunV1TokenRowDisposition } from "./token-usage-team-run-v1-row-planner.js";
+import type {
+  TeamRunMemberMetadata,
+  TeamRunSubTeamMemberMetadata,
+} from "../../legacy/team-run-metadata-types.js";
 
 const missing = (error: unknown): boolean =>
   (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
@@ -22,28 +33,65 @@ const readJson = async (filePath: string, optional = false): Promise<unknown | n
   }
 };
 
-const applicationBindingFromMetadata = (
-  rawMetadata: unknown,
-): { applicationId: string; bindingId: string } | null => {
-  const pairs = new Map<string, { applicationId: string; bindingId: string }>();
-  const visit = (value: unknown): void => {
-    if (!value || typeof value !== "object" || Array.isArray(value)) return;
-    const record = value as Record<string, unknown>;
-    if (record.applicationExecutionContext && typeof record.applicationExecutionContext === "object") {
-      const context = object(record.applicationExecutionContext, "applicationExecutionContext");
-      const applicationId = text(context.applicationId, "applicationExecutionContext.applicationId");
-      const bindingId = text(context.bindingId, "applicationExecutionContext.bindingId");
-      pairs.set(`${applicationId}\0${bindingId}`, { applicationId, bindingId });
+/** Derive one package binding from the validated predecessor Agent hierarchy. */
+export const applicationBindingFromMetadata = (
+  rootTeam: TeamRunSubTeamMemberMetadata,
+): TeamRunApplicationBinding | null => {
+  const pairs = new Map<string, TeamRunApplicationBinding>();
+  const visit = (member: TeamRunMemberMetadata): void => {
+    if (member.kind === "agent_team") {
+      member.children.forEach(visit);
+      return;
     }
-    for (const child of Object.values(record)) visit(child);
+    const context = member.applicationExecutionContext;
+    if (context) {
+      const applicationId = text(
+        context.applicationId,
+        `applicationExecutionContext.applicationId at '${member.address}'`,
+      );
+      const bindingId = text(
+        context.bindingId,
+        `applicationExecutionContext.bindingId at '${member.address}'`,
+      );
+      pairs.set(JSON.stringify([applicationId, bindingId]), { applicationId, bindingId });
+    }
   };
-  visit(rawMetadata);
+  rootTeam.children.forEach(visit);
   if (pairs.size > 1) throw new Error("Predecessor TeamRun contains contradictory application bindings.");
   return pairs.values().next().value ?? null;
 };
 
+const launchConfigurationFromAgent = (
+  agent: TeamRunAgentNode,
+): AgentLaunchConfiguration => ({
+  runtimeKind: agent.runtimeKind,
+  llmModelIdentifier: agent.llmModelIdentifier,
+  llmConfig: agent.llmConfig,
+  autoExecuteTools: agent.autoExecuteTools,
+  skillAccessMode: agent.skillAccessMode,
+  workspaceRootPath: agent.workspaceRootPath,
+});
+
+const materializeMigrationTeam = (
+  team: TeamRunSubTeamMemberMetadata,
+): TeamRunAgentTeamNode => {
+  const children: TeamRunNode[] = team.children.map((child) => {
+    if (child.kind === "agent_team") return materializeMigrationTeam(child);
+    const { applicationExecutionContext: _ignored, ...agent } = child;
+    return agent;
+  });
+  const coordinator = children.find((child): child is TeamRunAgentNode =>
+    child.kind === "agent" && child.address === team.coordinatorAddress);
+  if (!coordinator) throw new Error(`Historical Team '${team.address}' has no direct coordinator.`);
+  return {
+    ...team,
+    defaultLaunchConfiguration: launchConfigurationFromAgent(coordinator),
+    children,
+  };
+};
+
 export type PlannedTeamRunV1Package = Readonly<{
-  executionTree: import("../../../agent-team-execution/domain/team-run-execution-tree.js").TeamRunExecutionTreeSnapshot;
+  executionTree: import("./team-run-execution-tree-v1-types.js").TeamRunExecutionTreeSnapshot;
   taskRecords: import("../../../agent-team-execution/task-delegation/task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
   communicationMessages: import("../../../services/team-communication/team-communication-v1-types.js").TeamCommunicationMessagesSnapshot;
 }>;
@@ -60,9 +108,9 @@ export const planPredecessorTeamRunV1Package = async (input: {
   const metadata = convertLegacyTeamRunMetadata(rawMetadata, input.rootTeamRunId);
   const config = new TeamRunConfig({
     teamBackendKind: TeamBackendKind.MIXED,
-    rootTeam: metadata.rootTeam,
+    rootTeam: materializeMigrationTeam(metadata.rootTeam),
     handoffs: metadata.handoffs,
-    applicationBinding: applicationBindingFromMetadata(rawMetadata),
+    applicationBinding: applicationBindingFromMetadata(metadata.rootTeam),
   });
   const initial = buildInitialTeamRunExecutionTree({
     config,

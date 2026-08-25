@@ -3,7 +3,8 @@
 ## Identity
 
 - Package: `initial-prototype-baseline`
-- Revision: `RER-011` canonical integration of the approved `RER-009` correction; baseline pin established under `RER-002`
+- Revision: `RER-015` workspace-repository ownership of the approved
+  `RER-009` correction; baseline pin established under `RER-002`
 - Status: approved current-state baseline including the user-confirmed RER-009 correction (`PPA-002`)
 - Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`
 - Selected source repository: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
@@ -13,6 +14,14 @@
 - Canonical review URL: <http://127.0.0.1:3210>
 
 The selected source worktree may be newer than the approved pin. Source-versus-prototype evidence must run from an exact export or detached worktree at `8ef282b...`; do not reset the selected source worktree and do not treat its current HEAD as correction authority.
+
+The prototype is an isolated root-level project inside the owning workspace
+repository. Run project commands from
+`/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` and
+Git commands from `/home/autobyteus/workspace/autobyteus-workspace`. The
+prototype is ordinary tracked content, not a nested repository, workspace
+package, submodule or gitlink; no backend or source checkout is required for
+ordinary review.
 
 ## Clean Install And Run
 
@@ -128,6 +137,7 @@ corepack pnpm validate:boundaries
 corepack pnpm build
 corepack pnpm validate:gap-009-package
 corepack pnpm validate:gap-010-package
+corepack pnpm validate:workspace-ownership
 ```
 
 Do not run `capture:final-references` or modify `ui-ux-spec.md` during bootstrap correction. Those are Product Prototyper-owned post-acceptance artifacts.

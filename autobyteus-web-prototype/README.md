@@ -5,7 +5,12 @@ commit `8ef282ba77705180d985e7000d801f0e0068cdc1`.
 
 Status: **Approved current-state baseline, including the user-confirmed RER-009 `PP-GAP-009`/`PP-GAP-010` parity correction (`PPA-002`).** The package contains no future-state redesign.
 
-Current correction placement: ordinary tracked content at repository-root `autobyteus-web-prototype` inside worktree `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline` on branch `codex/initial-prototype-baseline`. Historical owning-repository placement remains documented in [repository-placement-correction.md](repository-placement-correction.md); this correction does not edit or push `personal`.
+Canonical ownership: ordinary root-level project content in
+`/home/autobyteus/workspace/autobyteus-workspace` at
+`/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` on
+branch `personal`. The RER-013 independent repository is historical provenance
+only; see [workspace-repository-return.md](workspace-repository-return.md) and
+[independent-repository-migration.md](independent-repository-migration.md).
 
 This project deliberately optimizes for **exact current experience** and
 **simplified implementation**. It reuses source presentation code and assets,
@@ -36,6 +41,8 @@ for production-preview and scenario commands.
 - [ui-ux-spec.md](ui-ux-spec.md)
 - [final-reference-screenshots](final-reference-screenshots/README.md)
 - [product-prototyper-baseline-review.md](product-prototyper-baseline-review.md)
+- [workspace-repository-return.md](workspace-repository-return.md)
+- [independent-repository-migration.md](independent-repository-migration.md)
 
 Bootstrap screenshots remain source-versus-prototype parity evidence. The
 distinct images in `final-reference-screenshots/` were captured after explicit
@@ -52,6 +59,7 @@ corepack pnpm validate:boundaries
 corepack pnpm build
 corepack pnpm validate:gap-009-package
 corepack pnpm validate:gap-010-package
+corepack pnpm validate:workspace-ownership
 corepack pnpm capture:final-references
 corepack pnpm validate:final-package
 SOURCE_BASE_URL=http://127.0.0.1:3110 \

@@ -1,0 +1,4 @@
+
+> autobyteus@1.4.57 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-web
+> tsc -p electron/tsconfig.json
+

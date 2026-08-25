@@ -1,4 +1,4 @@
-# RER-011 Direct Personal Integration Record
+# RER-011 Direct Personal Integration Record — Historical Provenance
 
 ## Scope And Authority
 
@@ -7,9 +7,9 @@
 - User authorization: **“directly on the personal branch”**
 - Approved UI/UX: cumulative `PPA-001` / `PPA-002`; unchanged
 - Approved source pin: `8ef282ba77705180d985e7000d801f0e0068cdc1`; unchanged
-- Canonical repository: `/home/autobyteus/workspace/autobyteus-workspace`
+- Historical RER-011 repository: `/home/autobyteus/workspace/autobyteus-workspace`
 - Canonical branch: `personal`
-- Canonical prototype root:
+- Historical RER-011 prototype root:
   `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype`
 - Observable change: **none**
 
@@ -17,6 +17,14 @@ This record covers Git ancestry synchronization, canonical active locators,
 validation, fast-forward promotion, and direct non-force push only. It does not
 refresh the pinned source, redesign the UI, add production behavior, or reopen
 the user-confirmed review decision.
+
+RER-013 temporarily superseded these workspace-ownership locators with the
+independent repository at
+`/home/autobyteus/workspace/autobyteus-web-prototype`. RER-015 then restored
+the active canonical root to
+`/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web-prototype` on
+workspace `personal`. The RER-011 details below remain historical capture and
+integration provenance.
 
 ## Rebase Preservation
 

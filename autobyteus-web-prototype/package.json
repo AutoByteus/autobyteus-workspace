@@ -24,12 +24,14 @@
     "capture:matrix": "node prototype/scripts/capture-route-matrix.mjs",
     "capture:final-references": "node prototype/scripts/capture-final-references.mjs",
     "validate:final-package": "node prototype/scripts/validate-final-package.mjs",
-    "validate:repository-placement": "node prototype/scripts/validate-repository-placement.mjs",
+    "validate:repository-placement": "node prototype/scripts/validate-workspace-ownership.mjs",
+    "validate:independent-repository": "node prototype/scripts/validate-independent-repository.mjs",
     "audit:presentation": "node prototype/scripts/audit-presentation-parity.mjs",
     "audit:interactions": "node prototype/scripts/audit-interaction-discovery.mjs",
     "validate:gap-009-package": "node prototype/scripts/validate-gap-009-package.mjs",
     "validate:gap-010-package": "node prototype/scripts/validate-gap-010-package.mjs",
-    "validate:personal-integration": "node prototype/scripts/validate-personal-integration.mjs"
+    "validate:personal-integration": "node prototype/scripts/validate-workspace-ownership.mjs",
+    "validate:workspace-ownership": "node prototype/scripts/validate-workspace-ownership.mjs"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",

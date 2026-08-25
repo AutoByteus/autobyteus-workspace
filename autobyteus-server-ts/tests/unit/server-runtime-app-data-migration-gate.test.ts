@@ -76,10 +76,13 @@ vi.mock("../../src/managed-capabilities/messaging-gateway/defaults.js", () => ({
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
 }));
-vi.mock("../../src/run-history/services/team-run-v1-package-catalog.js", () => ({
-  TeamRunV1PackageCatalog: class {
+vi.mock("../../src/run-history/services/team-run-package-catalog.js", () => ({
+  TeamRunPackageCatalog: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
+}));
+vi.mock("../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js", () => ({
+  TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID: "20260824_team_run_execution_tree_v2",
 }));
 vi.mock("../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
   CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "20260803_custom_provider_readable_identity",

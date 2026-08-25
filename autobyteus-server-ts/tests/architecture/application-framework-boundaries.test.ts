@@ -485,6 +485,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
       "agentTeamRunManager",
       "teamDefinitionService",
       "agentRunIdentityAllocator",
+      "teamRunIdentityAllocator",
       "teamRunHistoryCatalogService",
       "workspaceManager",
       "memoryDir",

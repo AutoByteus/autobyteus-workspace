@@ -340,7 +340,7 @@ const persistPublishedArtifactForRun = async (input: {
     agentDefinitionId: `test-${input.producer.agentRunId}`,
     workspaceRootPath: path.join(input.fixtureRoot, "workspace"),
     memoryDir,
-    llmModelIdentifier: "gpt-test",
+    llmModelIdentifier: "grok-4.6",
     llmConfig: null,
     autoExecuteTools: true,
     skillAccessMode: null,
@@ -584,43 +584,16 @@ describe("Brief Studio imported package integration", () => {
     };
 
     const fakeTeamRunService = {
-      allocateTeamRunId: vi.fn(async () => {
-        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
-        latestTeamRunId = `team-run-${runIndex}`;
-        return latestTeamRunId;
-      }),
-      buildMemberConfigsFromLaunchPreset: vi.fn(async ({ launchPreset }: { launchPreset: Record<string, unknown> }) => ([
-        {
-          memberAddress: "/researcher",
-          agentDefinitionId: "brief-studio-team/researcher",
-          llmModelIdentifier: launchPreset.llmModelIdentifier,
-          autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
-          skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceRootPath: launchPreset.workspaceRootPath,
-          llmConfig: launchPreset.llmConfig ?? null,
-          runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
-        },
-        {
-          memberAddress: "/writer",
-          agentDefinitionId: "brief-studio-team/writer",
-          llmModelIdentifier: launchPreset.llmModelIdentifier,
-          autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
-          skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceRootPath: launchPreset.workspaceRootPath,
-          llmConfig: launchPreset.llmConfig ?? null,
-          runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
-        },
-      ])),
       createTeamRun: vi.fn(async ({
         memberConfigs,
-        teamRunId,
         applicationBinding,
       }: {
+        teamConfigs: Array<Record<string, unknown>>;
         memberConfigs: Array<Record<string, unknown>>;
-        teamRunId: string;
         applicationBinding: { applicationId: string; bindingId: string };
       }) => {
-        latestTeamRunId = teamRunId;
+        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
+        latestTeamRunId = `team-run-${runIndex}`;
         const runtimeMemberConfigs = memberConfigs.map((memberConfig) => {
           const memberAddress = String(memberConfig.memberAddress);
           const memberRouteKey = memberAddress.slice(1);
@@ -707,6 +680,27 @@ describe("Brief Studio imported package integration", () => {
         },
         resourceDefinitionId: resolvedDefaultTeam.definitionId,
         resourceKind: "AGENT_TEAM",
+        teamScopes: [{
+          teamAddress: "/",
+          displayName: "Brief Studio Team",
+          teamDefinitionId: resolvedDefaultTeam.definitionId,
+          llmModelIdentifier: "gpt-test",
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          llmConfig: null,
+          workspaceRootPath: path.join(tempRoot, "workspace"),
+          provenance: {
+            runtimeKind: {
+              kind: "PACKAGE_TEAM_DEFAULT",
+              teamDefinitionId: resolvedDefaultTeam.definitionId,
+            },
+            llmModelIdentifier: {
+              kind: "PACKAGE_TEAM_DEFAULT",
+              teamDefinitionId: resolvedDefaultTeam.definitionId,
+            },
+            llmConfig: null,
+            workspaceRootPath: "APPLICATION_RUNTIME",
+          },
+        }],
         leaves: [
           {
             memberAddress: "/researcher",
@@ -1042,7 +1036,7 @@ describe("Brief Studio imported package integration", () => {
         variables: {
           input: {
             briefId: createdBrief.briefId,
-            llmModelIdentifier: "gpt-test",
+            llmModelIdentifier: "grok-4.6",
           },
         },
       }),
@@ -1580,7 +1574,7 @@ describe("Brief Studio imported package integration", () => {
 
     const launchedRun = await client.launchDraftRun({
       briefId: createdBrief.briefId,
-      llmModelIdentifier: "gpt-test",
+      llmModelIdentifier: "grok-4.6",
     });
     expect(launchedRun).toMatchObject({
       briefId: createdBrief.briefId,

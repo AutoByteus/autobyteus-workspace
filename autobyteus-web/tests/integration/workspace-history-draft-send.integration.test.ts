@@ -47,8 +47,9 @@ const {
     })),
   },
   llmProviderConfigStoreMock: {
-    models: ['fallback-model-1'],
+    models: vi.fn(() => ['fallback-model-1']),
     fetchProvidersWithModels: vi.fn().mockResolvedValue(undefined),
+    ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
   },
   agentDefinitionStoreMock: {
     agentDefinitions: [{ id: 'agent-def-1', name: 'db manager', avatarUrl: null }],

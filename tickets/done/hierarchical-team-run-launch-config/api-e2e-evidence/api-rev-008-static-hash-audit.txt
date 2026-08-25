@@ -1,0 +1,80 @@
+API-REV-008 pre-browser static/hash audit
+HEAD cf527998f58d05a34925abc7b5fa2ccf1c3b1fa5
+
+## git diff --check
+PASS
+
+## IR-009 source commit changed paths
+A	autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+M	autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+M	autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+M	autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+M	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+A	autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+M	autobyteus-web/localization/messages/en/workspace.ts
+M	autobyteus-web/localization/messages/zh-CN/workspace.ts
+
+## Presentation source and durable-test SHA-256
+5d8b618773730f31eddbecf691c5dce1d401b4c337b47b37ee13ead4557f8ebf  autobyteus-web/components/workspace/config/AutoApproveSwitch.vue
+c342afda6ebb42bca4175d91bf2757f62ac3e1e98c1312a9616e70d4c4ce41b6  autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+a032584e2edf1a28676d5cc2af777019a46ebea1b5ecd8f954981bcfde588d0b  autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+6c994b8dd02168f5723218502948c55697cef0635d1118349a483d7f4a1c48bf  autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+4a5ec1ce430988ad417ecefaea11449e40fd49bbd3ca7021417ca2205ee9c509  autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+411afb9a145d6939faa228328339db576e621ca15c03333a6f24cd7df02db58a  autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+a46b0900a71e5e9b391b0eaec4af69276dcdab7a11641534fb2f42ea9ba6acb0  autobyteus-web/localization/messages/en/workspace.ts
+81abbce1d9cead6f10ba80b146ea3bafd7844e77e1702f0851d3532dfab662ee  autobyteus-web/localization/messages/zh-CN/workspace.ts
+
+## Prohibited editable presentation strings in current production components
+PASS: prohibited editable output absent
+
+## Current working tree status
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/code-review-revision-record.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-static-hash-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-web-presentation-focused.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-015.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-presentation-focused-crr-015.txt
+
+## API-REV-008 final artifact and cleanup audit
+### git diff --check
+PASS
+### API/E2E working-tree source/test modifications
+PASS: none
+### Browser result JSON parse
+PASS
+### API-REV-008 canonical artifact SHA-256
+1e178f4e8a28b91530d4534fca48b76759dd1b316929dfe58038833fae711df8  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+1663308f3b3c7153b567c429ad843395678f772c53c3aa8148d8416ee053d430  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md
+e04293e1c5e7f3d05ba25f9d8be47b1acc630eee58d34d61d1c4c8b056c19805  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md
+dfc3e7459c84a837b774b8429d6a3aa47c0c972b13775bb72b1f179052060935  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-browser-presentation-result.json
+acd799f8dc23273b7d77df4c4ad364698a5e0000d3aaf48e5e243e6b98f433fc  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-presentation-evidence.md
+5c26c06520f1d1d96ddc3ac42b2f8d65ef4bbf10a6e8641275c268b1bc7414e8  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-cleanup-audit.txt
+8a5e6433c2d16bb24a921b88a020fc00d3e55f3f0bb482981aa79ce658f95378  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-desktop-root-collapsed.png
+214f12d302d2bbba678a20cbd0dca414947529a252a500ba02785c04e9afb1b1  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-members-nested-collapsed.png
+6da58fc1ba43f7cf468962df6694838e2c0b5e9694cb2a9c8ebb862e6e8c6d03  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-narrow-nested-customized.png
+c97f0510b9cd7c6af3e5cd293f762a9c42320395481903f20143f961c732c8c0  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-customized.png
+30d09a877038ea6ddf010290cdb42ed26477702264f933423e0ba489fb99ff1d  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-expanded-inherited.png
+966b482d6a48d867de1c135947a00f9e5c80ab332e35e055e52c2e30acec6ea0  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-new-empty.png
+a5161631d5d9aa5ac2192e95fe17b97790eaaa0f24c0ce51bcc5348cc338c740  tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-read-only.png
+### Final API-REV-008 status paths
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-coverage-investigation.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-revision-record.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-browser-presentation-result.json
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-cleanup-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-backend-session-final.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-backend-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-electron-transpile.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-nuxt-session.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-desktop-root-collapsed.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-members-nested-collapsed.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-narrow-nested-customized.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-customized.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-expanded-inherited.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-nested-new-empty.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-presentation-evidence.md
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-open-tab-read-only.png
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-static-hash-audit.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/api-e2e-evidence/api-rev-008-web-presentation-focused.txt

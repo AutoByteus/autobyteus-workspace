@@ -1,9 +1,9 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
-  ConfiguredAgentExecution,
-  ConfiguredMemberExecution,
-  ConfiguredTeamExecution,
-  RootConfiguredTeamExecution,
+  ConfiguredAgentExecutionNode,
+  ConfiguredExecutionNode,
+  ConfiguredTeamExecutionNode,
+  RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
   TaskExecution,
   TaskTeamAgentExecution,
@@ -27,7 +27,7 @@ export type IndexedAgentExecution = Readonly<{
   address: AgentTeamAddress;
   containingTeamRunId: string;
   executionKind: AgentExecutionKind;
-  source: ConfiguredAgentExecution | TaskAgentExecution | TaskTeamAgentExecution;
+  source: ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
 }>;
 
 export type IndexedTeamExecution = Readonly<{
@@ -36,8 +36,8 @@ export type IndexedTeamExecution = Readonly<{
   parentTeamRunId: string | null;
   executionKind: TeamExecutionKind;
   source:
-    | RootConfiguredTeamExecution
-    | ConfiguredTeamExecution
+    | RootConfiguredTeamExecutionNode
+    | ConfiguredTeamExecutionNode
     | TaskTeamExecution
     | TaskTeamNestedTeamExecution;
 }>;
@@ -62,7 +62,7 @@ export type IndexedTaskExecution =
 export class TeamExecutionIndex {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
-  private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredMemberExecution>();
+  private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredExecutionNode>();
   private readonly configuredTeamRunIdByAddress = new Map<AgentTeamAddress, string>();
   private readonly taskExecutionsByRunId = new Map<string, IndexedTaskExecution>();
   private readonly directAgentRunIdsByTeamRunId = new Map<string, string[]>();
@@ -105,7 +105,7 @@ export class TeamExecutionIndex {
     return team;
   }
 
-  getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredMemberExecution | null {
+  getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredExecutionNode | null {
     return this.configuredByAddress.get(address as AgentTeamAddress) ?? null;
   }
 
@@ -186,7 +186,7 @@ export class TeamExecutionIndex {
   }
 
   private visitConfiguredTeam(
-    team: RootConfiguredTeamExecution | ConfiguredTeamExecution,
+    team: RootConfiguredTeamExecutionNode | ConfiguredTeamExecutionNode,
     teamAddress: AgentTeamAddress,
     teamRunId: string,
   ): void {

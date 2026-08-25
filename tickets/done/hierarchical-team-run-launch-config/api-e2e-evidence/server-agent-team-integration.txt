@@ -1,0 +1,249 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35653) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (5 tests) 445ms
+stdout | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35667) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts (11 tests) 15ms
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35668) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (7 tests) 297ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35669) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > expands one root launch configuration across every Team and exact recursive Agent address
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-server-ts
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts (5 tests) 13ms
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35670) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent team websocket attached for team run team-run-1
+Created agent session 8934edf4-5686-4df1-9eeb-6f8a6b2d37e6 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+Agent Team WebSocket connected: session=8934edf4-5686-4df1-9eeb-6f8a6b2d37e6, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Closed agent session 8934edf4-5686-4df1-9eeb-6f8a6b2d37e6
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent team websocket attached for team run team-run-1
+Created agent session e786ada5-e33f-4118-b384-c2bbe577c432 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+Agent Team WebSocket connected: session=e786ada5-e33f-4118-b384-c2bbe577c432, run=team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Closed agent session e786ada5-e33f-4118-b384-c2bbe577c432
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent team websocket attached for team run team-run-1
+Created agent session cc56aa12-a993-4f40-bc27-6b5c2e1239f6 for run team-run-1
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Agent Team WebSocket connected: session=cc56aa12-a993-4f40-bc27-6b5c2e1239f6, run=team-run-1
+
+stderr | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > rejects a legacy selector at the strict WebSocket contract before root execution
+Error handling team message for cc56aa12-a993-4f40-bc27-6b5c2e1239f6: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+stdout | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+Closed agent session cc56aa12-a993-4f40-bc27-6b5c2e1239f6
+
+ ✓ tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts (3 tests) 157ms
+stdout | tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35671) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts (3 tests) 5ms
+ ✓ tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts (3 tests) 5ms
+
+ Test Files  7 passed (7)
+      Tests  37 passed (37)
+   Start at  18:35:20
+   Duration  10.23s (transform 2.99s, setup 38ms, import 8.24s, tests 938ms, environment 0ms)
+

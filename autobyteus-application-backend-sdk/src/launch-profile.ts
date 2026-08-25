@@ -57,14 +57,20 @@ export const buildEffectiveTeamRunLaunch = (input: {
   return {
     kind: "AGENT_TEAM",
     mode: "memberConfigs",
+    teamConfigs: input.configuration.teamScopes.map((scope) => ({
+      teamAddress: scope.teamAddress,
+      workspaceRootPath: requireWorkspaceRootPath(scope.workspaceRootPath, scope.displayName),
+      llmModelIdentifier: scope.llmModelIdentifier,
+      autoExecuteTools: true,
+      skillAccessMode,
+      runtimeKind: scope.runtimeKind,
+      ...(scope.llmConfig === null ? {} : { llmConfig: structuredClone(scope.llmConfig) }),
+    })),
     memberConfigs: input.configuration.leaves.map((leaf) => ({
       memberAddress: requireMemberAddress(leaf.memberAddress),
       displayName: leaf.displayName,
       agentDefinitionId: leaf.agentDefinitionId,
-      workspaceRootPath: requireWorkspaceRootPath(
-        leaf.workspaceRootPath,
-        leaf.displayName,
-      ),
+      workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.displayName),
       llmModelIdentifier: leaf.llmModelIdentifier,
       autoExecuteTools: true,
       skillAccessMode,

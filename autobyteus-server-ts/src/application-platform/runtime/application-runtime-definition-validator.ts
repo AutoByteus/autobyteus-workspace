@@ -81,10 +81,15 @@ export class ApplicationRuntimeDefinitionValidator {
     label: string,
     diagnostics: string[],
   ): void {
-    for (const member of configuration.leaves) {
+    const subjects = configuration.resourceKind === "AGENT_TEAM"
+      ? [...configuration.teamScopes, ...configuration.leaves]
+      : configuration.leaves;
+    for (const member of subjects) {
       validateRuntimeKind(
         member.runtimeKind,
-        `${label}/${member.memberAddress ?? member.agentDefinitionId}`,
+        `${label}/${"memberAddress" in member
+          ? member.memberAddress ?? member.agentDefinitionId
+          : member.teamAddress}`,
         diagnostics,
       );
     }

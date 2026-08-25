@@ -102,7 +102,13 @@ export const validateStandaloneApplicationPackage = async (input: {
       executionResourceRef: defaultRef,
       provenance: "PACKAGE",
     });
-    for (const leaf of baseline.leaves) {
+    const subjects = baseline.resourceKind === "AGENT_TEAM"
+      ? [...baseline.teamScopes, ...baseline.leaves]
+      : baseline.leaves;
+    for (const leaf of subjects) {
+      const subjectAddress = "teamAddress" in leaf
+        ? leaf.teamAddress
+        : leaf.memberAddress ?? leaf.agentDefinitionId;
       const runtimeKind = runtimeKindFromString(leaf.runtimeKind);
       if (!runtimeKind) {
         throw new Error(
@@ -111,13 +117,13 @@ export const validateStandaloneApplicationPackage = async (input: {
       }
       if (!leaf.llmModelIdentifier) {
         throw new Error(
-          `Application slot '${slot.slotKey}' leaf '${leaf.memberAddress ?? leaf.agentDefinitionId}' has no package llmModelIdentifier default.`,
+          `Application slot '${slot.slotKey}' launch subject '${subjectAddress}' has no package llmModelIdentifier default.`,
         );
       }
       portableConfigPolicy.assertPortableLlmConfig({
         runtimeKind,
         llmConfig: leaf.llmConfig,
-        path: `Application slot '${slot.slotKey}' leaf '${leaf.memberAddress ?? leaf.agentDefinitionId}'.llmConfig`,
+        path: `Application slot '${slot.slotKey}' launch subject '${subjectAddress}'.llmConfig`,
       });
     }
   }

@@ -1,0 +1,187 @@
+# CRR-018 historical control-losslessness probe
+
+## Independent supported initiating path
+    57	@InputType()
+    58	export class TeamMemberConfigInput {
+    59	  @Field(() => String)
+    60	  memberAddress!: string;
+    61	
+    62	  @Field(() => String)
+    63	  agentDefinitionId!: string;
+    64	
+    65	  @Field(() => String)
+    66	  llmModelIdentifier!: string;
+    67	
+    68	  @Field(() => Boolean)
+    69	  autoExecuteTools!: boolean;
+    70	
+    71	  @Field(() => SkillAccessMode)
+    72	  skillAccessMode!: SkillAccessMode;
+    73	
+    74	  @Field(() => String, { nullable: true })
+    75	  workspaceRootPath?: string | null;
+    76	
+    77	  @Field(() => GraphQLJSON, { nullable: true })
+    78	  llmConfig?: Record<string, unknown> | null;
+    79	
+    80	  @Field(() => String)
+    81	  runtimeKind!: string;
+    82	}
+    83	
+    84	@InputType()
+    85	export class TeamScopeLaunchConfigInput {
+    86	  @Field(() => String)
+    87	  teamAddress!: string;
+    88	
+    89	  @Field(() => String)
+    90	  llmModelIdentifier!: string;
+    91	
+    92	  @Field(() => Boolean)
+    93	  autoExecuteTools!: boolean;
+    94	
+    95	  @Field(() => SkillAccessMode)
+    96	  skillAccessMode!: SkillAccessMode;
+    97	
+    98	  @Field(() => String, { nullable: true })
+    99	  workspaceRootPath?: string | null;
+   100	
+   101	  @Field(() => GraphQLJSON, { nullable: true })
+   102	  llmConfig?: Record<string, unknown> | null;
+   103	
+   104	  @Field(() => String)
+   105	  runtimeKind!: string;
+   106	}
+   107	
+   108	@InputType()
+   109	export class CreateAgentTeamRunInput {
+   110	  @Field(() => String)
+   111	  teamDefinitionId!: string;
+   112	
+   113	  @Field(() => [TeamScopeLaunchConfigInput])
+   114	  teamConfigs!: TeamScopeLaunchConfigInput[];
+   115	
+   116	  @Field(() => [TeamMemberConfigInput])
+   117	  memberConfigs!: TeamMemberConfigInput[];
+   118	}
+   119	
+   120	@Resolver()
+   121	export class AgentTeamRunResolver {
+   122	  private readonly teamRunService = getTeamRunService();
+   123	
+   124	  @Mutation(() => CreateAgentTeamRunResult)
+   125	  async createAgentTeamRun(
+   126	    @Arg("input", () => CreateAgentTeamRunInput)
+   127	    input: CreateAgentTeamRunInput,
+   128	  ): Promise<CreateAgentTeamRunResult> {
+   129	    try {
+   130	      const run = await this.teamRunService.createTeamRun({
+   131	        teamDefinitionId: input.teamDefinitionId,
+   132	        teamConfigs: input.teamConfigs,
+   133	        memberConfigs: input.memberConfigs,
+   134	      });
+   135	      return {
+   136	        success: true,
+   137	        message: "Agent team run created successfully.",
+
+## Classifier and current text-control path
+    26	const hasOwn = (value: Readonly<Record<string, unknown>>, key: string): boolean =>
+    27	  Object.prototype.hasOwnProperty.call(value, key)
+    28	
+    29	const canCurrentControlRepresent = (
+    30	  value: unknown,
+    31	  schema: UiModelConfigParameterSchema,
+    32	): boolean => {
+    33	  if (!isModelConfigValueRepresentable(value, schema)) return false
+    34	  if (Array.isArray(schema.enum) && schema.enum.length > 0) return true
+    35	  if (['boolean', 'string', 'integer', 'number'].includes(schema.type ?? '')) return true
+    36	  return typeof value === 'string'
+    37	}
+    38	
+    39	export const projectHistoricalModelConfigFields = (
+    40	  storedConfig: Readonly<Record<string, unknown>> | null | undefined,
+    41	  currentSchema: UiModelConfigSchema | null | undefined,
+    42	): readonly HistoricalModelConfigField[] => {
+    43	  const config = storedConfig ?? {}
+    44	  const schema = currentSchema ?? {}
+    45	  const fields: HistoricalModelConfigField[] = []
+    46	
+    47	  for (const [key, parameterSchema] of Object.entries(schema)) {
+    48	    if (!hasOwn(config, key)) {
+    49	      fields.push(Object.freeze({
+    50	        kind: 'current_control' as const,
+    51	        key,
+    52	        schema: parameterSchema,
+    53	        hasExplicitStoredValue: false,
+    54	      }))
+    55	      continue
+    56	    }
+    57	
+    58	    const storedValue = config[key]
+    59	    if (canCurrentControlRepresent(storedValue, parameterSchema)) {
+    60	      fields.push(Object.freeze({
+    61	        kind: 'current_control' as const,
+    62	        key,
+    63	        schema: parameterSchema,
+    64	        hasExplicitStoredValue: true,
+    65	        storedValue,
+    66	      }))
+    67	      continue
+    68	    }
+    69	
+    70	    fields.push(Object.freeze({
+    71	      kind: 'historical_residual' as const,
+    72	      key,
+    73	      exactStoredValue: storedValue,
+    74	      reason: 'value_not_representable' as const,
+    75	    }))
+    76	  }
+    34	            type="button"
+    35	            :id="inputId(key)"
+    36	            :disabled="disabled"
+    37	            class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+    38	            :class="configValue(key) === true ? 'bg-blue-600' : 'bg-gray-200'"
+    39	            @click="handleBooleanChange(key, configValue(key) !== true)"
+    40	          >
+    41	            <span 
+    42	              aria-hidden="true" 
+    43	              class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+    44	              :class="configValue(key) === true ? 'translate-x-4' : 'translate-x-0'"
+    45	            />
+    46	          </button>
+    47	        </div>
+    48	
+    49	        <input
+    50	          v-else-if="paramSchema.type === 'integer' || paramSchema.type === 'number'"
+    51	          :id="inputId(key)"
+    52	          type="number"
+    53	          :value="configValue(key) as number | ''"
+    54	          :disabled="disabled"
+    55	          :class="advancedInputClass"
+    56	          @input="handleNumberChange(key, ($event.target as HTMLInputElement).value)"
+    57	        />
+    58	
+    59	        <input
+    60	          v-else
+    61	          :id="inputId(key)"
+    62	          type="text"
+    63	          :value="configValue(key) as string | ''"
+    64	          :disabled="disabled"
+    65	          :class="advancedInputClass"
+    66	          @input="handleTextChange(key, ($event.target as HTMLInputElement).value)"
+    67	        />
+    68	      </div>
+    69	    </div>
+    70	  </div>
+    71	</template>
+    72	
+    73	<script setup lang="ts">
+    74	import { computed } from 'vue';
+    75	import {
+    76	  getValidSchemaDefault,
+    77	  resolveEffectiveConfigValue,
+    78	  type UiModelConfigSchema,
+
+## Browser input-value normalization probe (jsdom)
+{"exactStoredValue":"line one\nline two","displayedControlValue":"line oneline two","equal":false}
+
+Conclusion: GraphQLJSON admits the value independently of the display mechanism; the classifier accepts any string for a string/text control, but the browser text input strips the line break. The persisted value would display as a changed value instead of one exact residual row.

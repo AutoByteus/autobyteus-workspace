@@ -1,0 +1,24 @@
+# IR-013 rendered-result check
+
+## Supported current-user journey
+
+- Surface: browser-rendered Nuxt `/workspace` against the existing local application backend.
+- Journey: Workspace -> Temp Workspace -> Nested Classroom Test Team -> stored TeamRun `hello` -> Teacher -> Edit Config.
+- Result: PASS. The shared form reported `data-mode="stored"`, all eight value controls were disabled, the read-only explanation was present, and Run/Reset commands were absent.
+- Disclosure: the real Advanced disclosure remained operable and changed `aria-expanded` from `true` to `false`.
+- Narrow layout: at the inspected narrow desktop width, the form measured 645px client width and 645px scroll width; there was no horizontal overflow.
+- Direct screenshot inspection: the root form retained the approved quiet field sequence, compact stored residual treatment, disabled-control language, readable spacing, and narrow layout. No visual or interaction regression was found.
+
+## Producer-backed historical states
+
+- The real-user browser path intentionally used only current product data. It did not mutate the page catalog, inject arbitrary GraphQLJSON, or rerun the rescinded synthetic CR/LF scenario.
+- Mounted shared-form coverage retains supported historical paths at all required subject boundaries: root Team and nested Team render stale `reasoning_effort=ultra` and removed optional `service_tier=fast` once in stable residual order; the Agent renderer proves the same named values, stable order, and zero mutation.
+- The current stored-settings journey remains visually shared, immutable, disclosure-operable, and command-free. IR-013 changes only unsupported classification/styling and fixture vocabulary, not the approved SR-012/SR-013 presentation.
+
+## Evidence
+
+- `implementation-evidence/render-browser-ir-013.json`
+- `implementation-evidence/stored-team-settings-ir-013.png`
+- `implementation-evidence/web-stored-settings-focused-ir-013.txt`
+
+This is implementation-stage rendered self-validation, not API/E2E sign-off. API-REV-010 remains the independent real-user baseline.

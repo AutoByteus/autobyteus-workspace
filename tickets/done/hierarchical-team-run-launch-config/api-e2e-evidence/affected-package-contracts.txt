@@ -1,0 +1,226 @@
+=== autobyteus-application-sdk-contracts: pnpm test ===
+
+> @autobyteus/application-sdk-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-sdk-contracts
+> pnpm build && node --test tests/application-iframe-contract.test.mjs
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: application agent target path codec round-trips encoded binding and member identities
+ok 1 - application agent target path codec round-trips encoded binding and member identities
+  ---
+  duration_ms: 0.838667
+  type: 'test'
+  ...
+# Subtest: application agent target path decoder rejects non-canonical and incomplete paths
+ok 2 - application agent target path decoder rejects non-canonical and incomplete paths
+  ---
+  duration_ms: 0.073375
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+ok 3 - readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+  ---
+  duration_ms: 0.1875
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+ok 4 - readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+  ---
+  duration_ms: 0.0995
+  type: 'test'
+  ...
+# Subtest: packaged host-origin normalization preserves the file/null equivalence rule
+ok 5 - packaged host-origin normalization preserves the file/null equivalence rule
+  ---
+  duration_ms: 0.139458
+  type: 'test'
+  ...
+# Subtest: ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+ok 6 - ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+  ---
+  duration_ms: 0.205458
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55.510334
+=== autobyteus-application-backend-sdk: pnpm test ===
+
+> @autobyteus/application-backend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-backend-sdk
+> vitest run --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-backend-sdk
+
+ ✓ tests/launch-profile.test.ts (3 tests) 4ms
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  18:45:38
+   Duration  163ms (transform 86ms, setup 0ms, import 109ms, tests 8ms, environment 0ms)
+
+=== autobyteus-application-devkit: pnpm test ===
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 13.561
+  type: 'test'
+  ...
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 37.778625
+  type: 'test'
+  ...
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 41.927041
+      type: 'test'
+      ...
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 21.028292
+      type: 'test'
+      ...
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 23.569041
+      type: 'test'
+      ...
+    1..3
+ok 3 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 86.973417
+  type: 'test'
+  ...
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 4 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 31.487417
+  type: 'test'
+  ...
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 5 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 19.810416
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 8.1355
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 5.142084
+      type: 'test'
+      ...
+    1..2
+ok 6 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 13.89725
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 7 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 4.385792
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 5.220958
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 4.950166
+      type: 'test'
+      ...
+    1..2
+ok 8 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 10.390125
+  type: 'test'
+  ...
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 9 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 20.536083
+  type: 'test'
+  ...
+# Subtest: dev bootstrap session uses v4 launch hints, direct WebSocket bases, and one real-backend application identity
+ok 10 - dev bootstrap session uses v4 launch hints, direct WebSocket bases, and one real-backend application identity
+  ---
+  duration_ms: 0.394083
+  type: 'test'
+  ...
+1..10
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 317.808292
+=== autobyteus-team-stream-contracts: pnpm test ===
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/hierarchical-team-run-launch-config/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 1 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.329167
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 2 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.600459
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95.646709

@@ -122,18 +122,27 @@ export type ApplicationTeamRunPreset = {
   llmConfig?: Record<string, unknown> | null;
 };
 
-export type ApplicationTeamMemberLaunchConfig = {
+export type ApplicationTeamScopeLaunchConfig = Readonly<{
+  teamAddress: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: ApplicationSkillAccessMode;
+  workspaceRootPath: string;
+  llmConfig?: Record<string, unknown> | null;
+  runtimeKind: string;
+}>;
+
+export type ApplicationTeamMemberLaunchConfig = Readonly<{
   memberAddress: string;
   displayName: string;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   skillAccessMode: ApplicationSkillAccessMode;
-  workspaceId?: string | null;
-  workspaceRootPath?: string | null;
+  workspaceRootPath: string;
   llmConfig?: Record<string, unknown> | null;
-  runtimeKind?: string | null;
-};
+  runtimeKind: string;
+}>;
 
 export type ApplicationTeamRunLaunch =
   | {
@@ -144,7 +153,8 @@ export type ApplicationTeamRunLaunch =
   | {
       kind: "AGENT_TEAM";
       mode: "memberConfigs";
-      memberConfigs: ApplicationTeamMemberLaunchConfig[];
+      teamConfigs: readonly ApplicationTeamScopeLaunchConfig[];
+      memberConfigs: readonly ApplicationTeamMemberLaunchConfig[];
     };
 
 export type ApplicationStartAgentInput = {

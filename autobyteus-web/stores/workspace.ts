@@ -425,12 +425,17 @@ export const useWorkspaceStore = defineStore('workspace', {
         const focusedConfig = teamContextsStore.activeExecutionFocusedMemberContext?.config
           || null;
         const configuration = teamContext?.view.getConfigurationView() ?? null;
-        metadata = focusedConfig?.workspaceMetadata || configuration?.workspaceMetadata || null;
-        workspaceId = focusedConfig?.workspaceId || configuration?.workspaceId || null;
+        metadata = focusedConfig?.workspaceMetadata || configuration?.root.effectiveConfig.workspaceMetadata || null;
+        workspaceId = focusedConfig?.workspaceId || configuration?.root.effectiveConfig.workspaceId || null;
       } else {
         const config = agentRunConfigStore.config || teamRunConfigStore.config || null;
-        metadata = config?.workspaceMetadata || null;
-        workspaceId = config?.workspaceId || null;
+        if (config && 'rootConfig' in config) {
+          metadata = config.rootConfig.workspace.workspaceMetadata;
+          workspaceId = config.rootConfig.workspace.workspaceId;
+        } else {
+          metadata = config?.workspaceMetadata || null;
+          workspaceId = config?.workspaceId || null;
+        }
       }
 
       if (metadata) {

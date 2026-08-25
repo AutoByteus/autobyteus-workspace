@@ -19,8 +19,10 @@ current-state evidence.
 - Related requirements revisions: `RER-002` established the approved UI/UX
   basis; `RER-004` and `RER-007` corrected repository placement without an
   observable delta; `RER-009` restored the pinned-source Agent Team launch and
-  launched-member selection journey; and `RER-011` authorizes the final
-  non-observable integration of that accepted package on `personal`.
+  launched-member selection journey; `RER-011` authorized the prior
+  non-observable workspace integration; `RER-013` recorded the superseded
+  independent-repository interval; and `RER-015` returns canonical ownership
+  to the workspace repository without an observable delta.
 - Product Prototyper acceptance references: `PPA-001` for the complete original
   baseline and `PPA-002` for the focused `RER-009` correction.
 - Source application: `/home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline/autobyteus-web`
@@ -41,6 +43,8 @@ current-state evidence.
   engineering was approved.
 - UI approval dates: `2026-08-22` and `2026-08-24`
 - Repository-placement validation date: `2026-08-24`
+- Independent-repository migration validation date: `2026-08-24`
+- Workspace-repository return validation date: `2026-08-24`
 - Final visual capture result: `17/17` without browser errors or external
   resources; the preserved `VIS-001`–`VIS-015` hashes remain exact and
   `VIS-016`–`VIS-017` anchor the user-confirmed `RER-009` states.
@@ -503,6 +507,8 @@ interaction affordances and responsive behavior are requirements-defining.
   `evidence/gap-010/gap-010-summary.json`
 - RER-011 integration record: `personal-integration-record.md` and
   `evidence/integration/rer-011-rebase-preservation.json`
+- RER-015 workspace-ownership return: `workspace-repository-return.md` and
+  `evidence/workspace-ownership/rer-015-return-proof.json`
 - Relevant stable IDs: `ROUTE-001`–`ROUTE-041`, `CFG-001`–`CFG-011`,
   `STATE-001`–`STATE-013`, `HOST-001`–`HOST-008`, `WKS-001`–`WKS-023`,
   `MOB-001`–`MOB-014`, `JRN-001`–`JRN-050`, `DISC-001`–`DISC-017`,
@@ -576,3 +582,5 @@ interaction affordances and responsive behavior are requirements-defining.
 - RER-009 controlled journey checkpoints: **5/5**, zero source/prototype
   browser errors, exact semantics/state and byte-identical checkpoint images.
 - Known failed, missing, unknown or unsubstantiated UI inventory IDs: **none**
+- RER-013 independent ownership migration: **no observable change**; PPA-001,
+  PPA-002, both user confirmations and VIS-001–VIS-017 remain authoritative.

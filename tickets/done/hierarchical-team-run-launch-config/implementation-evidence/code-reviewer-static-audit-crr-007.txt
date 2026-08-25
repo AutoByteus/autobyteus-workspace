@@ -1,0 +1,113 @@
+CRR-007 integrated static audit
+HEAD:
+77b7649d55313012e3df7eed8c8fd6e37b794b93
+merge commit:
+bd4e2403fd6630622e7789967e2f2815cc6f37f5
+merge parents:
+393c27015a4380f77d33f7f55096077f0e1f6b29 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+status:
+## codex/hierarchical-team-run-launch-config...origin/codex/hierarchical-team-run-launch-config [ahead 24, behind 1]
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-static-audit-crr-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-build-crr-007.txt
+?? tickets/in-progress/hierarchical-team-run-launch-config/implementation-evidence/code-reviewer-web-workspace-focused-crr-007.txt
+unmerged entries:
+diff check:
+prototype tracked paths:
+recovery ancestor status (0 means ancestor, 1 means not ancestor):
+1
+IR-004 source effective non-empty lines:
+autobyteus-web/components/workspace/config/RunConfigPanel.vue 498
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue 130
+autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue 125
+autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue 220
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue 307
+autobyteus-web/components/workspace/config/AgentRunConfigForm.vue 133
+autobyteus-web/types/workspace/WorkspaceSelectionState.ts 6
+conflict markers in IR-004 source/tests:
+
+Current integrated Team readiness lines 390-402:
+   390	const effectiveTeamBlockingIssues = computed(() => {
+   391	  if (!effectiveTeamConfig.value) return []
+   392	  const issues = teamLaunchReadiness.value.blockingIssues
+   393	  return issues.filter((issue) => {
+   394	    if (issue.code !== 'WORKSPACE_REQUIRED' || !issue.subjectAddress) return true
+   395	    const selection = teamWorkspaceSelections.value[issue.subjectAddress]
+   396	    return selection?.mode !== 'new' || !selection.newWorkspacePath.trim()
+   397	  })
+   398	})
+   399
+   400	const canLaunchTeamBeforeRun = computed(() =>
+   401	  Boolean(effectiveTeamConfig.value) && effectiveTeamBlockingIssues.value.length === 0,
+   402	)
+
+Protected current-base Team readiness lines 320-338:
+   320	const effectiveTeamBlockingIssues = computed(() => {
+   321	  if (!effectiveTeamConfig.value) return []
+   322	  const issues = teamLaunchReadiness.value.blockingIssues
+   323	  if (!isNewWorkspaceInputMode.value) return issues
+   324	  if (!currentPendingNewPath.value) {
+   325	    return [
+   326	      {
+   327	        code: 'WORKSPACE_REQUIRED',
+   328	        message: 'Enter a workspace path to run this team.',
+   329	      },
+   330	      ...issues.filter((issue) => issue.code !== 'WORKSPACE_REQUIRED'),
+   331	    ]
+   332	  }
+   333	  return issues.filter((issue) => issue.code !== 'WORKSPACE_REQUIRED')
+   334	})
+   335
+   336	const canLaunchTeamBeforeRun = computed(() =>
+   337	  Boolean(effectiveTeamConfig.value) && effectiveTeamBlockingIssues.value.length === 0,
+   338	)
+
+Current source handling blank active Team New paths only after click:
+   317	const ensurePendingWorkspaceLoadedForRun = async (): Promise<boolean> => {
+   318	  if (effectiveTeamConfig.value) {
+   319	    const pending = (Object.entries(teamWorkspaceSelections.value) as Array<[AgentTeamAddress, WorkspaceSelectionState | undefined]>)
+   320	      .filter((entry): entry is [AgentTeamAddress, WorkspaceSelectionState] => entry[1]?.mode === 'new')
+   321	    const missing = pending.find(([, value]) => !value.newWorkspacePath.trim())
+   322	    if (missing) { teamRunConfigStore.setWorkspaceError('Workspace path is required to run this Team scope.', missing[0]); return false }
+   323	    const creations = new Map<string, Promise<string>>()
+   324	    try {
+   325	      for (const [address, value] of pending) {
+   326	        const path = value.newWorkspacePath.trim(); const key = normalizeRootPath(path)
+   327	        teamRunConfigStore.setWorkspaceLoading(true, address)
+   328	        let creation = creations.get(key)
+   329	        if (!creation) { creation = workspaceStore.createWorkspace({ root_path: path }); creations.set(key, creation) }
+   330	        const workspaceId = await creation
+   331	        const workspace = workspaceStore.workspaces[workspaceId] || null
+   332	        const metadata = workspaceStore.workspaceMetadataById[workspaceId]
+   333	          || (workspace ? workspaceStore.registerWorkspaceInfoMetadata(workspace) : null) || null
+   334	        const loadedPath = metadata?.workspaceRootPath || path
+   335	        teamRunConfigStore.setWorkspaceLoaded(workspaceId, loadedPath, metadata, address)
+   336	        teamWorkspaceSelections.value = {
+   337	          ...teamWorkspaceSelections.value,
+   338	          [address]: {
+   339	            mode: 'existing',
+   340	            existingWorkspaceId: workspaceId,
+   341	            newWorkspacePath: value.newWorkspacePath,
+   342	          },
+   343	        }
+   344	      }
+   345	      if (pending.length) setActiveTab('files')
+   346	      return true
+   347	    } catch (error: any) {
+   348	      const address = pending.find(([candidate]) => teamRunConfigStore.workspaceLoadingStates[candidate]?.isLoading)?.[0] || '/'
+   349	      teamRunConfigStore.setWorkspaceError(error?.message || 'Failed to load workspace', address)
+   350	      return false
+   351	    }
+   352	  }
+   353	  if (!isNewWorkspaceInputMode.value) {
+   354	    return true
+   355	  }
+   356
+   357	  const pendingPath = currentPendingNewPath.value
+   358	  if (!pendingPath) {
+   359	    setActiveWorkspaceError(
+   360	      effectiveTeamConfig.value
+   361	        ? 'Workspace path is required to run a team.'
+   362	        : 'Workspace path is required to run an agent.',
+   363	    )
+   364	    return false
+   365	  }

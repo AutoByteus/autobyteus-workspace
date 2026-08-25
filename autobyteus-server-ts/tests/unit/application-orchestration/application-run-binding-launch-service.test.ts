@@ -52,7 +52,24 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
   launch: {
     kind: "AGENT_TEAM",
     mode: "memberConfigs",
-    memberConfigs: [],
+    teamConfigs: [{
+      teamAddress: "/",
+      workspaceRootPath: "/tmp/team-workspace",
+      llmModelIdentifier: "grok-4.6",
+      autoExecuteTools: false,
+      skillAccessMode: "PRELOADED_ONLY",
+      runtimeKind: "autobyteus",
+    }],
+    memberConfigs: [{
+      memberAddress: "/researcher",
+      displayName: "Researcher",
+      agentDefinitionId: "agent-def-1",
+      workspaceRootPath: "/tmp/team-workspace",
+      llmModelIdentifier: "grok-4.6",
+      autoExecuteTools: false,
+      skillAccessMode: "PRELOADED_ONLY",
+      runtimeKind: "autobyteus",
+    }],
   },
 });
 
@@ -75,12 +92,21 @@ const buildService = (input: {
     createAgentRun: vi.fn(async () => ({ runId: "agent-run-1" })),
   };
   const teamRunService = {
-    allocateTeamRunId: vi.fn(async () => "team-run-1"),
-    createTeamRun: vi.fn(async () => ({
+    createTeamRun: vi.fn(async (input: { memberConfigs: Array<{ memberAddress: string }> }) => ({
       teamRunId: "team-run-1",
       getExecutionTreeSnapshot: () => ({
-        rootTeam: { kind: "configured_team", address: "/", members: [] },
+        rootTeam: {
+          address: "/",
+          members: input.memberConfigs.map((member) => ({
+            address: member.memberAddress,
+            agentRunId: `team-run-1::${member.memberAddress.slice(1)}`,
+          })),
+        },
       }),
+    })),
+    createTeamRunFromRootConfig: vi.fn(async () => ({
+      teamRunId: "team-run-1",
+      getExecutionTreeSnapshot: () => ({ rootTeam: { address: "/", members: [] } }),
     })),
   };
   const agentDefinitionService = {
@@ -190,7 +216,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     expect(lookupStore.replaceBindingLookups).toHaveBeenCalledOnce();
   });
 
-  it("validates every AutoByteus team member before allocating a team run", async () => {
+  it("validates every Team scope and AutoByteus member before team creation", async () => {
     const { service, teamRunService } = buildService();
 
     await expect(service.startAgentTeamRunBinding(applicationId, {
@@ -198,10 +224,15 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       launch: {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: buildTeamInput().launch.mode === "memberConfigs"
+          ? buildTeamInput().launch.teamConfigs
+          : [],
         memberConfigs: [
           {
             memberAddress: "/researcher",
             agentDefinitionId: "agent-def-1",
+            displayName: "Researcher",
+            workspaceRootPath: "/tmp/team-workspace",
             llmModelIdentifier: "grok-4.6",
             autoExecuteTools: false,
             skillAccessMode: "PRELOADED_ONLY" as never,
@@ -209,6 +240,8 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
           {
             memberAddress: "/writer",
             agentDefinitionId: "agent-def-1",
+            displayName: "Writer",
+            workspaceRootPath: "/tmp/team-workspace",
             llmModelIdentifier: "grok-4.5",
             autoExecuteTools: false,
             skillAccessMode: "PRELOADED_ONLY" as never,
@@ -216,7 +249,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         ],
       },
     })).rejects.toMatchObject({ code: "CURRENT_MODEL_SELECTION_REQUIRED" });
-    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
   });
 
@@ -234,9 +266,14 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       launch: {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: buildTeamInput().launch.mode === "memberConfigs"
+          ? buildTeamInput().launch.teamConfigs
+          : [],
         memberConfigs: [identifierA, identifierB].map((llmModelIdentifier, index) => ({
           memberAddress: index === 0 ? "/researcher" : "/writer",
+          displayName: index === 0 ? "Researcher" : "Writer",
           agentDefinitionId: "agent-def-1",
+          workspaceRootPath: "/tmp/team-workspace",
           llmModelIdentifier,
           autoExecuteTools: false,
           skillAccessMode: "PRELOADED_ONLY" as never,
@@ -248,7 +285,37 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     });
     expect(ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(1, identifierA);
     expect(ensureAutoByteusModelAvailable).toHaveBeenNthCalledWith(2, identifierB);
-    expect(teamRunService.allocateTeamRunId).not.toHaveBeenCalled();
+    expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
+  });
+
+  it("uses the separate preset expansion path with the exact application binding", async () => {
+    const { service, teamRunService } = buildService();
+
+    await service.startAgentTeamRunBinding(applicationId, {
+      ...buildTeamInput(),
+      launch: {
+        kind: "AGENT_TEAM",
+        mode: "preset",
+        launchPreset: {
+          workspaceRootPath: "/tmp/team-workspace",
+          llmModelIdentifier: "grok-4.6",
+          runtimeKind: "autobyteus",
+          skillAccessMode: "PRELOADED_ONLY",
+        },
+      },
+    });
+
+    expect(teamRunService.createTeamRunFromRootConfig).toHaveBeenCalledWith({
+      teamDefinitionId: "team-def-1",
+      rootConfig: expect.objectContaining({
+        workspaceRootPath: "/tmp/team-workspace",
+        llmModelIdentifier: "grok-4.6",
+      }),
+      applicationBinding: {
+        applicationId,
+        bindingId: expect.any(String),
+      },
+    });
     expect(teamRunService.createTeamRun).not.toHaveBeenCalled();
   });
 

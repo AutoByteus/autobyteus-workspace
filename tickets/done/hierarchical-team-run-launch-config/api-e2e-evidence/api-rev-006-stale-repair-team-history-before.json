@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "nested_classroom_test_team_1c833edadc324a1488834e2376fb5a68",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/tmp/autobyteus-api-rev-006-owned/workspaces/root-luna",
+    "summary": "API-REV-006 LIVE VALIDATION. First use send_message_to to send an ordinary message to the nested ...",
+    "createdAt": "2026-08-24T22:07:07.998Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-24T22:09:21.363Z"
+  }
+]

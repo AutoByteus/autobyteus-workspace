@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "journey": "Workspace -> Temp Workspace -> Nested Classroom Test Team -> hello -> Teacher -> Edit Config",
+  "mode": "stored",
+  "disabledFieldCount": 8,
+  "readOnlyExplanation": true,
+  "runCommandCount": 0,
+  "resetCommandCount": 0,
+  "advancedDisclosure": {
+    "before": "true",
+    "after": "false"
+  },
+  "narrowWidth": {
+    "clientWidth": 645,
+    "scrollWidth": 645
+  }
+}

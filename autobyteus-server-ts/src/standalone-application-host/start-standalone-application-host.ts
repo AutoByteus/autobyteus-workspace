@@ -14,7 +14,7 @@ import {
 import { runMigrations } from "../startup/migrations.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import { getAppDataMigrationRunner } from "../app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "../app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import {
   resetDefaultAgentRunEventPipeline,
@@ -47,7 +47,7 @@ import {
   TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
   configureTokenUsageMigrationReadiness,
 } from "../token-usage/providers/token-usage-migration-readiness.js";
-import { TeamRunV1PackageCatalog } from "../run-history/services/team-run-v1-package-catalog.js";
+import { TeamRunPackageCatalog } from "../run-history/services/team-run-package-catalog.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -149,19 +149,19 @@ const initializeStandaloneProcessResources = async (
             logPath: tokenUsageStatus?.logPath ?? null,
           },
     );
-    await new TeamRunV1PackageCatalog(appConfig.getMemoryDir()).rebuild();
-    const teamRunV1Status = statuses.find(
-      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+    await new TeamRunPackageCatalog(appConfig.getMemoryDir()).rebuild();
+    const teamRunV2Status = statuses.find(
+      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
     );
-    if (teamRunV1Status?.status !== "SUCCEEDED") {
+    if (teamRunV2Status?.status !== "SUCCEEDED") {
       logger.warn(
-        `TeamRun V1 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
-          migrationId: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
-          displayName: teamRunV1Status?.displayName ?? null,
-          status: teamRunV1Status?.status ?? "MISSING",
-          attempts: teamRunV1Status?.attempts ?? null,
-          errorMessage: teamRunV1Status?.errorMessage ?? null,
-          logPath: teamRunV1Status?.logPath ?? null,
+        `TeamRun execution-tree V2 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
+          migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
+          displayName: teamRunV2Status?.displayName ?? null,
+          status: teamRunV2Status?.status ?? "MISSING",
+          attempts: teamRunV2Status?.attempts ?? null,
+          errorMessage: teamRunV2Status?.errorMessage ?? null,
+          logPath: teamRunV2Status?.logPath ?? null,
         })}`,
       );
     }

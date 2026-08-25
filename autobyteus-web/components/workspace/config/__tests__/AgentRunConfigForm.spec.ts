@@ -9,7 +9,7 @@ vi.mock('../WorkspaceSelector.vue', () => ({
   default: {
     name: 'WorkspaceSelector',
     template: '<div class="workspace-selector-stub"></div>',
-    props: ['modelValue', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
+    props: ['model', 'disabled', 'workspaceLocked'],
     emits: ['update:modelValue'],
   },
 }))
@@ -40,28 +40,26 @@ const flushPromises = async () => {
 describe('AgentRunConfigForm', () => {
   let llmStore: any
   let runtimeAvailabilityStore: any
-  let providerRowsForSelection: any[]
 
   const setProviders = (providersWithModels: any[]) => {
-    llmStore.providersWithModels = providersWithModels
-    providerRowsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
+    llmStore.providerRows = providersWithModels
   }
 
   beforeEach(() => {
     setActivePinia(createPinia())
-    providerRowsForSelection = []
 
     llmStore = {
-      providersWithModels: [],
-      providersWithModelsForSelection: vi.fn((_runtimeKind: string) => providerRowsForSelection),
+      providerRows: [],
       providerSnapshots: vi.fn(() => []),
-      get models() {
-        return llmStore.providersWithModels.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))
-      },
+      providersWithModelsForSelection: vi.fn(() =>
+        llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
+      ),
+      models: vi.fn(() =>
+        llmStore.providerRows.flatMap((p: any) => p.models.map((m: any) => m.modelIdentifier))),
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       modelConfigSchemaByIdentifier: vi.fn((identifier: string) => {
-        const model = llmStore.providersWithModels.flatMap((provider: any) => provider.models).find((entry: any) => entry.modelIdentifier === identifier)
+        const model = llmStore.providerRows.flatMap((provider: any) => provider.models).find((entry: any) => entry.modelIdentifier === identifier)
         return model?.configSchema || null
       }),
     }
@@ -161,7 +159,10 @@ describe('AgentRunConfigForm', () => {
     })
     const selector = wrapper.findComponent({ name: 'WorkspaceSelector' })
 
-    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+    expect(selector.props('model')).toEqual(expect.objectContaining({
+      mode: 'editable',
+      selection: workspaceSelection,
+    }))
 
     const nextSelection = {
       mode: 'existing' as const,

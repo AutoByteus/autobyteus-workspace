@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunExecutionTreePayload as validateTeamRunExecutionTreeV1Payload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../src/services/team-communication/team-communication-v1-schema.js";
 import { TeamRunV1PackagePromoter } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.js";
@@ -17,7 +17,7 @@ const readJson = async (name: string): Promise<unknown> =>
   JSON.parse(await fs.readFile(path.join(fixtureRoot, name), "utf8")) as unknown;
 
 const packageFixture = async () => ({
-  executionTree: validateTeamRunExecutionTreePayload(
+  executionTree: validateTeamRunExecutionTreeV1Payload(
     await readJson("team_run_execution_tree.json"),
     rootTeamRunId,
   ),
