@@ -33,6 +33,8 @@ This is not one scope per mounted application. Current source contains no suppor
 
 The concrete scope owns its internals, while consumers receive only the needed frozen view. These are semantic capabilities, not a `services` dictionary.
 
+The normative TypeScript signatures, exact build inputs, admission semantics, getter disposition, and internal orchestration result are defined in `application-execution-scope-contracts.md`. The rows below are a responsibility summary and cannot be widened independently.
+
 | Capability | Allowed operations | Intended consumers |
 | --- | --- | --- |
 | `ApplicationAgentExecution` | create, resolve, terminate, observe Agent lifecycle | binding launch, orchestration input/terminate, binding observer |
@@ -148,3 +150,5 @@ Construction creates no live run. No process-owned definition, MCP runtime, work
 - Lifecycle tests preserve the full outer shutdown order and prove scope quiesce/close idempotence.
 - Identity tests prove launch, stream, publication, memory, nested Team tasks, and cleanup reach one exact internal family; general/application identities remain non-identical.
 - Dual-host realistic tests preserve launch/input, real streaming, real publication/projection, nested task/history, recovery/reentry, multi-application Studio isolation, selected standalone behavior, and cleanup.
+
+Every production/test path and AFB-004 fixture/occurrence change is closed in `application-execution-scope-transition-inventory.md`.

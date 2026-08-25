@@ -29,6 +29,8 @@ Keep `ApplicationPlatformRuntime` as the outer platform owner and `GeneralProces
 | --- | --- | --- | --- | --- |
 | `application-execution-scope-ownership-and-spine-map.md` | focused owner/lifetime/dependency/spine map | REQ-001–REQ-010; AC-001–AC-011 | normative detail supporting all structural sections | Design-ready; approved direction |
 | `adjacent-application-agent-addressing-evaluation.md` | record separate SDK/protocol cleanup | N/A | establishes an explicit deferral and future boundary | investigated; N/A for this ticket |
+| `application-execution-scope-contracts.md` | exact platform/scope inputs, seven capability signatures, consumer/admission/getter/assembly map | REQ-001–REQ-007, REQ-010; AC-001–AC-007, AC-010 | normative boundary detail resolving AR-001 | Design-ready; behavior-neutral refinement |
+| `application-execution-scope-transition-inventory.md` | closed production/test/fixture/AFB/proof inventory | REQ-004, REQ-007, REQ-010; AC-005–AC-011 | normative transition detail resolving AR-002 | Design-ready; behavior-neutral refinement |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -203,6 +205,8 @@ Forbidden:
 
 ## Interface Boundary Mapping
 
+The exact normative TypeScript signatures, eight-field scope input, twelve-required-field platform build input, admission semantics, getter disposition, and twelve-field internal orchestration assembly result are in `application-execution-scope-contracts.md`. The table below is a navigation summary, not permission to widen those signatures.
+
 | Interface | Subject | Responsibility | Identity shape | Notes |
 | --- | --- | --- | --- | --- |
 | `ApplicationAgentExecution` | Agent execution | create/resolve/terminate/observe | exact agent definition/run IDs and current launch types | create checks scope admission |
@@ -298,11 +302,13 @@ The concrete scope additionally has an assembly-only `abortConstruction()` metho
 
 ## Target Subsystem / Folder / File Mapping
 
+The exact Add/Modify/Rename/Remove and durable-test path set is normative in `application-execution-scope-transition-inventory.md`; category rows below explain placement only.
+
 | Path | Kind | Owner / Boundary | Responsibility | Why here | Must not contain |
 | --- | --- | --- | --- | --- | --- |
 | `src/application-platform/execution/` | Folder | application execution | scope, contracts, internal shutdown | makes deeper owned runtime visible | routes/stores/packages/workers |
 | `.../application-execution-scope.ts` | Add | scope | concrete construction/lifecycle | main owner | public transport or generic lookup |
-| `.../application-execution-scope-contracts.ts` | Add | capability boundary | exact semantic contracts | prevents type dependence on managers | optional service fields |
+| `.../application-execution-scope-contracts.ts` | Add | capability boundary | exact 8-field scope input and all seven capability contracts using type-only domain imports; outer platform build input remains exported by its builder | prevents type dependence on managers | optional service fields or concrete outer stores |
 | `.../application-execution-shutdown-coordinator.ts` | Rename/Move | scope internal | Team-before-Agent stop | ownership aligned | platform-wide cleanup |
 | `runtime/create-application-run-services.ts` | Remove | obsolete | old bag factory | replaced | N/A |
 | `runtime/create-application-orchestration-services.ts` | Modify | orchestration | accept already-created orchestration stores and scope capabilities; return sibling outer assembly handles only; named readiness input | existing assembly | raw managers/sessions or an exported authoritative bag |
@@ -317,6 +323,8 @@ Test inventory:
 - Rename/move shutdown coordinator test to execution scope ownership.
 - Modify architecture boundaries, platform runtime isolation, lifecycle, stream source, orchestration launch/host, Studio composition, and standalone integration tests.
 - Preserve existing real dual-host application tests as characterization; API/E2E owns final coverage investigation.
+
+Normative AFB-004 transition: move all 22 existing nested-construction obligations and sole-occurrence authority to `application-execution-scope.ts`; tighten workspace requirements on publication/Claude session construction; add three defaulting-owner obligations for memory location, run-file change, and Agent history catalog (25 nested obligations total); add complete/omitted/null/undefined/spread checks for all eight `ApplicationExecutionScope.create` fields and all twelve required `buildApplicationPlatformRuntime` fields; require the two exact host call sites and standalone-only `selectedApplicationIds`; forbid the seven assembly-level ambient process selectors below host roots; enforce consumer contract imports, exact lifecycle fields, exact 12-field orchestration result, and old/new path absence/presence. Provider-owned process defaults remain only in the explicitly listed existing backend helper positions. See the contract and transition supplements for exact dispositions.
 
 ## Folder Boundary Check
 

@@ -36,6 +36,8 @@ This is architecture-health work, not a response to a currently failing product 
 | --- | --- | --- | --- | --- | --- |
 | `application-execution-scope-ownership-and-spine-map.md` | Intended boundary, ownership, lifetime, dependency, and spine contract | REQ-001–REQ-010 | AC-001–AC-011 | `Design-ready`; user-authorized direction | Makes the approved structural outcome concrete without adding product behavior |
 | `adjacent-application-agent-addressing-evaluation.md` | Evidence and separate-ticket recommendation | N/A | N/A | `Investigated`; approval N/A for this ticket | Records why address/runtimeKind cleanup is excluded and where its future boundary belongs |
+| `application-execution-scope-contracts.md` | Exact normative build/capability/admission/assembly contracts | REQ-001–REQ-007, REQ-010 | AC-001–AC-007, AC-010 | `Design-ready`; approved behavior-neutral refinement | Removes implementation discretion at the authoritative boundary |
+| `application-execution-scope-transition-inventory.md` | Closed production/test/AFB transition and proof inventory | REQ-004, REQ-007, REQ-010 | AC-005–AC-011 | `Design-ready`; approved behavior-neutral refinement | Makes the clean-cut source/test transition deterministic |
 
 ## Design Health Assessment (Mandatory)
 

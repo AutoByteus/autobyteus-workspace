@@ -42,6 +42,8 @@ The code reviewer also asked for an adjacent evaluation of logical application A
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `application-execution-scope-ownership-and-spine-map.md` | Canonical focused owner/lifetime/spine/dependency map | Current-to-target boundary and DS-001–DS-009 | requirements, design | REQ-001–REQ-010; AC-001–AC-011 | Design-ready | Intended-behavior detail; user-approved direction | Architecture review |
 | `adjacent-application-agent-addressing-evaluation.md` | Separate-ticket evaluation | redundant public selectors/classification, future target, persistence unknown | requirements scope, design deferral | N/A | Investigated | Evidence/recommendation; approval N/A for this ticket | Bootstrap separately only on explicit request |
+| `application-execution-scope-contracts.md` | Exact normative boundary | platform/scope inputs, seven capability signatures, consumer/admission/getter/assembly map | requirements, design | REQ-001–REQ-007, REQ-010; AC-001–AC-007, AC-010 | Design-ready | Intended structural detail; behavior-neutral | Architecture re-review |
+| `application-execution-scope-transition-inventory.md` | Exact transition/proof inventory | every source/test path, AFB obligations/fixtures, verification matrix | design | REQ-004, REQ-007, REQ-010; AC-005–AC-011 | Design-ready | Intended structural detail; behavior-neutral | Architecture re-review |
 
 ## Source Log
 
@@ -62,6 +64,8 @@ The code reviewer also asked for an adjacent evaluation of logical application A
 | 2026-08-25 | Code | application binding/event contracts, target URL, backend/frontend SDK, authorization/mapper, Brief/Socratic | adjacent address evaluation | root kind and runtimeKind are derivable; public change crosses SDK/protocol/storage | Separate ticket |
 | 2026-08-25 | Code/Data | `ApplicationRunBindingStore` schema/read/write and event journal | persistence impact of adjacent idea | summary/event JSON may tolerate field removal, but required physical member `runtime_kind` column makes future persistence choice material | Separate ticket, decision Undetermined |
 | 2026-08-25 | Test attempt | `pnpm exec vitest --run ...` in server worktree | focused baseline | not executed because the isolated worktree has no `node_modules` and `vitest` is unavailable | Downstream installs/uses repo environment |
+| 2026-08-25 | Review | `design-review-report.md` / ARCH-REV-001, AR-001–AR-002 | initial architecture review | ownership/spines accepted; exact contracts and closed path/proof inventory required | Resolved in SR-002 |
+| 2026-08-25 | Code/Command | exact Agent/Team service signatures; artifact/memory/stream contracts; `rg` of builders, consumers, getters, AFB obligations, defaulting constructors, and durable-test constructors | close AR-001/AR-002 | seven exact capabilities, 8-field scope input, 12-field required platform input, 12-field orchestration result, 22 migrated plus three new graph-sensitive nested obligations (25 total), and closed source/test set recorded | No |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -154,6 +158,8 @@ Adjacent addressing is different: the physical binding member `runtime_kind` col
 
 - Exact implementation type imports may require type-only domain extraction to avoid circular imports; architecture must preserve the specified subject boundaries rather than resolve cycles with a generic bag.
 - Latest-base changes may add named process dependencies; delivery refresh must re-evaluate without weakening the boundary.
+
+AR-001/AR-002 exactness resolution is recorded in the two SR-002 supplements. All seven scope capability contracts have one owner in the scope-contract file; type-only imports reference existing orchestration/streaming domain shapes without creating runtime construction dependencies.
 
 ## Notes For Architecture Reviewer
 
