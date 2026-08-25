@@ -15,6 +15,8 @@
 | DR-009 | CRR-017/API-REV-009 return the design-resolved v1.4.57 candidate for delivery | DR-008 Blocked — Design Impact | Latest-base integrated Electron 1.4.57 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-009-* |
 | DR-010 | User reports origin/personal advanced and requests latest integration plus Electron rebuild | DR-009 ready for verification on 8a4c3868c | Blocked — Design Impact; v1.4.58 hierarchical Team/migration refresh produces 43 conflicts | latest-base-refresh-round-5-conflict-report.md, evidence/delivery/dr-010-base-refresh-and-integration.log |
 | DR-011 | CRR-022/API-REV-011 return the design-resolved v1.4.58 package; final Personal refresh and Electron rebuild | DR-010 Blocked — Design Impact | Latest-base integrated Electron 1.4.58 ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-011-* |
+| DR-012 | CRR-023 returns API-REV-012 private nested-Classroom supplement | DR-011 Electron ready; supplemental probe in progress | Supplemental Pass; Electron 1.4.58 remains exact; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-012-* |
+| DR-013 | User explicitly verifies Electron 1.4.58 and authorizes finalization; no new release version requested | DR-012 ready for explicit user verification | Finalization preflight Pass; ticket ready for archive, ticket-branch push, Personal integration, and main-repository Electron rebuild | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-013-finalization-preflight.log |
 
 ## Revision Entries
 
@@ -24,10 +26,10 @@
 - Upstream basis: api-e2e-test-review-report.md at CRR-010; api-e2e-execution-coverage-report.md at API-REV-004 / 98%; code-review-report.md at CRR-009 / 93; implementation IR-006.
 - Prior result: N/A.
 - Current result: Ready for explicit user verification.
-- Docs sync: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
-- Electron report: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
-- Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
-- Release/deployment report: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+- Docs sync: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/docs-sync-report.md
+- Electron report: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+- Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/handoff-summary.md
+- Release/deployment report: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/release-deployment-report.md
 - Integration: protected the cumulative CRR-010/API-REV-004 package in checkpoint 42496b808df16f4ed24ca66bac03372c578f1f89; fetched origin/personal; confirmed it remains the integrated bootstrap 8ef282ba77705180d985e7000d801f0e0068cdc1 with divergence 135/0 and no new base commit.
 - Executable delivery result: documented personal macOS ARM64 Electron build passed at 1.4.54. Metadata, native terminal runtime, packaged current/retired owners, DMG/ZIP integrity, and five packaged isolation scenarios passed.
 - Docs result: corrected stale backend-definition/frontend-SDK v4 guidance to current v6 while retaining application-manifest and iframe/bootstrap v4; promoted logical member selection versus exact binding-owned agentRunId dispatch into canonical SDK/server/sample docs. Removed generated SDK output after package validation.
@@ -79,8 +81,8 @@
 - Latest-base refresh: fetched `origin/personal` at `1629441a30dfce91d75b9bf7dcdd508b0f371bc5`, 31 commits beyond the prior integrated base. Pre-integration divergence is 140 ahead / 31 behind.
 - Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 and reported 11 conflicts: six content conflicts and five modify/delete conflicts. No actual merge was started, so the protected branch remains intact and is not in an unmerged state.
 - Design impact: Personal's provider catalog/current-model validation and error transport modify owners that the ticket intentionally deleted or replaced, while SDK/stream conflicts overlap the ticket's v6 exact runtime identity and event architecture. A side-selection merge could either restore retired authority or discard new Personal behavior.
-- Canonical conflict analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log`.
+- Canonical conflict analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/latest-base-refresh-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-004-base-refresh-and-integration.log`.
 - Routing: Solution Designer must decide how new Personal current-model validation/provider-error behavior maps onto the current application-platform owners and v6 contracts, then route any changed design through normal downstream gates.
 - User/finalization state: ticket remains in progress. No merge, Electron rebuild, final push, Personal merge/push, release, deployment, archive, or cleanup occurred in DR-004.
 - Resume condition: approved design/integration resolution and downstream gate completion, followed by a fresh delivery fetch/integration check and Electron rebuild.
@@ -113,8 +115,8 @@
 - New base scope: nested team history restart hydration, persistent `TeamRunPhysicalScope`, nested member/task-agent memory placement, a registered team-agent memory-layout app-data migration, and settled nested-task web navigation.
 - Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with three content conflicts in the mixed agent member production owner and its two memory/task-agent tests. No actual merge was started; the worktree has zero unmerged paths.
 - Design impact: the production resolution must preserve both the ticket's injected graph-local Agent Tools/memory dependencies and exact scoped-session cleanup and Personal's complete nested physical memory scope. The tests also combine atomic prepared activation/platform binding with nested physical-scope behavior.
-- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log`.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log`.
 - Routing: Solution Designer must define the combined runtime/migration behavior and route any design/source/test change through normal downstream gates.
 - User/finalization state: the DR-005 binary is superseded for the newest-base request. Ticket remains in progress. No merge, Electron rebuild, final push, Personal merge/push, release, deployment, archive, or cleanup occurred in DR-006.
 - Resume condition: design-approved integration, downstream gate completion, fresh delivery ref check, and Electron rebuild.
@@ -149,8 +151,8 @@
 - New base scope: finalized controlled workspace-selection state for remote Team launches, explicit New mode/path preservation across unrelated form edits and delayed discovery, associated durable/browser/API evidence and docs, and the 1.4.57 version bump. This new feature is directly usable without migration.
 - Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with content conflicts in `AgentRunConfigForm.spec.ts` and `TeamRunConfigForm.spec.ts`. No actual merge was started; the worktree has zero unmerged paths.
 - Design impact: the two tests must combine the ticket's current provider-granular callable selection/snapshot/dynamic-ensure fixture with Personal's controlled `WorkspaceSelectionState` relay and replacement assertions. Whole-side selection would either restore stale provider mocks or drop current workspace behavior coverage.
-- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-008-base-refresh-and-integration.log`.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-008-base-refresh-and-integration.log`.
 - Routing: Solution Designer must define the combined form/test contract and downstream validation before implementation merges the new base.
 - User/finalization state: DR-007 1.4.56 is superseded for the newest-base request. Ticket remains in progress. No merge, new build, final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
 - Resume condition: design-approved semantic integration, normal downstream gates, fresh delivery ref check, and Electron rebuild.
@@ -186,8 +188,8 @@
 - New base scope: finalized hierarchical Team launch/stored configuration, Team execution-tree v2 schema/history/runtime behavior and registered app-data migration, SDK launch-profile updates, maintained application package regeneration, current web/server docs and proof, and the 1.4.58 release bump.
 - Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with 43 conflicts across 50 changed-both paths: 13 content conflicts in runtime/migration/SDK/web/test owners and 30 modify/delete conflicts in generated SDK and maintained application package outputs. No actual merge was started; the worktree has zero unmerged paths.
 - Design impact: the integration must reconcile hierarchical Team configuration and v2 migration ordering with the ticket's graph-local application runtime, physical scope, binding/history authority, package-regeneration ownership, provider-granular model behavior, and controlled workspace selection. Whole-side or generated-output selection is unsafe.
-- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md`.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`.
 - Routing: Solution Designer must define the combined runtime, migration, SDK/package, form, and durable-coverage contract, then route it through the normal downstream gates.
 - User/finalization state: DR-009 1.4.57 is superseded for the newest-base request. Ticket remains in progress. No merge, Electron rebuild, final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
 - Resume condition: design-approved semantic integration, architecture/implementation/source/API-E2E/test-review gates, fresh delivery ref check, and Electron rebuild.
@@ -210,3 +212,31 @@
 - User/finalization state: ticket remains in progress. No final ticket-branch push, Personal merge/push, release, deployment, archive, or cleanup occurred.
 - Next action: user tests the exact 1.4.58 DMG/hash and reports approval or a concrete issue; any API-REV-012 result remains separately authoritative for its supplemental claim.
 - Remaining risks/hold: unsigned/unnotarized local package; ordinary launch can apply pending registered migrations; rollback to older versions may require a user-data backup; Electron artifacts do not travel with Git. Refresh Personal again before any finalization and require renewed verification if source/package materially changes.
+
+### DR-012 — Private nested-Classroom supplement passes without Electron source delta
+
+- Round/trigger: Round 12; `CRR-023` returns successful supplemental `API-REV-012` after DR-011 Electron packaging.
+- Prior result: DR-011 latest-Personal Electron 1.4.58 ready; API-REV-012 isolated live probe still in progress.
+- Current result: API-REV-012 Pass / 98 and CRR-023 Not Applicable; the verified DR-011 Electron 1.4.58 package remains exact; explicit user verification pending.
+- Supplemental execution: the exact private `Nested Classroom Test Team` passed supported public import, configured nested V2 topology, ordinary `/StudentStudyGroup` and `/StudentStudyGroup/student_one` messages, one delegated task with exact submission and accepted review, browser projection, same-data cold restart, public restore/continuation/termination, retained history, 10/10 fixture byte parity, cleanup, and secret scan.
+- Review disposition: API-REV-012 added, updated, and removed zero repository-resident durable tests and changed zero production paths. `CRR-023` is correctly Not Applicable; prior `CRR-022` remains valid.
+- Delivery checkpoint: committed the cumulative API-REV-012, CRR-023, and DR-011 package locally as `cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b`.
+- Latest-base refresh: fetched `origin/personal@9d0fd7c570d58da1af2c7a40279327c8a20a8093`; it remains an ancestor with divergence Personal 0 behind / ticket 176 ahead and zero unmerged paths. No new merge was required.
+- Electron equivalence: API-REV-012 executed integrated source `226dcfd1dda71f6507b507a9c8b68145bf4d4bbf`; later changes are ticket evidence/reviewer artifacts only. No rebuild is required.
+- Current DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg`; 465981133 bytes; SHA-256 `eee0ac6cf7e3e3f4f4121a3b351004842a296e38fbaf5a37650f062381e2ef2c`.
+- Current ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip`; 461646534 bytes; SHA-256 `e257e3e4a2d75092b846aafd41515df406a9603e0d4bd75fe946d86aec0d711c`.
+- Documentation result: delivery records now include the successful private nested supplement and no-rebuild source-equivalence decision. No long-lived product-doc change is required because no product contract/source/test changed.
+- User/finalization state: ticket remains in progress. No ticket-branch final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
+- Next action: user tests the exact Electron 1.4.58 DMG/hash and provides explicit verification or a concrete issue.
+
+### DR-013 — User verification received; repository finalization authorized
+
+- Round/trigger: Round 13; the user explicitly states, `i have tested. lets finalize.`
+- Prior result: DR-012 API-REV-012 supplement Pass; exact Electron 1.4.58 package awaiting explicit verification.
+- Current result: finalization preflight Pass. The ticket is authorized to move to `tickets/done`, the ticket branch may be committed and pushed, and the recorded `personal` target may be updated from the finalized ticket branch.
+- Release instruction: the user explicitly requests no new release version. No version bump, tag, hosted release, notarization, or deployment is in scope.
+- Final base refresh: fetched `origin/personal@9d0fd7c570d58da1af2c7a40279327c8a20a8093`; it is unchanged, remains an ancestor, divergence is Personal 0 behind / ticket 176 ahead, and unmerged paths are zero.
+- Verified artifact identity: DMG SHA-256 `eee0ac6cf7e3e3f4f4121a3b351004842a296e38fbaf5a37650f062381e2ef2c`; ZIP SHA-256 `e257e3e4a2d75092b846aafd41515df406a9603e0d4bd75fe946d86aec0d711c`. Both match DR-012 exactly.
+- Material-change decision: no source, durable-test, base, or package change occurred after the user-tested handoff; renewed verification is not required before finalization.
+- Post-finalization instruction: make the main repository's `personal` branch current and build the same 1.4.58 Electron package from that main-repository checkout. Record that target-branch build as the next delivery revision.
+- Evidence: `evidence/delivery/dr-013-finalization-preflight.log`.
