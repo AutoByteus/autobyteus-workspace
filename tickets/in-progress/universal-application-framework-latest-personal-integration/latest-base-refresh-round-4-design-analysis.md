@@ -2,6 +2,7 @@
 
 ## Status And Decision
 
+- Current status: implemented, reviewed, and verified in DR-009; retained as historical v1.4.57 authority while SR-009 governs the v1.4.58 refresh.
 - Solution revision: `SR-008`.
 - Protected ticket checkpoint: `95c63b5a982ba90ccbb8c6345af66a9485fa5a78` (`DR-007`, verified v1.4.56 candidate).
 - Prior integrated Personal base: `52b4be02ea793f2071fe5a63a94664ab25196433`.

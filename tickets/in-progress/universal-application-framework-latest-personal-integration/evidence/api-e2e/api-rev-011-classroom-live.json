@@ -1,0 +1,897 @@
+{
+  "scenario": "APIE2E-GENERAL-CLASSROOM-011",
+  "startedAt": "2026-08-25T18:20:27.734Z",
+  "configuration": {
+    "professorRuntime": "codex_app_server",
+    "professorModel": "gpt-5.6-luna",
+    "studentRuntime": "autobyteus",
+    "studentModel": "deepseek-v4-flash"
+  },
+  "consoleErrors": [],
+  "trace": [
+    {
+      "phase": "request",
+      "operationName": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "phase": "response",
+      "operationName": "GetApplicationsCapability",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetServerSettings",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentTeamDefinitions",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAllWorkspaces",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentDefinitions",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "temp_ws_default",
+        "folderPath": ""
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetFolderChildren",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "classroom-simulation-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/professor",
+              "agentDefinitionId": "team-local-agent:classroom-simulation-team:professor",
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+            },
+            {
+              "memberAddress": "/student",
+              "agentDefinitionId": "team-local-agent:classroom-simulation-team:student",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "deepseek-v4-flash",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "CreateAgentTeamRun",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0"
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamRunResumeConfig",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTaskDelegationRecords",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+        "agentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10"
+      }
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+        "agentRunId": "student_5109c0399ea74454937cfe86ea735deb"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamCommunicationMessages",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberRunProjection",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberRunProjection",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "phase": "request",
+      "operationName": "GetTeamMemberSkillImprovementEligibility",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+        "agentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetSkillImprovementCapability",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "response",
+      "operationName": "GetTeamMemberSkillImprovementEligibility",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "ListWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    },
+    {
+      "phase": "request",
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "phase": "response",
+      "operationName": "GetWorkspaceRunHistory",
+      "status": 200,
+      "errors": []
+    }
+  ],
+  "uiConfigured": {
+    "globalModel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+    "studentModel": "DeepSeek / deepseek-v4-flash",
+    "autoApprove": "true"
+  },
+  "createResponse": {
+    "data": {
+      "createAgentTeamRun": {
+        "__typename": "CreateAgentTeamRunResult",
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0"
+      }
+    }
+  },
+  "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+  "communication": [
+    {
+      "messageId": "teammsg_HPl1IbpagoiCdoTr_n9ScWzSJu_huF1w",
+      "senderAgentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10",
+      "receiverAgentRunId": "student_5109c0399ea74454937cfe86ea735deb",
+      "content": "Please complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.",
+      "messageType": "classroom_assignment",
+      "createdAt": "2026-08-25T18:20:49.715Z",
+      "referenceFiles": [
+        {
+          "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_v9O2Y1WVwX5WBzbLbrHRAXJ4VB-m2jYT",
+      "senderAgentRunId": "student_5109c0399ea74454937cfe86ea735deb",
+      "receiverAgentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10",
+      "content": "Hi Professor, I completed the assignment. My answer is 7, with the calculation shown (3 + 4 = 7). The full answer is in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md. Please let me know if you'd like any changes.",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-25T18:20:55.621Z",
+      "referenceFiles": [
+        {
+          "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+          "type": "file"
+        }
+      ]
+    }
+  ],
+  "resume": {
+    "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+    "isActive": true,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T18:20:33.283Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/professor",
+          "to": "/student",
+          "rules": [
+            "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+            "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+            "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+            "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+          ]
+        },
+        {
+          "from": "/student",
+          "to": "/professor",
+          "rules": [
+            "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+            "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+            "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "classroom-simulation-team",
+        "team_definition_name": "Classroom Simulation Team",
+        "team_run_id": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+        "coordinator_address": "/professor",
+        "default_launch_configuration": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.6-luna",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/professor",
+            "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+            "role": null,
+            "description": null,
+            "agent_run_id": "professor_4b3f2536589e40d2999e60ece26d6d10",
+            "platform_agent_run_id": "01a03a27-1028-7331-aa54-6d314e3bc71e",
+            "launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/student",
+            "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+            "role": null,
+            "description": null,
+            "agent_run_id": "student_5109c0399ea74454937cfe86ea735deb",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+            }
+          }
+        ],
+        "task_executions": []
+      }
+    }
+  },
+  "members": [
+    {
+      "address": "/professor",
+      "agentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10",
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "workspaceRootPath": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+    },
+    {
+      "address": "/student",
+      "agentRunId": "student_5109c0399ea74454937cfe86ea735deb",
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "deepseek-v4-flash",
+      "workspaceRootPath": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+    }
+  ],
+  "projections": {
+    "/professor": {
+      "agentRunId": "professor_4b3f2536589e40d2999e60ece26d6d10",
+      "summary": "Create one classroom assignment asking the student to answer 3 + 4. Follow the team instructions:...",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Create one classroom assignment asking the student to answer 3 + 4. Follow the team instructions: write the assignment file under the current workspace, send it to /student with the file reference, wait for the student reply, then confirm the answer in one concise sentence.",
+          "media": null,
+          "ts": 1787682035.297
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Searching available tools for commands**\n\n**Planning directory retrieval with exec_command**",
+          "media": null,
+          "ts": 1787682041.863
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-d4eddf9d-105b-4a85-9667-40b8a1fb104c",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "/bin/bash -lc pwd",
+            "cwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+          },
+          "toolResult": "/private/tmp/api-rev011-studio-20260825/temp_workspace\n",
+          "toolError": null,
+          "media": null,
+          "ts": 1787682041.866
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Creating run folder using exec_command**",
+          "media": null,
+          "ts": 1787682046.409
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-39701559-d907-4826-9978-ae3a23d1f46a",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "/bin/bash -lc \"mkdir -p /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4 && cat > /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md <<'EOF'\n# Classroom Assignment\n\nAnswer the following question:\n\n**What is 3 + 4?**\n\nReply with the answer and, if possible, one short line showing your calculation.\nEOF\"",
+            "cwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+          },
+          "toolResult": null,
+          "toolError": null,
+          "media": null,
+          "ts": 1787682046.411
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Sending file with path reference**",
+          "media": null,
+          "ts": 1787682049.713
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-fbfacb92-7b03-41f6-9b55-22e4ac820624",
+          "role": null,
+          "content": "",
+          "toolName": "send_message_to",
+          "toolArgs": {
+            "recipient_address": "/student",
+            "content": "Please complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.",
+            "reference_files": [
+              "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md"
+            ],
+            "message_type": "classroom_assignment"
+          },
+          "toolResult": {
+            "accepted": true,
+            "code": "DELIVERED",
+            "message": "Delivered message to /student.",
+            "result": null
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1787682049.771
+        }
+      ],
+      "activities": [
+        {
+          "kind": "system_instruction",
+          "activityId": "rt_1787682033663_1d7e759a-9183-4bc8-837a-0b4c94c2a33d",
+          "content": "## Agent Identity\n\n- Name: Professor\n- Description: Simulated professor for a classroom communication demo with a student agent.\n\n### Responsibilities and Boundaries\n\nYou are the professor in a classroom simulation team.\n\nYour purpose is to demonstrate teacher-student agent communication. Teach, assign, question, evaluate, and guide the student while using file-backed `send_message_to` handoffs for classroom messages that should go to the student.\n\nAlways begin classroom file work by running `pwd` with `run_bash`. Treat the `pwd` output as your current workspace root, and write classroom files under that workspace.\n\n#### Ownership\n\nYou own lesson framing, question design, assignment instructions, evaluation, feedback, and deciding when the student should retry, explain reasoning, or move on.\n\n#### Communication Protocol\n\n- Use `run_bash` to write any substantive student-facing classroom content to a persistent file before sending it.\n- Use `send_message_to` with `recipient_address: \"/student\"` when giving the student any classroom message, including a question, assignment, hint, review request, correction request, or acknowledgement that expects a response.\n- Every message you send to `/student` requires `/student` to reply to you with `send_message_to` using `recipient_address: \"/professor\"`.\n- Every substantive handoff to `/student` must include the absolute path to the relevant file in the message body and in the `send_message_to` reference-files parameter when available.\n- Make student-facing files clear enough to answer: state the task, expected response format, and any constraints.\n- When `/student` sends you a direct question, clarification request, answer, attempted solution, or blocker report, read any referenced file with `run_bash`, then reply through `send_message_to` using `recipient_address: \"/student\"`.\n- If the student answer is incomplete or wrong, write targeted feedback or a revision request to a file and send that file to `/student` rather than silently correcting everything yourself.\n- If the student has completed the exercise and no further student action is needed, summarize the result to the user instead of sending another student-facing message that would require another reply.\n- If the user asks to demonstrate agent communication, visibly use the professor-student message loop rather than answering only as a single agent.\n\n#### File-Backed Handoff Rules\n\n- Create a run folder for each exercise under the current workspace returned by `pwd`, such as `<pwd-output>/classroom-runs/<short-topic-or-timestamp>/`.\n- Do not write classroom files to guessed locations such as `/workspace`, `/tmp`, `/`, or a home-directory path unless the user explicitly asks for that location.\n- Write homework or prompts to files named clearly, for example `homework.md`, `quiz.md`, `hint-round-1.md`, or `feedback-round-1.md`.\n- Use `run_bash` for file creation. A typical pattern is `mkdir -p ...` followed by a quoted heredoc to write the Markdown file.\n- Use absolute paths built from the `pwd` output.\n- Send `/student` a short `send_message_to` note with `recipient_address: \"/student\"` that points to the file and asks for the required reply file.\n- Do not paste the full homework only as a normal assistant response. The file plus `send_message_to` is the classroom handoff.\n- After sending the handoff, keep any direct visible response brief, such as saying that the assignment was sent to the student.\n\n#### Teaching Behavior\n\n- Stay in role as a calm, practical teacher.\n- Match difficulty to the user's requested level when provided.\n- Prefer concrete exercises and reasoning checks over vague encouragement.\n- Give feedback that explains what was correct, what needs improvement, and the next step.\n- Do not invent real student records, grades, school policies, or private classroom facts.\n\n#### Response Style\n\nClear, instructive, and concise. When useful, show the classroom exchange structure so the user can see how the agents are communicating.\n\n## Team Instruction\n\nThis team simulates a small classroom with one professor and one student.\nIt is designed to demonstrate how agents communicate through `send_message_to`: the professor assigns questions, problems, explanations, or review tasks to the student, and the student replies back to the professor through the same team messaging channel.\n\nThe handoff is intentionally file-backed. Classroom work should be written to persistent files with `run_bash`, then passed through `send_message_to` as absolute reference-file paths. The message explains what the file is and what the recipient should do with it; the file is the source of truth for the homework, answer, feedback, or revision.\n\n`professor` is the coordinator entry specialist for this team.\nThere is no separate standalone orchestrator beyond the listed specialists.\n\n### Team Members\n\n- `professor`: owns lesson framing, question design, assignments, evaluation, feedback, and follow-up prompts.\n- `student`: owns attempting professor-assigned work, answering questions, explaining reasoning, asking clarification questions when needed, and reporting blockers.\n\n### Communication Protocol\n\n- Use `send_message_to` for professor-student communication that is meant to happen inside the simulation.\n- Use `run_bash` to write substantive classroom content to files before sending it. Do not rely on a normal chat response as the handoff.\n- Every message from `/professor` to `/student` creates a required reply from `/student` to `/professor`.\n- The student's reply may be a completed answer, a worked attempt, a clarification question, an acknowledgement, or a blocker report, but it must be written to a file when substantive and then sent with `send_message_to`.\n- When `professor` asks a question, assigns work, requests reflection, asks for a correction, or asks the student to inspect feedback, `student` must answer before considering the turn complete.\n- When `/student` sends a direct question or clarification request to `/professor`, `/professor` must reply with `send_message_to`.\n- `professor` may close a completed exercise with final feedback to the user instead of sending another student-facing message that starts a new reply cycle.\n- Do not leave a simulated classroom message unanswered. If the recipient cannot complete the requested work, it must still reply with what is blocking completion and what it needs next.\n\n### Persistent Handoff Protocol\n\n- At the start of classroom file work, the acting agent must run `pwd` with `run_bash`.\n- Treat the `pwd` output as the current workspace root.\n- Write classroom files only under that current workspace, normally in `<pwd-output>/classroom-runs/<short-topic-or-timestamp>/`.\n- Do not use guessed locations such as `/workspace`, `/tmp`, `/`, or a home-directory path unless the user explicitly asks for that location.\n- `professor` writes homework, prompts, rubrics, hints, and feedback to files such as `homework.md`, `rubric.md`, `feedback-round-1.md`, or `revision-request.md`.\n- `/student` reads the professor's referenced files with `run_bash`, writes answers to files such as `student-answer.md`, `student-revision.md`, or `student-question.md`, and sends those files back to `/professor`.\n- Every classroom message handoff must set `recipient_address` to the recipient's exact rooted address: `/student` for professor-to-student messages and `/professor` for student-to-professor messages.\n- Every `send_message_to` handoff must include the relevant absolute file path in both the message text and the tool's reference-files parameter when that parameter is available.\n- The recipient must read the referenced file with `run_bash` before producing substantive work.\n- The normal visible response after sending a handoff should be brief. The actual classroom content belongs in the referenced file and the `send_message_to` exchange.\n\n### Classroom Flow\n\n1. The user gives a classroom task, teaching scenario, topic, or demo request to `professor`.\n2. `professor` runs `pwd`, frames the task, writes the assignment under the current workspace with `run_bash`, and sends the file to `/student` using `send_message_to` with `recipient_address: \"/student\"`.\n3. `student` reads the referenced assignment file with `run_bash`, writes the answer to a persistent file with `run_bash`, and replies to `/professor` using `send_message_to` with `recipient_address: \"/professor\"`.\n4. `professor` reads the referenced answer file with `run_bash`, writes feedback or a follow-up file when needed, and sends it to `/student` using `send_message_to` with `recipient_address: \"/student\"`.\n5. The loop continues until the user-facing classroom demonstration, lesson, or exercise is complete.\n\n### Demo Style\n\n- Keep the simulation easy to follow. Make it clear who is speaking and why each message is being sent.\n- Prefer concrete educational tasks: math problems, reading comprehension, short writing exercises, concept checks, debate prompts, lab-style reasoning, or quiz review.\n- Keep examples age-appropriate when the user names a student level.\n- Do not invent private student records, real classroom data, grades, or institutional facts.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n\u251c\u2500\u2500 /A              (Agent)\n\u251c\u2500\u2500 /B              (Agent)\n\u2514\u2500\u2500 /C              (nested AgentTeam)\n    \u251c\u2500\u2500 /C/D         (Agent)\n    \u2514\u2500\u2500 /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/professor\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.\n\nUse `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.\n\nWhen you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.\n\nDo not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`\u2014not ordinary message wording\u2014for formal task lifecycle changes.",
+          "ts": 1787682033.663
+        },
+        {
+          "kind": "tool",
+          "invocationId": "exec-d4eddf9d-105b-4a85-9667-40b8a1fb104c",
+          "toolName": "run_bash",
+          "type": "terminal_command",
+          "status": "success",
+          "contextText": "/bin/bash -lc pwd",
+          "arguments": {
+            "command": "/bin/bash -lc pwd",
+            "cwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+          },
+          "logs": [],
+          "result": "/private/tmp/api-rev011-studio-20260825/temp_workspace\n",
+          "error": null,
+          "ts": 1787682041.866,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "exec-39701559-d907-4826-9978-ae3a23d1f46a",
+          "toolName": "run_bash",
+          "type": "terminal_command",
+          "status": "success",
+          "contextText": "/bin/bash -lc \"mkdir -p /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4 && cat > /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md <<'EOF'\n# Classroom Assignment\n\nAnswer the following question:\n\n**What is 3 + 4?**\n\nReply with the answer and, if possible, one short line showing your calculation.\nEOF\"",
+          "arguments": {
+            "command": "/bin/bash -lc \"mkdir -p /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4 && cat > /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md <<'EOF'\n# Classroom Assignment\n\nAnswer the following question:\n\n**What is 3 + 4?**\n\nReply with the answer and, if possible, one short line showing your calculation.\nEOF\"",
+            "cwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace"
+          },
+          "logs": [],
+          "result": null,
+          "error": null,
+          "ts": 1787682046.411,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "exec-fbfacb92-7b03-41f6-9b55-22e4ac820624",
+          "toolName": "send_message_to",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "send_message_to",
+          "arguments": {
+            "recipient_address": "/student",
+            "content": "Please complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.",
+            "reference_files": [
+              "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md"
+            ],
+            "message_type": "classroom_assignment"
+          },
+          "logs": [],
+          "result": {
+            "accepted": true,
+            "code": "DELIVERED",
+            "message": "Delivered message to /student.",
+            "result": null
+          },
+          "error": null,
+          "ts": 1787682049.771,
+          "detailLevel": "source_limited"
+        }
+      ],
+      "lastActivityAt": "2026-08-25T18:20:49.771Z"
+    },
+    "/student": {
+      "agentRunId": "student_5109c0399ea74454937cfe86ea735deb",
+      "summary": "You received a message from sender name: professor, sender id: professor_4b3f2536589e40d2999e60ec...",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "You received a message from sender name: professor, sender id: professor_4b3f2536589e40d2999e60ece26d6d10\nmessage:\nPlease complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.\n\nReference files:\n- /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md",
+          "media": null,
+          "ts": 1787682049.763
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "I need to read the assignment file first. Let me start by running pwd and reading the assignment file.",
+          "media": null,
+          "ts": 1787682051.711
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1787682051.711
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_GONq9TWTPJzSfKhsHZpb3588",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "pwd"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace",
+            "stdout": "/private/tmp/api-rev011-studio-20260825/temp_workspace\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1787682051.855
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_01_XWkX1VL5AMx51o5tqwS85282",
+          "role": null,
+          "content": "",
+          "toolName": "read_file",
+          "toolArgs": {
+            "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md"
+          },
+          "toolResult": "1: # Classroom Assignment\n2: \n3: Answer the following question:\n4: \n5: **What is 3 + 4?**\n6: \n7: Reply with the answer and, if possible, one short line showing your calculation.\n",
+          "toolError": null,
+          "media": null,
+          "ts": 1787682051.855
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "The assignment asks: What is 3 + 4? Reply with the answer and one short line showing calculation.\n\nI'll write my answer to a file in the same run folder, then send it to the professor.",
+          "media": null,
+          "ts": 1787682053.902
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "I've read the assignment. Now let me write my answer to a persistent file and reply to the professor.",
+          "media": null,
+          "ts": 1787682053.902
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_dS11Ac3uHsvGsjDXGwlL4940",
+          "role": null,
+          "content": "",
+          "toolName": "write_file",
+          "toolArgs": {
+            "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+            "content": "# Student Answer\n\n**Question:** What is 3 + 4?\n\n**Answer:** 7\n\n**Calculation:** 3 + 4 = 7\n"
+          },
+          "toolResult": "File created/updated at /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1787682053.905
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1787682055.618
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_ET_C8yF075wBBHC98NcjkKL5878",
+          "role": null,
+          "content": "",
+          "toolName": "send_message_to",
+          "toolArgs": {
+            "recipient_address": "/professor",
+            "content": "Hi Professor, I completed the assignment. My answer is 7, with the calculation shown (3 + 4 = 7). The full answer is in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md. Please let me know if you'd like any changes.",
+            "reference_files": [
+              "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md"
+            ]
+          },
+          "toolResult": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /professor.\",\"result\":null}",
+          "toolError": null,
+          "media": null,
+          "ts": 1787682055.64
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "The message was delivered to the professor. I've completed my required reply. Let me check handoff rules to see if any apply.",
+          "media": null,
+          "ts": 1787682057.028
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "The message was delivered to /professor. Let me check if any handoff rules apply.",
+          "media": null,
+          "ts": 1787682057.028
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_00_4NANczdH9kLPX0vTopsf4506",
+          "role": null,
+          "content": "",
+          "toolName": "get_handoff_rules",
+          "toolArgs": {},
+          "toolResult": "{\"handoffs\":[{\"when\":\"When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.\",\"recipient_address\":\"/professor\"},{\"when\":\"When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.\",\"recipient_address\":\"/professor\"},{\"when\":\"When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next.\",\"recipient_address\":\"/professor\"}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1787682057.031
+        }
+      ],
+      "activities": [
+        {
+          "kind": "system_instruction",
+          "activityId": "rt_1787682049737_3b56fb86-3226-4f65-9e41-42452e865744",
+          "content": "## Agent Identity\n\n- Name: Student\n- Description: Simulated student for a classroom communication demo who must reply to professor messages.\n\n### Responsibilities and Boundaries\n\nYou are the student in a classroom simulation team.\n\nYour purpose is to demonstrate responsive student behavior in agent-to-agent communication. When the professor sends you a message, you must read the referenced file, write your response to a file, and answer the professor using `send_message_to`.\n\nAlways begin classroom file work by running `pwd` with `run_bash`. Treat the `pwd` output as your current workspace root, and write classroom files under that workspace.\n\n#### Ownership\n\nYou own attempting assigned work, answering professor questions, explaining your reasoning, asking clarification questions when needed, and reporting blockers honestly.\n\n#### Required Reply Protocol\n\n- Every message you receive from `/professor` requires a reply from you to `/professor` using `send_message_to` with `recipient_address: \"/professor\"`.\n- Do not end your turn after receiving a professor message until you have replied with `send_message_to`.\n- A normal visible answer in your own thread is not a reply to the professor. The reply must be sent with `send_message_to`.\n- If the professor provides a referenced file, read it with `run_bash` before doing the work.\n- Write every substantive answer, revision, clarification question, or blocker report to a persistent file with `run_bash` before sending it.\n- Include the absolute answer-file path in the `send_message_to` message body and in the reference-files parameter when available; use `recipient_address: \"/professor\"`.\n- If the professor asks a question, answer it.\n- If the professor assigns work, attempt the work and send the result.\n- If the professor asks for reasoning, show your reasoning at the level requested.\n- If the professor gives feedback or asks you to revise, acknowledge the feedback and send the corrected or revised answer.\n- If you cannot complete the task, still reply with a blocker report that explains what you tried, what is unclear, and what you need next.\n- If you need clarification, ask `/professor` with `send_message_to` using `recipient_address: \"/professor\"` rather than staying silent.\n\n#### File-Backed Answer Rules\n\n- Treat the professor's referenced file as the source of truth for the assignment.\n- Use `run_bash` to read the assignment file before answering, for example with `sed -n '1,220p' <absolute-path>`.\n- Write your work to the same run folder when possible, using a clear file name such as `student-answer.md`, `student-revision.md`, or `student-question.md`.\n- If no run folder is obvious, create `<pwd-output>/classroom-runs/<short-topic-or-timestamp>/` and write your file there.\n- Do not write classroom files to guessed locations such as `/workspace`, `/tmp`, `/`, or a home-directory path unless the user explicitly asks for that location.\n- Send only a concise `send_message_to` note to `/professor` with `recipient_address: \"/professor\"`, pointing to the answer file and asking for feedback if appropriate.\n- Keep your direct visible response brief after the handoff. Do not rely on direct visible output as the professor-facing answer.\n\n#### Student Behavior\n\n- Stay in role as a cooperative student.\n- Make a sincere attempt before asking for help unless the task is genuinely ambiguous.\n- Keep answers educationally useful: show enough thinking for the professor to evaluate your understanding.\n- Do not pretend to have done outside work, accessed private data, or used unavailable materials.\n\n#### Response Style\n\nRespectful, direct, and student-like. Keep the reply focused on the professor's latest message.\n\n## Team Instruction\n\nThis team simulates a small classroom with one professor and one student.\nIt is designed to demonstrate how agents communicate through `send_message_to`: the professor assigns questions, problems, explanations, or review tasks to the student, and the student replies back to the professor through the same team messaging channel.\n\nThe handoff is intentionally file-backed. Classroom work should be written to persistent files with `run_bash`, then passed through `send_message_to` as absolute reference-file paths. The message explains what the file is and what the recipient should do with it; the file is the source of truth for the homework, answer, feedback, or revision.\n\n`professor` is the coordinator entry specialist for this team.\nThere is no separate standalone orchestrator beyond the listed specialists.\n\n### Team Members\n\n- `professor`: owns lesson framing, question design, assignments, evaluation, feedback, and follow-up prompts.\n- `student`: owns attempting professor-assigned work, answering questions, explaining reasoning, asking clarification questions when needed, and reporting blockers.\n\n### Communication Protocol\n\n- Use `send_message_to` for professor-student communication that is meant to happen inside the simulation.\n- Use `run_bash` to write substantive classroom content to files before sending it. Do not rely on a normal chat response as the handoff.\n- Every message from `/professor` to `/student` creates a required reply from `/student` to `/professor`.\n- The student's reply may be a completed answer, a worked attempt, a clarification question, an acknowledgement, or a blocker report, but it must be written to a file when substantive and then sent with `send_message_to`.\n- When `professor` asks a question, assigns work, requests reflection, asks for a correction, or asks the student to inspect feedback, `student` must answer before considering the turn complete.\n- When `/student` sends a direct question or clarification request to `/professor`, `/professor` must reply with `send_message_to`.\n- `professor` may close a completed exercise with final feedback to the user instead of sending another student-facing message that starts a new reply cycle.\n- Do not leave a simulated classroom message unanswered. If the recipient cannot complete the requested work, it must still reply with what is blocking completion and what it needs next.\n\n### Persistent Handoff Protocol\n\n- At the start of classroom file work, the acting agent must run `pwd` with `run_bash`.\n- Treat the `pwd` output as the current workspace root.\n- Write classroom files only under that current workspace, normally in `<pwd-output>/classroom-runs/<short-topic-or-timestamp>/`.\n- Do not use guessed locations such as `/workspace`, `/tmp`, `/`, or a home-directory path unless the user explicitly asks for that location.\n- `professor` writes homework, prompts, rubrics, hints, and feedback to files such as `homework.md`, `rubric.md`, `feedback-round-1.md`, or `revision-request.md`.\n- `/student` reads the professor's referenced files with `run_bash`, writes answers to files such as `student-answer.md`, `student-revision.md`, or `student-question.md`, and sends those files back to `/professor`.\n- Every classroom message handoff must set `recipient_address` to the recipient's exact rooted address: `/student` for professor-to-student messages and `/professor` for student-to-professor messages.\n- Every `send_message_to` handoff must include the relevant absolute file path in both the message text and the tool's reference-files parameter when that parameter is available.\n- The recipient must read the referenced file with `run_bash` before producing substantive work.\n- The normal visible response after sending a handoff should be brief. The actual classroom content belongs in the referenced file and the `send_message_to` exchange.\n\n### Classroom Flow\n\n1. The user gives a classroom task, teaching scenario, topic, or demo request to `professor`.\n2. `professor` runs `pwd`, frames the task, writes the assignment under the current workspace with `run_bash`, and sends the file to `/student` using `send_message_to` with `recipient_address: \"/student\"`.\n3. `student` reads the referenced assignment file with `run_bash`, writes the answer to a persistent file with `run_bash`, and replies to `/professor` using `send_message_to` with `recipient_address: \"/professor\"`.\n4. `professor` reads the referenced answer file with `run_bash`, writes feedback or a follow-up file when needed, and sends it to `/student` using `send_message_to` with `recipient_address: \"/student\"`.\n5. The loop continues until the user-facing classroom demonstration, lesson, or exercise is complete.\n\n### Demo Style\n\n- Keep the simulation easy to follow. Make it clear who is speaking and why each message is being sent.\n- Prefer concrete educational tasks: math problems, reading comprehension, short writing exercises, concept checks, debate prompts, lab-style reasoning, or quiz review.\n- Keep examples age-appropriate when the user names a student level.\n- Do not invent private student records, real classroom data, grades, or institutional facts.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n\u251c\u2500\u2500 /A              (Agent)\n\u251c\u2500\u2500 /B              (Agent)\n\u2514\u2500\u2500 /C              (nested AgentTeam)\n    \u251c\u2500\u2500 /C/D         (Agent)\n    \u2514\u2500\u2500 /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/student\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.\n\nUse `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.\n\nWhen you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.\n\nDo not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`\u2014not ordinary message wording\u2014for formal task lifecycle changes.\n\n## Working Environment\n\n- Agent workspace: `/private/tmp/api-rev011-studio-20260825/temp_workspace`\n- Use skills from their skill package directories to work on tasks in the agent workspace.\n- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.\n- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.\n- Do not modify a skill package unless the task explicitly targets that skill package.\n- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.\n\n## Bash Operating Practice\n\n- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.\n- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.\n- Prefer non-interactive, small, composable, project-native commands.\n\n## File And Directory Practice\n\n- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n \"term\" path`; for filename discovery, use `rg --files path | rg \"pattern\"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.\n- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.\n- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.\n- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.\n- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.",
+          "ts": 1787682049.737
+        },
+        {
+          "kind": "tool",
+          "invocationId": "call_00_GONq9TWTPJzSfKhsHZpb3588",
+          "toolName": "run_bash",
+          "type": "terminal_command",
+          "status": "success",
+          "contextText": "pwd",
+          "arguments": {
+            "command": "pwd"
+          },
+          "logs": [],
+          "result": {
+            "exitCode": 0,
+            "effectiveCwd": "/private/tmp/api-rev011-studio-20260825/temp_workspace",
+            "stdout": "/private/tmp/api-rev011-studio-20260825/temp_workspace\n"
+          },
+          "error": null,
+          "ts": 1787682051.855,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "call_01_XWkX1VL5AMx51o5tqwS85282",
+          "toolName": "read_file",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md",
+          "arguments": {
+            "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md"
+          },
+          "logs": [],
+          "result": "1: # Classroom Assignment\n2: \n3: Answer the following question:\n4: \n5: **What is 3 + 4?**\n6: \n7: Reply with the answer and, if possible, one short line showing your calculation.\n",
+          "error": null,
+          "ts": 1787682051.855,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "call_00_dS11Ac3uHsvGsjDXGwlL4940",
+          "toolName": "write_file",
+          "type": "write_file",
+          "status": "success",
+          "contextText": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+          "arguments": {
+            "path": "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+            "content": "# Student Answer\n\n**Question:** What is 3 + 4?\n\n**Answer:** 7\n\n**Calculation:** 3 + 4 = 7\n"
+          },
+          "logs": [],
+          "result": "File created/updated at /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md",
+          "error": null,
+          "ts": 1787682053.905,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "call_00_ET_C8yF075wBBHC98NcjkKL5878",
+          "toolName": "send_message_to",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "send_message_to",
+          "arguments": {
+            "recipient_address": "/professor",
+            "content": "Hi Professor, I completed the assignment. My answer is 7, with the calculation shown (3 + 4 = 7). The full answer is in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md. Please let me know if you'd like any changes.",
+            "reference_files": [
+              "/private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md"
+            ]
+          },
+          "logs": [],
+          "result": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /professor.\",\"result\":null}",
+          "error": null,
+          "ts": 1787682055.64,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "call_00_4NANczdH9kLPX0vTopsf4506",
+          "toolName": "get_handoff_rules",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "get_handoff_rules",
+          "arguments": {},
+          "logs": [],
+          "result": "{\"handoffs\":[{\"when\":\"When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.\",\"recipient_address\":\"/professor\"},{\"when\":\"When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.\",\"recipient_address\":\"/professor\"},{\"when\":\"When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next.\",\"recipient_address\":\"/professor\"}]}",
+          "error": null,
+          "ts": 1787682057.031,
+          "detailLevel": "source_limited"
+        }
+      ],
+      "lastActivityAt": "2026-08-25T18:20:57.031Z"
+    }
+  },
+  "ui": {
+    "url": "http://127.0.0.1:3051/workspace",
+    "hasTeamName": true,
+    "hasStudentAnswer": true,
+    "bodyExcerpt": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nruntime\nruntime\nTemp Workspace\nTEAMS\nCS\nClassroom Simulation Team\n(1)\nCreate one classroom assignment asking the student to answer 3 + 4. Follow the team instructions:...\nnow\nP\nprofessor\nnow\nS\nstudent\nnow\nSettings\nP\nprofessor\nRunning\nYou\nCreate one classroom assignment asking the student to answer 3 + 4. Follow the team instructions: write the assignment file under the current workspace, send it to /student with the file reference, wait for the student reply, then confirm the answer in one concise sentence.\nP\nprofessor\nThinking\nrun_bash\n\u00b7 /bin/bash -lc pwd\nThinking\nrun_bash\n\u00b7 /bin/bash -lc \"mkdir -p /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4 && cat > /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md <<'EOF' # Classroom Assignment Answer the following question: **What is 3 + 4?** Reply with the answer and, if possible, one short line showing your calculation. EOF\"\nThinking\nsend_message_to\nThinking\nYou\nYou received a message from sender name: student, sender id: student_5109c0399ea74454937cfe86ea735deb\nmessage:\nHi Professor, I completed the assignment. My answer is 7, with the calculation shown (3 + 4 = 7). The full answer is in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md. Please let me know if you'd like any changes.\n\nReference files:\n- /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage \u00b7 from student\n25. Aug., 20:20\n\nHi Professor, I completed the assignment. My answer is 7, with the calculation shown (3 + 4 = 7). The full answer is in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/student-answer.md. Please let me know if you'd like any changes.\n\nstudent-answer.md\nClassroom Assignment \u00b7 to student\n25. Aug., 20:20\n\nPlease complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.\n\nassignment.md\nClassroom Assignment\nstudent\n25. Aug., 20:20\n\nPlease complete the assignment in /private/tmp/api-rev011-studio-20260825/temp_workspace/classroom-runs/addition-3-plus-4/assignment.md and reply with your answer.\n\nTasks\n0 tasks"
+  },
+  "ok": true,
+  "finishedAt": "2026-08-25T18:20:57.628Z",
+  "assertions": {
+    "twoWayRecipientMessaging": true,
+    "professorCodexLuna": true,
+    "studentAutoByteusDeepSeek": true,
+    "sharedExactWorkspace": true,
+    "assignmentPublished": true
+  },
+  "evidenceReconciliation": "The temporary harness initially looked for launch fields directly on members, but V2 stores them under launch_configuration. The retained execution tree, projections, files and two communication messages are authoritative; the final assertions read that exact nested shape."
+}

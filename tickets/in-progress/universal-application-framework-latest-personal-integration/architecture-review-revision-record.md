@@ -14,6 +14,11 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-006 | Round 6 / SR-006 Personal v1.4.56 provider integration | SR-001–SR-006 | Pass | Fail — Design Impact | AR-004, AR-005 |
 | ARCH-REV-007 | Round 7 / SR-007 AR-004/AR-005 re-review and current-ref validation | SR-001–SR-007 | Fail — Design Impact | Pass | AR-004, AR-005 |
 | ARCH-REV-008 | Round 8 / SR-008 v1.4.57 controlled-workspace refresh | SR-001–SR-008 | Pass | Pass | None |
+| ARCH-REV-009 | Round 9 / SR-009 v1.4.58 hierarchical Team/V2 refresh | SR-001–SR-009 | Pass | Fail — Design Impact | AR-006 |
+| ARCH-REV-010 | Round 10 / SR-010 AR-006 exact Team projection re-review | SR-001–SR-010 | Fail — Design Impact | Pass | AR-006 |
+| ARCH-REV-011 | Round 11 / SR-011 CRR-020 definition/run authority re-entry | SR-001–SR-011 | Pass | Fail — Design Impact | AR-007 |
+| ARCH-REV-012 | Round 12 / SR-012 AR-007 member/session task-scope re-review | SR-001–SR-012 | Fail — Design Impact | Fail — Design Impact | AR-007 |
+| ARCH-REV-013 | Round 13 / SR-013 exact general/default/fixture propagation re-review | SR-001–SR-013 | Fail — Design Impact | Pass | AR-007 |
 
 ## Revision Entries
 
@@ -200,3 +205,121 @@ None.
 - Material classification changes: none; the delivery Design Impact is resolved by an exact two-test semantic merge with no production owner, behavior, compatibility path, fallback, or data migration change.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: implementation must immediately re-fetch and stop if Personal moved, merge only exact `389748b0b9f0dea051aaed18641de131cf0adbbb`, inspect the clean production/type auto-merge, combine both form fixtures rather than select a side, and run focused workspace/provider, real Studio, retained dual-host/package/recovery/cleanup, and fresh Electron v1.4.57 proof on one integrated commit. Prior checkpoint and Personal evidence remain characterization only.
+
+### ARCH-REV-009 — Team/V2 ownership is accepted; exact application Team projection remains contradictory
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 9; SR-009 review after delivery refresh DR-010 found Personal v1.4.58 intersects checkpoint `c6d74710ad30b680f853fba0e90a68255f112955` at hierarchical Team launch, TeamRun V2 migration/location, Studio form seams, 13 content conflicts, and 30 generated-output modify/delete paths.
+- Triggering role, report path, and finding IDs: `/delivery_engineer` through `/solution_designer`; `latest-base-refresh-round-5-conflict-report.md`, `solution-revision-record.md` SR-009, and `latest-base-refresh-round-5-design-analysis.md`; new finding `AR-006`.
+- Relevant solution revision IDs: `SR-001`–`SR-009`
+- Prior authoritative decision: `Pass` (`ARCH-REV-008`, followed by passed v1.4.57 integration verification at the protected checkpoint)
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: SR-009's one-merge strategy, exact conflict/generated-output inventory, application-versus-Personal authority split, complete topology validation before allocation, graph-local Team allocator injection, V1 -> nested-memory -> V2 migration, V2-only current readers, Studio hierarchy/workspace/provider junction, generated-output removal, and complete proof direction are accepted. A fresh review-time fetch and merge-tree confirmed the 633/50/13/30/7 counts and clean protected state. One new central contract is not yet implementable without interpretation: the normative round-5 Team effective/SDK shape carries atomic `llmConfig`, resolved workspace, and full provenance, while runtime-contract section 8 calls a reduced shape “complete,” omits those fields, uses undefined generic SDK input names, and retains stale SR-008 authority metadata.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved in ARCH-REV-003 | Remains resolved | SR-003–SR-009; runtime contracts sections 1 and 4 | Required-tool readiness ownership/order/removal are unchanged. |
+| AR-002 | Resolved in ARCH-REV-002 | Remains resolved | SR-002–SR-009; runtime contracts sections 2 and 6 | Activation/provisioning, graph-local construction, physical scope, and scoped cleanup remain fixed. |
+| AR-003 | Resolved in ARCH-REV-002 | Remains resolved | SR-002–SR-009; runtime contracts sections 3, 5, and 7 | One sparse launch store and direct-use/no-rewrite persistence remain fixed. |
+| AR-004 | Resolved in ARCH-REV-007 | Remains resolved | SR-007–SR-009; requirements REQ-010/AC-022/AC-024 | Provider-granularity discovery and settled snapshot semantics are preserved. |
+| AR-005 | Resolved in ARCH-REV-007 | Remains resolved | SR-007–SR-009; requirements AC-022–AC-023 | Fresh per-subject exact model and credential-authority resolution extends to Team scopes. |
+
+- New or remaining finding IDs: `AR-006`.
+- Material classification changes: authoritative result changes from `Pass` to `Fail — Design Impact` because two authoritative exact definitions disagree on fields required by the supported UC-017 launch path. No requirement gap or product change is introduced.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: after AR-006 is resolved, implementation must re-fetch and stop if Personal moved, perform the one reviewed merge, preserve generated-source ownership, and execute the complete migration/topology/dual-host/provider/package/cleanup/Electron matrix on one integrated commit. Prior checkpoint and Personal evidence remain characterization only.
+
+### ARCH-REV-010 — Exact Team projection alignment closes the v1.4.58 architecture gate
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 10; SR-010 re-review after ARCH-REV-009 found the central application Team effective/SDK shape contradictory across the runtime contract and normative round-5 supplement.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `solution-revision-record.md` SR-010 and revised `integration-runtime-contracts.md` / `latest-base-refresh-round-5-design-analysis.md`; prior finding `AR-006`.
+- Relevant solution revision IDs: `SR-001`–`SR-010`
+- Prior authoritative decision: `Fail — Design Impact` (`ARCH-REV-009`)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-010 replaces the reduced Team example with byte-identical exact baseline/effective and SDK TypeScript declarations across the two authoritative supplements. The effective scope now retains runtime/model, atomic `llmConfig`, resolved workspace, rooted identity, diagnostic definition/label fields, and per-field provenance. Concrete `ApplicationTeamScopeLaunchConfig` / `ApplicationTeamMemberLaunchConfig` types carry all launch semantics; the mapping table distinguishes diagnostic-only fields, server-derived Team definition/binding identity, the single member label removed before Personal, and explicit `buildEffectiveTeamRunLaunch` host-policy enrichment. Review-time source comparison confirms the mapping matches the existing selection/seed path and Personal `TeamRunTeamConfigInput` / `TeamRunMemberConfigInput`; no downstream inference, owner, behavior, or persistence change remains. A fresh fetch confirmed the reviewed Personal ref is still `fb1335867a4223b2499e4513f58c609b6ac33ab4`, with zero unmerged paths and zero production-source diff.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved in ARCH-REV-003 | Remains resolved | SR-003–SR-010; runtime contracts sections 1 and 4 | Required-tool readiness ownership/order/removal remain unchanged. |
+| AR-002 | Resolved in ARCH-REV-002 | Remains resolved | SR-002–SR-010; runtime contracts sections 2 and 6 | Activation/provisioning, graph-local construction, physical scope, and scoped cleanup remain fixed. |
+| AR-003 | Resolved in ARCH-REV-002 | Remains resolved | SR-002–SR-010; runtime contracts sections 3, 5, and 7 | One sparse launch store and direct-use/no-rewrite persistence remain fixed. |
+| AR-004 | Resolved in ARCH-REV-007 | Remains resolved | SR-007–SR-010; requirements REQ-010/AC-022/AC-024 | Provider-granularity discovery and settled snapshot semantics are preserved. |
+| AR-005 | Resolved in ARCH-REV-007 | Remains resolved | SR-007–SR-010; requirements AC-022–AC-023 | Fresh per-subject exact model and credential-authority resolution remains required for Team scopes and leaves. |
+| AR-006 | Open — contradictory exact Team effective/SDK projection | Resolved | SR-010; BEH-011/REQ-012/AC-031–AC-032; runtime contracts 8.1–8.2; round-5 launch shapes/mapping | Byte-identical exact type examples; complete effective fields; concrete SDK types; explicit diagnostic/wire/Personal mapping; corrected authority metadata; source-backed selected-resource and server-binding derivation. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: AR-006 is resolved; the authoritative decision changes from `Fail — Design Impact` to `Pass`. No approved behavior, implementation inventory, migration, fallback, compatibility path, or product scope changed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: implementation must immediately re-fetch and stop if Personal moved, perform the one reviewed merge, preserve generated-source ownership, and execute the complete migration/topology/dual-host/provider/package/cleanup/Electron matrix on one integrated commit. Prior checkpoint and Personal evidence remain characterization only.
+
+### ARCH-REV-011 — Canonical catalog accepted; application task-delegation scope remains open
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 11; SR-011 review after CRR-020 / CR-011 and APIE2E-F005 proved that built Studio definition CRUD and public general-run launch used different definition-service families.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `code-review-report.md` CRR-020 / CR-011, `api-e2e-execution-coverage-report.md` API-REV-010 / APIE2E-F005, and the correlated failure evidence; new finding `AR-007`.
+- Relevant solution revision IDs: `SR-001`–`SR-011`
+- Prior authoritative decision: `Pass` (`ARCH-REV-010`, followed by implementation/source/API-E2E re-entry before CRR-020)
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: SR-011's one bound host Agent/Team definition pair, transient unbound validation pair, explicit `GeneralProcessRunSupervisor`, configured public services, migration-local persistence reads, redundant-preloader removal, and fail-closed bind/unwind/release lifecycle correctly resolve CR-011 at design level. Independent review found one supported execution-scope bypass not covered by that correction: an application Team member automatically receives `delegate_task`, but the shared MCP adapter's default task service resolves the Team root through the process-general `getTeamRunService()` rather than the graph-local application `TeamRunService`. The design's one-catalog/two-execution-scope invariant is therefore incomplete at the task-delegation boundary.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005 | Resolved in prior rounds | Remain resolved | `SR-003`–`SR-011`; runtime contracts sections 1–7 | SR-011 changes no required-tool readiness, activation/provisioning, sparse persistence, provider-granularity discovery, or exact per-leaf model/credential authority. |
+| AR-006 | Resolved in ARCH-REV-010 | Remains resolved | `SR-010`–`SR-011`; runtime contracts section 8 | Exact Team effective/SDK/Personal mapping remains unchanged. |
+| CR-011 / APIE2E-F005 | Downstream Design Impact trigger | Design direction resolved | `SR-011`; BEH-012/UC-019/AC-035 | One host-bound catalog pair, explicit general services, configured public resolvers, transient validation, and exact lifecycle are coherent. |
+
+- New or remaining finding IDs: `AR-007`.
+- Material classification changes: authoritative result changes from `Pass` to `Fail — Design Impact` because the currently supported application `delegate_task` path crosses from the application session into the general Team-run authority, contrary to BEH-003, REQ-005, AC-007, and SR-011's preserved two-execution-scope contract. No requirement gap or new product behavior is introduced.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: APIE2E-F006 remains a separate stale-test-sequence issue and does not drive new production machinery. After AR-007 is resolved, implementation must prove both application and general task-delegation scope, the accepted public definition/run correction, retained dual-host/package behavior, cleanup/recovery, and Electron integration on one commit.
+
+### ARCH-REV-012 — Root-bound task authority accepted; exact general propagation inventory remains open
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 12; SR-012 re-review of ARCH-REV-011 / AR-007 after solution design replaced ambient task-root lookup with member/session-bound root authority.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `solution-revision-record.md` SR-012, `design-spec.md` DS-025/SR-012, and `integration-runtime-contracts.md` section 10; prior finding `AR-007`.
+- Relevant solution revision IDs: `SR-001`–`SR-012`
+- Prior authoritative decision: `Fail — Design Impact` (`ARCH-REV-011`)
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: SR-012 correctly makes `RootTeamRun` the sole task owner, creates a selector-free root-local resolver, propagates it through immutable member context, projects a discriminated Team-member session capability, makes the shared MCP task adapter/service/router scope-stateless, binds equivalent AutoByteus tools, removes the global Team service and identity-only native parser, preserves lifecycle/revocation, and requires no migration. AR-007 is narrowed to one actionable completeness issue: the supported general path currently constructs a custom `MixedTeamManager` in `general-process-run-supervisor.ts`, but the exact SR-012 Modify/test inventory omits that required resolver forwarding and does not disposition the mixed factory's current optional/no-op callback seam or all direct construction fixtures.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-006 | Resolved in earlier rounds | Remain resolved | `SR-003`–`SR-012`; runtime contracts sections 1–9 | SR-012 changes no tool readiness, activation/provisioning, sparse persistence, provider/model authority, Team projection, or accepted host catalog design. |
+| AR-007 | Open — application task adapter used process-general Team service | Partially resolved; remains open only for exact general constructor/default-callback/occurrence inventory | `SR-012`; BEH-013/UC-020/AC-036; DS-025; runtime contracts section 10 | Root/session/task/AutoByteus design is coherent. Current `GeneralProcessRunSupervisor` is a reachable custom `MixedTeamManager` constructor but is absent from the SR-012 delta; required resolver inputs also affect direct factory/manager/context fixtures beyond the declared exact list. |
+
+- New or remaining finding IDs: `AR-007`.
+- Material classification changes: none; the authoritative result remains `Fail — Design Impact`, but AR-007 severity narrows from the original cross-scope authority defect to a bounded medium construction/inventory correction. No requirement gap or new product behavior is introduced.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: APIE2E-F006 remains separate. After the final inventory correction, implementation must prove live general/application task isolation, MCP/AutoByteus parity, failure-before-mutation lifecycle, accepted public catalog/run behavior, dual hosts, package parity, recovery/cleanup, and Electron integration. Per-application execution scopes remain a future refactoring and do not affect SR-012.
+
+### ARCH-REV-013 — Exact construction closure resolves root-bound task authority
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
+- Review round and trigger: Round 13; SR-013 re-review of the narrowed ARCH-REV-012 / AR-007 general/default/fixture construction-completeness branch.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `solution-revision-record.md` SR-013, `design-spec.md` DS-025/SR-013, `integration-runtime-contracts.md` section 10, and `integration-path-inventory.txt` SR-013 addendum; prior finding `AR-007`.
+- Relevant solution revision IDs: `SR-001`–`SR-013`
+- Prior authoritative decision: `Fail — Design Impact` (`ARCH-REV-012`)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-013 adds the supported `GeneralProcessRunSupervisor` custom manager to the exact propagation inventory; requires the built-in, general, and application managers to forward the same root-local resolver; removes `noopCallbacks`; requires complete callbacks for executable `createBackend`/`restoreBackend`; and classifies all current production/test manager, factory, builder, context, and typed callback occurrences. Independent source counting confirmed `MixedTeamManager` 3/3, `MixedTeamRunBackendFactory` 3/8, `MemberTeamContextBuilder.build` 1/5, and direct `MemberTeamContext` 1/4. The two callback-free factory constructors are limited to `buildTeamRunContext()` in the named context-only test. The accepted SR-012 owner/session/task/AutoByteus/lifecycle/no-migration design is now actionable without a default or unowned construction path.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-006 | Resolved in earlier rounds | Remain resolved | `SR-003`–`SR-013`; runtime contracts sections 1–9 | SR-013 changes no required-tool readiness, activation/provisioning, sparse persistence, provider/model authority, Team projection, migration, or canonical host catalog decision. |
+| AR-007 | Open only for exact general constructor/default-callback/occurrence inventory | Resolved | `SR-013`; BEH-013/UC-020/AC-036; DS-025; runtime contracts section 10; path-inventory SR-013 addendum | General/application/default forwarding is exact; executable callbacks are required; `noopCallbacks` is removed; all current occurrences and fixtures are classified and guarded; lifecycle and no-migration contracts remain coherent. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: AR-007 is resolved and the authoritative result changes from `Fail — Design Impact` to `Pass`. No approved behavior, product surface, migration, compatibility path, manager unification, or broader execution-scope refactor is introduced.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: implementation and downstream review must prove live general/application MCP and AutoByteus root isolation, resolver identity through fresh/restored/nested/task-member paths, failure before mutation, exact occurrence enforcement, the accepted SR-011 public catalog/run behavior, retained dual-host/package/provider/Team V2/migration/recovery/cleanup behavior, and Electron integration. APIE2E-F006 remains separate. Per-application execution scopes remain a future refactor.

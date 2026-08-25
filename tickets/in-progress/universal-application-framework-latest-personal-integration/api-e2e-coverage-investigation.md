@@ -800,3 +800,175 @@ This section supersedes the round-four planning status above.
 - Cleanup/isolation: **Pass**. Ports `3049`, `8049`, `43301`, and `43302` are free; all marked `/private/tmp/api-rev009-*` roots, per-app `.autobyteus` roots and generated outputs were removed; the ordinary application on `29695` was preserved; zero of 12 secret-like source values appeared in 38 retained text evidence files.
 - Final result: **Pass / 98%**. Every current critical criterion has direct evidence; every confidence category is at least 96%; broader validation was **Required; executed; Pass**. Electron packaging remains downstream delivery-owned and historical `APIE2E-REPO-005` remains separate/Unclear.
 - Required route: `/code_reviewer` for workflow-required proportional test-code review, expected **Not Applicable** because API-REV-009 changed no durable coverage.
+
+## API-REV-010 IR-011 / Personal v1.4.58 Hierarchical TeamRun V2 Investigation
+
+- Trigger: `/code_reviewer` `CRR-019` Pass / 95 for `IR-011`; reviewer/current HEAD `243143e62e0f198bf14f411a9688d59d5febc5f0`, reviewed implementation artifact `1734f641ce0c5982b25b59b3314ed9bbd75b4747`, source/test correction `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`.
+- Governing revisions: `SR-009`–`SR-010`, `ARCH-REV-009`–`ARCH-REV-010`, `IR-010`–`IR-011`, `CRR-018`–`CRR-019`, delivery re-entry `DR-010`.
+- Current-round rule: API-REV-009 proves the v1.4.57 controlled-workspace tree only. The v1.4.58 merge changes Team topology, application launch projection, allocation order, TeamRun current persistence/history, migrations, stored memory and hierarchical UI, so current-head repository, real process and browser evidence is mandatory. Electron remains delivery-owned.
+
+### Changed Runtime Surfaces And Boundaries
+
+1. **Application hierarchical Team launch:** package/selected/stored precedence must resolve complete effective values for every Team scope and Agent leaf, including runtime, model, LLM config, workspace and provenance, then map them through the backend SDK and application binding without launch-time inference.
+2. **Validation before allocation:** Personal's topology planner must reject invalid Team-scope and Agent-leaf values before either Team or Agent identity allocation, manager creation, catalog admission or binding persistence.
+3. **TeamRun execution-tree V2:** current create/persist/history/restore/location readers are V2-only; exact Team defaults, Agent snapshots, identities, application binding, handoffs, tasks and nested physical scope must remain coherent.
+4. **Forward-only migration:** required startup order is TeamRun V1 promotion -> nested Team Agent memory-layout repair -> TeamRun V2 migration -> later snapshot/external migrations -> strict current package catalog admission. V1 knowledge remains migration-only; fresh/current V2 data is directly usable.
+5. **Stored-memory ownership:** migration-time location classification must use stored V2 execution-tree services, never a live process-global Team manager.
+6. **Hierarchical Studio forms:** editable root/nested Team/Agent controls and immutable stored V2 presentation must retain the existing controlled-workspace and provider-granular model settlement contracts, including nullable runtime and historical/unavailable selection warnings.
+7. **Retained dual-host system:** real Brief/Socratic Studio/standalone business execution, provider/model readiness, scoped Agent Tools, recipient handoff/publication/projection, nested Team memory/history, watcher reload, remount/restart, route separation, package integrity and cleanup must remain current.
+8. **Source/generated topology:** exact v1.4.58 merge history, all content/generated conflict dispositions, Personal prototype isolation and no retired V1/current-reader or compatibility seam.
+
+### Authoritative Instructions And Environment
+
+- `autobyteus-server-ts/AGENTS.md`: use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`; build shared SDK prerequisites before clean-source server/e2e execution.
+- `autobyteus-web/AGENTS.md`: use `pnpm test:nuxt ... --run`; browser is the preferred web-equivalent desktop surface; Electron remains downstream.
+- Root `package.json`: `test:e2e`, real-E2E preflight, supported secret import, and root development scripts remain canonical.
+- Maintained application READMEs define `build`, `validate`, `dev`, `dev:studio`, setup-first Studio entry, package-owned Brief publication/handoff, and exact Socratic `/tutor` binding behavior.
+- Real execution will use installed Chrome, authenticated Codex, isolated loopback ports and marked `/private/tmp/api-rev010-*` roots. Supported credential import may use `/Users/normy/.autobyteus/server-data/.env` value-safely; `/Users/normy/autobyteus_org/autobyteus-agents` is an approved external package source. The ordinary app/data will not be stopped or reused.
+
+### Durable Coverage Inventory And Validity Decisions
+
+| Durable path / group | Decision | Rationale / execution action |
+| --- | --- | --- |
+| application baseline/overlay/configuration/host-validator/team-scope tests | **Still Valid; critical** | exact application-owned precedence, complete Team/Agent projection, provider/current-model readiness and pre-upsert failure |
+| `team-definition-topology-planner.test.ts`, `team-run-service.test.ts` and service integration | **Still Valid; critical** | exact coverage, normalization and zero-allocation/manager/catalog side effects for invalid Team or Agent inputs |
+| V1, nested-memory and V2 migration unit/e2e suites | **Still Valid; critical** | forward-only order, reconstruction, binding preservation, failure/retry and strict current admission |
+| TeamRun V2 package catalog/history/location/restart suites | **Still Valid; critical** | V2-only current readers, nested physical scope and same-data recovery |
+| application run-binding, backend SDK, imported Brief/context capability suites | **Still Valid; critical** | exact complete wire mapping, binding identities and package immutability |
+| hierarchical/stored web form tests plus controlled workspace/provider suites | **Still Valid; critical** | current editable/stored V2 UI must compose with API-REV-009 state and provider behavior |
+| devkit maintained package tests | **Still Valid** | authoring/package truth, watcher/atomic output and validation behavior |
+| prior API-REV-009 real scenarios | **Replace as current execution evidence, not durable code** | scenario definitions remain useful, but v1.4.58 launch/persistence/UI code requires current execution |
+| recursive cleanup two diagnostic failures and `APIE2E-REPO-005` | **Unclear / separate characterization** | reviewer confirms V2 parsing now executes; unchanged standalone diagnostic expectations are not IR-011 attribution or Pass evidence |
+
+### Coverage Gaps And Decisions
+
+- `APIE2E-HIERARCHY-010`: real application-owned Team launch must expose complete Team/Agent values and a V2 execution tree before publication/history. **Use imported-package integration plus real Brief/Studio and current Team browser/API correlation**.
+- `APIE2E-VALIDATION-010`: invalid Team and Agent models must cause zero Team/Agent allocation, manager create, catalog or binding persistence. **Use direct durable planner/service tests**; temporary API probe only if side-effect evidence is ambiguous.
+- `APIE2E-MIGRATION-010`: V1 -> memory -> V2 order, current V2 direct admission and old-data restart/history must execute on current HEAD. **Use actual SQLite/process E2E and startup-gate suites**.
+- `APIE2E-NESTED-010`: nested Team/current V2 physical scope and recovery need real run/history correlation. **Use current mixed/nested Team E2E plus real Classroom team**.
+- `APIE2E-DUAL-HOST-010`, `PUBLICATION-010`, `RECOVERY-010`, `REMOUNT-010`, `ROUTES-010`, `PARITY-010`: **real process/browser rerun required** because v1.4.58 changes launch, persistence/history and hierarchical renderer paths.
+- Repository-resident durable change planned: **None**. IR-011 already adds/updates direct implementation-owned regressions. Any failure will be revalidated against SR-010 before a test/source attribution or durable edit.
+
+### Planned Execution Order
+
+1. exact current ancestry/index/marker/retired-seam/generated-output/prototype audit;
+2. affected launch/planner/service/application binding/backend SDK/architecture suites;
+3. V1/nested-memory/V2 migration registry, catalog, history and actual-process restart suites;
+4. hierarchical/stored web plus controlled-workspace/provider suites;
+5. SDK/devkit/server/web and maintained app build/validate gates;
+6. isolated Studio and standalone with real provider/model, nested Team, Brief/Socratic publication/handoff/projection and browser evidence;
+7. graceful same-data restart, explicit remount, route separation, repeated watcher loops and exact 73-path parity;
+8. cleanup/leak/secret scan, confidence reassessment, canonical API-REV-010 report/revision and outcome routing.
+
+### Pre-Execution Confidence And Broader-Validation Gate
+
+| Category | Confidence | Gap |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 78% | current V2 migration, complete Team launch and real hosts pending |
+| Changed-boundary execution directness | 90% | source review is strong; independent API-owned execution pending |
+| Cross-boundary integration realism | 72% | real V2 application/provider/browser/history path pending |
+| Environment/configuration/identity fidelity | 82% | exact current packages/roots/provider identities pending |
+| Failure/lifecycle/recovery | 74% | current V1/V2 recovery, restart and invalid-side-effect proof pending |
+| User/browser/desktop-equivalent | 70% | current hierarchical renderer and application iframes pending |
+| Durable regression quality/relevance | 96% | direct coverage exists; independent reconciliation/execution pending |
+
+- Overall pre-execution confidence: **80%** (simple average, rounded).
+- Every critical current criterion directly proven by API/E2E: **No**.
+- Broader validation: **Required**. Repository tests cannot alone prove current package/provider/browser/business/restart/watch/integrity behavior.
+
+### API-REV-010 Post-Repository Resolution — Critical Failure Reroute
+
+- Exact executed identity remained reviewer HEAD `243143e62e0f198bf14f411a9688d59d5febc5f0` (`CRR-019`), implementation artifact `1734f641ce0c5982b25b59b3314ed9bbd75b4747`, and IR-011 correction `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`.
+- Topology and direct affected coverage passed: current ancestry/index/retired-seam audit; architecture, migration ordering, V2 catalog, planner, TeamRun and launch-configuration selection `10 files / 79 tests`; backend SDK `2/10`; frontend SDK `12/12`; server production build; devkit authoritative rerun `21/21`; both maintained package build/validate.
+- The first multi-file E2E attempt before canonical build/package prerequisites was environment-invalid (`TEST_SERVER_BUILD_REQUIRED` and missing Brief package). After building the documented prerequisites, the authoritative selection executed `44` tests and exposed five real failures. Each material failure was rerun alone.
+- **Coverage validity revision:** the current hierarchical GraphQL V2 lifecycle assertion remains **Still Valid; critical**. Creating an Agent/Team definition through the public Studio GraphQL authority and immediately launching it is a supported product boundary. The current real server returned `AgentTeamDefinition ... not found`; a separate non-fake API probe reproduced both Agent and Team cases: definition creation/listing returned HTTP 200, while `createAgentRun` returned `AgentDefinition ... cannot be loaded for agent run identity allocation` and `createAgentTeamRun` returned `AgentTeamDefinition ... not found`.
+- Source correlation shows definition GraphQL resolvers consume `getStudioAgentDefinitionService()` / `getStudioAgentTeamDefinitionService()`, while run GraphQL resolvers capture process-global `getAgentRunService()` / `getTeamRunService()` whose defaults construct/use separate definition authorities. This is direct evidence of an authority split, not a fixture typo. It overlaps the old post-migration general-run signature previously carried as `APIE2E-REPO-005`, so API/E2E does **not** attribute it to IR-011; focused origin review must decide whether the new hierarchical failure is the same pre-existing debt or a current integration defect.
+- **`APIE2E-HIERARCHY-010` / `APIE2E-F005`: Fail.** The durable hierarchical lifecycle passed all six invalid Team/Agent zero-side-effect cases but failed the positive persist/restart case because the newly created root definition could not be resolved by the run owner.
+- **`APIE2E-MIGRATION-010` / `APIE2E-F006`: Fail.** The actual-process nested-memory migration positive path passed and remained canonical after restart. Its failure/retry path completed the public migration action successfully but the next public projection read returned GraphQL error `AgentRun 'agent-run-architect' was not found in root TeamRun 'team-run-root'`. API-REV-008 had passed the earlier two-case suite; the current current-tree expectation is valid under the approved old-data nested history/recovery requirement.
+- The production-upgrade E2E continued to report three post-migration general-run failures and one overlap guard Pass. Those three failures retain historical `APIE2E-REPO-005` **Unclear / separate** status; they corroborate the authority split but are not independently attributed to IR-011.
+- No repository-resident durable test or production source was added, updated or removed by API/E2E. A temporary harness diagnostic exposed the hidden GraphQL payload for `APIE2E-F006`; the harness was restored byte-for-byte and all generated prerequisites, test roots and owned processes were cleaned.
+- Broader real Studio/standalone/browser/provider/remount/watcher/parity execution remained **Required but was not started** after the critical real-server failures. Continuing could not restore a Pass and would violate fail-fast focused-origin routing.
+
+#### Post-Repository Confidence
+
+| Category | Confidence | Evidence / gap |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 55% | direct positive validation/allocation and migration-recovery requirements fail; retained real-host matrix not reached |
+| Changed-boundary execution directness | 95% | real built server, public GraphQL, actual SQLite/process migration and non-fake authority probe directly reproduce the defects |
+| Cross-boundary integration realism | 70% | real server/process/GraphQL/SQLite executed; real provider and browser/application boundary stopped on failure |
+| Environment/configuration/identity fidelity | 85% | clean built outputs, isolated roots/databases and generated packages; no live credential/provider needed for these failures |
+| Failure/lifecycle/recovery | 60% | invalid-allocation guards pass, but positive hierarchy restart and migration retry projection fail |
+| User/browser/desktop-equivalent | 50% | browser/dual-host journey intentionally not executed after critical API failure; Electron remains delivery-owned |
+| Durable regression quality/relevance | 90% | direct durable tests caught both failures; historical `APIE2E-REPO-005` remains explicitly separated |
+
+- Overall current confidence: **72%** (simple average, rounded).
+- Result: **Fail**. Critical current criteria are failing; one category is below 90% and the default 95% target is not met.
+- Required route: `/code_reviewer` for focused failure-origin review of `APIE2E-F005` and `APIE2E-F006`, not proportional successful-test review.
+
+## API-REV-011 IR-012 Canonical Definition / RootTeamRun Authority Rerun Investigation
+
+- Trigger: `/code_reviewer` `CRR-021` Pass / 94 for `IR-012`, after `CRR-020` classified `APIE2E-F005` as Design Impact / `CR-011` and `APIE2E-F006` as an API/E2E-owned stale durable sequence.
+- Current reviewer HEAD: `16a6772a0`; reviewed implementation HEAD `5df709c89855231e26c6f7dafb6a73dda10cf4c0`; source commits `3a02f19b25c3719877c9d7ed485da0db815c59e4` and `2d76ea493a440503f24cfc5cd0b481585c351def`.
+- Governing revisions: `SR-011`–`SR-013`, `ARCH-REV-013`, `IR-012`, `CRR-020`–`CRR-021`, plus retained current v1.4.58 requirements.
+- API-REV-010 is the prior authoritative **Fail / 72%**. Its exact failures must be reconciled first; no prior Pass is inferred for this source.
+
+### Changed Runtime Surfaces And Boundaries
+
+1. **Canonical host definition authority:** Studio and standalone must construct, bind and reverse-unwind one exact bundle-aware Agent/Team definition pair shared by public definition CRUD, explicit general execution and graph-local application execution, while their managers and MCP session managers remain intentionally distinct.
+2. **Exact general run construction:** public Agent/Team CRUD -> list/update -> launch -> terminate/restart must consume the exact bound definitions; early/default construction fails closed and second-host lifecycle remains identity-safe.
+3. **RootTeamRun task authority:** general and application Team members must receive a selector-free resolver for their exact active root through mixed construction, immutable member context, authenticated MCP capability and native AutoByteus tools. No global TeamRunService lookup, noop task callback or old custom-data selector may participate.
+4. **Forward-only migration retry:** public retry executes only the selected ID. After retrying `20260823_repair_team_agent_memory_layout`, the current V2-only projection is not valid until `20260824_team_run_execution_tree_v2` is explicitly retried/admitted or startup runs the remaining pending migrations.
+5. **Retained system:** application/general task isolation, provider/workspace/model selection, hierarchical V2 launch/history, Brief/Socratic dual hosts and business publication/handoff/projection, recovery/remount, route separation, watcher/package parity and cleanup remain required.
+
+### Durable Coverage Reconciliation Before Execution
+
+| Path / group | Decision | Required action |
+| --- | --- | --- |
+| `tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | **Still Valid; rerun first** | exact public CRUD-created hierarchy must launch/persist/restart on the canonical authority |
+| `tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` second case | **Needs Update; API/E2E Local Fix** | after memory retry, explicitly run/assert the V2 migration before the current V2-only projection; do not add cascading or fallback |
+| IR-012 exact service identity, host lifecycle, general/application task resolver and MCP/native tool tests | **Still Valid; critical** | rerun current 30-file affected set or equivalent grouped selection and current architecture inventory |
+| prior application/Team V2/provider/workspace/dual-host durable coverage | **Still Valid; current rerun required** | execute current head after exact failures resolve |
+| `APIE2E-REPO-005` | **Unclear / separate** | retain characterization; do not use as current failure attribution or Pass evidence |
+
+### Execution Order And Broader Gate
+
+1. Confirm current identity/topology and preserve other-role dirty/untracked artifacts, including generated outputs already present at entry.
+2. Build clean-source prerequisites only as needed, then rerun `APIE2E-F005` on the real built public CRUD -> launch path before changing F006 coverage.
+3. Update only the stale F006 durable sequence; run the exact nested migration file first.
+4. Run IR-012 affected authority/task/lifecycle/architecture coverage, current hierarchical/migration/application/server matrix, SDK/devkit/web/maintained-app gates.
+5. Execute current isolated Studio and standalone with real provider/model, general/application task isolation, Brief/Socratic business publication/named handoff/projection, V2 history/recovery, browser/remount, route separation and watcher/package parity.
+6. Clean only API-REV-011-owned resources/output; preserve all paths present at entry and all other-role artifacts. Update canonical reports and route any durable test edit through proportional code review.
+
+### Pre-Execution Confidence And Broader-Validation Decision
+
+| Category | Confidence | Gap |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 74% | F005 source fix and F006 corrected sequence not yet independently executed |
+| Changed-boundary directness | 88% | CRR-021 source evidence strong; real public API rerun pending |
+| Cross-boundary integration realism | 70% | current real host/provider/task/browser boundaries pending |
+| Environment/configuration/identity fidelity | 80% | exact current host definitions, roots, provider identities pending |
+| Failure/lifecycle/recovery | 72% | exact prior failures, reverse unwind, revoke/restart and V2 retry pending |
+| User/browser/desktop-equivalent | 68% | current browser dual-host journeys pending; Electron downstream |
+| Durable regression quality/relevance | 90% | one precise stale sequence is identified; corrected execution pending |
+
+- Overall pre-execution confidence: **77%** (simple average, rounded).
+- Broader validation: **Required**. Repository coverage cannot by itself prove the corrected public authority, exact live RootTeamRun task routing, provider/business execution, browser lifecycle or package parity.
+- Initial generated-output preservation: `autobyteus-ts/dist`, both application SDK contract/backend/frontend `dist`, devkit `dist`, server `dist`, Brief `dist`, and web `.nuxt` were present before API-REV-011 execution and are treated as other-role/pre-existing state. Socratic `dist` was absent.
+
+### API-REV-011 Post-Execution Coverage Resolution (Authoritative)
+
+- Executed identity: reviewer HEAD `16a6772a04ef8a0f75f0a11044f9fca8192a4df8`, reviewed IR-012 implementation HEAD `5df709c89855231e26c6f7dafb6a73dda10cf4c0`.
+- Prior-failure-first rule: **satisfied**. `APIE2E-F005` public CRUD -> hierarchical launch passed `7/7` before any durable edit. `APIE2E-F006` then passed `2/2` after the one approved API/E2E test correction.
+- Durable validity resolution: `tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` second case is now **Updated / Still Valid**. It explicitly asserts V2 remains `NOT_RUN` after the memory migration failure, retries memory, invokes `20260824_team_run_execution_tree_v2`, asserts successful first-attempt admission, and only then reads the V2-only current projection. This protects the approved operation without production cascading, V1 fallback or compatibility behavior.
+- Canonical authority/task coverage: **Pass**. The exact CRR-021 selection passed `30 files / 202 tests`, covering exact definition service identities, deliberately distinct general/application managers and MCP sessions, selector-free RootTeamRun task resolution, native AutoByteus wiring, authenticated Agent Tools, reverse lifecycle and architecture guards.
+- Current repository coverage: **Pass**. The affected server matrix passed `10 files / 81 tests`; production V1/memory/V2 upgrade passed `4/4`; current application integration passed 32 tests with one documented environment gate; focused web passed `13 files / 100 tests`. Backend SDK `10/10`, frontend SDK `12/12`, devkit `21/21`, server build/bootstrap, Nuxt production/static build, and both maintained application type/build/validate gates passed.
+- Current real standalone: **Pass**. Installed Chrome exercised Socratic and Brief through the maintained `dev -- --port ... --no-open` commands. Socratic retained the real Codex Luna solution `8x + 7 = 31` -> `x = 3`; Brief retained Researcher/Writer publication and `in_review` after repeated edit/restore watcher restarts.
+- Current real Studio: **Pass**. Isolated Studio plus both `dev:studio` commands exposed exact bundled application definitions, valid setup, enabled entry and exactly one iframe. Socratic solved/recovered `9x + 4 = 49` -> `x = 5`; Brief completed real Researcher publication, named `/writer` handoff, Writer final publication and two projected stages. Navigation remount and a later same-data backend restart recovered both states with zero application console errors.
+- Current general-process task isolation: **Pass**. A real `Classroom Simulation Team` used Professor Codex `gpt-5.6-luna` and Student AutoByteus `deepseek-v4-flash` on one exact workspace. Professor wrote the `3 + 4` assignment and sent it to `/student`; Student read it, wrote the answer `7`, and replied to `/professor`. The two persisted recipient-name messages and both exact launch configurations are captured. After a process restart, the run was inactive with communication retained; public restore and public terminate both succeeded against the same TeamRun ID.
+- Route/recovery/lifecycle: **Pass**. Internal Agent Tools rejected unauthenticated fake sessions at `401` on Studio and both standalone hosts. Studio external gateway initialized at `200`; standalone external gateways were absent at `404`. One transient Brief Writer process failure was recovered by a replacement Writer run that reached the required final projection. Durable lifecycle coverage plus live restart/restore/terminate closes the active-run recovery boundary.
+- Maintained command/package integrity: **Pass**. Both apps observed two `dev:studio` source changes (edit and restore), package reload and remount instructions; their standalone commands also restarted on edit/restore. The exact Brief package/authoring set remained `73/73` SHA-256 identical with `0` changed paths.
+- Environment fidelity: **Pass**. The accepted Studio backend explicitly removed the user's shell `DATABASE_URL` and logged its isolated SQLite file. Nine credential assignments were imported through the supported CLI without retained values. `/Users/normy/autobyteus_org/autobyteus-agents` was already configured and exposed 7 shared agents, 50 team-local agents and 12 teams. Chrome, authenticated Codex and live DeepSeek were used; no provider response was fabricated.
+- Cleanup/isolation: **Pass**. API-owned ports `43321`, `43322`, `8051`, `3051` have zero listeners; isolated/per-app roots, temporary scripts, API-created Socratic output and devkit scratch were removed. Every generated path present at entry was preserved. Maintained source hashes were restored, `git diff --check` passed, and zero of 12 secret-like source values matched 36 retained text evidence files.
+- Historical separation: the production-upgrade component associated with earlier general-run symptoms now passes `4/4`, but historical `APIE2E-REPO-005` remains **Unclear / separate** for unrelated broad-suite diagnostics. It is neither current failure attribution nor used as Pass evidence.
+- Final result: **Pass / 98%**. Every API/E2E critical criterion has direct current evidence; every confidence category is at least 97%; broader validation was **Required; executed; Pass**. Electron packaging/shell remains downstream delivery-owned.
+- Required route: `/code_reviewer` for proportional review of `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` before delivery resumes.

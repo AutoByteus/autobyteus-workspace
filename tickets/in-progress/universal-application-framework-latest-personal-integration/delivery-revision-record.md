@@ -13,6 +13,7 @@
 | DR-007 | CRR-015/API-REV-008 return the design-resolved newest-Personal candidate; user requests latest base and Electron rebuild | DR-006 Blocked — Design Impact | Latest-base integrated Electron 1.4.56 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-007-* |
 | DR-008 | User reports origin/personal advanced and requests latest integration plus Electron rebuild | DR-007 ready for verification on 52b4be02e | Blocked — Design Impact; v1.4.57 workspace-selection refresh conflicts with 2 provider-granular durable tests | latest-base-refresh-round-4-conflict-report.md, evidence/delivery/dr-008-base-refresh-and-integration.log |
 | DR-009 | CRR-017/API-REV-009 return the design-resolved v1.4.57 candidate for delivery | DR-008 Blocked — Design Impact | Latest-base integrated Electron 1.4.57 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-009-* |
+| DR-010 | User reports origin/personal advanced and requests latest integration plus Electron rebuild | DR-009 ready for verification on 8a4c3868c | Blocked — Design Impact; v1.4.58 hierarchical Team/migration refresh produces 43 conflicts | latest-base-refresh-round-5-conflict-report.md, evidence/delivery/dr-010-base-refresh-and-integration.log |
 
 ## Revision Entries
 
@@ -173,3 +174,19 @@
 - User/finalization state: explicit verification of this exact DR-009 package has not been received. Ticket remains in progress. No final delivery commit/push, Personal merge/push, tag, hosted release, deployment, archive, or cleanup occurred.
 - Next action: user tests the exact 1.4.57 DMG/hash and replies with approval/completion or an issue.
 - Remaining risks/hold: unsigned/unnotarized local package; normal launch may apply pending standard migrations; provider availability is mutable; Electron artifacts do not travel with Git. Refresh Personal after verification and require renewed verification if the candidate materially changes. Finalization remains ticket-branch-only unless Personal integration is separately authorized.
+
+### DR-010 — Personal v1.4.58 hierarchical Team refresh requires design-led integration
+
+- Round/trigger: Round 10; user reports `origin/personal` advanced again and requests newest-base integration plus another Electron rebuild.
+- Prior result: DR-009 Electron 1.4.57 package ready for verification on Personal `8a4c3868c7c54a46991f45be22a68151076412b1`.
+- Current result: Blocked — Design Impact; Electron 1.4.58 rebuild not started.
+- Safety checkpoint: committed the complete DR-009 delivery package locally as `c6d74710ad30b680f853fba0e90a68255f112955` before refresh.
+- Latest-base refresh: fetched `origin/personal@fb1335867a4223b2499e4513f58c609b6ac33ab4` (contains `v1.4.58`), 38 commits beyond the DR-009 base. Pre-integration divergence is Personal 38 ahead / ticket 160 ahead from merge base `8a4c3868c7c54a46991f45be22a68151076412b1`.
+- New base scope: finalized hierarchical Team launch/stored configuration, Team execution-tree v2 schema/history/runtime behavior and registered app-data migration, SDK launch-profile updates, maintained application package regeneration, current web/server docs and proof, and the 1.4.58 release bump.
+- Integration preview: `git merge-tree --write-tree HEAD origin/personal` exited 1 with 43 conflicts across 50 changed-both paths: 13 content conflicts in runtime/migration/SDK/web/test owners and 30 modify/delete conflicts in generated SDK and maintained application package outputs. No actual merge was started; the worktree has zero unmerged paths.
+- Design impact: the integration must reconcile hierarchical Team configuration and v2 migration ordering with the ticket's graph-local application runtime, physical scope, binding/history authority, package-regeneration ownership, provider-granular model behavior, and controlled workspace selection. Whole-side or generated-output selection is unsafe.
+- Canonical analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`.
+- Routing: Solution Designer must define the combined runtime, migration, SDK/package, form, and durable-coverage contract, then route it through the normal downstream gates.
+- User/finalization state: DR-009 1.4.57 is superseded for the newest-base request. Ticket remains in progress. No merge, Electron rebuild, final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
+- Resume condition: design-approved semantic integration, architecture/implementation/source/API-E2E/test-review gates, fresh delivery ref check, and Electron rebuild.

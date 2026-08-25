@@ -2,181 +2,155 @@
 
 ## Execution Round Meta
 
-- Current API/E2E revision: `API-REV-009`; execution round 9.
-- Trigger: `/code_reviewer` `CRR-016` Pass / 95 for `IR-009` controlled-workspace integration.
-- Executed reviewer HEAD: `f389358e70054a9e249dd0f06623c1c154c130a5`.
-- Reviewed implementation artifact: `8a7955e9455eadc1be689aa4802384381f2107d8`.
-- Semantic merge: `53dd98b53490947ed96d4dda9fb45d9c80719740`.
-- Governing package: `SR-008`, `ARCH-REV-008`, `IR-009`, `CRR-016`, `DR-008` and the canonical requirements/design/investigation artifacts in this ticket directory.
-- Prior authoritative result: `API-REV-008` Pass / 98% for its earlier exact reviewed tree.
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
+- Supplemental Task Artifacts: `integration-strategy-analysis.md`, `integration-runtime-contracts.md`, `integration-path-inventory.txt`, `latest-base-refresh-round-5-design-analysis.md`, and `latest-base-refresh-round-5-conflict-report.md` in the same ticket directory.
+- Solution / architecture / implementation / review records: canonical files in the same ticket directory through `CRR-021` / `IR-012` / `SR-011`–`SR-013` / `ARCH-REV-013`.
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md` (`DR-010` re-entry context).
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md`
+- Current API/E2E Revision ID / round: `API-REV-011` / 11.
+- Trigger: `/code_reviewer` `CRR-021` Pass / 94 for `IR-012`, plus `CRR-020` classification of `APIE2E-F006` as an API/E2E-owned stale test sequence.
+- Executed HEAD: `16a6772a04ef8a0f75f0a11044f9fca8192a4df8`; reviewed implementation HEAD `5df709c89855231e26c6f7dafb6a73dda10cf4c0`.
+- Prior authoritative round: `API-REV-010` **Fail / 72%**.
 
 ## Executive Result
 
-**Pass / 98% validation confidence.** IR-009's controlled New-workspace behavior and the retained current dual-host system pass repository, API, real-process, installed-Chrome and live-provider execution.
+**Pass / 98% final validation confidence.** Both prior critical failures are resolved, the single stale durable sequence is corrected without a production compatibility path, and the complete current-head repository plus real dual-host matrix passed.
 
-- Agent New selection survived runtime/model changes, registered once, launched once and correlated to real Codex Luna response/history.
-- Team New selection survived global and member runtime/model changes, registered once and launched one real mixed Classroom team: Professor Codex `gpt-5.6-luna`, Student AutoByteus `deepseek-v4-flash`, exact workspace roots, artifacts and two recipient-name messages.
-- Registration failure retained New mode/path/error and performed zero launch with no stale fallback.
-- Socratic passed real standalone and Studio business turns. Brief Studio passed real Researcher publication, `/writer` handoff, Writer publication and projected final state.
-- Both maintained `dev` and `dev:studio` loops, explicit Studio remount, standalone/Studio restart recovery, route separation and exact `73/73` byte parity passed.
-- Cleanup was leak-free and retained evidence contains zero compared secret-like values.
+- `APIE2E-F005`: public CRUD-created hierarchy now launches and persists through the canonical authority (`7/7` Pass).
+- `APIE2E-F006`: the durable failure/retry case now executes the supported memory-retry -> explicit V2-admission -> current-projection order (`2/2` Pass).
+- IR-012 authority/task/lifecycle selection: `30 files / 202 tests` Pass.
+- Current affected server selection: `10 files / 81 tests` Pass; production-upgrade E2E `4/4` Pass.
+- Real installed-Chrome execution passed for Socratic and Brief in both standalone and Studio, including authenticated Codex Luna, real publication, named handoff, artifacts, explicit remount, same-data restart and watch recovery.
+- A current real general `Classroom Simulation Team` run passed with Professor Codex `gpt-5.6-luna`, Student AutoByteus `deepseek-v4-flash`, exact shared workspace, file-backed two-way `/professor` <-> `/student` messaging, restart, restore and terminate.
+- Internal Agent Tools versus Studio-only external gateway separation passed; exact Brief package/authoring parity remained `73/73` bytes.
+- All API-owned ports, roots, temporary scripts and newly generated Socratic output were cleaned. Pre-existing generated outputs and other roles' dirty artifacts were preserved. Zero owner-supplied secret values appeared in retained text evidence.
 
-The unchanged adjacent web mock failures retain the independently reviewed `APIE2E-REPO-005` signature and remain **Unclear / separate**. They are neither IR-009 failure evidence nor Pass evidence. Electron packaging remains delivery-owned.
+Historical `APIE2E-REPO-005` remains separately **Unclear** and is neither required current failure attribution nor Pass evidence. Its production-upgrade component now passes `4/4`; no claim is made about unrelated historical full-suite diagnostics. Electron packaging/shell execution remains delivery-owned.
 
-## Investigation And Coverage Decisions
+## Investigation And Compatibility Basis
 
-- Coverage investigation completed before final execution: **Yes**; see the `API-REV-009` section in `api-e2e-coverage-investigation.md`.
-- Affected existing durable coverage decision: **Still Valid**.
-- Durable coverage added/updated/removed by API-REV-009: **None**.
-- Production source changed by API/E2E: **None**.
-- Broader validation: **Required; executed; Pass** because repository mocks cannot prove real browser state, bound-node registration, process/provider behavior, history, watcher restart or byte integrity.
-- Persisted-data outcome: **Directly Usable — No Migration**. Current registry/history/application records were read normally after restart; no compatibility path was used.
+- Investigation completed before durable edit/final execution: **Yes**; the API-REV-011 section records current surfaces, validity decisions, execution order and pre-execution score.
+- Plan followed: **Yes**. Prior failures ran first; F006 coverage changed only after its supported order was confirmed; repository checks preceded browser/system execution.
+- Existing coverage decision revised: `nested-team-history-restart.e2e.test.ts` second case changed from **Needs Update** to **Updated / Still Valid**, because `runMigration(id)` intentionally executes exactly the requested migration and current projection is V2-only.
+- Backward-compatibility/legacy retention introduced or protected: **No**. The durable fix explicitly advances through the approved forward-only V2 migration; it does not add cascading, dual-read, fallback or runtime compatibility behavior.
+- Reroute required during execution: **No**.
 
-## Scenario Matrix
+## Changed Boundary And Evidence Matrix
 
-| Scenario | Boundary | Result | Evidence |
-| --- | --- | --- | --- |
-| `APIE2E-TOPOLOGY-009` | reviewed ancestry, merge/index, retired seams | Pass | `api-rev-009-topology.log` |
-| `APIE2E-WORKSPACE-AGENT-009` | controlled New -> one register -> one Agent launch -> history | Pass | `api-rev-009-workspace-agent-real.json/.png`; projection JSON |
-| `APIE2E-WORKSPACE-TEAM-009` | controlled New across global/member edits -> one mixed Team launch | Pass | `api-rev-009-workspace-team-real.json/.png` |
-| `APIE2E-WORKSPACE-FAILURE-009` | retained New/path/error; zero launch; no fallback | Pass | `api-rev-009-workspace-failure.json/.png` |
-| `APIE2E-STUDIO-BRIEF-009` | real publication, named handoff, projection | Pass | `api-rev-009-brief-studio-real.json/.png`; backend log |
-| `APIE2E-STUDIO-SOCRATIC-009` | real maintained first-turn identity/projection | Pass | `api-rev-009-socratic-studio-real.json/.png` |
-| `APIE2E-STANDALONE-009` | both hosts render; real Socratic; Brief durable restart | Pass | standalone JSON/PNG and process logs |
-| `APIE2E-REMOUNT-009` | visible explicit iframe remount and retained state | Pass | `api-rev-009-studio-remount.json` |
-| `APIE2E-RECOVERY-009` | same-data Studio and watcher restart recovery | Pass | restart logs and recovery JSON |
-| `APIE2E-ROUTES-009` | internal Agent Tools versus Studio-only gateway | Pass | `api-rev-009-route-separation.log` |
-| `APIE2E-PARITY-009` | repeated dev loops and immutable package/authoring truth | Pass | four dev logs; pre/post hashes; parity log |
-| `APIE2E-CLEANUP-009` | process/port/root/output/secret isolation | Pass | cleanup and secret-scan logs |
-| `APIE2E-REPO-005` | inherited broad repository debt | Unclear / separate | adjacent log plus CRR-016 full-web characterization |
+| Scenario ID | Boundary / requirement | Execution surface | Type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| `APIE2E-F005` / `APIE2E-HIERARCHY-010` | exact public CRUD definition authority -> hierarchical Team launch/persist/restart | built-server E2E | Durable | Pass `7/7` | `evidence/api-e2e/api-rev-011-f005-public-crud-launch.log` |
+| `APIE2E-F006` / `APIE2E-MIGRATION-010` | memory retry -> explicit V2 admission -> current projection | real process/SQLite/GraphQL E2E | Durable | Pass `2/2` | `api-rev-011-f006-corrected-migration-sequence.log` |
+| `APIE2E-AUTHORITY-011` | exact canonical Agent/Team definitions, separate manager/session identities, selector-free RootTeamRun resolver | architecture/unit/integration | Durable | Pass `30 files / 202 tests` | `api-rev-011-authority-task-matrix.log` |
+| `APIE2E-CURRENT-SERVER-011` | migrations, launch configuration, planner, catalog, startup gate | unit/integration | Durable | Pass `10 files / 81 tests` | `api-rev-011-affected-server.log` |
+| `APIE2E-PRODUCTION-UPGRADE-011` | V1 -> memory -> V2 production upgrade/current launch | actual-process E2E | Durable | Pass `4/4` | `api-rev-011-production-upgrade.log` |
+| `APIE2E-APPLICATION-011` | application capabilities, imported Brief, binding/launch, standalone host, Team service | integration | Durable | Pass `32`; one documented env-gated skip | `api-rev-011-application-integration.log` |
+| `APIE2E-WEB-011` | hierarchical/current workspace/provider application setup | Nuxt tests + build | Durable | Pass `13 files / 100 tests`; production build Pass | `api-rev-011-focused-web.log`; `api-rev-011-web-build.log` |
+| `APIE2E-STANDALONE-011` | maintained Socratic/Brief standalone real business, persistence and watcher restart | installed Chrome + live hosts | Browser/Live | Pass | `api-rev-011-standalone-browser-real.json`; standalone logs |
+| `APIE2E-STUDIO-011` | exact bundled definitions, setup gate, iframe mount/remount, real business and same-data recovery | installed Chrome + isolated Studio | Browser/Live | Pass | `api-rev-011-studio-browser-real.json`; `api-rev-011-studio-restart-recovery.json`; screenshots |
+| `APIE2E-CLASSROOM-011` | general mixed runtime/model task authority, file tools and recipient-name messaging | installed Chrome + real Codex/DeepSeek | Browser/Live | Pass | `api-rev-011-classroom-live.json` |
+| `APIE2E-GENERAL-RECOVERY-011` | active Team process shutdown, persisted communication, restore, terminate | live process + public GraphQL | Live | Pass | `api-rev-011-active-run-restart.json`; restart log |
+| `APIE2E-ROUTES-011` | internal authenticated-session route exists; external gateway Studio-only | curl/HTTP | Live | Pass (`401`; Studio `200`; standalone `404`) | `api-rev-011-route-separation.log` |
+| `APIE2E-WATCH-011` | repeated `dev` and `dev:studio` edit/restore loops | maintained commands/process logs | Live | Pass | `api-rev-011-watcher-loops.log`; `api-rev-011-dev-studio-watcher-loops.log` |
+| `APIE2E-PARITY-011` | immutable Brief package/authoring bytes | SHA-256 pre/post | Temporary | Pass `73/73`, changed `0` | `api-rev-011-package-parity.log`; pre/post hashes |
+| `APIE2E-CLEANUP-011` | isolation, leaks, generated ownership, credential evidence | process/filesystem scan | Temporary | Pass | `api-rev-011-cleanup.log`; `api-rev-011-secret-scan.log` |
 
 ## Repository Coverage Execution
 
-| Order | Command / selection | Result |
-| --- | --- | --- |
-| 1 | exact HEAD/merge ancestry, index, marker and retired-seam audit | Pass |
-| 2 | `nuxi prepare`, then seven controlled-workspace/provider Vitest files | `7 files / 100 tests` Pass |
-| 3 | adjacent workspace stores, launch policy and history | `7 files / 102 tests` Pass; `2` unchanged `runHistoryStore` mock failures separately Unclear |
-| 4 | application SDK contract builds, Nuxt production build | Pass |
-| 5 | server production build; both maintained app build/validate | Pass after canonical frontend-SDK prerequisite |
-| 6 | architecture, event-journal recovery, lifecycle, imported Brief and standalone server | `5 files / 29 tests` Pass |
+| Order | Command / selection | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | `7/7` Pass | `api-rev-011-f005-public-crud-launch.log` |
+| 2 | same command form for `tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` after the narrow test correction | `2/2` Pass | `api-rev-011-f006-corrected-migration-sequence.log` |
+| 3 | exact CRR-021 30-file authority/task/architecture selection | `30 files / 202 tests` Pass | `api-rev-011-authority-task-matrix.log` |
+| 4 | current architecture/startup/catalog/migration/TeamRun/launch/planner selection | `10 files / 81 tests` Pass | `api-rev-011-affected-server.log` |
+| 5 | `team-run-v1-production-upgrade.e2e.test.ts` | `4/4` Pass | `api-rev-011-production-upgrade.log` |
+| 6 | current application integration selection | `32 Pass / 1 env-gated Skip` | `api-rev-011-application-integration.log` |
+| 7 | backend SDK, frontend SDK, devkit, server build/bootstrap, both app type/build/validate | all Pass; devkit `21/21` | `api-rev-011-system-build.log` |
+| 8 | focused current Nuxt selection | `13 files / 100 tests` Pass | `api-rev-011-focused-web.log` |
+| 9 | Nuxt production/static build | Pass | `api-rev-011-web-build.log` |
 
-The first focused web attempt lacked generated `.nuxt/tsconfig.json`; `nuxi prepare` created the documented generated prerequisite and the authoritative rerun passed `100/100`. The first app pack attempt lacked the clean-source frontend SDK output; building that prerequisite made both authoritative app build/validate runs pass. These are environment preparation corrections, not product failures.
+## Broader Validation Execution
 
-## Changed-Boundary Results
+- Decision: **Required; executed; Pass**. Repository coverage could not prove real provider/tool dispatch, mounted iframes, process restart, watcher loops, route separation or package integrity.
+- Host setup: standalone Socratic `43321`, standalone Brief `43322`; isolated Studio backend `8051`, Nuxt `3051`, and per-app `dev:studio` watchers. Installed Google Chrome `150.0.7871.187` was controlled with `playwright-core 1.58.2`.
+- Environment: isolated marked `/private/tmp/api-rev011-studio-20260825`; shell `DATABASE_URL` was explicitly removed for accepted Studio starts and the log proved the isolated SQLite path. Nine supported secret assignments were imported to the isolated vault without retaining values. The approved `/Users/normy/autobyteus_org/autobyteus-agents` root was already registered and exposed 7 shared agents, 50 team-local agents and 12 teams.
+- Standalone: Socratic retained `Solve 8x + 7 = 31` / `x = 3`; Brief retained `API-REV-011 canonical authority real publication`, Researcher/Writer projections and `in_review` after two supported watcher restarts.
+- Studio: Socratic ran `9x + 4 = 49` and returned/recovered `x = 5`; Brief completed real Researcher publication, named `/writer` handoff, Writer final publication and `in_review`. Navigation away/re-entry created exactly one iframe and recovered both. A later same-data backend restart again recovered both records with zero browser console errors.
+- Real general process: Classroom Professor used Codex Luna, Student used AutoByteus DeepSeek V4 Flash, both shared the exact temp workspace, produced assignment/answer files and two recipient-name messages. After process restart the run was inactive with both messages retained; public restore made it active, and public terminate made it inactive again.
+- Recovery: the Studio Brief run observed one transient writer-process execution failure, created a replacement Writer run, and reached the required final publication/projection. This is retained as bounded recovery evidence rather than hidden.
+- Routes: all hosts returned `401 unauthorized` for unauthenticated internal Agent Tools requests; Studio external `/mcp/gateway` initialized at `200`; both standalone hosts returned `404` for that Studio-only route.
+- Watch/parity: both apps observed edit and restore in standalone and Studio modes. Brief's exact 73 tracked package/authoring paths were identical before and after (`0` changed).
+- Browser screenshots are supporting evidence; semantic DOM, GraphQL responses, persisted projections and process logs are authoritative.
 
-### Controlled Agent Workspace
+## Lifecycle / Persisted-Data Checks
 
-- Exact New path: `/private/tmp/api-rev009-agent-workspace-final`.
-- Path remained unchanged after runtime and model selection.
-- Exact model: `OpenAI / GPT-5.6-Luna` through `codex_app_server`.
-- Operation delta: one `CreateWorkspace`, one `PrepareAgentRun`, zero duplicate `CreateAgentRun`.
-- Real run: `codex_e3e3424599df4dbeb3dbd00b2611cc51`.
-- Observable result: exact assistant response `API-REV-009-AGENT-READY`; exact run present in workspace history; zero console errors.
+- Approved decision: forward-only migration through V1 promotion, nested-memory repair and TeamRun V2; no compatibility fallback.
+- F006 now proves the exact supported failure/retry sequence and the current V2-only projection only after explicit V2 admission.
+- Production-upgrade E2E passes `4/4`; same-data application and general Team histories recover through normal current readers.
+- Active general Team restart retained V2 execution-tree identity and communication; restore/terminate used public APIs and exact same run ID.
+- Version-specific runtime branch, dual read/write or compatibility fallback observed: **No**.
 
-### Controlled Team Workspace
+## Tests Implemented Or Updated
 
-- Exact New path: `/private/tmp/api-rev009-team-workspace-final`.
-- Path remained unchanged after global runtime/model and Student runtime/model edits.
-- One `CreateWorkspace` and one `CreateAgentTeamRun`.
-- Team run: `classroom_simulation_team_f63ce7b6004447198d1aa056e619a968`.
-- Professor: Codex / `gpt-5.6-luna`; Student: AutoByteus / `deepseek-v4-flash`; both bound to the exact workspace.
-- Professor created the assignment and delivered it to `/student`; Student read it, wrote `student-answer.md`, and replied to `/professor`. Two exact communication records, run tree and history correlated; zero console errors.
+| Path | Change | Requirement / boundary | Result | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` | Updated | explicit memory retry -> V2 admission -> current projection | `2/2` Pass | Adds `20260824_team_run_execution_tree_v2` status and public-run assertions; no production cascade/fallback. |
 
-### Registration Failure / No Fallback
+## Durable Coverage Changed In The Codebase
 
-- Real Studio browser plus controlled GraphQL failure at the external registration boundary.
-- Exact New path remained visible; error rendered; New mode remained selected.
-- Operation delta: one registration, zero Agent launch, zero Team launch.
-- No Existing/Temp fallback or history mutation occurred.
-- Temporary interception is appropriate for the environment-dependent negative; durable deterministic component coverage owns the reusable behavior.
+- Repository-resident durable coverage added/updated/removed this round: **Yes**.
+- Updated path: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts`
+- Added paths: none.
+- Removed paths: none.
+- Proportional test-code review required: **Yes**; attach the updated test and cumulative package to `/code_reviewer`.
 
-## Real Dual-Host Execution
-
-- **Socratic Studio:** real authenticated Codex Luna returned `7 + 5 = 12`; exact lesson, binding, tutor run, two-message transcript and notification were projected.
-- **Socratic standalone:** real authenticated Codex Luna returned `3 + 4 = 7`; exact lesson/binding/team/tutor identifiers were visible.
-- **Brief Studio:** package-owned Researcher and Writer completed in about 100 seconds; real `/writer` handoff and two publications produced two draft outputs, one final output and `in_review`.
-- **Brief standalone:** rendered over HTTP 200, created a durable record, restarted through the supported watch loop and recovered the exact record.
-- **Studio explicit remount:** the visible immersive-menu `Reload application` action changed iframe `performance.timeOrigin`, proving document recreation, while the Brief record remained readable.
-- **Studio same-data restart:** after graceful shutdown and restart against the exact isolated SQLite root, both package identities re-entered and retained their Brief/Socratic records and generated outputs with zero browser console errors.
-
-The console-only 404 observed on initial standalone page loads was `/favicon.ico` (confirmed in host logs); immediate response-level follow-up observed no HTTP error and the application routes remained ready.
-
-## Route, Watcher And Package Integrity
-
-- Studio internal `/mcp/agent-tools/fake-session`: `401 unauthorized`.
-- Studio external `/mcp/gateway` initialize: `200`, MCP protocol `2025-03-26`.
-- Standalone internal fake session: `401 unauthorized`.
-- Standalone external `/mcp/gateway`: `404 not found`.
-- Two edit/restore rounds produced four source-change cycles per app in both `dev` and `dev:studio`; every standalone host returned ready and every Studio worker completed package reload.
-- The canonical 73-path SHA-256 inventory was identical before and after all maintained loops: `73/73`, `changed_count=0`.
-
-## Environment And Data Fidelity
-
-- macOS ARM64; Node `v22.23.1`; pnpm `10.28.2`.
-- Installed Google Chrome; installed Codex executable authenticated through ChatGPT.
-- Studio: isolated loopback `8049`/`3049` and marked `/private/tmp/api-rev009-studio-20260824` SQLite/data root.
-- Standalone: isolated per-application `.autobyteus/dev/data` roots and ports `43301`/`43302`.
-- Supported secret import configured nine recognized credentials into the isolated Studio vault; values were never emitted.
-- `/Users/normy/autobyteus_org/autobyteus-agents` was already in the isolated source configuration and loaded `7` shared agents, `50` team-local agents and `12` teams. The API correctly rejected a duplicate import instead of adding it twice.
-- The accepted Studio run explicitly set the isolated SQLite URL. An earlier initialization-only attempt inherited the copied user `DATABASE_URL`, applied no migration (`No pending migrations`) and was stopped before package/business execution; this harness correction is retained transparently.
-
-## Validation Confidence Scorecard
+## Confidence Scorecard
 
 | Category | Post-repository | Final | Evidence / residual |
 | --- | ---: | ---: | --- |
-| Requirement and acceptance-criteria proof | 94% | 99% | all controlled success/failure/order and retained critical criteria directly exercised |
-| Changed-boundary execution directness | 96% | 99% | real component, GraphQL, filesystem, launch and history boundaries |
-| Cross-boundary integration realism and mock gap | 88% | 99% | real Chrome, hosts, Codex, DeepSeek, GraphQL, WebSocket/history and SQLite |
-| Environment/configuration/identity fidelity | 92% | 98% | exact reviewed tree, packages, model/runtime identities and isolated roots; providers remain mutable |
-| Failure, edge-case, lifecycle and recovery | 91% | 97% | no-fallback failure, remount, watcher and same-data restart |
-| User/browser/desktop-equivalent | 82% | 98% | real Studio forms/iframes plus both standalone hosts; Electron downstream |
-| Durable regression quality/relevance | 96% | 96% | direct 100-test changed suite; unchanged broad debt remains separate |
+| Requirement and acceptance proof | 96% | 99% | both prior failures, retained dual hosts and real mixed Team directly pass; only downstream Electron shell is excluded |
+| Changed-boundary execution directness | 98% | 99% | exact 30/202 authority set, real public API, actual SQLite/process and live hosts |
+| Cross-boundary realism / mock gap | 94% | 98% | real Chrome, Codex, DeepSeek, GraphQL, WebSocket/tool/publication/process boundaries |
+| Environment/configuration/identity fidelity | 96% | 98% | exact reviewed HEAD/packages, isolated SQLite/vault, installed Chrome and exact runtime/model identities |
+| Failure/edge/lifecycle/recovery | 96% | 98% | F006 retry, same-data restart, active run restore/terminate, worker replacement and cleanup |
+| User/browser/desktop-equivalent | 93% | 97% | both maintained apps in standalone and Studio; Electron shell/packaging remains delivery-owned |
+| Durable regression quality/relevance | 98% | 98% | one narrow requirement-aligned durable correction plus broad current suites |
 
-- Overall post-repository confidence: **91%**.
+- Overall post-repository confidence: **96%** (simple average, rounded).
 - Overall final confidence: **98%** (simple average, rounded).
-- Lowest final category: **96%**.
-- Critical current criteria missing direct proof: **None**.
+- Every critical criterion directly proven: **Yes**.
+- Applicable category below 90%: **No**.
+- Default 95% target met: **Yes**.
+- Confidence-limiting residuals: mutable external provider/account availability; delivery-owned Electron packaging/shell; historical `APIE2E-REPO-005` remains separate Unclear.
 
-## Durable Coverage Changes
+## Cleanup And Temporary Methods
 
-- Added: none.
-- Updated: none.
-- Removed: none.
-- Required proportional test-code review: **Yes by workflow; expected `Not Applicable`**.
+- Temporary Playwright/browser and GraphQL probes were required for live iframe, provider, recovery and route evidence; every `/tmp/api-rev-011-*` script was removed.
+- Ports `43321`, `43322`, `8051`, `3051`: zero listeners after cleanup.
+- Isolated Studio root, both per-app `.autobyteus/dev` roots, API-created Socratic `dist`, and devkit `.tmp-tests`: removed.
+- Pre-existing Brief/SDK/devkit/server/web generated outputs: preserved.
+- Maintained CSS sources restored to exact entry hashes; `git diff --check` Pass.
+- Secret scan: 12 secret-like assignments compared against 36 retained text files; `0` value matches.
+- Two standalone browser console `404`s were `/favicon.ico` only. Nuxt dev emitted transient `#app-manifest` pre-transform warnings during warmup, then built and served all accepted browser journeys; the production/static build passed. Neither affected tested application behavior.
 
-## Harness Corrections
+## Result Summary And Routing
 
-1. Generated Nuxt and frontend-SDK clean-source prerequisites were built before authoritative reruns.
-2. Non-TTY secret import correctly stopped at `IMPORT_CONFIRMATION_REQUIRED`; the supported direct-TTY confirmation then configured nine credentials and the dry-run postcheck showed nine `SKIP_CONFIGURED`.
-3. The accepted Studio server used an explicit isolated database after the initialization-only inherited-URL attempt described above.
-4. Initial remount probes targeted a hidden responsive-menu button; the authoritative visible immersive-menu action recreated the iframe document and retained state.
-5. The first Team artifact check guessed the run-folder slug; the evidence records the corrected actual live folder `addition-basics` and exact files.
+| Result | Scenarios | Summary |
+| --- | --- | --- |
+| **Pass** | all API-REV-011 scenarios above | critical current behavior, prior-failure resolution, broader live execution, parity and cleanup pass |
+| **Unclear / separate** | `APIE2E-REPO-005` | historical broad characterization, not current attribution or Pass evidence |
+| **Out of scope / delivery-owned** | Electron packaging and shell-only behavior | browser proves web-equivalent behavior; delivery owns packaged Electron gate |
 
-## Cleanup
+- Preliminary classification: no current failure. F006 was a completed API/E2E `Local Fix`; F005 is resolved by reviewed IR-012.
+- Recommended recipient: `/code_reviewer` for proportional review of the one updated durable E2E test, then downstream delivery if that review passes.
 
-- Owned ports `3049`, `8049`, `43301`, `43302`: free.
-- Marked `/private/tmp/api-rev009-*` roots: zero remaining.
-- Per-app `.autobyteus` roots and generated SDK/devkit/server/web/app outputs: removed.
-- Ordinary AutoByteus listener `29695`: preserved.
-- Secret comparison: 12 secret-like values across 38 retained text artifacts; zero matches.
-- Source edit bytes: restored; exact 73-path parity remained clean.
-
-## Evidence Index
-
-Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/`
-
-- Repository/build: `api-rev-009-topology.log`, `focused-web.log`, `adjacent-web.log`, `retained-server.log`, `web-build.log`, `system-build.log`.
-- Controlled workspace: Agent real/projection JSON/PNG; Team real JSON/PNG; failure JSON/PNG.
-- Maintained applications: Brief/Socratic Studio real JSON/PNG; Socratic standalone real JSON/PNG; both-host and standalone recovery JSON/PNG.
-- Lifecycle/routes/parity: Studio remount/restart logs and JSON; route-separation log; four dev logs; pre/post hashes and parity log.
-- Environment/cleanup: agent-package import JSON, secret-import/environment/secret-scan/cleanup logs.
-
-## Result And Routing
+## Latest Authoritative Result
 
 - Result: **Pass**.
-- Final confidence: **98%**.
-- Current failure IDs: **None**.
-- Historical residual: `APIE2E-REPO-005` remains separate/Unclear.
-- Downstream residual: Electron packaging/shell validation remains delivery-owned.
-- Required recipient: `/code_reviewer` for proportional successful test-code review, expected `Not Applicable` because no durable test changed.
+- Final validation confidence: **98%**.
+- Broader validation: **Required; executed; Pass**.
+- Critical criteria lacking direct proof: **None** within API/E2E scope.
+- Required next recipient: `/code_reviewer` for proportional durable-test review.

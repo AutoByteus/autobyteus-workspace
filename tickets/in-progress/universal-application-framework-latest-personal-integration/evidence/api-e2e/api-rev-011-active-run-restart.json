@@ -1,0 +1,26 @@
+{
+  "scenario": "APIE2E-GENERAL-ACTIVE-RUN-RESTART-011",
+  "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0",
+  "afterProcessRestartBeforeRestore": {
+    "isActive": false,
+    "communicationCount": 2
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "classroom_simulation_team_cbec0217785c43859ae300308901a2b0"
+  },
+  "afterRestore": {
+    "isActive": true,
+    "communicationCount": 2
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "afterTerminate": {
+    "isActive": false,
+    "communicationCount": 2
+  },
+  "ok": true
+}

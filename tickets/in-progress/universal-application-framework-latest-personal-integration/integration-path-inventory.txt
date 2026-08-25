@@ -2,12 +2,13 @@ BASE acb8985930ccce49b632cdca22b92f5b237e35bf
 PERSONAL origin/personal
 FEATURE origin/codex/universal-application-framework-proposal-analysis
 
-# Historical cumulative inventory implemented through SR-007/DR-007.
-# The current SR-008 v1.4.57 delta is separately authoritative in
-# evidence/solution/latest-base-refresh-round-4-path-inventory.txt and
-# latest-base-refresh-round-4-design-analysis.md (two test conflicts only).
+# Historical cumulative inventory implemented through SR-008/DR-009.
+# The current SR-009 v1.4.58 delta is separately authoritative in
+# evidence/solution/latest-base-refresh-round-5-path-inventory.txt and
+# latest-base-refresh-round-5-design-analysis.md (13 content conflicts,
+# 30 generated-output modify/delete conflicts, 50 changed-both paths).
 
-# Counts below are target dispositions derived from the raw branch evidence.
+# Counts below are historical target dispositions derived from earlier branch evidence.
 # Feature-only paths explicitly rejected by the target are omitted.
 
 [ADD_OR_ADAPT_CANONICAL] 109
@@ -1151,3 +1152,329 @@ tickets/in-progress/initial-prototype-baseline/{requirements-doc.md,investigatio
   accept as independent prototype-task records; no application-framework adaptation
 tickets/done/api-key-management-panel-performance/{delivery-revision-record.md,docs-sync-report.md,handoff-summary.md,release-deployment-report.md,validation-evidence/delivery-server-docker-zh-dr008.log}
   accept as latest-Personal delivery evidence; no production/runtime effect
+
+=======================================================================
+SR-011 CANONICAL HOST DEFINITION / PUBLIC RUN AUTHORITY CORRECTION
+=======================================================================
+Current source base: v1.4.58 merge and IR-011 implementation at CRR-020 reviewer HEAD a5a6131531658e8a8a323989b1863b7202464f11
+Trigger: CRR-020 / CR-011 / APIE2E-F005
+Normative contract: design-spec.md DS-024; integration-runtime-contracts.md section 9
+
+RENAME / MOVE (CLEAN REPLACEMENT; NO ALIAS)
+--------------------------------------------
+autobyteus-server-ts/src/application-platform/runtime/create-application-definition-services.ts
+  -> autobyteus-server-ts/src/application-platform/definitions/create-bundle-backed-definition-services.ts
+  own concrete file-provider/persistence-provider/Agent/Team service-pair wiring for exactly host binding and transient standalone package validation
+
+ADD HOST RUNTIME BINDING OWNER
+------------------------------
+autobyteus-server-ts/src/compositions/host-definition-services.ts
+  create one bundle-backed pair for executable-host use; fail-closed Agent then Team process binding, partial unwind, idempotent reverse release
+
+MODIFY HOST / SERVICE LIFECYCLE
+-------------------------------
+autobyteus-server-ts/src/agent-definition/services/agent-definition-service.ts
+  add bindProcessInstance/releaseProcessInstance; getInstance returns exact bound service
+autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts
+  add bindProcessInstance/releaseProcessInstance; Team binds over exact Agent and releases first
+autobyteus-server-ts/src/compositions/build-studio-server.ts
+  package/bundle -> host definitions -> Agent Tools -> explicit general services -> application runtime -> configured public APIs; exact unwind/close
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+  validated bundle/process migrations -> host definitions -> Agent Tools -> explicit general services -> selected application runtime; exact unwind/close
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+  accept exact definitions/app config/session manager; construct/bind exact general Agent/Team run services and dependencies; reverse release
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+  add exact named process AgentRunService bind/release; no lazy default during composed host startup
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+  add exact named process TeamRunService bind/release; no lazy default during composed host startup
+
+MODIFY TRANSIENT PACKAGE VALIDATION
+-----------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts
+  use the bundle-backed constructor for a short-lived read-only, unbound pair; never initialize process getters or expose validation caches to runtime
+autobyteus-server-ts/src/startup/cache-preloader.ts
+  remove Agent/Team definition imports and preload blocks because awaited application definition readiness already refreshes the exact bound pair; retain MCP/model preloads
+
+MODIFY PUBLIC STUDIO API BOUNDARY
+---------------------------------
+autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+  configure exact Agent/Team definition plus general Agent/Team run services; return identity-checked idempotent close handle
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+  consume getStudioAgentRunService; remove direct ambient getAgentRunService import
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts
+  consume getStudioTeamRunService; remove direct ambient getTeamRunService import
+
+MODIFY PRE-HOST MIGRATION LOOKUPS
+---------------------------------
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts
+  replace dynamic AgentDefinitionService.getInstance with migration-local non-caching persistence lookup; retain ID fallback
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts
+  replace dynamic AgentTeamDefinitionService.getInstance with migration-local non-caching persistence lookup; retain warning/ID fallback
+
+VERIFY / NO PRODUCTION BEHAVIOR CHANGE
+--------------------------------------
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  exact same definition identities; separate application managers/session/publication remain unchanged
+autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts
+  same Agent then Team cache refresh identities
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts
+  configured canonical definition CRUD behavior unchanged
+all definition file formats, package roots, GraphQL/SDK wire shapes, launch defaults/overrides, Team V2 and migration data
+  Directly Usable — No Migration
+
+ADD / MODIFY DURABLE PROOF (EXACT TARGET AREA)
+----------------------------------------------
+autobyteus-server-ts/tests/unit/agent-definition/**
+autobyteus-server-ts/tests/unit/agent-team-definition/**
+  fail-closed bind, identity release, Team-over-Agent construction, partial unwind fixtures
+autobyteus-server-ts/tests/unit/application-platform/application-standalone-package-validator.test.ts
+  complete package validation through the transient pair; process definition getters remain uninitialized and no runtime catalog is published
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor.test.ts (add or current exact equivalent)
+  explicit nested dependencies, service binding, stop/release/second-build, no application-state reuse
+autobyteus-server-ts/tests/unit/application-platform/application-framework-boundaries.test.ts
+  exact host factory occurrence/order, forbidden old factory/ambient resolver imports, omission/null/undefined fixtures, all definition-getter occurrence classification, no background Agent/Team preload, same definitions/different managers/sessions
+  governed getter categories: migration removed; validation direct; composition-critical explicit; invocation-time post-bind; external-channel host-scoped; memory compactor named general-process exception
+autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+  selected standalone same-definition construction and retained no-GraphQL/no-external-gateway behavior
+autobyteus-server-ts/tests/integration/application-backend/studio-application-server.integration.test.ts (add or current exact built-server integration owner)
+  configured service identity, close/unwind/second-build
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+  public Agent/Team create/list -> launch; update -> next launch; delete -> absent/later launch fail; restart -> visible/launchable
+autobyteus-server-ts/tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+  optional name persistence lookup and ID fallback without process singleton initialization
+
+EXPLICIT DO NOT ADD
+-------------------
+cache synchronization or mirrored definition service
+fallback definition read across service families
+application use of general Agent/Team run managers or MCP sessions
+general use of application managers/sessions/publication
+service locator, generic DI container, generic definition facade, mode-switched server builder
+compatibility alias at create-application-definition-services.ts
+definition data migration, copy, rewrite, seed, or package mutation
+production dependent-migration cascade or V1 current reader for APIE2E-F006
+
+
+================================================================================
+SR-012 MEMBER/SESSION-BOUND TASK-DELEGATION DELTA (CURRENT IMPLEMENTATION TARGET)
+================================================================================
+
+STATUS
+------
+ARCH-REV-011 accepted SR-011 and returned AR-007. This addendum is the exact
+current delta. All earlier merge/inventory entries remain historical/preserved.
+No merge, package, schema, route, public wire, provider, workspace, Team V2,
+migration, or native Codex/Claude file-tool change is authorized here.
+
+ADD
+---
+autobyteus-server-ts/src/agent-team-execution/task-delegation/member-task-root-resolver.ts
+  one root-specific resolveActiveRoot() capability; no caller selector, manager/service lookup, restore, mode switch, or default
+
+MODIFY — ROOT/MEMBER CONSTRUCTION
+---------------------------------
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  create the exact local-root resolver beside current message/platform callbacks; reject before bind/after inactive
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  propagate the same exact resolver through root/subteam/configured/restored/task Agent construction
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+  require and freeze the resolver beside the one member identity; no optional/default field
+
+MODIFY — SESSION/TRANSPORT PROJECTION
+-------------------------------------
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+  tight ordinary-Agent versus Team-member capability union; exact owner/member identity validation; preserve exact resolver and publisher/session/token/revocation behavior
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  pass only tight composition-scoped base publisher capability; issuing session service derives final variant; preserve revoke-only null service and exact general/application publisher identity
+autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+  require authenticated Team-member capability and consume its exact task context only
+
+MODIFY — SHARED TASK AND AUTOBYTEUS TOOL PATH
+---------------------------------------------
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts
+  carry the exact resolver; remove getTeamRunService(), root-ID lookup, restore language, and ambient scope fallback
+autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts
+  register definitions only; create all three executable task tools with required exact per-member ToolConfig
+
+REMOVE CLEANLY
+--------------
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts
+  obsolete identity-only custom-data parser; no alias, fallback, or compatibility wrapper
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+  replace with bound tool/config proof in current resolver/backend/task-tool tests
+
+MODIFY / ADD DURABLE PROOF
+--------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+  exact context propagation, capability variants/identity checks, no scope omission/default, and bound AutoByteus tools
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+  real application/general root isolation, configured/restored/nested/task-member coverage, authentication/revocation, root lifecycle/fail-stop, no getTeamRunService import/omission, one route/catalog/task system
+
+EXPLICIT NO PRODUCTION CHANGE
+-----------------------------
+autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+  remain exact task lifecycle/mutation/persistence/event owners
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.ts
+  retain one authenticated internal route/catalog/dispatcher
+Studio external /mcp/gateway; native Codex/Claude file tools; application packages/UI/SDK/GraphQL/database/migrations
+  unchanged and outside SR-012
+
+FORBIDDEN
+---------
+getTeamRunService() or manager singleton on task tool execution path
+application-ID/root-ID manager router or process/application mode switch
+application session use of general root/manager/session or converse
+nullable task fields on a broad capability bag
+inactive-root restore, cache mirror, global fallback, service locator, generic DI/event bus/deferred container
+duplicate route/catalog/manifest/task service/persistence owner/manager
+compatibility alias or identity-only AutoByteus fallback
+
+VERIFICATION
+------------
+configured/restored/nested/task Agent and task Team resolver identity
+application task command changes only application root; live general root unchanged
+general task command changes only general root; live application root unchanged
+MCP and AutoByteus parity for delegate/submit/review
+pre-bind/missing/mismatch/inactive/fail-stop/revoked failures before task store/event mutation
+architecture occurrence/omission/import guards
+retained full source/API-E2E/durable-test/dual-host/package/provider/workspace/Team V2/migration/Electron gates
+
+
+================================================================================
+SR-013 EXACT GENERAL / DEFAULT / FIXTURE PROPAGATION CLOSURE (CURRENT TARGET)
+================================================================================
+
+STATUS
+------
+ARCH-REV-012 accepted SR-012's RootTeamRun-local authority, member/session/native
+propagation, stateless task dispatch, lifecycle, removals, and no-migration design.
+This addendum supersedes only SR-012's incomplete construction/test inventory. It
+adds no owner, route, manager, schema, migration, host mode, or product behavior.
+
+MODIFY — COMPLETE PRODUCTION CONSTRUCTION
+-----------------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+  add taskRootResolver to MixedTeamRunCallbacks; remove noopCallbacks; make callbacks
+  required for createBackend/restoreBackend; preserve required createBackendForNode;
+  built-in MixedTeamManager forwards input.callbacks.taskRootResolver; retain optional
+  custom createTeamManager and callback-free buildTeamRunContext only
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  remain the sole real MixedTeamRunCallbacks producer; create one root-local resolver
+  in materializeRoot and pass the complete object on fresh and restore paths
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+  forward callbacks.taskRootResolver into the custom general MixedTeamManager while
+  preserving exact process manager/session/definition/service lifecycle
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  forward callbacks.taskRootResolver into the custom application MixedTeamManager
+  while preserving non-identical graph-local managers/sessions/publication/memory
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  require and forward taskRootResolver through configured/restored/task Agent handles;
+  no optional/default resolver or process getter
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts
+  builder build input and immutable context require the exact resolver; builder remains
+  the only production direct MemberTeamContext constructor
+
+MODIFY — DIRECT MIXED MANAGER / FACTORY / CALLBACK PROOF
+--------------------------------------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts
+  supply an explicit resolver at every direct MixedTeamManager construction; configured
+  overlap forwards the callback resolver through its custom factory
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+  supply complete callbacks to every executable create/restore invocation; add omission,
+  null, undefined, fresh/restore, and exact-reference cases
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+  extend the typed fake/captured MixedTeamRunCallbacks and expectations with the exact
+  root resolver for fresh and restore paths
+
+VERIFY — EXACT CONTEXT-ONLY FACTORY EXCEPTION
+---------------------------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+  retain exactly two no-option MixedTeamRunBackendFactory constructors only because both
+  call buildTeamRunContext; architecture guard fails if either calls create/restore/node
+
+MODIFY — BUILDER / DIRECT CONTEXT FIXTURES
+------------------------------------------
+autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+  add one clearly named explicit testMemberTaskRootResolver fixture and require/use it in
+  testMemberTeamContext; it returns an explicitly supplied root or throws test-only
+  unavailable and never becomes a production default
+autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+  pass resolver in all four build calls and prove frozen reference identity plus omission
+autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+  pass explicit test resolver to the one direct builder call; retain prompt/no-global proof
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+  every direct MemberTeamContext receives the explicit test resolver; no null/default or
+  as-never escape
+
+MODIFY — EXECUTABLE ARCHITECTURE GUARD
+--------------------------------------
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+  assert current occurrence counts and categories:
+    production/test MixedTeamManager = 3/3
+    production/test direct MixedTeamRunBackendFactory = 3/8
+    production/test MemberTeamContextBuilder.build = 1/5
+    production/test direct MemberTeamContext = 1/4
+    one real callback producer plus one typed manager-test capture
+  require built-in/general/application manager resolver forwarding; require executable
+  callbacks and member resolver non-null; add omission/null/undefined fixtures; forbid
+  noopCallbacks and any unclassified occurrence; retain only the two named context-only
+  factory constructors
+
+PRESERVE SR-012 SESSION / TASK / AUTOBYTEUS DELTA
+-------------------------------------------------
+all SR-012 session capability, MCP adapter, task context/service/router, AutoByteus bound
+tool, removal, route/lifecycle, dual-scope, and E2E rows above remain required unchanged
+
+EXPLICIT DO NOT ADD
+-------------------
+default/no-op taskRootResolver or callbacks
+optional/nullable resolver on MixedTeamManager, member builder/context, or Team session
+generic recursive constructor policy beyond the exact governed occurrences
+ApplicationExecutionScope, manager map/router/unification, service locator, generic DI,
+generic event bus, deferred container, singleton fallback, compatibility wrapper/alias
+
+VERIFICATION
+------------
+exact current-tree occurrence/category guard
+built-in/general/application resolver identity
+fresh/restore/configured/nested/task Agent/task Team propagation
+context-only factory exception remains non-executable
+omission/null/undefined and noopCallbacks absence
+real general/application MCP and AutoByteus root isolation and failure-before-mutation
+retained full source/API-E2E/durable-test/dual-host/package/provider/workspace/Team V2/
+migration/recovery/cleanup/Electron gates

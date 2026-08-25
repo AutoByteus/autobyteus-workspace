@@ -1,0 +1,19 @@
+{
+  "scenario": "API-REV-011-STUDIO-SAME-DATA-RESTART",
+  "startedAt": "2026-08-25T18:11:44.222Z",
+  "errors": [],
+  "socratic": {
+    "recoveredPrompt": true,
+    "recoveredAnswer": true,
+    "iframeCount": 1
+  },
+  "brief": {
+    "recoveredTitle": true,
+    "recoveredStatus": true,
+    "recoveredResearch": true,
+    "recoveredWriter": true,
+    "iframeCount": 1
+  },
+  "ok": true,
+  "finishedAt": "2026-08-25T18:11:50.703Z"
+}

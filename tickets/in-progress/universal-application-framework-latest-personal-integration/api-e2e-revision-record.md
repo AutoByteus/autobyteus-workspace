@@ -11,6 +11,10 @@
 | `API-REV-005` | user-requested packaged Electron provider expansion / round 5 | `API-REV-004`, `CRR-010`, `DR-001` | **Pass / 98%** | **Blocked / 88%** |
 | `API-REV-006` | user-reported DeepSeek balance restoration / round 6 | `API-REV-005`, `API-REV-004`, `CRR-010`, `DR-001` | **Blocked / 88%** | **Pass / 99%** |
 | `API-REV-007` | `code_reviewer` / `CRR-012` / round 7 | `SR-004`, `ARCH-REV-004`, `IR-007`, `CRR-012`, `DR-004` | **Pass / 99%** | **Pass / 98%** |
+| `API-REV-008` | `code_reviewer` / `CRR-014` / round 8 | `SR-005`–`SR-007`, `ARCH-REV-005`–`ARCH-REV-007`, `IR-008`, `CRR-014`, `DR-006` | **Pass / 98%** | **Pass / 98%** |
+| `API-REV-009` | `code_reviewer` / `CRR-016` / round 9 | `SR-008`, `ARCH-REV-008`, `IR-009`, `CRR-016`, `DR-008` | **Pass / 98%** | **Pass / 98%** |
+| `API-REV-010` | `code_reviewer` / `CRR-019` / round 10 | `SR-009`–`SR-010`, `ARCH-REV-009`–`ARCH-REV-010`, `IR-011`, `CRR-019`, `DR-010` | **Pass / 98%** | **Fail / 72%** |
+| `API-REV-011` | `code_reviewer` / `CRR-021` / round 11 | `SR-011`–`SR-013`, `ARCH-REV-013`, `IR-012`, `CRR-020`–`CRR-021`, `DR-010` | **Fail / 72%** | **Pass / 98%** |
 
 ## Revision Entries
 
@@ -242,3 +246,56 @@ None. API-REV-008 had no unresolved current implementation failure; it remains v
 - New or remaining current failure IDs: **None**.
 - Recommended recipient: `/code_reviewer` for proportional test-code review, expected **Not Applicable** because API-REV-009 changed no durable test.
 - Remaining risk: historical `APIE2E-REPO-005` stays separate/Unclear; live provider/account state remains externally mutable; Electron packaging/shell execution remains downstream delivery-owned.
+
+### API-REV-010 — Current v1.4.58 hierarchy and migration execution exposes authority/recovery failures
+
+- Triggering role/report/round: `/code_reviewer`; `code-review-report.md` / `CRR-019`; round 10.
+- Triggering surface: `IR-011` current Personal v1.4.58 complete Team/Agent launch validation, TeamRun V2 current persistence, V1 -> memory -> V2 migrations, nested execution and retained dual-host behavior.
+- Related revisions: `SR-009`–`SR-010`, `ARCH-REV-009`–`ARCH-REV-010`, `IR-010`–`IR-011`, `CRR-018`–`CRR-019`, delivery re-entry `DR-010`.
+- Executed identity: reviewer HEAD `243143e62e0f198bf14f411a9688d59d5febc5f0`; implementation artifact `1734f641ce0c5982b25b59b3314ed9bbd75b4747`; correction `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`.
+- Why recorded: API-REV-009 is earlier-tree characterization only. The first current v1.4.58 actual built-server hierarchy/migration pass exposed two critical failures and therefore stopped before real browser/provider execution.
+- Durable coverage decision: **no API/E2E durable test was changed**. The positive hierarchical GraphQL lifecycle and current nested migration retry/projection expectations remain valid/critical. Three already-known post-upgrade general-run failures remain historical `APIE2E-REPO-005` Unclear/separate.
+- Repository result: topology Pass; affected server `10 files / 79 tests` Pass; backend SDK `10/10`; frontend SDK `12/12`; devkit authoritative rerun `21/21`; server and both maintained package builds/validation Pass. The current E2E aggregate was `38 Pass / 5 Fail / 1 Skip`; isolated reruns reproduced every material failure.
+- `APIE2E-HIERARCHY-010` / `APIE2E-F005`: positive V2 lifecycle failed because a root Team definition created successfully through public GraphQL was not found by `createAgentTeamRun`; all six invalid Team/Agent zero-side-effect cases passed. A separate real-server public API probe reproduced both Agent and Team cases after successful definition creation/listing and source correlation exposed the distinct definition/run authorities.
+- `APIE2E-MIGRATION-010` / `APIE2E-F006`: the positive old-memory move/restart case passed, but after retry reported migration success, public member projection failed because `agent-run-architect` was not found in `team-run-root`.
+- Broader execution: Required but intentionally not started after critical failure. The live Studio/standalone/provider/browser/remount/watcher/parity matrix remains pending rather than being misreported.
+- Cleanup: temporary probe/harness edit, children, isolated roots/databases and all generated prerequisites were removed; other roles' artifact state was preserved.
+
+#### Prior Failure Resolution
+
+None. API-REV-009 had no unresolved current failure. Historical `APIE2E-REPO-005` remains separate; the new hierarchy evidence independently correlates with its general-run authority signature but is not attributed to IR-011 by API/E2E.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record and `evidence/api-e2e/api-rev-010-*`.
+- Prior result/confidence: **Pass / 98%** (`API-REV-009`, earlier exact tree).
+- Current result/confidence: **Fail / 72%**.
+- New or remaining failure IDs: `APIE2E-F005`, `APIE2E-F006`.
+- Recommended recipient: `/code_reviewer` for focused failure-origin review, not proportional successful-test review.
+- Remaining untested scope: current real Studio/standalone provider/model business execution, Brief/Socratic publication/handoff/projection, restart/remount, route separation, watchers, exact package parity, browser evidence; Electron remains delivery-owned.
+
+### API-REV-011 — Canonical authority and explicit V2 retry complete current dual-host execution
+
+- Triggering role/report/round: `/code_reviewer`; `code-review-report.md` / `CRR-021`; round 11.
+- Triggering scenarios: rerun `APIE2E-F005` first after IR-012; reconcile API/E2E Local Fix `APIE2E-F006`; then complete current general/application authority, V2 recovery and dual-host matrix.
+- Related revisions: `SR-011`–`SR-013`, `ARCH-REV-013`, `IR-012`, `CRR-020`–`CRR-021`, delivery re-entry `DR-010`.
+- Executed identity: reviewer HEAD `16a6772a04ef8a0f75f0a11044f9fca8192a4df8`; reviewed implementation HEAD `5df709c89855231e26c6f7dafb6a73dda10cf4c0`.
+- Why recorded: API-REV-010 was a current **Fail / 72%**. This round independently verifies the reviewed canonical definition/task authorities, corrects the one stale migration retry sequence, and executes the broader current v1.4.58 system rather than relying on earlier-tree characterization.
+- Durable coverage delta: updated only `autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts`. The failure/retry case now explicitly runs and asserts TeamRun V2 migration after the nested-memory retry before reading the V2-only projection. No source, compatibility fallback, production cascade or test removal was introduced.
+- Repository result: F005 `7/7`; corrected F006 `2/2`; exact IR-012 authority/task selection `30 files / 202 tests`; current affected server `10 files / 81 tests`; production upgrade `4/4`; current application integration `32 Pass / 1 env-gated Skip`; focused web `13 files / 100 tests`; SDK/devkit/server/Nuxt/maintained package gates all Pass.
+- Real-system result: both maintained applications passed standalone and Studio in installed Chrome with real Codex Luna business turns, Brief `publish_artifacts`, named `/writer` handoff and final projection. Explicit iframe remount, same-data backend restart, repeated standalone and Studio watch reload, route separation and exact `73/73` package parity passed.
+- General-process result: real Classroom Professor Codex `gpt-5.6-luna` and Student AutoByteus `deepseek-v4-flash` wrote/read assignment artifacts and exchanged two exact recipient-name messages. Process restart retained the current V2 history; public restore and terminate both succeeded on the exact TeamRun ID.
+- Cleanup: all API-owned listeners, isolated/per-app roots, temporary harnesses, API-created Socratic output and scratch directories were removed; pre-existing outputs/other-role artifacts were preserved; zero retained secret-value matches.
+
+#### Prior Failure Resolution
+
+| Prior scenario / failure | Previous classification | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-F005` / `APIE2E-HIERARCHY-010` | Design Impact / `CR-011`, resolved in reviewed IR-012 source | **Resolved**: exact public CRUD-created hierarchy launches and persists through the canonical authority; `7/7` Pass | `evidence/api-e2e/api-rev-011-f005-public-crud-launch.log` |
+| `APIE2E-F006` / `APIE2E-MIGRATION-010` | API/E2E Local Fix; stale sequence omitted explicit V2 admission | **Resolved**: durable case now runs memory retry -> explicit V2 migration -> current projection; `2/2` Pass | updated test; `api-rev-011-f006-corrected-migration-sequence.log` |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record and `evidence/api-e2e/api-rev-011-*`.
+- Prior result/confidence: **Fail / 72%** (`API-REV-010`).
+- Current result/confidence: **Pass / 98%**.
+- Broader validation: **Required; executed; Pass**.
+- New or remaining current failure IDs: **None**.
+- Recommended recipient: `/code_reviewer` for proportional review of the single updated durable E2E test before delivery resumes.
+- Remaining risks: historical `APIE2E-REPO-005` remains separate Unclear; external provider/account availability is mutable; Electron packaging/shell remains downstream delivery-owned.

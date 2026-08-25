@@ -1,15 +1,15 @@
 # Integration Strategy Analysis — Universal Application Framework on Latest Personal
 
-> Current status: the original integration and SR-004–SR-007 refreshes are implemented and verified at DR-007. The current v1.4.57 merge is governed by `latest-base-refresh-round-4-design-analysis.md`; this file remains historical authority for the one-merge strategy and established platform boundaries.
+> Current status: the v1.4.58 merge is complete. ARCH-REV-012 accepted SR-012's member/session-bound task authority and narrowed AR-007 to exact general/default/fixture propagation. The SR-013 addendum governs that construction-completeness correction while this file remains historical authority for the one-merge strategy and established platform boundaries.
 
 ## Status And Authority
 
-- Status: Historical strategy implemented through SR-007; still authoritative for the single history-preserving merge rule. SR-008 governs `origin/personal@389748b0b...` (four commits after integrated base, two conflicts, two changed-both paths).
+- Status: Historical merge strategy implemented through v1.4.58; SR-011 definition boundary and SR-012 task-ownership direction accepted; current SR-013 design-ready propagation-completeness correction.
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
 - Purpose: Preserve the measured merge evidence, option decision, semantic authority rules, integration seam, and verification delta.
-- Scope: REQ-001–REQ-011 and AC-001–AC-029.
+- Scope: REQ-001–REQ-012 and AC-001–AC-036.
 - Approval: The user explicitly authorized an isolated trial merge and delegated the technical approach subject to the required latest-Personal outcome.
-- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence contracts; [latest-base-refresh-round-3-design-analysis.md](latest-base-refresh-round-3-design-analysis.md) is the implemented v1.4.56 provider/physical-scope authority; [latest-base-refresh-round-4-design-analysis.md](latest-base-refresh-round-4-design-analysis.md) governs the current controlled-workspace/test delta.
+- Normative seam detail: [integration-runtime-contracts.md](integration-runtime-contracts.md) preserves the exact passed lifecycle/run/persistence/Team contracts; section 9 defines the accepted SR-011 host definition boundary and section 10 defines the SR-012 member/session task scope plus SR-013 exact constructor/default/occurrence closure; the round-3/4/5 supplements remain implemented historical authorities.
 
 ## Executive Decision
 
@@ -343,3 +343,93 @@ The six commits after `3ab4946c7...` add an isolated, non-workspace UI prototype
 | Full design | `latest-base-refresh-round-3-design-analysis.md`. |
 
 The new raw diff is large but the cross-boundary target is bounded. Do not replace it with a provider/application framework, endpoint-local discovery owner, compatibility facade for removed APIs, application-local catalog, eager all-provider startup discovery, generic resolver/coordinator, or a whole-file conflict choice.
+
+
+## SR-009 Personal v1.4.58 Hierarchical Team/V2 Refresh Addendum
+
+The strategy remains one history-preserving semantic merge on the dedicated ticket branch. The larger count does not justify rebase, selective replay, or reconstructing the completed feature on a fresh branch: protected checkpoint `c6d74710a...` already contains reviewed dual-host and v1.4.57 behavior, while Personal's 38-commit advance is independently coherent and should remain visible as the second merge parent.
+
+The current resolution order is source-first:
+
+1. require exact `origin/personal@fb1335867a4223b2499e4513f58c609b6ac33ab4` immediately before merge;
+2. accept Personal's current Team topology planner, identity allocator, V2 package/catalog/history, and registered migration as the lower execution/data authority;
+3. adapt the feature's application-owned launch resolver/SDK/run-binding seam to complete Team scopes plus Agent leaves without replacing Personal execution owners;
+4. preserve explicit Studio/standalone construction, graph-local dependencies, package defaults/overrides/readiness, controlled workspace/provider behavior, and real return/cleanup paths;
+5. keep the 30 generated SDK/vendor/importable package paths deleted, resolve the 13 content conflicts by current owner, and audit all 50 changed-both paths;
+6. rebuild generated output only as disposable package-parity evidence after canonical source passes;
+7. re-run the full architecture/source/API-E2E/durable-test/Electron gates on the integrated commit.
+
+Semantic authority for the new junction is:
+
+| Concern | Authority | Integration rule |
+| --- | --- | --- |
+| Application package/selected-definition/host precedence | current application launch configuration owner | extend the Team variant with complete rooted Team scopes; no launch-time inference |
+| Generic Team topology, validation, allocation, V2 persistence and execution | Personal v1.4.58 Team owners | consume exact complete input; never port/recreate these owners |
+| Historical V1 TeamRun conversion | Personal registered V2 migration | run after nested-memory migration; keep V1 out of current runtime |
+| Studio hierarchical editable/stored Team UI | Personal v1.4.58 | retain ticket controlled-workspace/provider/null-runtime corrections at existing sibling seams |
+| SDK/vendor/importable outputs | canonical source + build/devkit pack | remain deleted as tracked authority; regenerate for proof |
+
+The exact file, data, conflict, overlap, sequence, and verification decisions are in `latest-base-refresh-round-5-design-analysis.md`. Earlier addenda remain historical authority for already-integrated behavior and are not separate merge plans.
+
+## SR-011 Canonical Host Definition Boundary Addendum
+
+The v1.4.58 merge is complete. SR-011 is not another integration strategy or broad platform refactor. It resolves one demonstrated supported-path split:
+
+```text
+current: public definition cache A -> public run service -> definition cache B -> not found
+target:  one host definition pair -> {public definitions, general runs, application config/runs, refresh}
+```
+
+| Concern | Target owner | Rule |
+| --- | --- | --- |
+| Bundle-backed definition-pair construction | `createBundleBackedDefinitionServices` | concrete provider/service wiring with exactly two governed callers: host binding and transient standalone validation; no process binding or cache publication |
+| Host Agent/Team definition catalog | existing definition services bound by `HostDefinitionServices` | one bundle-aware pair, Team constructed over exact Agent, fail-closed bind/release |
+| Public Studio definition/run APIs | configured Studio service registration | exact definition and general run services from the same built server; no ambient resolver getter |
+| General process runs | `GeneralProcessRunSupervisor` | explicitly construct/bind run services, backends, allocators, planner/context with host definitions |
+| Application runs | existing application runtime/run-service factory | receive same definitions; keep non-identical managers/sessions/publication |
+| Package refresh | existing refresh coordinator | refresh the same Agent then Team caches |
+| Pre-host migration label lookup | migration-local persistence reader | non-caching optional lookup; never binds host catalog |
+| Persistence | unchanged definition files/package roots | `Directly Usable — No Migration` |
+
+The standalone package validator's pre-host pair is deliberately not the host catalog: it is method-local, read-only, unbound, and unreachable from routes, process getters, run construction, or refresh. Once executable-host assembly begins, exactly one bound runtime catalog exists. This distinction keeps package validation independent without weakening the canonical runtime boundary.
+
+Rejected alternatives are resolver-only redirection, cache mirroring/synchronization, fallback reads, a generic catalog facade/container, and unifying general/application execution state. Exact contracts, lifecycle, inventory, and proof are normative in `integration-runtime-contracts.md` section 9 and `design-spec.md` DS-024.
+
+
+## SR-012 Member/Session-Bound Task Delegation Addendum
+
+SR-012 does not change the completed merge strategy or reopen the accepted one-catalog/two-execution-scope design. It corrects the one path where shared task infrastructure accidentally selected process-general execution state:
+
+```text
+current: application member session -> shared task service -> process-general TeamRunService
+target:  issuing RootTeamRun -> immutable member resolver -> issuing session/native tool -> shared task service -> same RootTeamRun
+```
+
+| Concern | Target owner | Rule |
+| --- | --- | --- |
+| task lifecycle/state/persistence | existing `RootTeamRun` and its root `TaskDelegationService` | unchanged sole owner |
+| exact root selection | root-specific `MemberTaskRootResolver` created by `AgentTeamRunManager.materializeRoot()` | no selector, lookup, restore, or process/application mode |
+| member propagation | existing mixed callbacks, registries/handles, `MemberTeamContextBuilder`, immutable `MemberTeamContext` | required for configured/restored/nested/task members; no default |
+| MCP execution scope | existing scoped session service/registry with specialized Team-member capability | authenticated adapter consumes capability only; general/application sessions retain separate roots/managers |
+| task protocol | existing manifest, service, and router | one stateless shared implementation; remove `getTeamRunService()` |
+| AutoByteus server task tools | existing registered definitions plus bound per-member ToolConfig | same member resolver; remove identity-only native parser |
+| transport/public surface | existing `/mcp/agent-tools/:sessionId` and native in-process tool execution | unchanged; no duplicate route/catalog or external `/mcp/gateway` exposure |
+| persistence | unchanged task records, Team V2, launch and application data | `Directly Usable — No Migration` |
+
+This is proportionate because it strengthens the existing RootTeamRun boundary and reuses the existing task/session/tool capability areas. Rejected alternatives are a manager unification, process/application manager map, application-ID router, service locator, generic deferred container, global fallback, inactive-root restore, duplicate task service, nullable capability bag, compatibility parser, or modification of native Codex/Claude file tools. Exact types, lifecycle, inventory, and proof are normative in `integration-runtime-contracts.md` section 10 and `design-spec.md` DS-025/SR-012.
+
+## SR-013 Exact General/Fixture Propagation Addendum
+
+ARCH-REV-012 accepted the SR-012 architecture and found one bounded completeness problem rather than a new owner or behavior gap. The strategy is therefore not another refactor: close every reachable executable construction edge and prove the inventory.
+
+| Junction | Exact decision |
+| --- | --- |
+| General custom Team manager | `GeneralProcessRunSupervisor` forwards `callbacks.taskRootResolver` beside its existing publish/message/platform callbacks and keeps its process manager/session dependencies. |
+| Application custom Team manager | `createApplicationRunServices` forwards the same callback field beside its graph-local manager/session/memory dependencies. |
+| Built-in mixed manager | `MixedTeamRunBackendFactory` forwards `input.callbacks.taskRootResolver`; the optional custom manager factory remains a legitimate strategy seam. |
+| Executable factory methods | `createBackend` and `restoreBackend` require complete callbacks; remove `noopCallbacks`. `createBackendForNode` stays required. |
+| Context-only use | `buildTeamRunContext` remains callback-free. The two named subteam-factory tests may construct a default factory only for this non-executable method. |
+| Direct test/fixture construction | Update every current manager/factory/builder/context occurrence with an explicit resolver or exact context-only classification; one test-only fixture may own a clearly named explicit rejecting/root-returning resolver. |
+| Architecture enforcement | Exact current-tree counts, forwarding shapes, `noopCallbacks` absence, omission/null/undefined cases, and the two context-only exceptions are executable contract evidence. |
+
+This retains the one-catalog/two-execution-scope boundary and the one route/catalog/task implementation. It adds no `ApplicationExecutionScope`, manager router, container, event bus, compatibility wrapper, default resolver, or migration. Exact file and test paths are authoritative in the SR-013 `integration-path-inventory.txt` addendum; exact signatures and occurrence counts are normative in `integration-runtime-contracts.md` section 10.
