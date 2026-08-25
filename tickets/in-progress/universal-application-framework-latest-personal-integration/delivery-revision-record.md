@@ -12,6 +12,7 @@
 | DR-006 | User reports origin/personal advanced again and requests newest-base integration plus Electron rebuild | DR-005 ready for verification on 7edfb1625 | Blocked — Design Impact; nested physical-scope refresh produces 3 non-mechanical conflicts | latest-base-refresh-round-2-conflict-report.md, evidence/delivery/dr-006-base-refresh-and-integration.log |
 | DR-007 | CRR-015/API-REV-008 return the design-resolved newest-Personal candidate; user requests latest base and Electron rebuild | DR-006 Blocked — Design Impact | Latest-base integrated Electron 1.4.56 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-007-* |
 | DR-008 | User reports origin/personal advanced and requests latest integration plus Electron rebuild | DR-007 ready for verification on 52b4be02e | Blocked — Design Impact; v1.4.57 workspace-selection refresh conflicts with 2 provider-granular durable tests | latest-base-refresh-round-4-conflict-report.md, evidence/delivery/dr-008-base-refresh-and-integration.log |
+| DR-009 | CRR-017/API-REV-009 return the design-resolved v1.4.57 candidate for delivery | DR-008 Blocked — Design Impact | Latest-base integrated Electron 1.4.57 package ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-009-* |
 
 ## Revision Entries
 
@@ -151,3 +152,24 @@
 - Routing: Solution Designer must define the combined form/test contract and downstream validation before implementation merges the new base.
 - User/finalization state: DR-007 1.4.56 is superseded for the newest-base request. Ticket remains in progress. No merge, new build, final push, Personal merge/push, release, deployment, archive, or cleanup occurred.
 - Resume condition: design-approved semantic integration, normal downstream gates, fresh delivery ref check, and Electron rebuild.
+
+### DR-009 — Controlled-workspace v1.4.57 integration and newest-base Electron pass
+
+- Round/trigger: Round 9; `CRR-017` returns `API-REV-009` / `IR-009` after design-approved resolution of DR-008, and delivery resumes the user's newest-base Electron request.
+- Prior result: DR-008 Blocked — Design Impact before merge/build.
+- Current result: latest-base Personal macOS ARM64 Electron 1.4.57 package ready; explicit user verification pending.
+- Resolution basis: `SR-008` / `ARCH-REV-008` combines current provider-granular form fixtures with Personal's controlled `WorkspaceSelectionState`; semantic merge `53dd98b53` retains both sets of assertions without production duplication.
+- Authoritative gates: `CRR-016` Pass / 95; `API-REV-009` Pass / 98 with every category at least 96%; `CRR-017` Not Applicable because API/E2E changed no durable test or production path.
+- Delivery checkpoint: committed the cumulative reviewed API/E2E and DR-008 package locally as `d6d3b040b33a9ad070ad3047783514470cd0aece` before final base integration.
+- Latest-base refresh: fetched `origin/personal@8a4c3868c7c54a46991f45be22a68151076412b1`, 11 commits beyond the reviewed v1.4.57 base. The delta contains release-finalization/cleanup records plus isolated root-prototype Agent Team parity/integration work; it changes no production workspace/server/SDK/application source or schema.
+- Integration: changed-both path count was zero; merge-tree preview passed; delivery merged without conflicts as `26ea0891d80caf6edc1a6e9b92e7cadeff7fa6b9`, with the checkpoint and exact Personal revision as parents.
+- Integrated-state result: origin/personal is an ancestor, unmerged paths are zero, and post-build divergence is 159 ahead / 0 behind. Post-build fetch confirmed the base remained unchanged.
+- Electron result: documented Personal macOS ARM64 pipeline passed at 1.4.57. Repository guards, shared/server builds, Prisma generation, bootstrap smoke, renderer/main/preload generation, native rebuild, packaging, five-scenario isolation, terminal spawn, owner audit, integrity, ordinary-app preservation, and cleanup passed.
+- Current DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.57.dmg`; 466994232 bytes; SHA-256 `ad922e458a838fccbf057ec83d1556ad2fb0c19bedcad9b47687963d3d38ef54`.
+- Current ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.57.zip`; 461539918 bytes; SHA-256 `3da927ac75bbe0011fae940d4b424d2ed0834f33fe9bf48379992e10cca078b5`.
+- Documentation result: v1.4.57 workspace-selection docs and final prototype/release records are integrated. No additional long-lived production doc was required; delivery reports/evidence were refreshed.
+- Persisted data: controlled workspace selection is directly usable with no migration. The cumulative package retains the registered old Team Agent memory migration and additive token analytics Prisma migration; the final 11 base commits add no production migration.
+- Hygiene: generated SDK `dist` prerequisites were removed after verification. Electron output is retained locally and ignored by Git.
+- User/finalization state: explicit verification of this exact DR-009 package has not been received. Ticket remains in progress. No final delivery commit/push, Personal merge/push, tag, hosted release, deployment, archive, or cleanup occurred.
+- Next action: user tests the exact 1.4.57 DMG/hash and replies with approval/completion or an issue.
+- Remaining risks/hold: unsigned/unnotarized local package; normal launch may apply pending standard migrations; provider availability is mutable; Electron artifacts do not travel with Git. Refresh Personal after verification and require renewed verification if the candidate materially changes. Finalization remains ticket-branch-only unless Personal integration is separately authorized.
