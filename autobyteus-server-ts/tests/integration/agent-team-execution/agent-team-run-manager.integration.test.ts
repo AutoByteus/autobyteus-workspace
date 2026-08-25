@@ -14,7 +14,6 @@ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-ru
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { computeTeamRunModelConfigRevision } from "../../../src/run-history/domain/run-model-config-revision.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const tempDirs: string[] = [];
@@ -270,7 +269,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
 
     let releaseDeletion!: () => void;
     const deletionBarrier = new Promise<void>((resolve) => { releaseDeletion = resolve; });
-    const deletion = manager.withUnmanagedRootPersistence(config.rootTeam.teamRunId, async () => {
+    const deletion = manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => {
       await deletionBarrier;
       return "deleted";
     });
@@ -285,7 +284,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     releaseDeletion();
     await expect(deletion).resolves.toEqual({ kind: "completed", value: "deleted" });
     await expect(restore).resolves.toMatchObject({ teamRunId: config.rootTeam.teamRunId });
-    await expect(manager.withUnmanagedRootPersistence(config.rootTeam.teamRunId, async () => "unexpected"))
+    await expect(manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => "unexpected"))
       .resolves.toEqual({ kind: "managed" });
   });
 
@@ -305,7 +304,6 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     });
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Editable Team" });
     const initialTree = root.getExecutionTreeSnapshot();
-    const revision = computeTeamRunModelConfigRevision(initialTree);
     const patch = [{
       scopeKind: "CONFIGURED_TEAM" as const,
       scopeAddress: "/",
@@ -314,7 +312,6 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
 
     await expect(manager.updateStoppedModelConfigs({
       teamRunId: root.teamRunId,
-      expectedConfigurationRevision: revision,
       patches: patch,
     })).resolves.toMatchObject({ outcome: "RUN_ACTIVE", success: false });
     expect(validate).not.toHaveBeenCalled();
@@ -322,7 +319,6 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
     const updated = await manager.updateStoppedModelConfigs({
       teamRunId: root.teamRunId,
-      expectedConfigurationRevision: revision,
       patches: patch,
     });
     expect(updated).toMatchObject({

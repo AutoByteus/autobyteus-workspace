@@ -10,7 +10,6 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from "./team-run-history-catalog-service.js";
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
-import { computeTeamRunModelConfigRevision } from "../domain/run-model-config-revision.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 
 export interface DeleteStoredTeamRunResult { success: boolean; message: string }
@@ -67,7 +66,6 @@ export class TeamRunHistoryService {
         isActive,
         available: Boolean(row),
         archived: Boolean(tree.archivedAt),
-        configurationRevision: computeTeamRunModelConfigRevision(tree),
       }),
     };
   }

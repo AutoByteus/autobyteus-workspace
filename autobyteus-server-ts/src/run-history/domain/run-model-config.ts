@@ -4,7 +4,6 @@ export const RUN_MODEL_CONFIG_UPDATE_OUTCOMES = [
   "RUN_ACTIVE",
   "RUN_ARCHIVED",
   "NOT_FOUND",
-  "STALE_REVISION",
   "MODEL_UNAVAILABLE",
   "SCHEMA_UNAVAILABLE",
   "VALIDATION_FAILED",
@@ -23,7 +22,6 @@ export type RunModelConfigFieldError = Readonly<{
 export type RunModelConfigEditability = Readonly<{
   editable: boolean;
   reason: string | null;
-  configurationRevision: string;
 }>;
 
 export type RunModelConfigUpdateResult<TCanonical> = Readonly<{
@@ -40,7 +38,6 @@ export const runModelConfigEditability = (input: {
   isActive: boolean;
   archived: boolean;
   available?: boolean;
-  configurationRevision: string;
 }): RunModelConfigEditability => Object.freeze({
   editable: input.available !== false && !input.isActive && !input.archived,
   reason: input.available === false
@@ -50,5 +47,4 @@ export const runModelConfigEditability = (input: {
     : input.isActive
       ? "RUN_ACTIVE"
       : null,
-  configurationRevision: input.configurationRevision,
 });

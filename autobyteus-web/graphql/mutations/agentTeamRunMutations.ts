@@ -42,7 +42,6 @@ export const UpdateStoppedTeamRunModelConfigs = gql`
       editability {
         editable
         reason
-        configurationRevision
       }
       canonicalExecutionTree
       fieldErrors {

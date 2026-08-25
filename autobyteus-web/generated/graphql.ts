@@ -2191,7 +2191,6 @@ export type RunMetadataConfigObject = {
 
 export type RunModelConfigEditabilityObject = {
   __typename?: 'RunModelConfigEditabilityObject';
-  configurationRevision: Scalars['String']['output'];
   editable: Scalars['Boolean']['output'];
   reason?: Maybe<Scalars['String']['output']>;
 };
@@ -2849,7 +2848,6 @@ export type UpdateSkillInput = {
 
 export type UpdateStoppedAgentRunModelConfigInput = {
   agentRunId: Scalars['String']['input'];
-  expectedConfigurationRevision: Scalars['String']['input'];
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
 };
 
@@ -2865,7 +2863,6 @@ export type UpdateStoppedAgentRunModelConfigResult = {
 };
 
 export type UpdateStoppedTeamRunModelConfigsInput = {
-  expectedConfigurationRevision: Scalars['String']['input'];
   patches: Array<TeamRunModelConfigPatchInput>;
   teamRunId: Scalars['String']['input'];
 };
@@ -3177,7 +3174,7 @@ export type UpdateStoppedTeamRunModelConfigsMutationVariables = Exact<{
 }>;
 
 
-export type UpdateStoppedTeamRunModelConfigsMutation = { __typename?: 'Mutation', updateStoppedTeamRunModelConfigs: { __typename?: 'UpdateStoppedTeamRunModelConfigsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null, configurationRevision: string }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+export type UpdateStoppedTeamRunModelConfigsMutation = { __typename?: 'Mutation', updateStoppedTeamRunModelConfigs: { __typename?: 'UpdateStoppedTeamRunModelConfigsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
 
 export type RunAppDataMigrationMutationVariables = Exact<{
   migrationId: Scalars['String']['input'];
@@ -3449,7 +3446,7 @@ export type UpdateStoppedAgentRunModelConfigMutationVariables = Exact<{
 }>;
 
 
-export type UpdateStoppedAgentRunModelConfigMutation = { __typename?: 'Mutation', updateStoppedAgentRunModelConfig: { __typename?: 'UpdateStoppedAgentRunModelConfigResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalLlmConfig?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null, configurationRevision: string }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+export type UpdateStoppedAgentRunModelConfigMutation = { __typename?: 'Mutation', updateStoppedAgentRunModelConfig: { __typename?: 'UpdateStoppedAgentRunModelConfigResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalLlmConfig?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
 
 export type UpdateServerSettingMutationVariables = Exact<{
   key: Scalars['String']['input'];
@@ -3811,7 +3808,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null, configurationRevision: string } } };
+export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -3847,7 +3844,7 @@ export type GetAgentRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null, configurationRevision: string } } };
+export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5482,7 +5479,6 @@ export const UpdateStoppedTeamRunModelConfigsDocument = gql`
     editability {
       editable
       reason
-      configurationRevision
     }
     canonicalExecutionTree
     fieldErrors {
@@ -6696,7 +6692,6 @@ export const UpdateStoppedAgentRunModelConfigDocument = gql`
     editability {
       editable
       reason
-      configurationRevision
     }
     canonicalLlmConfig
     fieldErrors {
@@ -8727,7 +8722,6 @@ export const GetTeamRunResumeConfigDocument = gql`
     modelConfigEditability {
       editable
       reason
-      configurationRevision
     }
   }
 }
@@ -8949,7 +8943,6 @@ export const GetAgentRunResumeConfigDocument = gql`
     modelConfigEditability {
       editable
       reason
-      configurationRevision
     }
   }
 }

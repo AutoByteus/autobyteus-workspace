@@ -80,25 +80,6 @@ export const createExistingTeamModelConfigDraft = (
   return { scopesByAddress: scopes, childAddressesByParent: children }
 }
 
-export const rebaseExistingTeamModelConfigDraft = (
-  draft: ExistingTeamModelConfigDraft,
-  tree: TeamRunExecutionTreeDto,
-): ExistingTeamModelConfigDraft => {
-  const canonical = createExistingTeamModelConfigDraft(tree)
-  const scopesByAddress = Object.fromEntries(
-    Object.entries(canonical.scopesByAddress).map(([address, scope]) => {
-      const rejectedScope = draft.scopesByAddress[address]
-      if (!rejectedScope) return [address, scope]
-      return [address, {
-        ...scope,
-        draftLlmConfig: cloneExistingRunModelConfig(rejectedScope.draftLlmConfig),
-        directlyEdited: rejectedScope.directlyEdited,
-      }]
-    }),
-  )
-  return { ...canonical, scopesByAddress }
-}
-
 export const updateExistingTeamScopeModelConfig = (
   draft: ExistingTeamModelConfigDraft,
   address: string,

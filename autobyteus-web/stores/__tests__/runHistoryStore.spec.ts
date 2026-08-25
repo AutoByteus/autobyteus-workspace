@@ -1086,7 +1086,7 @@ describe('runHistoryStore', () => {
                   metadata: { origin: 'test' },
                 },
               },
-              modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+              modelConfigEditability: { editable: true, reason: null },
             },
           },
           errors: [],
@@ -1194,7 +1194,7 @@ describe('runHistoryStore', () => {
                 autoExecuteTools: false,
                 skillAccessMode: 'PRELOADED_ONLY',
               },
-              modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+              modelConfigEditability: { editable: true, reason: null },
             },
           },
           errors: [],
@@ -1312,7 +1312,7 @@ describe('runHistoryStore', () => {
                 runtimeKind: 'codex_app_server',
                 runtimeReference: null,
               },
-              modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+              modelConfigEditability: { editable: true, reason: null },
             },
           },
           errors: [],
@@ -1392,7 +1392,7 @@ describe('runHistoryStore', () => {
                 autoExecuteTools: false,
                 skillAccessMode: 'PRELOADED_ONLY',
               },
-              modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+              modelConfigEditability: { editable: true, reason: null },
             },
           },
           errors: [],
@@ -2018,7 +2018,7 @@ describe('runHistoryStore', () => {
           autoExecuteTools: false,
           skillAccessMode: null,
         },
-        modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+        modelConfigEditability: { editable: true, reason: null },
       },
     };
     store.selectedRunId = 'run-1';
@@ -2138,7 +2138,7 @@ describe('runHistoryStore', () => {
           autoExecuteTools: false,
           skillAccessMode: null,
         },
-        modelConfigEditability: { editable: true, reason: null, configurationRevision: 'revision-1' },
+        modelConfigEditability: { editable: true, reason: null },
       },
     };
     store.selectedRunId = 'run-1';

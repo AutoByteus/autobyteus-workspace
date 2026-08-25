@@ -4,7 +4,6 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
-import { computeAgentRunModelConfigRevision } from "../../../src/run-history/domain/run-model-config-revision.js";
 
 const RUN_ID = "standalone-run-1";
 const CLAUDE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
@@ -292,7 +291,6 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     await expect(current.service.updateStoppedModelConfig({
       agentRunId: RUN_ID,
-      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
       success: true,
@@ -307,7 +305,6 @@ describe("StandaloneAgentRunLifecycleService", () => {
     });
     expect(commitRunModelConfig).toHaveBeenCalledWith({
       runId: RUN_ID,
-      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
       llmConfig: { effort: "high" },
     });
   });
@@ -325,7 +322,6 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     await expect(current.service.updateStoppedModelConfig({
       agentRunId: RUN_ID,
-      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
       success: false,
@@ -371,7 +367,6 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     const save = current.service.updateStoppedModelConfig({
       agentRunId: RUN_ID,
-      expectedConfigurationRevision: computeAgentRunModelConfigRevision(stopped),
       llmConfig: { effort: "high" },
     });
     await vi.waitFor(() => expect(validateModelConfig).toHaveBeenCalledOnce());

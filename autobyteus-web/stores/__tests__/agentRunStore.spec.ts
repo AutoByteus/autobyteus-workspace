@@ -488,7 +488,7 @@ describe('agentRunStore', () => {
         expect(result).toBe(true);
         expect(mockDisconnect).toHaveBeenCalled();
         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
-        expect(runHistoryStoreMock.refreshAgentResumeConfig).toHaveBeenCalledWith('run-1');
+        expect(runHistoryStoreMock.refreshAgentResumeConfig).not.toHaveBeenCalled();
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
     });
 

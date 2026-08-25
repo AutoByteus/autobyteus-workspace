@@ -203,9 +203,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         });
         const history = useRunHistoryStore();
         history.markTeamAsInactive(rootTeamRunId);
-        await history.refreshTeamResumeConfig(rootTeamRunId).catch((refreshError) => {
-          console.warn(`Team '${rootTeamRunId}' stopped, but its editable configuration could not be refreshed.`, refreshError);
-        });
         void history.refreshTreeQuietly();
         return true;
       } catch (error) { console.error(`Error terminating Team '${rootTeamRunId}':`, error); return false; }

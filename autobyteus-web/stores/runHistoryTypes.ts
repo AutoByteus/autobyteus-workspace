@@ -35,7 +35,6 @@ export interface RunHistoryWorkspaceGroup {
 export interface RunModelConfigEditability {
   editable: boolean;
   reason?: string | null;
-  configurationRevision: string;
 }
 
 export interface RunMetadataConfigPayload {

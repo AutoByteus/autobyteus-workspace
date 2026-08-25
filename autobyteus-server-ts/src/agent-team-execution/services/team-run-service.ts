@@ -206,7 +206,6 @@ export class TeamRunService {
   }
   updateStoppedModelConfigs(input: {
     teamRunId: string;
-    expectedConfigurationRevision: string;
     patches: readonly TeamRunModelConfigPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     return this.manager.updateStoppedModelConfigs(input);

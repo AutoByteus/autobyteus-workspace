@@ -406,9 +406,6 @@ export const useAgentRunStore = defineStore('agentRun', {
 
         teardownLocalRuntime();
         runHistoryStore.markRunAsInactive(runId);
-        await runHistoryStore.refreshAgentResumeConfig(runId).catch((refreshError) => {
-          console.warn(`Run '${runId}' stopped, but its editable configuration could not be refreshed.`, refreshError);
-        });
         runHistoryStore.refreshTreeQuietly();
         return true;
       } catch (error) {

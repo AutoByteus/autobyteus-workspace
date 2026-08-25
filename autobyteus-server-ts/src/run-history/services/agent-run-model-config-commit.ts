@@ -1,57 +1,44 @@
-import { computeAgentRunModelConfigRevision } from "../domain/run-model-config-revision.js";
+import { isDeepStrictEqual } from "node:util";
 import type { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
 export type AgentRunModelConfigCommitResult =
-  | Readonly<{ kind: "committed" | "unchanged"; metadata: AgentRunMetadata; configurationRevision: string }>
-  | Readonly<{ kind: "not_found" | "archived" | "stale" | "failed" | "indeterminate"; metadata: AgentRunMetadata | null; configurationRevision: string | null }>;
+  | Readonly<{ kind: "committed" | "unchanged"; metadata: AgentRunMetadata }>
+  | Readonly<{ kind: "not_found" | "archived" | "failed" | "indeterminate"; metadata: AgentRunMetadata | null }>;
 
 export const commitAgentRunModelConfig = async (input: {
   metadataStore: Pick<AgentRunMetadataStore, "readMetadata" | "writeMetadata">;
   runId: string;
   cataloged: boolean;
   archived: boolean;
-  expectedConfigurationRevision: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
 }): Promise<AgentRunModelConfigCommitResult> => {
   const metadata = await input.metadataStore.readMetadata(input.runId);
-  if (!metadata || !input.cataloged) {
-    return {
-      kind: "not_found",
-      metadata,
-      configurationRevision: metadata ? computeAgentRunModelConfigRevision(metadata) : null,
-    };
-  }
-  const currentRevision = computeAgentRunModelConfigRevision(metadata);
-  if (input.archived) return { kind: "archived", metadata, configurationRevision: currentRevision };
-  if (currentRevision !== input.expectedConfigurationRevision) {
-    return { kind: "stale", metadata, configurationRevision: currentRevision };
+  if (!metadata || !input.cataloged) return { kind: "not_found", metadata };
+  if (input.archived) return { kind: "archived", metadata };
+  const nextLlmConfig = input.llmConfig ? structuredClone(input.llmConfig) : null;
+  if (isDeepStrictEqual(metadata.llmConfig ?? null, nextLlmConfig)) {
+    return { kind: "unchanged", metadata };
   }
   const nextMetadata: AgentRunMetadata = {
     ...metadata,
-    llmConfig: input.llmConfig ? structuredClone(input.llmConfig) : null,
+    llmConfig: nextLlmConfig,
   };
-  const nextRevision = computeAgentRunModelConfigRevision(nextMetadata);
-  if (nextRevision === currentRevision) {
-    return { kind: "unchanged", metadata, configurationRevision: currentRevision };
-  }
   try {
     await input.metadataStore.writeMetadata(input.runId, nextMetadata);
     const reread = await input.metadataStore.readMetadata(input.runId);
-    if (!reread || computeAgentRunModelConfigRevision(reread) !== nextRevision) {
-      return { kind: "failed", metadata, configurationRevision: currentRevision };
+    if (!reread || !isDeepStrictEqual(reread.llmConfig ?? null, nextLlmConfig)) {
+      return { kind: "failed", metadata };
     }
-    return { kind: "committed", metadata: reread, configurationRevision: nextRevision };
+    return { kind: "committed", metadata: reread };
   } catch {
     const reread = await input.metadataStore.readMetadata(input.runId);
-    const rereadRevision = reread ? computeAgentRunModelConfigRevision(reread) : null;
-    if (reread && rereadRevision === nextRevision) {
-      return { kind: "committed", metadata: reread, configurationRevision: nextRevision };
+    if (reread && isDeepStrictEqual(reread.llmConfig ?? null, nextLlmConfig)) {
+      return { kind: "committed", metadata: reread };
     }
     return {
       kind: reread ? "failed" : "indeterminate",
       metadata: reread ?? metadata,
-      configurationRevision: rereadRevision ?? currentRevision,
     };
   }
 };

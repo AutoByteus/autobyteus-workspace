@@ -8,8 +8,6 @@ export class RunModelConfigEditabilityObject {
   @Field(() => String, { nullable: true })
   reason?: string | null;
 
-  @Field(() => String)
-  configurationRevision!: string;
 }
 
 @ObjectType()

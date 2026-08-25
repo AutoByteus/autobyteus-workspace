@@ -121,9 +121,6 @@ export class UpdateStoppedAgentRunModelConfigInput {
   @Field(() => String)
   agentRunId!: string;
 
-  @Field(() => String)
-  expectedConfigurationRevision!: string;
-
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig!: Record<string, unknown> | null;
 }
@@ -312,7 +309,6 @@ export class AgentRunResolver {
       }
       const result = await this.agentRunService.updateStoppedModelConfig({
         agentRunId: input.agentRunId,
-        expectedConfigurationRevision: input.expectedConfigurationRevision,
         llmConfig: input.llmConfig,
       });
       return {
@@ -331,7 +327,7 @@ export class AgentRunResolver {
         outcome: "INTERNAL_ERROR",
         message: "Model settings could not be updated.",
         isActive: false,
-        editability: { editable: false, reason: "INTERNAL_ERROR", configurationRevision: "" },
+        editability: { editable: false, reason: "INTERNAL_ERROR" },
         canonicalLlmConfig: null,
         fieldErrors: [],
       };

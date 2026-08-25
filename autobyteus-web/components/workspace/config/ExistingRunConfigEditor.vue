@@ -1,8 +1,17 @@
 <template>
-  <div class="flex min-h-0 flex-1 flex-col" :aria-busy="draftStore.saving || draftStore.reconciling">
+  <div class="flex min-h-0 flex-1 flex-col" :aria-busy="draftStore.loadingCanonical || draftStore.saving || draftStore.reconciling">
     <div class="flex-1 overflow-y-auto px-4 py-4">
-      <div v-if="!draft" role="status" class="rounded border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700">
-        {{ t('workspace.runModelConfig.loading') }}
+      <div
+        v-if="!draft"
+        :role="draftStore.feedback?.kind === 'error' ? 'alert' : 'status'"
+        class="rounded border px-3 py-2 text-sm"
+        :class="draftStore.feedback?.kind === 'error'
+          ? 'border-red-200 bg-red-50 text-red-700'
+          : 'border-blue-100 bg-blue-50 text-blue-700'"
+      >
+        {{ draftStore.feedback?.kind === 'error'
+          ? draftStore.feedback.message
+          : t('workspace.runModelConfig.loading') }}
       </div>
 
       <AgentRunConfigForm
@@ -43,7 +52,7 @@
 
     <div class="border-t border-gray-200 bg-gray-50 px-4 py-3">
       <p
-        v-if="draftStore.feedback"
+        v-if="draftStore.feedback && draft"
         :role="draftStore.feedback.kind === 'error' ? 'alert' : 'status'"
         :aria-live="draftStore.feedback.kind === 'error' ? 'assertive' : 'polite'"
         class="mb-2 text-xs"
@@ -55,7 +64,7 @@
         v-if="draftStore.reconciliationRequired || draft?.editability.reason === 'REFRESH_REQUIRED'"
         type="button"
         class="mb-2 inline-flex w-full justify-center rounded-md border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-indigo-700 shadow-sm hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :disabled="draftStore.reconciling"
+        :disabled="draftStore.loadingCanonical || draftStore.reconciling"
         @click="draftStore.retryCanonicalRefresh"
       >
         {{ t('workspace.runModelConfig.retry') }}
@@ -78,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, onBeforeUnmount, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -100,6 +109,13 @@ const definitions = useAgentDefinitionStore()
 const { t } = useLocalization()
 const { draft } = storeToRefs(draftStore)
 
+const selectedIdentity = computed(() => {
+  const subject = selection.subject
+  if (subject?.kind === 'agent_run') return { kind: 'agent' as const, id: subject.runId }
+  if (subject?.kind === 'team_run') return { kind: 'team' as const, id: subject.rootTeamRunId }
+  return null
+})
+
 const selectedCanonical = computed(() => {
   const subject = selection.subject
   if (subject?.kind === 'agent_run') return history.resumeConfigByRunId[subject.runId] ?? null
@@ -107,14 +123,22 @@ const selectedCanonical = computed(() => {
   return null
 })
 
-watch(selectedCanonical, (payload) => {
-  if (!payload) {
+watch(selectedIdentity, (identity) => {
+  if (!identity) {
     draftStore.clear()
     return
   }
-  if ('runId' in payload) draftStore.syncAgentCanonical(payload)
-  else draftStore.syncTeamCanonical(payload)
-}, { immediate: true, deep: true })
+  if (identity.kind === 'agent') void draftStore.loadAgentCanonical(identity.id)
+  else void draftStore.loadTeamCanonical(identity.id)
+}, { immediate: true })
+
+watch(selectedCanonical, (payload) => {
+  if (!payload) return
+  if ('runId' in payload) draftStore.applyCachedAgentLifecycle(payload)
+  else draftStore.applyCachedTeamLifecycle(payload)
+}, { deep: true })
+
+onBeforeUnmount(() => draftStore.clear())
 
 const agentConfig = computed<AgentRunConfig | null>(() => {
   const current = draft.value

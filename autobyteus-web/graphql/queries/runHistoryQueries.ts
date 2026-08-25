@@ -196,7 +196,6 @@ export const GetTeamRunResumeConfig = gql`
       modelConfigEditability {
         editable
         reason
-        configurationRevision
       }
     }
   }
@@ -310,7 +309,6 @@ export const GetAgentRunResumeConfig = gql`
       modelConfigEditability {
         editable
         reason
-        configurationRevision
       }
     }
   }

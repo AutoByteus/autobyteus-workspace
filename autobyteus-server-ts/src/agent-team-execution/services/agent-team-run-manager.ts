@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -20,7 +21,6 @@ import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-dele
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import { ModelConfigValidationService } from "../../llm-management/services/model-config-validation-service.js";
-import { computeTeamRunModelConfigRevision } from "../../run-history/domain/run-model-config-revision.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -163,7 +163,7 @@ export class AgentTeamRunManager {
 
   listManagedTeamRunIds(): string[] { return [...this.managedRoots.keys()]; }
 
-  async withUnmanagedRootPersistence<T>(
+  async withUnmanagedHistoryDeletion<T>(
     rootTeamRunIdInput: string,
     operation: () => Promise<T>,
   ): Promise<{ kind: "managed" } | { kind: "completed"; value: T }> {
@@ -176,7 +176,6 @@ export class AgentTeamRunManager {
 
   async updateStoppedModelConfigs(input: {
     teamRunId: string;
-    expectedConfigurationRevision: string;
     patches: readonly TeamRunModelConfigPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     const teamRunId = required(input.teamRunId, "teamRunId");
@@ -189,17 +188,13 @@ export class AgentTeamRunManager {
       if (this.hasManagedTeamRun(teamRunId)) {
         return this.modelConfigUpdateResult(
           "RUN_ACTIVE",
-          "This team resumed before settings were saved. Stop it and try again.",
+          "This team became active through another connected workflow. Stop it, reopen Settings, and try again.",
           tree,
           true,
         );
       }
       if (tree.archivedAt) {
         return this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true);
-      }
-      const currentRevision = computeTeamRunModelConfigRevision(tree);
-      if (input.expectedConfigurationRevision !== currentRevision) {
-        return this.modelConfigUpdateResult("STALE_REVISION", "Team model settings changed in another window.", tree, false);
       }
       let targets;
       try {
@@ -259,7 +254,7 @@ export class AgentTeamRunManager {
         },
       }));
       const nextTree = applyTeamRunModelConfigPatches(tree, normalizedTargets);
-      if (computeTeamRunModelConfigRevision(nextTree) === currentRevision) {
+      if (isDeepStrictEqual(nextTree, tree)) {
         return this.modelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
       }
       const write = await this.executionTreeStore.write(this.teamMemoryDir(teamRunId), nextTree);
@@ -272,8 +267,7 @@ export class AgentTeamRunManager {
           false,
         );
       }
-      if (write.outcome !== "committed" || !canonical ||
-          computeTeamRunModelConfigRevision(canonical) !== computeTeamRunModelConfigRevision(nextTree)) {
+      if (write.outcome !== "committed" || !canonical || !isDeepStrictEqual(canonical, nextTree)) {
         return this.modelConfigUpdateResult("PERSISTENCE_FAILED", "Team model settings were not saved.", canonical ?? tree, false);
       }
       return this.modelConfigUpdateResult(
@@ -383,7 +377,6 @@ export class AgentTeamRunManager {
         isActive,
         archived,
         available: outcome !== "NOT_FOUND",
-        configurationRevision: tree ? computeTeamRunModelConfigRevision(tree) : "",
       }),
       canonical: tree,
       fieldErrors: Object.freeze([...fieldErrors]),

@@ -422,7 +422,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
     expect(worker.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
-    expect(runHistoryStoreMock.refreshTeamResumeConfig).toHaveBeenCalledWith('team-terminate')
+    expect(runHistoryStoreMock.refreshTeamResumeConfig).not.toHaveBeenCalled()
   })
 
   it('does not mutate local lifecycle when backend termination rejects', async () => {

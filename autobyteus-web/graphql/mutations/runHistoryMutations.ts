@@ -46,7 +46,6 @@ export const UpdateStoppedAgentRunModelConfig = gql`
       editability {
         editable
         reason
-        configurationRevision
       }
       canonicalLlmConfig
       fieldErrors {

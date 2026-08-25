@@ -28,21 +28,17 @@ vi.mock('~/stores/agentContextsStore', () => ({
   useAgentContextsStore: () => ({ patchConfigOnly: mocks.patchConfigOnly }),
 }))
 
-const editability = (revision = 'revision-1') => ({
-  editable: true,
-  reason: null,
-  configurationRevision: revision,
-})
+const editability = () => ({ editable: true, reason: null })
+const activeEditability = () => ({ editable: false, reason: 'RUN_ACTIVE' })
 
-const activeEditability = (revision = 'revision-1') => ({
-  editable: false,
-  reason: 'RUN_ACTIVE',
-  configurationRevision: revision,
-})
-
-const agentPayload = (revision = 'revision-1', llmConfig = { effort: 'low' }) => ({
-  runId: 'run-1',
-  isActive: false,
+const agentPayload = ({
+  runId = 'run-1',
+  llmConfig = { effort: 'low' } as Record<string, unknown> | null,
+  isActive = false,
+  modelConfigEditability = editability(),
+} = {}) => ({
+  runId,
+  isActive,
   metadataConfig: {
     agentDefinitionId: 'agent-1',
     workspaceRootPath: '/workspace',
@@ -52,7 +48,7 @@ const agentPayload = (revision = 'revision-1', llmConfig = { effort: 'low' }) =>
     skillAccessMode: 'PRELOADED_ONLY' as const,
     runtimeKind: 'codex_app_server' as const,
   },
-  modelConfigEditability: editability(revision),
+  modelConfigEditability,
 })
 
 const launch = (model: string, effort: string) => ({
@@ -64,14 +60,15 @@ const launch = (model: string, effort: string) => ({
   workspace_root_path: '/workspace',
 })
 
-const teamPayload = (
-  revision = 'revision-1',
+const teamPayload = ({
   rootEffort = 'low',
   memberEffort = 'medium',
-) => ({
+  isActive = false,
+  modelConfigEditability = editability(),
+} = {}) => ({
   teamRunId: 'team-1',
-  isActive: false,
-  modelConfigEditability: editability(revision),
+  isActive,
+  modelConfigEditability,
   executionTree: {
     schema_version: 2,
     created_at: '2026-08-25T00:00:00.000Z',
@@ -100,6 +97,16 @@ const teamPayload = (
   },
 })
 
+const deferred = <T>() => {
+  let resolve!: (value: T) => void
+  let reject!: (reason?: unknown) => void
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise
+    reject = rejectPromise
+  })
+  return { promise, resolve, reject }
+}
+
 describe('existingRunModelConfigStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -108,7 +115,67 @@ describe('existingRunModelConfigStore', () => {
     for (const key of Object.keys(mocks.teamResumeConfigByTeamRunId)) delete mocks.teamResumeConfigByTeamRunId[key]
   })
 
-  it('blocks another Save after an indeterminate result until canonical refresh succeeds', async () => {
+  it('locks Settings until its network load completes and ignores a superseded selection response', async () => {
+    const store = useExistingRunModelConfigStore()
+    const first = deferred<ReturnType<typeof agentPayload>>()
+    const second = deferred<ReturnType<typeof agentPayload>>()
+    mocks.refreshAgent.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise)
+
+    const firstLoad = store.loadAgentCanonical('run-1')
+    expect(store.loadingCanonical).toBe(true)
+    expect(store.draft).toBeNull()
+    const secondLoad = store.loadAgentCanonical('run-2')
+
+    first.resolve(agentPayload({ runId: 'run-1' }))
+    await firstLoad
+    expect(store.loadingCanonical).toBe(true)
+    expect(store.draft).toBeNull()
+
+    second.resolve(agentPayload({ runId: 'run-2' }))
+    await secondLoad
+    expect(store.loadingCanonical).toBe(false)
+    expect(store.draft).toMatchObject({ kind: 'agent', runId: 'run-2' })
+    expect(mocks.refreshAgent).toHaveBeenNthCalledWith(1, 'run-1')
+    expect(mocks.refreshAgent).toHaveBeenNthCalledWith(2, 'run-2')
+  })
+
+  it('allows cached lifecycle state to relock during loading but never unlocks from cache', async () => {
+    const store = useExistingRunModelConfigStore()
+    const load = deferred<ReturnType<typeof agentPayload>>()
+    mocks.refreshAgent.mockReturnValueOnce(load.promise)
+    const loading = store.loadAgentCanonical('run-1')
+    store.applyCachedAgentLifecycle(agentPayload({
+      isActive: true,
+      modelConfigEditability: activeEditability(),
+    }))
+    load.resolve(agentPayload())
+    await loading
+    expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
+
+    store.applyCachedAgentLifecycle(agentPayload())
+    expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
+
+    mocks.refreshAgent.mockResolvedValueOnce(agentPayload())
+    await store.loadAgentCanonical('run-1')
+    expect(store.draft).toMatchObject({ isActive: false, editability: { editable: true } })
+
+    const teamLoad = deferred<ReturnType<typeof teamPayload>>()
+    mocks.refreshTeam.mockReturnValueOnce(teamLoad.promise)
+    const loadingTeam = store.loadTeamCanonical('team-1')
+    store.applyCachedTeamLifecycle(teamPayload({
+      isActive: true,
+      modelConfigEditability: activeEditability(),
+    }) as never)
+    teamLoad.resolve(teamPayload())
+    await loadingTeam
+    expect(store.draft).toMatchObject({
+      kind: 'team',
+      isActive: true,
+      editability: { editable: false, reason: 'RUN_ACTIVE' },
+    })
+  })
+
+  it('blocks another Save after an indeterminate result until canonical verification succeeds', async () => {
     const store = useExistingRunModelConfigStore()
     const payload = agentPayload()
     store.syncAgentCanonical(payload)
@@ -132,8 +199,8 @@ describe('existingRunModelConfigStore', () => {
     mocks.refreshAgent.mockResolvedValueOnce(payload)
     await store.retryCanonicalRefresh()
     expect(store.reconciliationRequired).toBe(false)
-    expect(store.dirty).toBe(true)
-    expect(store.canSave).toBe(true)
+    expect(store.dirty).toBe(false)
+    expect(store.draft).toMatchObject({ canonicalLlmConfig: { effort: 'low' } })
   })
 
   it('fails closed when the server reports that the fixed model or schema is unavailable', async () => {
@@ -157,9 +224,10 @@ describe('existingRunModelConfigStore', () => {
       message: 'Current model options are unavailable.',
     })
     expect(store.canSave).toBe(false)
+    expect(mocks.refreshAgent).not.toHaveBeenCalled()
   })
 
-  it('requires every configured Team scope to be representable before enabling the shared Save action', () => {
+  it('requires every configured Team scope to be representable before enabling Save', () => {
     const store = useExistingRunModelConfigStore()
     store.syncTeamCanonical(teamPayload() as never)
     store.setSchemaState('/', { status: 'ready', message: null })
@@ -173,7 +241,7 @@ describe('existingRunModelConfigStore', () => {
     expect(store.canSave).toBe(true)
   })
 
-  it('replaces an Agent draft after unchanged-revision RUN_ACTIVE when the stopped canonical refresh arrives', async () => {
+  it('keeps an Agent RUN_ACTIVE draft locked without refresh, rebase, or revision input', async () => {
     const store = useExistingRunModelConfigStore()
     store.syncAgentCanonical(agentPayload())
     store.setSchemaState('/', { status: 'ready', message: null })
@@ -181,78 +249,43 @@ describe('existingRunModelConfigStore', () => {
     mocks.updateAgent.mockResolvedValue({
       success: false,
       outcome: 'RUN_ACTIVE',
-      message: 'This run resumed before settings were saved.',
+      message: 'Another supported workflow resumed this run.',
       isActive: true,
       editability: activeEditability(),
-      canonicalLlmConfig: { effort: 'low' },
+      canonicalLlmConfig: { effort: 'medium' },
       fieldErrors: [],
     })
 
     await expect(store.save()).resolves.toBe(false)
+    expect(mocks.updateAgent).toHaveBeenCalledWith({
+      agentRunId: 'run-1',
+      llmConfig: { effort: 'high' },
+    })
+    expect(mocks.refreshAgent).not.toHaveBeenCalled()
     expect(store.draft).toMatchObject({
-      kind: 'agent',
+      isActive: true,
       canonicalLlmConfig: { effort: 'low' },
       draftLlmConfig: { effort: 'high' },
+      editability: { editable: false, reason: 'RUN_ACTIVE' },
     })
-    expect(store.reconciliationRequired).toBe(true)
+    expect(mocks.resumeConfigByRunId['run-1']).toMatchObject({
+      isActive: true,
+      metadataConfig: { llmConfig: { effort: 'medium' } },
+    })
 
-    store.syncAgentCanonical(agentPayload())
+    store.applyCachedAgentLifecycle(agentPayload())
+    expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
+    mocks.refreshAgent.mockResolvedValueOnce(agentPayload())
+    await store.loadAgentCanonical('run-1')
     expect(store.draft).toMatchObject({
-      kind: 'agent',
+      isActive: false,
       canonicalLlmConfig: { effort: 'low' },
       draftLlmConfig: { effort: 'low' },
-    })
-    expect(store.dirty).toBe(false)
-    expect(store.reconciliationRequired).toBe(false)
-  })
-
-  it('does not let an Agent draft rejected at RUN_ACTIVE save under another writer revision', async () => {
-    const store = useExistingRunModelConfigStore()
-    store.syncAgentCanonical(agentPayload())
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.updateAgentModelConfig({ effort: 'high' })
-    mocks.updateAgent.mockResolvedValueOnce({
-      success: false,
-      outcome: 'RUN_ACTIVE',
-      message: 'This run resumed before settings were saved.',
-      isActive: true,
-      editability: activeEditability('revision-2'),
-      canonicalLlmConfig: { effort: 'medium' },
-      fieldErrors: [],
-    })
-
-    await expect(store.save()).resolves.toBe(false)
-    expect(store.draft).toMatchObject({
-      kind: 'agent',
-      canonicalLlmConfig: { effort: 'medium' },
-      draftLlmConfig: { effort: 'medium' },
-      editability: { configurationRevision: 'revision-2' },
-    })
-    store.syncAgentCanonical(agentPayload('revision-2', { effort: 'medium' }))
-    expect(store.dirty).toBe(false)
-    await expect(store.save()).resolves.toBe(false)
-    expect(mocks.updateAgent).toHaveBeenCalledTimes(1)
-
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.updateAgentModelConfig({ effort: 'max' })
-    mocks.updateAgent.mockResolvedValueOnce({
-      success: true,
-      outcome: 'UPDATED',
-      message: 'Saved.',
-      isActive: false,
-      editability: editability('revision-3'),
-      canonicalLlmConfig: { effort: 'max' },
-      fieldErrors: [],
-    })
-    await expect(store.save()).resolves.toBe(true)
-    expect(mocks.updateAgent).toHaveBeenLastCalledWith({
-      agentRunId: 'run-1',
-      expectedConfigurationRevision: 'revision-2',
-      llmConfig: { effort: 'max' },
+      editability: { editable: true },
     })
   })
 
-  it('replaces a Team planner after unchanged-revision RUN_ACTIVE when the stopped canonical refresh arrives', async () => {
+  it('keeps a Team RUN_ACTIVE plan locked and sends only narrow patches', async () => {
     const store = useExistingRunModelConfigStore()
     const canonical = teamPayload()
     store.syncTeamCanonical(canonical as never)
@@ -262,79 +295,32 @@ describe('existingRunModelConfigStore', () => {
     mocks.updateTeam.mockResolvedValue({
       success: false,
       outcome: 'RUN_ACTIVE',
-      message: 'This team resumed before settings were saved.',
+      message: 'Another supported workflow resumed this team.',
       isActive: true,
       editability: activeEditability(),
-      canonicalExecutionTree: canonical.executionTree,
+      canonicalExecutionTree: teamPayload({ rootEffort: 'medium' }).executionTree,
       fieldErrors: [],
     })
 
     await expect(store.save()).resolves.toBe(false)
+    expect(mocks.updateTeam).toHaveBeenCalledWith({
+      teamRunId: 'team-1',
+      patches: [{
+        scopeKind: 'CONFIGURED_TEAM',
+        scopeAddress: '/',
+        llmConfig: { effort: 'high' },
+      }],
+    })
+    expect(mocks.refreshTeam).not.toHaveBeenCalled()
     expect(store.patches).toEqual([{
       scopeKind: 'CONFIGURED_TEAM',
       scopeAddress: '/',
       llmConfig: { effort: 'high' },
     }])
-    expect(store.reconciliationRequired).toBe(true)
-
-    store.syncTeamCanonical(canonical as never)
-    expect(store.patches).toEqual([])
-    expect(store.reconciliationRequired).toBe(false)
-  })
-
-  it('does not let Team patches rejected at RUN_ACTIVE save under another writer revision', async () => {
-    const store = useExistingRunModelConfigStore()
-    store.syncTeamCanonical(teamPayload() as never)
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.setSchemaState('/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { effort: 'high' })
-    const advancedCanonical = teamPayload('revision-2', 'medium')
-    mocks.updateTeam.mockResolvedValueOnce({
-      success: false,
-      outcome: 'RUN_ACTIVE',
-      message: 'This team resumed before settings were saved.',
+    expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
+    expect(mocks.teamResumeConfigByTeamRunId['team-1']).toMatchObject({
       isActive: true,
-      editability: activeEditability('revision-2'),
-      canonicalExecutionTree: advancedCanonical.executionTree,
-      fieldErrors: [],
-    })
-
-    await expect(store.save()).resolves.toBe(false)
-    expect(store.draft).toMatchObject({
-      kind: 'team',
-      editability: { configurationRevision: 'revision-2' },
-      planner: { scopesByAddress: { '/': {
-        originalLlmConfig: { effort: 'medium' },
-        draftLlmConfig: { effort: 'medium' },
-      } } },
-    })
-    store.syncTeamCanonical(advancedCanonical as never)
-    expect(store.patches).toEqual([])
-    await expect(store.save()).resolves.toBe(false)
-    expect(mocks.updateTeam).toHaveBeenCalledTimes(1)
-
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.setSchemaState('/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { effort: 'max' })
-    const savedCanonical = teamPayload('revision-3', 'max')
-    mocks.updateTeam.mockResolvedValueOnce({
-      success: true,
-      outcome: 'UPDATED',
-      message: 'Saved.',
-      isActive: false,
-      editability: editability('revision-3'),
-      canonicalExecutionTree: savedCanonical.executionTree,
-      fieldErrors: [],
-    })
-    await expect(store.save()).resolves.toBe(true)
-    expect(mocks.updateTeam).toHaveBeenLastCalledWith({
-      teamRunId: 'team-1',
-      expectedConfigurationRevision: 'revision-2',
-      patches: [{
-        scopeKind: 'CONFIGURED_TEAM',
-        scopeAddress: '/',
-        llmConfig: { effort: 'max' },
-      }],
+      executionTree: { root_team: { default_launch_configuration: { llm_config: { effort: 'medium' } } } },
     })
   })
 })

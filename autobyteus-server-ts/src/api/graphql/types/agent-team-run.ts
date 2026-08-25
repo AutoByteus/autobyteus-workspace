@@ -139,9 +139,6 @@ export class UpdateStoppedTeamRunModelConfigsInput {
   @Field(() => String)
   teamRunId!: string;
 
-  @Field(() => String)
-  expectedConfigurationRevision!: string;
-
   @Field(() => [TeamRunModelConfigPatchInput])
   patches!: TeamRunModelConfigPatchInput[];
 }
@@ -246,7 +243,6 @@ export class AgentTeamRunResolver {
       }
       const result = await this.teamRunService.updateStoppedModelConfigs({
         teamRunId: input.teamRunId,
-        expectedConfigurationRevision: input.expectedConfigurationRevision,
         patches: input.patches,
       });
       return {
@@ -265,7 +261,7 @@ export class AgentTeamRunResolver {
         outcome: "INTERNAL_ERROR",
         message: "Team model settings could not be updated.",
         isActive: false,
-        editability: { editable: false, reason: "INTERNAL_ERROR", configurationRevision: "" },
+        editability: { editable: false, reason: "INTERNAL_ERROR" },
         canonicalExecutionTree: null,
         fieldErrors: [],
       };

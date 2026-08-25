@@ -24,7 +24,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   let managed = false;
   const manager = {
     hasManagedTeamRun: vi.fn(() => managed),
-    withUnmanagedRootPersistence: vi.fn(async <T>(_teamRunId: string, operation: () => Promise<T>) =>
+    withUnmanagedHistoryDeletion: vi.fn(async <T>(_teamRunId: string, operation: () => Promise<T>) =>
       managed ? { kind: "managed" as const } : { kind: "completed" as const, value: await operation() }),
   };
 
@@ -34,7 +34,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     resetTeamRunHistoryCatalogState(memoryDir);
     managed = false;
     manager.hasManagedTeamRun.mockClear();
-    manager.withUnmanagedRootPersistence.mockClear();
+    manager.withUnmanagedHistoryDeletion.mockClear();
   });
 
   afterEach(async () => {

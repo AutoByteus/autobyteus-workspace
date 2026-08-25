@@ -7,7 +7,6 @@ import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "./agent-run-history-catalog-service.js";
-import { computeAgentRunModelConfigRevision } from "../domain/run-model-config-revision.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 
 type RunRuntimeReference = {
@@ -56,7 +55,6 @@ export class AgentRunResumeConfigService {
       isActive,
       available: Boolean(row),
       archived: Boolean(row?.archivedAt),
-      configurationRevision: computeAgentRunModelConfigRevision(metadata),
     });
 
     return {

@@ -34,7 +34,6 @@ const requiredResult = <T>(
 
 export const updateStoppedAgentModelConfig = async (input: {
   agentRunId: string
-  expectedConfigurationRevision: string
   llmConfig: Record<string, unknown> | null
 }): Promise<AgentModelConfigMutationResult> => {
   const response = await getApolloClient().mutate<Record<string, AgentModelConfigMutationResult>>({
@@ -46,7 +45,6 @@ export const updateStoppedAgentModelConfig = async (input: {
 
 export const updateStoppedTeamModelConfigs = async (input: {
   teamRunId: string
-  expectedConfigurationRevision: string
   patches: readonly ExistingTeamModelConfigPatch[]
 }): Promise<TeamModelConfigMutationResult> => {
   const response = await getApolloClient().mutate<Record<string, TeamModelConfigMutationResult>>({

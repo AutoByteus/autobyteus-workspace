@@ -16,7 +16,6 @@ import {
 import {
   createExistingTeamModelConfigDraft,
   planExistingTeamModelConfigPatches,
-  rebaseExistingTeamModelConfigDraft,
   updateExistingTeamScopeModelConfig,
 } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import {
@@ -28,21 +27,36 @@ import {
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
+const requiresOutcomeVerification = (outcome: string): boolean => outcome === 'PERSISTENCE_INDETERMINATE'
 
-const shouldRefreshAfterFailure = (outcome: string): boolean => [
-  'STALE_REVISION',
-  'PERSISTENCE_FAILED',
-  'PERSISTENCE_INDETERMINATE',
-].includes(outcome)
+type CanonicalLoadTarget =
+  | Readonly<{ kind: 'agent'; runId: string }>
+  | Readonly<{ kind: 'team'; teamRunId: string }>
+
+type CachedLifecycleLock = Readonly<{
+  target: CanonicalLoadTarget
+  isActive: boolean
+  editability: RunResumeConfigPayload['modelConfigEditability']
+}>
+
+const sameTarget = (left: CanonicalLoadTarget | null, right: CanonicalLoadTarget): boolean => {
+  if (!left || left.kind !== right.kind) return false
+  return left.kind === 'agent' && right.kind === 'agent'
+    ? left.runId === right.runId
+    : left.kind === 'team' && right.kind === 'team' && left.teamRunId === right.teamRunId
+}
 
 export const useExistingRunModelConfigStore = defineStore('existingRunModelConfig', {
   state: () => ({
     draft: null as ExistingRunModelConfigDraft | null,
     schemaStateByAddress: {} as Record<string, ExistingRunModelConfigSchemaState>,
     saving: false,
+    loadingCanonical: false,
     reconciling: false,
     reconciliationRequired: false,
-    forceBaselineOnNextStoppedSync: false,
+    canonicalLoadRequestId: 0,
+    loadTarget: null as CanonicalLoadTarget | null,
+    cachedLifecycleLock: null as CachedLifecycleLock | null,
     feedback: null as { kind: 'success' | 'error'; message: string } | null,
     fieldErrors: [] as ExistingRunModelConfigFieldError[],
   }),
@@ -59,8 +73,8 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         : planExistingTeamModelConfigPatches(state.draft.planner).length > 0
     },
     canSave(state): boolean {
-      if (!state.draft || state.saving || state.reconciling || state.reconciliationRequired
-          || state.draft.isActive || !state.draft.editability.editable) return false
+      if (!state.draft || state.saving || state.loadingCanonical || state.reconciling
+          || state.reconciliationRequired || state.draft.isActive || !state.draft.editability.editable) return false
       if (state.draft.kind === 'agent') {
         return !existingRunModelConfigsEqual(state.draft.canonicalLlmConfig, state.draft.draftLlmConfig)
           && state.schemaStateByAddress['/']?.status === 'ready'
@@ -73,28 +87,68 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
   },
   actions: {
     clear(): void {
+      this.canonicalLoadRequestId += 1
       this.draft = null
       this.schemaStateByAddress = {}
       this.saving = false
+      this.loadingCanonical = false
       this.reconciling = false
       this.reconciliationRequired = false
-      this.forceBaselineOnNextStoppedSync = false
+      this.loadTarget = null
+      this.cachedLifecycleLock = null
       this.feedback = null
       this.fieldErrors = []
     },
-    syncAgentCanonical(payload: RunResumeConfigPayload, forceBaseline = false): void {
-      const revision = payload.modelConfigEditability.configurationRevision
-      const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
-      const mustReplaceBaseline = forceBaseline || (this.forceBaselineOnNextStoppedSync && !payload.isActive)
-      if (!mustReplaceBaseline && sameSubject
-        && this.draft.editability.configurationRevision === revision) {
-        this.draft = {
-          ...this.draft,
-          isActive: payload.isActive,
-          editability: { ...payload.modelConfigEditability },
-        }
-        return
+    beginCanonicalLoad(target: CanonicalLoadTarget): number {
+      const requestId = ++this.canonicalLoadRequestId
+      this.draft = null
+      this.schemaStateByAddress = {}
+      this.saving = false
+      this.loadingCanonical = true
+      this.reconciling = false
+      this.reconciliationRequired = false
+      this.loadTarget = target
+      this.cachedLifecycleLock = null
+      this.feedback = null
+      this.fieldErrors = []
+      return requestId
+    },
+    isCurrentLoad(requestId: number, target: CanonicalLoadTarget): boolean {
+      if (requestId !== this.canonicalLoadRequestId || this.loadTarget?.kind !== target.kind) return false
+      return target.kind === 'agent'
+        ? this.loadTarget.runId === target.runId
+        : this.loadTarget.teamRunId === target.teamRunId
+    },
+    async loadAgentCanonical(runId: string): Promise<void> {
+      const target = { kind: 'agent' as const, runId }
+      const requestId = this.beginCanonicalLoad(target)
+      try {
+        const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
+        if (this.isCurrentLoad(requestId, target)) this.syncAgentCanonical(payload)
+      } catch (error) {
+        if (!this.isCurrentLoad(requestId, target)) return
+        this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
+        this.reconciliationRequired = true
+      } finally {
+        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
       }
+    },
+    async loadTeamCanonical(teamRunId: string): Promise<void> {
+      const target = { kind: 'team' as const, teamRunId }
+      const requestId = this.beginCanonicalLoad(target)
+      try {
+        const payload = await useRunHistoryStore().refreshTeamResumeConfig(teamRunId)
+        if (this.isCurrentLoad(requestId, target)) this.syncTeamCanonical(payload)
+      } catch (error) {
+        if (!this.isCurrentLoad(requestId, target)) return
+        this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
+        this.reconciliationRequired = true
+      } finally {
+        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
+      }
+    },
+    syncAgentCanonical(payload: RunResumeConfigPayload): void {
+      const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
       const canonical = cloneExistingRunModelConfig(payload.metadataConfig.llmConfig)
       this.draft = {
         kind: 'agent',
@@ -108,22 +162,11 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       this.schemaStateByAddress = { '/': loadingSchemaState() }
       this.fieldErrors = []
       this.reconciliationRequired = false
-      this.forceBaselineOnNextStoppedSync = false
+      this.applyCachedLifecycleLock({ kind: 'agent', runId: payload.runId })
       if (!sameSubject) this.feedback = null
     },
-    syncTeamCanonical(payload: TeamRunResumeConfigPayload, forceBaseline = false): void {
-      const revision = payload.modelConfigEditability.configurationRevision
+    syncTeamCanonical(payload: TeamRunResumeConfigPayload): void {
       const sameSubject = this.draft?.kind === 'team' && this.draft.teamRunId === payload.teamRunId
-      const mustReplaceBaseline = forceBaseline || (this.forceBaselineOnNextStoppedSync && !payload.isActive)
-      if (!mustReplaceBaseline && sameSubject
-        && this.draft.editability.configurationRevision === revision) {
-        this.draft = {
-          ...this.draft,
-          isActive: payload.isActive,
-          editability: { ...payload.modelConfigEditability },
-        }
-        return
-      }
       this.draft = {
         kind: 'team',
         teamRunId: payload.teamRunId,
@@ -137,8 +180,51 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       )
       this.fieldErrors = []
       this.reconciliationRequired = false
-      this.forceBaselineOnNextStoppedSync = false
+      this.applyCachedLifecycleLock({ kind: 'team', teamRunId: payload.teamRunId })
       if (!sameSubject) this.feedback = null
+    },
+    applyCachedAgentLifecycle(payload: RunResumeConfigPayload): void {
+      const target = { kind: 'agent' as const, runId: payload.runId }
+      if (!payload.isActive && payload.modelConfigEditability.editable) return
+      if (!sameTarget(this.loadTarget, target)
+          && (this.draft?.kind !== 'agent' || this.draft.runId !== payload.runId)) return
+      this.cachedLifecycleLock = {
+        target,
+        isActive: payload.isActive,
+        editability: { ...payload.modelConfigEditability },
+      }
+      if (this.draft?.kind !== 'agent' || this.draft.runId !== payload.runId) return
+      this.draft = {
+        ...this.draft,
+        isActive: payload.isActive,
+        editability: { ...payload.modelConfigEditability },
+      }
+    },
+    applyCachedTeamLifecycle(payload: TeamRunResumeConfigPayload): void {
+      const target = { kind: 'team' as const, teamRunId: payload.teamRunId }
+      if (!payload.isActive && payload.modelConfigEditability.editable) return
+      if (!sameTarget(this.loadTarget, target)
+          && (this.draft?.kind !== 'team' || this.draft.teamRunId !== payload.teamRunId)) return
+      this.cachedLifecycleLock = {
+        target,
+        isActive: payload.isActive,
+        editability: { ...payload.modelConfigEditability },
+      }
+      if (this.draft?.kind !== 'team' || this.draft.teamRunId !== payload.teamRunId) return
+      this.draft = {
+        ...this.draft,
+        isActive: payload.isActive,
+        editability: { ...payload.modelConfigEditability },
+      }
+    },
+    applyCachedLifecycleLock(target: CanonicalLoadTarget): void {
+      const lock = this.cachedLifecycleLock
+      if (!lock || !sameTarget(lock.target, target)) return
+      if (target.kind === 'agent' && this.draft?.kind === 'agent' && this.draft.runId === target.runId) {
+        this.draft = { ...this.draft, isActive: lock.isActive, editability: { ...lock.editability } }
+      } else if (target.kind === 'team' && this.draft?.kind === 'team' && this.draft.teamRunId === target.teamRunId) {
+        this.draft = { ...this.draft, isActive: lock.isActive, editability: { ...lock.editability } }
+      }
     },
     updateAgentModelConfig(llmConfig: Record<string, unknown> | null): void {
       if (this.draft?.kind !== 'agent' || !this.draft.editability.editable || this.draft.isActive
@@ -187,7 +273,6 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
     async saveAgent(draft: Extract<ExistingRunModelConfigDraft, { kind: 'agent' }>): Promise<boolean> {
       const result = await updateStoppedAgentModelConfig({
         agentRunId: draft.runId,
-        expectedConfigurationRevision: draft.editability.configurationRevision,
         llmConfig: cloneExistingRunModelConfig(draft.draftLlmConfig),
       })
       const history = useRunHistoryStore()
@@ -200,25 +285,19 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
           modelConfigEditability: result.editability,
         }
         history.resumeConfigByRunId[draft.runId] = payload
-        this.syncAgentCanonical(payload, true)
+        this.syncAgentCanonical(payload)
         useAgentContextsStore().patchConfigOnly(draft.runId, { llmConfig: result.canonicalLlmConfig ?? null })
         this.feedback = { kind: 'success', message: result.message }
-        this.reconciliationRequired = false
         return true
       }
       this.applyAgentFailureCanonical(draft, result)
       this.applyResultState(result)
-      if (result.outcome === 'RUN_ACTIVE') {
-        this.reconciliationRequired = true
-        this.forceBaselineOnNextStoppedSync = true
-      }
       await this.reconcileAgentFailure(result.outcome, draft.runId)
       return false
     },
     async saveTeam(draft: Extract<ExistingRunModelConfigDraft, { kind: 'team' }>): Promise<boolean> {
       const result = await updateStoppedTeamModelConfigs({
         teamRunId: draft.teamRunId,
-        expectedConfigurationRevision: draft.editability.configurationRevision,
         patches: planExistingTeamModelConfigPatches(draft.planner),
       })
       const history = useRunHistoryStore()
@@ -232,17 +311,12 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
           modelConfigEditability: result.editability,
         }
         history.teamResumeConfigByTeamRunId[draft.teamRunId] = payload
-        this.syncTeamCanonical(payload, true)
+        this.syncTeamCanonical(payload)
         this.feedback = { kind: 'success', message: result.message }
-        this.reconciliationRequired = false
         return true
       }
       this.applyTeamFailureCanonical(draft, result)
       this.applyResultState(result)
-      if (result.outcome === 'RUN_ACTIVE') {
-        this.reconciliationRequired = true
-        this.forceBaselineOnNextStoppedSync = true
-      }
       await this.reconcileTeamFailure(result.outcome, draft.teamRunId)
       return false
     },
@@ -251,14 +325,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       result: AgentModelConfigMutationResult,
     ): void {
       if (!Object.prototype.hasOwnProperty.call(result, 'canonicalLlmConfig')) {
-        this.draft = {
-          ...draft,
-          isActive: result.isActive,
-          editability: {
-            ...result.editability,
-            configurationRevision: draft.editability.configurationRevision,
-          },
-        }
+        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
         return
       }
       const canonical = cloneExistingRunModelConfig(result.canonicalLlmConfig)
@@ -269,16 +336,10 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         modelConfigEditability: result.editability,
       }
       useRunHistoryStore().resumeConfigByRunId[draft.runId] = payload
-      if (result.editability.configurationRevision !== draft.editability.configurationRevision) {
-        this.syncAgentCanonical(payload, true)
-        return
-      }
       this.draft = {
         ...draft,
         isActive: result.isActive,
         editability: { ...result.editability },
-        metadata: cloneExistingRunJsonValue(payload.metadataConfig),
-        canonicalLlmConfig: canonical,
       }
     },
     applyTeamFailureCanonical(
@@ -287,14 +348,7 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
     ): void {
       const parsedTree = teamRunExecutionTreeDtoSchema.safeParse(result.canonicalExecutionTree)
       if (!parsedTree.success) {
-        this.draft = {
-          ...draft,
-          isActive: result.isActive,
-          editability: {
-            ...result.editability,
-            configurationRevision: draft.editability.configurationRevision,
-          },
-        }
+        this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
         return
       }
       const payload: TeamRunResumeConfigPayload = {
@@ -304,16 +358,11 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
         modelConfigEditability: result.editability,
       }
       useRunHistoryStore().teamResumeConfigByTeamRunId[draft.teamRunId] = payload
-      if (result.editability.configurationRevision !== draft.editability.configurationRevision) {
-        this.syncTeamCanonical(payload, true)
-        return
-      }
       this.draft = {
         ...draft,
         isActive: result.isActive,
         editability: { ...result.editability },
         executionTree: cloneExistingRunJsonValue(parsedTree.data),
-        planner: rebaseExistingTeamModelConfigDraft(draft.planner, parsedTree.data),
       }
     },
     applyResultState(result: ExistingRunModelConfigMutationResult): void {
@@ -333,12 +382,12 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       }
     },
     async reconcileAgentFailure(outcome: string, runId: string): Promise<void> {
-      if (!shouldRefreshAfterFailure(outcome)) return
+      if (!requiresOutcomeVerification(outcome)) return
       this.reconciliationRequired = true
       this.reconciling = true
+      this.cachedLifecycleLock = null
       try {
         this.syncAgentCanonical(await useRunHistoryStore().refreshAgentResumeConfig(runId))
-        this.reconciliationRequired = false
       } catch (error) {
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
       } finally {
@@ -346,12 +395,12 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       }
     },
     async reconcileTeamFailure(outcome: string, teamRunId: string): Promise<void> {
-      if (!shouldRefreshAfterFailure(outcome)) return
+      if (!requiresOutcomeVerification(outcome)) return
       this.reconciliationRequired = true
       this.reconciling = true
+      this.cachedLifecycleLock = null
       try {
         this.syncTeamCanonical(await useRunHistoryStore().refreshTeamResumeConfig(teamRunId))
-        this.reconciliationRequired = false
       } catch (error) {
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
       } finally {
@@ -359,13 +408,16 @@ export const useExistingRunModelConfigStore = defineStore('existingRunModelConfi
       }
     },
     async retryCanonicalRefresh(): Promise<void> {
+      if (this.reconciling || this.loadingCanonical) return
       const draft = this.draft
-      if (!draft || this.reconciling) return
-      this.reconciliationRequired = true
-      if (draft.kind === 'agent') {
+      if (draft?.kind === 'agent') {
         await this.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', draft.runId)
-      } else {
+      } else if (draft?.kind === 'team') {
         await this.reconcileTeamFailure('PERSISTENCE_INDETERMINATE', draft.teamRunId)
+      } else if (this.loadTarget?.kind === 'agent') {
+        await this.loadAgentCanonical(this.loadTarget.runId)
+      } else if (this.loadTarget?.kind === 'team') {
+        await this.loadTeamCanonical(this.loadTarget.teamRunId)
       }
     },
   },

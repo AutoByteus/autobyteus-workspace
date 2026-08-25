@@ -15,7 +15,6 @@ import {
 } from "../errors.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import { ModelConfigValidationService } from "../../llm-management/services/model-config-validation-service.js";
-import { computeAgentRunModelConfigRevision } from "../../run-history/domain/run-model-config-revision.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -80,7 +79,6 @@ export class StandaloneAgentRunLifecycleService {
 
   updateStoppedModelConfig(input: {
     agentRunId: string;
-    expectedConfigurationRevision: string;
     llmConfig: Readonly<Record<string, unknown>> | null;
   }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     const runId = requiredRunId(input.agentRunId);
@@ -98,7 +96,7 @@ export class StandaloneAgentRunLifecycleService {
       if (this.agentRunManager.getActiveRun(runId)) {
         return this.updateResult({
           outcome: "RUN_ACTIVE",
-          message: "This run resumed before settings were saved. Stop it and try again.",
+          message: "This run became active through another connected workflow. Stop it, reopen Settings, and try again.",
           metadata,
           active: true,
         });
@@ -109,10 +107,6 @@ export class StandaloneAgentRunLifecycleService {
       }
       if (row.archivedAt) {
         return this.updateResult({ outcome: "RUN_ARCHIVED", message: "Archived runs cannot be edited.", metadata, active: false, archived: true });
-      }
-      const currentRevision = computeAgentRunModelConfigRevision(metadata);
-      if (input.expectedConfigurationRevision !== currentRevision) {
-        return this.updateResult({ outcome: "STALE_REVISION", message: "Model settings changed in another window.", metadata, active: false });
       }
       const validation = await this.modelConfigValidator.validate({
         runtimeKind: metadata.runtimeKind,
@@ -137,7 +131,6 @@ export class StandaloneAgentRunLifecycleService {
       }
       const committed = await this.historyCatalogService.commitRunModelConfig({
         runId,
-        expectedConfigurationRevision: currentRevision,
         llmConfig: validation.config,
       });
       if (committed.kind === "committed" || committed.kind === "unchanged") {
@@ -154,18 +147,16 @@ export class StandaloneAgentRunLifecycleService {
         ? "RUN_ARCHIVED"
         : committed.kind === "not_found"
           ? "NOT_FOUND"
-          : committed.kind === "stale"
-            ? "STALE_REVISION"
-            : committed.kind === "indeterminate"
-              ? "PERSISTENCE_INDETERMINATE"
-              : "PERSISTENCE_FAILED";
+          : committed.kind === "indeterminate"
+            ? "PERSISTENCE_INDETERMINATE"
+            : "PERSISTENCE_FAILED";
       return this.updateResult({
         outcome,
         message: outcome === "PERSISTENCE_INDETERMINATE"
           ? "Update outcome is being verified. Refresh the run configuration before saving again."
           : outcome === "PERSISTENCE_FAILED"
           ? "Model settings were not saved."
-          : "The run changed before model settings could be saved.",
+          : "Model settings could not be saved.",
         metadata: committed.metadata ?? metadata,
         active: false,
         archived: outcome === "RUN_ARCHIVED",
@@ -204,7 +195,6 @@ export class StandaloneAgentRunLifecycleService {
     archived?: boolean;
     fieldErrors?: RunModelConfigUpdateResult<AgentRunMetadata | null>["fieldErrors"];
   }): RunModelConfigUpdateResult<AgentRunMetadata | null> {
-    const revision = input.metadata ? computeAgentRunModelConfigRevision(input.metadata) : "";
     return Object.freeze({
       success: input.outcome === "UPDATED" || input.outcome === "UNCHANGED",
       outcome: input.outcome,
@@ -214,7 +204,6 @@ export class StandaloneAgentRunLifecycleService {
         isActive: input.active,
         archived: input.archived === true,
         available: input.outcome !== "NOT_FOUND",
-        configurationRevision: revision,
       }),
       canonical: input.metadata,
       fieldErrors: Object.freeze([...(input.fieldErrors ?? [])]),

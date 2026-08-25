@@ -8,7 +8,6 @@ import type {
   AgentRunHistoryIndexRowRecord,
 } from "../../../../src/run-history/store/agent-run-history-index-record-types.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
-import { computeAgentRunModelConfigRevision } from "../../../../src/run-history/domain/run-model-config-revision.js";
 
 vi.mock("../../../../src/agent-definition/services/agent-definition-service.js", () => ({
   AgentDefinitionService: {
@@ -168,7 +167,7 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")).resolves.toBe(before);
   });
 
-  it("commits only llmConfig after checking the serialized catalog and revision", async () => {
+  it("commits only llmConfig through the serialized catalog", async () => {
     const service = await buildService();
     const metadata = buildMetadata("run-1", {
       memoryDir: path.join(memoryDir, "agents", "run-1"),
@@ -184,7 +183,6 @@ describe("AgentRunHistoryCatalogService", () => {
 
     await expect(service.commitRunModelConfig({
       runId: "run-1",
-      expectedConfigurationRevision: computeAgentRunModelConfigRevision(metadata),
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
       kind: "committed",
