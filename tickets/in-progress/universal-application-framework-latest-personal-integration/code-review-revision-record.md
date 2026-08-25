@@ -26,6 +26,7 @@ The latest canonical review report remains authoritative. This record preserves 
 | `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-010` | `Not Applicable`; source `Pass / 95` | `Fail — Local Fix / 91` | `CR-008`, `CR-009`, `CR-010` |
 | `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Re-review / `IR-011` | `Fail — Local Fix / 91` | `Pass / 95` | `CR-008`, `CR-009`, `CR-010` |
 | `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-010` | `Pass / 95` | `Fail — Design Impact + API/E2E Local Fix` | `CR-011`; `APIE2E-F005`, `APIE2E-F006` |
+| `CRR-021` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md` | Implementation Review / `IR-012` | `Fail — Design Impact + API/E2E Local Fix` | `Pass / 94` | `CR-011`; triggering `APIE2E-F005`, `APIE2E-F006` |
 
 ## Revision Entries
 
@@ -595,3 +596,35 @@ No prior proportional test-review finding existed. `CRR-015` remains valid for A
 - Reviewer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-020-failure-origin-focused.log`.
 - Recommended recipients: `/solution_designer` for `CR-011` / `F005`; `/api_e2e_engineer` for `F006` after the reviewed design/source correction is ready.
 - Remaining risks or uncertainty: delivery is blocked. Solution/architecture must define one canonical Studio definition authority without collapsing separate general/application run-manager ownership. API/E2E must then reconcile the migration durable sequence and rerun the full current-head hierarchy, V1 -> memory -> V2, browser/provider, dual-host, restart/remount, parity, and cleanup matrix. Electron remains downstream.
+
+### CRR-021 — Canonical definition and exact RootTeamRun authority source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `21`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-handoff.md`; `IR-012`; `CR-011` / `APIE2E-F005`, plus the approved SR-012/SR-013 exact task-authority correction.
+- Relevant solution revision IDs: `SR-001`–`SR-013`; current authority `SR-011`–`SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`–`ARCH-REV-013`; current authority `ARCH-REV-013`
+- Relevant implementation revision IDs: `IR-001`–`IR-012`; current `IR-012`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-010`
+- Relevant delivery revision IDs: `DR-004`, `DR-006`, `DR-008`, `DR-010`
+- Prior authoritative result: `CRR-020 — Fail — Design Impact + API/E2E Local Fix`
+- Current authoritative result: **Pass / 94**
+- What changed in the review result and why: IR-012 implements the reviewed SR-011–SR-013 boundaries. One bundle-aware Agent/Team definition pair is constructed and bound by the host, explicitly injected into general and application execution, and published to public GraphQL beside the exact general run services. Transient validation stays unbound; migration labels use persistence-only reads; reverse identity-safe unwind is present. Task tools now receive a selector-free resolver created beside the exact RootTeamRun, propagated through every executable mixed construction, immutable member context, authenticated MCP capability, and AutoByteus ToolConfig. The process-general task lookup, no-op callbacks, and custom-data task context are removed. General/application managers and sessions remain distinct.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-011` / `APIE2E-F005` | Open — High / Design Impact | **Resolved in source; execution confirmation pending** | `CRR-020`, `SR-011`, `ARCH-REV-013`, `IR-012`, `CRR-021` | Studio and standalone composition create one exact host definition pair before general/application owners; public definition/run APIs use the registered exact subjects; allocators/planners/backends receive those definitions; early binding fails closed; close/rebuild is identity-safe. |
+| `APIE2E-F006` | API/E2E-owned Local Fix | **Unchanged / downstream** | `CRR-020`, `IR-012`, `CRR-021` | IR-012 correctly adds no migration cascade or V1 runtime fallback. API/E2E must complete the supported V2 step before asserting current projection. |
+| `CR-001`–`CR-010` | Resolved | Remain resolved | `IR-002`–`IR-011`, `CRR-002`–`CRR-019`, `IR-012` | IR-012 preserves their lifecycle, read-only, exact identity, ownership, validation, V2, and source-structure invariants; affected regression selection remains green. |
+
+- New or remaining finding IDs: none in implementation source. `APIE2E-F006` remains an API/E2E-owned durable-sequence correction rather than a source finding.
+- Material score or classification changes: current result changes from focused `Fail` to complete source `Pass / 94`; every score category is at least 9.0. Ownership/readability is deliberately below perfect because established process accessors remain implicit, but they now have one composition owner, fail-closed binding, exact critical injection, and executable inventory guards.
+- Validation evidence: changed affected selection `30 files / 202 tests` Pass; production TypeScript Pass; ancestry, diff, unmerged, retired-path, ambient-task, source-size, and authority-trace audits Pass.
+- Reviewer evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-021-authority-trace.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-021-focused-validation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-021-source-build-audit.log`
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must rerun F005 first, reconcile F006 through the supported migration sequence, and execute current real public CRUD/run/restart, distinct general/application MCP and AutoByteus task roots, dual-host/provider/workspace/business, V2 recovery, package parity, browser, and cleanup gates. Electron/final delivery remain downstream. Existing cross-role dirty artifacts and untracked generated outputs were preserved.
