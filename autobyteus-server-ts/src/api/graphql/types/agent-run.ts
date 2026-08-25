@@ -9,7 +9,10 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { getStudioAgentRunService } from "../studio-application-api-services.js";
+import {
+  getStudioAgentRunService,
+  getStudioRunModelConfigService,
+} from "../studio-application-api-services.js";
 import {
   RunModelConfigEditabilityObject,
   RunModelConfigFieldErrorObject,
@@ -175,6 +178,7 @@ export class ApproveToolInvocationResult {
 @Resolver()
 export class AgentRunResolver {
   private readonly agentRunService = getStudioAgentRunService();
+  private readonly runModelConfigService = getStudioRunModelConfigService();
 
   @Mutation(() => TerminateAgentRunResult)
   async terminateAgentRun(
@@ -303,7 +307,7 @@ export class AgentRunResolver {
       if (!Object.hasOwn(input, "llmConfig")) {
         throw new Error("llmConfig must be present and may be null.");
       }
-      const result = await this.agentRunService.updateStoppedModelConfig({
+      const result = await this.runModelConfigService.updateStoppedAgentRunModelConfig({
         agentRunId: input.agentRunId,
         llmConfig: input.llmConfig,
       });

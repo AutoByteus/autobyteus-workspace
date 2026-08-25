@@ -11,6 +11,7 @@ import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-age
 import { CodexThreadBootstrapper } from "../backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
+import { AgentRunStatusProjectionService } from "../services/agent-run-status-projection-service.js";
 import { AgentRunProvisioningService } from "../services/agent-run-provisioning-service.js";
 import {
   AgentRunService,
@@ -30,11 +31,13 @@ import {
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
+import { AgentRunResumeConfigService } from "../../run-history/services/agent-run-resume-config-service.js";
 import {
   TeamRunExecutionTreeLocationService,
   createStoredTeamRunExecutionTreeLocationService,
 } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
+import { TeamRunHistoryService } from "../../run-history/services/team-run-history-service.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -65,6 +68,8 @@ const requireGeneralProcessRunSupervisorInput = (
 export class GeneralProcessRunSupervisor {
   readonly agentRunService: AgentRunService;
   readonly teamRunService: TeamRunService;
+  readonly agentRunResumeConfigService: AgentRunResumeConfigService;
+  readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private closePromise: Promise<void> | null = null;
@@ -185,12 +190,13 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         locationService: teamLocations,
       });
+      const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
+        teamRunManager: agentTeamRunManager,
+      });
       teamRunService = new TeamRunService({
         agentTeamRunManager,
         teamDefinitionService: input.agentTeamDefinitionService,
-        teamRunHistoryCatalogService: new TeamRunHistoryCatalogService(memoryDir, {
-          teamRunManager: agentTeamRunManager,
-        }),
+        teamRunHistoryCatalogService,
         workspaceManager,
         memoryDir,
         memoryLocationService,
@@ -208,6 +214,17 @@ export class GeneralProcessRunSupervisor {
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
+      this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
+        statusProjectionService: new AgentRunStatusProjectionService({
+          agentRunManager,
+          metadataService,
+        }),
+        historyCatalog: historyCatalogService,
+      });
+      this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
+        catalogService: teamRunHistoryCatalogService,
+        teamRunManager: agentTeamRunManager,
+      });
     } catch (error) {
       if (teamRunServiceBound && teamRunService) {
         releaseProcessTeamRunService(teamRunService);

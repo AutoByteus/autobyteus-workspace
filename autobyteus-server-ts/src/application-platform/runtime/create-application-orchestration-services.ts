@@ -32,6 +32,7 @@ import { ApplicationRunBindingLaunchService } from "../../application-orchestrat
 import { ApplicationRunBindingLifecycleHub } from "../../application-orchestration/services/application-run-binding-lifecycle-hub.js";
 import { ApplicationRunBindingTerminalTransitionService } from "../../application-orchestration/services/application-run-binding-terminal-transition-service.js";
 import { ApplicationRunObserverService } from "../../application-orchestration/services/application-run-observer-service.js";
+import { ApplicationRunOwnershipService } from "../../application-orchestration/services/application-run-ownership-service.js";
 import { ApplicationAgentTargetAuthorizationService } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationExecutionEventJournalStore } from "../../application-orchestration/stores/application-execution-event-journal-store.js";
 import { ApplicationLaunchOverrideStore } from "../../application-orchestration/stores/application-launch-override-store.js";
@@ -77,6 +78,11 @@ export const createApplicationOrchestrationServices = (input: {
     platformStateStore: input.platformStateStore,
   });
   const startupGate = new ApplicationOrchestrationStartupGate();
+  const runOwnershipService = new ApplicationRunOwnershipService({
+    startupGate,
+    lookupStore: runLookupStore,
+    bindingStore,
+  });
   const availabilityService = new ApplicationAvailabilityService({
     applicationBundleService: input.bundleService,
     stateRegistry: input.availabilityRegistry,
@@ -232,6 +238,7 @@ export const createApplicationOrchestrationServices = (input: {
   });
   return {
     startupGate,
+    runOwnershipService,
     eventDispatchService,
     artifactDeliveryService,
     runObserverService,

@@ -9,18 +9,18 @@ import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "./agent-run-history-catalog-service.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 
-type RunRuntimeReference = {
+export type RunRuntimeReference = {
   runtimeKind: RuntimeKind;
   sessionId: string | null;
   threadId: string | null;
   metadata: Record<string, unknown> | null;
 };
 
-type RunResumeMetadataConfig = AgentRunMetadata & {
+export type RunResumeMetadataConfig = AgentRunMetadata & {
   runtimeReference: RunRuntimeReference;
 };
 
-type RunResumeConfig = {
+export type AgentRunResumeConfig = {
   runId: string;
   isActive: boolean;
   metadataConfig: RunResumeMetadataConfig;
@@ -42,7 +42,7 @@ export class AgentRunResumeConfigService {
     this.historyCatalog = dependencies.historyCatalog ?? new AgentRunHistoryCatalogService(memoryDir);
   }
 
-  async getAgentRunResumeConfig(runId: string): Promise<RunResumeConfig> {
+  async getAgentRunResumeConfig(runId: string): Promise<AgentRunResumeConfig> {
     const metadata = await this.metadataStore.readMetadata(runId);
     if (!metadata) {
       throw new Error(`Run metadata not found for '${runId}'.`);

@@ -176,6 +176,9 @@ export const buildApplicationPlatformRuntime = (input: {
           .bind(services.agentCommunicationService),
       }),
     }),
-    hostManagement: Object.freeze({ catalogReconciliation }),
+    hostManagement: Object.freeze({
+      catalogReconciliation,
+      runOwnership: services.runOwnershipService,
+    }),
   });
 };

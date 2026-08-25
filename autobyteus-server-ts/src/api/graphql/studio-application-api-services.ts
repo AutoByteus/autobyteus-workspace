@@ -6,12 +6,14 @@ import type { ApplicationPackageCommandService } from "../../application-package
 import type { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { StudioRunModelConfigService } from "../../run-history/services/studio-run-model-config-service.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   agentRunService: AgentRunService;
   teamRunService: TeamRunService;
+  runModelConfigService: StudioRunModelConfigService;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -28,6 +30,7 @@ export const configureStudioApplicationApiServices = (
     || !services.agentTeamDefinitionService
     || !services.agentRunService
     || !services.teamRunService
+    || !services.runModelConfigService
     || !services.bundleService
     || !services.capabilityService
     || !services.packageQueries
@@ -76,6 +79,9 @@ export const getStudioAgentRunService = (): AgentRunService =>
 
 export const getStudioTeamRunService = (): TeamRunService =>
   requireConfiguredServices().teamRunService;
+
+export const getStudioRunModelConfigService = (): StudioRunModelConfigService =>
+  requireConfiguredServices().runModelConfigService;
 
 export const getStudioApplicationPackageQueries =
   (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;

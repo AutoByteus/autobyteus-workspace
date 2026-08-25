@@ -9,7 +9,10 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { getStudioTeamRunService } from "../studio-application-api-services.js";
+import {
+  getStudioRunModelConfigService,
+  getStudioTeamRunService,
+} from "../studio-application-api-services.js";
 import {
   RunModelConfigEditabilityObject,
   RunModelConfigFieldErrorObject,
@@ -170,6 +173,7 @@ export class UpdateStoppedTeamRunModelConfigsResult {
 @Resolver()
 export class AgentTeamRunResolver {
   private readonly teamRunService = getStudioTeamRunService();
+  private readonly runModelConfigService = getStudioRunModelConfigService();
 
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(
@@ -241,7 +245,7 @@ export class AgentTeamRunResolver {
       if (input.patches.some((patch) => !Object.hasOwn(patch, "llmConfig"))) {
         throw new Error("Every Team patch must contain llmConfig and it may be null.");
       }
-      const result = await this.teamRunService.updateStoppedModelConfigs({
+      const result = await this.runModelConfigService.updateStoppedTeamRunModelConfigs({
         teamRunId: input.teamRunId,
         patches: input.patches,
       });

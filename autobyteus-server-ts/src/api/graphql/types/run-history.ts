@@ -12,7 +12,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { getAgentRunHistoryService } from "../../../run-history/services/agent-run-history-service.js";
 import { getAgentRunViewProjectionService } from "../../../run-history/services/agent-run-view-projection-service.js";
-import { getAgentRunResumeConfigService } from "../../../run-history/services/agent-run-resume-config-service.js";
+import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
 import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
@@ -249,7 +249,7 @@ export class RunHistoryResolver {
   private workspaceRunHistoryService = getWorkspaceRunHistoryService();
   private workspaceManager = getWorkspaceManager();
   private agentRunProjectionService = getAgentRunViewProjectionService();
-  private agentRunResumeConfigService = getAgentRunResumeConfigService();
+  private runModelConfigService = getStudioRunModelConfigService();
 
   @Query(() => [WorkspaceRunHistoryGroupObject])
   async listWorkspaceRunHistory(
@@ -292,7 +292,7 @@ export class RunHistoryResolver {
   async getAgentRunResumeConfig(
     @Arg("runId", () => String) runId: string,
   ): Promise<RunResumeConfigPayload> {
-    return this.agentRunResumeConfigService.getAgentRunResumeConfig(runId);
+    return this.runModelConfigService.getAgentRunResumeConfig(runId);
   }
 
   @Mutation(() => DeleteStoredRunMutationResult)

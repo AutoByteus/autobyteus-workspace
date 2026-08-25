@@ -6,11 +6,15 @@ const mockTerminationService = vi.hoisted(() => ({
   restoreAgentRun: vi.fn(),
   getAgentRun: vi.fn(),
 }));
+const mockRunModelConfigService = vi.hoisted(() => ({
+  updateStoppedAgentRunModelConfig: vi.fn(),
+}));
 
 vi.mock(
   "../../../../../src/api/graphql/studio-application-api-services.js",
   () => ({
     getStudioAgentRunService: () => mockTerminationService,
+    getStudioRunModelConfigService: () => mockRunModelConfigService,
   }),
 );
 
@@ -25,6 +29,32 @@ describe("AgentRunResolver", () => {
     mockTerminationService.terminateAgentRun.mockReset();
     mockTerminationService.restoreAgentRun.mockReset();
     mockTerminationService.getAgentRun.mockReset();
+    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockReset();
+  });
+
+  it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
+    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockResolvedValue({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      message: "locked",
+      isActive: true,
+      editability: { editable: false, reason: "RUN_ACTIVE" },
+      canonical: { llmConfig: { reasoning_effort: "medium" } },
+      fieldErrors: [],
+    });
+    const resolver = new AgentRunResolver();
+
+    await expect(resolver.updateStoppedAgentRunModelConfig({
+      agentRunId: "run-1",
+      llmConfig: { reasoning_effort: "high" },
+    })).resolves.toMatchObject({
+      outcome: "RUN_ACTIVE",
+      canonicalLlmConfig: { reasoning_effort: "medium" },
+    });
+    expect(mockRunModelConfigService.updateStoppedAgentRunModelConfig).toHaveBeenCalledWith({
+      agentRunId: "run-1",
+      llmConfig: { reasoning_effort: "high" },
+    });
   });
 
   it("routes restore through AgentRunService", async () => {
