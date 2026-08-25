@@ -9,10 +9,19 @@
 - Solution revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md`
 - Design review report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
 - Architecture review revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence:
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` (`CRR-003`, `CR-F-002`)
+- Prior review and coverage package:
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` (`CRR-005` is the last reviewed pre-integration source/test result)
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md` (pre-SR-004 triggering evidence only; its revision/multi-client scenarios are non-authoritative)
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md` (`API-REV-001`; pre-integration execution evidence)
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md`
+- Triggering delivery rework report, revision record, and evidence:
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md` (`DR-001`)
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/docs-sync-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/release-deployment-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
 
 ## Current Implementation Summary
 
@@ -20,15 +29,17 @@ The current implementation provides stopped-only, model-configuration editing fo
 
 Agent and Team Save contracts accept only exact run identity plus `llmConfig` or configured-scope patches. The server rechecks stopped eligibility and validates each value against the target scope's fixed runtime/model inside the existing per-identity lifecycle owner, persists only `llmConfig`, rereads canonical storage, and returns typed canonical outcomes. The standalone lifecycle lane and Team manager root lane remain only because verified external-channel and Application Engine resolvers can independently restore stopped bound runs. Revision tokens, stale-writer outcomes, digest/rebase/forced-baseline logic, concurrent-writer tests/copy, and SR-003 Team archive broadening are removed. Team draft-start equality/direct-edit propagation, no stopped-run Reset, current-schema residual safety, AutoByteus/Codex restore behavior, and Claude thinking/effort application remain intact.
 
+IR-004 integrates the complete reviewed checkpoint with exact tracked base `origin/personal@306de420ca8830478529b40bd6dfda6694b742a9`. The eight DR-001 conflicts were resolved by preserving the base's current General Process/Application Engine provisioning and Studio GraphQL composition while replacing its removed activation seam with SR-004's lifecycle owner. The integrated web keeps current provider-source status and nullable inherited-runtime behavior together with SR-004's fail-closed catalog error/retry and fixed stopped-run controls. The intentionally obsolete stored-Team historical-field suite remains deleted; current Team scope/member coverage remains authoritative.
+
 - Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-004` (preserves the valid SR-003 feature and F-001 correction)
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-003`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-F-002`
+- Related code-review revision IDs: `CRR-005` (last pre-integration pass; integrated source re-review pending)
+- Related API/E2E revision IDs: `API-REV-001` (pre-integration evidence; refreshed integrated investigation/execution pending)
+- Related delivery revision IDs: `DR-001`
+- Triggering finding IDs: `DR-001` eight-path latest-base integration conflict inventory
 
 ## Reviewed Behavior Implementation Trace
 
@@ -47,12 +58,15 @@ Agent and Team Save contracts accept only exact run identity plus `llmConfig` or
 
 - Server lifecycle/contracts/persistence:
   - `autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
+  - `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts`
+  - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts`
   - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
   - `autobyteus-server-ts/src/run-history/domain/run-model-config.ts`
   - `autobyteus-server-ts/src/run-history/services/agent-run-model-config-commit.ts`
   - `autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts`
   - `autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts`
-  - Agent/Team GraphQL type files under `autobyteus-server-ts/src/api/graphql/types/`
+  - Agent/Team GraphQL type files under `autobyteus-server-ts/src/api/graphql/types/`, composed through `studio-application-api-services.ts`
 - Removed server compatibility/coordination seam:
   - `autobyteus-server-ts/src/run-history/domain/run-model-config-revision.ts`
 - Web Settings freshness and draft ownership:
@@ -61,6 +75,8 @@ Agent and Team Save contracts accept only exact run identity plus `llmConfig` or
   - `autobyteus-web/stores/agentRunStore.ts`
   - `autobyteus-web/stores/agentTeamRunStore.ts`
   - `autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts`
+  - `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue`
+  - `autobyteus-web/composables/useRuntimeScopedModelSelection.ts`
 - Web API/generated contract:
   - `autobyteus-web/graphql/queries/runHistoryQueries.ts`
   - `autobyteus-web/graphql/mutations/runHistoryMutations.ts`
@@ -122,38 +138,41 @@ Agent and Team Save contracts accept only exact run identity plus `llmConfig` or
 
 - Worktree: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis`
 - Branch: `codex/live-agent-definition-refresh-analysis`
-- SR-004 implementation development commit: `72ea90db12e4b10779f10ac9d298bbb8997d25f8`
-- Reviewed starting HEAD: `08b11b3aa4f3826d3360655dfbba6e884dd66d6b`
-- No dependency or lockfile changes were introduced. Existing workspace dependencies were reused; server build regenerated Prisma as part of its normal script.
-- Existing non-blocking output remains: Browserslist age, Nuxt large-chunk warnings, KaTeX test-environment warnings, Node localization-script module-type warning, and SQLite experimental warning.
+- Protected CRR-005/API-REV-001 checkpoint: `2eabf59af168e0375a1616bb3055c81200b8308c` (retained as an ancestor).
+- Delivery blocker artifact commit: `47f1c395f011c18c868fd1b060b4fee80bef5ea5`.
+- Exact integrated base parent: `origin/personal@306de420ca8830478529b40bd6dfda6694b742a9`.
+- Integration merge commit: `7e3f4e97c3e58951daa21070e46cb8c71246197a` with parents `47f1c395f011c18c868fd1b060b4fee80bef5ea5` and `306de420ca8830478529b40bd6dfda6694b742a9`.
+- `pnpm install --offline --frozen-lockfile` linked the already-locked `@vue/compiler-sfc` required by the advanced base. This implementation fix authored no dependency-manifest or lockfile change.
+- Server build regenerated Prisma and shared-package outputs as part of normal scripts; untracked build outputs were removed before commit.
+- Non-blocking output: Browserslist age, Nuxt large-chunk warnings, KaTeX test-environment warnings, Node localization-script module-type warning, and SQLite experimental warning. Direct `nuxi typecheck` could not start because the environment's external `npx`/`vue-tsc` combination raised `ERR_PACKAGE_PATH_NOT_EXPORTED`; production Nuxt build succeeded.
 
 ## Local Implementation Checks Run
 
-Implementation-scoped only; these are not API/E2E sign-off.
+Implementation-scoped integrated-state checks only; these are not renewed API/E2E sign-off.
 
-- Server production typecheck: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+- Server production typecheck: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed after normal shared-package preparation.
 - Server full build: `pnpm build` — passed, including shared packages, Prisma generation, managed asset copy, and sanitized built-in-agent bootstrap smoke.
-- Server focused unit/narrow integration set: 10 files / 88 tests — passed. Includes Agent stopped Save/restore ordering, Team active/stopped Save/restore, catalog commit/history baseline, target validation/mutation, and Claude configuration/session/client mapping.
-- Web current-feature component/store/planner/schema set: 12 files / 154 tests — passed.
-- Final SR-004 Settings/draft subset after cached-lifecycle lock hardening: 2 files / 37 tests — passed. It covers delayed network load, superseded selection responses, Agent/Team cached relock during load, no cached unlock, indeterminate verification, narrow revision-free inputs, and RUN_ACTIVE locked drafts.
-- Web production build: `pnpm build` — passed after the final source change.
-- Web boundary/localization checks: `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals` — passed; audit reported zero unresolved findings.
-- Obsolete-seam search across server/web source/tests for revision fields/outcomes/digest/rebase/forced-baseline names — no matches.
-- `git diff --check` — passed.
+- Server integration-focused set: 9 files / 55 tests — passed. It covers architecture/composition boundaries, General Process ownership, Application Engine service composition, Agent create/restore facade delegation, standalone lifecycle behavior, Team manager behavior, and Agent/Team GraphQL types.
+- Web integration-focused component/store/planner set: 8 files / 70 tests — passed. It covers the merged runtime-model component/catalog behavior plus existing Agent/Team forms, draft planner, and stopped-run store.
+- Web production build: `pnpm build` — passed.
+- Web boundary/localization checks: `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals` — passed; localization audit reported zero unresolved findings.
+- Exact merge-parent checks — passed: no unresolved index entries; `306de420ca8830478529b40bd6dfda6694b742a9` and protected checkpoint `2eabf59af168e0375a1616bb3055c81200b8308c` are ancestors of the merge commit.
+- Resolution-path `git diff --cached --check` — passed before the merge commit. A whole imported-base diff check reports whitespace in upstream evidence logs outside this ticket's resolution paths; those immutable upstream artifacts were not rewritten.
+- Changed integrated production files remain within the proactive guardrail: largest relevant file is `AgentTeamRunManager` at 485 physical lines; no reviewed non-generated source exceeds 500 lines.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Existing Agent/Team Configuration Settings entry, network loading/lock, stopped edit, dirty Save, and canonical feedback.
-- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md` UXJ-001–UXJ-004; REQ-005, REQ-009, REQ-011–REQ-013; AC-002–AC-004, AC-007–AC-008, AC-013; DS-001, DS-003, DS-005.
-- Existing design system, shared components, and adjacent product surfaces reviewed: `RunConfigPanel`, Agent/Team forms, `RuntimeModelConfigFields`, `ModelConfigSection`, existing footer/button/notice/error styles, localization messages.
-- Project development / preview instructions and rendered surface used: Nuxt development renderer with a temporary, uncommitted existing-Agent fixture page and Playwright-core driving system Chromium. GraphQL was intercepted only at the network boundary to exercise the real component, Pinia stores, Apollo documents, form hierarchy, and mutation client. The fixture was removed before commit.
-- States, layouts, viewports, and interactions inspected: 1280×900 loading state (`aria-busy=true`, Save disabled), stopped fresh-load state, fixed runtime/model/workspace/approval presentation, Codex reasoning/service controls, dirty edit enabling Save, mutation success feedback, and canonical no-op disabled Save. The browser issued `GetAgentRunResumeConfig`, runtime/catalog queries, and `UpdateStoppedAgentRunModelConfig` with no console errors.
-- Visual or interaction issues found and corrected: A failed initial fresh load could leave the body copy saying “Loading” while the error appeared only in the footer. The no-draft panel now renders the actual error as an alert and avoids duplicate footer feedback. Cached lifecycle relock was also latched across in-flight reads/Save so an older response cannot visually re-unlock after a newer active/refresh-required observation.
-- Supporting evidence and remaining unverified states or limitations: Direct inspection found the established spacing, hierarchy, disabled treatment, notices, control labels, and footer action coherent; a temporary screenshot was inspected and not committed. The full Team hierarchy, narrow responsive layout, keyboard traversal, real catalog failure, real external activation, and physical-store-indeterminate states remain downstream browser/system scenarios.
+- Affected surface: the integrated `RuntimeModelConfigFields` used by stopped Agent/Team Settings, especially current-base provider catalog behavior combined with fixed runtime/model and editable model config.
+- Method: temporary uncommitted Nuxt page mounting the real component; Playwright-core drove system Chromium while deterministic GraphQL interception supplied current runtime/catalog payloads. The fixture and script were removed before commit.
+- Viewports/states/interactions: desktop `1280×900` and narrow `390×844`; schema-ready state; disabled fixed runtime; visible fixed model identity; current-schema reasoning fields; edit from low to high effort; emitted canonical config display.
+- Result: passed. Schema state became `ready`, the runtime remained disabled, the fixed model was visible, the edit propagated, both layouts had no document-level horizontal overflow, and browser console/page/request failure collections were empty.
+- Visual inspection: hierarchy, spacing, disabled treatment, Advanced controls, and narrow wrapping were coherent with the established surface; no production visual correction was required.
+- Evidence: temporary screenshots `/tmp/ir004-integrated-runtime-model-config-desktop.png` and `/tmp/ir004-integrated-runtime-model-config-narrow.png` were inspected and intentionally not committed.
+- Remaining scope: renewed downstream browser/system execution must cover the complete integrated existing-Agent/Team Settings journeys rather than treating pre-integration API-REV-001 evidence as current.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Revise `api-e2e-coverage-investigation.md` before durable coverage changes or execution. Remove/rewrite API-E2E-003/004 and every revision/multi-client assertion; the current artifact is pre-SR-004 evidence, not an approved plan.
+- Refresh `api-e2e-coverage-investigation.md` against merge commit `7e3f4e97c3e58951daa21070e46cb8c71246197a` before renewed execution or any durable coverage change. Prior API-REV-001 passed the pre-integration state and is useful context, but it is not integrated-state sign-off.
 - Prove the sequential Agent path through GraphQL/storage/restart: Stop -> Settings network read -> edit -> Save -> same run/provider binding restores on a later message.
 - Prove the equivalent root Team hierarchy path with fixed-field preservation, exact configured-scope patches, approved propagation boundaries, and no stopped-run Reset.
 - Exercise direct active Agent and Team mutation rejection with no write.
@@ -163,4 +182,4 @@ Implementation-scoped only; these are not API/E2E sign-off.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `/api_e2e_engineer` must first revise the existing pre-SR-004 coverage investigation against this implementation and the approved sequential/independent-resolver behavior basis. This handoff reports only implementation-scoped builds, tests, and rendered self-validation; it does not claim API/E2E completion.
+Yes. After integrated source review passes, `/api_e2e_engineer` must refresh the coverage investigation and execute proportionate checks against merge commit `7e3f4e97c3e58951daa21070e46cb8c71246197a`. If repository-resident durable coverage changes, that state must return through proportional code review. This handoff reports only implementation-scoped integrated builds, tests, and rendered self-validation; it does not claim renewed API/E2E completion.
