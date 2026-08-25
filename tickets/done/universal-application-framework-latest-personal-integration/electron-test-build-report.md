@@ -1,29 +1,19 @@
-# Electron Test Build Report — DR-013
+# Electron Test Build Report — DR-014
 
 ## Result
 
-**Pass — the user explicitly verified the exact DR-011/DR-012 Personal macOS ARM64 Electron 1.4.58 package.**
+**Pass — Electron 1.4.58 was rebuilt and verified from finalized main-repository Personal.**
 
 ## Source Identity
 
-- Ticket branch: `codex/universal-application-framework-latest-personal-integration`
-- Current delivery checkpoint: `cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b`
-- Reviewed-package checkpoint: `7865429fe3e10980c559b7a03128dcd1c88635a1`
-- Latest Personal: `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
-- Delivery merge: `226dcfd1dda71f6507b507a9c8b68145bf4d4bbf`
-- Merge parents: `7865429fe3e10980c559b7a03128dcd1c88635a1`, `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
-- Finalization-preflight divergence: Personal 0 behind / ticket 176 ahead
-- Unmerged paths: zero
-- Post-build fetch: unchanged; Personal remains an ancestor
+- Repository: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Branch: `personal`
+- Executable source/merge: `887611bb372bc4d63b0dea496d2eaa3bf639f7e8`
+- Merge parents: `9d0fd7c570d58da1af2c7a40279327c8a20a8093`, `025e26d84c05671e9195edade786143bc4f2162f`
+- Remote at build start: `origin/personal@887611bb372bc4d63b0dea496d2eaa3bf639f7e8`
+- Version: 1.4.58 (unchanged)
 
-## Post-Supplement Source Equivalence
-
-- API-REV-012 executed production source at `226dcfd1dda71f6507b507a9c8b68145bf4d4bbf`.
-- CRR-023 and the API-REV-012 package changed zero non-ticket production and zero durable-test paths.
-- Latest Personal remains `9d0fd7c570d58da1af2c7a40279327c8a20a8093` and an ancestor.
-- Therefore no Electron rebuild is required after CRR-023; the artifact hashes below remain authoritative.
-
-## Build Command
+## README-Guided Build
 
 ```bash
 CI=true \
@@ -39,55 +29,34 @@ pnpm -C autobyteus-web build:electron:mac -- --arm64
 
 Result: Pass. Web/localization guards, shared/server/SDK builds, Prisma generation, sanitized bootstrap smoke, renderer/main/preload generation, native rebuild, app packaging, DMG, and ZIP completed.
 
-Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-macos-arm64-build.log`.
+Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-014-main-personal-electron-macos-arm64-build.log`.
 
-## Package Artifacts
+## Artifacts
 
-- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg`
-- DMG size: `465981133` bytes
-- DMG SHA-256: `eee0ac6cf7e3e3f4f4121a3b351004842a296e38fbaf5a37650f062381e2ef2c`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip`
-- ZIP size: `461646534` bytes
-- ZIP SHA-256: `e257e3e4a2d75092b846aafd41515df406a9603e0d4bd75fe946d86aec0d711c`
+- App: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg`
+- DMG size: `465957949` bytes
+- DMG SHA-256: `e23959eca0e3a2af4fe76692192bfb862ab81b96a8508ed35e456ada9633920a`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip`
+- ZIP size: `461635307` bytes
+- ZIP SHA-256: `bc13485cdf6024623b0f32f0d7400faa4ce22e9c5fa607dc12b1b362843b70a7`
 - Bundle identifier: `com.autobyteus.app`
-- Version: `1.4.58`
 - Minimum macOS: `12.0`
-- Signing/notarization: intentionally absent for local verification
+- Signing/notarization: intentionally absent for this local build
 
-## Packaged Isolation
+## Verification
 
-`pnpm -C autobyteus-web test:e2e:electron:isolation --skip-build ...` passed all five scenarios:
+- Main app executable: ARM64
+- Packaged active `node-pty` runtime bundles: ARM64
+- ZIP integrity: Pass
+- DMG `hdiutil verify`: Pass
+- Strict codesign: expected unsigned failure only
+- Tracked source status after build: clean
 
-1. direct packaged launch with isolated paths and retained caller root;
-2. Playwright renderer/GraphQL/WebSocket/provider/settings/updater journey;
-3. two simultaneous packaged instances with distinct ports, roots, and renderer state;
-4. invalid/partial profile fail-closed cases;
-5. allocation-race foreign-owner preservation and owned-root cleanup.
+Non-blocking warnings were limited to known dependency/peer, outdated Browserslist data, bundle-size, and intentionally unsigned-package notices.
 
-All nine cleanup entries passed. The ordinary AutoByteus process on port 29695 retained the same PID/fingerprint and remained healthy before, during, and after validation.
-
-Evidence:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-isolation.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-isolation/electron-launch-profile-evidence.json`
-
-## Package Verification
-
-Pass results include:
-
-- ARM64 app executable and ARM64 `node-pty` native bundle;
-- real packaged terminal spawn probe;
-- current dual-host application platform/runtime/engine/orchestration/streaming/Agent Tools owners;
-- current hierarchical topology, run identity/service, V1 and V2 migration, package catalog, and physical-scope owners;
-- token analytics and latest dependency owners;
-- retired broad-host/resource-configuration owners absent;
-- DMG checksum verification and ZIP integrity;
-- no retained test app process or mounted test DMG.
-
-Strict codesign verification fails as expected for the intentionally unsigned local package.
-
-Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-macos-arm64-verification.log`.
+Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/universal-application-framework-latest-personal-integration/evidence/delivery/dr-014-main-personal-electron-macos-arm64-verification.log`.
 
 ## Disposition
 
-The user reports successful testing and authorizes finalization. The final tracked-base refresh found no material change and both package hashes remain exact, so renewed verification is not required. No new release version, tag, hosted release, or deployment is requested. After repository finalization, Electron 1.4.58 must be rebuilt from the main repository's finalized `personal` checkout and recorded separately.
+The same-version main-Personal Electron test build is ready. No version bump, release upload, tag, notarization, or deployment was performed.

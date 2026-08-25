@@ -17,6 +17,7 @@
 | DR-011 | CRR-022/API-REV-011 return the design-resolved v1.4.58 package; final Personal refresh and Electron rebuild | DR-010 Blocked — Design Impact | Latest-base integrated Electron 1.4.58 ready; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-011-* |
 | DR-012 | CRR-023 returns API-REV-012 private nested-Classroom supplement | DR-011 Electron ready; supplemental probe in progress | Supplemental Pass; Electron 1.4.58 remains exact; explicit user verification pending | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-012-* |
 | DR-013 | User explicitly verifies Electron 1.4.58 and authorizes finalization; no new release version requested | DR-012 ready for explicit user verification | Finalization preflight Pass; ticket ready for archive, ticket-branch push, Personal integration, and main-repository Electron rebuild | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-013-finalization-preflight.log |
+| DR-014 | DR-013 user-authorized finalization plus main-repository Personal Electron build | DR-013 finalization preflight Pass | Complete — ticket archived/pushed, Personal merged/pushed, same-version main-repository Electron 1.4.58 build verified | docs-sync-report.md, electron-test-build-report.md, handoff-summary.md, release-deployment-report.md, evidence/delivery/dr-014-* |
 
 ## Revision Entries
 
@@ -240,3 +241,19 @@
 - Material-change decision: no source, durable-test, base, or package change occurred after the user-tested handoff; renewed verification is not required before finalization.
 - Post-finalization instruction: make the main repository's `personal` branch current and build the same 1.4.58 Electron package from that main-repository checkout. Record that target-branch build as the next delivery revision.
 - Evidence: `evidence/delivery/dr-013-finalization-preflight.log`.
+
+### DR-014 — Repository finalized; main-repository Personal Electron build passes
+
+- Round/trigger: Round 14; execution of the DR-013 user-authorized finalization and same-version main-repository Electron build.
+- Prior result: DR-013 finalization preflight Pass.
+- Current result: Complete. The ticket is archived, both repository branches are published, Personal contains the finalized ticket, and the main-repository Electron 1.4.58 package passes build and integrity verification.
+- Ticket finalization: moved the ticket to `tickets/done/universal-application-framework-latest-personal-integration`, committed it as `025e26d84c05671e9195edade786143bc4f2162f`, and pushed `origin/codex/universal-application-framework-latest-personal-integration` to the same commit.
+- Target finalization: refreshed main-repository `personal` to `origin/personal@9d0fd7c570d58da1af2c7a40279327c8a20a8093`, then merged the ticket branch without conflicts as `887611bb372bc4d63b0dea496d2eaa3bf639f7e8` and pushed that commit to `origin/personal`.
+- Main-repository build source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on executable Personal merge `887611bb372bc4d63b0dea496d2eaa3bf639f7e8`, exactly matching the remote at build start.
+- Electron build: documented macOS command with explicit ARM64 target, personal flavor, and disabled signing/notarization inputs passed at version 1.4.58. Guards, server/shared/SDK builds, Prisma generation, bootstrap smoke, renderer/main/preload builds, native rebuild, app packaging, DMG, and ZIP passed.
+- Verification: app and live `node-pty` bundles are ARM64; bundle ID is `com.autobyteus.app`; minimum macOS is 12.0; ZIP integrity and `hdiutil verify` passed; strict codesign failed only as expected for the intentionally unsigned local build.
+- Main-repository DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg`; 465957949 bytes; SHA-256 `e23959eca0e3a2af4fe76692192bfb862ab81b96a8508ed35e456ada9633920a`.
+- Main-repository ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip`; 461635307 bytes; SHA-256 `bc13485cdf6024623b0f32f0d7400faa4ce22e9c5fa607dc12b1b362843b70a7`.
+- Release/deployment disposition: no version bump, tag, hosted release, notarization, deployment, or rollout was performed, exactly as requested.
+- Cleanup: generated SDK build directories created only as packaging prerequisites were removed; the main-repository Electron artifacts were retained. Pre-existing unrelated `.article-work/` was preserved.
+- Evidence: `evidence/delivery/dr-014-main-personal-electron-macos-arm64-build.log`, `evidence/delivery/dr-014-main-personal-electron-macos-arm64-verification.log`, and `evidence/delivery/dr-014-repository-finalization-and-main-personal-build.log`.
