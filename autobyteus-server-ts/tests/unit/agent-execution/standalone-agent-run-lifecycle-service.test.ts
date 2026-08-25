@@ -1,8 +1,13 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
+import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
+import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
 const RUN_ID = "standalone-run-1";
@@ -69,6 +74,7 @@ const harness = (input: {
   };
   const historyCatalogService = {
     recordRunStarted: input.recordRunStarted ?? vi.fn(async (target: AgentRunMetadata) => target),
+    recordRunSummary: vi.fn(async () => undefined),
     getCatalogRow: input.getCatalogRow ?? vi.fn(async () => ({ archivedAt: null })),
     commitRunModelConfig: input.commitRunModelConfig ?? vi.fn(),
   };
@@ -88,6 +94,45 @@ const harness = (input: {
     },
   });
   return { service, metadataService, agentRunManager, historyCatalogService, workspaceManager };
+};
+
+const commandReadyRun = () => ({
+  runId: RUN_ID,
+  runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+  isActive: () => true,
+  subscribeToEvents: vi.fn(() => () => undefined),
+  postUserMessage: vi.fn(async (_message, options) => {
+    options.lifecycleObserver({ kind: "admitted" });
+    options.lifecycleObserver({
+      kind: "forwarded",
+      dispatchKind: "start_turn",
+      turnId: "external-turn-1",
+    });
+    return { accepted: true, turnId: "external-turn-1" };
+  }),
+});
+
+const exactCommandCoordinator = (
+  current: ReturnType<typeof harness>,
+): AgentRunCommandCoordinator => {
+  const agentRunService = new AgentRunService("/unused", {
+    agentRunManager: current.agentRunManager as never,
+    metadataService: current.metadataService as never,
+    historyCatalogService: current.historyCatalogService as never,
+    workspaceManager: current.workspaceManager as never,
+    lifecycleService: current.service,
+  });
+  return new AgentRunCommandCoordinator({
+    agentRunService,
+    registry: new AgentRunCommandRegistry(),
+    overlayStore: new AgentRunCommandStatusOverlayStore(),
+    projectionService: {
+      getRunStatusProjection: vi.fn(async () => ({
+        statusPayload: { status: "running", agent_id: RUN_ID },
+      })),
+    } as never,
+    broadcaster: { publishToRun: vi.fn(() => 1) } as never,
+  });
 };
 
 describe("StandaloneAgentRunLifecycleService", () => {
@@ -383,5 +428,116 @@ describe("StandaloneAgentRunLifecycleService", () => {
       config: expect.objectContaining({ llmConfig: { effort: "high" } }),
       platformAgentRunId: CLAUDE_SESSION_ID,
     });
+  });
+
+  it("orders the exact external command resolver after a stopped Save and restores the committed config", async () => {
+    const stopped = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      platformAgentRunId: CLAUDE_SESSION_ID,
+      llmConfig: { effort: "low" },
+    });
+    const updated = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      platformAgentRunId: CLAUDE_SESSION_ID,
+      llmConfig: { effort: "high" },
+    });
+    let releaseValidation!: () => void;
+    const validationBarrier = new Promise<void>((resolve) => { releaseValidation = resolve; });
+    const validateModelConfig = vi.fn(async () => {
+      await validationBarrier;
+      return { kind: "valid" as const, config: { effort: "high" } };
+    });
+    const commitRunModelConfig = vi.fn(async () => ({
+      kind: "committed" as const,
+      metadata: updated,
+    }));
+    const activeRun = commandReadyRun();
+    const restoredCandidate = candidate({ run: activeRun });
+    const current = harness({
+      metadataStates: [
+        { kind: "present", metadata: stopped },
+        { kind: "present", metadata: updated },
+      ],
+      restoredCandidate,
+      commitRunModelConfig,
+      validateModelConfig,
+    });
+    restoredCandidate.commitPublication.mockImplementation(() => {
+      current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
+      return activeRun;
+    });
+    const coordinator = exactCommandCoordinator(current);
+
+    const save = current.service.updateStoppedModelConfig({
+      agentRunId: RUN_ID,
+      llmConfig: { effort: "high" },
+    });
+    await vi.waitFor(() => expect(validateModelConfig).toHaveBeenCalledOnce());
+    const dispatch = coordinator.postUserMessage({
+      runId: RUN_ID,
+      messageId: "external-message-save-first",
+      dedupeKey: "external-channel:save-first",
+      message: new AgentInputUserMessage("external message after Save enters"),
+    });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+
+    releaseValidation();
+    await expect(save).resolves.toMatchObject({ outcome: "UPDATED", canonical: updated });
+    await expect(dispatch).resolves.toMatchObject({
+      ack: { accepted: true, state: "accepted" },
+      turnId: "external-turn-1",
+    });
+    expect(current.agentRunManager.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith({
+      runId: RUN_ID,
+      config: expect.objectContaining({ llmConfig: { effort: "high" } }),
+      platformAgentRunId: CLAUDE_SESSION_ID,
+    });
+    expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("returns RUN_ACTIVE when the exact external command resolver activates before Save", async () => {
+    const stopped = metadata({
+      startedAt: "2026-08-17T20:05:00.000Z",
+      platformAgentRunId: CLAUDE_SESSION_ID,
+      llmConfig: { effort: "low" },
+    });
+    const activeRun = commandReadyRun();
+    const restoredCandidate = candidate({ run: activeRun });
+    const validateModelConfig = vi.fn();
+    const commitRunModelConfig = vi.fn();
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: stopped }],
+      restoredCandidate,
+      validateModelConfig,
+      commitRunModelConfig,
+    });
+    restoredCandidate.commitPublication.mockImplementation(() => {
+      current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
+      return activeRun;
+    });
+    const coordinator = exactCommandCoordinator(current);
+
+    await expect(coordinator.postUserMessage({
+      runId: RUN_ID,
+      messageId: "external-message-restore-first",
+      dedupeKey: "external-channel:restore-first",
+      message: new AgentInputUserMessage("external message before Save"),
+    })).resolves.toMatchObject({
+      ack: { accepted: true, state: "accepted" },
+      turnId: "external-turn-1",
+    });
+
+    await expect(current.service.updateStoppedModelConfig({
+      agentRunId: RUN_ID,
+      llmConfig: { effort: "high" },
+    })).resolves.toMatchObject({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      canonical: stopped,
+      isActive: true,
+    });
+    expect(validateModelConfig).not.toHaveBeenCalled();
+    expect(commitRunModelConfig).not.toHaveBeenCalled();
   });
 });

@@ -15,91 +15,96 @@
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
-- API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md` (not yet created)
-- Current API/E2E Revision ID: `N/A`
-- Current Investigation Round: 1
-- Trigger: `CRR-002` passed implementation source review and requested API/E2E investigation and execution, prioritizing `MP-CR-001` and `MP-CR-002` for Agent and Team.
-- Prior Investigation Reviewed: None; a missing prior record is not treated as prior evidence.
-- Latest Authoritative Investigation: Round 1, initial pre-edit inventory and plan.
+- API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-001`
+- Current Investigation Round: 1, replaced before execution after SR-004/IR-003/CRR-004 changed the governing behavior basis
+- Trigger: `CRR-004` Pass of `IR-003` at source commit `72ea90db12e4b10779f10ac9d298bbb8997d25f8` against `SR-004` / `ARCH-REV-003`
+- Prior Investigation Reviewed: Yes. The pre-SR-004 content in this canonical file was triggering evidence only and was never executed. Its revision, multi-client, `MP-CR-001`, and `MP-CR-002` assertions are superseded and removed here.
+- Latest Authoritative Investigation: This SR-004 replacement. No prior API/E2E result or confidence exists and none is inferred.
 
 ## Current Requirement And Design Basis
 
-An existing standalone Agent Run or root Agent Team Run remains completely configuration-locked while active. After the existing Stop operation completes and a network-fresh server response confirms stopped editability, only schema-supported `llmConfig` controls unlock; runtime, model, workspace, definitions, topology, identities, provider bindings, and unrelated launch settings stay fixed. Save is an explicit, revision-checked, lifecycle-serialized persistence operation that leaves the subject stopped. The next restore must reuse the same logical/provider identities and consume the saved configuration.
+The approved browser journey is strictly sequential: an active standalone Agent or root Team is explicitly stopped; the user then opens Settings; Settings owns a network-fresh resume-config/editability read; only current-schema `llmConfig` controls unlock; the user edits and waits for Save to complete; the run remains stopped; and a later message restores the same persisted identity and provider binding with the saved configuration. Save never stops, starts, replaces, interrupts, or hot-updates a runtime. Runtime/model identity, workspace, definition/topology, IDs, auto-approval, skill mode, provider binding, history, messages, tasks, and all non-`llmConfig` data remain fixed.
 
-Team Save is root-owned and accepts only configured root, nested-team, and configured-agent scope patches. Parent changes propagate in the browser only through draft-start matching descendants not directly edited in the draft; divergent/directly edited branches remain boundaries, transient task executions are excluded, and the stopped-run surface has no Reset-to-inherited action. Current runtime/model schemas are authoritative and failures must preserve canonical storage. AutoByteus, Codex, and Claude adapters must use the saved settings at restore/query time.
+Team editing is root-stopped and configured-scope-only. Root, configured nested-team, and configured-agent patches use each scope's fixed runtime/model schema. Parent edits propagate only through draft-start value-equal, not-directly-edited descendant chains. A divergent or directly edited branch stays unchanged. The stopped existing-Team editor exposes no Reset-to-inherited action.
 
-The two highest-risk return paths are reachable and critical:
+The mutation contract has no writer revision, stale-writer outcome, rebase, or multi-client behavior. Direct active Agent and Team calls must return `RUN_ACTIVE` without validation or persistence. Equal canonical input returns `UNCHANGED` without a write. Invalid, unavailable, or unrepresentable current-schema input fails closed without altering stored values. Definite persistence failures retain the draft and canonical baseline; transport or physical commit indeterminacy requires a network-fresh verification read before another Save.
 
-- `MP-CR-001`: restore wins before Save without changing the canonical revision; `RUN_ACTIVE` may retain rejected input only while locked, and a later Stop plus fresh canonical read must force a clean baseline.
-- `MP-CR-002`: another client commits revision R2, restore wins, and an R1 client receives `RUN_ACTIVE` with canonical R2. R2 must replace the stale baseline/input atomically, stale Save must remain blocked, and only a new post-Stop edit may submit R2.
+The only approved ordering beyond the sequential browser flow comes from independently supported system triggers: external-channel ingress and Application Engine input can resolve a bound stopped Agent through `AgentRunCommandCoordinator` / `AgentRunService.resolveCommandReadyAgentRun`, or a bound stopped Team through `ChannelBindingRunLauncher` / `TeamRunService.restoreTeamRun` or `resolveActiveTeamRun`. These paths share the existing per-Agent or root-Team lifecycle lane with Save. Save-first commits before the resolver reads; resolver-first publishes the active runtime and a later Save returns `RUN_ACTIVE`. This is not browser concurrency and must not be tested as multi-tab, multi-user, concurrent Save, hand-speed, revision, or draft-rebase behavior.
+
+Existing Agent metadata and schema-v2 Team execution trees are directly usable without migration. AutoByteus, Codex, and Claude restore paths must consume saved configuration; Claude's pinned SDK path must apply thinking/effort to the same session/query. API/E2E evidence must cover public transport, real persistence/restart, exact supported resolver triggers, the single-browser Settings experience, and provider adapter application without reintroducing rejected premises.
 
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| BEH-001 / definition editing | Preserved | REQ-015, AC-015, DS map | Regression-check launch/definition flows do not call the stopped-run mutations. |
-| BEH-002 / restore consumes persisted config | Changed | REQ-004, REQ-006, REQ-007; AC-001, AC-002, AC-007, AC-014, AC-016 | Execute persistence through real storage and restore the same Agent/Team IDs; retain runtime-adapter checks. |
-| BEH-003 / active runtime immutability | Preserved | REQ-002, REQ-003, REQ-006, REQ-009 | Direct API updates against active Agent/Team subjects must return `RUN_ACTIVE` and not write. |
-| BEH-004 / standalone existing-run editor | Added | REQ-001–REQ-007, REQ-009–REQ-014; AC-001–AC-004, AC-009–AC-014 | Real GraphQL and browser state evidence are required for active lock, stopped Save, revisions, reconciliation, and fixed controls. |
-| BEH-005 / Team existing-run editor | Added | REQ-001, REQ-003–REQ-015; AC-005–AC-015; MP-001 | Add full Team browser rendering and real root/nested/member patch API coverage, including no Reset. |
-| BEH-006 / canonical contract and revision | Added / Changed by IR-002 | REQ-009, REQ-012–REQ-014; CR-F-001; MP-CR-001/002 | Execute real canonical payload/revision outcomes across active, unchanged-revision, advanced-revision, stale, no-op, and restart paths. |
-| BEH-007 / catalog and Claude application | Changed | REQ-004, REQ-010, REQ-011; AC-009, AC-011, AC-016 | Retain strict validation/catalog and Claude option-bridge tests; run catalog-backed API rejection. Real provider invocation depends on local capability preflight. |
-| Broad editable flags, browser-only mutation, stored-Team projection, activation-only service path | Removed | Design removal plan; implementation/code-review legacy checks | Existing obsolete coverage was already removed in IR-001. Do not restore compatibility assertions. |
+| BEH-001 definition versus existing-run editing | Preserved | REQ-001/REQ-015; AC-015; IR-003 trace | Prove no definition or launch-authoring path is used by Save. |
+| BEH-002 later restore consumes persisted `llmConfig` | Changed | REQ-004/006/007; AC-001/002/007/014/016; DS-002/004/008 | Cross GraphQL, real files, restart/current reader, same-ID restore, and runtime adapter boundaries. |
+| BEH-003 active runtime immutability | Preserved and contract-strengthened | REQ-002/003/006/009; AC-003/004/008 | Direct Agent and Team active mutations must return `RUN_ACTIVE` with no write. |
+| BEH-004 standalone stopped Settings | Added | REQ-001–007/009–014; AC-001–004/009–014/016; UXJ-001/002 | Prove Settings-owned network read, fixed controls, stopped edit, Save, canonical clean state, and later restore. |
+| BEH-005 root-Team stopped Settings | Added | REQ-003–015; AC-005–015; UXJ-003 | Prove full hierarchy, scope validation, bounded propagation/direct-edit behavior, no Reset, narrow persistence, and later restore. |
+| BEH-006 revision-free canonical API and uncertainty handling | Changed | SR-004; REQ-012–014; AC-003/004/008/010/013; DS-005 | Assert no revision/stale fields, typed outcomes, no-op, failure, and canonical verification only for uncertainty. |
+| BEH-007 current catalog and three runtimes | Changed | REQ-004/010/011; AC-009/011/012/016; DS-008 | Exercise catalog-backed validation/fail-closed behavior and focused runtime adapters; live provider only if configured. |
+| BEH-008 external-channel/Application Engine resolution | Preserved with narrowed justification | REQ-006/007/009; AC-004/008/014; MP-SR4-003/004; CRR-004 | Add exact Agent and Team system-trigger coverage for Save-first and resolver-first ordering. Do not simulate browser writers. |
+| SR-003 writer revisions, stale outcomes, rebase, forced-baseline, concurrent-browser tests | Removed | SR-004; MP-SR4-001/002 Not Reachable; IR-003; CRR-004 | Treat any remaining assertion as stale and fail the obsolete-seam audit; add no replacement concurrency policy. |
+| SR-003 generalized Team archive/delete coordination | Removed | SR-004 legacy removal; IR-003; CRR-004 | Preserve baseline archive/delete tests but do not add Save-versus-archive/delete scenarios. |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | Yes | Strict schema validation, revision digest, narrow metadata/tree mutation | Focused validator, revision/persistence, mutator, lifecycle and manager tests | Full request-to-file behavior using current catalogs | Built-server GraphQL E2E |
-| API / transport / contract | Yes | Agent/Team resume editability and narrow update mutations | GraphQL type source and generated client; no dedicated E2E mutation test | Schema mapping, JSON field presence, canonical payloads, typed outcomes over HTTP | Built-server GraphQL E2E |
-| Frontend component / state | Yes | Specialized drafts, fixed/editable split, Save/reconciliation | Store/planner/form Vitest, including IR-002 paths | Real renderer composition, catalog loading, DOM focusability and full Team tree | Browser probe against real backend/frontend |
-| Browser integration / user journey | Yes | Selected existing-run Stop/edit/Save/relock journey | Agent-only temporary implementation inspection; no repository browser journey | Full Team rendering, actual Apollo/API wiring, active/stopped DOM states | Browser |
-| Authentication / session / permissions | No material change | Existing access model only | Existing standard GraphQL path | No new authorization contract | N/A |
-| Desktop renderer / web-equivalent UI | Yes | Nuxt renderer used by Electron | Vue tests and prior temporary Chromium inspection | Full Team web-equivalent renderer state | Browser development path |
-| Desktop shell / Electron-specific integration | No | No preload/IPC/window/package change | Changed-path inventory | None for this behavior | None; actual Electron is not justified |
-| Process / lifecycle | Yes | Per-Agent and root-Team lanes order Save/restore/archive/delete | Direct owner unit/integration tests | Real HTTP clients and running service lifecycle, process restart | Built-server lifecycle E2E |
-| Persisted-data transition | Yes | Existing metadata/tree `llmConfig` edited in place; no schema change | Persistence-focused unit/integration tests | Real files before/after, restart reader, identity equality | Built-server E2E with isolated runtime |
-| Worker / queue / distributed coordination | Yes, bounded | Per-identity in-process transition lanes and catalog queues | Owner tests | Real multi-client HTTP ordering; not multi-node distributed | Concurrent GraphQL clients / lifecycle probe |
-| External integration | Yes | Claude pinned SDK options and provider binding | Direct Claude session/client tests | Actual provider acceptance requires configured Claude capability | Live-E2E preflight; run only if configured |
+| Domain / backend logic | Yes | Standalone lifecycle update, Team manager update, validation, mutator, commit classification | Focused unit and integration coverage | Public transport plus current package and exact external resolver composition | Live API + lifecycle integration |
+| API / transport / contract | Yes | Agent/Team resume queries and narrow revision-free GraphQL mutations/results | Resolver types, generated documents, store mocks | Real HTTP GraphQL serialization, rejected legacy fields, canonical payloads | Built-server API E2E |
+| Frontend component / state | Yes | Settings fresh load, restrictive cached lifecycle updates, revision-free drafts, outcome verification | Pinia, planner, and component tests | Real DOM composition, request ordering, hierarchy, focusability, notices | Browser |
+| Browser integration / user journey | Yes | Single-browser Stop-complete -> Settings load -> edit -> Save -> later message | Temporary Agent inspection; no durable full Team browser path | Full Team rendering and sequential transitions through actual documents | Browser |
+| Authentication / session / permissions | No | Existing local-owner access unchanged | Existing transport behavior | None introduced | None |
+| Desktop renderer / web-equivalent UI | Yes | Nuxt renderer surface used inside Electron | Components and browser-probe convention | Real renderer interaction across viewports | Browser, not shell |
+| Desktop shell / Electron-specific integration | No | No preload, IPC, window, packaging, native, or shell code changed | Existing package-boundary coverage | None material | None |
+| Process / lifecycle | Yes | Stop, stopped Save, later restore, restart, independent resolver ordering | Owner-level lifecycle tests | Exact trigger and server restart | Lifecycle + built server |
+| Persisted-data transition | Yes | Directly usable Agent metadata and Team V2 tree; only `llmConfig` changes | Store/catalog/manager tests and Team hierarchy E2E | Semantic preservation through public Save and restart | Built-server API + file comparison |
+| Worker / queue / distributed coordination | No | One-process per-identity lane; no distributed writer contract | Owner lane tests | Multi-node behavior explicitly outside contract | None |
+| External integration | Yes | Claude SDK options and external-channel/Application Engine resolver entry points | Adapter and caller tests | Live Claude acceptance may be environment-limited; exact caller/owner composition absent | Focused integration; conditional provider E2E |
 
 ## Project Execution Discovery
 
 - Assigned task worktree / workspace: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis`
-- Project type and runtime stack: pnpm monorepo; Node/TypeScript Fastify + Mercurius/TypeGraphQL backend; Nuxt/Vue/Pinia/Apollo frontend; Electron wrapper; Vitest; Playwright Core browser probes.
-- Conflicting, missing, or unclear project instructions: No conflict. Server `AGENTS.md` requires `vitest run --no-watch`; root scripts define isolated deterministic E2E separately from development data. Generic server `typecheck` has a recorded TS6059 limitation, so the production build config is authoritative for source typecheck.
-- Required environment variables or secrets available: N/A for deterministic GraphQL/browser coverage. Real Claude invocation is conditional and must be reported as configured, unavailable, or skipped by the existing live-E2E preflight rather than fabricated.
+- Project type and runtime stack: pnpm monorepo; TypeScript Node GraphQL/WebSocket server; Nuxt/Vue/Pinia/Apollo renderer wrapped by Electron; Vitest unit/integration/E2E; project-owned isolated built-server harness; Playwright-core browser probes.
+- Conflicting, missing, or unclear project instructions: None material. Server tests follow the closest `AGENTS.md`; browser-equivalent UI uses the Nuxt path; isolated E2E data must not reuse the development database.
+- Required environment variables or secrets available: `N/A` for deterministic local API/browser coverage; `No` for a paid live Claude turn. Sanitized preflight recognized the Claude capability but found no configured provider credential; no secret was recorded or fabricated.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/package.json` | Root scripts | `pnpm test:e2e` runs server E2E; `pnpm dev` builds and starts backend 8000/frontend 3000; live provider preflight is separate. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/README.md` | Monorepo development/E2E instructions | Deterministic tests use test-owned runtime and must not use development DB. Development stack owns only its two child processes and `.autobyteus/development`. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/AGENTS.md` | Closest server test instruction | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/vitest.config.ts` | Test runner | Fork pool, serial files, Prisma test setup/global setup, `tests/**/*.test.ts`. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/README.md` | Server execution and test data | Test environment uses `.env.test` and test-owned temporary SQLite under `tests/.tmp`; real capabilities are env-gated. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/test-support/live-e2e/test-runtime-bootstrap.mjs` | Built-server E2E harness | Creates sanitized isolated runtime roots/databases, starts current built server on a safe port, checks readiness, and removes only owned state. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/README.md` | Frontend/browser/desktop testing | Browser development path is preferred for web-equivalent behavior; specific Vitest uses `--run`; Playwright Core probes may install/remove a temporary fixture route. |
-| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/package.json` | Web scripts | Nuxt build/test commands and existing browser-probe conventions. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/README.md` | Workspace execution | Use pnpm workspace scripts; tests own isolated resources rather than development data. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/package.json` | Root scripts | `pnpm test:e2e`; `pnpm test:e2e:real:preflight`; package build/test scripts. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/AGENTS.md` | Server test authority | Run targeted Vitest with `pnpm exec vitest run <paths> --no-watch`; current-contract-only deterministic tests. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/vitest.config.ts` | Test runtime | Serial fork execution and repository setup; exact files before broader suites. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/test-support/live-e2e/test-runtime-bootstrap.mjs` | Built-server harness | Isolated runtime/database/HOME/free port, GraphQL/readiness, owned cleanup. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | Current package fixture example | Public seed, Team V2 files, restart, current readers. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/README.md` | Renderer/Desktop execution | Prefer web renderer for web-equivalent behavior; actual Electron only for shell-specific evidence. |
+| `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs` | Browser probe convention | Own free port/process group, fixture route, Playwright semantic assertions, cleanup. |
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
-| Dependencies | workspace root | Existing `pnpm install --frozen-lockfile` state from implementation | No lockfile change planned | Required packages resolve | None |
-| Built backend E2E | server test harness | `pnpm --filter autobyteus-server-ts build`, then focused Vitest E2E | Per-test isolated runtime/database/home and free port | Harness `/rest/health` readiness | `server.stop()` and `removeOwnedTestRuntime` in `afterEach` |
-| Browser fixture | `autobyteus-web` | Owned probe starts Nuxt on a free port, pointing to an owned built backend | Temporary fixture page only; no Electron launch or product data | HTTP route plus semantic DOM marker | Kill owned process group; remove fixture page and owned runtime/output as specified |
-| Real provider preflight | workspace root | `pnpm test:e2e:real:preflight` | No invocation; reports configured/missing/unavailable | Harness report | No provider process retained |
+| Dependencies/build | Workspace/server | Existing locked install; `pnpm --filter autobyteus-server-ts build` as required | No dependency change planned | Exit 0 | None |
+| Built backend E2E | Server harness | Focused Vitest E2E using `test-runtime-bootstrap.mjs` | Per-test runtime, SQLite DB, HOME, free port; never dev/prod data | `/rest/health` and GraphQL readiness | `server.stop()` and owned runtime removal |
+| Exact resolver integration | `autobyteus-server-ts` | Focused Vitest integration | Temp memory and deterministic fake provider edge; exact production resolver classes | Barrier observes owner-lane entry | Hooks remove temp dirs/reset state |
+| Browser fixture | `autobyteus-web` | Owned Nuxt probe on free loopback port | No Electron; built backend or deterministic network responses for UI-only failures | Route HTTP 200 and DOM marker | Close browser; kill owned group; remove scratch state |
+| Real provider preflight | Workspace root | `pnpm test:e2e:real:preflight` | Discovery only | Sanitized capability report | No retained process |
 
 | Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
 | --- | --- | --- | --- |
-| Agent/Team definitions | Public GraphQL create mutations | Unique labels per isolated runtime | Removed with owned runtime/database |
-| Agent Run and Team Run packages | Public GraphQL create/terminate/restore APIs | Workspace paths under owned runtime root; no production paths | Removed with owned runtime |
-| Model/schema | `providerModelCatalogSnapshots(runtimeKind: "autobyteus")`; select a deterministic model with a usable schema and derive valid distinct configs | No secret needed merely to create/restore; no real LLM turn sent | No persistent external data |
-| Multiple clients/revisions | Independent HTTP GraphQL requests retaining R1/R2 tokens | Same isolated server, deterministic ordering | No separate account/session state |
+| Agent/Team definitions | Public GraphQL create operations modeled on existing E2E | Unique labels in isolated runtime/database | Removed with owned runtime |
+| Agent metadata and Team V2 package | Normal public create/terminate/restore | Paths under owned runtime only | Removed; concise semantic evidence retained |
+| Current model/schema | Query `providerModelCatalogSnapshots(runtimeKind: "autobyteus")`; derive distinct valid values from returned schema | No live provider turn needed for create/restore checks | No external data |
+| External-channel binding trigger | Test binding through `ChannelAgentRunFacade`/coordinator and `ChannelBindingRunLauncher` | Exact production entry classes with deterministic message/runtime edges; no external network | In-memory data discarded |
+| Single-browser Agent/Team state | Public seed API or deterministic responses using actual Apollo documents and components | One context; no revision or multiple clients | Context/fixture state removed |
 
 ## Persisted Data Transition Coverage Basis
 
 - Approved decision: `Directly Usable — No Migration`
-- Design-spec and implementation-handoff references: design `Persisted Data / State Transition Decision`; handoff `Persisted Data Transition Check`.
-- Representative existing-data setup and required behavior: Create normal current standalone `run_metadata.json` and Team schema-v2 `team_run_execution_tree.json`, stop them, update only selected `llmConfig`, restart the server, and read through the normal resume APIs. IDs, provider/runtime references, topology, workspaces, launch facts, and other files/fields must remain equal.
-- Evidence planned: semantic before/after comparison of persisted JSON after narrow Save, canonical query equivalence, restart read, and same-ID restore.
+- Design-spec and implementation-handoff references: design `Persisted Data / State Transition Decision`; handoff `Persisted Data Transition Check` for IR-003.
+- Representative existing-data setup and required behavior: create current standalone `run_metadata.json` and Team schema-v2 `team_run_execution_tree.json`, stop them, change only addressed `llmConfig`, restart, read normal resume APIs, and restore the same IDs. Provider/runtime identity, definitions, workspace, topology, bindings, history, tasks/messages, timestamps, and every non-`llmConfig` field remain semantically equal.
+- Evidence planned: parsed before/after comparisons excluding only authorized paths, canonical GraphQL equivalence, restart/current reader success, and same-ID restore capture.
 - Migration-specific completion/recovery scenarios: N/A.
 - Upstream ambiguity or reroute required: None.
 
@@ -107,133 +112,152 @@ The two highest-risk return paths are reachable and critical:
 
 | Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts` update/race cases | Inactive narrow commit, active rejection, Save-first blocking restore | REQ-006, REQ-009; AC-003/004; DS-001/006 | Still Valid | Direct lifecycle owner with controlled lane ordering | Retain and execute. |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` stopped update/restore | Active Team rejection and stopped patch used on restore | REQ-003, REQ-006–009; AC-007/008; DS-003/004/007 | Still Valid | Real manager/tree store but mocked validator and no GraphQL transport | Retain and execute; supplement with E2E. |
-| `agent-run-history-catalog-service.test.ts` / `team-run-history-catalog-service.test.ts` | Serialized persistence, revision/archival/delete safety | REQ-007, REQ-009, REQ-013/014 | Still Valid | Persistence-owner assertions | Retain and execute focused/broader server suites. |
-| `model-config-validation-service.test.ts` | Invalid key/type/enum/range and absent schema outcomes | REQ-010; AC-009/011 | Still Valid | Direct strict validator | Retain; add catalog-backed API invalid case. |
-| `team-run-model-config-mutator.test.ts` | Configured-only narrow mutation and transient/kind/duplicate rejection | REQ-001, REQ-008; AC-005/006/012/014 | Still Valid | Pure authoritative transformation | Retain. |
-| Claude normalizer/session/client tests | Independent capability emission and thinking/effort query mapping on restored session | REQ-004; AC-016; DS-008 | Still Valid | Direct typed SDK boundary without real provider | Retain; conditionally supplement with live capability if configured. |
-| Codex thread/bootstrap coverage and AutoByteus restore/factory coverage | Runtime-specific config reaches constructed/turn settings | REQ-004/006; AC-001/002/016 | Still Valid | Direct adapter/factory tests | Execute affected focused tests; real provider call is conditional. |
-| `autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts` | Draft-start propagation and direct-edit boundaries | REQ-008; AC-005/006; MP-001 | Still Valid | Pure planner scenarios | Retain and execute. |
-| `autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts` | Indeterminate lock, schema fail-closed, Agent/Team MP-CR-001/002 reconciliation | REQ-009–014; AC-004/008/010/011/013; CR-F-001 | Still Valid | Direct store transition assertions with mocked transport | Retain and execute; supplement real API and browser composition. |
-| Agent/Team form and RunConfigPanel component tests | Fixed/editable fields, selected editor routing, no existing Team Reset event | REQ-001/005/008/011/012/015; AC-005/006/012/013/015 | Still Valid | Vue component-level evidence | Retain; add real browser Team rendering. |
-| `autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts` | Current Team hierarchy persists/restores through GraphQL and restart | REQ-007/015; AC-014/015 | Still Valid | Built server, real files, current V2 reader/writer | Retain; reuse its fixture style but do not overload it with stopped-update behavior. |
-| Existing runtime/live-E2E suites | General runtime sends and provider availability | BEH-002/003 | Still Valid but only partially relevant | Env-gated external runtimes and unrelated journey focus | Run focused configured capability preflight; do not misreport unavailable providers. |
-| Removed `StoredTeamRunFormModel` and historical stored-only tests | Asserted obsolete unconditionally read-only stored Team model | Removed contract; BEH-005/REQ-008 | Stale / Remove (already removed in IR-001) | Git delta and code-review cleanup verdict | Do not restore; replacement planner/form/browser scenarios cover current behavior. |
+| `standalone-agent-run-lifecycle-service.test.ts` stopped update cases | Inactive narrow commit, active rejection, Save-first restore ordering | REQ-006/009; AC-003/004; DS-001/002/006 | Still Valid | Direct revision-free governing owner | Retain; add exact trigger composition and resolver-first order. |
+| `agent-team-run-manager.integration.test.ts` stopped update/restore | Active rejection, stopped patch, real V2 tree, next restore | REQ-003/006–009; AC-007/008/014; DS-003/004/007 | Still Valid | Real manager/tree; mocked validator; API/caller bypassed | Retain; supplement API and exact launcher. |
+| Agent history catalog commit tests | Serialized narrow Agent write/no-op/error ownership | REQ-007/013/014; AC-009/010/014 | Still Valid | Current revision-free catalog | Retain and execute. |
+| Team history catalog archive/delete tests | Baseline Team catalog behavior unrelated to stopped Save | Preserved behavior; SR-004 rollback | Still Valid | IR-003 restored baseline | Retain; no Save-overlap tests. |
+| `model-config-validation-service.test.ts` | Strict keys/enums/ranges/types/null/schema | REQ-010; AC-009/011 | Still Valid | Direct current-schema validator | Retain; supplement public catalog-backed invalid case. |
+| `team-run-model-config-mutator.test.ts` | Only configured scopes change; bad targets rejected | REQ-001/008; AC-005/006/012/014 | Still Valid | Pure authoritative transform | Retain. |
+| Coordinator, external-channel facade/launcher, Application host tests | Exact callers resolve identities and dispatch through services | BEH-008; MP-SR4-003/004 | Needs Update for `agent-run-command-coordinator.test.ts` and `channel-binding-run-launcher.test.ts`; other caller tests remain valid | The first API/E2E broader run found these two fixtures still mocked removed service methods/old Team result fields while production callers use `resolveCommandReadyAgentRun`, `teamRunId`, and `createTeamRunFromRootConfig`. This is stale test-fixture drift, not a source failure. | Update only the two mock/result seams to the current production caller contract; retain assertions and exact caller-to-real-owner integration. |
+| Claude normalizer/config/bootstrap/session/client tests | Capability fields and thinking/effort reach same-session SDK options | REQ-004; AC-016; DS-008 | Still Valid | Direct pinned-SDK boundary | Retain; conditional provider preflight. |
+| Codex and AutoByteus factory/bootstrap tests | Persisted config reaches runtime construction/turn settings | REQ-004/006; AC-001/002/016 | Still Valid | Direct adapter/factory evidence | Execute focused tests and safe configured matrix. |
+| `existingRunModelConfigStore.spec.ts` | Fresh-load lock, cached relock/no unlock, indeterminate verification, catalog fail-closed, revision-free `RUN_ACTIVE`, narrow Team patches | REQ-005/009–014; AC-004/008/010/011/013; UXJ-004 | Still Valid | Exact SR-004 store assertions | Retain; supplement browser. |
+| `runHistoryStore.spec.ts`, `agentRunStore.spec.ts`, `agentTeamRunStore.spec.ts` relevant cases | Network resume reads, Stop lifecycle-only, later inactive sends use backend restore | REQ-005/006/009; AC-002/004/007/008 | Still Valid | IR-003 store boundaries | Retain and execute focused files. |
+| `existingTeamModelConfigDraft.spec.ts` | Equality propagation and direct-edit boundaries | REQ-008; AC-005/006; MP-001 | Still Valid | Pure deterministic planner | Retain. |
+| Agent/Team form and panel component tests | Fixed/editable controls, edit events, disclosure, no stopped Reset | REQ-001/005/008/011/012/015; AC-005/006/012/013/015 | Still Valid | Component evidence | Retain; add full Team browser rendering. |
+| `hierarchical-team-run-config-graphql.e2e.test.ts` | Current hierarchy persists/restores through GraphQL/restart | REQ-007/015; AC-014/015 | Still Valid | Built server, real V2 package | Retain; reuse fixture style. |
+| Live runtime matrix/provider E2E | General messages and provider availability | BEH-002/003/007 | Still Valid but environment-dependent | Preflight-gated | Run preflight; report unavailable providers. |
+| IR-003-deleted revision/rebase/concurrent-writer tests | SR-003 expected revisions/stale outcomes/reconciliation | Removed behavior; MP-SR4-001/002 | Stale / Remove (already removed upstream) | IR-003 and CRR-004 | Do not restore or replace with concurrency policy. |
+| Removed stored-Team read-only projection tests | Stored Team always read-only | Superseded by BEH-005 | Stale / Remove (already removed upstream) | Implementation legacy check | Do not restore. |
 
 ## Stale Or Obsolete Coverage Decisions
 
 | Path / Scenario | Obsolete Assertion | Why It Is Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
 | --- | --- | --- | --- | --- | --- |
-| Removed `autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts` and `components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts` | Stored Team configuration is always read-only and uses the old projection | Stopped Team `llmConfig` is now editable through a specialized existing-run model | BEH-005, REQ-003–008, implementation legacy check | Current planner, Team form/component coverage and planned Team browser scenario | Removal already occurred upstream; API/E2E will not recreate it. |
+| Pre-SR-004 API-E2E-003/004 in prior investigation | Same-browser/two-client revisions, R1/R2, stale Save, rebase, MP-CR-001/002 | Approved flow is sequential and has no writer revision contract | SR-004; MP-SR4-001/002; ARCH-REV-003; IR-003; CRR-004 | New API-E2E-003 starts from exact system resolvers | No replacement for explicitly out-of-scope browser concurrency. |
+| IR-003-deleted revision/concurrent-writer tests | Revision fields, stale outcomes, digest/rebase/forced-baseline | API/state seams removed cleanly | SR-004 legacy removal; IR-003; CRR-004 | Sequential canonical load/Save, `RUN_ACTIVE`, no-op, uncertainty, exact resolvers | No invalid compatibility coverage. |
+| SR-003 Team Save-versus-archive/delete assertions | Generalized Settings/archive coordination | No supported overlap authorizes it | SR-004/IR-003 | Independent archive regression plus stopped Save coverage | No cross-operation replacement. |
+| Removed old stored-Team tests | Stored Team unconditionally read-only | Specialized stopped editor supersedes old model | BEH-005; REQ-003–008 | Team planner/form/API/browser coverage | Already removed upstream. |
 
 ## Durable Coverage To Add
 
 | Scenario ID | Behavior / Boundary | Requirement / Acceptance Criteria / Design Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
 | --- | --- | --- | --- | --- |
-| API-E2E-001 | Standalone GraphQL resume/update: active rejection, stopped Save, no-op, validation, stale revision, persistence, restart, identity preservation | REQ-001–007, REQ-009–014; AC-001–004, AC-009, AC-014; DS-001/002/006 | `autobyteus-server-ts/tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts` | No existing test crosses GraphQL -> lifecycle -> catalog -> real metadata file for this mutation. |
-| API-E2E-002 | Team GraphQL root/member narrow patches: active rejection, stopped Save, no-op/stale/invalid, restart, exact fixed-tree preservation | REQ-001, REQ-003–010, REQ-012–014; AC-005–010, AC-014; DS-003/004/007 | Same E2E file | Existing manager integration bypasses the public API/current catalog and does not compare real persisted files. |
-| API-E2E-003 | `MP-CR-001` unchanged-revision restore-first -> `RUN_ACTIVE` -> Stop/fresh-read for Agent and Team | REQ-005/009/012; AC-004/008/013; UXJ-004 | Same E2E file plus browser probe state assertions | Source/store tests are mocked; the reachable real lifecycle/API response must be proven. |
-| API-E2E-004 | `MP-CR-002` two-client R1/R2 -> restore -> `RUN_ACTIVE` canonical R2 -> Stop -> new edit uses R2 for Agent and Team | REQ-009/012/014; AC-004/008/013; CR-F-001 | Same E2E file plus browser probe state assertions | Highest-risk lost-update path; must cross actual revisions and storage. |
-| API-E2E-005 | Full existing-Team web-equivalent renderer with real resume/update API: fixed controls, active/stopped notice, hierarchy disclosure, no Reset, enabled Save after valid edit, canonical clean state | REQ-003–005, REQ-008, REQ-010–012; AC-005–008, AC-011–013; UXJ-003/004 | `autobyteus-web/tests/e2e/stopped-run-model-config-probe.mjs` and fixture page | Prior browser inspection covered Agent only and was temporary; full Team rendering is the material UI gap. |
+| API-E2E-001 | Sequential standalone GraphQL/files/restart: active rejection/no write; terminate; fresh resume; unchanged; invalid/no write; stopped Save; fixed-field preservation; restart; same identity restores saved config; revision fields absent/rejected | REQ-001–007/009–014; AC-001–004/009/010/014/016; DS-001/002/005/006 | `autobyteus-server-ts/tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts` | No current test crosses HTTP GraphQL -> lifecycle -> catalog -> metadata -> restart for this mutation. |
+| API-E2E-002 | Sequential Team GraphQL/files/restart: active rejection; terminate/fresh read; root/nested/agent patches; per-scope validation; no-op/invalid; fixed-tree preservation; restart/same IDs; no revisions | REQ-001/003–015; AC-005–015; DS-003/004/005/007 | Same built-server E2E file with cohesive helpers | Manager integration bypasses API/catalog and complete semantic restart comparison. |
+| API-E2E-003 | Exact supported resolver ordering, not browser concurrency: Agent via `AgentRunCommandCoordinator`; Team via `ChannelBindingRunLauncher`; Save-first restores committed config; resolver-first makes Save `RUN_ACTIVE` without write | REQ-006/007/009; AC-004/008/014; BEH-008; MP-SR4-003; DS-006/007 | Update `autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts` and `tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | Existing caller and owner assertions are separated. Reusing each owner harness composes the exact named resolver with the real lane without duplicating large fixtures. |
+| API-E2E-004 | One-browser Agent/full-Team Settings: loading/locked, no cached unlock, fixed controls, notices, hierarchy/no Reset, dirty/Save/saving/canonical clean, `RUN_ACTIVE` relock, indeterminate verification; sequential only | REQ-002–005/008/010–013; AC-001–013/016; UXJ-001–004; DS-005 | `autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs` plus focused fixture | Prior rendered evidence was temporary and Agent-only. |
 
 ## Durable Coverage To Update
 
-None planned. Existing relevant assertions remain approved and coherent.
+| Scenario ID | Existing Path / Scenario | Required Update | Requirement / Acceptance Criteria / Design Evidence | Notes |
+| --- | --- | --- | --- | --- |
+| API-E2E-003 | `standalone-agent-run-lifecycle-service.test.ts` and `agent-team-run-manager.integration.test.ts` | Compose the real Agent lifecycle through `AgentRunCommandCoordinator` and the real Team manager through `ChannelBindingRunLauncher`, proving Save-first and resolver-first outcomes | REQ-006/007/009; AC-004/008/014; BEH-008; MP-SR4-003; DS-006/007 | This is more proportional than a new integration file because the existing deterministic owner fixtures already model current metadata/tree and runtime publication. |
+| API-E2E-003 | `agent-run-command-coordinator.test.ts` and `channel-binding-run-launcher.test.ts` | Replace removed-method mock seams with the current `resolveCommandReadyAgentRun` and `restoreTeamRun`/`createTeamRunFromRootConfig` result shapes | BEH-008; MP-SR4-003/004 | Broader execution produced 8 fixture failures whose messages name missing mock methods or old `runId` fields. Production-path integration already passed; updating these unit fixtures restores direct caller regression value without changing source. |
 
 ## Durable Coverage To Remove
 
-None planned in API/E2E. Obsolete stored-Team tests were already removed in the reviewed implementation.
+None remains for API/E2E to remove. IR-003 already removed obsolete repository assertions; this file replaces the obsolete investigation plan.
 
 ## Repository Coverage Execution Plan And Results
 
+All commands below completed in this round. Expected stderr from negative Claude/Codex cases did not correspond to failing assertions.
+
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm exec vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts --no-watch` | `autobyteus-server-ts` | API-E2E-001 through API-E2E-004 over built isolated server | Planned | Console log plus retained report evidence directory |
-| 2 | Focused server lifecycle, persistence, validator, Team manager, runtime adapter tests | `autobyteus-server-ts` | Direct owner boundaries and three-runtime application | Planned | Console log |
-| 3 | Focused web store/planner/form suites | `autobyteus-web`; `pnpm exec vitest run ...` | IR-002 reconciliation, Team planner, fixed/editable form boundary | Planned | Console log |
-| 4 | `pnpm --filter autobyteus-server-ts build` and web boundary/localization/build checks | workspace/server/web | Production compilation and generated/runtime boundaries | Planned | Console log |
-| 5 | Broader affected server E2E/run-history and web selected-config suites as justified by focused results | Appropriate package | Regression integration | Planned | Console log |
-| 6 | Browser probe command to be added under `autobyteus-web` | Owned backend + Nuxt + Chromium | API-E2E-005 and UI portions of API-E2E-003/004 | Planned | Ticket `probes/api-e2e` JSON/screenshots/logs |
+| 1 | `pnpm exec vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts --no-watch` | `autobyteus-server-ts`; project built-server harness with isolated HOME/runtime/SQLite/free port | API-E2E-001/002: public GraphQL, raw package comparison, active/no-op/invalid no-write, restart, same-ID restore | Pass — 1 file / 2 tests | Command result summarized in `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md` |
+| 2 | `pnpm exec vitest run tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts --no-watch` | `autobyteus-server-ts`; exact production coordinator/launcher plus real lifecycle owners and deterministic runtime edges | API-E2E-003 Save-first/resolver-first ordering | Pass — 2 files / 23 tests | Execution report |
+| 3 | Focused 13-file server lifecycle, manager, catalog, validator, mutator, exact-caller, Claude, Codex, and runtime-client command ending in `--no-watch` | `autobyteus-server-ts` | Direct lifecycle/failure/schema/provider application plus caller regression | Pass — 13 files / 130 tests. An interim 8-test failure exposed two stale caller mock/result fixtures; the investigation was updated before correcting those API/E2E-owned fixtures and the complete set then passed. | Execution report; changed caller test paths in durable coverage inventory |
+| 4 | Focused 11-file Vitest run covering `RuntimeModelConfigFields`, Agent/Team forms, panel/section, Team scope/planner, Agent/Team/history/existing-run stores | `autobyteus-web` | Network-fresh load, restrictive relock, canonical outcomes, Team propagation, fixed fields, notices, indeterminate verification | Pass — 11 files / 156 tests | Execution report |
+| 5 | `pnpm build` | `autobyteus-server-ts` | Shared/generated/server TypeScript, managed assets, sanitized bootstrap smoke | Pass | Execution report |
+| 6 | `pnpm build` | `autobyteus-web` | Production Nuxt renderer bundle | Pass; only expected Browserslist and large-chunk warnings | Execution report |
+| 7 | `pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals` | `autobyteus-web` | Web/desktop boundary and localization discipline | Pass; zero unresolved localization literals | Execution report |
+| 8 | `pnpm exec vitest run tests/unit/run-history/team-run-file-commit-writer.test.ts tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts --no-watch` | `autobyteus-server-ts` | Physical Team commit classification, broader hierarchy/restart, three-runtime catalog | Pass — 3 files / 10 tests | Execution report |
+| 9 | `pnpm test:e2e:existing-run-model-config -- --output-dir ../tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/browser` | `autobyteus-web`; owned Nuxt/free port, system Chromium, one browser context | API-E2E-004 Agent/full-Team/narrow viewport/`RUN_ACTIVE` relock | Pass — 4 semantic journeys | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/browser/existing-run-model-config-evidence.json` and screenshots |
+| 10 | `pnpm test:e2e:real:preflight` | Workspace root; sanitized capability discovery | Live-provider availability | Pass — build plus 1 file / 18 tests. Claude capability was recognized, but no provider credential was configured, so no paid live turn was attempted. | Execution report |
+| 11 | Targeted obsolete-seam `rg` audit and `git diff --check` | Workspace root | No revision/stale/rebase contract returned; patch hygiene | Pass. Only the intentional negative E2E assertion that schema fields do not contain `configurationRevision` matched; unrelated working-context `bindingRevision` is outside this feature. | Console summary in execution report |
 
 ## Post-Repository Confidence Scorecard
 
-Repository execution has not yet begun. Scores will be calculated after the planned durable coverage is implemented and executed; no confidence is inferred from upstream implementation-scoped passes.
+These scores capture the state after durable server/web repository checks and builds but before the owned Chromium journey and real-provider preflight. They are intentionally preserved as the broader-validation gate rather than retroactively inflated by later evidence.
 
 | Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
 | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | Pending | Approved mapping and detailed plan | Execution pending | Execute API and browser scenarios. |
-| Changed-boundary execution directness | Pending | Direct owner tests exist | Public API/file boundary not yet executed by API/E2E | Add/run built-server GraphQL E2E. |
-| Cross-boundary integration realism and mock gap | Pending | Manager integration and component tests exist | GraphQL/Apollo/browser composition gap | Built-server + browser probe. |
-| Environment, configuration, identity, and fixture fidelity | Pending | Project-owned isolated harness discovered | Fixtures not yet created | Use public GraphQL setup and current catalog. |
-| Failure, edge-case, lifecycle, and recovery evidence | Pending | Focused mocked lane/store tests exist | Real R1/R2 and Stop/restore outcomes unexecuted | Execute API-E2E-003/004. |
-| User-surface, browser, and desktop-shell confidence | Pending | Agent temporary inspection and Vue tests exist | Full Team actual browser path unexecuted | Execute API-E2E-005; Electron shell N/A. |
-| Durable regression coverage quality and relevance | Pending | Existing tests classified | New durable paths not yet reviewed/executed | Implement narrow maintainable E2E/probe. |
+| Requirement and acceptance-criteria proof | 94% | Built-server Agent/Team API, persistence/restart, owner ordering, validation, stores, forms, runtime adapters | Full rendered Settings journey not yet observed | Execute API-E2E-004 in Chromium. |
+| Changed-boundary execution directness | 96% | Public HTTP GraphQL reaches real lifecycle/catalog/files; exact coordinator/launcher reach real owners | Browser document/state composition not yet direct | Browser probe. |
+| Cross-boundary integration realism and mock gap | 94% | Real built server and V2 packages; exact production resolver composition; frontend boundary tests | Browser backend remains uncomposed before probe | Actual components/documents in browser, correlated with separate live API evidence. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Public creates, current strict V5 working context, current V2 Team tree, isolated database/HOME, free ports | Provider credential availability unknown | Sanitized real-provider preflight. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Active/no-op/invalid raw no-write, physical commit classification, uncertainty policy, both resolver orders | Rendered `RUN_ACTIVE` relock not yet observed | Browser journey D. |
+| User-surface, browser, and desktop-shell confidence | 88% | 11 focused web files / 156 tests; Electron shell genuinely unaffected | No durable full Team/narrow viewport/browser network-order evidence yet | Required Chromium execution. |
+| Durable regression coverage quality and relevance | 97% | SR-004-specific API/lifecycle/browser artifacts added; stale caller fixtures corrected; obsolete revision assertions absent | Proportional test-code review remains downstream | Code-review pass after API/E2E. |
 
-- Overall post-repository confidence: Pending
-- Calculation method: Simple average of the seven applicable categories after execution.
-- Every critical acceptance criterion directly proven: No; execution pending.
-- Any applicable category below `90%`: Not scored yet.
-- Default clean-confidence target of `95%` met: No; execution pending.
-- Material residual risks: full Team browser rendering, real multi-client lifecycle ordering, catalog-backed validation, indeterminate filesystem outcome, and real Claude provider acceptance.
+- Overall post-repository confidence: `94.1%` (`659 / 7`)
+- Calculation method: Simple average of seven applicable categories; critical-criterion and weak-category gates remain binding.
+- Every critical acceptance criterion directly proven: `No` at this checkpoint — rendered user-surface portions of AC-001/005/006/011/012/013 still required browser evidence.
+- Any applicable category below `90%`: `Yes` — user-surface/browser/desktop-shell confidence at 88%.
+- Default clean-confidence target of `95%` met: `No` at this checkpoint.
+- Material residual risks: rendered network-fresh loading, complete Team hierarchy/no Reset, accessible Save states, narrow viewport usability, rendered active relock, and live Claude account availability.
 
 ## Broader Validation Decision
 
 - Decision: `Required`
-- Selected execution mode: `Live API` + `Browser` + `Lifecycle`
-- Specific confidence gap or residual risk addressed: The reviewed source passes do not cross HTTP GraphQL into real package storage/restart, and no durable browser path renders the complete existing Team editor or its canonical active/stopped/Save states.
-- Why the selected mode can materially improve confidence: The built-server harness exercises the actual transport, lifecycle owners, catalog validator, atomic files, revisions, and restart readers. The browser probe exercises Nuxt/Apollo/Pinia/current catalog and semantic DOM through the web-equivalent renderer.
-- Expected confidence after selected validation: At least 95% overall with no category below 90%, assuming all critical paths pass. A real-provider-only residual may remain bounded if the live preflight reports Claude unavailable.
-- Browser-specific decision and rationale: Required because Team hierarchy rendering, focusability, active/stopped notice, no Reset, and contextual Save are user-surface behavior not directly proven by backend/API execution. Browser is appropriate; no changed Electron shell boundary justifies actual desktop execution.
+- Selected execution mode: `Live API` + `Lifecycle` + `Browser`
+- Specific confidence gap: reviewed tests do not cross real GraphQL into current packages/restart, compose named system triggers with owners, or durably render full Team Settings.
+- Why the mode improves confidence: built server proves transport/files/readers; resolver integration proves only approved non-browser ordering; browser proves Nuxt/Vue/Pinia/Apollo DOM behavior.
+- Expected confidence: at least 95% overall and no category below 90% if critical scenarios pass. Configured-credential-only Claude residual may remain bounded if direct pinned-SDK evidence is strong and preflight confirms the environment limitation.
+- Browser-specific decision: Required for hierarchy, controls, loading/no-stale-unlock, Save, notices, no Reset, accessibility, and narrow viewport. One sequential context only.
 - If Not Required: N/A.
 - If Blocked: N/A at investigation time.
 
 ## Desktop Application Validation Decision
 
-- Desktop framework / shell: Electron wrapping the Nuxt renderer.
-- Relevant README or development instructions: `autobyteus-web/README.md`, Web Development and Packaged Electron E2E sections.
-- Web-equivalent behavior: Entire changed selected-run configuration surface, Apollo requests, Pinia reconciliation, Team hierarchy, form actions.
-- Shell-specific or lifecycle behavior: None changed; no preload/IPC/window/packaging path is involved.
-- Chosen validation approach and why it fits the project: Browser development renderer with owned backend/Nuxt processes, following project instructions and the skill's web-equivalent preference.
-- Server/frontend setup when browser validation is used: Isolated built backend plus Nuxt dev on free loopback ports; route proxy points to the owned backend.
-- Effect on any already-running desktop application: None.
-- Behavior not directly proven and confidence consequence: Electron shell integration is N/A for the changed boundary, not a residual defect.
+- Desktop framework / shell: Electron wrapping Nuxt.
+- Relevant instructions: `autobyteus-web/README.md`.
+- Web-equivalent behavior: all changed Settings rendering, stores, Apollo, forms, schema controls, notices, Save.
+- Shell-specific behavior: none changed.
+- Chosen approach: owned browser renderer, per project convention.
+- Setup: free ports; owned backend or deterministic interception for UI-only failures; actual components/stores/documents; system Chromium.
+- Effect on running desktop app: None.
+- Not directly proven: Electron shell is genuinely inapplicable and not a material residual.
 
 ## Live Environment And Fixture Plan
 
-- Startup order and commands: build server; start one owned isolated backend; seed definitions/runs via public GraphQL; start owned Nuxt with backend proxy; launch Chromium via Playwright Core.
-- Environment choices that materially affect the run: sanitized environment and isolated HOME/runtime/database; free loopback ports; no production/development data root; English locale and UTC evidence timestamps.
-- Health / readiness checks: backend `/rest/health`; frontend route HTTP 200 and fixture DOM marker; model catalog response with one schema-capable AutoByteus model.
-- Seed data / fixtures: one standalone Agent Run and one root Team with root, nested Team, and configured agents using normal public create operations and workspaces under the owned root.
-- Test identities, authentication, permissions, or session state: existing unauthenticated local-owner GraphQL model; two independent HTTP clients distinguished by retained revision tokens; no new account model.
-- Requirement-linked journeys or scenarios: API-E2E-001 through API-E2E-005.
-- Evidence to capture: JSON summary; before/after persisted metadata/tree hashes and semantic diffs; GraphQL outcomes/revisions; browser DOM assertions; screenshots for active, stopped, hierarchy, post-Save and reconciliation states; server/Nuxt logs.
-- Owned processes and temporary state to clean up: backend process tree, Nuxt process group, browser/context, temporary fixture page, isolated runtime/database/home. Ticket evidence is retained.
+- Startup order: build/start isolated server; seed public API data; run API/restart cases; start owned Nuxt fixture; launch one Chromium context; run browser assertions; provider preflight last.
+- Environment: isolated HOME/runtime/database/workspaces, free ports, sanitized env, UTC; no dev/prod data or running Electron reuse.
+- Readiness: `/rest/health`, catalog GraphQL, fixture HTTP/DOM marker, resolver barrier events.
+- Fixtures: standalone Agent and Team with root, configured nested Team, and configured Agents, using a current schema-capable AutoByteus model where no provider turn is needed.
+- Identities/session: local-owner GraphQL; exact persisted run/binding IDs; one browser; no revision/parallel writer.
+- Scenarios: API-E2E-001–004.
+- Evidence: operations/outcomes, semantic file diffs, restart/restore captures, lane order, DOM/request/accessibility assertions, desktop/narrow screenshots, logs.
+- Cleanup: backend, Nuxt group, browser, temp memory/DB/HOME/workspaces, scratch logs; retain concise ticket evidence only.
 
-## Temporary Executable Validation Plan
+## Temporary Executable Validation Plan And Result
 
-| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
+| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why Not Durable |
 | --- | --- | --- | --- |
-| API-E2E-006 | If the real filesystem-indeterminate branch cannot be triggered safely through normal built-server APIs, use a focused temporary in-process fault-injection probe around the Team commit writer | UI/API never speculates success and blocks until canonical refresh | Platform-dependent post-rename I/O failure injection is brittle as permanent E2E; durable owner/store tests already protect the deterministic policy. |
+| API-E2E-005 | No temporary fault injector was needed: existing `team-run-file-commit-writer.test.ts` plus `existingRunModelConfigStore.spec.ts` directly cover post-rename indeterminacy and mandatory canonical verification | Indeterminate never becomes speculative success and blocks repeat Save until verification | Avoided duplicative platform-brittle scaffolding; durable direct-owner/store coverage passed. |
+| API-E2E-006 | `pnpm test:e2e:real:preflight`; live Claude turn was conditional on a configured credential | Environment capability and safe decision not to fabricate a provider turn | Preflight passed but found no Claude provider credential; direct pinned-SDK bootstrap/session/client tests cover adapter application durably. |
 
 ## Not Tested / Infeasible / Deferred
 
-| Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
+| Behavior / Boundary | Reason | Risk | Follow-Up |
 | --- | --- | --- | --- |
-| Real paid Claude query/session | Execute only if existing live-E2E preflight reports a configured capability; no secret may be invented | Provider may reject mapped options despite pinned SDK typing | Record preflight result; retain direct SDK boundary evidence; report as residual if unavailable. |
-| Multi-node/distributed revision coordination | The implementation owns one server process with per-identity lanes and file persistence; no distributed lock contract is approved | None within approved deployment contract | Out of scope unless upstream changes ownership contract. |
-| Actual Electron shell | No shell boundary changed and browser proves the web-equivalent renderer | Negligible | Not required. |
+| Multi-tab/user, concurrent Save, hand-speed timing, revisions, rebase | Explicitly excluded by SR-004/MP-SR4-001/002 | None in contract | Do not test/reintroduce. |
+| MP-SR4-005 Team stream/output/recovery overlap | Upstream says Unclear and drives nothing | None beyond convergence on owner | No follow-up. |
+| Multi-node/distributed lane | No approved distributed writer contract | None in deployment contract | Out of scope. |
+| Electron shell | No shell code changed | Negligible | Not required. |
+| Paid Claude response turn | Sanitized preflight found no configured provider credential; credentials cannot be invented | Bounded external-service acceptance residual only. The repository directly proves stopped persistence/restore and the pinned Claude session/query SDK options, but not remote service acceptance in this environment. | Re-run the same preflight and configured live-provider scenario in a credentialed release environment if remote acceptance evidence is required. |
 
 ## Ambiguities Or Reroute Triggers
 
-None found during the initial investigation.
+None requiring reroute. During the first broader repository run, eight failures in two caller suites were classified `Local Fix` because their mocks referenced removed methods/old result fields while production exact-owner integration already passed. This artifact was updated before those fixtures were corrected; the final 13-file run passed 130/130 tests.
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: Yes
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: Yes — add API GraphQL E2E and browser probe; no update/removal currently planned.
-- Post-repository confidence: Pending execution.
-- Broader validation decision: Required — Live API, lifecycle, and browser.
-- Reroute Required Before Validation Execution: No
-- Recommended Recipient If Reroute Required: N/A
-- Notes: Investigation was written before any API/E2E-owned durable coverage edit. Existing relevant coverage is valid but leaves material transport, real-storage/restart, multi-client, and full Team browser gaps.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: Yes — add built-server GraphQL E2E and one-browser Agent/Team probe; update the two existing owner suites with exact resolver composition; no durable removal currently required.
+- Post-repository confidence: `94.1%`; browser confidence was 88%, so the clean target was not yet met.
+- Broader validation decision: Required — Live API and lifecycle were exercised durably; Chromium and provider preflight then closed or bounded the remaining risks.
+- Reroute Required Before Validation Execution: No.
+- Recommended Recipient If Reroute Required: N/A.
+- Notes: Replaced before any API/E2E-owned test edit or execution. It supersedes every pre-SR-004 revision/multi-client assertion and authorizes only the sequential journey, direct active contract, current persistence/runtime behavior, and exact supported system triggers. Final authoritative result and `96.4%` confidence are recorded in the execution report and `API-REV-001`.
