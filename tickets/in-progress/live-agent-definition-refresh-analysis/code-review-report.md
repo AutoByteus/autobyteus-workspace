@@ -8,231 +8,242 @@
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
 - Solution Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-004` (preserving the valid SR-003 feature decisions)
+- Relevant Solution Revision IDs: `SR-004`
 - Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-003` (superseding IR-001/IR-002 policy machinery)
+- Relevant Implementation Revision IDs: `IR-004` (integrating and preserving `IR-003`)
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `4`
-- Trigger: `/implementation_engineer` IR-003 rework handoff at code commit `72ea90db12e4b10779f10ac9d298bbb8997d25f8` and artifact commit `9e0f4c5c4ab6d4304030baa37d23a12bd9320d2d`, resolving `CR-F-002` against SR-004 / ARCH-REV-003.
-- Prior Review Round Reviewed: `CRR-003` / implementation-review round `3`
-- Latest Authoritative Round: `4`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A` for this entry point. `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md` was read only as pre-SR-004 triggering evidence; it is explicitly non-authoritative and must be revised by `/api_e2e_engineer`.
-- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
-- API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
-- Relevant API/E2E Revision IDs: `N/A`
-- Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `5`
+- Trigger: `/implementation_engineer` IR-004 delivery-blocker rework at handoff commit `c3b2466489e81d74930582f76016540480345020`; integration merge `7e3f4e97c3e58951daa21070e46cb8c71246197a` combines protected checkpoint lineage with exact base `306de420ca8830478529b40bd6dfda6694b742a9`.
+- Prior Review Round Reviewed: `CRR-004` source Pass and `CRR-005` proportional test-code Pass
+- Latest Authoritative Round: `CRR-006`
+- Coverage Investigation Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md` as pre-integration context only
+- Execution Coverage Report Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md` as pre-integration context only
+- API/E2E Revision Record Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-001` (pre-integration Pass; not approval of IR-004)
+- Delivery Revision Record Reviewed (delivery re-entry only): `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
 - Failing Scenario IDs: `N/A`
 - Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
+- Failure Evidence Paths: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-003's clean removal of browser revision/stale-writer/rebase policy; Settings-entry network freshness and restrictive cached-lifecycle latching; revision-free Agent/Team update contracts and canonical outcomes; restoration of Team archive/delete baseline ownership; preservation of narrow validation/persistence, Team propagation/no-Reset, provider restore application, and only the independently justified per-identity Save-versus-restore lanes.
-- Files / areas reviewed: the complete cumulative artifact chain; `08b11b3aa..72ea90db` source/test delta; current Agent and Team GraphQL, service, lifecycle, persistence, validation, history/resume, Team planner/form, Settings editor/store, Stop stores, generated client contract, Claude adapter paths, and focused tests. Obsolete-seam searches and current effective source sizes were rechecked.
-- Explicit exclusions: API/E2E coverage investigation and execution remain downstream. No unsupported multi-tab, multi-user, concurrent browser Save, or hand-speed Save-versus-message premise was used to judge the source.
+- Changed implementation and behavior reviewed: IR-004's integrated production source and implementation-owned unit/architecture adjustments, especially the advanced base's separate General Process and Application Engine Agent/Team ownership composed with SR-004's stopped model-config mutation and lifecycle lanes.
+- Files / areas reviewed: complete feature diff against integrated base parent `306de420...`; General Process and Application runtime composition; Application binding launch/input paths; Agent/Team lifecycle managers and history projections; Agent/Team GraphQL mutations; validation/persistence/outcome contracts; Team mutation planning; Settings/store/UI behavior; Claude mapping; integration-owned tests.
+- Explicit exclusions: successful pre-integration API/E2E execution was treated only as context. This round did not reopen CRR-005's proportional durable-test assessment and does not claim integrated API/E2E coverage.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. SR-004 defines the supported browser lifecycle as sequential `Stop completes -> Settings fresh load -> edit -> Save completes -> later browser message restores`, while separately preserving independently triggered external-channel and Application Engine run resolution.
-- Design-spec behavior map verified against the implementation: Yes. BEH-001 through BEH-008 map to the current UI, narrow APIs, lifecycle owners, canonical storage, Team planner, provider adapters, and supported system resolver paths.
-- Design review report and round confirmed: Yes — ARCH-REV-003 passed SR-004, resolved CR-F-002 at the solution basis, and required removal of unsupported revision/rebase/archive coordination while retaining only real per-identity lifecycle lanes.
-- Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: None that governs this implementation. MP-SR4-005 remains `Unclear` and intentionally drives no requirement, finding, score, machinery, or coverage.
+- Approved requirements basis understood: Yes. The browser journey remains strictly sequential and no finding relies on multiple tabs/users, hand speed, concurrent browser submissions, revisions, or rebasing. REQ-009 separately requires stopped Save to share one authoritative lifecycle boundary with supported external-channel ingress and Application Engine input.
+- Design-spec behavior map verified against the implementation: Partially. The General Process/external-channel path remains aligned. The integrated Application Engine path no longer converges on the same lifecycle owners used by Studio reads/mutations.
+- Design review report and round confirmed: `ARCH-REV-003` / SR-004 basis confirmed, then reclassified where IR-004's advanced-base integration contradicts its same-owner premise.
+- Behavior-basis status: `Contradicted`
+- Changed or newly discovered behavior, if any: The advanced base deliberately creates application-scoped `AgentRunManager`, `AgentTeamRunManager`, `StandaloneAgentRunLifecycleService`, `AgentRunService`, and `TeamRunService` instances alongside distinct General Process instances. Studio GraphQL and history read/update surfaces remain bound only to General Process services. Application-created run IDs are persisted in the same run history namespace and returned in application bindings, but their live state and transition lanes are held by the application-scoped owners.
+- Remaining material ambiguity, if any: Upstream design must define the authoritative stopped-read/update routing for application-owned run IDs, or explicitly revise the applicable product scope/contract. The reviewer does not infer a repair from the duplicated technical mechanism.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | `RunConfigPanel.vue` selects `ExistingRunConfigEditor.vue` for existing runs; launch and definition stores/actions remain separate. | N/A |
-| `BEH-002` | Confirmed | Agent metadata restore and Team execution-tree restore preserve run/provider identity and read the persisted `llmConfig`; AutoByteus, Codex, and Claude bootstrap/session adapters consume that configuration. | N/A |
-| `BEH-003` | Confirmed | Active checks remain inside `StandaloneAgentRunLifecycleService.updateStoppedModelConfig` and `AgentTeamRunManager.updateStoppedModelConfigs`; Save never stops, starts, or hot-mutates a runtime. | N/A |
-| `BEH-004` | Confirmed | Settings entry calls `loadAgentCanonical` -> network-only `refreshAgentResumeConfig`; the editor fixes identity/runtime/model/workspace and emits only schema-supported `llmConfig`. | N/A |
-| `BEH-005` | Confirmed | `existingTeamModelConfigDraft.ts` preserves draft-start equality, direct-edit precedence, fixed-identity divergence, exact configured-scope patches, and no stopped-run Reset. | N/A |
-| `BEH-006` | Confirmed | Revision-free Agent/Team GraphQL mutations map through subject facades to stopped lifecycle owners and return editability, canonical state, field errors, and typed outcomes. Only transport/physical uncertainty requests a fresh verification read. | N/A |
-| `BEH-007` | Confirmed | Dynamic catalog schemas fail closed in the UI and `ModelConfigValidationService`; provider-specific saved settings remain mapped through AutoByteus/Codex/Claude restore paths. | N/A |
-| `BEH-008` | Confirmed | External-channel Agent resolution converges through `AgentRunCommandCoordinator`/`StandaloneAgentRunLifecycleService`; Team binding restore converges on `AgentTeamRunManager`. Application Engine Agent/Team input uses the same restore-aware owners. Save and restore share only those existing per-ID lanes. | N/A |
+| `BEH-001` | Confirmed | Stop remains explicit; stopped configuration is persisted rather than hot-applied. | N/A |
+| `BEH-002` | Confirmed | General Process Agent/Team restore still reads persisted current configuration. | N/A |
+| `BEH-003` | Contradicted | General-owned active runs reject through the owning manager, but an application-owned active run is absent from the General manager consulted by Studio mutation. | Application launch creates a normal active Agent/Team through application-scoped services and returns the run ID in its binding; the public exact-run mutation then checks a different manager and can persist instead of rejecting. See `MP-CR-003` and `MP-CR-004`. |
+| `BEH-004` | Confirmed | Agent Settings still performs a network-fresh canonical read and fixed identity remains locked. | N/A |
+| `BEH-005` | Confirmed | Team Settings retains bounded propagation/direct edits and no stopped Reset. | N/A |
+| `BEH-006` | Contradicted | Narrow canonical APIs remain revision-free, but active/editability authority is General-process-only. | The exact-run API contract does not encode or route runtime ownership, while application-bound runs occupy the same persisted identity space. See `MP-CR-003` and `MP-CR-004`. |
+| `BEH-007` | Confirmed | Catalog/schema validation, residual handling, narrow persistence, and runtime-specific restore mapping remain intact within each owner. | N/A |
+| `BEH-008` | Contradicted | External-channel restore and Save converge on General Process lanes; Application Engine `sendInput` restores through application-local lanes while Studio Save uses General Process lanes. | Normal Application Engine start/input is independently supported, but no common per-run/root boundary orders it with Save after integration. See reclassified `MP-SR4-004`. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-003 implements SR-004's narrow refactor: Settings owns freshness, verified resolver lanes remain, and unsupported writer/revision/archive policy is deleted. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Loading is non-interactive; fixed controls remain fixed; cached state may relock but never unlock; stopped edits save through the existing footer; no stopped Team Reset appears. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | The sequential Settings spines and separate external-channel/Application Engine resolver spines remain traceable through their authoritative lifecycle owners and meaningful storage/runtime outcomes. | None. |
-| Ownership boundary preservation and clarity | Pass | Settings/store owns draft/fresh-load state; lifecycle/manager owns stopped eligibility and ordering; run history owns canonical persistence; LLM management owns validation; provider adapters own runtime translation. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Schema lookup, validation, pure Team planning/mutation, canonical outcome mapping, and physical-outcome verification serve explicit spine owners without taking over orchestration. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing resume queries, lifecycle lanes, atomic metadata/tree writers, catalogs, model schemas, form controls, and provider adapters are reused. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Shared editability/result vocabulary and subject-specialized canonical payloads remain tight; Team patch planning/mutation stays in focused owned files. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Revision fields were removed; drafts remain a discriminated Agent/Team union; patches contain only scope kind/address/config; canonical subjects remain specialized. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Agent per-run ordering exists only in `StandaloneAgentRunLifecycleService`; Team root ordering exists only in `AgentTeamRunManager`; no client-side writer coordinator remains. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Subject service facades are existing application entrypoints; lifecycle, persistence, validator, planner, and UI store boundaries each own substantive invariants. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Network transport, Pinia state transitions, pure Team planning, Vue rendering, validation, mutation, and persistence remain separated. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | GraphQL depends on Agent/Team service facades; lifecycle owners alone use validators/persistence/mutators; components do not bypass the Settings store into transport. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | New mutations call only `AgentRunService`/`TeamRunService`; external resolvers and update commands converge through the existing subject owners rather than accessing their stores directly. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Execution, history, LLM, GraphQL, run-config services, stores, and workspace components remain in their established capability areas. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Pure planning/transport pieces are extracted, while the cohesive Settings state machine remains one sub-500 Pinia owner rather than a coordinator chain. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Separate Agent/Team reads and mutations use exact identity plus only `llmConfig` or configured-scope patches; no revision, full-config, or full-tree input remains. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `load*Canonical`, `cachedLifecycleLock`, `requiresOutcomeVerification`, `updateStoppedModelConfig(s)`, and restored `withUnmanagedHistoryDeletion` match their actual responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Common editability/outcome semantics are shared; Agent/Team persistence and canonical projections stay distinct where their domain shapes differ. | None. |
-| Patch-on-patch complexity control | Pass | IR-003 removes revisions, stale outcomes, rebase/force flags, concurrent-writer tests, and generalized Team history coordination instead of layering another compatibility path. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | `run-model-config-revision.ts` and every source/test reference to revision/rebase/forced-baseline policy are absent; generated GraphQL is revision-free; Stop-owned refresh calls are removed. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests cover fresh Settings locking, cached relock/no cached unlock, uncertainty verification, narrow Agent/Team inputs, active rejection, and Save-first/restore-first owner behavior without using browser multi-client tests as reachability evidence. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused service/store harnesses isolate lifecycle and draft behavior; no source-size threshold was applied to tests. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Revision/concurrent-writer tests and assertions were removed. The existing pre-SR-004 API/E2E investigation is labeled triggering evidence and is not treated as current coverage. | `/api_e2e_engineer` must replace its stale scenario basis before durable coverage changes or execution. |
-| API/E2E readiness for the next workflow stage | Pass | Current contracts are narrow and testable; implementation checks passed, and handoff risks identify exact sequential, active-call, external resolver, catalog, persistence, Team, and provider scenarios. | Proceed to a fresh API/E2E coverage investigation. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | SR-004 correctly removed imagined browser concurrency, but its statement that Application Engine resolution converges on the same owner is false after latest-base integration. | Revise the design basis around current General/Application ownership before further implementation. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Settings UI retains fixed runtime/model identity, loading/locked states, schema-driven editing, Team hierarchy behavior, and no stopped Reset. | Preserve these unaffected decisions. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | The actual application spine is `Application Engine -> application-scoped service/manager/lane`, while read/update is `Studio GraphQL -> General Process service/manager/lane`; the approved DS-006/DS-007 convergence is absent. | Map both current spines and select an authoritative routing boundary. |
+| Ownership boundary preservation and clarity | Fail | Two intentional runtime owner families have instance-local live maps and lanes, but one public mutation family assumes General Process owns every persisted run ID. | Define authoritative ownership/routing for exact run IDs without bypassing Application ownership. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Validation, catalogs, persistence verification, schemas, and provider mapping remain attached to clear lifecycle/UI owners. | Preserve. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Current validation, catalogs, managers, stores, GraphQL composition, and Application orchestration are reused. | Preserve. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Shared outcomes/editability, mutation client, Team draft planner, validation, and commit helpers remain meaningfully owned. | Preserve. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Narrow Agent/Team inputs retain subject-specific canonical payloads without revision carriers. | Preserve. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Fail | Per-ID/root transition coordination exists twice for the same persisted identity namespace; cross-owner operations are not coordinated. | Upstream design must assign or route the relevant lifecycle operation to the authoritative owner. |
+| Empty indirection check (no pass-through-only boundary) | Pass | Facades/composition boundaries perform meaningful routing, lifecycle, validation, or transport work. | Preserve. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Mutators, persistence, lifecycle, transport, UI planning, and rendering remain separated. | Preserve. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Fail | Studio update/history composition depends only on General Process ownership even for application-created identities; direct dependency on Application internals would also violate the advanced-base boundary. | Resolve through an approved owner-aware public boundary, not an internal-manager shortcut. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Fail | No caller directly pierces one owner's internals, but the product-level exact-run command has two possible runtime authorities and consults only one. This is an equivalent split-authority failure at the governing boundary. | Establish one authoritative command/query route per target identity while preserving Application encapsulation. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Changed files remain in lifecycle, run-history, Application runtime, GraphQL, runtime adapter, or Settings owners. | Preserve. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The feature remains navigable across meaningful server/web subsystems. | Preserve. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | Agent/Team mutations are subject-specific and narrow, but a bare run ID is insufficient to locate the authoritative owner in the integrated process. | Define a truthful owner-aware routing contract or revised scope. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names accurately describe stopped update, canonical config, lifecycle, and Application-scoped construction. | Preserve. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared shapes/planners are reused; the duplicate manager families are an intentional base architecture rather than local copy-paste. | Do not collapse them mechanically; resolve the cross-owner contract at design level. |
+| Patch-on-patch complexity control | Pass | IR-004 neither undid SR-004's simplification nor restored revision/rebase machinery. | Preserve. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Removed revision seams and obsolete stored-Team form model remain absent; no source compatibility branch returned. | Preserve. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Integration tests prove each owner in isolation and General-owner Save/restore ordering, but do not exercise application-created identity through Studio read/update or cross-owner Application input ordering. | After design correction, cover the exact supported cross-boundary path. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused fixtures remain scoped and the integrated 9-file set is readable. | Preserve. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Obsolete revision and StoredTeamScopeHistoricalFields seams remain removed. | Preserve. |
+| API/E2E readiness for the next workflow stage | Fail | Integrated behavior contradicts BEH-003/006/008 before API/E2E; API-REV-001 predates the advanced-base ownership split. | Pause API/E2E until design and source are corrected and re-reviewed. |
 
-## Source File Size And Structure Audit
+## Source File Size And Structure Audit (If Applicable)
 
-Effective counts are non-empty current-source lines. Generated output, localization data, tests, and the deleted revision file are excluded from source thresholds.
+Effective non-empty lines are measured at current HEAD. Tests, fixtures, generated GraphQL output, package manifests, and lockfiles are excluded from source thresholds.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `agent-execution/backends/claude/backend/claude-session-bootstrapper.ts` | 125 | Pass | N/A | Pass | Pass | Pass | None |
-| `agent-execution/backends/claude/session/claude-session-config.ts` | 44 | Pass | N/A | Pass | Pass | Pass | None |
-| `agent-execution/backends/claude/session/claude-session.ts` | 500 | Pass (not `>500`) | Assessed; small adapter delta | Pass | Pass | Pass | None |
-| `agent-execution/services/agent-run-service.ts` | 264 | Pass | Assessed; thin facade delta | Pass | Pass | Pass | None |
-| `agent-execution/services/standalone-agent-run-lifecycle-service.ts` | 386 | Pass | Assessed; cohesive lifecycle owner | Pass | Pass | Pass | None |
-| `agent-team-execution/services/agent-team-run-manager.ts` | 409 | Pass | Assessed; cohesive root lifecycle owner | Pass | Pass | Pass | None |
-| `agent-team-execution/services/team-run-model-config-mutator.ts` | 97 | Pass | N/A | Pass | Pass | Pass | None |
-| `agent-team-execution/services/team-run-service.ts` | 251 | Pass | Assessed; thin facade delta | Pass | Pass | Pass | None |
-| `api/graphql/types/agent-run.ts` | 330 | Pass | Assessed; existing subject API file | Pass | Pass | Pass | None |
-| `api/graphql/types/agent-team-run.ts` | 225 | Pass | Assessed; existing subject API file | Pass | Pass | Pass | None |
-| `api/graphql/types/run-history.ts` | 254 | Pass | Assessed; existing history contract file | Pass | Pass | Pass | None |
-| `api/graphql/types/run-model-config.ts` | 15 | Pass | N/A | Pass | Pass | Pass | None |
-| `api/graphql/types/team-run-history.ts` | 131 | Pass | N/A | Pass | Pass | Pass | None |
-| `llm-management/services/model-config-validation-service.ts` | 151 | Pass | N/A | Pass | Pass | Pass | None |
-| `run-history/domain/run-model-config.ts` | 45 | Pass | N/A | Pass | Pass | Pass | None |
-| `run-history/services/agent-run-history-catalog-service.ts` | 472 | Pass | Assessed; narrow catalog commit boundary | Pass | Pass | Pass | None |
-| `run-history/services/agent-run-model-config-commit.ts` | 42 | Pass | N/A | Pass | Pass | Pass | None |
-| `run-history/services/agent-run-resume-config-service.ts` | 95 | Pass | N/A | Pass | Pass | Pass | None |
-| `run-history/services/team-run-history-catalog-service.ts` | 264 | Pass | Assessed; restored baseline catalog owner | Pass | Pass | Pass | None |
-| `run-history/services/team-run-history-service.ts` | 125 | Pass | N/A | Pass | Pass | Pass | None |
-| `runtime-management/claude/client/claude-sdk-client.ts` | 461 | Pass | Assessed; small SDK option delta | Pass | Pass | Pass | None |
-| `runtime-management/claude/client/claude-sdk-model-normalizer.ts` | 185 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/launch-config/RuntimeModelConfigFields.vue` | 319 | Pass | Assessed; cohesive selector/config concern | Pass | Pass | Pass | None |
-| `components/workspace/config/AgentRunConfigForm.vue` | 160 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/workspace/config/ExistingRunConfigEditor.vue` | 184 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/workspace/config/MemberOverrideItem.vue` | 335 | Pass | Assessed; existing dual-mode member concern | Pass | Pass | Pass | None |
-| `components/workspace/config/ModelConfigAdvanced.vue` | 187 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/workspace/config/ModelConfigSection.vue` | 298 | Pass | Assessed; schema presentation owner | Pass | Pass | Pass | None |
-| `components/workspace/config/RunConfigPanel.vue` | 410 | Pass | Assessed; selected/new surface host | Pass | Pass | Pass | None |
-| `components/workspace/config/TeamMemberConfigTree.vue` | 87 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/workspace/config/TeamRunConfigForm.vue` | 149 | Pass | N/A | Pass | Pass | Pass | None |
-| `components/workspace/config/TeamScopeConfigEditor.vue` | 326 | Pass | Assessed; existing scope editor concern | Pass | Pass | Pass | None |
-| `components/workspace/config/WorkspaceSelector.vue` | 353 | Pass | Assessed; small fixed-state delta | Pass | Pass | Pass | None |
-| `composables/useRuntimeScopedModelSelection.ts` | 243 | Pass | Assessed; catalog-selection owner | Pass | Pass | Pass | None |
-| `graphql/mutations/agentTeamRunMutations.ts` | 49 | Pass | N/A | Pass | Pass | Pass | None |
-| `graphql/mutations/runHistoryMutations.ts` | 52 | Pass | N/A | Pass | Pass | Pass | None |
-| `graphql/queries/runHistoryQueries.ts` | 298 | Pass | Assessed; existing query-document collection | Pass | Pass | Pass | None |
-| `services/runConfigEditing/existingAgentModelConfigDraft.ts` | 24 | Pass | N/A | Pass | Pass | Pass | None |
-| `services/runConfigEditing/existingRunModelConfigMutationClient.ts` | 49 | Pass | N/A | Pass | Pass | Pass | None |
-| `services/runConfigEditing/existingTeamModelConfigDraft.ts` | 105 | Pass | N/A | Pass | Pass | Pass | None |
-| `services/runConfigEditing/existingTeamRunFormModel.ts` | 96 | Pass | N/A | Pass | Pass | Pass | None |
-| `services/runHydration/teamRunContextHydrationService.ts` | 297 | Pass | Assessed; small projection replacement | Pass | Pass | Pass | None |
-| `stores/activeContextStore.ts` | 180 | Pass | N/A | Pass | Pass | Pass | None |
-| `stores/agentRunStore.ts` | 382 | Pass | Assessed; Stop lifecycle owner, refresh removed | Pass | Pass | Pass | None |
-| `stores/agentTeamRunStore.ts` | 402 | Pass | Assessed; root Stop owner, refresh removed | Pass | Pass | Pass | None |
-| `stores/existingRunModelConfigStore.ts` | 419 | Pass | Assessed; cohesive Settings load/draft/Save/verification owner with transport and pure planning already extracted | Pass | Pass | Pass | None; reassess only if a new independent transition expands it. |
-| `stores/runHistoryStore.ts` | 435 | Pass | Assessed; canonical history/status projection | Pass | Pass | Pass | None |
-| `stores/runHistoryTypes.ts` | 213 | Pass | N/A | Pass | Pass | Pass | None |
-| `types/agent/ExistingRunModelConfigDraft.ts` | 29 | Pass | N/A | Pass | Pass | Pass | None |
-| `types/agent/ExistingTeamRunFormModel.ts` | 36 | Pass | N/A | Pass | Pass | Pass | None |
-| `types/agent/TeamRunFormModel.ts` | 16 | Pass | N/A | Pass | Pass | Pass | None |
-| `utils/historicalModelConfigFields.ts` | 78 | Pass | N/A | Pass | Pass | Pass | None |
-| `utils/llmConfigSchema.ts` | 235 | Pass | Assessed; schema normalization/validation owner | Pass | Pass | Pass | None |
+| `claude-session-bootstrapper.ts`; `claude-session-config.ts` | 125; 44 | Pass | Pass | Cohesive provider bootstrap/config | Pass | Pass | None |
+| `claude-session.ts` | 500 | Pass (at limit) | Assessed | Cohesive existing session owner; no finding from size alone | Pass | Pass with pressure | Avoid unrelated growth |
+| `general-process-run-supervisor.ts` | 240 | Pass | Assessed | Cohesive General Process assembly, but part of CR-F-003 ownership split | Pass | Design Impact | Reconcile through design, not local size split |
+| `agent-run-service.ts` | 279 | Pass | Assessed | Cohesive Agent facade | Pass | Pass | None |
+| `standalone-agent-run-lifecycle-service.ts` | 386 | Pass | Assessed | Cohesive per-instance lifecycle; its instance-local lane cannot govern another owner | Pass | Design Impact | Preserve cohesion; correct authoritative routing upstream |
+| `agent-team-run-manager.ts` | 455 | Pass | Assessed | Cohesive Team root owner; instance-local managed map/lane is material to CR-F-003 | Pass | Design Impact | Preserve owner; correct routing upstream |
+| `team-run-model-config-mutator.ts`; `team-run-service.ts` | 97; 265 | Pass | Pass / Assessed | Pure mutation plus Team facade | Pass | Pass | None |
+| `agent-run.ts`; `agent-team-run.ts` GraphQL | 326; 225 | Pass | Assessed | Narrow transport, but both bind only General Process services | Pass | Design Impact | Route commands through the approved authoritative boundary |
+| `run-history.ts`; `team-run-history.ts`; `run-model-config.ts` GraphQL | 254; 131; 15 | Pass | Assessed / Pass | Cohesive query/transport structures; current live projection is General-only | Pass | Design Impact for affected reads | Align authoritative live/editability read |
+| `create-application-run-services.ts` | 216 | Pass | Pass | Cohesive application-scoped assembly; intentional distinct ownership | Pass | Pass locally / cross-boundary Design Impact | Do not replace with global ownership without design approval |
+| `model-config-validation-service.ts`; domain `run-model-config.ts` | 151; 45 | Pass | Pass | Tight shared validation/outcome vocabulary | Pass | Pass | None |
+| `agent-run-history-catalog-service.ts`; `agent-run-model-config-commit.ts`; `agent-run-resume-config-service.ts`; `team-run-history-service.ts` | 472; 42; 95; 125 | Pass | Assessed / Pass | Cohesive persistence/read services; live authority for resume is General-only | Pass | Design Impact for resume authority | Align reads with authoritative run owner |
+| `claude-sdk-client.ts`; `claude-sdk-model-normalizer.ts` | 461; 185 | Pass | Assessed / Pass | Cohesive SDK client/normalizer | Pass | Pass | None |
+| `RuntimeModelConfigFields.vue` | 319 | Pass | Assessed | Cohesive schema-driven field renderer | Pass | Pass | None |
+| `AgentRunConfigForm.vue`; `ExistingRunConfigEditor.vue`; `TeamRunConfigForm.vue`; `TeamMemberConfigTree.vue` | 160; 184; 149; 87 | Pass | Pass | Cohesive Settings/form components | Pass | Pass | None |
+| `MemberOverrideItem.vue`; `ModelConfigAdvanced.vue`; `ModelConfigSection.vue`; `RunConfigPanel.vue`; `TeamScopeConfigEditor.vue`; `WorkspaceSelector.vue` | 335; 187; 298; 410; 326; 353 | Pass | Assessed where >220 | Cohesive established presentation owners | Pass | Pass | Extract only for real concern growth |
+| `useRuntimeScopedModelSelection.ts` | 272 | Pass | Assessed | Cohesive catalog/schema selection | Pass | Pass | None |
+| GraphQL documents: `agentTeamRunMutations.ts`; `runHistoryMutations.ts`; `runHistoryQueries.ts` | 49; 52; 298 | Pass | Pass / Assessed | Subject-specific documents | Pass | Pass | None |
+| Run-config editing services: `existingAgentModelConfigDraft.ts`; `existingRunModelConfigMutationClient.ts`; `existingTeamModelConfigDraft.ts`; `existingTeamRunFormModel.ts` | 24; 49; 105; 96 | Pass | Pass | Pure/narrow draft, transport, and form mapping | Pass | Pass | None |
+| `teamRunContextHydrationService.ts` | 297 | Pass | Assessed | Cohesive hydration owner | Pass | Pass | None |
+| Stores: `activeContextStore.ts`; `agentTeamRunStore.ts`; `existingRunModelConfigStore.ts`; `runHistoryStore.ts` | 180; 402; 419; 435 | Pass | Pass / Assessed | Cohesive store owners; editability consumes General-only history state | Pass | Design Impact only at authority input | Preserve store responsibilities; correct server authority |
+| Types: `runHistoryTypes.ts`; `ExistingRunModelConfigDraft.ts`; `ExistingTeamRunFormModel.ts`; `TeamRunFormModel.ts` | 213; 29; 36; 16 | Pass | Pass | Tight subject-specific shapes | Pass | Pass | None |
+| `historicalModelConfigFields.ts`; `llmConfigSchema.ts` | 78; 235 | Pass | Pass / Assessed | Cohesive schema helpers | Pass | Pass | None |
+| `localization/messages/{en,zh-CN}/workspace.ts` | 309; 308 | Pass | Assessed | Established locale-owned message files | Pass | Pass | None |
+
+No changed implementation source exceeds 500 effective non-empty lines. The structural failure is ownership/routing, not file length.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No nullable/ignored revision input, dual mutation, full-config fallback, or provider fallback remains. |
-| No legacy old-behavior retention in changed scope | Pass | The target is stopped-only model-config editing; prior all-locked behavior and SR-003 browser-writer policy are not retained as parallel paths. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Revision/digest/rebase/forced-baseline code and tests are removed; Team archive/delete behavior and names are restored to their baseline owner. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing Agent metadata and Team schema-v2 trees are directly usable; only existing `llmConfig` fields change. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current runtime reads/writes one canonical metadata/tree shape and transports no writer version. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | `Directly Usable — No Migration` is implemented; atomic write/reread outcomes and uncertainty verification remain current-schema behavior. |
+| No backward-compatibility mechanisms in changed scope | Pass | No revision or legacy activation compatibility seam returned. |
+| No legacy old-behavior retention in changed scope | Pass | SR-004's sequential browser behavior remains authoritative. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Revision/rebase helpers and obsolete StoredTeam form structures remain removed. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing Agent metadata and Team execution trees remain directly usable. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current-schema paths only. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration is required; CR-F-003 concerns runtime authority rather than stored shape. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal
+## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-None remain in the reviewed scope.
+None in implementation source. A stale documentation reference is recorded under Docs Impact and does not drive this source failure.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Existing-run stopped editing, Settings-owned freshness, the lifecycle service rename, Team form/projection replacement, and effective Claude configuration alter durable architecture/user documentation.
-- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_execution.md`; `autobyteus-web/docs/agent_teams.md`; `autobyteus-web/docs/agent_execution_architecture.md`; `autobyteus-web/docs/settings.md`. Delivery should update them only after integrated-state validation.
+- Why: The stopped Agent/Team Settings feature requires durable user/developer documentation, and current integrated docs still reference a removed Team form-model path. CR-F-003 must be resolved before docs claim the final authoritative lifecycle.
+- Files or areas likely affected: `autobyteus-web/docs/agent_teams.md` (currently references removed `services/teamExecution/storedTeamRunFormModel.ts`), Agent/Team stopped Settings behavior, runtime/provider configuration documentation, and any Application Engine run-ownership documentation.
 
-## Material Premise Validation
+## Material Premise Validation (Only When Needed)
 
 ### Upstream Design-Review Material-Premise Decisions
 
 | Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
 | --- | --- | --- |
-| `MP-001` | Confirmed | N/A |
-| `MP-SR4-001` | Confirmed | N/A — no browser revision/rebase/concurrent-writer mechanism or test remains. |
-| `MP-SR4-002` | Confirmed | N/A — the browser journey remains sequential and no in-flight browser resume machinery remains. |
-| `MP-SR4-003` | Confirmed | N/A — external-channel Agent/Team callers still converge on the retained lifecycle owners. |
-| `MP-SR4-004` | Confirmed | N/A — Application Engine Agent/Team input still uses restore-aware services and the same owners. |
-| `MP-SR4-005` | Confirmed | N/A — its `Unclear` overlap claim drives no source or coverage requirement. |
-| `MP-SR4-006` | Confirmed | N/A — active direct mutations return `RUN_ACTIVE` before validation/write. |
-| `MP-SR4-007` | Confirmed | N/A — current physical writer contracts and network failures justify only canonical verification. |
-| `MP-CR-001` | No Longer Relevant | SR-004 replaced the aggregated premise with MP-SR4-002 (`Not Reachable` browser overlap) and MP-SR4-003/004 (`Reachable` independent system resolvers). |
-| `MP-CR-002` | No Longer Relevant | SR-004 replaced it with MP-SR4-001 (`Not Reachable`); the implementation removed the premise's revision/rebase machinery. |
+| `MP-SR4-003` | Confirmed | External-channel ingress continues through General Process services and the same General owner lanes as Studio Save. |
+| `MP-SR4-004` | Reclassified | Application Engine input remains Reachable, but IR-004's integrated base constructs application-scoped managers/services/lanes distinct from the General Process services used by Studio GraphQL. The prior same-owner conclusion is contradicted. |
+| `MP-SR4-006` | Reclassified | Direct active mutation remains a governing public API contract. The integrated application-owned active cases are not visible to the General manager used by that mutation. |
 
-No new or reclassified material premise arose from IR-003. In particular, technical ability to open another client or invoke another UI action was not used as evidence of product reachability.
+### `MP-SR4-004` — Application Engine input and Studio Save do not share a lifecycle owner after integration
+
+- Origin: `Reclassified from MP-SR4-004`
+- Related approved requirement or established contract: REQ-009; AC-004 and AC-008; preserved Application Engine communication behavior.
+- Relevant behavior ID(s): `BEH-008`
+- Initiating basis kind: `System`
+- Independent product-supported initiating trigger or applicable governing contract: A normal Application Engine/client communication calls `sendInput` for an existing application run binding.
+- Support evidence: Application communication and orchestration expose this normal operation independently of the Settings browser. `ApplicationRunBindingLaunchService` creates Agent/Team runs and persists binding records containing their run IDs (`application-run-binding-launch-service.ts:114-201`).
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Application Engine/client communication -> ApplicationOrchestrationHostService.sendRunInput -> postRunInputInternal/postAddressedRunInputInternal -> application-scoped AgentRunService.resolveAgentRun or TeamRunService.resolveActiveTeamRun -> application-scoped lifecycle/manager lane` (`application-orchestration-host-service.ts:408-470`). Studio Save follows `AgentRunResolver`/`AgentTeamRunResolver -> General Process AgentRunService/TeamRunService -> General lifecycle/manager lane` (`build-studio-server.ts:174-199`; GraphQL Agent lines 297-317; Team lines 235-255).
+- Lifecycle preconditions and material consequence at the claimed point: Both operations address the same persisted run/root ID, but `StandaloneAgentRunLifecycleService.transitionLanes` and `AgentTeamRunManager.rootTransitionLanes` are instance fields. Therefore the approved restore-first/Save-first ordering is not established across Application and General owners; either operation can read/write state without the other owner's lane.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Fail the integrated source and route a design correction. Do not introduce browser revisions or multi-client machinery; define how supported application-bound identities reach one authoritative read/update/lifecycle boundary.
+
+### `MP-CR-003` — Public Agent mutation targets a normally active application-owned Agent
+
+- Origin: `New`
+- Related approved requirement or established contract: AC-003 states that calling the update API for any active standalone runtime is rejected and leaves persistence unchanged.
+- Relevant behavior ID(s): `BEH-003`, `BEH-006`
+- Initiating basis kind: `Contract`
+- Independent product-supported initiating trigger or applicable governing contract: The exact-run public `updateStoppedAgentRunModelConfig` contract is called with the Agent run ID returned by a normal Application Engine binding.
+- Support evidence: `ApplicationRunBindingLaunchService.startAgent` creates an active run and returns `runtime.agentRunId` in the binding (`application-run-binding-launch-service.ts:114-157`). The mutation accepts an `agentRunId` and contains no product scope excluding application-bound IDs (`api/graphql/types/agent-run.ts:297-317`).
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Application launch -> application-scoped `AgentRunManager` holds active run -> public mutation -> Studio General `AgentRunService` -> General `StandaloneAgentRunLifecycleService.updateStoppedModelConfig` -> General manager active lookup (`standalone-agent-run-lifecycle-service.ts:80-103`).
+- Lifecycle preconditions and material consequence at the claimed point: The application-owned run is active, but the distinct General manager returns no active run. Its metadata/catalog are persisted in the shared memory directory, so the General path can continue validation and commit rather than returning `RUN_ACTIVE`, violating AC-003 and active-runtime immutability.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: `CR-F-003`; design must establish authoritative owner routing or revise the contract explicitly. This is a normal Application launch plus governing API path, not a same-browser timing or multi-tab premise.
+
+### `MP-CR-004` — Public Team mutation targets a normally managed application-owned Team
+
+- Origin: `New`
+- Related approved requirement or established contract: AC-008 states that direct Team update while the root is managed/active returns `RUN_ACTIVE` and does not change the execution tree.
+- Relevant behavior ID(s): `BEH-003`, `BEH-006`
+- Initiating basis kind: `Contract`
+- Independent product-supported initiating trigger or applicable governing contract: The exact-root public `updateStoppedTeamRunModelConfigs` contract is called with the Team run ID returned by a normal Application Engine binding.
+- Support evidence: `ApplicationRunBindingLaunchService.startTeam` creates the managed root and returns `runtime.teamRunId` (`application-run-binding-launch-service.ts:160-201`). The mutation accepts `teamRunId` with no exclusion for application-bound roots (`api/graphql/types/agent-team-run.ts:235-255`). `TeamRunPackageCatalog` admission is process-shared by memory directory (`team-run-package-catalog.ts:15-23,55-59`), so the General manager can see the package while not seeing the application manager's live root.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Application launch -> application-scoped `AgentTeamRunManager.managedRoots` -> public Team mutation -> Studio General `TeamRunService` -> General `AgentTeamRunManager.updateStoppedModelConfigs` (`agent-team-run-manager.ts:191-209`).
+- Lifecycle preconditions and material consequence at the claimed point: The application owner manages the active root, but the General owner has no corresponding `managedRoots` entry. The shared package/tree remains readable, allowing mutation instead of `RUN_ACTIVE` and violating AC-008.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: `CR-F-003`; route upstream for one authoritative owner-aware command/read design. No browser concurrency mechanism is justified.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.5`
-- Overall score (`/100`): `95.3`
-- Score calculation note: simple average of the ten categories below, rounded to one decimal for `/10`. The Pass decision follows the behavior, structural, premise, and finding gates rather than the average.
+- Overall score (`/10`): `8.6`
+- Overall score (`/100`): `86.3`
+- Score calculation note: Simple average of the ten categories. The fail decision is independently required by contradicted behavior and sub-9.0 structural/runtime categories.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Sequential Settings and independent system-resolver paths are explicit from trigger through lifecycle owner to persistence/restore outcome. | Exact live external resolver execution remains downstream evidence. | Keep API/E2E scenarios tied to the named external-channel/Application Engine triggers. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | UI drafts, lifecycle ordering, persistence, validation, Team planning, and provider translation each have clear authoritative owners. | The Pinia owner necessarily coordinates several UI states for two subject variants. | Reassess only if another independent state transition expands that owner. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.7 | Separate Agent/Team contracts carry exact identity and narrow mutable data, with canonical typed results and no writer revision. | Canonical response payloads remain subject-specific by necessity. | Preserve narrow subject-specific contracts and current-schema result semantics. |
-| `4` | `Separation of Concerns and File Placement` | 9.3 | Transport, state orchestration, pure planning, rendering, validation, persistence, and runtime mapping are cleanly separated. | `existingRunModelConfigStore.ts` is a cohesive but moderately large 419 effective lines. | Extract only if a genuinely separate concern appears; do not fragment the current state machine preemptively. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Revision carriers are gone; shared outcome/editability structures are tight; drafts and canonical payloads retain meaningful specialization. | Agent and Team shapes cannot be fully consolidated without weakening domain meaning. | Continue sharing only truly identical policy vocabulary. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Names now distinguish canonical loading, restrictive cached lifecycle observations, outcome verification, and stopped update ownership. | The cached-lock temporal behavior still requires reading load, lifecycle, and Save actions together. | Keep transition tests and focused naming synchronized as the Settings lifecycle evolves. |
-| `7` | `API/E2E Readiness` | 9.3 | Source contracts are executable, focused unit/component checks pass, and downstream real paths are identified. | The existing coverage investigation predates SR-004 and is intentionally non-authoritative. | `/api_e2e_engineer` must rewrite it before durable coverage changes or execution. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | Fresh Settings loading, fail-closed editability, stopped checks, narrow persistence, real resolver ordering, no-op behavior, and provider application match SR-004. | Real external resolver and provider sessions are not established by implementation-scoped tests alone. | Validate those exact supported paths downstream without reintroducing browser race premises. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | IR-003 cleanly deletes revision/stale/rebase seams and restores Team history baseline with no dual API or ignored field. | Durable docs still describe older structure until delivery. | Refresh docs against the integrated, tested state. |
-| `10` | `Cleanup Completeness` | 9.6 | Obsolete source, generated fields, tests, copy, flags, and Stop-owned refresh calls are absent. | Downstream coverage documentation still contains explicitly marked pre-SR-004 evidence. | Replace the coverage investigation rather than editing around its stale scenarios. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.0 | General and Application spines are locally readable. | The approved convergence omits the integrated split between Application runtime ownership and Studio read/update ownership (`MP-SR4-004`). | Revise the design map and implement a truthful authoritative route. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.8 | Each manager/service family is internally coherent. | Same persisted IDs have two live authorities while public read/update consults only General Process (`MP-CR-003/004`). | Define one owner-aware boundary without bypassing Application internals. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.2 | Mutations are narrow, typed, and subject-specific. | Bare run identity does not resolve its integrated runtime owner, so `RUN_ACTIVE` semantics are not truthful for application-owned runs. | Make owner routing or applicability explicit. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Validation, persistence, lifecycle, transport, UI state, and provider mapping remain cleanly separated. | Cross-owner integration is unresolved, though not caused by misplaced local code. | Preserve separation while repairing the higher boundary. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Shapes are narrow and revision-free; specialization remains meaningful. | No material data-model weakness. | Preserve. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Names express responsibilities and runtime scope well. | Understanding the split requires assembly tracing across subsystems. | Make authoritative routing explicit in design/API names if introduced. |
+| `7` | `API/E2E Readiness` | 7.8 | Focused builds/tests pass and contracts are executable. | Current tests omit the supported cross-owner Application binding -> Studio mutation/input path; prior API evidence is pre-integration. | Correct and source-review before refreshed API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.2 | General-owned stopped editing, persistence, Team behavior, and provider mapping remain sound. | Reachable application-owned active mutation and cross-owner ordering violate AC-003/008 and REQ-009. | Establish authoritative state/lane routing and add exact regressions. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | No revision/rebase/compatibility machinery returned. | Only stale docs remain, outside runtime source. | Preserve runtime cleanup and update docs after correction. |
+| `10` | `Cleanup Completeness` | 9.4 | Obsolete source/tests remain removed and worktree is clean. | Documentation still references a removed path. | Fix docs during delivery after integrated behavior passes. |
 
 ## Findings
 
-None.
+### `CR-F-003` — Application-owned runs bypass the authoritative stopped/active boundary
+
+- Severity: `High`
+- Affected approved behavior/contracts: REQ-009; AC-003; AC-008; `BEH-003`, `BEH-006`, `BEH-008`.
+- Material-premise evidence: reclassified `MP-SR4-004` plus new Reachable `MP-CR-003` and `MP-CR-004`.
+- Finding: IR-004 preserves the advanced base's distinct General Process and Application Engine run owners, but Studio history/update surfaces remain bound only to General Process services. Live maps and transition lanes are instance-local. Consequently, an application-owned active Agent/Team is invisible to the manager enforcing `RUN_ACTIVE`, and stopped Save is not ordered with normal Application Engine `sendInput` restore as REQ-009 requires.
+- Concrete consequence: A public update for an active application-bound Agent/Team can reach persistence rather than reject without change; a stopped update and Application restore do not have the specified Save-first/restore-first serialization.
+- Why this is product-supported: The witness starts from normal Application Engine launch/input and the explicit direct-update governing contracts, not two tabs, multiple users, hand speed, a synthetic test, or technical possibility alone.
+- Required action: `/solution_designer` must revise the current design/production-path map to reconcile the advanced base's application-scoped ownership with stopped model-config reads/updates and BEH-008 ordering. Then architecture review, implementation rework, source review, and refreshed API/E2E must repeat. Do not restore optimistic revisions, draft rebasing, or concurrent-browser policy.
 
 ## Classification
 
-`N/A — Pass`
+`Design Impact`
+
+The conflict is structural: the reviewed design assumed General and Application operations converge on one lifecycle owner, while the latest base deliberately isolates Application construction/ownership. A bounded local patch cannot be prescribed safely without deciding the authoritative public routing boundary and preserving the advanced-base ownership contract.
 
 ## Recommended Recipient
 
-`/api_e2e_engineer`
-
-Proceed with a fresh coverage investigation against SR-004 before durable coverage changes or execution. Do not carry forward the pre-SR-004 revision/multi-client API-E2E-003/004 assertions.
+`/solution_designer`
 
 ## Residual Risks
 
-- The exact external-channel and Application Engine Agent/Team resolver paths require downstream realistic execution in both owner orderings; tests must begin from those supported system triggers, not synthetic browser concurrency.
-- Full Team browser hierarchy, dynamic catalog/residual fail-closed behavior, and physical-store indeterminate verification remain downstream scenarios.
-- A real Claude provider session should confirm the pinned SDK thinking/effort mapping; AutoByteus and Codex restore application also remain API/E2E evidence.
-- MP-SR4-005 remains `Unclear` but has no effect on the decision or required coverage.
-- Durable project documentation remains delivery-stage work after integrated-state verification.
+- General Process/external-channel behavior is not implicated by CR-F-003 and should not be broadened or complicated while fixing Application ownership.
+- API-REV-001 remains valuable pre-integration evidence but cannot validate the new integrated owner topology.
+- The exact final cross-owner regression shape depends on the revised design; no speculative revision/multi-client tests should be added.
+- Real Claude paid-provider execution remains environmentally unverified, although pinned SDK application tests previously passed.
+- Durable docs remain delivery work after a corrected integrated state passes.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass**
+- Review Decision: **Fail**
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Pass** — unsupported browser concurrency is absent and drives nothing; independently supported external-channel/Application Engine triggers justify only the retained per-identity lifecycle lanes.
-- Score Summary: `9.5/10` (`95.3/100`); every mandatory category is `>= 9.0`.
-- Failure Origin (when applicable): `N/A`. Prior requirement-gap finding `CR-F-002` is resolved by SR-004 / ARCH-REV-003 / IR-003.
-- Recommended Recipient (when applicable): `/api_e2e_engineer`
-- Notes: Reviewer reruns passed server lifecycle/manager `2 files / 19 tests` and web Settings `2 files / 37 tests`; obsolete seam search, `git diff --check`, and clean pre-review worktree checks passed. API/E2E remains required and must first replace its pre-SR-004 coverage investigation.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): **Fail** — `MP-SR4-004`, `MP-CR-003`, and `MP-CR-004` are independently Reachable through normal Application Engine operations and explicit public update contracts; they contradict the approved same-owner path. No imagined browser concurrency drives the result.
+- Score Summary: `8.6/10` (`86.3/100`); Data Flow `8.0`, Ownership `7.8`, API clarity `8.2`, API/E2E readiness `7.8`, and Runtime fidelity `7.2` are below the clean-pass threshold.
+- Failure Origin (when applicable): Integrated design/source ownership mismatch introduced by the advanced-base topology and not covered by SR-004's prior same-owner premise.
+- Recommended Recipient (when applicable): `/solution_designer`
+- Notes: Reviewer confirmed merge/checkpoint ancestry and clean integration, ran shared-package preparation, then passed the exact server focused set (`9 files / 55 tests`) and a focused web set (`8 files / 45 tests`); `git diff --check` and obsolete-seam searches passed. These local passes do not cover the supported cross-owner path. API/E2E is paused pending upstream correction.

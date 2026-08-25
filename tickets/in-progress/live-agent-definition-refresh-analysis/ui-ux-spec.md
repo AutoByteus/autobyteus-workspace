@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Requirements-ready`/`Refined`)
 
-Refined — approved with `requirements.md` on 2026-08-25, re-approved after architecture finding F-001, and narrowed after CR-F-002. The normal browser journey is sequential Stop -> open Settings -> edit -> Save, with no multi-tab/revision UX. The stopped existing-Team surface does not add Reset-to-inherited.
+Refined — approved with `requirements.md` on 2026-08-25, re-approved after architecture finding F-001, narrowed after CR-F-002, and aligned with the SR-005 owner-aware server correction after CR-F-003. The normal browser journey remains sequential Stop -> open Settings -> edit -> Save, with no multi-tab/revision or new ownership-management UX. The stopped existing-Team surface does not add Reset-to-inherited.
 
 ## UX Goal
 
@@ -27,7 +27,7 @@ Let users revise the selected model's Thinking/advanced settings only after an e
 | UXJ-001 | Standalone user | Existing run is inactive/offline | Change supported model settings | New config saved; run remains inactive; draft clean | REQ-001, REQ-002, REQ-004–REQ-007; AC-001, AC-012–AC-014 |
 | UXJ-002 | Standalone user | Existing run is active, including active-idle | Stop it, then change Codex/AutoByteus/Claude model settings | Config saved while stopped; run remains ready for automatic resume | REQ-002, REQ-004–REQ-007, REQ-011; AC-002–AC-004, AC-016 |
 | UXJ-003 | Team operator | Existing root is active or stopped | Stop the root if needed, then change root/nested-team/configured-agent model settings directly | Narrow team changes saved without a stopped-run Reset action; root remains stopped | REQ-003–REQ-008, REQ-015; AC-005–AC-008, AC-015 |
-| UXJ-004 | Any user | Settings load, validation, catalog, persistence, network, or independently triggered system activation changes the operation state | Avoid unsafe save or accidental persistence | Canonical state remains authoritative; draft is retained only where truthful and is dropped on navigation | REQ-005, REQ-009–REQ-014; AC-003, AC-004, AC-008–AC-013 |
+| UXJ-004 | Any user | Settings load, validation, catalog, persistence, network, General external activation, or a live Application binding changes eligibility | Avoid unsafe save or accidental persistence | Canonical owner-aware state remains authoritative; draft is retained only where truthful and is dropped on navigation | REQ-005, REQ-009–REQ-014; AC-003, AC-004, AC-008–AC-013 |
 
 ## Journey Details
 
@@ -61,7 +61,7 @@ Let users revise the selected model's Thinking/advanced settings only after an e
 
 ### UXJ-004 — Recovery and unsaved navigation
 
-1. In the normal browser journey, no message is sent until Save returns. If an independent supported subsystem—such as external-channel ingress or application input—activates the same persisted run while Settings is open, the status update or `RUN_ACTIVE` Save response makes inputs and Save unavailable and explains that other activity resumed the run.
+1. In the normal browser journey, no message is sent until Save returns. If General external-channel ingress restores the same General-owned run, the status update or `RUN_ACTIVE` Save response relocks the form. Separately, if the exact ID belongs to a nonterminal Application binding, the network-fresh Settings response is locked from the outset and a direct Save returns `RUN_ACTIVE`; the UI does not expose Application manager internals or an ownership-transfer action.
 2. After the user stops it again and reopens Settings, the panel performs a fresh canonical load. It does not rebase or automatically resubmit the old draft; the rejected local values may remain visible only with an explicit unsaved/error state until navigation/reload.
 3. Validation errors appear next to the relevant control and in an alert summary. No active runtime is stopped.
 4. Catalog failure preserves stored values, disables editing, and offers **Retry model options**.
@@ -84,12 +84,14 @@ Let users revise the selected model's Thinking/advanced settings only after an e
 | Scenario / State | User Action Or Trigger | Immediate Feedback | Resulting UI State | Data / Side Effect | Next Available Actions |
 | --- | --- | --- | --- | --- | --- |
 | Eligible inactive, clean | Change model setting | Control updates; Save enables if valid | Dirty | Local draft only | Save, continue edit, leave without saving |
-| Dirty | Save | Button label `Saving…`; controls disabled | Saving | Server validates and enters the run/root lifecycle boundary used by real external-ingress restore | Wait |
+| Dirty | Save | Button label `Saving…`; controls disabled | Saving | Server verifies no live Application lease, then validates and enters the General run/root lifecycle boundary used by real external-ingress restore | Wait |
 | Save success | Server returns canonical result | Success status announced | Clean, inactive/offline | Canonical config/status replaces draft | Send next message; edit again |
 | Active/active-idle selected | Open configuration | `Stop this run/team before changing model settings.` | Entire form locked; selected-run Save visible but disabled | None | Use existing Stop action |
 | Divergent or directly edited Team scope | Expand the stopped scope, edit it directly, or edit an ancestor | Scope remains/becomes `Customized`; its own model controls use its fixed runtime/model; no Reset action is shown | Directly editable locally; later ancestor propagation stops before this branch | Local draft changes only; a later direct edit overrides an earlier propagated value | Edit directly, Save, or leave |
-| Independent system restore enters first | External inbound or application input activates the same persisted run; status update or Save response | `Other activity resumed this run before settings were saved. Stop it and try again.` | Form relocked; local values are explicitly unsaved | No persisted config change | Stop, reopen Settings, reload, edit again |
-| Save enters before independent system restore | External/application resolver targets the same run | Normal `Saving…`; no concurrency-specific browser controls | Saving then stopped/clean | Config commits before the queued restore reads it | Wait for Save; the initiating subsystem continues normally |
+| General external restore enters first | External inbound activates the same General-owned persisted run; status update or Save response | `Other activity resumed this run before settings were saved. Stop it and try again.` | Form relocked; local values are explicitly unsaved | No persisted config change | Stop, reopen Settings, reload, edit again |
+| Save enters before General external restore | External-channel resolver targets the same General-owned run | Normal `Saving…`; no concurrency-specific browser controls | Saving then stopped/clean | Config commits before the queued General restore reads it | Wait for Save; the initiating subsystem continues normally |
+| Application binding owns the exact ID | Open Settings or call Save directly while the binding is nonterminal | Existing active/locked guidance; direct Save yields `RUN_ACTIVE` | Locked; no editable draft is authorized | No persisted config change; Application input remains under its owner | Stop/terminate through the owning Application lifecycle, then reopen Settings after completion |
+| Application ownership lookup unavailable/inconsistent | Open Settings or Save during failed/incomplete ownership resolution | Existing loading/error alert; Retry where supported | Locked | No persistence call is delegated to General services | Retry after recovery; do not edit |
 | Client/server validation failure | Save or response | Field messages + alert summary | Dirty, editable | No stop, no persisted change | Correct or leave without saving |
 | Catalog loading | Open/refresh | `Loading model options…` status | Read-only model config | No normalization or persistence | Wait |
 | Catalog error | Load fails | Error alert + Retry | Read-only model config | Stored values preserved | Retry |
@@ -178,7 +180,7 @@ Before this team was launched, the same footer location used `[Run Team]`.
 
 - Fixed fields use disabled/read-only styling plus text, not color alone, to communicate immutability.
 - Every active state uses the same clear boundary: `Stop this run before changing model settings` or `Stop this team before changing model settings`.
-- If a verified non-Settings subsystem restores the same persisted run while Settings is open, the form relocks and explains that the run must be stopped again. Generic multi-tab/browser timing copy is not shown.
+- If General external activity restores the same persisted run while Settings is open, or a fresh result shows a live Application binding, the form remains/relocks and explains that the run must be stopped again. Generic multi-tab/browser timing or technical manager-ownership copy is not shown.
 
 ### Permission / Authentication
 
@@ -211,11 +213,11 @@ No new role/permission model is introduced. Existing access to the selected run 
 
 ## Data And API Dependencies
 
-- Authoritative standalone/team resume configuration, lifecycle status, and model-setting editability.
+- Authoritative standalone/team resume configuration, owner-aware lifecycle status, and model-setting editability.
 - Runtime-scoped model catalog/schema for the fixed runtime/model.
 - Narrow standalone and team Save operations returning canonical config, lifecycle/editability, and outcome/error code. Outcome-verification state is needed only for network/physical persistence uncertainty, not writer revision conflicts.
 - Existing status/event refresh and inactive-run automatic restore paths.
-- Existing non-Settings restore paths, including external-channel ingress and application input, which converge on the server lifecycle boundary shared with Save.
+- Existing non-Settings paths: external-channel ingress converges on the General lifecycle boundary shared with Save; Application input remains behind a separate binding-owned lifecycle lease that keeps Studio configuration locked until release.
 
 ## Out Of Scope
 
@@ -226,6 +228,7 @@ No new role/permission model is introduced. Existing access to the selected run 
 - Live progress granularity beyond what the update operation can truthfully report.
 - New visual design system components when existing form, alert, disclosure, and button patterns suffice.
 - Multi-tab/multi-user editing, revision-conflict dialogs, automatic draft rebasing, and concurrent-submission UX.
+- New UI for transferring, inspecting, or controlling Application Engine run ownership; this ticket reuses the existing locked/error presentation.
 
 ## Open Decisions / Risks
 
@@ -233,8 +236,8 @@ No new role/permission model is introduced. Existing access to the selected run 
 - The stopped Team Configuration may retain descriptive inherited/customized badges, but adds no Reset-to-inherited action. A direct scope edit uses that scope's fixed model; a parent/default edit flows only through the REQ-008 value-matching chain. Existing pre-launch Reset behavior remains unchanged.
 - Effective support across AutoByteus, Codex, and Claude is approved; the missing Claude `llmConfig` execution bridge is required behind the same UI.
 - A current schema can become unavailable after a draft begins; canonical stored data must win and the draft must not be auto-sanitized.
-- The user-approved browser path is sequential. Only verified non-Settings runtime resolvers (for example external-channel ingress or application input) retain lifecycle coordination; the UI uses ordinary locked/error states rather than a new concurrency workflow.
+- The user-approved browser path is sequential. General external-channel restore retains lifecycle coordination; Application input is handled by a server-owned live-binding eligibility barrier. The UI uses ordinary locked/error states rather than a new concurrency or ownership workflow.
 
 ## Approval Status
 
-Approved on 2026-08-25 with `requirements.md`, re-approved after F-001, and narrowed after CR-F-002. The browser UI remains locked until the user manually stops the standalone run or entire root Team, then opens Settings and waits for a network-fresh canonical load. The stopped form reuses the existing hierarchy, enables only model-setting controls, adds contextual Save, adds no Reset-to-inherited or revision-conflict UX, and leaves the run/team stopped after Save. Independently verified non-Settings runtime resolution can relock the form outside that sequential browser journey.
+Approved on 2026-08-25 with `requirements.md`, re-approved after F-001, narrowed after CR-F-002, and unchanged in visible scope by SR-005. The browser UI remains locked until the user manually stops the standalone run or entire root Team, any live Application binding has released the identity, and Settings completes a network-fresh canonical load. The stopped form reuses the existing hierarchy, enables only model-setting controls, adds contextual Save, adds no Reset-to-inherited, revision-conflict, or ownership-management UX, and leaves the run/team stopped after Save. General external restore or a live Application lease can keep/relock the form outside that sequential browser journey.

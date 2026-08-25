@@ -11,6 +11,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | `CRR-003` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 3 / direct user product-path correction | Pass | Fail — Requirement Gap | `CR-F-002`; `CR-F-001` remains technically resolved |
 | `CRR-004` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 4 / `IR-003` SR-004 rework | Fail — Requirement Gap | Pass | `CR-F-002` resolved; `CR-F-001` obsolete under SR-004 |
 | `CRR-005` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` | Proportional API/E2E test-code review / `API-REV-001` Pass | Pass — Implementation Review | Pass — Test-Code Review | None |
+| `CRR-006` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 5 / `IR-004` latest-base integration | Pass — Source and Test-Code Reviews; `DR-001` integration blocked | Fail — Design Impact | `CR-F-003` |
 
 ## Revision Entries
 
@@ -139,3 +140,30 @@ None. No prior proportional test-review finding existed; CR-F-001/002 were alrea
 - Material score or classification changes: None. The implementation scorecard was not repeated or changed; API-REV-001 remains Pass at 96.4% final confidence.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: The environment lacked a configured Claude provider credential for a paid remote response turn; direct pinned-SDK application coverage passed. Delivery still owns integrated-state refresh, durable documentation, final handoff, and user-gated finalization.
+
+
+### CRR-006 — Integrated process ownership contradicts the Application-bound stopped-update contract
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `5`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`; `DR-001`; new finding `CR-F-003`
+- Relevant solution revision IDs: `SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-004` (preserving `IR-003`)
+- Relevant API/E2E revision IDs: `API-REV-001` (pre-integration context only)
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: **Pass** — source review (`CRR-004`) and proportional test-code review (`CRR-005`); delivery was blocked only on latest-base integration
+- Current authoritative result: **Fail — Design Impact**
+- What changed in the review result and why: IR-004 correctly preserves the advanced base's intentionally application-scoped Agent/Team managers and services, but SR-004 assumed Application Engine restore converges on the same lifecycle owner as Studio stopped Save. Studio GraphQL/history remains bound only to General Process services, while Application launch/input uses distinct application-scoped live maps and transition lanes. Normal Application Engine launch/input plus the explicit active-update API contracts therefore expose a real cross-owner gap: application-owned active runs can bypass `RUN_ACTIVE`, and application restore is not ordered with stopped Save. No multi-tab, multi-user, hand-speed, revision, or browser-writer premise drives this result.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-001` | Obsolete under SR-004 | Remains obsolete | `SR-004`, `CRR-004`, `IR-004` | Revision, stale-writer, rebase, and forced-baseline seams remain absent from current source/tests. |
+| `CR-F-002` | Resolved by SR-004/IR-003 | Remains resolved | `SR-004`, `ARCH-REV-003`, `IR-003`, `IR-004`, `CRR-004` | The sequential browser journey remains authoritative; IR-004 restores no imagined browser concurrency. CR-F-003 begins instead from normal Application Engine operations and governing direct-update contracts. |
+
+- New or remaining finding IDs: `CR-F-003` — open `Design Impact`.
+- Material score or classification changes: Source score decreases from `9.5/10` (`95.3/100`) to `8.6/10` (`86.3/100`); behavior basis changes from Confirmed to Contradicted; classification is `Design Impact`.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: Upstream must decide the authoritative query/update/lifecycle routing for application-owned run IDs, or explicitly revise the applicable product contract. API/E2E is paused until design, architecture, implementation, and source review correct the integrated owner topology; no speculative browser concurrency machinery or coverage should be introduced.

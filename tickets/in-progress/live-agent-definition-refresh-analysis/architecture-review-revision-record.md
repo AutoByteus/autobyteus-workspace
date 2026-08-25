@@ -9,6 +9,7 @@ The latest `design-review-report.md` remains authoritative. This record preserve
 | ARCH-REV-001 | Round 1 / SR-002 implementation-readiness review requested by solution designer | SR-002 | N/A | Fail — Requirement Gap | F-001 |
 | ARCH-REV-002 | Round 2 / SR-003 re-review after user-approved F-001 correction | SR-003 | Fail — Requirement Gap | Pass | F-001 (resolved) |
 | ARCH-REV-003 | Round 3 / SR-004 re-review after CRR-003 product-reachability correction | SR-004 | Pass | Pass | CR-F-002 (solution basis resolved); F-001 remains resolved |
+| ARCH-REV-004 | Round 4 / SR-005 re-review after CRR-006 integrated owner-topology finding | SR-005 | Pass | Pass | CR-F-003 (design basis resolved); CR-F-002/F-001 remain resolved |
 
 ## Revision Entries
 
@@ -73,3 +74,26 @@ None.
 - Material classification changes: The old same-browser `MP-CR-001` timing premise no longer governs behavior; SR-004 classifies same-browser in-flight resume as `MP-SR4-002 Not Reachable`. `MP-CR-002` remains Not Reachable as `MP-SR4-001`. Separate independently originated `MP-SR4-003` external ingress and `MP-SR4-004` Application Engine input are Reachable and justify only the existing owner lanes. `MP-SR4-005` is Unclear and drives no decision. Active-call and physical-outcome contracts remain narrowly reachable as `MP-SR4-006/007`.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Current HEAD `08b11b3aa` still contains the superseded implementation and must be refactored before source re-review. The existing API/E2E investigation is stale and must be revised by its owner before durable coverage edits or execution. Dynamic schemas, Team post-rename indeterminacy, stored Team provenance, and real Claude provider execution remain bounded residual risks; MP-SR4-005 is explicitly non-authoritative.
+
+### ARCH-REV-004 — SR-005 adds a bounded Application ownership lease without cross-owner coordination
+
+- Canonical design review report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
+- Review round and trigger: Round 4; SR-005 re-review after integrated-source review `CRR-006` found that SR-004 incorrectly treated Application input and Studio stopped Save as callers of the same manager/lifecycle instances.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`; `CR-F-003`, `MP-CR-003`, and `MP-CR-004`, with `MP-SR4-004` reclassified.
+- Relevant solution revision IDs: `SR-005` (preserving SR-004's sequential-flow/removal decisions and SR-003's no-stopped-Reset correction)
+- Prior authoritative decision: **Pass** (`ARCH-REV-003`, with an Application same-owner conclusion later contradicted by integrated source)
+- Current authoritative decision: **Pass**
+- What changed in the review result or what baseline was established: Verified integrated HEAD `c3b2466489e81d74930582f76016540480345020` and accepted the corrected two-owner topology. `ApplicationRunOwnershipService` uses startup readiness, exact global lookup, canonical Agent/Team binding provenance, binding contents, and binding status to classify a live nonterminal lease or verified release. `StudioRunModelConfigService` guards only the two resume reads and two stopped updates; live ownership maps to existing locked/`RUN_ACTIVE` results with no write, while release delegates to unchanged General owners. Terminal persistence precedes lookup release, terminal input is rejected, and provenance preserves the lease through supported post-start reentry lookup rebuilds. Managers/stores remain encapsulated; no cross-owner mutex, ownership transfer, revision policy, or new UI is added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-003` | Open downstream Design Impact in `CRR-006` | Resolved at the SR-005 design basis; implementation and source re-review remain required | `SR-005`, `CRR-006`, `ARCH-REV-004`, `MP-SR4-004`, `MP-SR5-001`–`MP-SR5-003` | Requirements BEH-003/006/008 and REQ-009, DS-009, the ownership decision matrix, host-management seam, four-operation routing, file/dependency maps, and coverage guidance consistently use the Application lease before General delegation. Direct source reads confirm startup recovery, reentry, terminal-before-release, and terminal-input rejection. |
+| `CR-F-002` | Resolved by SR-004 / ARCH-REV-003 | Remains resolved | `SR-004`, `SR-005`, `ARCH-REV-003`, `ARCH-REV-004` | No revision, rebase, multi-client, hand-speed, or archive/delete coordination returns. The browser flow remains sequential. |
+| `F-001` | Resolved by SR-003 / ARCH-REV-002 | Remains resolved | `SR-003`, `SR-005`, `ARCH-REV-002`, `ARCH-REV-004` | Requirements, UX, planner guidance, examples, and coverage still omit stopped-run Reset and preserve fixed-identity divergence/direct-edit boundaries. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `MP-SR4-004` remains `Reachable`, but its consequence changes from a shared General lane to a distinct Application ownership lease. `MP-SR5-001`, `MP-SR5-002`, and `MP-SR5-003` are `Reachable` through normal terminalization, listener-before-recovery startup, and supported `reloadAndReenter`. `MP-SR4-005` remains `Unclear` and drives nothing. Unsupported browser premises remain `Not Reachable`.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: SR-005 is not yet implemented. Historical API/E2E and delivery results do not verify it. Dynamic schema absence, physical write uncertainty, Team override provenance, real-provider Claude execution, and the deliberately conservative lock for temporarily unmaterialized nonterminal Application bindings remain bounded. Keep `StudioRunModelConfigService` limited to the four named operations.
