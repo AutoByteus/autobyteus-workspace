@@ -2,10 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
-- Integration strategy and exact runtime contract:
+- Requirements and investigation:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md`
+- Reviewed design and exact integration contracts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt`
@@ -15,93 +16,144 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-3-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-design-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-design-analysis.md`
-- Current merge/conflict authority:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-attempt.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/merge-conflict-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/branch-overlap-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-merge-preview.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-conflict-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-overlap-inventory.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-path-inventory.txt`
-- Revision and review records:
+- Solution and review authority:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-merge-source-audit.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-source-trace.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-focused-validation.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-018-planner-completeness-probe.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-test-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md`
+- Triggering review and evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-020-failure-origin-focused.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-definition-run-authority-failure.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-source-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log`
 
 ## Current Implementation Summary
 
-`IR-011` is the bounded implementation-owned correction for `CRR-018` findings `CR-008`–`CR-010`, on top of the reviewed `IR-010` / `SR-010` / `ARCH-REV-010` v1.4.58 semantic integration. The implementation source commit is `ac0e1dea4b65b6c74f91a1d24a011b4871ac636f`.
+`IR-012` implements the cumulative reviewed `SR-011`–`SR-013` authority correction after `ARCH-REV-013: Pass`. Source commits are:
 
-The correction keeps the existing launch-configuration and TeamRun owners. It reduces the changed launch-configuration service below the effective-line hard limit, reconciles the two V2-affected migration fixtures, and makes `TeamDefinitionTopologyPlanner` normalize and validate every Team-scope and Agent-member launch value through the existing current validator before either identity allocator can run. No caller-only guard, fallback, second precedence owner, production migration change, or generated output was added.
+- `3a02f19b25c3719877c9d7ed485da0db815c59e4` — `fix(server): bind task delegation to exact team root`
+- `2d76ea493a440503f24cfc5cd0b481585c351def` — `fix(server): bind host definitions to general run services`
 
-- Current revision: `IR-011`
-- Related solution revision: `SR-010` (retaining `SR-001`–`SR-009`)
-- Related architecture review: `ARCH-REV-010`
-- Triggering review/findings: `CRR-018`; `CR-008`, `CR-009`, `CR-010`
-- Current result: ready for affected implementation-source re-review
+The resulting hosts bind one exact bundle-backed Agent/Team definition pair, inject it into explicit general-process and graph-local application construction, configure Studio public definition/run services as one exact set, and unwind every owner in reverse order. General and application managers and Agent Tools sessions remain deliberately non-identical.
+
+Task delegation now carries a required RootTeamRun-local resolver through built-in, general-process, and application mixed-Team construction. Each MCP or AutoByteus Team member uses its exact immutable member capability; the shared task service/router no longer resolves process-global Team services, and executable mixed backends cannot synthesize no-op callbacks.
+
+- Implementation cycle: `Rework`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/implementation-revision-record.md`
+- Current implementation revision ID: `IR-012`
+- Related solution revisions: `SR-011`, `SR-012`, `SR-013` while retaining `SR-001`–`SR-010`
+- Related architecture review: `ARCH-REV-013` while retaining the accepted earlier integration reviews
+- Related code review: `CRR-020`
+- Related API/E2E revision: `API-REV-010`
+- Related delivery revision: `DR-010`
+- Triggering findings: `CR-011` / `APIE2E-F005`; `AR-007`
+- Current result: ready for complete implementation-source and structural re-review
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior / finding | Implemented path | Result |
-| --- | --- | --- |
-| `CR-008` | Cohesively simplified `ApplicationLaunchConfigurationService` without moving precedence or diagnostics to another owner. | `498` effective non-empty lines, below the `500` hard limit; package/selected/stored/readiness behavior remains unchanged. |
-| `CR-009`, `BEH-008`, `AC-033` | The native working-context fixture now asserts and executes V1 -> nested-memory -> V2 -> external order; recursive Team fixtures now include the exact V2 `defaultLaunchConfiguration`. | Current migration order and nested execution-tree shape are represented without changing production migration behavior. |
-| `CR-010`, `BEH-011`, `AC-032` | Planner coverage checks normalize Team and Agent launch values using `cloneAgentLaunchConfiguration` before root Team compilation and allocation. | Blank required Team or Agent models reject with zero Team allocation, zero Agent allocation, zero manager creation, and zero persistence. |
-| Retained `IR-010` integration | The `633/50/13/30/7` semantic merge, application scope/leaf projection, graph-local allocators, V2-only current readers, and hierarchical Studio owners remain intact. | No unrelated integration source was reopened. |
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| `BEH-003`, `BEH-012`; `REQ-004`, `REQ-005`; `AC-035` | One exact host Agent/Team definition catalog serves Studio public definitions, explicit general execution, application construction, readiness, and refresh while execution/session state remains split. | `compositions/host-definition-services.ts`; `definitions/create-bundle-backed-definition-services.ts`; `build-studio-server.ts`; `start-standalone-application-host.ts`; `general-process-run-supervisor.ts`; definition/run services; Studio API service holder and run resolvers. | Exact Agent-then-Team bind and Team-then-Agent release; partial construction unwind and idempotent close; public run resolvers use the configured exact general services instead of ambient lookup. |
+| `BEH-012`; `REQ-004`, `REQ-006`; `AC-035` | Package validation stays transient/unbound; migrations and background preload cannot preempt or duplicate the runtime catalog. | `application-standalone-package-validator.ts`; run-history V2 migrations; `startup/cache-preloader.ts`. | Validator constructs an unbound pair; migration labels use persistence-only reads; redundant post-ready Agent/Team preload is removed. |
+| `BEH-003`, `BEH-013`; `REQ-004`, `REQ-005`; `AC-036` | Team task calls mutate only the RootTeamRun that created the member context in both general and application scopes. | `member-task-root-resolver.ts`; `member-team-context.ts`; manager/factory/builder/member registries; application/general assembly; MCP session/runtime/providers; task service/router; AutoByteus resolver. | Resolver identity is required through root, configured member, nested/task Agent, task Team, create, and restore paths. The router has no `getTeamRunService()` or restore fallback. |
+| `BEH-013`; `REQ-005`, `REQ-006`; `AC-036` | Missing callbacks/capability and revoked/closed scope fail before mutation; executable mixed factories have no callback-free route. | `mixed-team-run-backend-factory.ts`; `mixed-team-manager.ts`; MCP session/service/registry; task tool contracts. | `noopCallbacks` and the old AutoByteus custom-data context are removed. Required capability, immutable session projection, revocation, and closed-runtime rejection are covered. |
+| `BEH-001`–`BEH-011`; `REQ-001`–`REQ-012`; retained `AC-001`–`AC-035` | Preserve the completed v1.4.58 semantic merge, provider/workspace behavior, TeamRun V2/migrations, dual hosts, package contracts, publication, recovery, and cleanup. | Existing integrated source plus focused cumulative build and regression selection. | No public wire, persisted schema, package format, provider/native-tool behavior, gateway surface, or new compatibility path was introduced. |
 
-## Key Implementation Areas
+## Key Files Or Areas
 
-- `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts`
-- `autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts`
-- `autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts`
+- Host definition/general authority:
+  - `autobyteus-server-ts/src/compositions/host-definition-services.ts`
+  - `autobyteus-server-ts/src/application-platform/definitions/create-bundle-backed-definition-services.ts`
+  - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
+  - `autobyteus-server-ts/src/compositions/build-studio-server.ts`
+  - `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`
+  - Agent/Team definition and run service files; Studio API holder/resolvers; package validator; migration and preloader files.
+- Exact task-root authority:
+  - `autobyteus-server-ts/src/agent-team-execution/task-delegation/member-task-root-resolver.ts`
+  - mixed Team manager/factory/member/context construction files
+  - `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts`
+  - Agent Tools MCP session/runtime/provider files
+  - task-delegation contract/router/service/tool files
+  - AutoByteus tool resolver
+- Proof:
+  - `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`
+  - host definition, general supervisor, Studio API, standalone lifecycle, MCP/session/task-router, mixed Team, manager, migration, and narrow package integration tests changed by the two commits.
 
-## Design And Compatibility Checks
+## Important Assumptions
 
-- Change posture: bounded `CRR-018` Local Fix; no independent product or architecture expansion.
-- Launch precedence/diagnostic ownership remains in `ApplicationLaunchConfigurationService`; no pass-through layer or second authority was added.
-- Planner validation reuses the current `cloneAgentLaunchConfiguration` normalization/validation owner before allocation; coverage, skill-policy, preset expansion, application binding, and graph-local allocator behavior remain unchanged.
-- Production V1 -> nested-memory -> V2 migration order and cleanup behavior were not changed; only directly stale implementation-owned fixtures were reconciled.
-- Compatibility machinery, fallback lookup, identity inference, and generated output introduced: none.
-- The source delta is backend/test-only; frontend runtime and rendered UI behavior are unchanged.
+- `ARCH-REV-013` is the current design authority and closes `AR-007`; no manager unification or application execution-scope abstraction is approved.
+- General-process and application run/session managers remain separate by design. Only the exact host definition objects are shared.
+- The existing internal Agent Tools route/catalog/tool protocol remains authoritative. Studio alone retains `/mcp/gateway`; standalone does not gain it.
+- Existing package, provider, TeamRun V2, migration, persisted-data, native Codex/Claude tool, and application SDK contracts remain unchanged.
 
-## Local Implementation Checks
+## Known Risks
 
-- Changed-source size audit: passed; `application-launch-configuration-service.ts` is `518` physical / `498` effective non-empty lines, and `team-definition-topology-planner.ts` is `265` physical / `248` effective non-empty lines.
-- Focused corrected server matrix: passed, `10` files / `79` tests. This covers application launch configuration, planner/TeamRun pre-allocation rejection, V1/memory/V2 migrations, current Team package catalog, server migration gate, and all `15` application-framework architecture checks.
-- Direct five-file correction run: application launch, planner, TeamRun, and native working-context files passed; the recursive cleanup file reached current V2 migration behavior and retained its two already-recorded blob-identical standalone diagnostic expectation failures (`APIE2E-REPO-005` / `Unclear`). Those unrelated assertions were not weakened or rewritten.
-- Shared prerequisites: `autobyteus-ts`, application SDK contracts, and backend SDK builds passed.
-- Server build-config TypeScript no-emit: passed after the normal shared-package build prerequisite.
-- Full server production build and sanitized built-in-agent bootstrap: passed.
-- Generated-output hygiene: all build-created `dist` directories were removed after validation; no generated target was added to the implementation commit.
-- Scoped implementation `git diff --check`: passed.
+- This is implementation-scoped evidence only. Real public Agent/Team CRUD-to-run/restart, live general/application task isolation, dual-host/package parity, recovery/cleanup, provider/model, migration, browser, and Electron proof remain downstream-owned.
+- `pnpm exec tsc -p tsconfig.json --noEmit` remains unusable as a repository-wide test-inclusive check because the existing config sets `rootDir: src` while including tests, producing baseline `TS6059` errors. Production `tsconfig.build.json --noEmit` and executable Vitest compilation pass.
+- API/E2E-owned dirty tests/reports/evidence and build-generated untracked `dist` directories were preserved and excluded from both implementation source commits.
+
+## Task Design Health Assessment Implementation Check
+
+- Reviewed change posture: bounded `Design Impact` correction on the completed integration.
+- Reviewed root-cause classification: split/ambient definition and run authority plus task execution-scope looseness.
+- Reviewed refactor decision: `Refactor Needed Now`, bounded to exact construction, lifecycle, and member capability paths.
+- Implementation matched the reviewed assessment: `Yes`.
+- If challenged, routed as Design Impact: `N/A`; implementation stayed within `SR-011`–`SR-013`.
+- Evidence / notes: no generic container, routing map, deferred proxy, global fallback, manager merge, compatibility alias, schema change, or migration was added.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: `None`.
+- Legacy old-behavior retained in scope: `No`.
+- Dead/obsolete code and paths removed in scope: `Yes`; the old application-only definition constructor name, executable `noopCallbacks`, process-global task router lookup, and `task-delegation-autobyteus-context.ts` are removed.
+- Shared structures remain tight: `Yes`; exact definitions are shared while general/application execution remains isolated.
+- Canonical shared design guidance was reapplied: `Yes`.
+- Changed production files stayed within proactive size-pressure guardrails: `Yes`; all changed production files are at or below `500` effective non-empty lines. The largest audited file is `490` effective lines.
+
+## Persisted Data Transition Check
+
+- Approved decision: `Directly Usable — No Migration` for the SR-011–SR-013 definition/task authority correction.
+- Design reference: `DS-024`, `DS-025`, and the SR-011/SR-012/SR-013 persisted-data decisions.
+- Implementation follows the approved decision without an unapproved migration or runtime fallback: `Yes`.
+- Existing TeamRun V2 and nested-memory migrations remain unchanged in meaning. The two history migrations changed only optional label lookup from ambient cached services to migration-local persistence reads.
+- Deviation: `None`.
+
+## Environment Or Dependency Notes
+
+- No dependency or manifest change was required.
+- Shared-package builds are the normal prerequisite for server/application builds.
+- Generated `dist` directories from local build checks remain untracked and intentionally unstaged; downstream owners' dirty ticket/evidence package is preserved.
+
+## Local Implementation Checks Run
+
+- Cumulative focused server matrix: `29` files / `183` tests passed. It covers architecture, exact member/root resolver identity, general/application/built-in mixed construction, create/restore/configured/nested/task paths, MCP capability/revocation, AutoByteus binding, definition binding, public service configuration, migrations, and standalone lifecycle/unwind.
+- Portable standalone package validation: `1` file / `9` tests passed; runtime definition singleton access was explicitly rejected.
+- Final architecture plus standalone lifecycle rerun: `2` files / `28` tests passed (`17` architecture tests and `11` lifecycle tests).
+- Server production TypeScript: `pnpm exec tsc --noEmit -p tsconfig.build.json` passed after final source changes.
+- Server full production build and built-in bootstrap smoke: `pnpm build` passed.
+- Application devkit build: passed.
+- Application frontend SDK build: passed.
+- Maintained Brief package build: passed.
+- Retired-path/symbol, public ambient run-service, process-definition getter, task ambient/no-op, occurrence, conflict-marker, and changed-source size audits: passed.
+- Implementation source and test commits passed `git diff --check`; no production source remains dirty after the commits.
+- The repository test-inclusive TypeScript command was attempted and reports the existing `TS6059` `rootDir`/test-include configuration mismatch; it is not represented as a pass.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable. `IR-011` changes backend service validation and implementation-owned server fixtures only; it contains no frontend source or styling delta. The retained `IR-010` rendered Studio coverage remains the downstream baseline.
+Not Applicable. `IR-012` changes server composition, execution authority, task capabilities, and focused backend tests only. It does not change rendered frontend source or styling.
 
-## Known Risks And Downstream Coverage Hints
+## Downstream Coverage Hints / Suggested Scenarios
 
-- Source re-review should verify the `498` effective-line result, exact V2 fixture shape/order, and that all planner launch-value validation completes before either allocator.
-- The unchanged cleanup-test diagnostic expectations remain separately characterized as historical `APIE2E-REPO-005` / `Unclear`; they are neither `IR-011` Pass evidence nor a broadened implementation finding.
-- After source Pass, API/E2E should resume the complete v1.4.58 Studio/standalone, provider/model, nested Team recovery/history, package parity, cleanup, and generated-tree matrix.
-- Fresh Electron v1.4.58 verification remains downstream delivery-owned.
+1. Perform complete source/architecture review of both implementation commits and verify exact identities, reverse unwind, omission/null/undefined rejection, and all governed construction occurrences.
+2. After source Pass, rerun public Studio Agent/Team create/list/update/delete -> run -> restart against the same bound definition objects; prove application business construction consumes those definitions with non-identical application managers/sessions.
+3. Run distinct live general and application Teams. Exercise MCP and AutoByteus `delegate_task`, `submit_task_result`, and `review_task_result`; prove each mutates only its exact active root and fails after revoke/close without lookup or restore fallback.
+4. Re-run both real hosts, package parity, provider/model/workspace, TeamRun V2/migrations, nested history/recovery, publication/handoff/projection, cleanup, browser, proportional durable-test review, and fresh Electron verification.
 
-## API / E2E / Executable Coverage Still Required
+## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. This handoff is implementation-scoped only. Independent coverage investigation/reconciliation, real dual-host/browser execution, migration/recovery, package parity, cleanup, proportional durable-test review, and Electron verification remain required after source review passes.
+Yes. This handoff claims only implementation-scoped source, unit, narrow integration, architecture, and build evidence. API/E2E must reconcile and execute the current durable coverage after source review passes; delivery remains blocked until the complete downstream loop succeeds.

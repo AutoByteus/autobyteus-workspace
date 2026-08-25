@@ -17,6 +17,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-009 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-008` | `N/A`; `AR-001`–`AR-005` remain resolved | `Reviewed Semantic Refresh` | `SR-001`–`SR-008`, `ARCH-REV-003`–`ARCH-REV-008`, `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-003`, `DR-004`, `DR-006`, `DR-008` | Ready for source review |
 | IR-010 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-010` | `AR-006` resolved; `AR-001`–`AR-005` remain resolved | `Reviewed Semantic Refresh` | `SR-001`–`SR-010`, `ARCH-REV-003`–`ARCH-REV-010`, `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-003`, `DR-004`, `DR-006`, `DR-008`, `DR-010` | Ready for source review |
 | IR-011 | `code_reviewer`; `code-review-report.md`; `CRR-018` | `CR-008`, `CR-009`, `CR-010` | `Local Fix` | `SR-001`–`SR-010`, `ARCH-REV-003`–`ARCH-REV-010`, `CRR-018`, `API-REV-001`–`API-REV-009`, `DR-004`, `DR-006`, `DR-008`, `DR-010` | Ready for source re-review |
+| IR-012 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-013` after `CRR-020` / `API-REV-010` | `CR-011`, `APIE2E-F005`, `AR-007` | `Design Impact` | `SR-011`–`SR-013`, `ARCH-REV-013`, `CRR-020`, `API-REV-010`, `DR-010` | Ready for complete source re-review |
 
 ## Revision Entries
 
@@ -240,3 +241,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Frontend rendered-result check: `Not Applicable`; IR-011 has no frontend source or styling delta.
 - Next recipient or routing: `/code_reviewer` for affected implementation-source and structural re-review before API/E2E resumes.
 - Remaining limitations or risks: no current-head API/E2E sign-off is claimed. After source Pass, the complete v1.4.58 Studio/standalone/provider/model/nested Team/recovery/history/package-parity/cleanup/browser matrix and fresh Electron verification remain downstream-owned; other roles' dirty reports/evidence remain preserved outside the implementation commit.
+
+### IR-012 — Bind canonical host definitions and task delegation to exact roots
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md`; `ARCH-REV-013` Pass for cumulative `SR-011`–`SR-013`, following `code-review-report.md` / `CRR-020` and `API-REV-010`.
+- Triggering finding IDs: `CR-011` / `APIE2E-F005`; `AR-007`.
+- Classification: `Design Impact`.
+- Prior authoritative result: `ARCH-REV-013 — Pass`; implementation pending on reviewer HEAD `a5a6131531658e8a8a323989b1863b7202464f11`.
+- Current authoritative result: `Ready for complete implementation-source and structural re-review` at source HEAD `2d76ea493a440503f24cfc5cd0b481585c351def`.
+- Related solution revision IDs: `SR-011`, `SR-012`, `SR-013`, retaining `SR-001`–`SR-010`.
+- Related architecture-review revision IDs: `ARCH-REV-013`.
+- Related code-review revision IDs: `CRR-020`.
+- Related API/E2E revision IDs: `API-REV-010`.
+- Related delivery revision IDs: `DR-010`.
+- Why this implementation revision is recorded: closes the exact definition/run authority mismatch that prevented public definitions from launching and the RootTeamRun task-scope gap that allowed application Team-member task tools to depend on process-general lookup.
+- Approved behavior or requirement IDs affected: `BEH-003`, `BEH-006`, `BEH-012`, `BEH-013`; `REQ-004`–`REQ-007`; `AC-005`, `AC-007`, `AC-008`, `AC-011`, `AC-035`, `AC-036`; `DS-024`, `DS-025`.
+- Implementation delta: added one composition-owned fail-closed `HostDefinitionServices` resource and reusable unbound bundle-backed constructor; explicitly constructed/bound general Agent/Team run services from the exact host definitions; configured Studio public definitions and run services as one identity-owned set; kept standalone validation transient/unbound; converted migration label lookup to persistence-only reads and removed redundant definition preloading. Added `MemberTaskRootResolver`, propagated its exact identity through built-in/general/application mixed managers, member context, MCP sessions and AutoByteus tools, removed `noopCallbacks` and process-global task routing, and made executable mixed-factory callbacks required. Preserved non-identical general/application managers and sessions plus reverse close/unwind.
+- Changed files or areas: source/test commit `3a02f19b25c3719877c9d7ed485da0db815c59e4` for exact task-root authority and source/test commit `2d76ea493a440503f24cfc5cd0b481585c351def` for canonical host definitions/general services; detailed path lists are in `implementation-handoff.md` and the two commit manifests.
+- Local validation and result: cumulative focused server selection passed `29` files / `183` tests; portable standalone package validation passed `1` file / `9` tests; final architecture/standalone lifecycle rerun passed `2` files / `28` tests; server build-config TypeScript and full production build/bootstrap passed; devkit, frontend SDK, and maintained Brief package builds passed; exact getter/occurrence/retired-path/no-op/ambient lookup/size/diff audits passed. The test-inclusive `tsconfig.json` command retains the existing `TS6059` rootDir/include mismatch and is not claimed as a pass.
+- Frontend rendered-result check: `Not Applicable`; the revision changes backend composition/execution authority and tests only.
+- Next recipient or routing: `/code_reviewer` for complete implementation-source and structural re-review before API/E2E resumes.
+- Remaining limitations or risks: no current-head API/E2E or Electron sign-off is claimed. Public CRUD-to-run/restart, real general/application MCP and AutoByteus task isolation, both hosts, provider/workspace, TeamRun V2/migrations, package parity, publication/handoff/projection, recovery/cleanup, browser, durable-test review, and Electron remain downstream-owned. Other roles' dirty reports/evidence and generated build outputs are preserved outside the implementation commits.
