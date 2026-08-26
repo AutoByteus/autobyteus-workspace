@@ -1,8 +1,8 @@
 # Provider Composition Transition Inventory
 
-Status: Normative cumulative implementation and proof supplement. SR-007 starts from protected checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7` and semantically integrates latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a`. The SR-007 section below overrides any later historical SR-006 row that calls a now-overlapping path “no planned edit.” All earlier provider/Authority/kernel/task/context/Mixed Team obligations remain cumulative.
+Status: Normative cumulative implementation and proof supplement. SR-008 corrects ARCH-REV-007 AR-005 by closing the current stopped-Team frontend clean cut; SR-007's accepted production integration from protected checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7` to latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` is otherwise unchanged. The current section overrides any later historical row that calls a now-overlapping path “no planned edit.”
 
-## SR-007 — Latest Personal Semantic Integration Override
+## SR-007/SR-008 — Latest Personal Semantic Integration Override
 
 ### Exact authority and construction delta
 
@@ -61,6 +61,26 @@ The Personal rename from
 the discarded revision-based `run-model-config-revision.ts` representation stay
 absent. The current sequential lane is the only transition authority.
 
+The latest-Personal frontend clean cut also removes exactly these four legacy
+stored-Team representation paths:
+
+```text
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts
+autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+```
+
+They remain absent. No alias, re-export, wrapper, duplicate `stored` form model,
+or compatibility import is permitted. Their current replacement owners are:
+
+```text
+autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+autobyteus-web/types/agent/ExistingTeamRunFormModel.ts
+```
+
 ### Modify — additional production paths
 
 | Path | Exact Change |
@@ -75,7 +95,7 @@ absent. The current sequential lane is the only transition authority.
 | `autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts` | consume configured guarded Studio service; no default direct general/application lookup |
 | `autobyteus-server-ts/src/api/graphql/types/{agent-run.ts,agent-team-run.ts,run-history.ts,team-run-history.ts}` | retain Personal query/mutation/result mapping through configured Studio service |
 
-### Durable coverage — exact SR-007 add/retain set
+### Durable coverage — exact SR-007/SR-008 add/retain set
 
 ```text
 autobyteus-server-ts/tests/unit/llm-management/model-config-validation-service.test.ts
@@ -91,17 +111,18 @@ autobyteus-server-ts/tests/unit/api/graphql/types/agent-team-run.test.ts
 autobyteus-server-ts/tests/unit/api/graphql/types/run-history.test.ts
 autobyteus-server-ts/tests/unit/api/graphql/types/team-run-history.test.ts
 autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
-autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
-autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
 autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
 autobyteus-web/stores/__tests__/agentRunStore.spec.ts
 autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
 autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts
 autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts
 autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
 ```
 
-### Durable coverage — exact SR-007 modify set
+### Durable coverage — exact SR-007/SR-008 modify set
 
 | Path / Set | Required Update / Preserved Proof |
 | --- | --- |
@@ -114,6 +135,8 @@ autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
 | `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | current stopped-config and race cases plus exact factory/task/validator construction |
 | every direct `AgentRunService` constructor file listed below | supply exact lifecycle fixture; preserve the file's existing create/restore/termination/history subject |
 | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | union current application-ownership dependency rules with deleted old-factory/test and seven-capability proof |
+| `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` | use `projectExistingTeamRunFormModel`; preserve root/member order, nested exact values, historical-only workspace display, fixed Team facts, absence of editable command/config surfaces, and model-config-only emissions |
+| `autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts` | move the deleted stale test's root/nested-scope residual rendering assertions onto current `ExistingTeamScopeFormModel`: representable value plus removed-key/unrepresentable-value rows exactly once, no reset/fixed-field mutation, no input mutation |
 
 Direct `AgentRunService` constructor closure is exactly:
 
@@ -154,8 +177,13 @@ The architecture guards derive current source sets and fail on drift:
 9. deleted `create-application-run-services.ts` and
    `application-run-services.test.ts` remain absent; unresolved governed imports
    fail closed.
+10. the four deleted `StoredTeamRunFormModel` family paths remain absent;
+    production/test imports of `StoredTeamRunFormModel` or
+    `projectStoredTeamRunFormModel` are zero; current stopped-Team projection is
+    owned only by `ExistingTeamRunFormModel`, `projectExistingTeamRunFormModel`,
+    the existing-run draft/editor family, and their exact tests above.
 
-### SR-007 focused and realistic verification
+### SR-007/SR-008 focused and realistic verification
 
 | Proof | Required Result |
 | --- | --- |
@@ -164,6 +192,7 @@ The architecture guards derive current source sets and fail on drift:
 | Team configuration | configured Agent/Team address resolution, validate-all-before-write, root lane ordering, active/archive/admission rejection, external-channel race |
 | ownership | startup wait, lookup/binding provenance, status matrix, mismatch/missing fail closed, zero general write while live/unreadable |
 | boundary | seven scope capabilities, read-only platform ownership, no raw manager/store/catalog, lookup-only general Agent service |
+| frontend clean cut | four legacy stored-Team paths absent; current existing-run projector/editor tests preserve topology, fixed identity, workspace display, exact historical residuals, and model-config-only edits without compatibility representation |
 | regression | prior provider/Authority/context/task/cleanup suite plus Personal GraphQL/web model-setting suite and realistic Studio/standalone runs |
 | delivery | fresh current-base audit, Electron build, user verification after all upstream gates pass |
 

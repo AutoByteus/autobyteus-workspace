@@ -11,6 +11,7 @@
 | SR-005 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 | AR-004 | Design Impact Rework | Complete root-owned Mixed Team construction preserved; ready for architecture re-review |
 | SR-006 | `/code_reviewer` / `code-review-report.md` / CRR-003 | CR-002, CR-003, CR-004 | Design Impact Rework | Complete task identity, provider-input, and Agent-manager execution-family closure; ready for re-review |
 | SR-007 | `/delivery_engineer` / `latest-base-integration-conflict-report.md` / DR-001 | latest-Personal 14-path semantic junction | Design Impact Rework | Current stopped-run configuration and ownership integrated into explicit roots; ready for architecture re-review |
+| SR-008 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-007 | AR-005 | Design Impact Rework | Four-path stopped-Team frontend clean cut and current assertion ownership closed; ready for re-review |
 
 ## Revision Entries
 
@@ -135,3 +136,25 @@
 - Downstream impact: merge/implementation remains paused until architecture Pass. After Pass, implementation must perform one semantic merge and route through source review, API/E2E, proportional durable-test review, then delivery's fresh base audit and Electron build.
 - Next recipient: `/architecture_reviewer` with the cumulative SR-007 solution package plus DR-001 blocker/evidence and all prior review artifacts.
 - Remaining gaps or risks: source review must audit all fourteen overlaps, exact validator/lifecycle identity, lookup-only service access, ownership zero-write behavior, deleted-path absence, and the complete previously passed provider/Authority/task/context/cleanup matrix. A newly discovered governed construction occurrence is Design Impact rather than permission to add a default.
+
+### SR-008 — Current stopped-Team frontend representation clean cut
+
+- Trigger: `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-007.
+- Triggering finding IDs: AR-005. AR-001–AR-004 and SR-007's complete production architecture were explicitly accepted and remain closed.
+- Prior authoritative result: `Fail — Design Impact`, bounded to one contradictory frontend retain/removal instruction.
+- Current solution result: `Design Impact Rework Complete — Ready for Architecture Re-review`.
+- Why recorded: SR-007 incorrectly retained `StoredTeamScopeHistoricalFields.spec.ts` even though authoritative Personal commit `a4c2595f8` deletes it together with the `StoredTeamRunFormModel` type, projector, and projector test. The stale test imports the deleted type, so it cannot coexist with the required latest-Personal tree or one current frontend representation.
+- Resolution:
+  - recorded the exact four legacy type/projector/test paths as Remove and removed the stale test from the retain set;
+  - confirmed current Personal's singular replacement owners are `ExistingTeamRunFormModel`, `projectExistingTeamRunFormModel`, `existingTeamModelConfigDraft`, and `ExistingRunConfigEditor`;
+  - mapped current topology/fixed identity/historical workspace/model-config-only assertions to `TeamRunConfigForm.spec.ts` and draft propagation to `existingTeamModelConfigDraft.spec.ts`;
+  - mapped shared residual classification/non-mutation to `historicalModelConfigFields.spec.ts` and `RuntimeModelConfigFields.spec.ts`, Agent residual display to `MemberOverrideItem.spec.ts`, and root/nested Team residual display to a current `TeamScopeConfigEditor.spec.ts` modification;
+  - rejected transfer of the old projector's runtime deep-freeze assertion because current Personal intentionally uses readonly projection types plus an editable draft; recreating the frozen stored representation would be compatibility duplication;
+  - added zero-import/zero-path guards and explicit self-validation for the clean cut.
+- Reachability disposition: retaining the stale test is `Not Reachable` as a valid integrated state because ordinary module resolution fails on the deleted type. Current stopped-Team editing/rendering is `Reachable` through `ExistingRunConfigEditor`; its assertions must therefore follow that current owner.
+- Approved behavior or requirement IDs affected: BEH-007; REQ-008–REQ-009; AC-013–AC-016. Their meaning and all user-visible behavior remain unchanged.
+- Persisted-data disposition: `Directly Usable — No Migration / Not Affected`; only obsolete/current frontend TypeScript representations and coverage ownership are involved.
+- Canonical artifacts updated: `requirements.md` (status note only), `investigation-notes.md`, `design-spec.md`, `provider-composition-transition-inventory.md`, `latest-personal-run-configuration-integration-analysis.md`, `evidence/solution/sr-008-frontend-clean-cut-audit.log`, and this revision record. The provider/Authority contract remains unchanged because ARCH-REV-007 accepted it; no requirement statement or criterion changed.
+- Downstream impact: implementation/merge remains paused pending architecture Pass. After Pass, the four removed paths must stay absent and only current test files may receive the mapped coverage edits.
+- Next recipient: `/architecture_reviewer` with the cumulative SR-008 package plus ARCH-REV-007 artifacts.
+- Remaining gaps or risks: source review must prove zero legacy imports/aliases and complete current residual/topology coverage while preserving the accepted production integration matrix. No compatibility representation or representation-only rewrite is permitted.

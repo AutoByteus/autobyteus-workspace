@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: `Complete — Refined for SR-007 latest-Personal integration`
+- Current Status: `Complete — SR-008 resolves ARCH-REV-007 AR-005 frontend transition closure`
 - Investigation Goal: establish exact process/provider/session ownership, supported construction and failure spines, clean-cut transition, proof surface, and latest-Personal stopped-run configuration/application-ownership reconciliation.
 - Scope Classification: `Large`
 - Scope Classification Rationale: two execution roots, three provider families, MCP capability lifecycle, scope assembly, latest-Personal stopped-run/ownership junction, and tests change; current public behavior is preserved.
@@ -25,14 +25,14 @@ The user authorized continued design improvements, specifically required the Age
 - Bootstrap Remote Snapshot: `origin/personal` at `306de420ca8830478529b40bd6dfda6694b742a9`. Delivery fetched mandatory current Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` (22 commits beyond the snapshot).
 - Expected Base: `0811503a6c547698e7b77e1064d98890101acc1b`
 - Expected Finalization Target: ticket branch containing one history-preserving semantic merge of current Personal; target-branch integration remains separate.
-- Current Blocker: design-led semantic integration of latest Personal; delivery performed read-only merge preview only and started no merge.
-- Notes For Downstream Agents: protected checkpoint HEAD `ce9f2b6da2463ac789386acd5ec417188528c8c7` contains the CRR-004/API-REV-002/CRR-005-reviewed provider/authority result plus delivery records. Do not edit delivery-owned untracked artifacts. Implementation remains paused until SR-007 passes architecture review. Logical addressing is excluded.
+- Current Blocker: ARCH-REV-007 accepted the production design and returned one bounded AR-005 exact frontend removal/test-mapping correction; no merge has started.
+- Notes For Downstream Agents: protected implementation checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7` plus solution commit `808d74bb7` remain intact. Do not edit delivery- or reviewer-owned dirty artifacts. Implementation remains paused until SR-008 passes architecture review. Logical addressing is excluded.
 
 ## Supplemental Task Artifact Inventory
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related IDs | Status | Approval | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `provider-composition-and-agent-tools-authority-contract.md` | Normative boundary contract | Host/Authority/Issuer/resource, builder, kernel, validator/lifecycle | requirements, design | REQ-001–REQ-009; AC-001–AC-016 | Current SR-007 | User-approved scope | Architecture review |
+| `provider-composition-and-agent-tools-authority-contract.md` | Normative boundary contract | Host/Authority/Issuer/resource, builder, kernel, validator/lifecycle | requirements, design | REQ-001–REQ-009; AC-001–AC-016 | Accepted by ARCH-REV-007 | User-approved scope | Preserve |
 | `provider-composition-transition-inventory.md` | Exact transition/proof map | Add/modify/rename/remove, latest-base conflict disposition, and coverage obligations | design | REQ-001–REQ-009; AC-001–AC-016 | Current | N/A | Architecture review |
 | `latest-personal-run-configuration-integration-analysis.md` | Latest-base semantic reconciliation | authority split, reachability, owners, DS-012–DS-016, conflicts, exact construction and proof | requirements, design | REQ-008, REQ-009; AC-012–AC-016 | Current | N/A; preserves approved/current behavior | Architecture review |
 | upstream `future-architecture-simplification-review.md` | Triggering assessment | source-backed smells, spines, sequencing | all | all | Read-only upstream | N/A | None |
@@ -76,6 +76,8 @@ The user authorized continued design improvements, specifically required the Age
 | 2026-08-26 | Code/tests | latest Personal Agent lifecycle, Team manager, ownership, Studio config tests; current scope/kernel/general-supervisor tests | map durable proof and obsolete-test disposition | Save/restore races and zero-write guards have durable coverage; deleted `application-run-services.test.ts` only proves allocator identities already covered by current scope test | Combine fixtures; do not restore removed owner/test |
 | 2026-08-26 | Code/occurrence audit | latest Personal `agent-run-service.ts`, lifecycle/manager defaults, `ModelConfigValidationService` constructor, and every direct `new AgentRunService` occurrence | close the validator/lane construction surface | lifecycle and Team manager default the validator; AgentRunService can recreate lifecycle and its process accessor can lazily recreate the service. Nine durable files directly construct AgentRunService | Require root-created lifecycle, make the process accessor lookup-only, and record the exact nine-file fixture transition |
 | 2026-08-26 | Design principles | Product-Reachability and Authoritative Boundary checks against the new junction | prevent speculative capability growth | application direct run-config mutation is not supported; validator is a narrow process capability; application ownership remains an outer concern | DS-012–DS-016 and explicit dependency rules |
+| 2026-08-26 | Review | `design-review-report.md`, `architecture-review-revision-record.md`, ARCH-REV-007 | receive bounded Design Impact | production design accepted; AR-005 proves the exact retain list contradicts Personal's four-path stopped-Team frontend deletion | Resolve as SR-008 transition-only correction |
+| 2026-08-26 | Git/source | `evidence/solution/sr-008-frontend-clean-cut-audit.log`: `git show --name-status a4c2595f8`, deleted `StoredTeamRunFormModel` files/tests, current projector/type/editor and exact tests | verify current frontend authority and preserved assertions | one commit deletes all four legacy paths and adds one current existing-run representation; current tests allocate topology, draft propagation, fixed identity/workspace, shared residual classification, Agent residual, and Team editor behavior | Remove four paths; transfer root/nested residual assertions to current tests only |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -188,6 +190,20 @@ None. This is repository-internal architecture and no current external contract 
 22. One host-created `ModelConfigValidationService` over the selected process model catalog is a proportionate explicit dependency. Passing its narrow `validate` capability to both roots removes new ambient model-catalog/default selection without folding LLM policy into the provider factory builder.
 23. The two modify/delete conflicts stay deleted. The old application-run-services test's allocator/non-global/shutdown assertions already exist under `ApplicationExecutionScope`; latest stopped-run assertions belong to lifecycle/manager/ownership tests, not a resurrected factory test.
 24. Explicit validator injection is incomplete if `AgentRunService` can reconstruct the lane owner without it. Requiring the root-created lifecycle and making `getAgentRunService()` lookup-only removes that alternate composition path without changing any public caller: maintained hosts bind the exact general service before GraphQL/streaming/external-channel consumers run, and the application graph receives its service directly.
+25. Personal commit `a4c2595f8` deletes the `StoredTeamRunFormModel` type, projector, projector test, and standalone stored-scope historical test while adding the single `ExistingTeamRunFormModel`/draft/editor family. The stale test cannot compile because it imports the deleted type. Current topology and fixed-field assertions live in `TeamRunConfigForm.spec.ts`; draft propagation lives in `existingTeamModelConfigDraft.spec.ts`; shared residual classification/non-mutation lives in `historicalModelConfigFields.spec.ts` and `RuntimeModelConfigFields.spec.ts`; configured-Agent residual rendering lives in `MemberOverrideItem.spec.ts`. Root/nested Team-scope residual rendering is transferred into current `TeamScopeConfigEditor.spec.ts`. The old projector's runtime deep-freeze assertion is intentionally not preserved because the current design uses readonly projections plus an editable draft; recreating a frozen stored model would introduce a second representation.
+
+## SR-008 Design Self-Validation
+
+| Check | Evidence | Result |
+| --- | --- | --- |
+| latest target authority | reviewer independently re-fetched Personal at `b52fe5aebdb962ce361529f9e797affeb30d719a`; local `git show a4c2595f8 --name-status` confirms all four deletions and current replacements | Pass |
+| one frontend representation | authoritative current Personal contains `ExistingTeamRunFormModel`, `projectExistingTeamRunFormModel`, draft/editor owners; zero legacy path is present in that target | Pass |
+| exact Remove inventory | transition supplement lists the type, projector, projector test, and stale component test as Remove | Pass |
+| stale retain/import removal | `StoredTeamScopeHistoricalFields.spec.ts` is absent from retain coverage; target requires zero `StoredTeamRunFormModel`/`projectStoredTeamRunFormModel` imports | Pass |
+| assertion ownership | exact current source/tests own topology/fixed fields, draft propagation, residual classification, and Agent residual; the transition assigns root/nested Team residual proof to current `TeamScopeConfigEditor.spec.ts` | Pass — implementation/execution pending |
+| empty compatibility control | no alias, wrapper, re-export, parallel stored model, runtime fallback, or representation-only rewrite is proposed | Pass |
+| production design stability | ARCH-REV-007 accepted validator/lifecycle, ownership, seven-capability scope, Host/Authority/provider/task/context/Mixed Team, and deleted run-services decisions | Pass; unchanged |
+| migration/data | frontend TypeScript/test representation only; persisted Agent metadata/Team V2 trees and current readers/writers are unchanged | `Directly Usable — No Migration` |
 
 ## Persisted Data Transition Evidence
 
@@ -195,7 +211,7 @@ None. This is repository-internal architecture and no current external contract 
 - Code-model change: object graph and TypeScript contracts only.
 - Normal readers/writers: unchanged.
 - Required semantics preserved by direct use: `Yes` — no stored shape changes.
-- Decision: `Directly Usable — No Migration / Not Affected by SR-007`; the semantic merge changes object-graph construction only and uses latest Personal readers/writers unchanged.
+- Decision: `Directly Usable — No Migration / Not Affected by SR-008`; the semantic merge changes object-graph/frontend TypeScript construction only and uses latest Personal readers/writers unchanged.
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -207,9 +223,9 @@ None. This is repository-internal architecture and no current external contract 
 
 ## Open Unknowns / Risks
 
-- No design unknown remains for AR-001–AR-004, CR-001–CR-004, or the DR-001 latest-base junction. Downstream must prove the exact process input/mapping, revised K0–K8 ownership cuts, all prior constructor obligations, required Root Team task identity, one explicitly rooted AgentRun provider-input normalizer per execution family (including app-data, memory and configured-origin inputs), complete AgentRunManager infrastructure, and exact general/application identity rather than reinterpret them.
+- No design unknown remains for AR-001–AR-005, CR-001–CR-004, or the DR-001 latest-base junction. Downstream must prove the exact process input/mapping, revised K0–K8 ownership cuts, all prior constructor obligations, required Root Team task identity, one explicitly rooted AgentRun provider-input normalizer per execution family (including app-data, memory and configured-origin inputs), complete AgentRunManager infrastructure, exact general/application identity, and the four-path frontend clean cut rather than reinterpret them.
 - Any newly discovered production/test occurrence, construction closeable, or proposed issuer broadening is Design Impact and requires re-review; it is not permission to add a generic escape hatch.
 
 ## Notes For Architecture Reviewer
 
-Review SR-007 as the DR-001 latest-base reconciliation over the passed ARCH-REV-006/IR-003/CRR-004/API-REV-002/CRR-005 baseline. Preserve the Host/Authority/provider/kernel and Mixed Team callback architecture. Preserve the prior four exact closures and confirm the SR-007 additions: one explicit host-selected validator reaches each family's Agent lifecycle and Team manager; AgentRunService requires that root-created lifecycle and its process accessor is lookup-only; outer orchestration owns the read-only application lease; Studio guards general updates; the scope remains seven-capability; deleted broad factory/test remain absent. Prior closures: (1) one explicit Team memory root and catalog-filtered stored-tree-backed Agent/task-Team identity pair flow from each execution root through Team manager and every RootTeamRun; (2) host composition projects one frozen app-data/base-URL value plus memory root into both execution owners, one stored-tree-backed provider-input normalizer runs at AgentRun before all three providers, and provider-local context/config ownership is removed; (3) process context REST constructs one explicit stored-only owner resolver and shares it across finalization/read; (4) AgentRunManager accepts complete explicit activation/resource/normalizer/factory identities and the exact eight failed files plus all newly affected constructors are inventoried. No manager unification, router, late binding, public behavior, migration, or logical-addressing change is introduced.
+Review SR-008 only for ARCH-REV-007 AR-005. The accepted SR-007 production design is unchanged. Confirm that all four `StoredTeamRunFormModel` family paths are exact Removes; the stale test is absent from retain coverage; current `ExistingTeamRunFormModel`/draft/editor owners are singular; and its still-current topology, fixed-field, workspace, residual-field, no-mutation, and model-config-only assertions are allocated to `TeamRunConfigForm.spec.ts`, `TeamScopeConfigEditor.spec.ts`, `MemberOverrideItem.spec.ts`, `RuntimeModelConfigFields.spec.ts`, `historicalModelConfigFields.spec.ts`, and `existingTeamModelConfigDraft.spec.ts`. No runtime deep-freeze compatibility representation is recreated. Preserve all ARCH-REV-007-accepted validator/lifecycle, outer ownership, seven-capability scope, Host/Authority/provider/kernel/task/context/Mixed Team, deleted run-services, no-migration, and logical-addressing-exclusion decisions.

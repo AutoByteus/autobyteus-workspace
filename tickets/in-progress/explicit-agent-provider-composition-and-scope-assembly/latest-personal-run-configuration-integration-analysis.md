@@ -1,6 +1,6 @@
 # Latest Personal Run-Configuration Integration Analysis
 
-Status: **Normative SR-007 reconciliation supplement** for latest `origin/personal` `b52fe5aebdb962ce361529f9e797affeb30d719a`. It preserves the approved provider-composition architecture and the current Personal stopped-run configuration/application-ownership behavior. It does not authorize production edits before architecture review.
+Status: **Normative SR-008 reconciliation supplement** for latest `origin/personal` `b52fe5aebdb962ce361529f9e797affeb30d719a`. SR-008 corrects the exact frontend clean-cut inventory after ARCH-REV-007; the accepted SR-007 production architecture is unchanged. It does not authorize production edits before architecture review.
 
 ## 1. Integration Authority
 
@@ -221,7 +221,32 @@ Forbidden:
 - Personal rename `standalone-agent-run-activation-service.ts` -> `standalone-agent-run-lifecycle-service.ts` and corresponding test is retained.
 - `create-application-run-services.ts` and `application-run-services.test.ts` remain removed.
 - Personal's already-removed revision-based run-config model remains removed; sequential lanes are the only authority.
+- The previous stopped-Team frontend representation is removed as one clean cut:
+  - `autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts`;
+  - `autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts`;
+  - `autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts`;
+  - `autobyteus-web/types/agent/StoredTeamRunFormModel.ts`.
+- Current Personal replaces that family with `ExistingTeamRunFormModel`, `projectExistingTeamRunFormModel`, `existingTeamModelConfigDraft`, and `ExistingRunConfigEditor`; no old type/import/alias remains.
 - No generated, SDK, application-package, persisted-schema, or migration file is added by SR-007 beyond latest Personal itself.
+
+### Historical/residual assertion transfer
+
+The deleted `StoredTeamScopeHistoricalFields.spec.ts` is not retained or
+recreated. Its current requirements are allocated to current owners:
+
+| Historical assertion | Current Owner | Exact Durable Proof |
+| --- | --- | --- |
+| exact persisted fields are classified once; removed keys and no-longer-enumerated values remain visible without mutating input | `historicalModelConfigFields.ts` + shared `RuntimeModelConfigFields` | `utils/__tests__/historicalModelConfigFields.spec.ts` and `components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts` |
+| existing configured Agent residual fields remain visible and non-editable | `ExistingTeamFormAgentNode` -> `MemberOverrideItem` | `components/workspace/config/__tests__/MemberOverrideItem.spec.ts` |
+| root and nested existing Team scopes render the same representable/residual fields, hide Reset/fixed edits, emit no fixed-field mutation, and preserve source input | `ExistingTeamScopeFormModel` -> `TeamScopeConfigEditor` | modify `components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts` with current root/nested cases |
+| root/member order, exact nested effective configuration, historical-only workspace display, fixed Team facts, and model-config-only editing use one current projection | `projectExistingTeamRunFormModel` + `ExistingRunConfigEditor`/`TeamRunConfigForm` | modify `components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`; retain `services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts` |
+
+The deleted projector test's runtime deep-freeze assertion is not transferred:
+current Personal intentionally uses recursively readonly current types plus a
+separate editable draft. The preserved behavioral invariant is no mutation of
+the canonical tree/source projection and model-config-only emitted edits, which
+the current tests prove. Reintroducing a runtime-frozen `stored` model would be
+a second representation rather than preservation.
 
 ## 10. Durable Proof Matrix
 
@@ -235,6 +260,7 @@ Forbidden:
 | boundary | runtime exposes read-only ownership only; scope still exposes exactly seven capabilities; no raw manager/store/model catalog crosses outward |
 | identity | the exact validator passed into each root reaches that root's Agent lifecycle and Team manager; general/application managers/task identities/Authorities remain non-identical |
 | architecture | governed roots and lifecycle/manager leaves contain no default `ModelConfigValidationService`, model-catalog getter, old broad factory import, or run-configuration scope capability; `getAgentRunService()` is lookup-only; source occurrence sets fail closed |
+| frontend representation | the four legacy stored-Team paths/imports are absent; current existing-run projection/editor tests cover topology, historical-only workspaces, residual fields, fixed identity, and model-config-only edits |
 | regression | current provider/Authority/context/task cleanup matrix plus latest Personal server/web model-setting suite, Studio/standalone realistic runs, application ownership, recovery/reentry, external-channel concurrency, and shutdown |
 
 ## 11. Persisted Data Decision
@@ -253,3 +279,4 @@ Latest Personal already defines the current readers/writers for nullable `llmCon
 - Do not add a generic validator registry/event bus/container: one narrow stateless validation service is sufficient.
 - Do not unify general/application managers or sessions: the ownership guard exists precisely because they remain separate.
 - Do not add aliases, singleton fallbacks, source compatibility wrappers, or a second model-config representation.
+- Do not retain or recreate `StoredTeamRunFormModel` for test compatibility; current historical presentation belongs to the one `ExistingTeamRunFormModel`/draft/editor family.

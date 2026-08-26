@@ -2,7 +2,7 @@
 
 ## Current-State Read
 
-The finalized outer architecture remains healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. ARCH-REV-005 and IR-002 close the Mixed Team manager/member construction family. CRR-003 then traced API-REV-001's deterministic failures one level deeper: each `RootTeamRun` still constructs task identity through the process allocator, all three provider families can construct a context-path resolver backed by the process Team manager, and governed direct `AgentRunManager` fixtures still select an optional resource/activation sidecar chain. The first two are supported production boundary violations masked by host startup order; the third is transition incompleteness, not a product defect. The reviewed implementation closed those paths and passed ARCH-REV-006, CRR-004, API-REV-002, and CRR-005. Delivery then found latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` changes the same assembly surfaces to add stopped-run configuration and application ownership. Those current behaviors are sound, but their old application run-services factory conflicts with the approved scope/kernel and their validator can still be selected by lower-level defaults.
+The finalized outer architecture remains healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. ARCH-REV-005 and IR-002 close the Mixed Team manager/member construction family. CRR-003 then traced API-REV-001's deterministic failures one level deeper: each `RootTeamRun` still constructs task identity through the process allocator, all three provider families can construct a context-path resolver backed by the process Team manager, and governed direct `AgentRunManager` fixtures still select an optional resource/activation sidecar chain. The first two are supported production boundary violations masked by host startup order; the third is transition incompleteness, not a product defect. The reviewed implementation closed those paths and passed ARCH-REV-006, CRR-004, API-REV-002, and CRR-005. Delivery then found latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` changes the same assembly surfaces to add stopped-run configuration and application ownership. SR-007 resolved the production junction, and ARCH-REV-007 accepted that architecture. AR-005 found one bounded inventory contradiction: the design retained a frontend test whose `StoredTeamRunFormModel` representation latest Personal deletes. SR-008 records the complete four-path removal and transfers only still-current assertions to the single `ExistingTeamRunFormModel`/existing-run editor family.
 
 ## Intended Change
 
@@ -31,9 +31,9 @@ No manager is unified, no execution-family router or late binding is added, and 
 
 | Artifact | Purpose | Related IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `provider-composition-and-agent-tools-authority-contract.md` | exact boundary/types/lifecycle | REQ-001–009 | normative structural contract | Current SR-007 |
+| `provider-composition-and-agent-tools-authority-contract.md` | exact boundary/types/lifecycle | REQ-001–009 | normative structural contract | Accepted by ARCH-REV-007 |
 | `provider-composition-transition-inventory.md` | files/tests/guards | all | implementation completeness | Current |
-| `latest-personal-run-configuration-integration-analysis.md` | current-base authority, owners, conflicts, spines, proof | REQ-008–009; AC-012–016 | normative semantic merge constraint | Current |
+| `latest-personal-run-configuration-integration-analysis.md` | current-base authority, owners, conflicts, frontend clean cut, spines, proof | REQ-008–009; AC-012–016 | normative semantic merge constraint | Current SR-008 |
 | upstream future review + CRR-006 evidence | triggering audit | all | source evidence | Read-only |
 
 ## Task Design Health Assessment (Mandatory)
@@ -42,8 +42,8 @@ No manager is unified, no execution-family router or late binding is added, and 
 - Current design issue found: `Yes`
 - Root cause: boundary/ownership issue, duplicated policy/coordination, file responsibility drift.
 - Refactor needed now: `Yes`
-- Evidence: the reviewed ticket closes the prior execution-family gaps. DR-001 proves latest Personal adds reachable stopped-run and ownership behavior on the same roots, including two modify/delete conflicts; mechanical selection would either lose current behavior or restore a boundary that was deliberately removed.
-- Design response: preserve Host/Authority/Issuer, fixed builder, narrow failure releaser, private kernel, required Mixed Team callback, task/context/manager closure, and add only an explicit validator leaf plus outer read-only application ownership projection. Transplant current Personal lifecycle behavior into existing owners; do not add a scope capability.
+- Evidence: the reviewed ticket closes the prior execution-family gaps. DR-001 proves latest Personal adds reachable stopped-run and ownership behavior on the same roots, including two modify/delete conflicts; mechanical selection would either lose current behavior or restore a boundary that was deliberately removed. ARCH-REV-007 accepts the production reconciliation and proves separately that latest Personal also deletes one four-path legacy stopped-Team representation, so retaining its stale test is impossible.
+- Design response: preserve Host/Authority/Issuer, fixed builder, narrow failure releaser, private kernel, required Mixed Team callback, task/context/manager closure, and add only an explicit validator leaf plus outer read-only application ownership projection. Transplant current Personal lifecycle behavior into existing owners; do not add a scope capability. Remove the legacy stored-Team representation completely and keep one current existing-run frontend projection.
 - Refactor rationale: each added boundary owns concrete policy/state/lifecycle; none is pass-through-only.
 - Deferral: logical application-agent addressing is separately approved. Unrelated provider-local defaults remain outside supported roots, but Agent Tools releaser selection is not a provider-local default and receives no exception in Mixed Team execution.
 
@@ -70,6 +70,7 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 
 - Policy: `No backward compatibility; remove legacy code paths.`
 - Remove old Runtime/session-scope/session-manager composition shapes.
+- Remove all four legacy `StoredTeamRunFormModel` type/projector/test paths; current stopped-Team UI uses only `ExistingTeamRunFormModel` and the existing-run draft/editor family.
 - No alias, wrapper, dual path, or legacy fallback is allowed.
 - Provider-local defaults outside supported roots are not declared legacy; architecture enforcement prevents their application/general root use. The Mixed Team releaser fallback, cached/default factory, optional callback, and built-in default manager are in the governed execution chain and are removed without alias or replacement fallback.
 
@@ -549,6 +550,8 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | `src/run-history/services/studio-run-model-config-service.ts` | Add from Personal | Studio run-history use case | guard application ownership then delegate to general facades | stores/managers/application scope |
 | `src/llm-management/services/model-config-validation-service.ts` | Add from Personal | LLM management | current schema/model validation over a required catalog capability | run lifecycle/persistence or catalog getter/default |
 | `src/application-platform/runtime/{application-platform-runtime-contracts.ts,build-application-platform-runtime.ts,create-application-orchestration-services.ts}` | Modify | platform | keep scope; expose read-only ownership; inject validator | raw manager/store or new scope command |
+| `autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts` + `types/agent/ExistingTeamRunFormModel.ts` | Retain from Personal | stopped-Team presentation | one current projection/type for canonical tree + draft state | parallel `StoredTeamRunFormModel`, compatibility import |
+| four legacy stored-Team type/projector/test paths in the transition inventory | Remove | stopped-Team presentation | delete obsolete representation and stale coverage | alias, re-export, wrapper, retained stale test |
 
 ## Folder Boundary Check
 
@@ -588,6 +591,7 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | restore deleted run-services factory/test | easiest conflict resolution | Rejected | transplant current behavior into kernel/current scope tests |
 | add application scope run-config capability | symmetry with general updates | Rejected: no supported caller | keep exactly seven scope capabilities |
 | move ownership into execution scope | centralize application concerns | Rejected: wrong subject/owner | outer orchestration lease through runtime host management |
+| retain/restore `StoredTeamRunFormModel` or its stale tests | appears to preserve historical rendering coverage | Rejected: latest Personal deliberately replaced the representation | current existing-run projector/editor plus exact transferred residual-field tests |
 
 ## Derived Layering (If Useful)
 
@@ -598,7 +602,7 @@ Composition -> execution owner -> complete manager/root capability -> AgentRun/R
 1. Perform one semantic merge of latest Personal; preserve all nonoverlap current-base work and resolve the exact 14 overlaps using the SR-007 supplement. Keep the two deleted run-services paths absent.
 2. Add the explicit host-selected validator field through both host roots, general supervisor/platform/scope input, Agent lifecycle, and Team manager; merge the current Personal lifecycle/manager algorithms without defaults.
 3. Create/expose the current Personal ownership lease only from outer orchestration/runtime and construct the guarded Studio run-model-config service from platform ownership plus general facades; do not change the scope API.
-4. Reconcile the seven conflicting and seven auto-merged overlaps, then update source-derived guards and exact tests before broader verification.
+4. Reconcile the seven conflicting and seven auto-merged overlaps; remove the exact four-path legacy stopped-Team representation; transfer current topology/residual assertions to the existing-run tests; then update source-derived guards before broader verification.
 5. Preserve and re-prove the prior provider-composition transition: exact task identity; provider-input normalization; complete Agent manager; required Mixed Team callback/releaser; Host/Authority lifecycle; context REST owner projection; provider adapters; and general/application non-identity.
 6. Align K0–K8 with the eleven-top-level/twelve-leaf application input, the eight-top-level/nine-leaf general input, stored-reader reuse, Agent identity before Team manager, the required validator/lifecycle identities, and existing Authority unwind.
 7. Run source-derived occurrence/omission guards and the exact eight CRR-003 failure files first; then focused provider/Team/context coverage and latest-Personal Agent/Team save-race, ownership, GraphQL/web, Studio/standalone, cleanup, and delivery matrices.

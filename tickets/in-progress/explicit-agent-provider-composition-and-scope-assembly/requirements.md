@@ -2,7 +2,7 @@
 
 ## Status
 
-`Refined` — the user-approved provider-composition scope is unchanged; SR-007 reconciles the mandatory latest-Personal baseline `b52fe5aebdb962ce361529f9e797affeb30d719a` without adding a product feature.
+`Refined` — the user-approved provider-composition scope is unchanged; SR-007 reconciles the mandatory latest-Personal baseline `b52fe5aebdb962ce361529f9e797affeb30d719a`, and SR-008 corrects only its exact frontend removal/coverage inventory. No product feature is added.
 
 ## Goal / Problem Statement
 

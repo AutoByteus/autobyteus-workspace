@@ -1,0 +1,54 @@
+# SR-008 frontend clean-cut source audit
+HEAD=808d74bb771b4c25a9924c3c215f654b0ebe1066
+origin/personal=b52fe5aebdb962ce361529f9e797affeb30d719a
+
+## Personal deletion/addition commit
+commit a4c2595f89c029baa3c2723013fa30e7b409596d
+subject feat: edit model settings for stopped runs
+
+A	autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+D	autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+A	autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+A	autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+D	autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts
+D	autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+A	autobyteus-web/types/agent/ExistingTeamRunFormModel.ts
+D	autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+
+## Current Personal relevant paths
+autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+autobyteus-web/types/agent/ExistingTeamRunFormModel.ts
+autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts
+autobyteus-web/utils/historicalModelConfigFields.ts
+
+## Current Personal legacy symbol imports (expected none)
+<none>
+
+## Current replacement construction/use occurrences
+origin/personal:autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts:64:    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+origin/personal:autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue:99:import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
+origin/personal:autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue:188:  return projectExistingTeamRunFormModel({
+origin/personal:autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:10:import type { ExistingTeamFormAgentNode } from '~/types/agent/ExistingTeamRunFormModel'
+origin/personal:autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:270:    const residuals = wrapper.findAll('[data-test="historical-model-config-residual"]')
+origin/personal:autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts:300:    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
+origin/personal:autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:11:import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
+origin/personal:autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:12:import { createExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
+origin/personal:autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:104:  return projectExistingTeamRunFormModel({
+origin/personal:autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:106:    planner: createExistingTeamModelConfigDraft(tree),
+origin/personal:autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts:4:  createExistingTeamModelConfigDraft,
+origin/personal:autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts:50:      createExistingTeamModelConfigDraft(tree()), '/', { effort: 'high' },
+origin/personal:autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts:59:    let draft = createExistingTeamModelConfigDraft(tree())
+origin/personal:autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts:74:    let draft = createExistingTeamModelConfigDraft(tree())
+origin/personal:autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts:9:  ExistingTeamRunFormModel,
+origin/personal:autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts:12:} from '~/types/agent/ExistingTeamRunFormModel'
+origin/personal:autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts:36:export const projectExistingTeamRunFormModel = (input: {
+origin/personal:autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts:43:}): ExistingTeamRunFormModel => {
+origin/personal:autobyteus-web/types/agent/ExistingTeamRunFormModel.ts:33:export type ExistingTeamRunFormModel = Readonly<{
+origin/personal:autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:2:import { projectHistoricalModelConfigFields } from '../historicalModelConfigFields'
+origin/personal:autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:16:describe('projectHistoricalModelConfigFields', () => {
+origin/personal:autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:25:    const fields = projectHistoricalModelConfigFields(stored, schema)
+origin/personal:autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:50:    const fields = projectHistoricalModelConfigFields({ service_tier: 'fast', reasoning_effort: 'high' }, null)
+origin/personal:autobyteus-web/utils/__tests__/historicalModelConfigFields.spec.ts:58:    expect(projectHistoricalModelConfigFields(null, schema).map((field) => field.key))
