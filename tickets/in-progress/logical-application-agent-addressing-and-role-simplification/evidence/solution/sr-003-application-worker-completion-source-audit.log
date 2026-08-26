@@ -1,0 +1,1449 @@
+SR-003 application-worker completion source audit
+UTC: 2026-08-26T16:49:30Z
+HEAD: 159dd376906374d2caa50251f98d4456f2584328
+merge-base origin/personal: 4108786f4058ca83fd036df84666a2c846fd6401
+
+== CRR-003 exact approved-basis/finding ==
+- Observed consequence: the outer request returns HTTP 500 at 30,070 ms, yet the host-side capability continues and the durable Socratic transcript grows from 8 to 10 messages. Unchanged Brief launch shows the same 500 followed by projected artifacts; a warmed repeat returns HTTP 200 in 422 ms.
+
+### Failure-origin determination
+
+- `ApplicationEngineClient.request` deletes the pending correlation and rejects after a fixed 30 seconds. A late worker response is ignored because its request ID is no longer pending.
+- `ApplicationWorkerHostBridgeClient.request` independently applies the same fixed 30-second behavior to the nested host capability request.
+- Neither boundary propagates cancellation, returns an explicit indeterminate/admitted disposition, nor establishes idempotent retry semantics. Therefore transport failure is reported while mutation work can still commit.
+- The engine client, bridge client, controller, gateway, REST route, worker dispatcher, Brief launch service, and Socratic GraphQL dispatcher are blob-identical to reviewed Personal `4108786f4`. The only Socratic mutation delta replaces the old root target with `{ bindingId, memberAddress: null }`, and the same failure reproduces through unchanged Brief launch.
+- Conclusion: `APIE2E-F001` is not caused by IR-002 logical addressing. It is pre-existing cross-cutting request/commit semantics exposed by realistic cold-provider latency. It was not reasonably attributable during source review because source alone did not establish that supported cold latency crosses the fixed deadline; API-REV-001 supplies that reachability evidence.
+
+## Findings
+
+### `CR-002` — Application worker timeouts report failure without resolving mutation commit authority
+
+- Status: `Open`
+- Affected behavior / contract: `BEH-007`, `REQ-008`, `AC-018` maintained launch and restart/reentry behavior.
+- Source evidence: `application-engine-client.ts:111-118` and `application-worker-host-bridge-client.ts:78-84` independently expire correlation after 30 seconds; the protocol contains no cancellation or indeterminate/admission result. Socratic and Brief mutations synchronously await those capabilities.
+- Supported path / consequence: the real Studio/standalone cold user actions return HTTP 500 while later durable transcript/artifact work commits. A normal client retry cannot know whether it is retrying rejected work or duplicating accepted work.
+- Why this matters: this is an ambiguous-commit problem across transport, worker, application mutation, and execution capability boundaries, not merely a timeout value that can safely be increased.
+- Required design decision: define one authoritative mutation lifecycle and response contract across both JSON-RPC directions—successful admission/completion, confirmed cancellation/no-commit, or explicit indeterminate status with stable operation identity and safe reconciliation/idempotency. Then assign timeout ownership and application mutation behavior consistently. Do not treat a larger arbitrary timeout as sufficient.
+- Classification: `Design Impact`
+
+`CR-001` remains resolved in `CRR-002`; API/E2E directly confirmed logical root/member READY/EVENT behavior.
+
+## Classification
+
+`Design Impact` — the failure spans transport deadlines, cancellation, admission/commit disposition, application mutation behavior, and retry semantics. It requires solution design before implementation.
+
+## Recommended Recipient
+
+`/solution_designer`
+
+## Residual Risks
+
+- Retrying a displayed failure may duplicate a Team launch, input, or application-local record because the first operation's final commit state is unknown at the client boundary.
+- Raising either 30-second constant alone only moves the ambiguity and leaves the second timeout and late-commit semantics intact.
+- API/E2E must rerun the exact cold Studio/standalone scenarios after a reviewed correction; current logical-address proof remains valid but cannot yield an overall Pass while `APIE2E-F001` is open.
+
+== API-REV-001 cold evidence ==
+{
+  "scenario": "APIE2E-STUDIO-COLD-RESTART-001",
+  "failureId": "APIE2E-F001",
+  "startedAt": "2026-08-26T16:29:23.835Z",
+  "assertions": {
+    "sameDataRecovered": true,
+    "coldMutation2xx": false,
+    "eventualTurnSaved": true
+  },
+  "beforeCount": 8,
+  "coldMutation": {
+    "status": 500,
+    "durationMs": 30070,
+    "url": "http://127.0.0.1:43960/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466c6f676963616c2d6170706c69636174696f6e2d6167656e742d61646472657373696e672d616e642d726f6c652d73696d706c696669636174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572/backend/graphql",
+    "body": "{\"detail\":\"Application worker request timed out: executeApplicationGraphql\"}"
+  },
+  "afterCount": 10,
+  "finalBody": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 5x - 10 = 25. Guide me with one question at a time.\nActive\nLesson lesson-7569dc63-c63f-49ca-9834-8a15916a86b7\nUpdated 26.8.2026, 18:31:09\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 5x - 10 = 25. Guide me with one question at a time.\n\nlessonId lesson-7569dc63-c63f-49ca-9834-8a15916a86b7\n\nActive\nCreated 26.8.2026, 18:07:10\nUpdated 26.8.2026, 18:31:09\nLESSON RECORD\nlesson-7569dc63-c63f-49ca-9834-8a15916a86b7\nStatus active\nCONVERSATION\n10 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor response saved\n\nThe authoritative tutor response is shown in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 18:07:10\n\nSolve 5x - 10 = 25. Guide me with one question at a time.\n\ntutor\nLesson_response\n26.8.2026, 18:07:44\n\nWhat number should you add to both sides to undo the −10?\n\nstudent\nFollow_up\n26.8.2026, 18:07:45\n\nI added 10 to both sides and got 5x = 35. What should I do next?\n\ntutor\nLesson_response\n26.8.2026, 18:07:51\n\nGreat! Now, what operation will isolate x in 5x = 35?\n\nstudent\nHint_request\n26.8.2026, 18:07:54\n\nPlease give the student the next helpful hint without solving the full problem.\n\ntutor\nLesson_hint\n26.8.2026, 18:08:00\n\nSince x is multiplied by 5, use the inverse operation: divide both sides by 5. What is 35 ÷ 5?\n\nstudent\nHint_request\n26.8.2026, 18:24:26\n\nPlease give the student the next helpful hint without solving the full problem.\n\ntutor\nLesson_hint\n26.8.2026, 18:26:07\n\nAfter dividing both sides by 5, you have x = 35 ÷ 5. How many groups of 5 make 35?\n\nstudent\nHint_request\n26.8.2026, 18:29:26\n\nPlease give the student the next helpful hint without solving the full problem.\n\ntutor\nLesson_hint\n26.8.2026, 18:31:09\n\nUse the related multiplication fact: 5 × ? = 35. Which number belongs in the blank?\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nlesson.hint_received\n26.8.2026, 18:31:09\n{\n  \"lessonId\": \"lesson-7569dc63-c63f-49ca-9834-8a15916a86b7\",\n  \"bindingId\": \"b97653e7-8180-4e6e-be54-19a50bb93f2e\",\n  \"revisionId\": \"c73a6bcd-7971-42da-a42c-1fe05f774768\",\n  \"runId\": \"socratic_math_tutor_af131b65b0dc4e5dbac810394dffbfa9\"\n}",
+  "result": "Fail",
+  "completedAt": "2026-08-26T16:31:11.047Z"
+}
+== Host correlation timer and terminals ==
+     1	import type { ChildProcessWithoutNullStreams } from "node:child_process";
+     2	import {
+     3	  APPLICATION_ENGINE_NOTIFICATION_METHOD,
+     4	  type ApplicationWorkerNotificationParams,
+     5	} from "./protocol.js";
+     6	import { JsonLineFrameWriter } from "./json-line-frame-writer.js";
+     7	import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/application-sdk-contracts";
+     8
+     9	type JsonRpcId = string | number;
+    10
+    11	type PendingRequest = {
+    12	  resolve: (value: unknown) => void;
+    13	  reject: (error: Error) => void;
+    14	  timeoutHandle: NodeJS.Timeout;
+    15	};
+    16
+    17	type JsonRpcRequestHandler = (params: Record<string, unknown>) => Promise<unknown> | unknown;
+    18
+    19	export class ApplicationEngineResponseAfterWrite {
+    20	  constructor(
+    21	    readonly result: unknown,
+    22	    readonly afterWrite: () => void,
+    23	  ) {}
+    24	}
+    25
+    26	export type ApplicationEngineClientNotification = ApplicationWorkerNotificationParams;
+    27
+    28	export class ApplicationEngineClient {
+    29	  private readonly pendingRequests = new Map<JsonRpcId, PendingRequest>();
+    30	  private readonly notificationListeners = new Set<(message: ApplicationEngineClientNotification) => void>();
+    31	  private readonly closeListeners = new Set<(error: Error | null) => void>();
+    32	  private readonly requestHandlers = new Map<string, JsonRpcRequestHandler>();
+    33	  private process: ChildProcessWithoutNullStreams | null = null;
+    34	  private stdoutBuffer = "";
+    35	  private nextRequestId = 1;
+    36	  private closed = false;
+    37	  private frameWriter: JsonLineFrameWriter | null = null;
+    38
+    39	  attach(process: ChildProcessWithoutNullStreams): void {
+    40	    if (this.process) {
+    41	      throw new Error("Application engine client is already attached.");
+    42	    }
+    43
+    44	    this.process = process;
+    45	    this.frameWriter = new JsonLineFrameWriter(process.stdin);
+    46	    this.closed = false;
+    47	    process.stdout.on("data", (chunk: Buffer) => {
+    48	      this.onStdout(chunk.toString("utf-8"));
+    49	    });
+    50	    process.on("error", (error) => {
+    51	      const engineError = new Error(`Application worker process error: ${String(error)}`);
+    52	      this.failAllPending(engineError);
+    53	      this.emitClose(engineError);
+    54	    });
+    55	    process.on("close", (code, signal) => {
+    56	      if (this.closed) {
+    57	        return;
+    58	      }
+    59	      const error = new Error(
+    60	        `Application worker process closed unexpectedly (code=${String(code)}, signal=${String(signal)}).`,
+    61	      );
+    62	      this.failAllPending(error);
+    63	      this.emitClose(error);
+    64	      this.process = null;
+    65	      this.closed = true;
+    66	    });
+    67	  }
+    68
+    69	  async close(): Promise<void> {
+    70	    const proc = this.process;
+    71	    if (!proc) {
+    72	      return;
+    73	    }
+    74	    this.closed = true;
+    75	    this.process = null;
+    76	    const closeError = new Error("Application engine client closed.");
+    77	    this.frameWriter?.fail(closeError);
+    78	    this.frameWriter = null;
+    79	    this.failAllPending(closeError);
+    80	    try {
+    81	      proc.kill("SIGTERM");
+    82	    } catch {
+    83	      // no-op
+    84	    }
+    85	    this.emitClose(null);
+    86	  }
+    87
+    88	  onNotification(listener: (message: ApplicationEngineClientNotification) => void): () => void {
+    89	    this.notificationListeners.add(listener);
+    90	    return () => {
+    91	      this.notificationListeners.delete(listener);
+    92	    };
+    93	  }
+    94
+    95	  onClose(listener: (error: Error | null) => void): () => void {
+    96	    this.closeListeners.add(listener);
+    97	    return () => {
+    98	      this.closeListeners.delete(listener);
+    99	    };
+   100	  }
+   101
+   102	  registerRequestHandler(method: string, handler: JsonRpcRequestHandler): () => void {
+   103	    this.requestHandlers.set(method, handler);
+   104	    return () => {
+   105	      if (this.requestHandlers.get(method) === handler) {
+   106	        this.requestHandlers.delete(method);
+   107	      }
+   108	    };
+   109	  }
+   110
+   111	  async request<T = unknown>(method: string, params?: Record<string, unknown>, timeoutMs = 30_000): Promise<T> {
+   112	    this.ensureAttached();
+   113	    const id = this.nextRequestId++;
+   114	    const promise = new Promise<T>((resolve, reject) => {
+   115	      const timeoutHandle = setTimeout(() => {
+   116	        this.pendingRequests.delete(id);
+   117	        reject(new Error(`Application worker request timed out: ${method}`));
+   118	      }, timeoutMs);
+   119
+   120	      this.pendingRequests.set(id, {
+   121	        resolve: (value) => {
+   122	          clearTimeout(timeoutHandle);
+   123	          resolve(value as T);
+   124	        },
+   125	        reject: (error) => {
+   126	          clearTimeout(timeoutHandle);
+   127	          reject(error);
+   128	        },
+   129	        timeoutHandle,
+   130	      });
+   131	    });
+   132
+   133	    void this.writeFrame({
+   134	      jsonrpc: "2.0",
+   135	      id,
+   136	      method,
+   137	      params: params ?? {},
+   138	    }).catch((error) => {
+   139	      const pending = this.pendingRequests.get(id);
+   140	      if (!pending) return;
+   141	      this.pendingRequests.delete(id);
+   142	      clearTimeout(pending.timeoutHandle);
+   143	      pending.reject(error instanceof Error ? error : new Error(String(error)));
+   144	    });
+   145	    return promise;
+   146	  }
+   147
+   148	  notify(method: string, params: Record<string, unknown>): Promise<void> {
+   149	    this.ensureAttached();
+   150	    return this.writeFrame({ jsonrpc: "2.0", method, params });
+   151	  }
+   152
+   153	  private emitClose(error: Error | null): void {
+   154	    for (const listener of this.closeListeners) {
+   155	      try {
+   156	        listener(error);
+   157	      } catch {
+   158	        // no-op
+   159	      }
+   160	    }
+   161	  }
+   162
+   163	  private failAllPending(error: Error): void {
+   164	    for (const pending of this.pendingRequests.values()) {
+   165	      clearTimeout(pending.timeoutHandle);
+   166	      pending.reject(error);
+   167	    }
+   168	    this.pendingRequests.clear();
+   169	  }
+   170
+   171	  private ensureAttached(): void {
+   172	    if (!this.process) {
+   173	      throw new Error("Application engine client is not attached to a worker process.");
+   174	    }
+   175	  }
+   176
+   177	  private writeFrame(frame: Record<string, unknown>): Promise<void> {
+   178	    if (!this.process || !this.frameWriter) {
+   179	      throw new Error("Application engine client is not attached to a worker process.");
+   180	    }
+   181	    return this.frameWriter.write(frame);
+   182	  }
+   183
+   184	  private onStdout(chunk: string): void {
+   185	    this.stdoutBuffer += chunk;
+   186	    while (true) {
+   187	      const newlineIndex = this.stdoutBuffer.indexOf("\n");
+   188	      if (newlineIndex < 0) {
+   189	        return;
+   190	      }
+   191	      const line = this.stdoutBuffer.slice(0, newlineIndex).trim();
+   192	      this.stdoutBuffer = this.stdoutBuffer.slice(newlineIndex + 1);
+   193	      if (!line) {
+   194	        continue;
+   195	      }
+   196	      this.handleLine(line);
+   197	    }
+   198	  }
+   199
+   200	  private handleLine(line: string): void {
+   201	    let payload: unknown;
+   202	    try {
+   203	      payload = JSON.parse(line);
+   204	    } catch {
+   205	      return;
+   206	    }
+   207
+   208	    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+   209	      return;
+   210	    }
+   211	    const envelope = payload as Record<string, unknown>;
+   212	    const method = typeof envelope.method === "string" ? envelope.method : null;
+   213	    const id = typeof envelope.id === "number" || typeof envelope.id === "string" ? envelope.id : null;
+   214
+   215	    if (method === APPLICATION_ENGINE_NOTIFICATION_METHOD) {
+   216	      for (const listener of this.notificationListeners) {
+   217	        try {
+   218	          listener((envelope.params ?? {}) as ApplicationEngineClientNotification);
+   219	        } catch {
+   220	          // no-op
+   221	        }
+   222	      }
+   223	      return;
+   224	    }
+   225
+   226	    if (method && id !== null) {
+   227	      void this.handleWorkerRequest(id, method, (envelope.params ?? {}) as Record<string, unknown>);
+   228	      return;
+   229	    }
+   230
+   231	    if (id === null) {
+   232	      return;
+   233	    }
+   234
+   235	    const pending = this.pendingRequests.get(id);
+   236	    if (!pending) {
+   237	      return;
+   238	    }
+   239	    this.pendingRequests.delete(id);
+   240
+   241	    if (Object.prototype.hasOwnProperty.call(envelope, "error")) {
+   242	      const errorPayload = envelope.error as Record<string, unknown> | undefined;
+   243	      const message =
+   244	        errorPayload && typeof errorPayload.message === "string"
+   245	          ? errorPayload.message
+   246	          : "Application worker request failed.";
+   247	      pending.reject(new Error(message));
+   248	      return;
+   249	    }
+   250
+   251	    pending.resolve(envelope.result);
+   252	  }
+   253
+   254	  private async handleWorkerRequest(
+   255	    id: JsonRpcId,
+   256	    method: string,
+   257	    params: Record<string, unknown>,
+   258	  ): Promise<void> {
+   259	    const handler = this.requestHandlers.get(method);
+   260	    if (!handler) {
+   261	      await this.writeFrame({
+   262	        jsonrpc: "2.0",
+   263	        id,
+   264	        error: { message: `Unsupported worker request '${method}'.` },
+   265	      });
+   266	      return;
+   267	    }
+   268
+   269	    try {
+   270	      const handled = await handler(params);
+   271	      const result = handled instanceof ApplicationEngineResponseAfterWrite ? handled.result : handled;
+   272	      await this.writeFrame({ jsonrpc: "2.0", id, result });
+   273	      if (handled instanceof ApplicationEngineResponseAfterWrite) handled.afterWrite();
+   274	    } catch (error) {
+   275	      const streamError = error instanceof ApplicationAgentEventStreamSubscribeError ? error : null;
+   276	      await this.writeFrame({
+   277	        jsonrpc: "2.0",
+   278	        id,
+   279	        error: {
+   280	          message: error instanceof Error ? error.message : String(error),
+   281	          ...(streamError ? { code: streamError.code, recoverable: streamError.recoverable } : {}),
+   282	        },
+   283	      });
+   284	    }
+   285	  }
+
+== Worker bridge correlation timer ==
+     1	import {
+     2	  APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
+     3	  APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION,
+     4	  type ApplicationWorkerContextCapabilityInput,
+     5	  type ApplicationWorkerWebSocketActionInput,
+     6	} from "../runtime/protocol.js";
+     7	import {
+     8	  ApplicationAgentEventStreamSubscribeError,
+     9	  type ApplicationAgentEventStreamSubscribeErrorCode,
+    10	} from "@autobyteus/application-sdk-contracts";
+    11
+    12	type JsonRpcId = string;
+    13
+    14	type PendingRequest = {
+    15	  resolve: (value: unknown) => void;
+    16	  reject: (error: Error) => void;
+    17	  timeoutHandle: NodeJS.Timeout;
+    18	};
+    19
+    20	export class ApplicationWorkerHostBridgeClient {
+    21	  private readonly pendingRequests = new Map<JsonRpcId, PendingRequest>();
+    22	  private nextRequestId = 1;
+    23
+    24	  constructor(
+    25	    private readonly writeFrame: (frame: Record<string, unknown>) => Promise<void>,
+    26	  ) {}
+    27
+    28	  async invokeContextCapability(input: ApplicationWorkerContextCapabilityInput): Promise<unknown> {
+    29	    return this.request(APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY, input as unknown as Record<string, unknown>);
+    30	  }
+    31
+    32	  async invokeWebSocketAction(input: ApplicationWorkerWebSocketActionInput): Promise<unknown> {
+    33	    return this.request(APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION, input as unknown as Record<string, unknown>);
+    34	  }
+    35
+    36	  handleResponse(payload: Record<string, unknown>): boolean {
+    37	    const id = typeof payload.id === "string" ? payload.id : null;
+    38	    if (!id) {
+    39	      return false;
+    40	    }
+    41	    const pending = this.pendingRequests.get(id);
+    42	    if (!pending) {
+    43	      return false;
+    44	    }
+    45	    this.pendingRequests.delete(id);
+    46
+    47	    if (Object.prototype.hasOwnProperty.call(payload, "error")) {
+    48	      const errorPayload = payload.error as Record<string, unknown> | undefined;
+    49	      const message =
+    50	        errorPayload && typeof errorPayload.message === "string"
+    51	          ? errorPayload.message
+    52	          : "Host bridge request failed.";
+    53	      const code = errorPayload && typeof errorPayload.code === "string"
+    54	        ? errorPayload.code as ApplicationAgentEventStreamSubscribeErrorCode
+    55	        : null;
+    56	      if (code && [
+    57	        "SUBSCRIPTION_NOT_AVAILABLE",
+    58	        "INVALID_STREAM_TARGET",
+    59	        "RUNTIME_NOT_ACTIVE",
+    60	        "SUBSCRIPTION_ABORTED",
+    61	        "WORKER_TRANSPORT_FAILED",
+    62	      ].includes(code)) {
+    63	        pending.reject(new ApplicationAgentEventStreamSubscribeError({
+    64	          code,
+    65	          message,
+    66	          recoverable: errorPayload?.recoverable === true,
+    67	        }));
+    68	      } else {
+    69	        pending.reject(new Error(message));
+    70	      }
+    71	      return true;
+    72	    }
+    73
+    74	    pending.resolve(payload.result);
+    75	    return true;
+    76	  }
+    77
+    78	  private async request(method: string, params: Record<string, unknown>): Promise<unknown> {
+    79	    const id = `host:${this.nextRequestId++}`;
+    80	    const promise = new Promise<unknown>((resolve, reject) => {
+    81	      const timeoutHandle = setTimeout(() => {
+    82	        this.pendingRequests.delete(id);
+    83	        reject(new Error(`Application host bridge request timed out: ${method}`));
+    84	      }, 30_000);
+    85	      this.pendingRequests.set(id, {
+    86	        resolve: (value) => {
+    87	          clearTimeout(timeoutHandle);
+    88	          resolve(value);
+    89	        },
+    90	        reject: (error) => {
+    91	          clearTimeout(timeoutHandle);
+    92	          reject(error);
+    93	        },
+    94	        timeoutHandle,
+    95	      });
+    96	    });
+    97
+    98	    await this.writeFrame({
+    99	      jsonrpc: "2.0",
+   100	      id,
+   101	      method,
+   102	      params,
+   103	    });
+   104	    return promise;
+   105	  }
+   106	}
+
+== Controller operation and stop callsites ==
+   100
+   101	  getStatus(applicationId: string): ApplicationEngineStatus {
+   102	    return this.state.getStatus(applicationId);
+   103	  }
+   104
+   105	  updateStatus(
+   106	    applicationId: string,
+   107	    status: ApplicationEngineStatus,
+   108	    statusPath?: string,
+   109	  ): void {
+   110	    this.state.updateStatus(applicationId, status, statusPath);
+   111	  }
+   112
+   113	  invokeApplicationQuery(
+   114	    applicationId: string,
+   115	    input: ApplicationWorkerInvokeQueryInput,
+   116	  ): Promise<unknown> {
+   117	    return this.request(applicationId, APPLICATION_ENGINE_METHOD_INVOKE_QUERY, input);
+   118	  }
+   119
+   120	  invokeApplicationCommand(
+   121	    applicationId: string,
+   122	    input: ApplicationWorkerInvokeCommandInput,
+   123	  ): Promise<unknown> {
+   124	    return this.request(applicationId, APPLICATION_ENGINE_METHOD_INVOKE_COMMAND, input);
+   125	  }
+   126
+   127	  routeApplicationRequest(
+   128	    applicationId: string,
+   129	    input: ApplicationWorkerRouteRequestInput,
+   130	  ): Promise<unknown> {
+   131	    return this.request(applicationId, APPLICATION_ENGINE_METHOD_ROUTE_REQUEST, input);
+   132	  }
+   133
+   134	  executeApplicationGraphql(
+   135	    applicationId: string,
+   136	    input: ApplicationWorkerExecuteGraphqlInput,
+   137	  ): Promise<unknown> {
+   138	    return this.request(applicationId, APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL, input);
+   139	  }
+   140
+   141	  async openApplicationWebSocket(
+   142	    applicationId: string,
+   143	    input: ApplicationWorkerOpenWebSocketInput,
+   144	  ): Promise<void> {
+   145	    await this.request(applicationId, APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET, input);
+   146	  }
+   147
+   148	  async deliverApplicationWebSocketMessage(
+   149	    applicationId: string,
+   150	    input: ApplicationWorkerWebSocketMessageInput,
+   151	  ): Promise<void> {
+   152	    await this.request(applicationId, APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE, input);
+   153	  }
+   154
+   155	  async closeApplicationWebSocket(
+   156	    applicationId: string,
+   157	    input: ApplicationWorkerCloseWebSocketInput,
+   158	  ): Promise<void> {
+   159	    const handle = this.state.getAttachedHandle(applicationId);
+   160	    if (!handle) {
+   161	      return;
+   162	    }
+   163	    await handle.client.request(
+   164	      APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET,
+   165	      input as unknown as Record<string, unknown>,
+   166	    );
+   167	  }
+   168
+   169	  invokeApplicationEventHandler(
+   170	    applicationId: string,
+   171	    input: ApplicationWorkerInvokeEventHandlerInput,
+   172	  ): Promise<ApplicationExecutionEventDispatchResult> {
+   173	    return this.request(
+   174	      applicationId,
+   175	      APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
+   176	      input,
+   177	    );
+   178	  }
+   179
+   180	  invokeApplicationArtifactHandler(
+   181	    applicationId: string,
+   182	    input: { event: ApplicationPublishedArtifactEvent },
+   183	  ): Promise<ApplicationExecutionEventDispatchResult> {
+   184	    return this.request(
+   185	      applicationId,
+   186	      APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
+   187	      input as ApplicationWorkerInvokeArtifactHandlerInput,
+   188	    );
+   189	  }
+   190
+   191	  async stopAttachedEngine(applicationId: string): Promise<void> {
+   192	    const handle = this.state.getAttachedHandle(applicationId);
+   193	    if (!handle) {
+   194	      return;
+   195	    }
+   196	    this.updateStatus(applicationId, {
+   197	      ...this.getStatus(applicationId),
+   198	      state: "stopping",
+   199	      ready: false,
+   200	    });
+   201	    try {
+   202	      await handle.client.request(APPLICATION_ENGINE_METHOD_STOP, {});
+   203	    } catch {
+   204	      // The worker may already have exited.
+   205	    }
+   206	    await handle.client.close();
+   207	    await handle.supervisor.stop();
+   208	    this.detachIfCurrent(applicationId, handle);
+   209	    this.updateStatus(applicationId, createApplicationEngineBaseStatus(applicationId));
+   210	  }
+   211
+   212	  clearListeners(): void {
+   213	    this.state.clearListeners();
+   214	  }
+   215
+   216	  private request<T>(
+   217	    applicationId: string,
+   218	    method: string,
+   219	    input: unknown,
+   220	  ): Promise<T> {
+   221	    const handle = this.state.getAttachedHandle(applicationId);
+   222	    if (!handle) {
+   223	      throw new Error(`Application engine '${applicationId}' is not running.`);
+   224	    }
+   225	    return handle.client.request<T>(
+   226	      method,
+   227	      input as Record<string, unknown>,
+   228	    );
+   229	  }
+   230	}
+
+== Launcher definition-load and unwind ==
+   105	    this.dependencies.controller.updateStatus(applicationId, {
+   106	      ...this.dependencies.controller.getStatus(applicationId),
+   107	      state: "starting_worker",
+   108	      ready: false,
+   109	      lastFailure: null,
+   110	    });
+   111
+   112	    const supervisor = new ApplicationWorkerSupervisor();
+   113	    const childProcess = supervisor.start({
+   114	      cwd: bundle.applicationRootPath,
+   115	      stdoutLogPath: layout.workerStdoutLogPath,
+   116	      stderrLogPath: layout.workerStderrLogPath,
+   117	    });
+   118	    const client = new ApplicationEngineClient();
+   119	    client.attach(childProcess);
+   120	    const handle: ApplicationEngineRuntimeHandle = Object.freeze({
+   121	      supervisor,
+   122	      client,
+   123	    });
+   124	    client.registerRequestHandler(
+   125	      APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
+   126	      async (params) => this.contextCapabilityHandler.handle(
+   127	        applicationId,
+   128	        params as unknown as ApplicationWorkerContextCapabilityInput,
+   129	        client,
+   130	      ),
+   131	    );
+   132	    client.registerRequestHandler(
+   133	      APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION,
+   134	      async (params) => this.dependencies.controller.publishWebSocketAction(
+   135	        applicationId,
+   136	        params as unknown as ApplicationWorkerWebSocketActionInput,
+   137	      ),
+   138	    );
+   139	    client.onNotification((message) =>
+   140	      this.dependencies.controller.publishNotification(applicationId, message));
+   141	    client.onClose((error) => {
+   142	      if (!this.dependencies.controller.detachIfCurrent(applicationId, handle)) {
+   143	        return;
+   144	      }
+   145	      this.dependencies.agentStreamingService.stopApplication(applicationId);
+   146	      this.dependencies.controller.publishWorkerClose(applicationId, error);
+   147	      this.dependencies.controller.updateStatus(applicationId, {
+   148	        ...createApplicationEngineBaseStatus(applicationId),
+   149	        state: error ? "failed" : "stopped",
+   150	        lastFailure: error ? error.message : null,
+   151	      });
+   152	    });
+   153	    supervisor.onExit(({ expected, code, signal }) => {
+   154	      if (expected || !this.dependencies.controller.detachIfCurrent(applicationId, handle)) {
+   155	        return;
+   156	      }
+   157	      const error = new Error(
+   158	        `Application worker exited unexpectedly (code=${String(code)}, signal=${String(signal)}).`,
+   159	      );
+   160	      this.dependencies.agentStreamingService.stopApplication(applicationId);
+   161	      this.dependencies.controller.publishWorkerClose(applicationId, error);
+   162	      this.dependencies.controller.updateStatus(applicationId, {
+   163	        ...createApplicationEngineBaseStatus(applicationId),
+   164	        state: "failed",
+   165	        lastFailure: error.message,
+   166	      });
+   167	    });
+   168	    this.dependencies.controller.attach(applicationId, handle);
+   169
+   170	    try {
+   171	      const definition = await client.request<ApplicationWorkerLoadDefinitionResult>(
+   172	        APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
+   173	        {
+   174	          applicationId,
+   175	          entryModulePath: bundle.backend.entryModulePath,
+   176	          supportedExposures: bundle.backend.supportedExposures,
+   177	          storage: {
+   178	            rootPath: layout.rootPath,
+   179	            runtimePath: layout.runtimeDir,
+   180	            logsPath: layout.logsDir,
+   181	            appDatabasePath: layout.appDatabasePath,
+   182	            appDatabaseUrl: `file:${layout.appDatabasePath}`,
+   183	            assetsPath: bundle.backend.assetsDirPath,
+   184	          },
+   185	        },
+   186	      );
+   187	      const status: ApplicationEngineStatus = {
+   188	        applicationId,
+   189	        state: "ready",
+   190	        ready: true,
+   191	        startedAt: new Date().toISOString(),
+   192	        lastFailure: null,
+   193	        exposures: definition.exposures,
+   194	      };
+   195	      this.dependencies.controller.updateStatus(
+   196	        applicationId,
+   197	        status,
+   198	        layout.engineStatusPath,
+   199	      );
+   200	      return status;
+   201	    } catch (error) {
+   202	      this.dependencies.controller.detachIfCurrent(applicationId, handle);
+   203	      await client.close();
+   204	      await supervisor.stop();
+   205	      const failureStatus: ApplicationEngineStatus = {
+   206	        ...createApplicationEngineBaseStatus(applicationId),
+   207	        state: "failed",
+   208	        lastFailure: error instanceof Error ? error.message : String(error),
+   209	      };
+   210	      this.dependencies.controller.updateStatus(
+   211	        applicationId,
+   212	        failureStatus,
+   213	        layout.engineStatusPath,
+   214	      );
+   215	      throw error;
+   216	    }
+   217	  }
+   218
+   219	  private runtimeStorageNeedsRepair(applicationId: string): boolean {
+   220	    const layout = this.dependencies.storageLifecycleService
+   221	      .getStorageLayout(applicationId);
+   222	    return applicationEngineStorageNeedsRepair(layout.appDatabasePath);
+   223	  }
+   224	}
+
+== Worker dispatch / nested bridge response ==
+     1	import readline from "node:readline";
+     2	import { ApplicationWorkerHostBridgeClient } from "./application-worker-host-bridge-client.js";
+     3	import { ApplicationBackendHost } from "./application-backend-host.js";
+     4	import { JsonLineFrameWriter } from "../runtime/json-line-frame-writer.js";
+     5	import {
+     6	  APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
+     7	  APPLICATION_ENGINE_METHOD_GET_STATUS,
+     8	  APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
+     9	  APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
+    10	  APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
+    11	  APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
+    12	  APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
+    13	  APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
+    14	  APPLICATION_ENGINE_METHOD_STOP,
+    15	  APPLICATION_ENGINE_NOTIFICATION_METHOD,
+    16	  APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET,
+    17	  APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE,
+    18	  APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET,
+    19	  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT,
+    20	  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR,
+    21	  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED,
+    22	  type ApplicationWorkerNotificationParams,
+    23	} from "../runtime/protocol.js";
+    24
+    25	type JsonRpcRequest = {
+    26	  jsonrpc?: string;
+    27	  id?: string | number | null;
+    28	  method?: string;
+    29	  params?: Record<string, unknown>;
+    30	  result?: unknown;
+    31	  error?: { message?: string };
+    32	};
+    33
+    34	const frameWriter = new JsonLineFrameWriter(process.stdout);
+    35	const writeFrame = (frame: Record<string, unknown>): Promise<void> => frameWriter.write(frame);
+    36
+    37	const hostBridgeClient = new ApplicationWorkerHostBridgeClient(writeFrame);
+    38	const runtime = new ApplicationBackendHost(
+    39	  async (params: ApplicationWorkerNotificationParams) => {
+    40	    await writeFrame({
+    41	      jsonrpc: "2.0",
+    42	      method: APPLICATION_ENGINE_NOTIFICATION_METHOD,
+    43	      params,
+    44	    });
+    45	  },
+    46	  async (input) => hostBridgeClient.invokeContextCapability(input),
+    47	  async (input) => hostBridgeClient.invokeWebSocketAction(input),
+    48	);
+    49
+    50	const respondSuccess = async (id: string | number | null, result: unknown): Promise<void> => {
+    51	  await writeFrame({ jsonrpc: "2.0", id, result });
+    52	};
+    53
+    54	const respondError = async (id: string | number | null, message: string): Promise<void> => {
+    55	  await writeFrame({
+    56	    jsonrpc: "2.0",
+    57	    id,
+    58	    error: { message },
+    59	  });
+    60	};
+    61
+    62	const rl = readline.createInterface({
+    63	  input: process.stdin,
+    64	  crlfDelay: Infinity,
+    65	});
+    66
+    67	rl.on("line", async (line) => {
+    68	  if (!line.trim()) {
+    69	    return;
+    70	  }
+    71
+    72	  let request: JsonRpcRequest;
+    73	  try {
+    74	    request = JSON.parse(line) as JsonRpcRequest;
+    75	  } catch (error) {
+    76	    await respondError(null, `Invalid JSON request: ${String(error)}`);
+    77	    return;
+    78	  }
+    79
+    80	  if (!request.method && hostBridgeClient.handleResponse(request as Record<string, unknown>)) {
+    81	    return;
+    82	  }
+    83
+    84	  const id = request.id ?? null;
+    85	  const method = request.method ?? "";
+    86	  const params = request.params ?? {};
+    87
+    88	  if (id === null) {
+    89	    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT) runtime.dispatchAgentStreamEvent(params);
+    90	    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR) runtime.dispatchAgentStreamError(params);
+    91	    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED) runtime.dispatchAgentStreamClosed(params);
+    92	    return;
+    93	  }
+    94
+    95	  try {
+    96	    switch (method) {
+    97	      case APPLICATION_ENGINE_METHOD_LOAD_DEFINITION:
+    98	        await respondSuccess(id, await runtime.loadDefinition(params as never));
+    99	        break;
+   100	      case APPLICATION_ENGINE_METHOD_GET_STATUS:
+   101	        await respondSuccess(id, runtime.getStatus());
+   102	        break;
+   103	      case APPLICATION_ENGINE_METHOD_INVOKE_QUERY:
+   104	        await respondSuccess(id, await runtime.invokeQuery(params as never));
+   105	        break;
+   106	      case APPLICATION_ENGINE_METHOD_INVOKE_COMMAND:
+   107	        await respondSuccess(id, await runtime.invokeCommand(params as never));
+   108	        break;
+   109	      case APPLICATION_ENGINE_METHOD_ROUTE_REQUEST:
+   110	        await respondSuccess(id, await runtime.routeRequest(params as never));
+   111	        break;
+   112	      case APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL:
+   113	        await respondSuccess(id, await runtime.executeGraphql(params as never));
+   114	        break;
+   115	      case APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER:
+   116	        await respondSuccess(id, await runtime.invokeEventHandler(params as never));
+   117	        break;
+   118	      case APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER:
+   119	        await respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
+   120	        break;
+   121	      case APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET:
+   122	        await runtime.openWebSocket(params as never);
+   123	        await respondSuccess(id, { opened: true });
+   124	        break;
+   125	      case APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE:
+   126	        await runtime.deliverWebSocketMessage(params as never);
+   127	        await respondSuccess(id, { delivered: true });
+   128	        break;
+   129	      case APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET:
+   130	        await runtime.closeWebSocket(params as never);
+   131	        await respondSuccess(id, { closed: true });
+   132	        break;
+   133	      case APPLICATION_ENGINE_METHOD_STOP:
+   134	        await runtime.stop();
+   135	        await respondSuccess(id, { stopped: true });
+   136	        process.exit(0);
+   137	        break;
+   138	      default:
+   139	        await respondError(id, `Unsupported worker method '${method}'.`);
+   140	        break;
+   141	    }
+   142	  } catch (error) {
+   143	    await respondError(id, error instanceof Error ? error.message : String(error));
+   144	  }
+   145	});
+   146
+   147	rl.on("close", () => {
+   148	  void runtime.stop().finally(() => {
+   149	    process.exit(0);
+   150	  });
+   151	});
+
+== Protocol operation classes ==
+    20	} from "@autobyteus/application-sdk-contracts";
+    21
+    22	export const APPLICATION_ENGINE_NOTIFICATION_METHOD = "application.notification" as const;
+    23	export const APPLICATION_ENGINE_METHOD_LOAD_DEFINITION = "loadApplicationDefinition" as const;
+    24	export const APPLICATION_ENGINE_METHOD_GET_STATUS = "getApplicationStatus" as const;
+    25	export const APPLICATION_ENGINE_METHOD_INVOKE_QUERY = "invokeApplicationQuery" as const;
+    26	export const APPLICATION_ENGINE_METHOD_INVOKE_COMMAND = "invokeApplicationCommand" as const;
+    27	export const APPLICATION_ENGINE_METHOD_ROUTE_REQUEST = "routeApplicationRequest" as const;
+    28	export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGraphql" as const;
+    29	export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
+    30	export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
+    31	export const APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY = "invokeContextCapability" as const;
+    32	export const APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET = "openApplicationWebSocket" as const;
+    33	export const APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE = "deliverApplicationWebSocketMessage" as const;
+    34	export const APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET = "closeApplicationWebSocket" as const;
+    35	export const APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION = "invokeApplicationWebSocketAction" as const;
+    36	export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT = "application.agentStream.event" as const;
+    37	export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR = "application.agentStream.error" as const;
+    38	export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED = "application.agentStream.closed" as const;
+    39	export const APPLICATION_ENGINE_METHOD_STOP = "stopApplication" as const;
+    40
+    41	export type ApplicationWorkerLoadDefinitionInput = {
+    42	  applicationId: string;
+    43	  entryModulePath: string;
+    44	  supportedExposures: ApplicationBackendExposureSummary["supportedExposures"];
+    45	  storage: ApplicationStorageContext;
+    46	};
+    47
+    48	export type ApplicationWorkerLoadDefinitionResult = {
+    49	  exposures: ApplicationBackendExposureSummary;
+    50	};
+    51
+    52	export type ApplicationWorkerInvokeQueryInput = {
+    53	  queryName: string;
+    54	  requestContext: ApplicationRequestContext | null;
+    55	  input: unknown;
+    56	};
+    57
+    58	export type ApplicationWorkerInvokeCommandInput = {
+    59	  commandName: string;
+    60	  requestContext: ApplicationRequestContext | null;
+    61	  input: unknown;
+    62	};
+    63
+    64	export type ApplicationWorkerRouteRequestInput = {
+    65	  requestContext: ApplicationRequestContext | null;
+    66	  request: ApplicationRouteRequest;
+    67	};
+    68
+    69	export type ApplicationWorkerExecuteGraphqlInput = {
+    70	  requestContext: ApplicationRequestContext | null;
+    71	  request: ApplicationGraphqlRequest;
+    72	};
+    73
+    74	export type ApplicationWorkerInvokeEventHandlerInput = {
+    75	  envelope: ApplicationExecutionEventEnvelope;
+    76	};
+    77
+    78	export type ApplicationWorkerInvokeArtifactHandlerInput = {
+    79	  event: ApplicationPublishedArtifactEvent;
+    80	};
+    81
+    82	export type ApplicationWorkerContextCapabilityInput =
+    83	  | { capability: "agentExecution"; operation: "startAgent"; input: ApplicationStartAgentInput }
+    84	  | { capability: "agentExecution"; operation: "startAgentTeam"; input: ApplicationStartAgentTeamInput }
+    85	  | {
+    86	      capability: "agentExecution";
+    87	      operation: "sendInput";
+    88	      input: {
+    89	        address: ApplicationAgentTargetAddress;
+    90	        input: ApplicationAgentInput;
+    91	      };
+    92	    }
+    93	  | {
+    94	      capability: "agentExecution";
+    95	      operation: "subscribeEventStream";
+    96	      input: { subscriptionId: string; address: ApplicationAgentTargetAddress };
+    97	    }
+    98	  | {
+    99	      capability: "agentExecution";
+   100	      operation: "unsubscribeEventStream";
+   101	      input: { subscriptionId: string; reason: "UNSUBSCRIBED" | "ABORTED" };
+   102	    }
+   103	  | { capability: "agentExecution"; operation: "terminate"; input: { bindingId: string } }
+   104	  | { capability: "agentExecution"; operation: "get"; input: { bindingId: string } }
+   105	  | { capability: "agentExecution"; operation: "list"; input: ApplicationAgentBindingListFilter | null }
+   106	  | { capability: "agentExecution"; operation: "findByLaunchRequestId"; input: { launchRequestId: string } }
+   107	  | {
+   108	      capability: "agentResources";
+   109	      operation: "listAvailable";
+   110	      input: {
+   111	        source?: ApplicationExecutionResourceSource | null;
+   112	        kind?: ApplicationExecutionResourceKind | null;
+   113	      } | null;
+   114	    }
+   115	  | { capability: "agentResources"; operation: "requireRunnable"; input: { slotKey: string } }
+   116	  | { capability: "publishedArtifacts"; operation: "list"; input: { runId: string } }
+   117	  | {
+   118	      capability: "publishedArtifacts";
+   119	      operation: "readRevision";
+   120	      input: {
+   121	        runId: string;
+   122	        revisionId: string;
+   123	      };
+   124	    };
+   125
+   126	export type ApplicationWorkerNotificationParams = {
+   127	  topic: string;
+   128	  payload: unknown;
+   129	  publishedAt: string;
+   130	};
+   131
+   132	export type ApplicationWorkerStatusResult = {
+   133	  exposures: ApplicationBackendExposureSummary | null;
+   134	};
+   135
+   136	export type ApplicationExecutionEventDispatchResult = {
+   137	  status: "acknowledged" | "missing_handler";
+   138	};
+   139
+   140	export type ApplicationWebSocketIpcFrame =
+   141	  | { kind: "text"; text: string }
+   142	  | { kind: "binary"; dataBase64: string };
+   143
+   144	export type ApplicationWorkerOpenWebSocketInput = {
+   145	  sessionId: string;
+   146	  request: ApplicationWebSocketRequest;
+   147	};
+   148
+   149	export type ApplicationWorkerWebSocketMessageInput = {
+   150	  sessionId: string;
+
+== Synchronous REST/gateway path ==
+     1	import type { FastifyInstance } from "fastify";
+     2	import type {
+     3	  ApplicationGraphqlRequest,
+     4	} from "@autobyteus/application-sdk-contracts";
+     5	import type { ApplicationBackendRestContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
+     6	import { sendApplicationRouteError } from "./application-route-error.js";
+     7	import {
+     8	  invokeApplicationCommand,
+     9	  invokeApplicationGraphql,
+    10	  invokeApplicationQuery,
+    11	  invokeApplicationRoute,
+    12	} from "./application-backend-route-handlers.js";
+    13
+    14	const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
+    15
+    16	export async function registerApplicationBackendRoutes(
+    17	  app: FastifyInstance,
+    18	  dependencies: {
+    19	    gateway: ApplicationBackendRestContract;
+    20	    lifecycle: ApplicationPlatformLifecycleReadiness;
+    21	  },
+    22	): Promise<void> {
+    23	  app.post<{
+    24	    Params: { applicationId: string; queryName: string };
+    25	    Body: { requestContext?: unknown; input?: unknown };
+    26	  }>(`${APPLICATION_BACKEND_ROUTE_BASE}/queries/:queryName`, async (request, reply) => {
+    27	    try {
+    28	      await dependencies.lifecycle.awaitReady();
+    29	      const result = await invokeApplicationQuery({
+    30	        gateway: dependencies.gateway,
+    31	        applicationId: request.params.applicationId,
+    32	        queryName: request.params.queryName,
+    33	        value: request.body?.input ?? null,
+    34	      });
+    35	      return reply.send({ result });
+    36	    } catch (error) {
+    37	      return sendApplicationRouteError(reply, error);
+    38	    }
+    39	  });
+    40
+    41	  app.post<{
+    42	    Params: { applicationId: string; commandName: string };
+    43	    Body: { requestContext?: unknown; input?: unknown };
+    44	  }>(`${APPLICATION_BACKEND_ROUTE_BASE}/commands/:commandName`, async (request, reply) => {
+    45	    try {
+    46	      await dependencies.lifecycle.awaitReady();
+    47	      const result = await invokeApplicationCommand({
+    48	        gateway: dependencies.gateway,
+    49	        applicationId: request.params.applicationId,
+    50	        commandName: request.params.commandName,
+    51	        value: request.body?.input ?? null,
+    52	      });
+    53	      return reply.send({ result });
+    54	    } catch (error) {
+    55	      return sendApplicationRouteError(reply, error);
+    56	    }
+    57	  });
+    58
+    59	  app.post<{
+    60	    Params: { applicationId: string };
+    61	    Body: { requestContext?: unknown; request: ApplicationGraphqlRequest };
+    62	  }>(`${APPLICATION_BACKEND_ROUTE_BASE}/graphql`, async (request, reply) => {
+    63	    try {
+    64	      await dependencies.lifecycle.awaitReady();
+    65	      const result = await invokeApplicationGraphql({
+    66	        gateway: dependencies.gateway,
+    67	        applicationId: request.params.applicationId,
+    68	        request: request.body.request,
+    69	      });
+    70	      return reply.send({ result });
+    71	    } catch (error) {
+    72	      return sendApplicationRouteError(reply, error);
+    73	    }
+    74	  });
+    75
+    76	  app.route<{
+    77	    Params: { applicationId: string } & Record<string, string>;
+    78	  }>({
+    79	    method: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+    80	    url: `${APPLICATION_BACKEND_ROUTE_BASE}/routes/*`,
+    81	    handler: async (request, reply) => {
+    82	      const routePath = `/${request.params["*"] ?? ""}`.replace(/\/+/g, "/");
+    83	      const applicationId = request.params.applicationId;
+    84	      try {
+    85	        await dependencies.lifecycle.awaitReady();
+    86	        const result = await invokeApplicationRoute({
+    87	          gateway: dependencies.gateway,
+    88	          applicationId,
+    89	          routePath,
+    90	          request,
+    91	        });
+    92
+    93	        const routeResponse = result as { status?: number; headers?: Record<string, string>; body?: unknown };
+    94	        if (routeResponse.headers) {
+    95	          for (const [key, value] of Object.entries(routeResponse.headers)) {
+    96	            reply.header(key, value);
+    97	          }
+    98	        }
+    99	        reply.code(routeResponse.status ?? 200);
+   100	        return reply.send(routeResponse.body ?? null);
+   101	      } catch (error) {
+   102	        return sendApplicationRouteError(reply, error);
+   103	      }
+   104	    },
+   105	  });
+   106	}
+   135	    input: unknown,
+   136	  ): Promise<unknown> {
+   137	    await this.requireApplication(applicationId);
+   138	    await this.engineLauncher.ensureReady(applicationId);
+   139	    return this.engineController.invokeApplicationCommand(applicationId, {
+   140	      commandName,
+   141	      requestContext: normalizeRequestContext(applicationId, requestContext),
+   142	      input,
+   143	    });
+   144	  }
+   145
+   146	  async routeApplicationRequest(
+   147	    applicationId: string,
+   148	    requestContext: ApplicationRequestContext | null,
+   149	    request: ApplicationRouteRequest,
+   150	  ): Promise<unknown> {
+   151	    await this.requireApplication(applicationId);
+   152	    await this.engineLauncher.ensureReady(applicationId);
+   153	    return this.engineController.routeApplicationRequest(applicationId, {
+   154	      requestContext: normalizeRequestContext(applicationId, requestContext),
+   155	      request,
+   156	    });
+   157	  }
+   158
+   159	  async executeApplicationGraphql(
+   160	    applicationId: string,
+   161	    requestContext: ApplicationRequestContext | null,
+   162	    request: ApplicationGraphqlRequest,
+   163	  ): Promise<unknown> {
+   164	    await this.requireApplication(applicationId);
+   165	    await this.engineLauncher.ensureReady(applicationId);
+   166	    return this.engineController.executeApplicationGraphql(applicationId, {
+   167	      requestContext: normalizeRequestContext(applicationId, requestContext),
+   168	      request,
+   169	    });
+   170	  }
+   171
+   172	  connectApplicationWebSocket(input: {
+   173	    applicationId: string;
+   174	    request: ApplicationWebSocketRequest;
+   175	    socket: ApplicationBackendNetworkWebSocket;
+   176	  }): string {
+   177	    return this.webSocketSessionService.connect({
+   178	      ...input,
+   179	      requireApplication: () => this.requireApplicationWebSocketExposure(input.applicationId),
+   180	    });
+   181	  }
+   182
+   183	  dispose(): void {
+   184	    this.unsubscribeEngineNotifications?.();
+   185	    this.unsubscribeEngineNotifications = null;
+   186	    this.subscribedToEngineNotifications = false;
+   187	    this.dependencies.webSocketSessionService.dispose();
+   188	  }
+   189	}
+
+== Maintained mutation sequencing ==
+   170	            artifactCatchupCompletedAt: null,
+   171	          });
+   172	        });
+   173	      });
+   174	      throw error;
+   175	    }
+   176	  },
+   177
+   178	  async askFollowUp(input: { lessonId: string; text: string }) {
+   179	    const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
+   180	    const text = requireNonEmptyString(input.text, "text");
+   181	    const lesson = requireLesson(context, lessonId);
+   182	    const bindingId = ensureOpenBinding(lesson);
+   183	    const createdAt = new Date().toISOString();
+   184
+   185	    withAppDatabase(context.storage.appDatabasePath, (db) => {
+   186	      withTransaction(db, () => {
+   187	        createLessonMessageRepository(db).insertMessage({
+   188	          messageId: randomUUID(),
+   189	          lessonId,
+   190	          role: "student",
+   191	          kind: "follow_up",
+   192	          body: text,
+   193	          createdAt,
+   194	        });
+   195	        createLessonRepository(db).upsertLesson({
+   196	          lessonId,
+   197	          prompt: lesson.prompt,
+   198	          status: lesson.status,
+   199	          updatedAt: createdAt,
+   200	          latestBindingId: lesson.latestBindingId,
+   201	          latestRunId: lesson.latestRunId,
+   202	          latestBindingStatus: lesson.latestBindingStatus,
+   203	          lastErrorMessage: null,
+   204	          closedAt: lesson.closedAt,
+   205	          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
+   206	        });
+   207	      });
+   208	    });
+   209
+   210	    await context.agentExecution.sendInput({
+   211	      address: { bindingId, memberAddress: null },
+   212	      input: {
+   213	        text,
+   214	        metadata: { lessonId },
+   215	      },
+   216	    });
+   217
+   218	    return createLessonReadService(context).getLesson(lessonId);
+   219	  },
+   220
+   221	  async requestHint(input: { lessonId: string; text?: string | null }) {
+   222	    const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
+   223	    const lesson = requireLesson(context, lessonId);
+   224	    const bindingId = ensureOpenBinding(lesson);
+   225	    const createdAt = new Date().toISOString();
+   226	    const detail = typeof input.text === "string" && input.text.trim()
+   227	      ? input.text.trim()
+   228	      : "Please give the student the next helpful hint without solving the full problem.";
+   229
+   230	    withAppDatabase(context.storage.appDatabasePath, (db) => {
+   231	      withTransaction(db, () => {
+   232	        createLessonMessageRepository(db).insertMessage({
+   233	          messageId: randomUUID(),
+   234	          lessonId,
+   235	          role: "student",
+   236	          kind: "hint_request",
+   237	          body: detail,
+   238	          createdAt,
+   239	        });
+   240	        createLessonRepository(db).upsertLesson({
+   241	          lessonId,
+   242	          prompt: lesson.prompt,
+   243	          status: lesson.status,
+   244	          updatedAt: createdAt,
+   245	          latestBindingId: lesson.latestBindingId,
+   246	          latestRunId: lesson.latestRunId,
+   247	          latestBindingStatus: lesson.latestBindingStatus,
+   248	          lastErrorMessage: null,
+   249	          closedAt: lesson.closedAt,
+   250	          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
+   251	        });
+   252	      });
+   253	    });
+   254
+   255	    await context.agentExecution.sendInput({
+   256	      address: { bindingId, memberAddress: null },
+   257	      input: {
+   258	        text: `The student requests a hint. ${detail}`,
+   259	        metadata: { lessonId, requestKind: "hint" },
+   260	      },
+   261	    });
+   262
+   263	    return createLessonReadService(context).getLesson(lessonId);
+   264	  },
+   265
+   266	  async closeLesson(input: { lessonId: string }) {
+   267	    const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
+   268	    const lesson = requireLesson(context, lessonId);
+   269	    const closedAt = new Date().toISOString();
+   270
+   271	    if (lesson.latestBindingId && !(lesson.latestBindingStatus && ["TERMINATED", "FAILED", "ORPHANED"].includes(lesson.latestBindingStatus))) {
+   272	      await context.agentExecution.terminate(lesson.latestBindingId);
+   273	    }
+   274
+   275	    withAppDatabase(context.storage.appDatabasePath, (db) => {
+   120
+   121	    return brief;
+   122	  },
+   123
+   124	  async launchDraftRun(input: { briefId: string }) {
+   125	    const briefId = requireNonEmptyString(input.briefId, "briefId");
+   126	    const correlationService = createRunBindingCorrelationService(context);
+   127
+   128	    const launchContext = withAppDatabase(context.storage.appDatabasePath, (db) => {
+   129	      const briefRepository = createBriefRepository(db);
+   130	      const artifactRepository = createArtifactRepository(db);
+   131	      const reviewNoteRepository = createReviewNoteRepository(db);
+   132	      const brief = briefRepository.getById(briefId);
+   133	      if (!brief) {
+   134	        throw new Error(`Brief '${briefId}' was not found.`);
+   135	      }
+   136
+   137	      const writerArtifact = artifactRepository
+   138	        .listByBriefId(briefId)
+   139	        .find((artifact) => artifact.artifactKind === "writer") ?? null;
+   140	      const reviewNotes = reviewNoteRepository
+   141	        .listByBriefId(briefId)
+   142	        .map((note) => note.body.trim())
+   143	        .filter(Boolean);
+   144
+   145	      return {
+   146	        brief,
+   147	        latestWriterSummary: writerArtifact?.description?.trim() || null,
+   148	        latestWriterBody: writerArtifact?.body?.trim() || null,
+   149	        reviewNotes,
+   150	      };
+   151	    });
+   152
+   153	    const launchedAt = new Date().toISOString();
+   154	    const pendingLaunchRequest = correlationService.createPendingLaunchRequest(briefId);
+   155	    const draftingTeam = await context.agentResources.requireRunnable(DRAFTING_TEAM_SLOT_KEY);
+   156
+   157	    try {
+   158	      const binding = await context.agentExecution.startAgentTeam({
+   159	        launchRequestId: pendingLaunchRequest.launchRequestId,
+   160	        executionResourceRef: draftingTeam.executionResourceRef,
+   161	        launch: buildEffectiveTeamRunLaunch({
+   162	          configuration: draftingTeam,
+   163	        }),
+   164	        initialInput: {
+   165	          text: buildInitialInputText({
+   166	            title: launchContext.brief.title,
+   167	            latestWriterSummary: launchContext.latestWriterSummary,
+   168	            latestWriterBody: launchContext.latestWriterBody,
+   169	            reviewNotes: launchContext.reviewNotes,
+   170	          }),
+   171	          metadata: {
+   172	            briefId,
+   173	            title: launchContext.brief.title,
+   174	          },
+   175	        },
+   176	      });
+   177
+   178	      withAppDatabase(context.storage.appDatabasePath, (db) => {
+   179	        withTransaction(db, () => {
+   180	          const briefRepository = createBriefRepository(db);
+   181	          createPendingLaunchRequestRepository(db).markCommitted({
+   182	            launchRequestId: binding.launchRequestId,
+   183	            bindingId: binding.bindingId,
+   184	            committedAt: launchedAt,
+   185	          });
+   186	          createBriefBindingRepository(db).upsertBinding({
+   187	            briefId,
+   188	            bindingId: binding.bindingId,
+   189	            launchRequestId: binding.launchRequestId,
+   190	            runId: binding.runtime.teamRunId,
+   191	            createdAt: binding.createdAt,
+   192	            updatedAt: launchedAt,
+   193	            artifactCatchupCompletedAt: null,
+   194	          });
+   195	          const launchProjection = resolveLaunchProjection({
+   196	            brief: launchContext.brief,
+   197	            currentBrief: briefRepository.getById(briefId),
+   198	            binding,
+   199	            launchedAt,
+   200	          });
+   201	          briefRepository.upsertProjectedBrief({
+   202	            briefId,
+   203	            title: launchProjection.title,
+   204	            status: launchProjection.status,
+   205	            updatedAt: launchProjection.updatedAt,
+   206	            latestBindingId: binding.bindingId,
+   207	            latestRunId: binding.runtime.teamRunId,
+   208	            latestBindingStatus: launchProjection.latestBindingStatus,
+   209	            lastErrorMessage: launchProjection.lastErrorMessage,
+   210	          });
+   211	        });
+   212	      });
+   213
+   214	      await context.publishNotification("brief.draft_run_started", {
+   215	        briefId,
+   216	        bindingId: binding.bindingId,
+   217	        runId: binding.runtime.teamRunId,
+   218	        launchedAt,
+   219	      });
+   220
+   221	      return {
+   222	        briefId,
+   223	        bindingId: binding.bindingId,
+   224	        runId: binding.runtime.teamRunId,
+   225	        status: binding.status,
+   226	      };
+   227	    } catch (error) {
+   228	      const message = error instanceof Error ? error.message : String(error);
+   229	      const reconciled = await correlationService.reconcileLaunchRequest(pendingLaunchRequest.launchRequestId);
+   230	      withAppDatabase(context.storage.appDatabasePath, (db) => {
+   231	        withTransaction(db, () => {
+   232	          createBriefRepository(db).upsertProjectedBrief({
+   233	            briefId,
+   234	            title: launchContext.brief.title,
+   235	            status: launchContext.brief.status === "approved" || launchContext.brief.status === "rejected"
+
+== Supervisor termination evidence ==
+    70	    const stderrStream = fs.createWriteStream(input.stderrLogPath, { flags: "a" });
+    71	    child.stdout.pipe(stdoutStream);
+    72	    child.stderr.pipe(stderrStream);
+    73	    child.on("close", (code, signal) => {
+    74	      const expected = this.expectedExitProcess === child;
+    75	      if (expected) {
+    76	        this.expectedExitProcess = null;
+    77	      }
+    78	      this.process = null;
+    79	      stdoutStream.end();
+    80	      stderrStream.end();
+    81	      for (const listener of this.exitListeners) {
+    82	        listener({ code, signal, expected });
+    83	      }
+    84	    });
+    85
+    86	    this.process = child;
+    87	    return child;
+    88	  }
+    89
+    90	  async stop(): Promise<void> {
+    91	    const current = this.process;
+    92	    if (!current) {
+    93	      return;
+    94	    }
+    95	    this.expectedExitProcess = current;
+    96	    await new Promise<void>((resolve) => {
+    97	      let closed = false;
+    98	      const cleanup = () => {
+    99	        closed = true;
+   100	        current.removeListener("close", cleanup);
+   101	        resolve();
+   102	      };
+   103	      current.once("close", cleanup);
+   104	      current.kill("SIGTERM");
+   105	      setTimeout(() => {
+   106	        if (!closed) {
+   107	          current.kill("SIGKILL");
+   108	        }
+   109	      }, 5_000).unref();
+   110	    });
+   111	  }
+   112	}
+
+== Exact ApplicationEngineClient callsites ==
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts:163:    await handle.client.request(
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts:202:      await handle.client.request(APPLICATION_ENGINE_METHOD_STOP, {});
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts:225:    return handle.client.request<T>(
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts:171:      const definition = await client.request<ApplicationWorkerLoadDefinitionResult>(
+
+== Existing application-engine durable-test paths ==
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/integration/application-backend/application-engine-test-runtime.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/unit/application-engine/application-backend-definition-loader.test.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/unit/application-engine/application-handler-context-factory.test.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/unit/application-engine/application-websocket-session-registry.test.ts
+
+== Maintained frontend automatic retry search ==

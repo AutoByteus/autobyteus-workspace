@@ -1,6 +1,6 @@
 # Logical Application-Agent Addressing Transition Inventory
 
-Status: Normative SR-002 implementation and proof supplement, revalidated against `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
+Status: Normative SR-003 implementation and proof supplement. The SR-002 address/role transition remains fixed; SR-003 adds the bounded CRR-003 application-worker completion correction against implemented HEAD `159dd376906374d2caa50251f98d4456f2584328`.
 
 ## Add
 
@@ -10,6 +10,11 @@ Status: Normative SR-002 implementation and proof supplement, revalidated agains
 | `autobyteus-server-ts/src/application-orchestration/domain/application-run-binding-record-codec.ts` | strict current-schema binding record decode/projection |
 | `autobyteus-server-ts/src/application-orchestration/domain/application-execution-producer-projector.ts` | strict current-schema producer/context projection |
 | `autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts` | old-contract and boundary-bypass occurrence guards |
+| `autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts` | exact definition-load/stop deadline owner; terminate and await worker before timeout failure |
+| `autobyteus-server-ts/tests/unit/application-engine/application-engine-client.test.ts` | host correlation survives elapsed time; response/error/write/close settlement |
+| `autobyteus-server-ts/tests/unit/application-engine/application-worker-host-bridge-client.test.ts` | nested correlation survives elapsed time; response/error/write/close/new-call settlement |
+| `autobyteus-server-ts/tests/unit/application-engine/application-engine-control-request.test.ts` | response/error/deadline/terminate/cleanup state proof |
+| `autobyteus-server-ts/tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts` | real outer-worker/nested-host deferred completion and exact return proof |
 
 ## Modify — SDK Contracts And Packages
 
@@ -66,6 +71,11 @@ Status: Normative SR-002 implementation and proof supplement, revalidated agains
 | `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publisher.ts` and `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts` | aligned smaller execution-context type only; no addressing interpretation |
 | `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | define/export exact readonly `ResolvedApplicationAgentExecutionTarget`; streaming attach accepts it; remove authorization-service import; seven-capability count and all other capability/lifecycle contracts fixed |
 | `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts` | exact service type wiring only |
+| `autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts` | remove timeout parameter/default/timer from application correlation; retain exact result/error/write/client/process-close settlement |
+| `autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts` | all application-work methods use completion-coupled client request; stop uses the exact control-request owner and retains detach/status/close idempotency |
+| `autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts` | definition load uses the exact control-request owner; retain attach/status and reverse failed-start unwind |
+| `autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts` | remove fixed timer; add write-failure cleanup, idempotent close/fail-all, and fail-closed post-close request |
+| `autobyteus-server-ts/src/application-engine/worker/application-worker-entry.ts` | on host-stdin close, close bridge before runtime cleanup, catch/settle expected closed-bridge cleanup failure, then exit; normal stop keeps bridge open through response |
 | `autobyteus-server-ts/docs/modules/application_orchestration.md` | document logical/public vs exact/private boundary |
 
 ## Modify — Maintained Applications And Generated Outputs
@@ -91,6 +101,9 @@ Status: Normative SR-002 implementation and proof supplement, revalidated agains
 | separate `createApplicationAgentTeamTargetAddress` | root builder accepting Agent or Team binding |
 | old URL segments `agent-run`, `agent-team-run`, `agent-team-member/<runId>` | `root` / `member/<memberAddress>` |
 | raw JSON casts/spreads for affected binding/producer/context | current-schema codecs/projector |
+| `ApplicationEngineClient.request(..., timeoutMs = 30_000)` and pending timeout handles | correlation-only `request(method, params)` plus lifecycle control owner |
+| bridge-local 30-second `setTimeout`/pending timeout handles | response/error/write/close correlation |
+| application-work deadline/timeout error while worker is live | completion-coupled result/error |
 
 ## Durable Tests / Fixtures To Update
 
@@ -134,6 +147,20 @@ Named existing paths include:
 - `autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts` — remove only redundant Team-member role fixture; preserve startup gate, evidence agreement, nonterminal ownership, and terminal release.
 - `autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts` — remove only redundant Agent producer role fixture; preserve Application-owned active-run rejection and stopped-run edit behavior.
 
+## SR-003 Completion Tests / Fixtures To Add Or Modify
+
+| Path | Action | Exact Proof |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/unit/application-engine/application-engine-client.test.ts` | Add | with fake time beyond 30 seconds, a live request remains pending and the exact late response resolves; remote error, frame-write failure, explicit close, child error/close settle/remove exactly once |
+| `autobyteus-server-ts/tests/unit/application-engine/application-worker-host-bridge-client.test.ts` | Add | nested capability/action remains pending beyond 30 seconds and exact response resolves; write failure and bridge close reject; close is idempotent; later request fails before write; host-stdin teardown does not hang or leave an unhandled cleanup rejection |
+| `autobyteus-server-ts/tests/unit/application-engine/application-engine-control-request.test.ts` | Add | response/error clear deadline; deadline becomes authoritative, closes client, awaits supervisor stop, rejects only after stop; late result cannot win; primary plus cleanup failure preserved |
+| `autobyteus-server-ts/tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts` | Add | one real worker application request blocks on a deferred registered host capability, remains unresolved past a bounded test observation, then returns exact inner/outer result without duplicate dispatch |
+| `autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts` | Modify | application query/command/route/GraphQL/event/artifact/WebSocket call the correlation client without a deadline/control helper; stop alone uses control owner and remains idempotent |
+| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Modify | exact occurrence/omission rules below; control owner has exactly launcher and controller-stop production importers |
+| existing API-REV-001 cold Studio/standalone probes | Rerun, not repository source | RequestHint, cold Brief launch, and standalone Socratic recovery return actual result rather than 30-second HTTP 500; one transcript/input/launch effect; logical address evidence unchanged |
+
+Maintained Brief/Socratic backend/frontend production files are **not** SR-003 Modify paths. Their schemas, random/domain identities, repositories, and UI admission behavior remain as implemented by IR-002; no local timeout, retry, idempotency, or reconciliation patch is allowed.
+
 ## Current-Data Proof Fixtures
 
 1. Old binding summary with Team member `runtimeKind` extra -> exact current binding; no write performed.
@@ -155,8 +182,12 @@ Fail if supported source/package copies contain:
 - `application-execution-scope-contracts.ts` importing `application-agent-target-authorization-service.ts` or naming `AuthorizedApplicationAgentTargetDescriptor`;
 - scope streaming source/attach receiving a complete authorization descriptor, public address, or binding snapshot instead of `ResolvedApplicationAgentExecutionTarget`;
 - old URL literals/decoders, compatibility aliases, dual validators, version branches, or old/new address unions.
+- `timeoutMs`, timeout handles, `setTimeout`, or a `30_000` request deadline in `application-engine-client.ts` or `application-worker-host-bridge-client.ts`;
+- any gateway/REST/application-work controller method importing/calling `application-engine-control-request.ts`;
+- any control-request production importer other than `application-engine-launcher.ts` and `application-engine-controller.ts`;
+- any Brief/Socratic application-local retry, larger timeout, operation-status, or idempotency workaround added for CR-002.
 
-Positive guards require the exact address, scope-owned resolved-target union, orchestration-owned descriptor containing that union, SDK helper signatures, current-schema projectors, and physical constant writer. Governed current production and durable-test constructor/literal occurrence sets must be enumerated from the current source tree; an old-symbol-only search is not sufficient.
+Positive guards require the exact address, scope-owned resolved-target union, orchestration-owned descriptor containing that union, SDK helper signatures, current-schema projectors, and physical constant writer. SR-003 positive guards require one correlation-only host client request signature, one bridge `close`/fail-all path, one control-request owner, and exactly two governed control importers/calls (definition load and stop). Governed current production and durable-test constructor/literal occurrence sets must be enumerated from the current source tree; an old-symbol-only search is not sufficient.
 
 ## Verification Matrix
 
@@ -170,6 +201,10 @@ Positive guards require the exact address, scope-owned resolved-target union, or
 | Recovery | binding/event/run metadata restart/reentry with representative old supersets |
 | Package | build/devkit regeneration and exact package byte/schema parity |
 | Realistic | Studio + standalone launch/input/stream/publication/cleanup |
+| Completion unit | fake-time >30 seconds then exact outer/inner result; write/remote-error/close terminals; no pending leak |
+| Lifecycle control | definition-load/stop deadline aborts and awaits worker before failure; late response loses |
+| Completion integration | real worker plus deferred host capability resolves once through both correlations |
+| Cold realistic | exact API-REV-001 Studio RequestHint, standalone Socratic restart, and cold Brief launch return actual result with one effect |
 
 ## No-Impact Inventory
 
@@ -182,3 +217,7 @@ Positive guards require the exact address, scope-owned resolved-target union, or
 - binding IDs, Team/Agent run IDs, event ordering, artifact run IDs remain;
 - SQLite schema and migration ledger unchanged;
 - RootTeamRun-local delegation unchanged.
+- public GraphQL/command/route request/response schemas, JSON-RPC frame fields/method names, and frontend transport APIs unchanged by SR-003;
+- Brief/Socratic business services, GraphQL schemas, frontend runtime code, repositories, and persisted records unchanged by SR-003;
+- application handler/provider/orchestration error semantics remain exact; elapsed-time failure only is removed;
+- no operation journal, public idempotency key, cancellation frame, async status endpoint, automatic retry, or migration.

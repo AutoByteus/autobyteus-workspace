@@ -6,9 +6,11 @@ The exact current source authority is `origin/personal@4108786f4058ca83fd036df84
 
 Persistence analysis found JSON supersets containing the redundant role field, one physical NOT NULL member-role column, and no durable application-agent target address. The retained identity and display fields are already present. The target must therefore contract the current schema without introducing a migration or a compatibility path.
 
+API-REV-001 then established a separate reachable preservation failure on the same maintained-application proof spine: a cold Studio/standalone synchronous mutation can exceed both fixed 30-second internal JSON-RPC deadlines, return HTTP 500, and still commit. CRR-003 proved the engine, bridge, gateway, and application owners are unchanged from Personal and that the addressing delta is not the cause. The current API exposes a completion result rather than an asynchronous admission/status contract; the timers sit in correlation transports that own neither cancellation nor commit.
+
 ## Intended Change
 
-Replace the three-way public physical target union with one exact logical address `{ bindingId, memberAddress }`. Make binding authorization the sole logical-to-physical translator. It returns one immutable orchestration-owned authorization descriptor whose `runtime` field is the scope-owned `ResolvedApplicationAgentExecutionTarget`. The host and subscription use the complete descriptor. Host input discriminates only `descriptor.runtime` and calls the existing subject-specific scope commands; scope streaming receives `descriptor.runtime`. The scope never depends upward on authorization evidence. Remove application-role `runtimeKind` from binding members and producers, preserve provider/launch `runtimeKind`, and introduce current-schema projectors that read existing JSON supersets directly while new writers emit only the current shape.
+Replace the three-way public physical target union with one exact logical address `{ bindingId, memberAddress }`. Make binding authorization the sole logical-to-physical translator. It returns one immutable orchestration-owned authorization descriptor whose `runtime` field is the scope-owned `ResolvedApplicationAgentExecutionTarget`. The host and subscription use the complete descriptor. Host input discriminates only `descriptor.runtime` and calls the existing subject-specific scope commands; scope streaming receives `descriptor.runtime`. The scope never depends upward on authorization evidence. Remove application-role `runtimeKind` from binding members and producers, preserve provider/launch `runtimeKind`, and introduce current-schema projectors that read existing JSON supersets directly while new writers emit only the current shape. For SR-003, preserve the synchronous application-work contract by retaining both host-to-worker and nested worker-to-host correlation until a real response/error/write failure/close. Remove live-work deadlines from both clients. Keep bounded worker startup/stop through one explicit control-request owner that terminates and awaits the worker before surfacing timeout. Do not add a public async status, cancellation, retry, idempotency, or application-schema path.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -20,7 +22,7 @@ Replace the three-way public physical target union with one exact logical addres
 | BEH-004 | Contract | REQ-005; AC-008–010 | websocket URL, READY, event, worker capability | contracts/frontend/server protocol sources | one canonical root/member wire shape; existing transport lifecycle preserved | DS-001–DS-003, DS-007 |
 | BEH-005 | System | REQ-006; AC-011–013 | binding launch and execution event | launch/auth/mapper/application sources | remove derivable application-role fields; keep physical identity and provider runtime kind | DS-004, DS-005 |
 | BEH-006 | Operational | REQ-007; AC-014–016 | restart/recovery reads existing rows, journal entries, metadata | binding store, event journal, metadata store | version-agnostic current projection reads supersets; no rewrite or migration | DS-006, DS-009 |
-| BEH-007 | Contract | REQ-008; AC-017–018 | package regeneration and both-host execution | maintained application and package inventory | atomic clean cut with identical business outcomes | DS-001–DS-006 |
+| BEH-007 | Contract | REQ-008; AC-017–018 | package regeneration and both-host execution, including supported cold/reentry synchronous mutation | maintained application/package inventory plus API-REV-001/CRR-003 live evidence | atomic address clean cut; completion-coupled application work; actual completion/domain errors; bounded abort-before-failure lifecycle control | DS-001–DS-006, DS-010–DS-012 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -29,18 +31,19 @@ Replace the three-way public physical target union with one exact logical addres
 | `logical-application-agent-addressing-contract.md` | exact public/private/address/producer/persistence contract | REQ-001–007; AC-001–016 | normative interface and data contract | Approved with requirements |
 | `logical-application-agent-addressing-transition-inventory.md` | exact Add/Modify/Remove/test/package inventory | REQ-001–008; AC-001–018 | normative transition completeness | Current; approval N/A |
 | `current-personal-refresh-analysis.md` | exact current-base/source-spine/intersection/persistence revalidation | REQ-001–008; AC-001–018 | current source evidence for SR-002 | Current; approval N/A |
+| `application-worker-operation-completion-contract.md` | exact SR-003 operation classes, state machines, owners, spines, dependencies, and proof | REQ-008; AC-018 | normative derived design correction | N/A; no new public behavior |
 | upstream `future-architecture-simplification-review.md` | source-grounded trigger and six-spine assessment | all | read-only design evidence | N/A |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Behavior Change` and `Refactor`.
 - Current design issue found: `Yes`.
-- Root cause classification: `Boundary Or Ownership Issue`, `Shared Structure Looseness`, and `Duplicated Policy Or Coordination`.
+- Root cause classification: `Boundary Or Ownership Issue`, `Shared Structure Looseness`, `Duplicated Policy Or Coordination`, and `Missing Invariant`.
 - Refactor needed now: `Yes`.
-- Evidence: the public address repeats binding-owned subject and physical member identity; three downstream locations interpret the same selector; the scope contract imports a higher-level complete authorization descriptor; application-role fields are constant or derivable; application code manually maps logical member address to physical run ID.
-- Design response: one logical public shape, one authoritative translator, one complete orchestration descriptor containing one scope-owned exact runtime target, two current-schema projectors, and clean removal of redundant fields/paths.
+- Evidence: the public address repeats binding-owned subject and physical member identity; three downstream locations interpret the same selector; the scope contract imports a higher-level complete authorization descriptor; application-role fields are constant or derivable; application code manually maps logical member address to physical run ID. Separately, two correlation transports independently expire synchronous work without owning cancellation/commit, and direct cold-path evidence proves the resulting failure can precede a later commit.
+- Design response: one logical public shape, one authoritative translator, one complete orchestration descriptor containing one scope-owned exact runtime target, two current-schema projectors, and clean removal of redundant fields/paths. For completion, make both clients correlation-only for application work and isolate the legitimate startup/stop deadline in one abort-before-failure control owner.
 - Refactor rationale: each target concern has one concrete owner and the data-flow spines no longer cross both an outer boundary and its internals.
-- Intentional deferrals: dynamic task-agent addressing is not a current supported product surface; removing physical IDs from binding/event correlation is outside scope. Finalized provider/session composition and execution-scope lifecycle are preserved current baselines rather than deferred work. None requires change for this design.
+- Intentional deferrals: dynamic task-agent addressing is not a current supported product surface; removing physical IDs from binding/event correlation is outside scope. A public async status/idempotency/cancellation/retry protocol is a different product contract and is not needed for the observed live-worker path. Finalized provider/session composition and execution-scope lifecycle are preserved current baselines rather than deferred work. None requires change for this design.
 
 ## Terminology
 
@@ -50,10 +53,13 @@ Replace the three-way public physical target union with one exact logical addres
 - **Authorized descriptor:** immutable orchestration-owned translation result containing the public address, binding snapshot, and one resolved execution target in `runtime`.
 - **Application-role runtime kind:** the redundant `AGENT | AGENT_TEAM_MEMBER` classification removed here; it is distinct from provider launch `runtimeKind`.
 - **Current-schema projector:** version-agnostic reconstruction of recognized current fields from persisted JSON; it is not a legacy decoder.
+- **Application work:** any worker request that may execute application code or application-owned effects: query, command, route, GraphQL, event/artifact handler, or WebSocket operation.
+- **Completion-coupled:** correlation remains owned until actual remote result/error, local write failure, or transport close; elapsed wall time alone is not a result.
+- **Control request:** only worker definition load or stop, whose lifecycle owner may impose a deadline provided worker termination/close is awaited before failure escapes.
 
 ## Design Reading Order
 
-Behavior -> public logical contract -> authorization spine -> input/stream consumers -> role contraction -> current-data projection -> exact file transition.
+Behavior -> public logical contract -> authorization spine -> input/stream consumers -> role contraction -> current-data projection -> synchronous application-work completion spine -> exact file transition.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -61,6 +67,7 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 - Remove the old target union, old public target kinds/run ID, old URL segments, old helpers, redundant application-role fields, downstream reinterpretation, and raw casts/spreads at affected persistence boundaries.
 - The implementation must not add aliases, dual address validation, version negotiation, old/new wire unions, version-specific persistence branches, or fallback physical targeting.
 - Existing stored JSON is not a legacy runtime path: the current projector uniformly ignores unknown extras and requires every retained field.
+- Remove the two default/fixed live-work deadlines and timeout-handle ownership from correlation clients. Do not retain them under a renamed constant or larger value. Lifecycle control keeps one separately owned abort-before-failure deadline.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
@@ -72,6 +79,7 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 - Decision: `Directly Usable — No Migration`.
 - Rationale: a strict version-agnostic current projector reconstructs all retained meaning from existing supersets. A migration adds I/O, interruption, rollback, and corruption exposure without changing semantics. The physical column remains a derived write constant and is not exposed in the current model.
 - Supported criteria: REQ-007; AC-014–AC-016.
+- SR-003 state impact: `Not Affected`; the completion correction adds no public/persisted field, operation journal, retry record, or migration.
 
 ## Data-Flow Spine Inventory
 
@@ -86,6 +94,9 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 | DS-007 | Bounded Local | 004 | public address or URL | canonical encoded/decoded address | contracts URL codec | one wire representation |
 | DS-008 | Bounded Local | 001,003 | authorization request | immutable authorized descriptor or exact failure | authorization service | one translation authority |
 | DS-009 | Bounded Local | 006 | persisted unknown JSON | validated current object or fail-closed result | current-schema codecs/projector | no historical branch in runtime |
+| DS-010 | Primary End-to-End | 007 | cold/reentry synchronous application mutation | actual GraphQL completion/domain error at Studio/standalone caller | ApplicationEngineController completion contract | prevents local failure while nested accepted work continues |
+| DS-011 | Return/Error | 007 | application/host-capability completion or error | retained inner and outer correlations -> exact caller result | engine client + worker host bridge correlation owners | preserves real provider/domain/authorization errors and late valid response |
+| DS-012 | Secondary Lifecycle | 007 | worker definition load or stop | response/error or terminated-worker timeout | application engine control-request owner | preserves bounded control without leaving work live |
 
 ## Primary Execution Spine(s)
 
@@ -94,6 +105,8 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 - DS-003: `application worker -> engine protocol -> communication session -> authorization -> input/subscription -> READY/event/response -> worker`.
 - DS-004: `application launch request -> launch configuration/authorization -> scope Agent/Team creation -> binding launch service -> binding store -> role-free public binding`.
 - DS-006: `host lifecycle recovery -> binding/event/metadata store -> current-schema projector -> application recovery/reentry -> resumed exact binding/run/event state`.
+- DS-010: `Studio/standalone UI -> frontend GraphQL -> REST/gateway -> ApplicationEngineController -> retained ApplicationEngineClient correlation -> worker GraphQL/application mutation -> retained ApplicationWorkerHostBridgeClient correlation -> host orchestration/execution acceptance -> inner response -> application result -> outer response -> HTTP result`.
+- DS-012: `launcher/controller lifecycle -> control-request owner -> load/stop request -> deadline -> client close -> supervisor stop/close wait -> timeout result`; no application-work method may enter this spine.
 
 ## Spine Narratives (Mandatory)
 
@@ -106,10 +119,13 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 | DS-005 | Runtime subject remains on the event/binding where classification is required and physical run ID remains on producer; mapper/relay/context consumers no longer carry an unused duplicate role. | runtime event, producer, application event | event ingress/mapper/relay | journal, artifact projection |
 | DS-006 | Current-schema owners reconstruct recognized fields from existing supersets before normal recovery. No historical type reaches orchestration. | stored JSON, current object, recovery | each store/projector | SQLite/file I/O |
 | DS-007–009 | Canonical parsing, authorization resolution, and persisted projection are bounded transformations under their owning boundaries. | address/URL, binding/descriptor, JSON/current object | codec/auth/projector | validation errors |
+| DS-010 | Caller awaits one synchronous application result while both internal correlation owners retain the operation through cold execution and nested host capability completion. | HTTP request, worker request, application mutation, host capability, exact responses | ApplicationEngineController | correlation clients, frame writers |
+| DS-011 | Exact host capability/application domain errors return through retained nested and outer IDs; elapsed time never replaces them. | capability error/result, worker error/result, caller result | correlation clients | JSON-RPC mapper |
+| DS-012 | Startup/stop deadline is isolated from application work; on expiry the worker is closed/stopped before timeout escapes. | lifecycle trigger, control request, worker handle, timeout | control-request owner | supervisor/client cleanup |
 
 ## Spine Actors / Main-Line Nodes
 
-Application business caller, SDK target builder, worker/frontend transport, orchestration host, authorization service, binding store, authorized descriptor, `ApplicationExecutionScope` capabilities, communication/streaming services, event mapper/relay, recovery owners.
+Application business caller, SDK target builder, worker/frontend transport, orchestration host, authorization service, binding store, authorized descriptor, `ApplicationExecutionScope` capabilities, communication/streaming services, event mapper/relay, recovery owners. For DS-010–012: Studio/standalone frontend, REST/gateway, `ApplicationEngineController`, `ApplicationEngineClient`, worker entry/backend host, `ApplicationWorkerHostBridgeClient`, host capability handler, and the application engine control-request owner.
 
 ## Ownership Map
 
@@ -122,6 +138,10 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 - `ApplicationExecutionScope` remains the authoritative graph-local command/event boundary, owns the narrow `ResolvedApplicationAgentExecutionTarget` streaming input type, and never imports the higher-level authorization service; raw managers remain encapsulated.
 - Event/metadata stores own current-schema projection at their persistence boundaries.
 - Maintained applications own logical member choice such as `/tutor`, never physical address translation.
+- `ApplicationEngineController` owns synchronous application-work completion at the host boundary; it never supplies an application-work deadline.
+- `ApplicationEngineClient` and `ApplicationWorkerHostBridgeClient` own correlation and transport terminals, not timeout/commit/retry policy.
+- `ApplicationEngineControlRequest` owns only definition-load/stop deadline sequencing and worker termination-before-failure.
+- `ApplicationEngineLauncher` retains failed-start status/detach/unwind; worker entry owns bridge close before backend runtime teardown on host-stdin loss, isolates the expected closed-bridge cleanup rejection, and exits. Normal `stopApplication` keeps the bridge open through `runtime.stop()` and the stop response.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -131,6 +151,8 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 | target URL codec | public address contract | canonical transport representation | binding lookup/authorization |
 | orchestration REST/worker methods | orchestration host + scope | host entrypoint | raw managers or alternate resolver |
 | stream/communication URL handlers | streaming/communication service | transport registration | member mapping or execution ownership |
+| application backend REST/gateway | ApplicationEngineController | synchronous application-work entry | timeout, retry, commit, or GraphQL operation parsing |
+| JSON-RPC clients | controller/control-request owners | correlation/frame transport | default live-work deadline or application business semantics |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -145,18 +167,26 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 | input binding reload/public reinterpretation | bypasses descriptor authority | descriptor binding/runtime | In This Change | occurrence guard |
 | stream public-address branching | duplicates translator | descriptor runtime union | In This Change | occurrence guard |
 | raw affected JSON casts/spreads | leak stale fields | current codecs/projector | In This Change | fail retained-field errors |
+| `ApplicationEngineClient` default 30-second application-work timeout and pending timeout handle | transport is not commit/cancel owner | response/error/write/close correlation terminals | In This Change | no larger replacement timeout |
+| `ApplicationWorkerHostBridgeClient` fixed timeout | nested capability may validly exceed it | response/error/write/bridge-close terminals | In This Change | add idempotent close |
+| deadline use for application work | creates false failure with live work | completion-coupled controller path | In This Change | only load/stop control uses deadline |
 
 ## Return Or Event Spine(s) (If Applicable)
 
 - DS-005 streaming return: `run event -> scope event source -> producer projector -> application stream mapper -> event journal/transport -> logical address event -> caller`.
 - DS-005 publication return: `run context -> published artifact -> application relay -> binding/producer authorization -> application worker/projection`; exact run ID still correlates the artifact, while role derives from the enclosing subject.
 - Input returns the binding snapshot carried by the descriptor, ensuring the result represents the state that was actually authorized.
+- DS-011 completion return: `host capability result/error -> retained worker bridge ID -> application handler result/error -> retained engine-client ID -> controller/gateway -> caller`. Both correlations remain until the exact return traverses them.
+- A real write/process/bridge close rejects pending work. Elapsed time on a live transport is not a return event.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
 - DS-007, contracts owner: `address -> validate exact fields -> encode canonical segments` and `segments -> strict decode -> member parser -> exact address`.
 - DS-008, authorization owner: `validate exact public shape -> load one binding -> check application/status -> derive subject -> exact member match -> freeze descriptor`.
 - DS-009, persistence owner: `parse unknown JSON -> validate retained fields -> explicitly reconstruct current object -> freeze/return`; unknown extras are never spread onward.
+- DS-010 host correlation: `write frame -> retain request ID -> receive result/error or close -> settle/remove exactly once`.
+- DS-010 nested correlation: `write capability frame -> retain request ID -> receive host result/error or bridge close -> settle/remove exactly once`.
+- DS-012 control deadline: `start timer -> request -> on deadline mark deadline authoritative -> close client -> await supervisor stop -> reject timeout`; late response cannot win.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -169,10 +199,13 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 | physical role constant | 004,006 | binding store | satisfy unchanged DB constraint | schema concern | DB artifact becomes public domain field |
 | validators/equality | 002,003 | frontend/worker sessions | exact frame/address contract | untrusted boundary | alternate semantics |
 | package generation | all | SDK/application owners | atomic owned copies | maintained distribution | stale dual contracts |
+| JSON-RPC correlation | 010–011 | engine controller/worker bridge | retain ID and map actual terminal response | transport concern | timer becomes false business outcome |
+| control deadline | 012 | launcher/controller lifecycle | abort and await worker before timeout | lifecycle concern | deadline leaks into app work |
+| frame writer | 010–012 | correlation clients | bounded queued write/failure | existing transport capability | write failure leaks pending promise |
 
 ## Ownership Boundaries
 
-The binding is authoritative for Agent-versus-Team subject and configured member-to-run identity. The public caller names only root/member intent. Authorization is the sole boundary that may cross from logical intent to physical execution identity. Above it, no public API carries member run IDs. At the boundary, the complete descriptor owns authorization evidence and embeds the scope-owned resolved execution target. Below it, host input derives the existing subject-specific command arguments only from that target, and scope streaming receives that target directly. Neither can reload the binding, inspect the public address, or depend on the authorization service. Persistence stores expose current objects only; historical extra attributes do not cross their boundary. `ApplicationExecutionScope` remains authoritative for mutable execution and is not widened beyond changing one existing capability input value.
+The binding is authoritative for Agent-versus-Team subject and configured member-to-run identity. The public caller names only root/member intent. Authorization is the sole boundary that may cross from logical intent to physical execution identity. Above it, no public API carries member run IDs. At the boundary, the complete descriptor owns authorization evidence and embeds the scope-owned resolved execution target. Below it, host input derives the existing subject-specific command arguments only from that target, and scope streaming receives that target directly. Neither can reload the binding, inspect the public address, or depend on the authorization service. Persistence stores expose current objects only; historical extra attributes do not cross their boundary. `ApplicationExecutionScope` remains authoritative for mutable execution and is not widened beyond changing one existing capability input value. For application work, `ApplicationEngineController` is the outward completion boundary; callers depend on it, not on client timers. The two JSON-RPC clients are internal correlation mechanisms. The control-request owner is a sibling lifecycle concern used only by launcher/stop and cannot be called by application-work surfaces.
 
 ## Boundary Encapsulation Map
 
@@ -183,12 +216,15 @@ The binding is authoritative for Agent-versus-Team subject and configured member
 | authorization service | binding lookup/member map/complete descriptor | host/streaming/communication | reload/re-resolve downstream | extend descriptor |
 | `ApplicationExecutionScope` capabilities | resolved-target type/managers/runs/event sources | host/stream subscription | raw manager plus scope or full authorization descriptor into scope | adjust existing narrow capability input |
 | event/metadata projectors | stored producer/context JSON | journal/metadata/auth | version branch/raw object spread | extend current projector |
+| ApplicationEngineController | synchronous application-work completion | gateway/WebSocket/application event dispatch | caller-supplied timeout or direct engine client | extend controller method |
+| engine correlation clients | pending request IDs/frame terminals | controller/worker entry only | default timeout/commit semantics | strengthen correlation lifecycle |
+| engine control-request owner | startup/stop abort-before-failure deadline | launcher/controller stop only | application query/command/route/GraphQL/capability | extend exact control sequence |
 
 ## Dependency Rules
 
 Allowed: application -> logical SDK target; transport -> the same public address; host/stream subscription -> authorization; authorization -> binding store/current codec and scope-owned resolved-target type; host/subscription -> descriptor runtime and scope capabilities; scope runtime source -> resolved target only; stores -> current codecs/projector; event/binding subject -> role classification where required; context-only consumers -> role-free producer identity.
 
-Forbidden: public address -> run kind or member run ID; application -> logical-to-physical target projection; authorization caller -> both descriptor and binding store; input/stream -> public selector interpretation; scope contracts/source -> authorization-service import, complete descriptor, public address, or binding snapshot; caller -> scope plus raw manager; producer/member -> application-role runtime kind; current runtime -> old schema version branch; generic ID, service locator, manager router, compatibility adapter, or dual protocol.
+Forbidden: public address -> run kind or member run ID; application -> logical-to-physical target projection; authorization caller -> both descriptor and binding store; input/stream -> public selector interpretation; scope contracts/source -> authorization-service import, complete descriptor, public address, or binding snapshot; caller -> scope plus raw manager; producer/member -> application-role runtime kind; current runtime -> old schema version branch; generic ID, service locator, manager router, compatibility adapter, or dual protocol. Also forbidden: application/gateway/controller callers -> arbitrary timeout; client/bridge -> default fixed deadline; live correlation deletion on elapsed time; lifecycle control helper -> application work/capability; larger timeout as the fix; app-local retry/idempotency workaround.
 
 ## Interface Boundary Mapping
 
@@ -205,6 +241,10 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | scope streaming `attach` | exact stream target | attach/filter | resolved execution target | no complete descriptor/address/binding |
 | binding codec | current binding record | persisted projection | unknown JSON | retained fields required |
 | producer projector | current producer/context | persisted projection | unknown JSON | no role output |
+| `ApplicationEngineController` work methods | synchronous application work | await actual worker result/error | applicationId + exact current request input | no deadline parameter |
+| `ApplicationEngineClient.request` | host/worker correlation | frame/write/result/error/close lifecycle | method + params | no timeout option |
+| `ApplicationWorkerHostBridgeClient` | nested host capability correlation | frame/write/result/error/close lifecycle | exact capability/action input | no timeout option; explicit close |
+| `runApplicationEngineControlRequest` | engine lifecycle control | explicit deadline, termination, close wait | exact runtime handle + load/stop method/input | only launcher/stop callsites |
 
 ## Interface Boundary Check
 
@@ -215,6 +255,8 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | authorization | Yes | Yes | Low | discriminated private output |
 | Agent/Team scope commands | Yes | Yes | Low | keep subject-specific methods |
 | current projectors | Yes | Yes | Low | explicit reconstruction |
+| application-work completion | Yes | Yes (request ID) | Low | retain until real terminal transport event |
+| lifecycle deadline | Yes | exact runtime handle | Low | isolate load/stop and abort before failure |
 
 ## Main Domain Subject Naming Check
 
@@ -238,6 +280,8 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | current binding projection | orchestration persistence | Create owned codec | raw casts cross store boundary today | one repeated persisted subject |
 | producer projection | orchestration domain | Create owned projector | journal/metadata/auth need identical current shape | one repeated current subject |
 | transport/session | communication/streaming | Reuse | current lifecycle owner | N/A |
+| host/worker correlation | application engine client/bridge | Refine | existing transport owners are correct but timers are not | N/A |
+| startup/stop deadline | application engine lifecycle | Add one owned control concern | current launcher/controller duplicate the needed cleanup sequencing | exact abort-before-failure invariant, not generic timeout helper |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -248,7 +292,8 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | application streaming/communication | lease/session/event transport | 002–003,005 | existing services | Modify | subscription consumes descriptor; scope source consumes resolved target only |
 | application execution scope | exact commands/events and resolved-target contract | 001–002 | scope | Modify contract only | no owner/lifecycle/capability-count change |
 | run metadata/history | current execution-context read/write | 005–006,009 | metadata store | Extend | uses shared projector |
-| maintained applications | logical choice/business behavior | 001–005 | Brief/Socratic | Modify | no physical targeting |
+| maintained applications | logical choice/business behavior | 001–005,010–011 | Brief/Socratic | Modify only for address; no SR-003 source change | no physical targeting or timeout workaround |
+| application engine runtime | worker correlation and lifecycle control | 010–012 | controller/client/bridge/control owner | Modify/Add | completion correlation separated from bounded control |
 
 ## Draft File Responsibility Mapping
 
@@ -260,6 +305,9 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | `application-agent-target-authorization-service.ts` | orchestration | authorization | one logical-to-physical resolution | real state/validation owner | binding codec/store |
 | `application-run-binding-record-codec.ts` | persistence | binding store | current record projection | one stored aggregate | producer projector |
 | `application-execution-producer-projector.ts` | orchestration domain | producer shape | current producer/context projection | repeated semantic transform | journal/metadata/auth |
+| `application-engine-client.ts` | application engine runtime | host correlation | result/error/write/close settlement only | existing exact transport owner | controller/control owner |
+| `application-worker-host-bridge-client.ts` | application engine worker | nested correlation | result/error/write/close settlement only | existing exact transport owner | handler context |
+| `application-engine-control-request.ts` | application engine runtime | lifecycle deadline | load/stop request + terminate/wait + primary/cleanup error | one real sequencing invariant | launcher/controller stop |
 
 ## Reusable Owned Structures Check
 
@@ -269,6 +317,7 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | resolved execution union | scope contracts | execution boundary | host dispatch and stream attach share one exact value | Yes | Yes | public wire type or authorization aggregate |
 | producer current projection | producer projector | orchestration domain | journal/metadata/auth share transform | Yes | Yes | old-schema version adapter |
 | binding current projection | binding codec | binding store | all binding reads share invariants | Yes | Yes | generic JSON codec registry |
+| lifecycle deadline sequencing | engine control request | application engine lifecycle | startup/stop need the same abort-before-failure rule | Yes | Yes | generic timeout/retry/cancellation library |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -282,7 +331,7 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 
 ## Final File Responsibility Mapping
 
-The exact path-level Add/Modify/Remove and durable-test list in `logical-application-agent-addressing-transition-inventory.md` is authoritative. The important final responsibilities are: contract package owns public schemas/codec; backend SDK owns logical builders; authorization owns translation and the complete descriptor; scope contracts own the resolved execution target; stores/projectors own current persistence projection; host/subscription consume the complete descriptor while host commands derive exact arguments from its runtime value and the scope source consumes that runtime value; applications select logical members. No generic target resolver, codec registry, compatibility package, or shared optional-field base is added.
+The exact path-level Add/Modify/Remove and durable-test list in `logical-application-agent-addressing-transition-inventory.md` is authoritative. The important final responsibilities are: contract package owns public schemas/codec; backend SDK owns logical builders; authorization owns translation and the complete descriptor; scope contracts own the resolved execution target; stores/projectors own current persistence projection; host/subscription consume the complete descriptor while host commands derive exact arguments from its runtime value and the scope source consumes that runtime value; applications select logical members. No generic target resolver, codec registry, compatibility package, or shared optional-field base is added. SR-003 adds one application-engine control-request file with real deadline/termination ownership; it does not wrap the engine client generically. The controller remains the application-work completion boundary, both clients remain correlation transports, and maintained applications remain unchanged by the completion correction.
 
 ## Applied Patterns (If Any)
 
@@ -291,6 +340,8 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 - Discriminated union: private Agent versus Team exact target.
 - Current-schema projector: strict retained-field reconstruction from JSON supersets.
 - Adapter/codec: canonical public address to URL only.
+- Correlation state machine: each JSON-RPC client retains an exact request until result/error/write/close.
+- Lifecycle control operation: one deadline owner sequences request, worker termination, close wait, and error preservation.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -305,6 +356,10 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | `autobyteus-server-ts/src/application-orchestration/domain/application-run-binding-record-codec.ts` | File | persistence boundary | current binding decode/projection | orchestration owns binding | version branches |
 | `autobyteus-server-ts/src/application-orchestration/domain/application-execution-producer-projector.ts` | File | orchestration domain | current producer/context projection | shared subject owner | provider runtime kinds |
 | communication/streaming service files | Files | existing transport owners | complete descriptor until subscription; resolved target at scope attach | lifecycle/evidence remains local | binding reload/address interpretation/full descriptor in source |
+| `autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts` | File | host correlation | request ID/frame terminals; no timer | existing transport boundary | timeout/commit/retry policy |
+| `autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts` | File | nested correlation | capability/action ID/frame terminals and close | existing worker adapter | timer/application policy |
+| `autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts` | File | engine lifecycle | load/stop deadline and terminate-before-fail | distinct off-spine lifecycle owner | application-work methods/retry |
+| controller/launcher/worker entry | Files | existing work/lifecycle/teardown owners | choose completion versus control path; close bridge | existing spine nodes | duplicate deadline policy |
 
 ## Folder Boundary Check
 
@@ -315,6 +370,8 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | server `application-orchestration/services` | Main-Line control | Yes | Low | authorization/input owners |
 | server `application-agent-streaming` | Transport/event | Yes | Low | consumes but does not resolve |
 | maintained application backend | Business caller | Yes | Low | selects logical member only |
+| server `application-engine/runtime` | Transport/lifecycle | Yes | Low | correlation client plus one concrete control-request concern |
+| server `application-engine/worker` | Worker transport | Yes | Low | worker entry and nested bridge lifecycle stay together |
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
@@ -325,6 +382,8 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | resolution | `authorize -> descriptor -> descriptor.runtime -> scope` | host reloads binding or scope receives full descriptor | one authority and downward-only dependency |
 | role | event subject + `{agentRunId,displayName}` | duplicate producer `runtimeKind` | one classification source |
 | persistence | explicit recognized-field projection | spread raw JSON or `if (version===old)` | directly usable current schema |
+| cold mutation | retain outer + inner IDs until actual responses | reject/delete both after 30 seconds while work runs | elapsed time is not commit authority |
+| control timeout | deadline -> close client -> await supervisor stop -> reject | reject first and leave worker live | bounded lifecycle has abort evidence |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -336,10 +395,13 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | keep optional role fields | reduce fixture edits | Rejected | smaller exact schemas/current projectors |
 | migrate/rewrite all JSON | representation cleanliness | Rejected | direct current projection |
 | generic ID target | fewer types | Rejected | explicit binding + member intent/private union |
+| raise both timeouts | avoid current 30-second failure | Rejected | completion-coupled application work |
+| public async operation/status or idempotency key | model indeterminate retries | Rejected for current approved scope | preserve synchronous completion; new contract requires user approval |
+| app-local retry/reconciliation patch | limit source delta | Rejected | shared engine/bridge invariant |
 
 ## Derived Layering (If Useful)
 
-Application business caller -> public logical contract/SDK -> transport -> authorization -> orchestration descriptor -> scope-owned resolved target -> `ApplicationExecutionScope` capability -> run. Persistence sits behind binding/event/metadata owners; provider execution remains below the scope and unchanged. The scope defines the value it accepts but does not perform authorization. The layering is explanatory and follows the authoritative boundary rather than defining it.
+Application business caller -> public logical contract/SDK -> transport -> authorization -> orchestration descriptor -> scope-owned resolved target -> `ApplicationExecutionScope` capability -> run. Persistence sits behind binding/event/metadata owners; provider execution remains below the scope and unchanged. The scope defines the value it accepts but does not perform authorization. The layering is explanatory and follows the authoritative boundary rather than defining it. The SR-003 spine is `REST/gateway -> controller completion boundary -> correlation client -> worker application -> nested bridge -> host capability`; lifecycle control is a sibling off-spine path, not a layer through which application work flows.
 
 ## Change / Refactor Sequence
 
@@ -351,9 +413,12 @@ Application business caller -> public logical contract/SDK -> transport -> autho
 6. Update backend/frontend SDKs and maintained Brief/Socratic callers; Socratic selects `/tutor` directly.
 7. Regenerate all owned application/package copies atomically.
 8. Remove old unions/helpers/URL literals/role fields/raw casts and enable architecture occurrence guards.
-9. Run focused unit/integration checks, package parity, realistic Studio/standalone input/stream/publication/recovery, source review, API/E2E, durable-test review, and delivery verification.
+9. Make `ApplicationEngineClient.request` correlation-only and update every exact caller: controller work uses completion; launcher definition load and controller stop use the new control-request owner.
+10. Make `ApplicationWorkerHostBridgeClient` correlation-only with explicit close/write-failure cleanup; close it from worker entry teardown.
+11. Add client/bridge fake-time, write/close, control abort-before-failure, architecture occurrence, and exact cold Studio/standalone proof.
+12. Run focused unit/integration checks, package parity, realistic Studio/standalone input/stream/publication/recovery, source review, API/E2E, durable-test review, and delivery verification.
 
-No committed target state may retain dual public contracts or a downstream physical-resolution bypass.
+No committed target state may retain dual public contracts, a downstream physical-resolution bypass, or an elapsed-time failure on live application work.
 
 ## Key Tradeoffs
 
@@ -361,6 +426,8 @@ No committed target state may retain dual public contracts or a downstream physi
 - The binding still exposes physical run IDs because they remain meaningful for correlation, artifacts, and lifecycle; only target selection stops requiring them.
 - The physical role column remains as derived storage residue to avoid a table rewrite with no semantic benefit.
 - A named member-address parser adds one small contract file but removes repeated validation and ambiguous plain-string use.
+- Completion-coupled application work can wait longer than 30 seconds, which is intentional for the current synchronous API. It avoids false failure without inventing a broader async/idempotency product.
+- A dedicated control-request concern adds one file but keeps lifecycle bounded and prevents the correlation client from becoming a mixed timeout/commit owner.
 
 ## Risks
 
@@ -368,7 +435,10 @@ No committed target state may retain dual public contracts or a downstream physi
 - If a consumer derives runtime role without the enclosing subject, removal could be unsafe; investigation found none, and source/test occurrence closure must confirm it.
 - A broad raw JSON cast could leak the removed role into current objects; owned projectors and direct-use fixtures close this risk.
 - Nested member addresses must be encoded as one path segment and exact-matched; codec and realistic Socratic cases must prove this.
+- Removing the bridge timer without write-failure/close cleanup would leak pending promises; explicit settlement proof is mandatory.
+- Accidentally routing GraphQL/command/route/capability work through the control deadline would recreate CR-002; exact occurrence guards must constrain the two control callsites.
+- A real process/transport failure remains an error and is not automatically retried. New exactly-once or user-visible indeterminate/reconciliation semantics are a Requirement Gap, not an implementation improvisation.
 
 ## Guidance For Implementation
 
-Implement the contract and projectors before consumers. Keep public/private structures `Readonly`; clone/freeze the descriptor, resolved target, producers, and binding snapshot. Read each binding exactly once per authorization. Define the resolved target in the scope contract and prohibit the inverse import from scope to authorization. Do not derive a physical target anywhere else. Preserve current error mapping, lease/reconnect, queue limits, run command results, event ordering, application-run ownership/stopped-model-config behavior, provider/session composition, and recovery. Keep provider `runtimeKind` occurrence guards positively scoped so the architecture test cannot delete legitimate provider configuration. Treat the transition inventory, generated-output parity, and old-superset direct-read cases as completion conditions.
+Implement the contract and projectors before consumers. Keep public/private structures `Readonly`; clone/freeze the descriptor, resolved target, producers, and binding snapshot. Read each binding exactly once per authorization. Define the resolved target in the scope contract and prohibit the inverse import from scope to authorization. Do not derive a physical target anywhere else. Preserve current error mapping, lease/reconnect, queue limits, run command results, event ordering, application-run ownership/stopped-model-config behavior, provider/session composition, and recovery. Keep provider `runtimeKind` occurrence guards positively scoped so the architecture test cannot delete legitimate provider configuration. Treat the transition inventory, generated-output parity, and old-superset direct-read cases as completion conditions. Follow `application-worker-operation-completion-contract.md` exactly for SR-003: no timeout parameter or timer in either application-work correlation client; no app schema/service workaround; one control-request owner used only by definition load and stop; close/write failures settle exact pending entries; host-stdin teardown closes the bridge before runtime cleanup and catches expected cleanup rejection; normal stop keeps the bridge open through its response; lifecycle timeout does not escape until the worker is stopped. Rerun the exact three cold/reentry scenarios that established reachability, not only fake-timer unit tests.
