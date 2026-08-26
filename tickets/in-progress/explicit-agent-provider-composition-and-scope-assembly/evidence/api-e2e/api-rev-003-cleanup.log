@@ -1,0 +1,45 @@
+=== cleanup actions ===
+{
+  "removed": [
+    "/private/tmp/api-rev-003-provider-composition",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-frontend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/dist",
+    "/private/tmp/api-rev-003-nested-live.mjs",
+    "/private/tmp/api-rev-003-studio-socratic-verify.mjs",
+    "/private/tmp/api-rev-003-inspect.mjs",
+    "/private/tmp/api-rev-003-nested-click.mjs",
+    "/private/tmp/api-rev-003-studio-socratic-live.mjs",
+    "/private/tmp/api-rev-003-restart-recovery.mjs",
+    "/private/tmp/api-rev-003-socratic-live.mjs",
+    "/private/tmp/api-rev-003-studio-brief.mjs",
+    "/private/tmp/api-rev-003-nested-inspect.mjs",
+    "/private/tmp/api-rev-003-studio-socratic-inspect.mjs",
+    "/private/tmp/api-rev-003-socratic-inspect.mjs",
+    "/private/tmp/api-rev-003-studio-app-inspect.mjs",
+    "/private/tmp/api-rev-003-studio.png",
+    "/private/tmp/api-rev-003-socratic-after.png",
+    "/private/tmp/api-rev-003-studio-socratic-page.png",
+    "/private/tmp/api-rev-003-standalone.png"
+  ]
+}
+
+=== service/process cleanup ===
+port_43651=FREE
+port_43660=FREE
+port_31660=FREE
+isolated_processes=ABSENT
+=== isolated data ===
+ABSENT
+=== baseline generated-state restoration ===
+PRESERVED autobyteus-server-ts/dist
+PRESERVED autobyteus-application-backend-sdk/dist
+PRESERVED autobyteus-application-sdk-contracts/dist
+PRESERVED autobyteus-web/.nuxt
+RESTORED_ABSENT autobyteus-application-devkit/dist
+RESTORED_ABSENT autobyteus-application-frontend-sdk/dist
+RESTORED_ABSENT applications/brief-studio/dist
+RESTORED_ABSENT applications/socratic-math-teacher/dist
+RESTORED_ABSENT autobyteus-web/.output
+RESTORED_ABSENT autobyteus-application-devkit/.tmp-tests

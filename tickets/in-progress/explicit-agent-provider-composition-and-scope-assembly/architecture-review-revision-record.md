@@ -12,6 +12,8 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-004 | Round 4 / CRR-001 Design Impact and SR-004 correction | SR-001, SR-002, SR-003, SR-004 | Pass | Fail — Design Impact | AR-004 |
 | ARCH-REV-005 | Round 5 / SR-005 complete Mixed Team construction | SR-001, SR-002, SR-003, SR-004, SR-005 | Fail — Design Impact | Pass | AR-004 |
 | ARCH-REV-006 | Round 6 / CRR-003 Design Impact and SR-006 execution-family closure | SR-001, SR-002, SR-003, SR-004, SR-005, SR-006 | Pass | Pass | CR-002, CR-003, CR-004 |
+| ARCH-REV-007 | Round 7 / DR-001 latest-Personal reconciliation and SR-007 | SR-001, SR-002, SR-003, SR-004, SR-005, SR-006, SR-007 | Pass | Fail — Design Impact | AR-005 |
+| ARCH-REV-008 | Round 8 / SR-008 stopped-Team frontend clean cut | SR-001, SR-002, SR-003, SR-004, SR-005, SR-006, SR-007, SR-008 | Fail — Design Impact | Pass | AR-005 |
 
 ## Revision Entries
 
@@ -134,3 +136,45 @@ None.
 - Material classification changes: none; the authoritative result remains `Pass`, with the downstream Design Impact resolved before implementation resumes.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: IR-002 remains the source baseline. Implementation and source re-review must prove exact allocator/task-capability propagation, copied provider dispatch, stored-reader identity, all seven manager inputs, clean removal of ambient getters, and construction/unwind semantics. API/E2E must rerun the eight API-REV-001 failures and the complete dual-host/provider/recursive-Team/context/publication/recovery/shutdown matrix. These are downstream evidence obligations, not unresolved design findings.
+
+### ARCH-REV-007 — Latest-Personal production ownership is accepted; stopped-Team web clean cut remains contradictory
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`
+- Review round and trigger: Round 7; DR-001 latest-base Design Impact after the mandatory preview of `origin/personal@b52fe5aebdb962ce361529f9e797affeb30d719a`, reviewing SR-007.
+- Triggering role, report path, and finding IDs: `/solution_designer`; SR-007 at `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`; DR-001 blocker at `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md`; no prior open architecture finding.
+- Relevant solution revision IDs: `SR-001`–`SR-007`
+- Prior authoritative decision: `Pass` at `ARCH-REV-006`.
+- Current authoritative decision: `Fail — Design Impact`.
+- Accepted SR-007 direction: preserve the passed Host/Authority/provider/context/task/Mixed-Team/K0–K8 architecture; select one validator at each maintained host and pass it into both execution roots; retain concrete Agent and Team stopped-run transition lanes; require the root-created Agent lifecycle; make the process Agent service accessor lookup-only; keep application ownership as an outer startup-gated read-only lease; expose it only through runtime host management; keep the application execution scope at seven capabilities; and keep the broad application run-services owner/test deleted.
+
+#### Prior Finding Resolution
+
+- `AR-001`–`AR-004`: `Still Resolved`. SR-007 does not reopen provider provenance, Authority construction/unwind, transition closure, or complete Mixed Team execution-family construction.
+- `CR-002`–`CR-004`: `Still Resolved at design/transition level`. The exact allocator/task capability, provider-neutral normalization, stored context owner, complete Agent manager, and occurrence guards remain cumulative.
+- `AR-005`: `New — Open`. The normative exact SR-007 durable-coverage inventory instructs implementation to retain `autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts`, but the reviewed latest-Personal target deletes that file together with `storedTeamRunFormModel.spec.ts`, `storedTeamRunFormModel.ts`, and `StoredTeamRunFormModel.ts`. The named test imports the deleted type. The package omits the four-path Remove/replacement disposition, so it cannot simultaneously preserve latest Personal, maintain one current frontend representation, and follow its own exact inventory.
+
+- New or remaining finding IDs: `AR-005`.
+- Material classification changes: `Pass` -> `Fail — Design Impact`; the failure is limited to exact source/test transition coherence and does not reject the SR-007 production ownership architecture.
+- Recommended recipient: `/solution_designer`.
+- Remaining risks or uncertainty: correct the four-path clean removal and map historical/residual-field proof to exact current replacement owners/tests. Implementation and semantic merge remain paused. After re-review, source/API/E2E must still prove all fourteen overlaps, validator/lifecycle identity, lookup-only process access, ownership zero-write behavior, latest web behavior, and the full previously passed matrix. `origin/personal` was independently re-fetched during review and remained exactly `b52fe5aebdb962ce361529f9e797affeb30d719a`.
+
+### ARCH-REV-008 — Exact current stopped-Team representation resolves AR-005
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`
+- Review round and trigger: Round 8; bounded re-review of SR-008 against `ARCH-REV-007` / `AR-005`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; SR-008 at `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`; prior `AR-005` in the canonical design review report.
+- Relevant solution revision IDs: `SR-001`–`SR-008`.
+- Prior authoritative decision: `Fail — Design Impact` at `ARCH-REV-007`.
+- Current authoritative decision: `Pass`.
+- What changed: SR-008 records the four deleted `StoredTeamRunFormModel` family paths as exact Removes, removes the stale test from retain coverage, identifies the singular current `ExistingTeamRunFormModel`/projector/draft/editor owners, maps still-current assertions to exact current tests, rejects restoration of the obsolete runtime-frozen representation, and adds zero-path/zero-import guards. The accepted SR-007 production ownership architecture is unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-005 | Open — Design Impact | Resolved | SR-008; ARCH-REV-007; MP-ARCH-007-003 | Independently re-fetched Personal remains `b52fe5aebdb962ce361529f9e797affeb30d719a`; commit `a4c2595f8` deletes the exact four legacy paths and adds the current replacement family; all legacy paths/symbols are absent from current Personal; the transition inventory names the four Removes, current owner/test mapping, and fail-closed zero guards. |
+
+- New or remaining finding IDs: none.
+- Material classification changes: `Fail — Design Impact` -> `Pass`; no requirement or product behavior changed.
+- Recommended recipient: `/implementation_engineer`.
+- Remaining risks or uncertainty: implementation must perform the semantic merge and mapped current-test edits, then source/API-E2E review must prove the accepted production architecture, all fourteen overlaps, exact four-path absence, zero legacy imports/aliases, and realistic stopped-run/dual-host behavior. Delivery must re-fetch the tracked base and stop if it moves.

@@ -6,202 +6,184 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, and the upstream `future-architecture-simplification-review.md` source analysis.
+- Supplemental Task Artifacts Reviewed As Context: `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, `latest-personal-run-configuration-integration-analysis.md`, `latest-base-integration-conflict-report.md`, DR-001 evidence, and `evidence/solution/sr-008-frontend-clean-cut-audit.log`.
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-006`
+- Relevant Solution Revision IDs: `SR-001`–`SR-008`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`–`ARCH-REV-006`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-001`–`ARCH-REV-008`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`–`IR-003`
+- Relevant Implementation Revision IDs: `IR-001`–`IR-004`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `4`
-- Trigger: `/implementation_engineer` handoff of `IR-003`, implementing `SR-006` / `ARCH-REV-006` for `CR-002`, `CR-003`, and `CR-004` after `API-REV-001` / `APIE2E-F001`.
-- Prior Review Round Reviewed: `CRR-003` (`Fail — Design Impact`)
-- Latest Authoritative Round: this document
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md`
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `5` (implementation-source review rounds; `CRR-005` was the separate proportional test-review entry)
+- Trigger: `/implementation_engineer` handoff of `IR-004`, the reviewed SR-008 / ARCH-REV-008 semantic integration of latest Personal after delivery `DR-001`.
+- Prior Review Round Reviewed: `CRR-004 Pass / 9.47`, followed by `CRR-005 Not Applicable`; delivery then routed `DR-001` Design Impact through SR-007/SR-008 and ARCH-REV-007/008.
+- Latest Authoritative Round: this document.
+- Coverage Investigation Reviewed: prior `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md` as retained context only.
+- Execution Coverage Report Reviewed: prior `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md` as retained context only.
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-001`
-- Delivery Revision Record Reviewed: `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: prior trigger `APIE2E-REPO-AFFECTED-001`, `APIE2E-F001`; no current source-review failure.
-- Exact Failing Commands / Execution Mode: prior affected Vitest selection under `pnpm -C autobyteus-server-ts exec vitest run --no-watch`; the exact eight governed files were rerun together during this review.
-- Failure Evidence Paths: `evidence/api-e2e/api-rev-001-affected-server.log`, `evidence/api-e2e/api-rev-001-failures-isolated.log`, `evidence/api-e2e/api-rev-001-source-correlation.log`, and `evidence/code-review/crr-003-failure-origin-focused.log`.
+- Relevant API/E2E Revision IDs: `API-REV-001`, `API-REV-002`; API-REV-002 establishes the pre-merge retained baseline, not a Pass for IR-004.
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
+- Failing Scenario IDs: none in this source-review round.
+- Exact Failing Commands / Execution Mode: `N/A`.
+- Failure Evidence Paths: `N/A`.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: complete cumulative provider-composition/Agent Tools Authority/application-kernel change plus the IR-003 execution-family closure: root-derived task identity, provider-neutral input normalization, exact seven-field Agent manager construction, explicit context-file environment/owner composition, and removal of provider/process rediscovery paths.
-- Files / areas reviewed: all changed production source from baseline `64327760e` through HEAD `8704f2653b664c6ae7b5ecb24f2dd3885a79aad9`; changed architecture/unit/integration fixtures proportionately; both maintained host composition roots; prior API failure evidence; approved transition/removal inventory.
-- Explicit exclusions: realistic credentialed providers, browser/dual-host/private Nested Classroom execution, package parity, recovery/reentry, and active shutdown are downstream API/E2E responsibilities. Unchanged repository-wide debt and low-level optional defaults outside supported root construction are not used as findings without a supported production path.
+- Changed implementation and behavior reviewed: the complete cumulative provider-composition/Authority/execution-family implementation plus IR-004's history-preserving integration of stopped general Agent/Team model-configuration reads and updates, application-owned fail-closed guards, host-selected validation, current Studio editor representation, and latest Personal run-history/resume behavior.
+- Files / areas reviewed: merge topology and all 14 changed-both paths; all seven conflict resolutions; 66 changed production source paths relative to the reviewed ticket parent `887b0941`; both host composition roots; general/application execution roots; Agent lifecycle/service; Team manager/service; ownership/orchestration/runtime contracts; GraphQL and Studio editor/store/draft paths; changed architecture/unit/integration tests; removal inventory; rendered frontend evidence.
+- Explicit exclusions: credentialed provider execution, real Studio/standalone journeys, package parity, recovery/reentry under the merged tree, active shutdown, Electron packaging, and broad repository characterization remain API/E2E or delivery responsibilities. The separately approved future application-agent addressing simplification is outside this ticket. Optional defaults that are not selected by a supported production root are not used as speculative findings.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Yes`. The task is an internal clean-cut ownership refactor: one process MCP host, distinct execution-family Authorities/managers/resources, exact provider construction, explicit task identity and context-input ownership, and unchanged public/persisted behavior.
-- Design-spec behavior map verified against the implementation: `Yes`. Source traces were followed from Studio/standalone composition through general/application roots, Agent/Team creation, RootTeamRun task delegation, AgentRun dispatch, provider formatting, session release, and reverse lifecycle cleanup.
-- Design review report and round confirmed: `ARCH-REV-006 Pass`, including `MP-ARCH-006-001`–`MP-ARCH-006-004`.
-- Behavior-basis status: `Confirmed`
+- Approved requirements basis understood: `Yes`. This is a clean-cut ownership refactor plus preservation of latest-Personal stopped-run configuration behavior; it does not introduce a new product feature or public/persisted contract.
+- Design-spec behavior map verified against the implementation: `Yes`. The trace covered Studio Settings -> canonical resume config -> application ownership lease -> general Agent/Team transition lane -> host-selected validator -> narrow persistence -> canonical reread, together with both supported execution roots and their lifecycle/cleanup paths.
+- Design review report and round confirmed: `ARCH-REV-008 Pass`, including the SR-008 frontend clean-cut correction and `MP-ARCH-007-001`–`MP-ARCH-007-003`.
+- Behavior-basis status: `Confirmed`.
 - Changed or newly discovered behavior, if any: `None`.
 - Remaining material ambiguity, if any: `None` affecting source review.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | `buildStudioServer` / standalone host create one `AgentToolsMcpHost`; general/application roots receive distinct scoped Authorities and retain independent close ownership. | None. |
-| `BEH-002` | `Confirmed` | Each root creates a non-identical Agent allocator, derives one frozen `TaskExecutionIdentityCapabilities`, and carries that exact identity through `AgentTeamRunManager -> RootTeamRun -> TaskDelegationService`; no task path reacquires a process manager. | None. |
-| `BEH-003` | `Confirmed` | Each root constructs one `AgentRunProviderInputNormalizer` from its explicit stored-Team owner/path graph; `AgentRun` copies and normalizes immediately before dispatch; AutoByteus/Codex/Claude only perform provider formatting. | None. |
-| `BEH-004` | `Confirmed` | Existing admission, run-session release, quarantine/aggregate cleanup, and reverse shutdown owners remain explicit in the resource/session Authority and execution-root lifecycle. | None. |
-| `BEH-005` | `Confirmed` | `AgentRunManager` requires the exact seven-field infrastructure record; both roots supply it; omission/null/undefined/unsafe substitutes fail closed; no sidecar/default construction remains. | None. |
-| `BEH-006` | `Confirmed` | Changes are internal composition/translation/removal only; route, public SDK/wire/package/database/migration contracts are unchanged and the retired MCP runtime/scope/manager files are deleted. | None. |
+| `BEH-001` | `Confirmed` | Studio and standalone construct one process `AgentToolsMcpHost`; distinct general/application Authorities retain non-identical mutable execution families and owned close paths. | None. |
+| `BEH-002` | `Confirmed` | Each root owns its Agent allocator and frozen task identity, carried through Team manager, RootTeamRun, and task delegation without process rediscovery. | None. |
+| `BEH-003` | `Confirmed` | Each root supplies an explicit context-file environment and provider-neutral `AgentRunProviderInputNormalizer`; provider adapters do not reacquire Team/process ownership. | None. |
+| `BEH-004` | `Confirmed` | Resource/session admission, release, quarantine, construction unwind, Team-before-Agent shutdown, and Authority close remain explicit and unchanged by IR-004. | None. |
+| `BEH-005` | `Confirmed` | Agent/Team construction remains fail-closed and complete at the two execution roots; the latest validator is an additional required narrow dependency, not a default or selector. | None. |
+| `BEH-006` | `Confirmed` | Public route, SDK/wire/package/database and migration contracts remain unchanged; current runtime behavior has no compatibility wrapper or dual path. | None. |
+| `BEH-007` | `Confirmed` | Studio stopped-run Settings loads canonical Agent/Team state, checks outer application ownership, serializes Save against restore/resume, validates through the exact host-selected validator, writes only `llmConfig`, rereads canonical state, and keeps fixed runtime/model/workspace facts read-only. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | Requirements/design classify the work as boundary/ownership repair; IR-003 implements the SR-006 execution-family closure rather than a local fallback. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Exact Authority, provider-builder, K0–K8, task-identity, context-owner, seven-field manager, transition, and removal contracts match source and architecture guards. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | Host -> root -> manager -> run -> provider/task paths are explicit and exact object identities are traceable through the source. | None. |
-| Ownership boundary preservation and clarity | `Pass` | General and application roots own separate mutable families; process definitions/workspace/Host are intentionally shared; low-level providers receive narrow issued inputs only. | None. |
-| Off-spine concern clarity | `Pass` | Context-path resolution, session issuance, resource cleanup, and task identity allocation sit behind named owners serving the primary run spine. | None. |
-| Existing capability/subsystem reuse check | `Pass` | Stored Team V2 location service, context-file layout/owner services, existing allocators, and Agent/Team managers are reused rather than duplicated. | None. |
-| Reusable owned structures check | `Pass` | `TaskExecutionIdentityCapabilities`, `AgentRunProviderInputNormalizer`, `ContextFilePathEnvironment`, and provider factory input records eliminate repeated loose structures. | None. |
-| Shared-structure/data-model tightness check | `Pass` | Frozen, exact records contain one semantic meaning per field; provider-neutral input is copied without adding a broad optional base or parallel authoritative model. | None. |
-| Repeated coordination ownership check | `Pass` | Normalization, task identity derivation, session issuance/release, and shutdown sequencing each have one named owner. | None. |
-| Empty indirection check | `Pass` | New boundaries validate, own state/identity, translate input, allocate identity, or enforce lifecycle; none is a pass-through-only facade. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Composition stays in roots/builders, task allocation in task-delegation, provider normalization at AgentRun input, and context path semantics in context-files. | None. |
-| Ownership-driven dependency check | `Pass` | Governed paths no longer call process manager/allocator getters; dependency direction is host/root -> owned capability -> run/provider. | None. |
-| Authoritative Boundary Rule check | `Pass` | Callers use the root-owned capabilities/managers and do not simultaneously select those owners' process-global internals. | None. |
-| File placement check | `Pass` | Added records and services are under their owning agent-execution, task-delegation, context-files, composition, or application-platform subsystems. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | Small records are separated only where they express reusable ownership boundaries; orchestration remains in cohesive composition roots. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Pass` | Exact typed inputs replace positional/default selection; Agent/Team task identity and provider-normalized dispatch remain distinct subjects. | None. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | `AgentRunProviderInputNormalizer`, `TaskExecutionIdentityCapabilities`, `ContextFilePathEnvironment`, `Authority`, `Issuer`, and `Releaser` state their actual roles. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Both roots intentionally repeat composition at the owner boundary but share exact builders/records; no duplicated policy or resolver implementation remains. | None. |
-| Patch-on-patch complexity control | `Pass` | The correction removes ambient defaults/provider-local owners instead of adding compatibility branches, manager routers, retries, or fallback layers. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Old MCP runtime/application scope/scoped manager files and tests are removed; retired symbol/provider-local resolver scans are clean. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Architecture identity/omission guards, task propagation, context normalization, manager construction, cleanup, and host isolation assertions map to REQ-004/005/007/008 and AC-012. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Exact infrastructure and releaser fixtures replace implicit globals; focused fixtures remain owned by their test subsystem. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Tests for deleted MCP runtime/scope are removed; current coverage rejects the retired symbols and defaults. | None. |
-| API/E2E readiness for the next workflow stage | `Pass` | Exact eight previously failing files now pass `64` tests with `8` environment-gated skips; structural selection passes `121`; build-config TypeScript and prerequisite build pass. | Resume API/E2E from the exact prior failures, then the retained realistic matrix. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | DR-001 correctly classified the latest-base junction as Design Impact; SR-007/SR-008 preserve the execution-family boundary and cleanly transplant current stopped-run behavior. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Exact validator provenance, ownership lease, transition lanes, seven-capability scope, 14-overlap disposition, six-path removal, and current frontend owner map match source. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | Supported spines remain explicit from Studio/standalone host composition through separate execution roots to Agent/Team manager/lifecycle, validation, persistence, canonical reread, and UI result. | None. |
+| Ownership boundary preservation and clarity | `Pass` | General/application mutable run state remains separate; the validator is stateless and host-selected; application ownership remains outer/read-only; mutation stays in general Agent/Team owners. | None. |
+| Off-spine concern clarity | `Pass` | Model validation, persistence commit, ownership lookup, form projection, and schema/draft planning each serve a named owner without competing for lifecycle sequencing. | None. |
+| Existing capability/subsystem reuse check | `Pass` | Existing catalog, lifecycle lanes, Team execution tree, binding/lookup stores, scope kernel, history stores, and current Team form family are reused. | None. |
+| Reusable owned structures check | `Pass` | `RunModelConfigValidator`, result/editability records, Team patch/target types, current existing-run form model, and draft planner remove loose repeated shapes. | None. |
+| Shared-structure/data-model tightness check | `Pass` | Agent and Team mutation subjects remain distinct; fixed launch facts and editable `llmConfig` are not collapsed; one current existing-Team representation replaces the retired parallel model. | None. |
+| Repeated coordination ownership check | `Pass` | Hosts select validation once; lifecycle/manager transition lanes own ordering; Studio ownership guard owns fail-closed delegation; UI store owns reconciliation. | None. |
+| Empty indirection check | `Pass` | New services validate, classify ownership, serialize mutation, project current state, or enforce reconciliation; none is a forwarding-only wrapper. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Validation is under LLM management, mutation under Agent/Team lifecycle owners, ownership under application orchestration, runtime exposure under host management, and editing under the existing-run frontend subsystem. | None. |
+| Ownership-driven dependency check | `Pass` | Dependency direction is host -> validator/root -> lifecycle/manager and runtime host-management -> read-only ownership; no governed leaf selects a catalog/default validator or application manager. | None. |
+| Authoritative Boundary Rule check | `Pass` | Studio depends on general run facades plus the runtime's read-only ownership projection; it does not bypass the application scope into its internal managers/stores, and application mutation is not exposed through the scope. | None. |
+| File placement check | `Pass` | Added services/types are placed with LLM management, run history, Team execution, application orchestration/platform, or existing-run editing owners. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | Larger lifecycle/stores remain cohesive owners while schema validation, persistence commit, ownership, mutation planning, and projection are extracted into focused files. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | Agent and Team commands use explicit run IDs and Team patch subject/address kinds; ownership accepts exact run/provenance; validator accepts fixed runtime/model plus editable config. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | `ModelConfigValidationService`, `ApplicationRunOwnershipService`, `StudioRunModelConfigService`, `TeamRunModelConfigPatch`, and `ExistingTeamRunFormModel` describe concrete roles. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Both roots intentionally repeat owner-bound assembly while sharing exact narrow contracts; old broad application run-services and duplicate frontend representations are absent. | None. |
+| Patch-on-patch complexity control | `Pass` | The merge combines responsibilities at existing owners and deletes obsolete paths; it adds no fallback, alias, router, retry layer, default validator, or compatibility branch. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Two broad application run-service paths and four `StoredTeamRunFormModel` family paths are absent; zero retired imports/symbols and zero conflict markers. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Tests cover exact host validator identity, omission rejection, Agent/Team save ordering, atomic outcomes, application ownership, seven capabilities, current frontend projection, lock/reconciliation, and removal guards. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Current Team context fixtures, validator stubs, ownership harnesses, draft planners, and deterministic page fixture keep setup subject-specific. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | SR-008's stale historical-Team test and projector/type tests are deleted; remaining assertions sit with current form/draft/store owners. | None. |
+| API/E2E readiness for the next workflow stage | `Pass` | Independent review run: server `21 files / 163 tests` Pass, web `11 files / 124 tests` Pass, build-config TypeScript Pass; implementation full server/Nuxt builds passed; rendered evidence is coherent. | API/E2E should investigate current coverage and rerun the retained realistic matrix on IR-004. |
 
-## Source File Size And Structure Audit (If Applicable)
+## Source File Size And Structure Audit
 
-All cumulative changed production source files were audited. Effective non-empty counts are at HEAD; tests and generated files are excluded. `agent-run.ts` is exactly the 500-line limit but IR-003 adds only the required normalizer dependency/call and retains one AgentRun lifecycle owner. This is maintainability pressure, not a current defect; future unrelated growth should extract a cohesive lifecycle concern rather than compress the file further.
+All 66 changed production-source paths were audited. No changed production file exceeds 500 effective non-empty lines. The table lists every changed file above 220 lines plus the main new/removal owners; all remaining changed files are `<=213` lines and passed the same ownership/placement audit. Tests, generated GraphQL output, docs, evidence, and fixtures are excluded from source limits.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts` | `Deleted` | `N/A` | `N/A` | `Pass — approved obsolete owner removed` | `Pass` | `Completed removal` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts` | `Deleted` | `N/A` | `N/A` | `Pass — approved obsolete owner removed` | `Pass` | `Completed removal` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts` | `Deleted` | `N/A` | `N/A` | `Pass — approved obsolete owner removed` | `Pass` | `Completed removal` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` | `500` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | `496` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | `491` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | `491` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | `484` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts` | `477` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None; avoid unrelated growth and extract a cohesive concern before crossing 500.` |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts` | `407` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | `405` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | `378` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | `358` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | `329` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts` | `322` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | `306` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts` | `280` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts` | `239` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts` | `226` | `Pass` | `Pass — cumulative delta reviewed; cohesive owner/composition boundary` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts` | `220` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | `189` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` | `187` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts` | `186` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | `182` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/api/rest/context-files.ts` | `179` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts` | `174` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | `173` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts` | `160` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts` | `148` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts` | `126` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | `113` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts` | `111` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | `89` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts` | `86` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/store/context-file-layout.ts` | `68` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/services/context-file-read-service.ts` | `65` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts` | `64` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | `63` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-host.ts` | `60` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service-contract.ts` | `59` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts` | `56` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-authority.ts` | `54` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts` | `51` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts` | `43` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-run-identity-factory.ts` | `36` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts` | `29` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts` | `26` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts` | `26` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts` | `17` | `Pass` | `N/A` | `Pass — responsibility remains cohesive` | `Pass` | `Pass` | `None.` |
+| `agent-execution/backends/claude/session/claude-session.ts` | `492` | `Pass` | `Pass — small merged delta reviewed` | Cohesive Claude session owner | `Pass` | `Pass; pressure only` | Avoid unrelated growth. |
+| `agent-team-execution/services/agent-team-run-manager.ts` | `474` | `Pass` | `Pass — stopped-config delta reviewed` | Root Team lifecycle/transition authority; pure patching extracted | `Pass` | `Pass; pressure only` | Extract another cohesive concern before unrelated growth. |
+| `run-history/services/agent-run-history-catalog-service.ts` | `472` | `Pass` | `Pass` | Serialized Agent history/catalog owner | `Pass` | `Pass; pressure only` | Avoid unrelated growth. |
+| `runtime-management/claude/client/claude-sdk-client.ts` | `461` | `Pass` | `Pass — small retained Personal delta` | Cohesive Claude SDK client | `Pass` | `Pass; pressure only` | Avoid unrelated growth. |
+| `autobyteus-web/stores/runHistoryStore.ts` | `435` | `Pass` | `Pass` | Canonical run-history UI state owner | `Pass` | `Pass; pressure only` | Extract by subject if future unrelated behavior arrives. |
+| `autobyteus-web/stores/existingRunModelConfigStore.ts` | `419` | `Pass` | `Pass` | Cohesive stopped-run edit/reconciliation state machine | `Pass` | `Pass; pressure only` | Keep transport and projection in their extracted files. |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | `410` | `Pass` | `Pass` | Selection/new-run switch; existing editor extracted | `Pass` | `Pass; pressure only` | Avoid adding stopped-run internals back into the panel. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | `402` | `Pass` | `Pass — small retained delta` | Team runtime state owner | `Pass` | `Pass; pressure only` | Avoid unrelated growth. |
+| `agent-execution/services/standalone-agent-run-lifecycle-service.ts` | `390` | `Pass` | `Pass` | Agent activation/restore/update transition authority | `Pass` | `Pass` | Keep validation/commit mechanics off-spine. |
+| `standalone-application-host/start-standalone-application-host.ts` | `363` | `Pass` | `Pass` | Standalone composition/lifecycle root | `Pass` | `Pass` | Keep host selection explicit. |
+| `autobyteus-web/components/workspace/config/WorkspaceSelector.vue` | `353` | `Pass` | `Pass — small retained delta` | Workspace selection/presentation owner | `Pass` | `Pass; pressure only` | Avoid unrelated model-policy logic. |
+| `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | `335` | `Pass` | `Pass` | One Team member presentation/edit node | `Pass` | `Pass` | None. |
+| `api/graphql/types/agent-run.ts` | `330` | `Pass` | `Pass` | Agent GraphQL command boundary | `Pass` | `Pass` | Keep Team mutations separate. |
+| `compositions/build-studio-server.ts` | `330` | `Pass` | `Pass` | Studio composition root | `Pass` | `Pass` | Keep construction explicit. |
+| `autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue` | `326` | `Pass` | `Pass` | Team-scope presentation/editor | `Pass` | `Pass` | None. |
+| `application-platform/execution/application-execution-scope-kernel-builder.ts` | `325` | `Pass` | `Pass` | Private K0–K8 application construction transaction | `Pass` | `Pass` | Preserve exact inputs and unwind. |
+| `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` | `319` | `Pass` | `Pass` | Runtime/model schema-backed fields | `Pass` | `Pass` | None. |
+| `autobyteus-web/localization/messages/en/workspace.ts` | `309` | `Pass` | `Pass` | Locale message catalog | `Pass` | `Pass` | None. |
+| `autobyteus-web/localization/messages/zh-CN/workspace.ts` | `308` | `Pass` | `Pass` | Locale message catalog | `Pass` | `Pass` | None. |
+| `agent-execution/runtime/general-process-run-supervisor.ts` | `303` | `Pass` | `Pass` | General execution-family composition/lifecycle root | `Pass` | `Pass` | Keep mutable owners private. |
+| `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | `298` | `Pass` | `Pass` | Model-config section presentation | `Pass` | `Pass` | None. |
+| `autobyteus-web/graphql/queries/runHistoryQueries.ts` | `298` | `Pass` | `Pass` | Run-history query documents | `Pass` | `Pass` | None. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | `297` | `Pass` | `Pass — small retained delta` | Team hydration projection | `Pass` | `Pass` | None. |
+| `agent-execution/services/agent-run-service.ts` | `274` | `Pass` | `Pass` | Agent run facade requiring root lifecycle | `Pass` | `Pass` | Retain lookup-only process accessor. |
+| `autobyteus-web/composables/useRuntimeScopedModelSelection.ts` | `272` | `Pass` | `Pass` | Runtime-scoped catalog selection UI concern | `Pass` | `Pass` | None. |
+| `agent-team-execution/services/team-run-service.ts` | `268` | `Pass` | `Pass` | Team run facade | `Pass` | `Pass` | None. |
+| `api/graphql/types/run-history.ts` | `254` | `Pass` | `Pass` | Run-history GraphQL boundary | `Pass` | `Pass` | None. |
+| `application-platform/runtime/create-application-orchestration-services.ts` | `253` | `Pass` | `Pass` | Named application orchestration assembly | `Pass` | `Pass` | Keep execution internals outside. |
+| `application-platform/runtime/build-application-platform-runtime.ts` | `245` | `Pass` | `Pass` | Platform runtime composition and outward contracts | `Pass` | `Pass` | Retain seven-capability scope/read-only host management. |
+| `autobyteus-web/utils/llmConfigSchema.ts` | `244` | `Pass` | `Pass` | Frontend schema normalization/validation | `Pass` | `Pass` | None. |
+| `api/graphql/types/agent-team-run.ts` | `229` | `Pass` | `Pass` | Team GraphQL command boundary | `Pass` | `Pass` | None. |
+| `llm-management/services/model-config-validation-service.ts` | `156` | `Pass` | `N/A` | One stateless validation policy owner | `Pass` | `Pass` | None. |
+| `application-orchestration/services/application-run-ownership-service.ts` | `96` | `Pass` | `N/A` | Read-only binding/lookup ownership lease | `Pass` | `Pass` | None. |
+| `agent-team-execution/services/team-run-model-config-mutator.ts` | `97` | `Pass` | `N/A` | Pure Team target/patch transformation | `Pass` | `Pass` | None. |
+| `autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts` | `96` | `Pass` | `N/A` | Current existing-Team projection | `Pass` | `Pass` | None. |
+| `autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts` | `Deleted` | `N/A` | `N/A` | Obsolete parallel representation removed | `Pass` | `Completed removal` | None. |
+| `autobyteus-web/types/agent/StoredTeamRunFormModel.ts` | `Deleted` | `N/A` | `N/A` | Obsolete parallel type removed | `Pass` | `Completed removal` | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No optional legacy owner, resolver, allocator, session manager, or manager-construction fallback was added or retained. |
-| No legacy old-behavior retention in changed scope | `Pass` | The prior MCP runtime/scope/manager and provider/process rediscovery paths are removed cleanly. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Deleted files/tests and retired symbol scans match the reviewed inventory. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | `Directly Usable — No Migration`; public, package, wire, database, and current Team V2 contracts remain unchanged. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Current stored-Team V2 readers are used directly; no compatibility branch was introduced. |
-| Approved transition mechanics match the reviewed design | `Pass` | Production and governed direct fixtures use exact explicit construction; omission/null/undefined cases fail closed. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No alias, version branch, dual path, fallback validator, application manager router, or legacy frontend adapter was added. |
+| No legacy old-behavior retention in changed scope | `Pass` | Broad application run-services and the full `StoredTeamRunFormModel` family remain deleted. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Six exact source/test paths are absent and retired-symbol/import scans are clean. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | Existing nullable metadata/Team-tree `llmConfig` and binding/lookup data are directly usable; only current writers/readers changed. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Agent and Team paths use current metadata/V2 tree readers and narrow current-schema writes. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | No migration was required or introduced; ordering is owned by existing run/root transition lanes. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+## Dead / Obsolete / Legacy Items Requiring Removal
 
-None remain. Completed removals are:
-
-| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| `src/agent-tools/mcp/agent-tools-mcp-runtime.ts` | `ObsoleteFile` | Deleted; retired symbol scan clean. | Replaced by Host plus scoped Authority ownership. | Completed. |
-| `src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts` | `ObsoleteFile` | Deleted; associated obsolete test removed. | Broad scope exposed the wrong abstraction and duplicated Authority responsibility. | Completed. |
-| `src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts` | `ObsoleteFile` | Deleted; associated obsolete test removed. | Replaced by explicit scoped session Authority/Issuer/Releaser roles. | Completed. |
+None remain in the changed scope.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No`
-- Why: the implementation is an internal ownership/composition refactor with no public API, route, package, configuration, persisted schema, or user-workflow change. The task's technical artifacts already document the new construction and lifecycle contracts.
-- Files or areas likely affected: none outside the current ticket artifacts.
+- Docs impact: `Yes`.
+- Why: latest Personal adds stopped-run model-config and application-ownership behavior while this ticket changes the underlying composition/ownership architecture.
+- Files or areas likely affected: server module docs for agent execution, Team execution, application orchestration, LLM management and run history; web Agent/Team/settings architecture docs. The merged tree already contains Personal documentation updates, but delivery must verify integrated-state accuracy after API/E2E.
 
-## Material Premise Validation (Only When Needed)
+## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-ARCH-006-001` | `Confirmed` | The supported application `delegate_task` path now receives the root-derived identity pair end-to-end; the prior process-allocator crossing is removed. |
-| `MP-ARCH-006-002` | `Confirmed` | Supported application context input now passes through the root-owned normalizer/stored-Team owner path; providers no longer rediscover process Team ownership. |
-| `MP-ARCH-006-003` | `Confirmed` | It remains `Not Reachable` as a product premise and therefore does not drive a finding or deduction; the separately applicable transition contract is now satisfied by exact required fixtures. |
-| `MP-ARCH-006-004` | `Confirmed` | The approved stored-only current Team V2 projection is used at the root-owned allocation/context boundaries and focused tests cover its path behavior. |
+| `MP-ARCH-007-001` | `Confirmed` | Studio Settings plus GraphQL/current service paths establish supported stopped general Agent/Team configuration and the implementation preserves the full forward path. |
+| `MP-ARCH-007-002` | `Confirmed` | The upstream `Not Reachable` decision remains correct: no supported caller needs stopped-run mutation through `ApplicationExecutionScope`; outward capability count remains seven. |
+| `MP-ARCH-007-003` | `Confirmed` | The obsolete frontend representation cannot coexist with the current tree; IR-004 removes all four paths and current assertions live with the current form/draft/store owners. |
 
 No new or reclassified material premise was needed.
 
-## Review Scorecard (Mandatory)
+## Review Scorecard
 
-- Overall score (`/10`): `9.47`
-- Overall score (`/100`): `94.7`
-- Score calculation note: simple average of the ten mandatory categories; the score does not override the clean-pass requirement.
+- Overall score (`/10`): `9.43`
+- Overall score (`/100`): `94.3`
+- Score calculation note: simple average of the ten mandatory categories; the Pass decision also requires every category to remain `>=9.0` and no open finding.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.6` | General/application task, context-input, session, resource, and shutdown spines are explicit from host through the runtime leaf. | The full construction map remains inherently broad across two roots. | Keep exact identity assertions and spine maps current when adding a provider or run type. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.6` | Each mutable execution family owns its allocator, managers, resources, normalizer, Authority, and task capability; process sharing is deliberate and narrow. | Stored-only context/location readers are intentionally shared projections that require discipline. | Preserve read-only projection semantics and prohibit mutable manager selection below roots. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.5` | Exact typed records replace optional defaults and ambiguous implicit inputs; provider and task identities are subject-specific. | Some construction records are necessarily wide because they make infrastructure complete. | Add fields only through the owning record/builder and keep fail-closed guards. |
-| `4` | `Separation of Concerns and File Placement` | `9.3` | Normalization, task identity, session Authority, and composition are placed under their owning subsystems. | Several established lifecycle owners/composition roots exceed 300–490 effective lines. | Extract only cohesive owned lifecycle concerns before those files need unrelated growth. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.5` | Frozen narrow records remove repeated loose structures without creating a kitchen-sink base. | General/application roots still require parallel assembly by design. | Reuse exact builders/records while retaining non-identical state families. |
-| `6` | `Naming Quality and Local Readability` | `9.1` | New names communicate owner and role; no generic `runtime`/`manager` wrapper obscures session authority. | `agent-run.ts` is exactly 500 effective lines, and a few established lifecycle files remain dense. | Prefer cohesive extraction over formatting compression on future changes. |
-| `7` | `API/E2E Readiness` | `9.4` | The exact eight prior failures and a broader structural matrix pass; build/config checks are green. | Credentialed providers, dual-host browser, recursive private Team/task, restart, and parity have not rerun on IR-003. | API/E2E should rerun F001 first and then its retained realistic matrix. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Source and executable evidence prove exact identity propagation, copied dispatch normalization, fail-closed manager construction, and preserved cleanup. | Live provider/runtime evidence remains downstream. | Confirm non-identical allocator/Authority identities and context inputs in real supported hosts. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.7` | Clean-cut removal is complete; no dual path, alias, default, version branch, or fallback was introduced. | None material. | Continue rejecting compatibility restoration as a shortcut. |
-| `10` | `Cleanup Completeness` | `9.6` | Obsolete source/tests are deleted, scans and diff check pass, generated validation output was removed, and only role artifacts remain untracked. | API/E2E still owns later process/output cleanup. | Preserve baseline outputs and rerun final cleanup after realistic execution. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | Host selection, separate execution roots, stopped-run transitions, ownership check, persistence, canonical return, and UI reconciliation are traceable end to end. | The integrated path spans server and web and is necessarily broad. | Keep the current spine map and architecture guards current as new run-config subjects appear. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | General/application mutable families remain separate; validation is shared stateless policy; application ownership is outer/read-only; lifecycle/Team manager own mutation. | Process-level general facades remain established globals for general APIs. | Do not let application code select those globals or expose scope internals. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.4` | Agent/Team commands, patch kinds/addresses, ownership provenance, editability and canonical results are explicit and subject-specific. | GraphQL outcome values remain strings rather than a generated enum contract. | Preserve the current closed outcome set and consider an enum only in a dedicated public-contract change. |
+| `4` | `Separation of Concerns and File Placement` | `9.2` | Validation, ownership, commit, mutation projection, draft planning, and existing-run UI are separated under correct owners. | Several established lifecycle/stores/components are 300–492 effective lines. | Extract only cohesive concerns before those files need unrelated growth. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.5` | One current existing-Team representation and narrow Agent/Team result/patch contracts replace parallel or loose shapes. | New-run and existing-run forms intentionally share UI components while retaining specialized models. | Keep the shared UI core tight; do not reintroduce frozen/historical parallel representations. |
+| `6` | `Naming Quality and Local Readability` | `9.1` | New types/services communicate their exact owner and subject; no vague new runtime/container facade was added. | Dense existing stores, GraphQL resolvers, and lifecycle files require careful navigation. | Prefer cohesive extraction over compression when future behavior is added. |
+| `7` | `API/E2E Readiness` | `9.3` | Independent 287-test focused matrix and build-config TypeScript pass; implementation full builds and rendered fixture pass. | Real providers, both hosts, restart/reentry, nested Team, ownership release, and package parity have not rerun on IR-004. | API/E2E should execute the current merged matrix before delivery. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Exact validator identity, fail-closed ownership, serialized save/restore, all-target validation, narrow writes, canonical reread, and current UI locks are covered. | Credentialed and multi-process evidence is still downstream. | Confirm supported real journeys and failure outcomes under actual server/browser execution. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.8` | Six obsolete paths are deleted; no alias, wrapper, dual read/write, migration fallback, or default validator exists on supported roots. | None material. | Continue rejecting compatibility restoration as an integration shortcut. |
+| `10` | `Cleanup Completeness` | `9.6` | Exact merge ancestry, 14-overlap audit, zero unmerged entries/markers, retired scans, size audit, and source diff check pass. | Generated SDK outputs and other-role artifacts remain intentionally preserved for downstream ownership. | API/E2E/delivery should preserve the baseline and perform final integrated-state cleanup. |
 
 ## Findings
 
-No current findings. Prior `CR-001` remains resolved; `CR-002`, `CR-003`, and `CR-004` are resolved by IR-003 and verified in source plus executable evidence.
+No current findings. Prior `CR-001`–`CR-004` remain resolved. Delivery/architecture finding `AR-005` is resolved in the implemented tree by the exact four-path frontend clean cut.
 
 ## Classification
 
@@ -211,21 +193,22 @@ Not applicable — current implementation review passes.
 
 `/api_e2e_engineer`
 
-API/E2E should rerun the exact eight `APIE2E-F001` files first without initializing unrelated globals, then continue the retained credentialed provider, dual-host, recursive/private Team/task, publication/handoff, context-file, restart/shutdown, browser, and package-parity matrix.
+API/E2E should first investigate coverage against IR-004/current HEAD, then rerun the retained real dual-host/provider/context/task/recovery matrix plus stopped Agent/Team Save ordering, fail-closed application ownership, exact validator propagation, current editor behavior, package parity, and cleanup.
 
 ## Residual Risks
 
-- Live AutoByteus/Codex/Claude input behavior and provider-specific error handling have not yet been executed on IR-003.
-- General/application concurrent identity separation, recursive task delegation, private Nested Classroom execution, active shutdown, same-data restart, and package parity remain API/E2E-owned.
-- `agent-run.ts` is at the 500 effective-line limit. It is cohesive and compliant now, but future unrelated behavior must not be compressed into it.
-- Unchanged repository-wide fixture/configuration debt is separate and is neither current Pass evidence nor current-ticket attribution.
+- API-REV-002 is a valid pre-merge baseline but does not certify IR-004; the latest Personal stopped-run and ownership paths need current API/E2E execution.
+- Live provider selection/schema availability, same-data restart/reentry, application ownership terminal release, recursive/private Team task flows, and concurrent general/application isolation remain downstream checks.
+- Several cohesive source owners are near 400–492 effective lines; none violates the current limit or ownership model, but unrelated future growth should be extracted rather than compressed.
+- The separate application-agent addressing simplification remains intentionally out of scope and is neither implemented nor reopened here.
+- The documented `nuxi typecheck` toolchain mismatch remains an environment/tooling limitation; the maintained Nuxt production build passed in implementation evidence.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `9.47/10` (`94.7/100`); every mandatory category is `>=9.0`.
-- Failure Origin: `N/A`; prior `APIE2E-F001` design-impact paths are corrected.
+- Score Summary: `9.43/10` (`94.3/100`); every mandatory category is `>=9.0`.
+- Failure Origin: `N/A`.
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: exact prior failure selection `64 Pass / 8 environment-gated Skip`; structural focused selection `121 Pass`; build-config TypeScript and prerequisite build pass; no source finding remains.
+- Notes: exact current HEAD `2625f2b7d053e1b8e8009d21f5583b32fc55ba34`; merge topology/14-overlap/removal/source-size audits pass; independent server `21/163`, web `11/124`, and build-config TypeScript pass; no source finding remains.

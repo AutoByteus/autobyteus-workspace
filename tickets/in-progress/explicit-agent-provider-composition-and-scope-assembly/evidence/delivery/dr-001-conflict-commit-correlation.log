@@ -1,0 +1,36 @@
+# commits on latest origin/personal since bootstrap snapshot
+b52fe5aeb docs(delivery): complete live agent definition finalization
+44c83bdbc merge: live agent definition refresh analysis
+9efa24a52 docs(delivery): record finalization authentication blocker
+46899f483 chore(delivery): archive live agent definition refresh
+3ea5af9bf chore(delivery): checkpoint CRR-011 reviewed package
+3b07b2d97 docs: record IR-006 enum schema fix
+d8eb36f93 fix(web): normalize Codex enum parameter schemas
+1399437f0 chore: checkpoint CRR-009 failure evidence
+15690131b chore(delivery): checkpoint CRR-008 reviewed package
+66c696473 docs(implementation): record application ownership guard
+370f1f5fa fix(studio): guard application-owned run configuration
+af4ce2e93 docs(solution): approve application run ownership guard
+c3b246648 docs: record latest-base integration implementation
+7e3f4e97c merge(personal): integrate stopped-run model settings
+47f1c395f docs(delivery): record latest-base integration blocker
+2eabf59af chore(delivery): checkpoint CRR-005 reviewed package
+9e0f4c5c4 docs: record sequential run config implementation
+72ea90db1 refactor: align stopped run editing with sequential lifecycle
+08b11b3aa docs: record run config reconciliation rework
+90414c016 fix: reconcile rejected run config saves
+574c47954 docs: record stopped-run implementation handoff
+a4c2595f8 feat: edit model settings for stopped runs
+
+# base commits touching conflict paths
+370f1f5fa fix(studio): guard application-owned run configuration
+7e3f4e97c merge(personal): integrate stopped-run model settings
+2eabf59af chore(delivery): checkpoint CRR-005 reviewed package
+72ea90db1 refactor: align stopped run editing with sequential lifecycle
+a4c2595f8 feat: edit model settings for stopped runs
+
+# ticket commits touching conflict paths
+8704f2653 refactor(agent): close execution family composition
+3806ca36e refactor(team): require explicit mixed execution family
+50537fef2 refactor(agent): compose explicit provider authorities
+54eaac53a refactor(application): contain execution behind scope

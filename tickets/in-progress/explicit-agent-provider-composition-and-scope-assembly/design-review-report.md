@@ -5,281 +5,258 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `provider-composition-and-agent-tools-authority-contract.md`; `provider-composition-transition-inventory.md`; upstream `future-architecture-simplification-review.md` and source-audit evidence.
+- Supplemental Task Artifacts Reviewed: `provider-composition-and-agent-tools-authority-contract.md`; `provider-composition-transition-inventory.md`; `latest-personal-run-configuration-integration-analysis.md`; `evidence/solution/sr-008-frontend-clean-cut-audit.log`; DR-001 conflict report/evidence; prior implementation, source-review, API/E2E, and architecture-review artifacts.
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-006`
+- Relevant Solution Revision IDs: `SR-001`–`SR-008`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: 6
-- Trigger: SR-006 correction of CRR-003 findings `CR-002`, `CR-003`, and `CR-004` after `API-REV-001`.
-- Prior Review Round Reviewed: `ARCH-REV-005` Pass at SR-005; subsequent IR-002 / CRR-003 / API-REV-001 evidence.
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: 8
+- Trigger: SR-008 bounded correction of `ARCH-REV-007` finding `AR-005`.
+- Prior Review Round Reviewed: `ARCH-REV-007` (`Fail — Design Impact`) at SR-007.
 - Latest Authoritative Round: this report.
-- Reviewed Commit: `fa7797c4b1ec278296ffbe93623af2bc42e9472c`
-- Current-State Evidence Basis: IR-002 source at `3806ca36e46495ba28d5957a330a502eb22bd973`; CRR-003 source tracing; API-REV-001 deterministic failure evidence; current Team V2 persistence/catalog, task, context-file, provider, and composition sources.
+- Reviewed Solution Commit: `887b09417` (`docs(solution): close stopped team frontend transition`).
+- Reviewed Latest-Personal Input: `b52fe5aebdb962ce361529f9e797affeb30d719a`; independently re-fetched and unchanged on 2026-08-26.
+- Current-State Evidence Basis: protected implementation checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7`; authoritative latest-Personal commit `a4c2595f89c029baa3c2723013fa30e7b409596d`; exact current/deleted frontend paths and imports; DR-001 14-overlap / 7-conflict preview; prior accepted scope/kernel/general-root design and downstream evidence.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`.
-- Approved requirements / intended behavior understood: the refactor must preserve the passed `ApplicationExecutionScope`, separate general/application mutable execution families, provider behavior/timing, RootTeamRun-local task ownership, public routes/contracts, and persisted data while removing implicit authority selection.
-- Relevant existing behavior and evidence confirmed: CRR-003 correctly traces two supported application paths below the previously reviewed Mixed Team boundary and one transition-only direct-constructor gap. The current source also confirms the catalog rebuild and Team write/admission ordering on which the stored-only target relies.
-- Scope guardrail confirmed: provider/Agent Tools composition, run-resource assembly, Root task identity, provider-bound context normalization, and process context-file composition are in scope; logical addressing, per-mounted-application scopes, manager unification, provider policy, public protocol, and new migration policy remain out of scope.
+- Approved requirements / intended behavior understood: preserve the passed Host/Authority/provider/context/task/Mixed-Team/private-kernel architecture while adopting latest Personal's supported stopped Agent/Team configuration and application-ownership behavior through its current owners.
+- Relevant existing behavior and evidence confirmed: stopped Team Settings reaches `RunConfigPanel -> ExistingRunConfigEditor -> projectExistingTeamRunFormModel -> TeamRunConfigForm`; the current representation is `ExistingTeamRunFormModel` plus `existingTeamModelConfigDraft`. Latest Personal deletes the prior `StoredTeamRunFormModel` family.
+- Scope guardrail confirmed: exact frontend clean removal and proof transfer are in scope. Logical addressing, execution multiplicity, manager unification, public representation changes, compatibility aliases, and a new migration remain out of scope.
 - Approved change, preserved behavior, and outside scope understood: `Yes`.
-- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `Yes`; no new blocking finding remains.
-- Remaining material ambiguity: none at design level.
+- Every prospective blocking `Design Impact` finding is traceable to approved IDs: `Yes`; no blocking finding remains.
+- Remaining material ambiguity: none.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | Pass | Pass — both maintained hosts build one process Host and distinct general/application authorities. | Pass — accepted Host/Authority lifecycle remains unchanged. | Confirmed | None. |
-| BEH-002 | System | Pass | Pass — supported create/restore/delegation reaches exact execution roots, managers, RootTeamRun, and task allocation. | Pass — one family allocator and derived task-Team capability flow unchanged through every root. | Confirmed | Downstream identity proof only. |
-| BEH-003 | Contract | Pass | Pass — application AutoByteus/Codex/Claude input and Team attachment finalization are supported paths; provider-local defaults currently reacquire process Team ownership. | Pass — one copied AgentRun dispatch is normalized through explicit roots/stored projection; providers retain formatting only; REST composes its own exact stored owner. | Confirmed | Downstream provider/context proof only. |
-| BEH-004 | Operational | Pass | Pass — Codex can issue before later preparation failure. | Pass — accepted per-run revocation/quarantine contract remains fixed. | Confirmed | Downstream failure proof only. |
-| BEH-005 | System | Pass | Pass — both roots currently assemble resource/activation graphs, while direct fixtures can enter optional manager defaults. | Pass — exact seven-field manager input and K0–K8 application construction are coherent. | Confirmed | Downstream construction proof only. |
-| BEH-006 | Contract | Pass | Pass — no new serialized type or public surface is introduced. | Pass — runtime-only clean cut with unchanged readers/writers. | Confirmed | None. |
+| BEH-001 | System | Pass | Studio/standalone boot construct one process Host and distinct execution-family Authorities. | Passed construction/lifecycle remains unchanged. | Confirmed | Downstream proof only. |
+| BEH-002 | System | Pass | Agent/Team create, restore, and delegated tasks stay in the selected execution family. | Existing allocator/task/factory closure remains fixed. | Confirmed | Downstream proof only. |
+| BEH-003 | Contract | Pass | Provider input and context-file REST use explicit roots and stored ownership. | Copied-dispatch normalization and stored resolver remain fixed. | Confirmed | Downstream proof only. |
+| BEH-004 | Failure | Pass | Provider preparation can fail after scoped session issuance. | Revocation/quarantine contract remains fixed. | Confirmed | Downstream proof only. |
+| BEH-005 | Lifecycle | Pass | Both execution roots assemble complete graphs and unwind exact owners. | K0–K8 remains coherent with required validation. | Confirmed | Downstream proof only. |
+| BEH-006 | Contract | Pass | Provider composition has no public or persisted representation. | No public/schema/migration change. | Confirmed | None. |
+| BEH-007 | User/System | Pass | Studio stopped-run Settings and latest-Personal source establish the current Team editor path. | One current existing-run representation; exact four-path legacy removal; assertions move to current owners. | Confirmed | Implement and execute the mapped proof. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `provider-composition-and-agent-tools-authority-contract.md` | Pass | Pass | Pass | Pass | Pass — normative and approved with requirements | None. |
-| `provider-composition-transition-inventory.md` | Pass | Pass | Pass | Pass | Pass — normative transition/proof context; approval N/A | None. |
-| Upstream future review and CRR/API evidence | Pass | Pass | Pass | Pass | Pass — read-only evidence | None. |
+| `provider-composition-and-agent-tools-authority-contract.md` | Pass | Pass | Pass | Pass | Pass — accepted production contract | None. |
+| `provider-composition-transition-inventory.md` | Pass | Pass | Pass | Pass | Pass — normative transition/proof supplement | Implement exact inventory. |
+| `latest-personal-run-configuration-integration-analysis.md` | Pass | Pass | Pass | Pass | Pass — normative current-base reconciliation | Preserve authority split. |
+| `sr-008-frontend-clean-cut-audit.log` | Pass | Pass | Pass | Pass | Pass — evidence only, approval N/A | None. |
+| DR-001 reports/evidence | Pass | Pass | Pass | Pass | Pass — downstream evidence | Revalidate after semantic merge. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements, investigation, and design classify this as behavior-neutral boundary/ownership refactoring. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | CRR-003 and current source establish hidden process allocator/Team-owner selection plus optional Agent-manager infrastructure construction. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Complete current execution-family closure is required; logical addressing and per-mounted multiplicity remain separate. | None. |
-| Refactor decision is supported by concrete design sections | Pass | Exact task identity, normalizer, REST composition, manager input, K0–K8, file inventory, and occurrence guards are specified. | None. |
+| Assessment is present for the current task posture | Pass | Design classifies the change as a boundary/ownership refactor plus latest-base semantic reconciliation. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | SR-007 production junction is separated from AR-005 transition inconsistency; Personal commit `a4c2595f8` proves the frontend replacement. | None. |
+| Refactor needed now / deferred decision is explicit | Pass | Existing execution architecture is preserved; obsolete frontend representation is removed rather than restored. | None. |
+| Refactor decision is reflected in concrete sections | Pass | Exact owners, four Remove paths, two Modify tests, retained tests, guards, and proof are recorded. | None. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Studio boot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Standalone boot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Application provider/Team execution | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | General provider/Team execution | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Failed preparation return | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Authority issue/adaptation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-007 | Application kernel construction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-008 | Ordered close return | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-009 | Root-local task identity | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-010 | Provider-bound input normalization | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-011 | Team attachment finalization/read/dispatch | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001–DS-011 | Existing dual-host/provider/task/context/publication paths | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-012 | Stopped Agent configuration | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-013 | Stopped Team configuration and frontend projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-014 | Application ownership lookup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-015 | Host construction of validator/execution roots | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-016 | Ownership/persistence uncertainty return path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+The corrected Team Settings path spans the supported surface through the current projection/editor and exact persistence result; it no longer terminates in a deleted test representation.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentToolsMcpHost` | Pass | Pass | Pass | Pass | Process route/catalog/registry/dispatcher owner remains fixed. |
-| `ScopedAgentToolMcpSessionAuthority` | Pass | Pass | Pass | Pass | Execution-family issuance/revocation ledger remains fixed. |
-| Provider builder / issuer / releaser | Pass | Pass | Pass | Pass | Least-privilege boundaries remain non-identical per execution family. |
-| `AgentRunManager` | Pass | Pass | Pass | Pass | Owns claim/preparation/lifecycle but consumes, rather than constructs, all seven execution-root inputs. |
-| `AgentRun` provider-input boundary | Pass | Pass | Pass | Pass | Owns the last-responsible-moment copied dispatch; providers cannot rediscover Team/config ownership. |
-| `RootTeamRun` task boundary | Pass | Pass | Pass | Pass | Retains task lifecycle/state/persistence/events while consuming an immutable root-selected identity capability. |
-| Process context-file REST composition | Pass | Pass | Pass | Pass | Owns route-level layout and stored-owner selection without becoming an execution owner. |
-| Application kernel builder / scope | Pass | Pass | Pass | Pass | Normalizer, allocators, managers, and resources remain private; outward seven capabilities are unchanged. |
+| Host -> validation -> execution roots | Pass | Pass | Pass | Pass | One host-selected stateless validator; no leaf default. |
+| General vs application execution | Pass | Pass | Pass | Pass | Mutable managers, Authorities, tasks, and sessions remain non-identical. |
+| Application platform vs execution scope | Pass | Pass | Pass | Pass | Outer ownership remains outside the seven-capability execution boundary. |
+| Studio stopped-run service | Pass | Pass | Pass | Pass | Guard then exact general lane; no application manager fallback. |
+| Stopped-Team frontend | Pass | Pass | Pass | Pass | `ExistingTeamRunFormModel`/draft/editor is the sole current representation. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Host composition -> explicit path values / Host / execution owners | Pass | Pass | Pass | Pass | AppConfig selection remains at composition edges. |
-| Execution root -> stored Team reader / normalizer / resource graph | Pass | Pass | Pass | Pass | No mutable Team-manager cycle or broad AppConfig dependency. |
-| Agent manager -> AgentRun -> provider | Pass | Pass | Pass | Pass | Required normalizer is passed once and provider code sees only the copy. |
-| Team manager -> RootTeamRun -> task service | Pass | Pass | Pass | Pass | Same capability identity is carried unchanged; no global allocator. |
-| REST composition -> stored Team projection -> read/finalization | Pass | Pass | Pass | Pass | No general/application manager selection. |
-| Mixed Team construction | Pass | Pass | Pass | Pass | Previously accepted releaser/callback closure remains intact. |
-| Direct tests -> explicit narrow fixtures | Pass | Pass | Pass | Pass | No global initialization or production optionality is introduced for tests. |
+| Host composition | Pass | Pass | Pass | Pass | Selects catalog/validator and injects both execution roots. |
+| Application platform outer ownership | Pass | Pass | Pass | Pass | Read-only projection to Studio; no raw store/manager. |
+| Agent/Team run leaves | Pass | Pass | Pass | Pass | No ambient catalog/lifecycle/session selection. |
+| Frontend current projection | Pass | Pass | Pass | Pass | Zero old symbols/paths; no alias, wrapper, or dual model. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `TaskExecutionIdentityCapabilities` | Pass | Pass | Pass | Low | Pass |
-| `AgentRunProviderInputNormalizer.normalizeForProvider` | Pass | Pass | Pass | Low | Pass |
-| `ContextFilePathEnvironment` | Pass | Pass | Pass | Low | Pass |
-| `ContextFileOwnerResolverInput` | Pass | Pass | Pass | Low | Pass |
-| Seven-field `AgentRunManagerOptions` | Pass | Pass | Pass | Low | Pass |
-| Seven-top-level general supervisor input | Pass | Pass | Pass | Low | Pass |
-| Ten-top-level application scope build input | Pass | Pass | Pass | Low | Pass |
-| Existing Host/Authority/issuer/releaser contracts | Pass | Pass | Pass | Low | Pass |
+| `RunModelConfigValidator` | Pass | Pass | Pass | Low | Pass |
+| `GeneralProcessRunSupervisorInput` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationExecutionScopeBuildInput` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationRunOwnershipReader` | Pass | Pass | Pass | Low | Pass |
+| Seven execution-scope capabilities | Pass | Pass | Pass | Low | Pass |
+| `ExistingTeamRunFormModel` + draft/editor commands | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Durable Team identity/location projection | Pass | Pass | N/A | Pass | Reuses the existing stored-only V2 reader and catalog admission. |
-| Context-file path/owner rules | Pass | Pass | Pass | Pass | Reuses layout/owner/local resolver; adds one provider-neutral owner at AgentRun. |
-| Task identity allocation | Pass | Pass | Pass | Pass | Reuses exact Agent allocator and task-Team factory behind one immutable pair. |
-| Agent resource/activation lifecycle | Pass | Pass | N/A | Pass | Existing recorder/resource manager/activation registry are assembled explicitly at roots. |
-| Provider formatting | Pass | Pass | N/A | Pass | AutoByteus/Codex/Claude retain only their existing formatting. |
+| Model validation | Pass | Pass | Pass | Pass | Reuse current catalog through one narrow validator. |
+| Agent/Team stopped-run transitions | Pass | Pass | N/A | Pass | Preserve distinct lifecycle/persistence owners. |
+| Application ownership | Pass | Pass | Pass | Pass | Reuse current binding/lookup stores behind a reader. |
+| Historical/residual model fields | Pass | Pass | N/A | Pass | Reuse shared classifier/renderer and current editor tests. |
+| Team editing projection | Pass | Pass | N/A | Pass | Keep current Personal existing-run projection/draft. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Agent execution input | Pass | Pass | Pass | Pass | Provider-neutral normalizer belongs immediately above backend dispatch. |
-| Team task delegation | Pass | Pass | Pass | Pass | Capability is injected; RootTeamRun remains the lifecycle owner. |
-| Context files | Pass | Pass | Pass | Pass | Layout/owner resolution remains in the context subsystem. |
-| Application execution | Pass | Pass | Pass | Pass | Complete graph remains private to the scope kernel. |
-| General process execution | Pass | Pass | Pass | Pass | Explicit resource/task/input family without application ownership. |
+| `llm-management` | Pass | Pass | Pass | Pass | Validation policy. |
+| `agent-execution` | Pass | Pass | Pass | Pass | Agent lifecycle/transition. |
+| `agent-team-execution` | Pass | Pass | Pass | Pass | Team lane/mutator. |
+| `application-orchestration` | Pass | Pass | Pass | Pass | Application ownership. |
+| `run-history` | Pass | Pass | Pass | Pass | Studio coordination. |
+| `autobyteus-web/services/runConfigEditing` | Pass | Pass | Pass | Pass | Current stopped-Team projection/draft. |
+| Current web components/utilities | Pass | Pass | Pass | Pass | Presentation and historical/residual field rendering. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Task Agent/task-Team identity pair | Pass | Pass | Pass | Pass | Cohesive immutable capability, not a manager bag. |
-| Provider dispatch locator normalization | Pass | Pass | Pass | Pass | One transform replaces three provider copies. |
-| Context path environment | Pass | Pass | Pass | Pass | Exact two-field value, not AppConfig or a dependency dictionary. |
-| Agent manager test infrastructure | Pass | N/A | Pass | Pass | Test-only named factory, not a production options/default owner. |
+| `RunModelConfigValidator` | Pass | Pass | Pass | Pass | Narrow shared process policy. |
+| `ApplicationRunOwnershipReader` | Pass | Pass | Pass | Pass | Narrow outer read contract. |
+| Historical-field classifier / runtime renderer | Pass | Pass | Pass | Pass | Reused by existing Agent and Team scopes. |
+| New generic registry/container/state machine | Pass | N/A | N/A | Pass | Correctly rejected. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `TaskExecutionIdentityCapabilities` | Pass | Pass | Pass | Pass | Pass | Two allocation capabilities derived from one exact allocator. |
-| `ContextFilePathEnvironment` | Pass | Pass | Pass | Pass | Pass | `memoryDir` remains separate because it is already an execution-root field. |
-| Provider-bound message copy | Pass | Pass | Pass | Pass | Pass | Exact clone semantics preserve source fields and provider mutability. |
-| `CompleteAgentRunManagerOptions` | Pass | Pass | Pass | Pass | Pass | Exactly factories, activation, recorder, normalizer, and releaser. |
+| Provider/Authority contracts | Pass | Pass | Pass | Pass | Pass | Passed design remains unchanged. |
+| Agent metadata / Team V2 / ownership result | Pass | Pass | Pass | Pass | Pass | Current latest-Personal shapes. |
+| `ExistingTeamRunFormModel` + editable draft | Pass | Pass | Pass | Pass | Pass | Readonly projection plus explicit draft; no frozen legacy duplicate. |
+| Historical residual field projection | Pass | Pass | Pass | Pass | Pass | Each persisted value classified once without input mutation. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-run-provider-input-normalizer.ts` | Pass | Pass | Pass | Pass | One provider-neutral copy/locator transform. |
-| `task-execution-identity-capabilities.ts` | Pass | Pass | Pass | Pass | Validation/freeze/derivation only. |
-| `context-file-path-environment.ts` | Pass | Pass | Pass | Pass | Two shared validated leaves only. |
-| `agent-run-manager.ts` | Pass | Pass | Pass | Pass | Infrastructure construction is removed. |
-| `root-team-run.ts` / task service | Pass | Pass | Pass | Pass | Task ownership stays where it is; only identity selection moves upward. |
-| Context-file resolver/service files | Pass | Pass | Pass | Pass | Defaults are removed while existing path/storage behavior stays owned locally. |
-| Two execution roots | Pass | Pass | Pass | Pass | They are the only mutable family assembly points. |
+| `model-config-validation-service.ts` | Pass | Pass | Pass | Pass | Required-catalog validation. |
+| Agent lifecycle / Team manager + mutator | Pass | Pass | Pass | Pass | Distinct transition owners. |
+| `application-run-ownership-service.ts` | Pass | Pass | Pass | Pass | Read-only ownership lease. |
+| `studio-run-model-config-service.ts` | Pass | Pass | Pass | Pass | Guard and general delegation. |
+| `existingTeamRunFormModel.ts` / `ExistingTeamRunFormModel.ts` | Pass | Pass | Pass | Pass | Current canonical Team form projection/type. |
+| `existingTeamModelConfigDraft.ts` | Pass | Pass | Pass | Pass | Model-config-only edit planning. |
+| `TeamRunConfigForm.spec.ts` / `TeamScopeConfigEditor.spec.ts` | Pass | Pass | N/A | Pass | Exact current projection and root/nested presentation proof. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-execution/input/agent-run-provider-input-normalizer.ts` | Pass | Pass | Low | Pass | Correct Agent dispatch boundary. |
-| `agent-team-execution/task-delegation/task-execution-identity-capabilities.ts` | Pass | Pass | Low | Pass | Correct task-allocation capability area. |
-| `context-files/domain/context-file-path-environment.ts` | Pass | Pass | Low | Pass | Context-owned immutable value; no AppConfig dependency. |
-| `application-platform/execution/application-execution-scope-kernel-builder.ts` | Pass | Pass | Low | Pass | Correct private application graph owner. |
-| `agent-execution/runtime/general-process-run-supervisor.ts` | Pass | Pass | Low | Pass | Correct general graph owner. |
+| Server validation/lifecycle/ownership files | Pass | Pass | Low | Pass | Located by authoritative subject. |
+| `services/runConfigEditing` projection/draft | Pass | Pass | Low | Pass | Current stopped-run editing boundary. |
+| Workspace configuration component tests | Pass | Pass | Low | Pass | Presentation behavior stays with component owners. |
+| Shared historical-field tests | Pass | Pass | Low | Pass | Cross-consumer field classification/renderer proof. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Root task global allocator/default task-Team factory | Pass | Pass | Pass | Pass | Required capability replaces both. |
-| Provider-local context owner/resolver construction | Pass | Pass | Pass | Pass | AgentRun normalizer replaces all three. |
-| Context layout/owner/read/finalization defaults | Pass | Pass | Pass | Pass | Explicit execution or REST composition replaces defaults. |
-| Agent manager provider/resource/activation/recorder defaults | Pass | Pass | Pass | Pass | Exact seven-field root input replaces them. |
-| Prior Runtime/session/Mixed Team fallback paths | Pass | Pass | Pass | Pass | Accepted earlier clean cuts remain retained and guarded. |
+| `StoredTeamScopeHistoricalFields.spec.ts` | Pass | Pass | Pass | Pass | Removed; assertions mapped to current tests. |
+| `storedTeamRunFormModel.spec.ts` | Pass | Pass | Pass | Pass | Removed with obsolete projector. |
+| `storedTeamRunFormModel.ts` | Pass | Pass | Pass | Pass | Replaced by current existing-run projector. |
+| `StoredTeamRunFormModel.ts` | Pass | Pass | Pass | Pass | Replaced by current existing-run type. |
+| Broad application run-services factory/test and other prior removals | Pass | Pass | Pass | Pass | Prior accepted clean cuts remain intact. |
+
+The four legacy paths are explicitly absent, their old symbols have a zero-import guard, and no obsolete runtime-deep-freeze contract is transferred into a second representation.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Task identity | No | Pass | Pass | No allocator fallback. |
-| Provider context normalization | No | Pass | Pass | No provider-local alternate path. |
-| Agent manager construction | No | Pass | Pass | No optional production path. |
-| Context-file composition | No | Pass | Pass | Current locator contract only. |
-| Host/Authority/Mixed Team prior transition | No | Pass | Pass | No alias or compatibility wrapper. |
+| Provider/Authority construction | No | Pass | Pass | No global/default compatibility path. |
+| Application run-services owner | No | Pass | Pass | Remains deleted. |
+| Stopped-Team frontend model | No | Pass | Pass | Four-path removal; no alias/re-export/wrapper. |
+| Persisted Agent/Team data | No | Pass | Pass | Version-agnostic current readers remain authoritative. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Run metadata, Team V2 tree/task/message package, context locators, bindings, provider state | `Not Affected` / `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | The same current stores and schemas are used; only in-memory composition and a provider-bound copy change. |
+| Provider/Authority composition | Not Affected | Pass | Pass | N/A | Pass | Object graph only. |
+| Agent metadata / Team V2 / application ownership | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Current latest-Personal readers/writers remain unchanged. |
+| Frontend form models/tests | Not Persisted / Not Affected | Pass | Pass | N/A | Pass | Ephemeral projection and durable coverage only. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Task identity cutover | Pass | Pass | Pass | Pass |
-| Provider-input cutover | Pass | Pass | Pass | Pass |
-| Context REST explicit composition | Pass | Pass | Pass | Pass |
-| Complete Agent manager construction | Pass | Pass | Pass | Pass |
-| K0–K8 application construction | Pass | Pass | Pass | Pass |
-| Production/test occurrence closure | Pass | Pass | Pass | Pass |
+| Latest-Personal semantic merge | Pass | Pass | Pass | Pass |
+| Required validator/ownership propagation | Pass | Pass | Pass | Pass |
+| K0–K8 lifecycle and unwind | Pass | Pass | Pass | Pass |
+| Frontend representation clean cut | Pass | Pass | Pass | Pass |
+| Source/test occurrence guards | Pass | Pass | Pass | Pass |
+
+Implementation must still perform and validate the merge; this review does not infer execution success.
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Task identity capability | Yes | Pass | Pass | Pass | Exact TypeScript shape and propagation are given. |
-| Provider message copy | Yes | Pass | Pass | Pass | Field-by-field copy semantics and provider responsibilities are explicit. |
-| Agent manager input | Yes | Pass | Pass | Pass | Exact seven-field record is given. |
-| Application construction | Yes | Pass | Pass | Pass | K0–K8 and disposer ownership are explicit. |
-| Transition/negative guards | Yes | Pass | Pass | Pass | Exact path sets and omission/null/undefined/ambient cases are listed. |
+| Host/Authority/kernel composition | Yes | Pass | Pass | Pass | Exact TypeScript shapes and K0–K8 tables remain authoritative. |
+| Stopped-run ownership paths | Yes | Pass | Pass | Pass | Primary/return spines and status outcomes are explicit. |
+| Frontend replacement | Yes | Pass | Pass | Pass | Exact Remove/current-owner/test mapping and rejected frozen duplicate are explicit. |
 
 ## Material Premise Validation (Only When Needed)
 
-### MP-ARCH-006-001 — Application RootTeamRun task delegation can reacquire process Agent identity
+### MP-ARCH-007-001 — Stopped general Agent/Team configuration is a supported product path
 
-- Related approved requirement or established contract: REQ-004, AC-004–AC-005, AC-012.
-- Relevant behavior ID(s): BEH-002.
+- Related approved requirement or established contract: BEH-007, REQ-009, AC-013–AC-016.
+- Relevant behavior ID(s): BEH-007.
 - Initiating basis kind: `User`.
-- Independent product-supported initiating trigger: a user starts/restores an application Team through Studio or the selected standalone application and an authenticated Team member invokes supported `delegate_task` for an Agent or Team target.
-- Forward current production path: application Team surface -> application scope Team capability -> graph-local Team manager -> RootTeamRun -> TaskDelegationService -> omitted allocator/factory -> process `AgentRunIdentityAllocator.getInstance()` and process Agent manager.
-- Lifecycle preconditions and material consequence: the application root is active; delegated identity allocation is checked against the wrong mutable execution family and correctness depends on general-first startup.
+- Independent product-supported initiating trigger: a Studio user opens a stopped Agent or Team run in Settings and reads or saves model configuration.
+- Support evidence: `RunConfigPanel` selects `ExistingRunConfigEditor`; current Pinia/GraphQL and server lanes implement the operation.
+- Forward path: Studio editor -> Pinia/GraphQL -> `StudioRunModelConfigService` -> application ownership reader -> exact general Agent lifecycle or Team manager lane -> validation -> atomic write/reread -> canonical UI state.
+- Lifecycle preconditions and material consequence: only stopped, non-archived, released general runs are writable; ownership/persistence uncertainty must perform zero unsafe write.
 - Reachability: `Reachable`.
-- Review consequence / proportionate response: SR-006 resolves it with one root-built allocator and immutable derived pair carried through the existing RootTeamRun task owner; no manager router or lifecycle change is added.
+- Review consequence / proportionate response: accept the explicit ownership/validation design and require current frontend proof.
 
-### MP-ARCH-006-002 — Application provider context mapping can reacquire process Team ownership
+### MP-ARCH-007-002 — Application execution scope needs an outward stopped-run mutation capability
 
-- Related approved requirement or established contract: REQ-003–REQ-005, AC-004–AC-007, AC-012.
-- Relevant behavior ID(s): BEH-002, BEH-003.
-- Initiating basis kind: `User`.
-- Independent product-supported initiating trigger: a user launches/restores an application Claude Agent or sends normal input with a context locator to an application AutoByteus/Codex Agent.
-- Forward current production path: application execution root -> provider factory/session or Agent input -> provider-local default `ContextFileLocalPathResolver` -> default owner/location service -> process Team manager.
-- Lifecycle preconditions and material consequence: general execution has been initialized first in maintained hosts, masking construction failure while application provider execution reads mutable Team ownership from the wrong family.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: one exact execution-root normalizer at AgentRun copies and resolves the dispatch through the stored projection; provider formatting remains provider-owned and no manager is exposed.
+- Related approved requirement or established contract: REQ-009, AC-015–AC-016.
+- Relevant behavior ID(s): BEH-007.
+- Initiating basis kind: `User/System`.
+- Independent product-supported initiating trigger: none; application clients configure launch bindings/overrides and expose no direct stopped-run mutation command.
+- Support evidence: no application REST/WS/worker command reaches such an operation through the scope.
+- Forward path: none in supported production behavior.
+- Lifecycle preconditions and material consequence: N/A.
+- Reachability: `Not Reachable`.
+- Review consequence / proportionate response: do not add a scope facade/router; retain exactly seven capabilities.
 
-### MP-ARCH-006-003 — Direct AgentRunManager fixture failures prove a product defect
+### MP-ARCH-007-003 — The obsolete stopped-Team representation may be retained as harmless coverage
 
-- Related approved requirement or established contract: REQ-008 transition completeness.
-- Relevant behavior ID(s): BEH-005, BEH-006.
-- Initiating basis kind: `Contract`.
-- Independent product-supported initiating trigger or applicable governing contract: maintained production roots always supply explicit activation/resource infrastructure; the separately applicable normative transition inventory governs the direct tests.
-- Forward current path: direct tests omit activation/sidecar inputs -> optional manager construction -> process Team lookup. Normal Studio/standalone construction does not enter this branch.
-- Lifecycle preconditions and material consequence: no production defect is established; durable coverage cannot reach its intended assertions and the claimed transition is incomplete.
-- Reachability: `Not Reachable` as a product premise; the transition contract remains applicable.
-- Review consequence / proportionate response: make all seven production inputs required and use a narrow explicit test fixture; do not initialize globals or add a production fallback.
-
-### MP-ARCH-006-004 — Stored-only Team V2 projection is sufficient at supported allocation and context boundaries
-
-- Related approved requirement or established contract: REQ-004–REQ-005, AC-004–AC-005, AC-012.
-- Relevant behavior ID(s): BEH-002, BEH-003.
-- Initiating basis kind: `System`.
-- Independent product-supported initiating trigger: maintained Studio/standalone startup rebuilds the Team package catalog; supported fresh create, restore, delegated task activation, and Team attachment send use the existing durable package protocol.
-- Forward current/target production path: startup catalog rebuild -> execution roots construct stored-only readers -> fresh root commits tree/tasks/messages then admits before materialization, restore loads an admitted current package, and task activation writes the next tree before live commit -> allocator/context owner reads the catalog-filtered V2 tree.
-- Lifecycle preconditions and material consequence: incomplete/unadmitted roots are filtered; an indeterminate finalization fail-stops the root. The stored projection supplies the physical identity/location facts needed without creating an Agent-before-Team manager cycle. A failed multi-file task activation can leave conservative orphan identity data, but it cannot expose a supported live attachment/dispatch target and therefore does not require a mutable manager overlay.
-- Reachability: `Reachable` and sufficient for the approved target paths.
-- Review consequence / proportionate response: reuse one stored-only reader identity per execution family for collision and context ownership; retain exact persistence/fail-stop proof and do not add routing or late binding.
-
-### MP-ARCH-006-005 — Process context-file REST needs a mutable process Team manager to serve application attachments
-
-- Related approved requirement or established contract: REQ-005, AC-005, AC-012.
-- Relevant behavior ID(s): BEH-003.
-- Initiating basis kind: `User`.
-- Independent product-supported initiating trigger: the Team send store launches/restores the root before invoking `/context-files/finalize`, then sends the finalized locator.
-- Forward production path: Team launch/restore -> admitted durable V2 tree -> REST finalization/read -> owner resolution -> later AgentRun input normalization.
-- Lifecycle preconditions and material consequence: the durable owner exists before finalization; no supported action requires the route to observe an unpersisted live-only Team member.
-- Reachability: `Not Reachable` for the claimed need for a mutable process manager.
-- Review consequence / proportionate response: no mutable manager selection or fallback is accepted; explicit stored-owner REST composition is sufficient.
+- Related approved requirement or established contract: BEH-007, REQ-008–REQ-009, AC-013–AC-016; normative transition contract.
+- Relevant behavior ID(s): BEH-007.
+- Initiating basis kind: `Contract` and `User`.
+- Independent product-supported initiating trigger or applicable governing contract: mandatory semantic merge of latest Personal, followed by the supported stopped-Team Settings journey and durable web proof.
+- Support evidence: Personal commit `a4c2595f8` deletes the four legacy paths and the current `RunConfigPanel -> ExistingRunConfigEditor` path uses the replacement model/draft.
+- Forward path: latest-Personal merge -> current editor/projector -> stopped Team rendering and model-config-only edit -> current exact component/utility tests.
+- Lifecycle preconditions and material consequence: retaining the old test would fail module resolution or pressure restoration of an obsolete parallel representation.
+- Reachability: `Reachable` under the governing integration/coverage contract.
+- Review consequence / proportionate response: SR-008 now satisfies the clean cut: exact four-path removal, zero old imports, and current-owner assertion mapping. `AR-005` is resolved.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None. `AR-001`–`AR-004` remain resolved, and SR-006 closes the design/transition obligations raised by downstream `CR-002`, `CR-003`, and `CR-004`.
+None. `AR-001`–`AR-005` and downstream `CR-002`–`CR-004` are resolved at design/transition level.
 
 ## Review Decision
 
 `Pass`
 
-SR-006 completes the execution-family boundary rather than widening it. The exact root-owned Agent allocator now reaches every RootTeamRun task path; one provider-neutral copied-dispatch normalizer removes three provider-local process-Team lookups; the process REST edge independently composes the same durable owner facts without selecting either mutable execution family; and `AgentRunManager` becomes a complete consumer of seven explicit root-built inputs. The target remains acyclic, preserves RootTeamRun and AgentRun ownership, retains the accepted Host/Authority/Mixed Team/K0–K8 lifecycle, and adds no public behavior, migration, manager router, generic container, or compatibility path.
+SR-008 resolves the only remaining contradiction without reopening the accepted production architecture. The package now defines one current stopped-Team frontend representation, an exact four-path legacy removal, current proof owners for topology/fixed fields/workspace/residual rendering/model-config-only edits, and zero legacy-symbol guards. The overall design remains behavior-neutral, acyclic, ownership-led, and ready for semantic merge implementation.
 
 ## Findings
 
@@ -295,17 +272,17 @@ None.
 
 ## Residual Risks
 
-- IR-002 remains the current source baseline; SR-006 has not yet been implemented or behaviorally executed.
-- Implementation/source review must verify exact same-identity recorder/resource wiring, stored-reader reuse, all seven manager fields, every task/root propagation point, and absence of provider/context/task ambient getters.
-- API/E2E must rerun the exact eight API-REV-001 failures first, then the complete provider, dual-host, recursive Team/task, context-file, publication, recovery/reentry, shutdown, and package matrix.
-- The architecture guard must derive current constructor/import occurrence sets and fail closed on new or stale sites; it must not become a broad grep substitute for source review.
-- Logical application-agent addressing and per-mounted-application multiplicity remain outside this ticket.
+- The semantic merge and SR-008 test edits have not yet been implemented or executed; no source/test success is inferred.
+- Implementation and source review must verify all fourteen latest-base overlaps, exact validator/lifecycle identity, lookup-only access, ownership zero-write behavior, K0–K8 lifecycle, prior provider/Authority/task/context/cleanup closure, four removed frontend paths, and zero legacy imports/aliases.
+- API/E2E must execute the latest server/web stopped-run suite and realistic Studio/standalone behavior after source review passes.
+- Delivery must re-fetch the tracked base before integration and stop for renewed semantic analysis if `origin/personal` moves.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Architecture Review Revision: `ARCH-REV-006`
+- Architecture Review Revision: `ARCH-REV-008`
 - Material-Premise Gate: `Pass`
-- Resolved Downstream Findings: `CR-002`, `CR-003`, `CR-004` at design level through SR-006.
+- Resolved Finding: `AR-005`
+- Accepted Direction: host-selected validator; concrete Agent/Team lanes; outer read-only application ownership; general-only Studio delegation; seven-capability application scope; exact four-path stopped-Team frontend clean cut with current proof owners.
 - Open Architecture Findings: none.
-- Notes: implementation and API/E2E remain required; no execution result is inferred from this design Pass.
+- Notes: implementation may resume against the complete SR-001–SR-008 package; execution evidence remains downstream.

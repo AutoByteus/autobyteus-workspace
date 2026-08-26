@@ -1,0 +1,201 @@
+{
+  "scenario": "APIE2E-RECOVERY-003",
+  "startedAt": "2026-08-26T13:56:56.966Z",
+  "assertions": [
+    {
+      "id": "STANDALONE-SAME-DATA-TRANSCRIPT",
+      "pass": true,
+      "details": {
+        "tail": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 13x - 8 = 57. State the exact value of x.\nActive\nLesson lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nUpdated 26.8.2026, 15:41:00\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 13x - 8 = 57. State the exact value of x.\n\nlessonId lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\n\nActive\nCreated 26.8.2026, 15:40:36\nUpdated 26.8.2026, 15:41:00\nLESSON RECORD\nlesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nStatus active\nCONVERSATION\n2 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor connected\n\nLive text appears here while the tutor responds. Completed turns remain in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 15:40:36\n\nSolve 13x - 8 = 57. State the exact value of x.\n\ntutor\nLesson_response\n26.8.2026, 15:41:00\n\nAdd 8 to both sides:\n\n13x = 65\n\nNow divide by 13:\n\n**x = 5**\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nNo notifications yet."
+      }
+    },
+    {
+      "id": "STUDIO-BRIEF-SAME-DATA-PROJECTION",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "STUDIO-SOCRATIC-SAME-DATA-CLOSED",
+      "pass": true,
+      "details": {
+        "tail": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 9x + 2 = 74. State x exactly.\nClosed\nLesson lesson-086bf6db-272a-4149-a36b-77fcdfc2a638\nUpdated 26.8.2026, 15:57:01\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 9x + 2 = 74. State x exactly.\n\nlessonId lesson-086bf6db-272a-4149-a36b-77fcdfc2a638\n\nClosed\nCreated 26.8.2026, 15:42:44\nUpdated 26.8.2026, 15:57:01\nLESSON RECORD\nlesson-086bf6db-272a-4149-a36b-77fcdfc2a638\nStatus closed\nCONVERSATION\n2 messages\nClosed 26.8.2026, 15:49:47\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nLesson closed\nLIVE TUTOR\nTutor not connected\n\nLive text appears here while the tutor responds. Completed turns remain in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 15:42:44\n\nSolve 9x + 2 = 74. State x exactly.\n\ntutor\nLesson_response\n26.8.2026, 15:43:06\n\nLet’s isolate the term containing (x). Subtract 2 from both sides:\n\n\\[\n9x=72\n\\]\n\nWhat should you do next to isolate (x)?\n\nSend follow-up\n\nThis lesson is closed. Follow-up and hint actions are unavailable.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nNo notifications yet."
+      }
+    },
+    {
+      "id": "NESTED-SAME-DATA-EDITABLE",
+      "pass": true,
+      "details": {
+        "isActive": false,
+        "editability": {
+          "editable": true,
+          "reason": null
+        }
+      }
+    },
+    {
+      "id": "NESTED-SAVED-CONFIG-RECOVERED",
+      "pass": true,
+      "details": {}
+    }
+  ],
+  "graphql": [
+    {
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_945d289aa8804310ba96e836e876da13"
+      },
+      "response": {
+        "data": {
+          "getTeamRunResumeConfig": {
+            "teamRunId": "nested_classroom_test_team_945d289aa8804310ba96e836e876da13",
+            "isActive": false,
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null
+            },
+            "executionTree": {
+              "schema_version": 2,
+              "created_at": "2026-08-26T13:39:34.158Z",
+              "archived_at": null,
+              "application_binding": null,
+              "handoffs": [
+                {
+                  "from": "/Teacher",
+                  "to": "/StudentStudyGroup",
+                  "rules": [
+                    "When a bounded classroom task is ready to be delegated to the nested student study group.",
+                    "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+                  ]
+                },
+                {
+                  "from": "/Teacher",
+                  "to": "/StudentStudyGroup/student_one",
+                  "rules": [
+                    "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+                  ]
+                },
+                {
+                  "from": "/StudentStudyGroup/student_one",
+                  "to": "/Teacher",
+                  "rules": [
+                    "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+                    "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+                  ]
+                },
+                {
+                  "from": "/StudentStudyGroup/student_one",
+                  "to": "/StudentStudyGroup/student_two",
+                  "rules": [
+                    "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+                  ]
+                },
+                {
+                  "from": "/StudentStudyGroup/student_two",
+                  "to": "/StudentStudyGroup/student_one",
+                  "rules": [
+                    "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+                  ]
+                }
+              ],
+              "root_team": {
+                "address": "/",
+                "team_definition_id": "nested-classroom-test",
+                "team_definition_name": "Nested Classroom Test Team",
+                "team_run_id": "nested_classroom_test_team_945d289aa8804310ba96e836e876da13",
+                "coordinator_address": "/Teacher",
+                "default_launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": {
+                    "reasoning_effort": "low"
+                  },
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/private/tmp/api-rev-003-provider-composition/studio/temp_workspace"
+                },
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/Teacher",
+                    "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "test_teacher_e149b72d930c437a830188719334e406",
+                    "platform_agent_run_id": "01a03e4c-2c1d-7e21-bbee-d0e60d89e2b1",
+                    "launch_configuration": {
+                      "runtime_kind": "codex_app_server",
+                      "llm_model_identifier": "gpt-5.6-luna",
+                      "llm_config": {
+                        "reasoning_effort": "low"
+                      },
+                      "auto_execute_tools": true,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/private/tmp/api-rev-003-provider-composition/studio/temp_workspace"
+                    }
+                  },
+                  {
+                    "kind": "configured_team",
+                    "address": "/StudentStudyGroup",
+                    "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+                    "role": null,
+                    "description": null,
+                    "team_run_id": "student_study_group_59ea7ee13a054840b3e30d3cd5f3ba54",
+                    "coordinator_address": "/StudentStudyGroup/student_one",
+                    "default_launch_configuration": {
+                      "runtime_kind": "autobyteus",
+                      "llm_model_identifier": "deepseek-v4-flash",
+                      "llm_config": null,
+                      "auto_execute_tools": true,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/private/tmp/api-rev-003-provider-composition/studio/temp_workspace"
+                    },
+                    "members": [
+                      {
+                        "kind": "configured_agent",
+                        "address": "/StudentStudyGroup/student_one",
+                        "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                        "role": null,
+                        "description": null,
+                        "agent_run_id": "student_one_e8640d9966574dcfba7b5cb06c589622",
+                        "platform_agent_run_id": null,
+                        "launch_configuration": {
+                          "runtime_kind": "autobyteus",
+                          "llm_model_identifier": "deepseek-v4-flash",
+                          "llm_config": null,
+                          "auto_execute_tools": true,
+                          "skill_access_mode": "PRELOADED_ONLY",
+                          "workspace_root_path": "/private/tmp/api-rev-003-provider-composition/studio/temp_workspace"
+                        }
+                      },
+                      {
+                        "kind": "configured_agent",
+                        "address": "/StudentStudyGroup/student_two",
+                        "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                        "role": null,
+                        "description": null,
+                        "agent_run_id": "student_two_96a102b1cbba45ba9381120bbf4e21fd",
+                        "platform_agent_run_id": null,
+                        "launch_configuration": {
+                          "runtime_kind": "autobyteus",
+                          "llm_model_identifier": "deepseek-v4-flash",
+                          "llm_config": null,
+                          "auto_execute_tools": true,
+                          "skill_access_mode": "PRELOADED_ONLY",
+                          "workspace_root_path": "/private/tmp/api-rev-003-provider-composition/studio/temp_workspace"
+                        }
+                      }
+                    ],
+                    "task_executions": []
+                  }
+                ],
+                "task_executions": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "result": "PASS",
+  "completedAt": "2026-08-26T13:57:01.491Z"
+}

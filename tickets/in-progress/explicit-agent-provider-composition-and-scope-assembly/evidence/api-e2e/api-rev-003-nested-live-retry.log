@@ -1,0 +1,10 @@
+{
+  "result": "FAIL",
+  "assertions": 1,
+  "failures": [
+    {
+      "message": "TimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-scope-StudentStudyGroup-panel').getByRole('button', { name: /Select a model/i }).first() to be visible\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-scope-StudentStudyGroup-panel').getByRole('button', { name: /Select a model/i }).first() to be visible\u001b[22m\n\n    at /private/tmp/api-rev-003-nested-live.mjs:27:92"
+    }
+  ]
+}

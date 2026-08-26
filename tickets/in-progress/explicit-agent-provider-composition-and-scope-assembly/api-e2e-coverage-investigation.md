@@ -5,23 +5,45 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-spec.md`
-- Supplemental Task Artifacts: `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, and the upstream `future-architecture-simplification-review.md` plus its source-audit evidence
-- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-006`)
-- Design Review Report: `design-review-report.md` (`ARCH-REV-006` Pass)
+- Supplemental Task Artifacts: `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, `latest-personal-run-configuration-integration-analysis.md`, `latest-base-integration-conflict-report.md`, and DR-001 evidence
+- Solution Revision Record: `solution-revision-record.md` (`SR-001`–`SR-008`)
+- Design Review Report: `design-review-report.md` (`ARCH-REV-008` Pass)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (`IR-003` current)
+- Implementation Handoff: `implementation-handoff.md` (`IR-004` current)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (`CRR-004` Pass / 94.7)
+- Code Review Report: `code-review-report.md` (`CRR-006` Pass / 94.3)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): N/A
-- Relevant Delivery Revision IDs: N/A
-- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-001` Fail / 63% prior baseline)
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
-- Trigger: `/code_reviewer` handoff after complete IR-003 source review (`CRR-004` Pass)
-- Prior Investigation Reviewed: yes — task-local `API-REV-001` Fail / 63%, `APIE2E-F001`; CRR-003 classified Design Impact and IR-003/CRR-004 report the correction
+- Delivery Revision Record: `delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
+- API/E2E Revision Record: `api-e2e-revision-record.md` (`API-REV-002` Pass / 96% pre-merge baseline)
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3
+- Trigger: `/code_reviewer` handoff after latest-Personal semantic integration source review (`IR-004`, `CRR-006` Pass)
+- Prior Investigation Reviewed: yes — `API-REV-001` Fail / 63% and `API-REV-002` Pass / 96%; API-REV-002 is retained pre-merge characterization only and does not certify IR-004
 - Latest Authoritative Investigation: this document
 
+
+## API-REV-003 Reinvestigation Delta
+
+- Current reviewed HEAD: `2625f2b7d053e1b8e8009d21f5583b32fc55ba34` (`IR-004`, `CRR-006` Pass / 94.3).
+- Integration basis: latest-Personal semantic merge `f6d3e52d0330732cd7d1783b84a7253952210842`, governed by `SR-007`–`SR-008` and `ARCH-REV-007`–`ARCH-REV-008` after delivery `DR-001`.
+- New material boundary: stopped general Agent/Team model-config reads and Save mutations, Save-versus-restore serialization, exact host-selected validation, application-owned live/unreadable fail-closed zero-write behavior, terminal ownership release, and current existing-run editor reconciliation.
+- Preserved material boundary: exact provider/Agent Tools construction, distinct general/application execution families, seven-capability application scope, private recursive Team/task execution, context-file ownership, publication/handoff, restart/reentry, watcher/remount, shutdown, routes and package bytes.
+- Prior API-REV-002 evidence is **Still Valid only as pre-merge characterization**. Every current critical repository and realistic-system scenario must execute again on IR-004.
+- Existing IR-004 durable server coverage (21 reviewed files / 163 tests), current web coverage (11 reviewed files / 124 tests), the durable stopped-run GraphQL E2E, application-owned integration, terminal-transition unit coverage, and the browser existing-run probe are classified **Still Valid / Run Current**.
+- No API/E2E-owned durable edit is planned before execution. A failing assertion will be validated against SR-008 before any test edit/removal.
+- Broader validation is **Required**: direct current UI Save/reload and restore ordering, application ownership guard through public APIs, and credentialed dual-host/private-Team/provider/recovery behavior cannot be certified from API-REV-002 or source review.
+
+### API-REV-003 Coverage Decisions Before Execution
+
+| Scenario / Coverage | Current Decision | Required Evidence |
+| --- | --- | --- |
+| exact CRR-006 server 21-file and web 11-file selections | Still Valid | rerun first on HEAD; retain exact counts/logs |
+| `stopped-run-model-config-graphql.e2e.test.ts` | Still Valid, high-priority durable E2E | active rejection, stopped Save, canonical reread, restart and restore ordering for Agent/Team |
+| application-owned Studio config integration | Still Valid, high-priority integration | live/unreadable ownership reasons, zero general-owner writes, terminal release ordering |
+| current existing-run browser probe | Still Valid | saved Agent/Team, nested fields, validation/warning, narrow layout, active lock/reconciliation |
+| API-REV-002 live dual-host/provider/private-Team/context/publication matrix | Replace with current-head execution evidence | rerun proportionately; do not reuse prior Pass |
+| broad unisolated repository characterization | Unclear / separate debt | do not rerun unless current affected evidence establishes a connection; prior 70-file failure characterization is neither Pass nor IR-004 attribution |
 
 ## API-REV-002 Reinvestigation Delta
 
@@ -56,13 +78,13 @@ Critical executable obligations are `AC-001`–`AC-012`: one shared route host w
 | --- | --- | --- | --- | --- | --- |
 | Domain / backend logic | Yes | provider factory construction, candidate/session cleanup, Team recursion | focused unit/integration and architecture tests | real provider process and recursive live Team | Live API/provider |
 | API / transport / contract | Preserved but material | existing Agent Tools routes dispatch through new Host/Authority ownership | MCP route and standalone integrations | authenticated real descriptors, publish/handoff | Live API/browser |
-| Frontend component / state | No source delta | unchanged consumers | maintained component/application tests | real iframe/stream/reentry | Browser |
+| Frontend component / state | Yes | current existing-run Agent/Team editor, draft reconciliation, active lock and warning states | focused web tests and committed browser probe | actual stopped-run Save/reload against current server | Browser + live GraphQL |
 | Browser integration / user journey | Yes for confidence | Studio/standalone application journeys cross changed runtime | no single durable browser suite covers the whole composition | real provider stream, remount and restart | Browser |
 | Authentication / session / permissions | Yes | scoped MCP issue/revoke ownership | authority/session/route tests | live descriptor authentication and invalidation | Live API |
 | Desktop renderer / web-equivalent UI | Yes for confidence | unchanged web surface uses changed backend composition | browser path available | real Electron shell | Browser; shell deferred |
 | Desktop shell / Electron-specific integration | No | no preload/IPC/window/package change | delivery-owned Electron gate | shell packaging only | Deferred to delivery |
 | Process / lifecycle | Yes | Host/Authority/general/application construction and close order | kernel/supervisor/lifecycle tests | active provider/team runs across process restart | Lifecycle |
-| Persisted-data transition | No transformation; preservation required | ownership-only refactor | recovery/history tests | same-data real restart/reentry | Lifecycle/API |
+| Persisted-data transition | No schema transformation; current-value mutation/preservation required | stopped-run `llmConfig` narrow writes plus ownership metadata/readers | stopped-run GraphQL E2E and recovery/history tests | real Save/reload/restore and application zero-write guard | Lifecycle/API/browser |
 | Worker / queue / distributed coordination | Yes | application worker publication/relay and Team task recursion use exact family | integration/E2E suites | real worker + provider publication and nested task | Worker/process |
 | External integration | Yes | Codex/Claude/AutoByteus backend construction | durable mocked and environment-gated tests | real credentials/provider availability | Provider-backed live run |
 
@@ -285,3 +307,68 @@ The prepackage application selection and first app-command attempt are setup cha
 - Final result: **Pass**.
 - Final confidence: **96%**, with no applicable category below 90%.
 - Negligible/bounded residuals: live Claude provider was not invoked (current exact Claude durable coverage passed with backend integration environment-gated); Electron shell packaging remains downstream delivery-owned; the unisolated broad repository characterization retains unrelated `Unclear` debt and is not ticket evidence.
+
+
+## API-REV-003 Pre-execution Decision
+
+- Investigation completed before API-REV-003 execution: **Yes**.
+- Current pre-execution confidence: **75%**. Source review and direct current durable coverage are strong, but no current-head repository or real-system result has yet been produced by API/E2E.
+- Proceed: **Yes**.
+- Durable API/E2E coverage changes planned: **None**.
+- Mandatory order: exact CRR-006 server/web selections; stopped-run/application-owned/terminal durable scenarios and browser probe; current dual-host/provider/private Nested Classroom/context/publication journey; Save-versus-restore, recovery/remount, route/parity/shutdown; cleanup and final scoring.
+- Baseline note: backend SDK and SDK-contract `dist` directories and Nuxt `.nuxt` were already present at API-REV-003 entry and are preserved as upstream/reviewer-owned state; application/devkit/frontend SDK outputs and Nuxt `.output` were absent.
+- Latest authoritative current-head result: **Pending execution**. API-REV-002 remains historical baseline only.
+
+
+## API-REV-003 Final Execution Reconciliation
+
+### Current-Head Repository Evidence And Coverage Validity
+
+| Scenario / Coverage Set | Result | Current Validity / Decision | Evidence |
+| --- | --- | --- | --- |
+| Exact CRR-006 server selection | **Pass — 21 files / 163 tests** | Still Valid; directly exercises current IR-004 validator propagation, execution-family separation, ownership and lifecycle boundaries | `api-rev-003-crr006-server.log` |
+| Exact CRR-006 web selection | **Pass — 11 files / 124 tests** | Still Valid; current controlled editor and rendered-state coverage | `api-rev-003-crr006-web.log` |
+| Stopped-run/application ownership/recovery selection | **Pass — 7 files / 33 tests** | Still Valid; direct Save-versus-restore, zero-write guard and terminal transition evidence | `api-rev-003-stopped-run-recovery.log` |
+| Retained application/MCP/recursive-Team/history selection | **Pass — 11 files / 48 tests** | Still Valid after canonical application package build | `api-rev-003-retained-server-postpackage.log` |
+| Current context frontend selection | **Pass — 2 files / 8 tests** | Still Valid | `api-rev-003-context-web.log` |
+| SDK/devkit/maintained application commands | **Pass — frontend SDK 12/12; devkit 21/21; Brief and Socratic build/validate/typecheck** | Still Valid | `api-rev-003-app-commands.log` |
+| Existing-run browser probe | **Pass** | Still Valid; saved Agent/Team, nested, warning, narrow and active-lock states rendered correctly | `api-rev-003-existing-run-browser.log` |
+| Nuxt production/static build | **Pass** | Still Valid | `api-rev-003-web-build.log` |
+
+The initial retained selection failure in `api-rev-003-retained-server.log` was a missing generated-package prerequisite, not an assertion or product failure. Canonical application commands generated the required packages and the unchanged selection then passed. The full unisolated repository characterization was not repeated because API-REV-002 already isolated its unrelated/global-fixture-sensitive failures as historical `Unclear` debt; no current evidence connects that debt to IR-004.
+
+### Realistic Current-Head Evidence
+
+- **Private Nested Classroom:** the private recursive Team launched with Teacher on Codex `gpt-5.6-luna` and `/StudentStudyGroup` on AutoByteus `deepseek-v4-flash`; Team and direct-member acknowledgements, delegated-task submission/acceptance, public termination, stopped config Save, network-fresh reopen and real-provider restore all passed.
+- **Standalone Socratic:** the maintained package ran through its actual standalone host and WebSocket surface; Codex `gpt-5.6-luna` solved `13x - 8 = 57` as `x = 5`, published the lesson artifact and retained the two-message transcript.
+- **Studio Socratic:** the mounted iframe and real provider produced the approved guided `9x=72` step; active update returned `RUN_ACTIVE` with zero canonical write, remount recovered state, and Close lesson released editability.
+- **Studio Brief:** real Researcher/Writer Codex runs published `research.md` and `final-brief.md`; recipient-name `send_message_to` returned `DELIVERED`; application projection and browser remount retained both artifacts.
+- **Route separation:** internal Agent Tools missing-session requests returned `401` on both hosts; Studio external gateway initialized with `200`; standalone external gateway remained `404`.
+- **Shutdown/restart:** owned host, provider and worker processes drained; both hosts restarted against the same isolated roots; standalone lesson, Studio Brief/Socratic projections and nested stopped config recovered through normal readers.
+- **Package integrity:** all **99/99** tracked Brief/Socratic files retained exact SHA-256 bytes.
+- **Cleanup/security:** all owned ports/processes and isolated data were removed, baseline output state was restored, `git diff --check` passed, and 12 secret-like values were checked across ticket/evidence files with zero exact matches.
+
+### Harness Characterization
+
+Five temporary harness assumptions were corrected without product or durable-test changes: the confined standalone readiness path, hidden/inherited nested selectors, a WebSocket URL substring assumption, an over-specific Socratic full-answer expectation, and a restart prompt literal. Corrected verifiers exercised the same public behaviors and passed. Nuxt development emitted transient `#app-manifest` warmup warnings, then served `200`, completed the browser journeys, and passed the independent production build.
+
+### Final Confidence And Decision
+
+| Confidence Category | Post-Repository | Final | Supporting Evidence / Residual |
+| --- | ---: | ---: | --- |
+| Requirement and acceptance-criteria proof | 96% | 98% | exact current repository plus every critical current live scenario |
+| Changed-boundary execution directness | 97% | 98% | public stopped-run APIs, exact validator tests, real restore and application ownership |
+| Cross-boundary integration realism and mock gap | 91% | 98% | both hosts, providers, worker, MCP, WebSocket, iframe, SQLite and recursive private Team |
+| Environment, configuration, identity and fixture fidelity | 94% | 97% | isolated roots, supported secret import, exact packages/providers/models |
+| Failure, edge-case, lifecycle and recovery evidence | 94% | 97% | active/unreadable guards, terminal release, close/restart, integrity and leak checks |
+| User-surface, browser and desktop-shell confidence | 92% | 97% | current Chrome journeys; unchanged Electron shell remains delivery-owned |
+| Durable regression coverage quality and relevance | 95% | 95% | 163 + 124 + 33 + 48 + 8 current tests; historical broad debt remains separate |
+
+- Overall post-repository confidence: **94%**.
+- Overall final confidence: **97%**.
+- Critical acceptance criteria directly proven: **Yes**, within API/E2E scope.
+- Broader validation: **Required / Completed**.
+- Durable API/E2E coverage added, updated, or removed: **None**.
+- Current result: **Pass**.
+- Residuals: live Claude was not invoked; Electron preload/IPC/window packaging is unchanged and delivery-owned; historical broad-suite debt remains separate `Unclear` characterization.
+- Required next recipient: `/code_reviewer` for proportional durable-test review; `Not Applicable` is expected for the API/E2E-owned durable-test delta.

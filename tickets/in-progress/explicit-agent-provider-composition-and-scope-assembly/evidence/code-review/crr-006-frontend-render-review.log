@@ -1,0 +1,17 @@
+CRR-006 frontend rendered-result review
+Timestamp UTC: 2026-08-26T13:14:00Z
+Evidence inspected:
+- /tmp/ir004-visual-20260826/existing-run-model-config-evidence.json
+- /tmp/ir004-visual-20260826/API-E2E-004-A-agent-saved.png
+- /tmp/ir004-visual-20260826/API-E2E-004-B-team-saved.png
+- /tmp/ir004-visual-20260826/API-E2E-004-C-team-narrow.png
+- /tmp/ir004-visual-20260826/API-E2E-004-D-agent-run-active.png
+
+Review result: PASS
+- Agent stopped-run view keeps runtime/model/workspace fixed, exposes only schema-backed model config, and shows saved/stopped status.
+- Team view preserves root/configured-Agent/nested-Team hierarchy, inherited/overridden badges, historical workspace/model warnings, and one current form representation.
+- Narrow view retains readable controls without horizontal overflow.
+- Active-run view disables model setting controls and shows the supported external-workflow lock reason.
+- No obvious clipping, overlap, missing hierarchy, or conflicting interaction affordance was observed.
+
+This is source-review inspection of implementation feedback-loop evidence, not downstream API/E2E sign-off.

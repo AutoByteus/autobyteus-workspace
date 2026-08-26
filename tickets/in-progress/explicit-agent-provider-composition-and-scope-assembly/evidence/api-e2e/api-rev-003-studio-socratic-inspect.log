@@ -1,0 +1,370 @@
+url http://127.0.0.1:31660/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+← Back to applications
+Launch setup
+Socratic Math Teacher
+
+Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.
+
+The generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.
+
+Enter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.
+
+Show technical details
+Launch setup
+Saved resource and launch defaults
+
+Choose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.
+
+Refresh setup
+Lesson Tutor Team
+Required
+
+Team resource used when the app starts a new long-lived lesson conversation.
+
+CURRENT SELECTION
+
+Socratic Math Team · Bundled · Agent team
+
+Using manifest defaults only
+
+PACKAGE BASELINE
+
+/tutor · codex_app_server · gpt-5.6-luna
+
+SELECTED RESOURCE BASELINE
+
+/tutor · codex_app_server · gpt-5.6-luna
+
+SAVED HOST OVERRIDE
+
+ABSENT
+
+No saved override
+
+EFFECTIVE CONFIGURATION
+
+/tutor · codex_app_server · gpt-5.6-luna
+PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d · PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d
+llmConfig: none · workspace: APPLICATION_RUNTIME
+
+Execution resource
+Use manifest default · Socratic Math Team · Bundled · Agent team
+Socratic Math Team · Bundled · Agent team
+Article Writing Team · Shared · Agent team
+Classroom Simulation Team · Shared · Agent team
+Evidence-Driven Delivery Team · Shared · Agent team
+Kids Coloring Story Team · Shared · Agent team
+Kids Picture Story Team · Shared · Agent team
+Manga Video Studio Team · Shared · Agent team
+Narrated Presentation Video Team · Shared · Agent team
+Northstar Operating Company · Shared · Agent team
+Product Design & Prototyping Team · Shared · Agent team
+Requirements Engineering Team · Shared · Agent team
+Research To Deck Team · Shared · Agent team
+Software Development Department · Shared · Agent team
+Software Engineering Team · Shared · Agent team
+Software Product Promo Video Team · Shared · Agent team
+STORM Team · Shared · Agent team
+Bible Study Group · Shared · Agent team
+Clara Ocean Friends · Shared · Agent team
+Job Search Application Team · Shared · Agent team
+Marketing Team · Shared · Agent team
+Movie Maker · Shared · Agent team
+Nested Classroom Test Team · Shared · Agent team
+Presentation_Chemie · Shared · Agent team
+Socratic Math Team · Shared · Agent team
+Tutorial Video Creation Team · Shared · Agent team
+Default runtime
+Use application default runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Optional: save a preferred runtime for later launches from inside the application.
+
+Default model
+Select a default model
+
+Optional: save a preferred model for later application-owned launches.
+
+Default workspace root
+Loaded workspaces
+Custom path
+
+Enter or browse for an absolute workspace root path to reuse during application-owned launches.
+
+Optional: save a workspace root path for later launches from inside the application.
+
+Team member overrides
+
+Each member inherits the shared defaults unless you set a runtime or model override here.
+
+tutor
+
+/tutor
+
+RUNTIME OVERRIDE
+Inherit global runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+MODEL OVERRIDE
+Inherit global model
+Save setup
+Cancel draft changes
+Confirm launch setup before opening the app
+
+Review or save the host-managed resource and launch defaults below, then enter the application. This gate never starts a run by itself.
+
+Enter application
+[
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Agents",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Agent Teams",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Applications",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Skills",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Memory",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Nodes",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Temp Workspace",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Settings",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "← Back to applications",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Show technical details",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Refresh setup",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "SELECT",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Use manifest default · Socratic Math Team · Bundled · Agent teamSocratic Math Team · Bundled · Agent",
+    "src": null,
+    "disabled": false,
+    "value": "__manifest_default__"
+  },
+  {
+    "tag": "SELECT",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Use application default runtimeAutoByteusCodex App ServerClaude Agent SDK",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Select a default model",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Loaded workspaces",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Custom path",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "INPUT",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "SELECT",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Inherit global runtimeAutoByteusCodex App ServerClaude Agent SDK",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Inherit global model",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": "application-launch-setup-save-lessonTutorTeam",
+    "text": "Save setup",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": "application-launch-setup-reset-lessonTutorTeam",
+    "text": "Cancel draft changes",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Enter application",
+    "src": null,
+    "disabled": false,
+    "value": ""
+  }
+]
