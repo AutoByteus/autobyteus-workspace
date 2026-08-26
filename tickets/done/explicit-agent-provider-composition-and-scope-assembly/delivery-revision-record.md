@@ -7,6 +7,7 @@
 | `DR-001` | `CRR-005` N/A after `CRR-004` Pass / 94.7 and `API-REV-002` Pass / 96% | N/A | `Blocked — Design Impact` | `latest-base-integration-conflict-report.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; delivery evidence |
 | `DR-002` | Reconciled latest-Personal package: `CRR-006` Pass / 94.3, `API-REV-003` Pass / 97%, `CRR-007` N/A | `DR-001 Blocked` | `Pass — Ready for explicit user verification` | `docs-sync-report.md`; `electron-test-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-002 evidence |
 | `DR-003` | Explicit user verification and finalization authorization | `DR-002 Ready for verification` | `Accepted — finalize to Personal; no release` | `handoff-summary.md`; `release-deployment-report.md`; archived ticket state |
+| `DR-004` | Authorized repository finalization and requested main-Personal Electron rebuild | `DR-003 Accepted` | `Complete — finalized, built, verified, cleaned; no release` | `main-personal-electron-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-004 evidence |
 
 ## Revision Entries
 
@@ -54,3 +55,19 @@
 - Finalization sequence authorized: commit and push the ticket branch; merge and push to `personal`; update the main repository `personal`; build and verify one unsigned local Electron artifact from that main-repository state; no version bump/tag/release/deployment.
 - Why this revision was recorded: explicit user acceptance is the required boundary between test handoff and repository finalization.
 - Remaining work at this checkpoint: execute and record the authorized Git finalization, main-repository Electron build, and cleanup results.
+
+### DR-004 — Personal finalization and main-repository Electron build complete
+
+- Delivery round and trigger: execution of the repository finalization and post-finalization Electron build explicitly authorized in `DR-003`.
+- Prior authoritative result: `DR-003 Accepted — finalize to Personal; no release`.
+- Current authoritative result: `Complete — the ticket is finalized to Personal, the main-repository Personal Electron artifact passed package/isolation verification, and post-finalization cleanup completed without a release.`
+- Final target refresh: `origin/personal=b52fe5aebdb962ce361529f9e797affeb30d719a` remained unchanged before the merge and was already an ancestor of the accepted ticket state; renewed user verification was not required.
+- Ticket finalization: archived ticket committed as `dd7eba5ce8bb9dbe3be3a70ba07f496ff800ef20` and pushed to `origin/codex/explicit-agent-provider-composition-and-scope-assembly`.
+- Target finalization: ticket branch merged into the main-repository `personal` branch as `4efc0ffd6b254ff1d508cf09c5e447524998d1b1` and pushed successfully to `origin/personal`.
+- Main-repository Electron result: Personal macOS arm64 `1.4.58` app/DMG/ZIP build `Pass`; package native/terminal/archive checks `Pass`; `E2E-PKG-001`–`E2E-PKG-005` isolation `Pass`; ordinary PID `53536` and listener `29695` preserved.
+- Main-repository artifacts: DMG SHA-256 `42545e65d787c400811baf81a889f9036e8b899a1e4c33fc8c97e0cc5ae699ac`; ZIP SHA-256 `db05cb1c545a4751a761df708a99a7747aa26ee30b573330d707bcb1142fff37`.
+- Canonical Electron report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/explicit-agent-provider-composition-and-scope-assembly/main-personal-electron-build-report.md`.
+- Cleanup: dedicated ticket worktree removed, worktrees pruned, local ticket branch deleted, generated untracked SDK `dist/` directories removed, and unrelated main-repository `.article-work/` preserved. The finalized remote ticket branch was retained because deletion was not requested.
+- Release/publication/deployment: explicitly `Not Applicable`; no version bump, release commit, tag, publication, deployment, signing, or notarization occurred.
+- Why this revision was recorded: mandatory authoritative record for completed finalization, post-finalization build verification, and cleanup.
+- Remaining risks or untested scope: local artifact is intentionally unsigned; live Claude remains environment-gated; historical broad-fixture debt and future logical application-agent addressing simplification remain separate scope.
