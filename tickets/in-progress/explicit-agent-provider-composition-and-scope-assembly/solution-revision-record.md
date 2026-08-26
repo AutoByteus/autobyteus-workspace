@@ -9,6 +9,7 @@
 | SR-003 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-002 | AR-003 | Design Impact Rework | Governed durable-test constructor transition closed; ready for re-review |
 | SR-004 | `/code_reviewer` / `code-review-report.md` / CRR-001 | CR-001 | Design Impact Rework | Mixed Team authority selection clean cut completed; ready for architecture re-review |
 | SR-005 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 | AR-004 | Design Impact Rework | Complete root-owned Mixed Team construction preserved; ready for architecture re-review |
+| SR-006 | `/code_reviewer` / `code-review-report.md` / CRR-003 | CR-002, CR-003, CR-004 | Design Impact Rework | Complete task identity, provider-input, and Agent-manager execution-family closure; ready for re-review |
 
 ## Revision Entries
 
@@ -87,3 +88,26 @@
 - Downstream and architecture-review impact: implementation and API/E2E remain paused pending architecture Pass. After Pass, implementation is bounded to the corrected Mixed Team construction transition over IR-001.
 - Next recipient: `/architecture_reviewer` with the cumulative SR-005 package, ARCH-REV-004 artifacts, IR-001 handoff/revision, and CRR-001 trigger/evidence.
 - Remaining gaps or risks: downstream must prove both production callbacks use the factory-owned releaser and exact family dependencies, recursive child/task Teams preserve identity, the application path never touches process getters/managers, constructor omissions fail closed, and the already-passed provider/kernel/dual-host behavior remains unchanged.
+
+### SR-006 — Complete execution-family closure for task identity, provider input, and Agent manager assembly
+
+- Trigger: `/code_reviewer` / `code-review-report.md` / CRR-003 focused failure-origin review of API-REV-001.
+- Triggering finding IDs: CR-002, CR-003, CR-004. CR-001 remains resolved; ARCH-REV-005 and IR-002 remain the accepted production baseline for Host/Authority/provider/kernel and Mixed Team construction.
+- Prior authoritative result: CRR-003 `Fail — Design Impact`; eight deterministic files failed after fail-closed defaults exposed three deeper construction paths. CRR-002 Pass is superseded.
+- Current solution result: `Design Impact Rework Complete — Ready for Architecture Re-review`.
+- Resolution:
+  - defined one immutable `TaskExecutionIdentityCapabilities` per execution family, built from the exact Agent allocator plus a task-Team factory derived from that allocator, and required it through Team manager -> every RootTeamRun -> task service;
+  - proved the existing stored-only V2 Team-tree reader is current at allocation/dispatch boundaries under write-before-live and fail-stop invariants, removing the Agent-before-Team manager cycle without routing;
+  - centralized logical context-file locator resolution in one copied provider dispatch at `AgentRun`, explicitly rooted by app-data, memory, configured base URL, and the same stored Team reader; removed provider-local Team/context/config ownership from AutoByteus, Codex, and Claude;
+  - completed the companion process REST boundary by composing one explicit layout and stored-only owner resolver at route registration and requiring that identity at finalization/read, rather than retaining a default process Team-manager path;
+  - kept the context-path environment at the two execution host roots only; process REST projects just `appDataDir` and `memoryDir` so it does not acquire an unused base-URL dependency;
+  - replaced the general supervisor's broad AppConfig dependency with the same explicit memory/context-path projection already required by the application kernel, keeping AppConfig selection at composition edges;
+  - made `AgentRunManager` consume an exact seven-field factory/activation/recorder/normalizer/releaser input and moved resource/activation assembly to the two execution roots;
+  - revised K0–K8 to a ten-top-level/eleven-leaf application input and closed all production/direct-test constructor and omission inventories, including the exact eight CRR-003 files plus both direct-manager occurrences in the live Codex memory E2E file.
+- Reachability disposition: CR-002 and CR-003 are `Reachable` on supported application task and context-input paths but masked by general-first host construction. CR-004 is not a current product premise because maintained roots pass explicit resources; it remains binding transition evidence under REQ-008. No new product behavior is introduced.
+- Persisted-data disposition: `Directly Usable — No Migration / Not Affected`; stored Team V2 trees and context locators are read through current owners without schema or representation rewrite.
+- Affected canonical artifacts: `requirements.md`, `investigation-notes.md`, `design-spec.md`, `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, and this revision record.
+- Requirements disposition: existing user-approved BEH-002/003/005, REQ-004/005/007/008, and AC-004/005/012 govern the correction. No requirement gap, public contract change, migration, manager unification, logical-addressing change, compatibility path, or new lifecycle owner was added.
+- Downstream impact: implementation and API/E2E remain paused until architecture review passes SR-006. After implementation/source review, the exact eight failed files run first without initializing unrelated globals, followed by the complete provider/Team/context/dual-host matrix.
+- Next recipient: `/architecture_reviewer` with the cumulative SR-006 solution package plus CRR-003/API-REV-001 trigger artifacts.
+- Remaining gaps or risks: implementation must preserve original AgentRun admission/observer state while normalizing only the copied provider dispatch; use the stored-only Team reader identity in both task/context paths; and prove exact general/application non-identity plus all source-derived occurrence guards.
