@@ -13,7 +13,7 @@
 
 - Command: `CI=true NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= CSC_IDENTITY_AUTO_DISCOVERY=false AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac --arm64`.
 - Result: `Pass` (`exit 0`).
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-build.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-build.log`.
 - Included gates: web/localization guards, localization-literal audit, shared/server builds, sanitized server bootstrap smoke, mobile and Electron generation, Electron transpilation, native-module rebuild, terminal permission normalization, and app/DMG/ZIP packaging.
 - Non-blocking diagnostics: current Browserslist-age, dependency deprecation/peer warnings, and the expected explicitly disabled signing identity. No build step failed.
 
@@ -34,7 +34,7 @@
 - ZIP integrity: `Pass` (`unzip -tq`).
 - DMG integrity: `Pass` (`hdiutil verify`).
 - Signing: strict `codesign --verify` exited `1`, as expected for this intentionally unsigned local test build; no release-signing or notarization claim is made.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-verification.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-verification.log`.
 
 ## Packaged Electron Isolation
 
@@ -44,8 +44,8 @@
 - Direct/Playwright and parallel sessions used isolated endpoints, ports, data roots, Electron state paths, and owned process trees.
 - Renderer GraphQL/WebSocket/provider-settings checks passed; selected-endpoint traffic did not fall back to production and updater activity remained suppressed.
 - Invalid/partial/production-profile cases failed closed; allocation-race foreign ownership survived; all owned processes/listeners/temporary roots were cleaned.
-- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation.log`.
-- Structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json`.
+- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation.log`.
+- Structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json`.
 
 ## Persisted Data And Test Guidance
 

@@ -6,7 +6,7 @@
 - Trigger: `CRR-004` Pass / 97, `API-REV-002` Pass / 98, and `CRR-005` Not Applicable.
 - Bootstrap base reference: `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
 - Integrated base reference used for docs sync: refreshed `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`; reviewed source `31c674d0c31181c96d2198ed2b2f7a9996f2f4cb`; delivery checkpoint `0a55b013ad6250b5ffe02609aa43cfc7e465463d`.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-post-integration-check-corrected.log` (`6` files / `38` tests Pass after building the required workspace package entry).
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-post-integration-check-corrected.log` (`6` files / `38` tests Pass after building the required workspace package entry).
 
 ## Why Docs Were Updated
 
