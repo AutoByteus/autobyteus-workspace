@@ -56,6 +56,16 @@ const firstString = (...values: unknown[]): string | undefined => {
   return undefined;
 };
 
+const normalizeParameterType = (
+  type: string | undefined,
+  enumValues: unknown[] | undefined,
+): string | undefined => type === 'enum'
+  && Array.isArray(enumValues)
+  && enumValues.length > 0
+  && enumValues.every((value) => typeof value === 'string')
+    ? 'string'
+    : type;
+
 export const isModelConfigValueRepresentable = (
   value: unknown,
   param: UiModelConfigParameterSchema,
@@ -184,7 +194,7 @@ export const normalizeModelConfigSchema = (schema: unknown): UiModelConfigSchema
       if (!param || typeof param.name !== 'string' || param.name.length === 0) continue;
 
       normalized[param.name] = {
-        type: param.type,
+        type: normalizeParameterType(param.type, param.enum_values),
         title: firstString(param.title, param.label, param.display_name),
         description: param.description,
         enum: param.enum_values,

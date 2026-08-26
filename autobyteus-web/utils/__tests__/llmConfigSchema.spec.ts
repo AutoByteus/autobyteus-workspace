@@ -46,6 +46,42 @@ describe('normalizeModelConfigSchema', () => {
     });
   });
 
+  it('normalizes the exact Codex enum parameter shape and validates enum membership', () => {
+    const result = normalizeModelConfigSchema({
+      parameters: [{
+        name: 'reasoning_effort',
+        type: 'enum',
+        default_value: 'medium',
+        enum_values: ['low', 'medium', 'high', 'xhigh'],
+      }],
+    });
+
+    expect(result?.reasoning_effort).toMatchObject({
+      type: 'string',
+      default: 'medium',
+      enum: ['low', 'medium', 'high', 'xhigh'],
+    });
+    expect(validateUiModelConfig(result, { reasoning_effort: 'low' })).toEqual([]);
+    expect(validateUiModelConfig(result, { reasoning_effort: 'ultra' })).toEqual([
+      { key: 'reasoning_effort', code: 'enum' },
+    ]);
+  });
+
+  it('keeps malformed non-string enum parameter schemas fail-closed', () => {
+    const result = normalizeModelConfigSchema({
+      parameters: [{
+        name: 'mixed_mode',
+        type: 'enum',
+        enum_values: ['safe', 1],
+      }],
+    });
+
+    expect(result?.mixed_mode?.type).toBe('enum');
+    expect(validateUiModelConfig(result, { mixed_mode: 'safe' })).toEqual([
+      { key: 'mixed_mode', code: 'type', expected: 'enum' },
+    ]);
+  });
+
   it('normalizes json schema to UI schema', () => {
     const schema = {
       type: 'object',
