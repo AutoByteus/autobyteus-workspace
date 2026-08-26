@@ -90,6 +90,7 @@ describe("application platform runtime isolation", () => {
         llmProviderService: {} as never,
         codexClientManager: {} as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
+        modelConfigValidator: { validate: vi.fn() },
         selectedApplicationIds: new Set([applicationId]),
       });
     };
@@ -117,6 +118,9 @@ describe("application platform runtime isolation", () => {
     expect(runtimeA.realtime).not.toBe(runtimeB.realtime);
     expect(runtimeA.hostManagement.catalogReconciliation).not.toBe(
       runtimeB.hostManagement.catalogReconciliation,
+    );
+    expect(runtimeA.hostManagement.runOwnership).not.toBe(
+      runtimeB.hostManagement.runOwnership,
     );
 
     await runtimeA.lifecycle.stop();
@@ -199,6 +203,7 @@ describe("application platform runtime isolation", () => {
         llmProviderService: processOwners.llmProvider as never,
         codexClientManager: processOwners.codexClient as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
+        modelConfigValidator: { validate: vi.fn() },
         selectedApplicationIds: new Set(["app-a"]),
       });
     }).toThrow(assemblyFailure);

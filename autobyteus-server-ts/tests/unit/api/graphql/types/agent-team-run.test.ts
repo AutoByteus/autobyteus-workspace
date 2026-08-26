@@ -7,11 +7,15 @@ const mockTeamRunService = vi.hoisted(() => ({
   createTeamRun: vi.fn(),
   terminateTeamRun: vi.fn(),
 }));
+const mockRunModelConfigService = vi.hoisted(() => ({
+  updateStoppedTeamRunModelConfigs: vi.fn(),
+}));
 
 vi.mock(
   "../../../../../src/api/graphql/studio-application-api-services.js",
   () => ({
     getStudioTeamRunService: () => mockTeamRunService,
+    getStudioRunModelConfigService: () => mockRunModelConfigService,
   }),
 );
 
@@ -29,6 +33,28 @@ describe("AgentTeamRunResolver", () => {
     mockTeamRunService.restoreTeamRun.mockReset();
     mockTeamRunService.createTeamRun.mockReset();
     mockTeamRunService.terminateTeamRun.mockReset();
+    mockRunModelConfigService.updateStoppedTeamRunModelConfigs.mockReset();
+  });
+
+  it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
+    mockRunModelConfigService.updateStoppedTeamRunModelConfigs.mockResolvedValue({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      message: "locked",
+      isActive: true,
+      editability: { editable: false, reason: "RUN_ACTIVE" },
+      canonical: null,
+      fieldErrors: [],
+    });
+    const resolver = new AgentTeamRunResolver();
+    const input = {
+      teamRunId: "team-run-1",
+      patches: [{ scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmConfig: null }],
+    };
+
+    await expect(resolver.updateStoppedTeamRunModelConfigs(input))
+      .resolves.toMatchObject({ outcome: "RUN_ACTIVE", canonicalExecutionTree: null });
+    expect(mockRunModelConfigService.updateStoppedTeamRunModelConfigs).toHaveBeenCalledWith(input);
   });
 
   it("routes restore through TeamRunService", async () => {

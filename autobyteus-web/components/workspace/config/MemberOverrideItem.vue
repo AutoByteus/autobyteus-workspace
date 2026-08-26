@@ -20,7 +20,25 @@
       {{ memberBreadcrumb }}
     </p>
 
-    <div class="mb-3">
+    <RuntimeModelConfigFields
+      v-if="existingNode"
+      class="mb-3"
+      :runtime-kind="node.effectiveConfig.runtimeKind"
+      :llm-model-identifier="node.effectiveConfig.llmModelIdentifier"
+      :llm-config="node.effectiveConfig.llmConfig"
+      :runtime-selection-locked="true"
+      :model-selection-locked="true"
+      :model-config-disabled="disabled"
+      :model-config-read-only="disabled"
+      :historical-model-config="true"
+      :validation-errors="modelConfigFieldErrors"
+      :id-prefix="`existing-${inputIdSuffix}`"
+      control-variant="quiet"
+      @update:llm-config="emit('update-existing-model-config', node.address, $event)"
+      @schema-state="emit('schema-state', node.address, $event)"
+    />
+
+    <div v-if="!existingNode" class="mb-3">
       <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
       <select
         :id="`override-runtime-${inputIdSuffix}`"
@@ -58,7 +76,7 @@
       {{ unresolvedInheritedModelMessage }}
     </div>
 
-    <div class="mb-3">
+    <div v-if="!existingNode" class="mb-3">
       <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
       <SearchableGroupedSelect
         :model-value="selectedModelIdentifier"
@@ -76,9 +94,9 @@
     </div>
 
     <WorkspaceSelector
-      v-if="storedNode"
+      v-if="existingNode"
       class="mb-3"
-      :model="{ mode: 'stored', workspace: storedNode.storedWorkspace }"
+      :model="{ mode: 'stored', workspace: existingNode.storedWorkspace }"
       :disabled="true"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :auto-select-default="false"
@@ -92,7 +110,7 @@
         type="checkbox"
         :checked="node.effectiveConfig.autoExecuteTools"
         :indeterminate="Boolean(editableNode && editableNode.override?.autoExecuteTools === undefined)"
-        :disabled="isInteractionDisabled"
+        :disabled="isFixedFieldDisabled"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
         @change="handleAutoExecuteChange"
       />
@@ -100,15 +118,15 @@
     </div>
 
     <ModelConfigSection
-      v-if="effectiveModelIdentifier"
+      v-if="effectiveModelIdentifier && !existingNode"
       :schema="modelConfigSchema"
       :model-config="node.effectiveConfig.llmConfig"
       :disabled="isInteractionDisabled"
       :read-only="isInteractionDisabled"
       :compact="true"
       :id-prefix="`config-${inputIdSuffix}`"
-      :advanced-initially-expanded="Boolean(storedNode) || memberAdvancedExplicitlyExpanded"
-      :historical="Boolean(storedNode)"
+      :advanced-initially-expanded="memberAdvancedExplicitlyExpanded"
+      :historical="false"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :historical-model-config-title="t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration')"
       control-variant="quiet"
@@ -123,6 +141,7 @@ import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamFormAgentNode } from '~/types/agent/TeamRunFormModel'
 import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
+import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
@@ -142,16 +161,21 @@ const props = defineProps<{
   node: Readonly<TeamFormAgentNode>
   memberBreadcrumb?: string
   disabled: boolean
+  modelConfigFieldErrors?: Readonly<Record<string, string>>
 }>()
 const emit = defineEmits<{
   (e: 'update:override', memberAddress: string, override: AgentConfigOverride | null): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
+  (e: 'update-existing-model-config', memberAddress: string, config: Record<string, unknown> | null): void
+  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
 }>()
 const { t } = useLocalization()
 const editableNode = computed(() => props.node.mode === 'editable' ? props.node : null)
-const storedNode = computed(() => props.node.mode === 'stored' ? props.node : null)
-const isInteractionDisabled = computed(() => props.disabled || props.node.mode === 'stored')
+const existingNode = computed(() => props.node.mode === 'existing' ? props.node : null)
+const isInteractionDisabled = computed(() => props.disabled || props.node.mode === 'existing')
+const isFixedFieldDisabled = computed(() => props.disabled || props.node.mode === 'existing')
 const historicalUnavailableMessage = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable'))
+const modelConfigFieldErrors = computed(() => props.modelConfigFieldErrors ?? {})
 const memberAdvancedExplicitlyExpanded = ref(false)
 const inputIdSuffix = computed(() => props.node.address.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const editableOverride = computed(() => editableNode.value?.override)
@@ -189,18 +213,18 @@ const unresolvedInheritedModelMessage = computed(() => buildUnavailableInherited
   memberName: props.node.displayName,
 }))
 const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
-const selectedModelIdentifier = computed(() => storedNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
+const selectedModelIdentifier = computed(() => existingNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
 const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value))
 const storedModelUnavailable = computed(() => Boolean(
-  storedNode.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
+  existingNode.value && selectedModelIdentifier.value && !hasModelIdentifier(selectedModelIdentifier.value),
 ))
-const modelPlaceholder = computed(() => storedNode.value
+const modelPlaceholder = computed(() => existingNode.value
   ? selectedModelIdentifier.value
   : isUnresolvedInheritedModel.value
     ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
     : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'))
 const autoExecuteStateLabel = computed(() => {
-  if (storedNode.value) {
+  if (existingNode.value) {
     return props.node.effectiveConfig.autoExecuteTools
       ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
       : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')

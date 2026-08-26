@@ -28,6 +28,7 @@ import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
 import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 class DeterministicLLM extends BaseLLM {
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
@@ -56,6 +57,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   let dataRoot: string;
   let workspaceRoot: string;
   let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
+  let closeStudioServices: (() => void) | null = null;
   const activeBackends = new Set<AutoByteusAgentRunBackend>();
   const llms = new Set<DeterministicLLM>();
 
@@ -80,6 +82,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     }).registerRequiredGroups();
     loadAgentCustomizations();
 
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -89,6 +92,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   });
 
   afterAll(async () => {
+    closeStudioServices?.();
     for (const backend of activeBackends) {
       await backend.terminate().catch(() => undefined);
     }

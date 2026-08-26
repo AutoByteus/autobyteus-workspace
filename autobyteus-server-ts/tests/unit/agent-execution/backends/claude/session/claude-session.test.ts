@@ -152,6 +152,7 @@ const createSession = (input: {
   sessionId?: string;
   hasCompletedTurn?: boolean;
   autoExecuteTools?: boolean;
+  llmConfig?: Record<string, unknown> | null;
   query?: ClaudeSdkQueryLike;
   queries?: ClaudeSdkQueryLike[];
   startQueryTurnImplementation?: (
@@ -195,6 +196,7 @@ const createSession = (input: {
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       memoryDir: input.memoryDir ?? null,
+      llmConfig: input.llmConfig ?? null,
     }),
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
@@ -202,6 +204,7 @@ const createSession = (input: {
         workingDirectory: "/tmp",
         permissionMode: "default",
         autoExecuteTools: input.autoExecuteTools ?? false,
+        llmConfig: input.llmConfig ?? null,
       }),
       carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
       runtimeToolExposure: buildRuntimeAgentToolExposure([]),
@@ -244,6 +247,23 @@ const createSession = (input: {
 };
 
 describe("ClaudeSession", () => {
+  it("forwards persisted thinking and effort on a restored session turn", async () => {
+    const { session, startQueryTurn } = createSession({
+      sessionId: RESERVED_SESSION_ID,
+      query: createResultQuery(RESERVED_SESSION_ID),
+      llmConfig: { thinking_enabled: true, reasoning_effort: "high" },
+    });
+
+    await session.startTurn(new AgentInputUserMessage("continue"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "Claude reasoning options");
+
+    expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
+      sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID },
+      thinking: { type: "adaptive" },
+      effort: "high",
+    }));
+  });
+
   it("captures and publishes the exact SDK systemPrompt after a usable query is returned", async () => {
     const captureService = {
       capture: vi.fn((input) => ({

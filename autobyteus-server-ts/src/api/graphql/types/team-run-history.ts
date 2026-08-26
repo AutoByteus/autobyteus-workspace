@@ -5,6 +5,8 @@ import { getTeamMemberRunViewProjectionService } from "../../../run-history/serv
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
+import { RunModelConfigEditabilityObject } from "./run-model-config.js";
+import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -16,6 +18,9 @@ class TeamRunResumeConfigPayload {
 
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  modelConfigEditability!: RunModelConfigEditabilityObject;
 }
 
 @ObjectType()
@@ -73,16 +78,18 @@ class ArchiveStoredTeamRunMutationResult {
 export class TeamRunHistoryResolver {
   private teamRunHistoryService = getTeamRunHistoryService();
   private teamMemberRunProjectionService = getTeamMemberRunViewProjectionService();
+  private runModelConfigService = getStudioRunModelConfigService();
 
   @Query(() => TeamRunResumeConfigPayload)
   async getTeamRunResumeConfig(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TeamRunResumeConfigPayload> {
-    const config = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
+    const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree),
+      modelConfigEditability: config.modelConfigEditability,
     };
   }
 

@@ -10,7 +10,7 @@ import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-nor
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import type { ClaudeSessionConfig } from "./claude-session-config.js";
+import { claudeSessionReasoningOptions, type ClaudeSessionConfig } from "./claude-session-config.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import {
   createClaudeActiveTurnExecution,
@@ -415,6 +415,7 @@ export class ClaudeSession {
         mcpServers,
         allowedTools: toolingOptions.allowedTools,
         permissionMode: this.permissionMode,
+        ...claudeSessionReasoningOptions(this.sessionConfig),
         abortController: options.abortController,
         stderr: (data: string) => processDiagnostics.append(data),
         canUseTool: (

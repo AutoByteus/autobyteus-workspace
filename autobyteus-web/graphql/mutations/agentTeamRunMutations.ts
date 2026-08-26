@@ -31,3 +31,23 @@ export const RestoreAgentTeamRun = gql`
     }
   }
 `
+
+export const UpdateStoppedTeamRunModelConfigs = gql`
+  mutation UpdateStoppedTeamRunModelConfigs($input: UpdateStoppedTeamRunModelConfigsInput!) {
+    updateStoppedTeamRunModelConfigs(input: $input) {
+      success
+      outcome
+      message
+      isActive
+      editability {
+        editable
+        reason
+      }
+      canonicalExecutionTree
+      fieldErrors {
+        path
+        message
+      }
+    }
+  }
+`

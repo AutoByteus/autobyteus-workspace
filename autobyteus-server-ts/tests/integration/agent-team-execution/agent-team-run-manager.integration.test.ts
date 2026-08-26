@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
 import type {
   MixedTeamRunBackendFactory,
@@ -14,7 +15,12 @@ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-ru
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
+import type { ChannelBinding } from "../../../src/external-channel/domain/models.js";
+import { ChannelBindingRunLauncher } from "../../../src/external-channel/runtime/channel-binding-run-launcher.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
+import type { RunModelConfigValidator } from "../../../src/llm-management/services/model-config-validation-service.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const tempDirs: string[] = [];
@@ -23,6 +29,13 @@ const createMemoryDir = async (): Promise<string> => {
   tempDirs.push(value);
   return value;
 };
+
+const modelConfigValidator = Object.freeze({
+  validate: vi.fn(async ({ llmConfig }: { llmConfig: Record<string, unknown> | null }) => ({
+    kind: "valid" as const,
+    config: llmConfig,
+  })),
+});
 
 const initializeTaskIdentityAllocator = (memoryDir: string): AgentRunIdentityAllocator =>
   AgentRunIdentityAllocator.getInstance({
@@ -130,6 +143,66 @@ const createFactory = (input: {
   };
 };
 
+const createTeamBinding = (teamRunId: string): ChannelBinding => ({
+  id: `binding-${teamRunId}`,
+  provider: "WHATSAPP" as any,
+  transport: "BUSINESS_API" as any,
+  accountId: "acct-1",
+  peerId: "peer-1",
+  threadId: null,
+  targetType: "TEAM",
+  agentDefinitionId: null,
+  launchPreset: null,
+  agentRunId: null,
+  teamDefinitionId: "team-def-mixed-only",
+  teamLaunchPreset: {
+    workspaceRootPath: "/tmp/external-team-workspace",
+    llmModelIdentifier: "unused-fallback-model",
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    autoExecuteTools: false,
+    skillAccessMode: "PRELOADED_ONLY",
+    llmConfig: null,
+  },
+  teamRunId,
+  targetMemberRouteKey: "Coordinator",
+  allowTransportFallback: false,
+  createdAt: new Date("2026-08-25T00:00:00.000Z"),
+  updatedAt: new Date("2026-08-25T00:00:00.000Z"),
+});
+
+const exactChannelLauncher = (
+  manager: AgentTeamRunManager,
+  memoryDir: string,
+): { launcher: ChannelBindingRunLauncher; teamRunService: TeamRunService } => {
+  const teamRunService = new TeamRunService({
+    agentTeamRunManager: manager,
+    memoryDir,
+    memoryLocationService: new AgentMemoryLocationService({
+      memoryDir,
+      locationService: new TeamRunExecutionTreeLocationService({ memoryDir, manager }),
+    }),
+    agentRunIdentityAllocator: {
+      allocateForAgentDefinition: vi.fn(async () => "run-unused-by-stopped-config"),
+    },
+    teamRunHistoryCatalogService: {
+      recordTeamRunRestored: vi.fn(async () => undefined),
+    } as never,
+    tokenUsageReadiness: {
+      assertCurrentSchemaReady: vi.fn(),
+      assertExistingRunRestoreReady: vi.fn(),
+    },
+  });
+  const launcher = new ChannelBindingRunLauncher({
+    bindingService: {
+      upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(async () => undefined),
+    } as never,
+    agentRunService: {} as never,
+    teamRunService,
+  });
+  return { launcher, teamRunService };
+};
+
 describe("AgentTeamRunManager strict current V2 package integration", () => {
   it.each([
     [[RuntimeKind.AUTOBYTEUS]],
@@ -143,7 +216,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig(runtimeKinds);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity });
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelConfigValidator });
 
     const run = await manager.createTeamRun({ config, teamDefinitionName: "Runtime Team" });
 
@@ -213,7 +286,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       });
     });
     const factory = createFactory({ beforeBackendReturn });
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity });
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelConfigValidator });
 
     const root = await manager.createTeamRun({ config, teamDefinitionName: "Resolver Team" });
     const resolver = factory.callbacks[0]!.taskRootResolver;
@@ -232,14 +305,14 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]);
     const initialFactory = createFactory();
-    const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory, taskExecutionIdentity });
+    const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory, taskExecutionIdentity, modelConfigValidator });
     await initial.createTeamRun({ config, teamDefinitionName: "Restorable Team" });
     initialFactory.state.active = false;
     expect(initial.getActiveTeamRun(config.rootTeam.teamRunId)).toBeNull();
     expect(initial.getManagedTeamRun(config.rootTeam.teamRunId)).not.toBeNull();
 
     const restoredFactory = createFactory();
-    const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory, taskExecutionIdentity });
+    const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory, taskExecutionIdentity, modelConfigValidator });
     const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
 
     expect(restored.getExecutionTreeSnapshot()).toMatchObject({
@@ -277,7 +350,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity });
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelConfigValidator });
     const snapshots: Array<{ teamRunId: string; isActive: boolean }> = [];
     manager.subscribeToLifecycle(config.rootTeam.teamRunId, (snapshot) => snapshots.push(snapshot));
 
@@ -299,7 +372,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
-    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity });
+    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory, taskExecutionIdentity, modelConfigValidator });
     await manager.createTeamRun({ config, teamDefinitionName: "Lane Team" });
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
     // The fake factory shares lifecycle state across backends; a restored backend is a fresh active owner.
@@ -324,5 +397,180 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     await expect(restore).resolves.toMatchObject({ teamRunId: config.rootTeam.teamRunId });
     await expect(manager.withUnmanagedHistoryDeletion(config.rootTeam.teamRunId, async () => "unexpected"))
       .resolves.toEqual({ kind: "managed" });
+  });
+
+  it("rejects active updates, then persists a stopped narrow patch for the next restore", async () => {
+    const memoryDir = await createMemoryDir();
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+      initializeTaskIdentityAllocator(memoryDir),
+    );
+    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
+    const factory = createFactory();
+    const validate: RunModelConfigValidator["validate"] = vi.fn(async ({ llmConfig }) => ({
+      kind: "valid" as const,
+      config: llmConfig,
+    }));
+    const manager = new AgentTeamRunManager({
+      memoryDir,
+      mixedTeamRunBackendFactory: factory.factory,
+      taskExecutionIdentity,
+      modelConfigValidator: { validate },
+    });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Editable Team" });
+    const initialTree = root.getExecutionTreeSnapshot();
+    const patch = [{
+      scopeKind: "CONFIGURED_TEAM" as const,
+      scopeAddress: "/",
+      llmConfig: { reasoning_effort: "high", service_tier: "priority" },
+    }];
+
+    await expect(manager.updateStoppedModelConfigs({
+      teamRunId: root.teamRunId,
+      patches: patch,
+    })).resolves.toMatchObject({ outcome: "RUN_ACTIVE", success: false });
+    expect(validate).not.toHaveBeenCalled();
+
+    await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
+    const updated = await manager.updateStoppedModelConfigs({
+      teamRunId: root.teamRunId,
+      patches: patch,
+    });
+    expect(updated).toMatchObject({
+      outcome: "UPDATED",
+      success: true,
+      isActive: false,
+      canonical: {
+        rootTeam: {
+          teamRunId: root.teamRunId,
+          defaultLaunchConfiguration: {
+            llmConfig: { reasoning_effort: "high", service_tier: "priority" },
+          },
+        },
+      },
+    });
+    expect(updated.canonical?.rootTeam.members[0]).toMatchObject({
+      launchConfiguration: initialTree.rootTeam.members[0] && "launchConfiguration" in initialTree.rootTeam.members[0]
+        ? { llmConfig: initialTree.rootTeam.members[0].launchConfiguration.llmConfig }
+        : undefined,
+    });
+    expect(validate).toHaveBeenCalledWith(expect.objectContaining({
+      runtimeKind: initialTree.rootTeam.defaultLaunchConfiguration.runtimeKind,
+      llmModelIdentifier: initialTree.rootTeam.defaultLaunchConfiguration.llmModelIdentifier,
+      llmConfig: patch[0].llmConfig,
+    }));
+
+    factory.state.active = true;
+    const restored = await manager.restoreTeamRun(root.teamRunId);
+    expect(restored.teamRunId).toBe(root.teamRunId);
+    expect(factory.restoreBackend).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        rootTeam: expect.objectContaining({
+          defaultLaunchConfiguration: expect.objectContaining({ llmConfig: patch[0].llmConfig }),
+        }),
+      }),
+      root.teamRunId,
+      expect.any(Object),
+    );
+  });
+
+  it("orders the exact external-channel Team resolver after Save and restores committed config", async () => {
+    const memoryDir = await createMemoryDir();
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+      initializeTaskIdentityAllocator(memoryDir),
+    );
+    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
+    const factory = createFactory();
+    let releaseValidation!: () => void;
+    const validationBarrier = new Promise<void>((resolve) => { releaseValidation = resolve; });
+    const validate: RunModelConfigValidator["validate"] = vi.fn(async ({ llmConfig }) => {
+      await validationBarrier;
+      return { kind: "valid" as const, config: llmConfig };
+    });
+    const manager = new AgentTeamRunManager({
+      memoryDir,
+      mixedTeamRunBackendFactory: factory.factory,
+      taskExecutionIdentity,
+      modelConfigValidator: { validate },
+    });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "External Save-First Team" });
+    await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
+    factory.state.active = true;
+    const { launcher, teamRunService } = exactChannelLauncher(manager, memoryDir);
+    const patch = [{
+      scopeKind: "CONFIGURED_TEAM" as const,
+      scopeAddress: "/",
+      llmConfig: { reasoning_effort: "high", service_tier: "priority" },
+    }];
+
+    const save = teamRunService.updateStoppedModelConfigs({
+      teamRunId: root.teamRunId,
+      patches: patch,
+    });
+    await vi.waitFor(() => expect(validate).toHaveBeenCalledOnce());
+    const externalResolve = launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(factory.restoreBackend).not.toHaveBeenCalled();
+
+    releaseValidation();
+    await expect(save).resolves.toMatchObject({
+      success: true,
+      outcome: "UPDATED",
+      canonical: {
+        rootTeam: {
+          defaultLaunchConfiguration: { llmConfig: patch[0].llmConfig },
+        },
+      },
+    });
+    await expect(externalResolve).resolves.toBe(root.teamRunId);
+    expect(factory.restoreBackend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rootTeam: expect.objectContaining({
+          defaultLaunchConfiguration: expect.objectContaining({
+            llmConfig: patch[0].llmConfig,
+          }),
+        }),
+      }),
+      root.teamRunId,
+      expect.any(Object),
+    );
+  });
+
+  it("returns RUN_ACTIVE when the exact external-channel Team resolver restores before Save", async () => {
+    const memoryDir = await createMemoryDir();
+    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+      initializeTaskIdentityAllocator(memoryDir),
+    );
+    const config = createConfig([RuntimeKind.CODEX_APP_SERVER]);
+    const factory = createFactory();
+    const validate: RunModelConfigValidator["validate"] = vi.fn(async ({ llmConfig }) => ({
+      kind: "valid" as const,
+      config: llmConfig,
+    }));
+    const manager = new AgentTeamRunManager({
+      memoryDir,
+      mixedTeamRunBackendFactory: factory.factory,
+      taskExecutionIdentity,
+      modelConfigValidator: { validate },
+    });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "External Restore-First Team" });
+    await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
+    factory.state.active = true;
+    const { launcher, teamRunService } = exactChannelLauncher(manager, memoryDir);
+
+    await expect(launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId)))
+      .resolves.toBe(root.teamRunId);
+    await expect(teamRunService.updateStoppedModelConfigs({
+      teamRunId: root.teamRunId,
+      patches: [{
+        scopeKind: "CONFIGURED_TEAM",
+        scopeAddress: "/",
+        llmConfig: { reasoning_effort: "high", service_tier: "priority" },
+      }],
+    })).resolves.toMatchObject({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      isActive: true,
+    });
+    expect(validate).not.toHaveBeenCalled();
   });
 });

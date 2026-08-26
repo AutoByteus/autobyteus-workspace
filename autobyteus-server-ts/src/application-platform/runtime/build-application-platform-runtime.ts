@@ -36,6 +36,7 @@ import type { ModelAvailabilityService } from "../../llm-management/services/mod
 import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
 import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
 
 export type ApplicationPlatformBuildInput = Readonly<{
   appConfig: AppConfig;
@@ -52,6 +53,7 @@ export type ApplicationPlatformBuildInput = Readonly<{
   llmProviderService: LlmProviderService;
   codexClientManager: CodexAppServerClientManager;
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
+  modelConfigValidator: RunModelConfigValidator;
   selectedApplicationIds?: ReadonlySet<string> | null;
 }>;
 
@@ -91,6 +93,7 @@ export const buildApplicationPlatformRuntime = (
     workspaceManager: input.workspaceManager,
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,
+    modelConfigValidator: input.modelConfigValidator,
   });
   try {
     const services = createApplicationOrchestrationServices({
@@ -226,7 +229,10 @@ export const buildApplicationPlatformRuntime = (
             .bind(services.agentCommunicationService),
         }),
       }),
-      hostManagement: Object.freeze({ catalogReconciliation }),
+      hostManagement: Object.freeze({
+        catalogReconciliation,
+        runOwnership: services.runOwnershipService,
+      }),
     });
   } catch (error) {
     try {

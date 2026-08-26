@@ -8,7 +8,7 @@ import { AgentRunProvisioningService } from "../../agent-execution/services/agen
 import { AgentRunResourceManager } from "../../agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunProviderInputNormalizer } from "../../agent-execution/input/agent-run-provider-input-normalizer.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { StandaloneAgentRunActivationService } from "../../agent-execution/services/standalone-agent-run-activation-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
@@ -157,6 +157,7 @@ export const buildApplicationExecutionScopeKernel = (
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
       taskExecutionIdentity,
+      modelConfigValidator: input.modelConfigValidator,
       mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
         agentToolMcpRunSessionReleaser: authority.runSessions,
         createTeamManager: (managerInput) =>
@@ -256,7 +257,7 @@ const buildRunServices = (
       agentRunIdentityAllocator,
     },
   );
-  const activationService = new StandaloneAgentRunActivationService(
+  const lifecycleService = new StandaloneAgentRunLifecycleService(
     input.memoryDir,
     {
       agentRunManager: kernel.agentRunManager,
@@ -264,6 +265,7 @@ const buildRunServices = (
       historyCatalogService,
       workspaceManager: input.workspaceManager,
       tokenUsageReadiness,
+      modelConfigValidator: input.modelConfigValidator,
     },
   );
   const agentRunService = new AgentRunService(input.memoryDir, {
@@ -273,7 +275,7 @@ const buildRunServices = (
     workspaceManager: input.workspaceManager,
     agentRunIdentityAllocator,
     provisioningService,
-    activationService,
+    lifecycleService,
   });
   const teamRunService = new TeamRunService({
     agentTeamRunManager: kernel.teamRunManager,
@@ -319,6 +321,7 @@ const assertBuildInput = (input: ApplicationExecutionScopeBuildInput): void => {
     "workspaceManager",
     "bindingReader",
     "artifactDeliverySink",
+    "modelConfigValidator",
   ] as const) {
     if (input[field] == null) {
       throw new Error(`Application execution scope ${field} is required.`);

@@ -341,8 +341,8 @@ describe("Workspaces GraphQL e2e", () => {
       getActiveRun: () => ({ config: { workspaceId } }),
     } as any);
     const teamManagerSpy = vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({
-      listActiveRuns: () => [],
-      getActiveRun: () => null,
+      listManagedTeamRunIds: () => [],
+      getManagedTeamRun: () => null,
     } as any);
 
     try {

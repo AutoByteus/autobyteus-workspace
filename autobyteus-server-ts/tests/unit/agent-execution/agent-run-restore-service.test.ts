@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
-const defaultMetadata = (): AgentRunMetadata => ({
+const metadata = (): AgentRunMetadata => ({
   runId: "run-1",
   agentDefinitionId: "agent-def-1",
   workspaceRootPath: "/tmp/workspace",
@@ -19,119 +20,50 @@ const defaultMetadata = (): AgentRunMetadata => ({
   startedAt: "2026-05-17T00:05:00.000Z",
 });
 
-describe("AgentRunService restore", () => {
-  const createSubject = (options: {
-    activeRun?: unknown;
-    metadata?: AgentRunMetadata | null;
-    restoredRun?: Record<string, unknown>;
-  } = {}) => {
-    const agentRunManager = {
-      getActiveRun: vi.fn().mockReturnValue(options.activeRun ?? null),
-      restoreAgentRun: vi.fn().mockResolvedValue(
-        options.restoredRun ?? {
-          runId: "run-1",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          getPlatformAgentRunId: vi.fn().mockReturnValue("thread-restored"),
-        },
-      ),
-      createAgentRun: vi.fn(),
-      hasActiveRun: vi.fn().mockReturnValue(false),
-    } as never;
-    const metadataService = {
-      readMetadata: vi.fn().mockResolvedValue(
-        options.metadata === undefined ? defaultMetadata() : options.metadata,
-      ),
-      writeMetadata: vi.fn().mockResolvedValue(undefined),
-    };
-    const historyCatalogService = {
-      recordPreparedRun: vi.fn(),
-      recordRunStarted: vi.fn(async (input: {
-        runId: string;
-        platformAgentRunId?: string | null;
-        runtimeKind?: RuntimeKind;
-        startedAt?: string;
-      }) => {
-        const current = await metadataService.readMetadata(input.runId);
-        if (!current) {
-          return null;
-        }
-        return {
-          ...current,
-          runtimeKind: input.runtimeKind ?? current.runtimeKind,
-          platformAgentRunId: input.platformAgentRunId ?? current.platformAgentRunId,
-          startedAt: input.startedAt ?? current.startedAt,
-        };
-      }),
-      recordRunTerminated: vi.fn(),
-    };
-    const workspaceManager = {
-      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-        workspaceId: "workspace-1",
-      }),
-      getWorkspaceById: vi.fn(),
-    } as never;
-
-    const service = new AgentRunService("/tmp/agent-run-service-test", {
-      agentRunManager,
-      metadataService: metadataService as never,
-      historyCatalogService: historyCatalogService as never,
-      workspaceManager,
-    });
-
-    return { service, mocks: { agentRunManager, metadataService, historyCatalogService, workspaceManager } };
+const createSubject = () => {
+  const restored = {
+    run: { runId: "run-1", runtimeKind: RuntimeKind.CODEX_APP_SERVER },
+    metadata: metadata(),
   };
+  const lifecycleService = Object.assign(
+    Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
+    {
+    restorePersistedRun: vi.fn().mockResolvedValue(restored),
+    },
+  );
+  const service = new AgentRunService("/tmp/agent-run-service-test", {
+    agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
+    metadataService: {} as never,
+    historyCatalogService: {} as never,
+    provisioningService: {} as never,
+    lifecycleService,
+  });
+  return { lifecycleService, restored, service };
+};
 
-  it("restores an inactive run from metadata and records start facts", async () => {
-    const { service, mocks } = createSubject();
+describe("AgentRunService restore", () => {
+  it("normalizes identity and delegates restore to the lifecycle owner", async () => {
+    const { lifecycleService, restored, service } = createSubject();
 
-    const result = await service.restoreAgentRun(" run-1 ");
-
-    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/workspace");
-    expect(mocks.agentRunManager.restoreAgentRun).toHaveBeenCalledOnce();
-    expect(mocks.metadataService.writeMetadata).not.toHaveBeenCalled();
-    expect(mocks.historyCatalogService.recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
-      runId: "run-1",
-      platformAgentRunId: "thread-restored",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      startedAt: "2026-05-17T00:05:00.000Z",
-    }));
-    expect(result).toMatchObject({
-      run: { runId: "run-1" },
-      metadata: {
-        runId: "run-1",
-        platformAgentRunId: "thread-restored",
-      },
-    });
-    expect(result.metadata).not.toHaveProperty("lastKnownStatus");
+    await expect(service.restoreAgentRun(" run-1 ")).resolves.toBe(restored);
+    expect(lifecycleService.restorePersistedRun).toHaveBeenCalledExactlyOnceWith("run-1");
   });
 
-  it("rejects restoring a run that is already active", async () => {
-    const { service, mocks } = createSubject({ activeRun: { runId: "run-1" } });
-
-    await expect(service.restoreAgentRun("run-1")).rejects.toThrow(
-      "Run 'run-1' is already active and does not need restore.",
+  it("preserves lifecycle-owner restore failures", async () => {
+    const { lifecycleService, service } = createSubject();
+    lifecycleService.restorePersistedRun.mockRejectedValueOnce(
+      new Error("Run 'run-missing' was not found."),
     );
-    expect(mocks.metadataService.readMetadata).not.toHaveBeenCalled();
-    expect(mocks.agentRunManager.restoreAgentRun).not.toHaveBeenCalled();
-  });
-
-  it("rejects restoring a run with missing metadata", async () => {
-    const { service, mocks } = createSubject({ metadata: null });
 
     await expect(service.restoreAgentRun("run-missing")).rejects.toThrow(
-      "Run 'run-missing' cannot be restored because metadata is missing.",
+      "Run 'run-missing' was not found.",
     );
-    expect(mocks.agentRunManager.restoreAgentRun).not.toHaveBeenCalled();
   });
 
-  it("rejects restoring a prepared run that has not started", async () => {
-    const { service, mocks } = createSubject({
-      metadata: { ...defaultMetadata(), startedAt: null },
-    });
+  it("rejects a blank identity before entering the lifecycle owner", async () => {
+    const { lifecycleService, service } = createSubject();
 
-    await expect(service.restoreAgentRun("run-1")).rejects.toThrow(
-      "Run 'run-1' cannot be restored because it has not been started.",
-    );
-    expect(mocks.agentRunManager.restoreAgentRun).not.toHaveBeenCalled();
+    await expect(service.restoreAgentRun("   ")).rejects.toThrow("runId is required.");
+    expect(lifecycleService.restorePersistedRun).not.toHaveBeenCalled();
   });
 });

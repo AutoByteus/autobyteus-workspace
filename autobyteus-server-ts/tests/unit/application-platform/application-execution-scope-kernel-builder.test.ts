@@ -137,6 +137,7 @@ const createHarness = (input: {
     workspaceManager: {} as never,
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
+    modelConfigValidator: { validate: vi.fn() },
   };
   return {
     buildInput,
@@ -159,6 +160,7 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     for (const field of [
       "scopeIdentity",
       "memoryDir",
+      "contextFilePathEnvironment",
       "agentDefinitionService",
       "agentTeamDefinitionService",
       "agentToolMcpSessionAuthorities",
@@ -166,6 +168,7 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       "workspaceManager",
       "bindingReader",
       "artifactDeliverySink",
+      "modelConfigValidator",
     ] as const) {
       for (const [label, value, omit] of [
         ["omitted", undefined, true],

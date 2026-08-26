@@ -21,6 +21,7 @@ import type { PublishedArtifactPublisher } from "../../services/published-artifa
 import type { PublishedArtifactSummary } from "../../services/published-artifacts/published-artifact-types.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
 
 export type ApplicationExecutionScopeIdentity = `application:${string}`;
 
@@ -35,6 +36,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   workspaceManager: WorkspaceManager;
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 export type ApplicationAgentLaunchResult = Readonly<{

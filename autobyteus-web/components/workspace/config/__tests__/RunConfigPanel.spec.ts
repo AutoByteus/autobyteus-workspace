@@ -6,7 +6,6 @@ import RunConfigPanel from '../RunConfigPanel.vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
-import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 
 const { agentRunState, teamRunState, agentContextState, teamContextState, teamRunOwnerState } = vi.hoisted(() => ({
   agentRunState: {
@@ -980,7 +979,7 @@ describe('RunConfigPanel', () => {
     })
 
     const form = wrapper.findComponent(AgentRunConfigForm)
-    expect(form.props('readOnly')).toBe(false)
+    expect(form.props()).not.toHaveProperty('readOnly')
 
     form.vm.$emit('update:workspaceSelection', {
       mode: 'existing',
@@ -1058,93 +1057,23 @@ describe('RunConfigPanel', () => {
     expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalledTimes(beforeClickCalls + 1)
   })
 
-  it('passes read-only mode to selected existing run configuration and ignores workspace edit events', async () => {
-    const selectionStore = useAgentSelectionStore()
-    selectionStore.selectRun('run-1', 'agent')
-
-    const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
-    const contextStore = useAgentContextsStore() as any
-    contextStore.activeRun = {
-      config: {
-        agentDefinitionId: 'def-1',
-        agentDefinitionName: 'Agent def-1',
-        workspaceId: 'ws-original',
-        isLocked: false,
-      },
-    } as any
+  it('routes selected existing runs through the specialized stopped-run editor', () => {
+    useAgentSelectionStore().selectRun('run-1', 'agent')
 
     const wrapper = mount(RunConfigPanel, {
       global: {
-        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
-      },
-    })
-
-    const form = wrapper.findComponent(AgentRunConfigForm)
-    expect(form.props('readOnly')).toBe(true)
-
-    form.vm.$emit('update:workspaceSelection', {
-      mode: 'existing',
-      existingWorkspaceId: 'ws-new',
-      newWorkspacePath: '',
-    })
-    expect(contextStore.activeRun?.config.workspaceId).toBe('ws-original')
-  })
-
-  it('passes read-only mode to selected existing team configuration and ignores workspace edit events', async () => {
-    const selectionStore = useAgentSelectionStore()
-    selectionStore.selectRun('team-run-1', 'team')
-
-    const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
-    const contextStore = useAgentTeamContextsStore() as any
-    const activeContext = buildTestTeamContext({
-      teamRunId: 'team-run-1',
-      teamDefinitionId: 'team-def-1',
-      teamDefinitionName: 'Team team-def-1',
-      rootChildren: [testAgentNode('/coordinator')],
-      workspaceRootPath: '/workspace/original',
-      configuration: {
-        workspaceId: 'ws-original',
-        workspaceMetadata: {
-          workspaceId: 'ws-original',
-          workspaceRootPath: '/workspace/original',
-          displayName: 'Original workspace',
-          kind: 'filesystem',
+        stubs: {
+          AgentRunConfigForm: true,
+          TeamRunConfigForm: true,
+          ExistingRunConfigEditor: true,
         },
-        isLocked: true,
-      },
-    })
-    const topologyConfiguration = activeContext.view.getConfigurationView()
-    contextStore.activeTeamContext = activeContext
-
-    const wrapper = mount(RunConfigPanel, {
-      global: {
-        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
       },
     })
 
-    const form = wrapper.findComponent(TeamRunConfigForm)
-    expect(form.props('model')).toEqual(expect.objectContaining({
-      mode: 'stored',
-      definitionLabel: 'Team team-def-1',
-      root: expect.objectContaining({
-        effectiveConfig: expect.objectContaining({
-          workspaceId: 'ws-original',
-          llmModelIdentifier: 'test-model',
-        }),
-      }),
-    }))
-    expect(contextStore.activeTeamContext).toBe(activeContext)
-    expect(contextStore.activeTeamContext.view.getConfigurationView()).toBe(topologyConfiguration)
-    expect(topologyConfiguration.root.effectiveConfig.workspaceId).toBe('ws-original')
-    expect(topologyConfiguration.root.effectiveConfig.llmModelIdentifier).toBe('test-model')
+    expect(wrapper.findComponent({ name: 'ExistingRunConfigEditor' }).exists()).toBe(true)
+    expect(wrapper.findComponent(AgentRunConfigForm).exists()).toBe(false)
+    expect(wrapper.findComponent(TeamRunConfigForm).exists()).toBe(false)
     expect(wrapper.find('.run-btn').exists()).toBe(false)
-
-    form.vm.$emit('update:workspaceSelection', '/', {
-      mode: 'existing', existingWorkspaceId: 'ws-other', newWorkspacePath: '/other',
-    })
-    form.vm.$emit('edit-config', { kind: 'set_root_model', llmModelIdentifier: 'other-model' })
-    await wrapper.vm.$nextTick()
-    expect(teamRunState.applyConfigEdit).not.toHaveBeenCalled()
-    expect(teamRunState.applyTeamWorkspaceAuthoringCommand).not.toHaveBeenCalled()
   })
+
 })

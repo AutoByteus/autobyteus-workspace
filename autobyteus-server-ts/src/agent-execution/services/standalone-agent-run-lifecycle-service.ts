@@ -14,6 +14,11 @@ import {
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
+import {
+  runModelConfigEditability,
+  type RunModelConfigUpdateResult,
+} from "../../run-history/domain/run-model-config.js";
 
 export type StandaloneAgentRunActivationResult = Readonly<{
   run: AgentRun;
@@ -26,8 +31,8 @@ const requiredRunId = (runId: string): string => {
   return normalized;
 };
 
-export class StandaloneAgentRunActivationService {
-  private readonly attempts = new Map<string, Promise<StandaloneAgentRunActivationResult>>();
+export class StandaloneAgentRunLifecycleService {
+  private readonly transitionLanes = new Map<string, Promise<void>>();
   private readonly quarantines = new Map<string, Error>();
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataService: AgentRunMetadataService;
@@ -35,6 +40,7 @@ export class StandaloneAgentRunActivationService {
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
+  private readonly modelConfigValidator: RunModelConfigValidator;
 
   constructor(
     memoryDir: string,
@@ -45,13 +51,19 @@ export class StandaloneAgentRunActivationService {
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
         "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
-    } = {},
+      modelConfigValidator: RunModelConfigValidator;
+    },
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService = deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService = deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.tokenUsageReadiness = deps.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    if (!deps.modelConfigValidator ||
+        typeof deps.modelConfigValidator.validate !== "function") {
+      throw new Error("modelConfigValidator is required.");
+    }
+    this.modelConfigValidator = deps.modelConfigValidator;
   }
 
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
@@ -69,7 +81,98 @@ export class StandaloneAgentRunActivationService {
     return this.resolve(requiredRunId(runId));
   }
 
+  updateStoppedModelConfig(input: {
+    agentRunId: string;
+    llmConfig: Readonly<Record<string, unknown>> | null;
+  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    const runId = requiredRunId(input.agentRunId);
+    return this.withTransition(runId, async () => {
+      const state = await this.metadataService.readMetadataState(runId);
+      const metadata = state.kind === "present" ? state.metadata : null;
+      if (!metadata) {
+        return this.updateResult({
+          outcome: "NOT_FOUND",
+          message: `Run '${runId}' was not found.`,
+          metadata: null,
+          active: false,
+        });
+      }
+      if (this.agentRunManager.getActiveRun(runId)) {
+        return this.updateResult({
+          outcome: "RUN_ACTIVE",
+          message: "This run became active through another connected workflow. Stop it, reopen Settings, and try again.",
+          metadata,
+          active: true,
+        });
+      }
+      const row = await this.historyCatalogService.getCatalogRow(runId);
+      if (!row) {
+        return this.updateResult({ outcome: "NOT_FOUND", message: `Run '${runId}' was not found.`, metadata, active: false });
+      }
+      if (row.archivedAt) {
+        return this.updateResult({ outcome: "RUN_ARCHIVED", message: "Archived runs cannot be edited.", metadata, active: false, archived: true });
+      }
+      const validation = await this.modelConfigValidator.validate({
+        runtimeKind: metadata.runtimeKind,
+        llmModelIdentifier: metadata.llmModelIdentifier,
+        llmConfig: input.llmConfig,
+      });
+      if (validation.kind !== "valid") {
+        const outcome = validation.kind === "model_unavailable"
+          ? "MODEL_UNAVAILABLE"
+          : validation.kind === "schema_unavailable"
+            ? "SCHEMA_UNAVAILABLE"
+            : "VALIDATION_FAILED";
+        return this.updateResult({
+          outcome,
+          message: outcome === "VALIDATION_FAILED"
+            ? "Model settings are invalid."
+            : "Current model options are unavailable; saved settings were not changed.",
+          metadata,
+          active: false,
+          fieldErrors: validation.kind === "invalid" ? validation.errors : [],
+        });
+      }
+      const committed = await this.historyCatalogService.commitRunModelConfig({
+        runId,
+        llmConfig: validation.config,
+      });
+      if (committed.kind === "committed" || committed.kind === "unchanged") {
+        return this.updateResult({
+          outcome: committed.kind === "committed" ? "UPDATED" : "UNCHANGED",
+          message: committed.kind === "committed"
+            ? "Model settings updated. They will be used when this run resumes."
+            : "Model settings are already up to date.",
+          metadata: committed.metadata,
+          active: false,
+        });
+      }
+      const outcome = committed.kind === "archived"
+        ? "RUN_ARCHIVED"
+        : committed.kind === "not_found"
+          ? "NOT_FOUND"
+          : committed.kind === "indeterminate"
+            ? "PERSISTENCE_INDETERMINATE"
+            : "PERSISTENCE_FAILED";
+      return this.updateResult({
+        outcome,
+        message: outcome === "PERSISTENCE_INDETERMINATE"
+          ? "Update outcome is being verified. Refresh the run configuration before saving again."
+          : outcome === "PERSISTENCE_FAILED"
+          ? "Model settings were not saved."
+          : "Model settings could not be saved.",
+        metadata: committed.metadata ?? metadata,
+        active: false,
+        archived: outcome === "RUN_ARCHIVED",
+      });
+    });
+  }
+
   private async resolve(runId: string): Promise<StandaloneAgentRunActivationResult> {
+    return this.withTransition(runId, () => this.resolveInsideTransition(runId));
+  }
+
+  private async resolveInsideTransition(runId: string): Promise<StandaloneAgentRunActivationResult> {
     const active = this.agentRunManager.getActiveRun(runId);
     if (active) {
       const state = await this.metadataService.readMetadataState(runId);
@@ -78,20 +181,51 @@ export class StandaloneAgentRunActivationService {
     }
     const quarantine = this.quarantines.get(runId);
     if (quarantine) throw quarantine;
-    const existing = this.attempts.get(runId);
-    if (existing) return existing;
-
-    const attempt = Promise.resolve().then(() => this.activateOnce(runId));
-    this.attempts.set(runId, attempt);
     try {
-      return await attempt;
+      return await this.activateOnce(runId);
     } catch (error) {
       if (isAgentRunActivationQuarantineError(error)) {
         this.quarantines.set(runId, error instanceof Error ? error : new Error(String(error)));
       }
       throw error;
+    }
+  }
+
+  private updateResult(input: {
+    outcome: RunModelConfigUpdateResult<AgentRunMetadata | null>["outcome"];
+    message: string;
+    metadata: AgentRunMetadata | null;
+    active: boolean;
+    archived?: boolean;
+    fieldErrors?: RunModelConfigUpdateResult<AgentRunMetadata | null>["fieldErrors"];
+  }): RunModelConfigUpdateResult<AgentRunMetadata | null> {
+    return Object.freeze({
+      success: input.outcome === "UPDATED" || input.outcome === "UNCHANGED",
+      outcome: input.outcome,
+      message: input.message,
+      isActive: input.active,
+      editability: runModelConfigEditability({
+        isActive: input.active,
+        archived: input.archived === true,
+        available: input.outcome !== "NOT_FOUND",
+      }),
+      canonical: input.metadata,
+      fieldErrors: Object.freeze([...(input.fieldErrors ?? [])]),
+    });
+  }
+
+  private async withTransition<T>(runId: string, operation: () => Promise<T>): Promise<T> {
+    const previous = this.transitionLanes.get(runId) ?? Promise.resolve();
+    let release!: () => void;
+    const current = new Promise<void>((resolve) => { release = resolve; });
+    const tail = previous.then(() => current);
+    this.transitionLanes.set(runId, tail);
+    await previous;
+    try {
+      return await operation();
     } finally {
-      if (this.attempts.get(runId) === attempt) this.attempts.delete(runId);
+      release();
+      if (this.transitionLanes.get(runId) === tail) this.transitionLanes.delete(runId);
     }
   }
 

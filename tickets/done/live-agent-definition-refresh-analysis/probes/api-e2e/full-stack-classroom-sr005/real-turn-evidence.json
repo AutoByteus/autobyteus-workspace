@@ -1,0 +1,465 @@
+{
+  "startedAt": "2026-08-26T03:38:14.874Z",
+  "runId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+  "browser": {
+    "realTab": true,
+    "interception": false,
+    "executablePath": "/usr/bin/chromium"
+  },
+  "graphql": [
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": {
+        "data": {
+          "getTeamRunResumeConfig": {
+            "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+            "isActive": false,
+            "executionTree": {
+              "schema_version": 2,
+              "created_at": "2026-08-26T03:35:45.550Z",
+              "archived_at": null,
+              "application_binding": null,
+              "handoffs": [
+                {
+                  "from": "/professor",
+                  "to": "/student",
+                  "rules": [
+                    "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+                    "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+                    "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+                    "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+                  ]
+                },
+                {
+                  "from": "/student",
+                  "to": "/professor",
+                  "rules": [
+                    "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+                    "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+                    "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+                  ]
+                }
+              ],
+              "root_team": {
+                "address": "/",
+                "team_definition_id": "classroom-simulation-team",
+                "team_definition_name": "Classroom Simulation Team",
+                "team_run_id": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+                "coordinator_address": "/professor",
+                "default_launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.4",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                },
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/professor",
+                    "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "professor_9a6d785f94d649619192302933493faa",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "codex_app_server",
+                      "llm_model_identifier": "gpt-5.4",
+                      "llm_config": null,
+                      "auto_execute_tools": false,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                    }
+                  },
+                  {
+                    "kind": "configured_agent",
+                    "address": "/student",
+                    "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "student_c51c3261decd4333996360c51ead76d1",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "codex_app_server",
+                      "llm_model_identifier": "gpt-5.4",
+                      "llm_config": null,
+                      "auto_execute_tools": false,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                    }
+                  }
+                ],
+                "task_executions": []
+              }
+            },
+            "modelConfigEditability": {
+              "editable": true,
+              "reason": null,
+              "__typename": "RunModelConfigEditabilityObject"
+            },
+            "__typename": "TeamRunResumeConfigPayload"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+        "agentRunId": "professor_9a6d785f94d649619192302933493faa"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+        "agentRunId": "student_c51c3261decd4333996360c51ead76d1"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {},
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "RestoreAgentTeamRun",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": {
+        "data": {
+          "restoreAgentTeamRun": {
+            "__typename": "RestoreAgentTeamRunResult",
+            "success": true,
+            "message": "Agent team run restored successfully.",
+            "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": {
+        "data": {
+          "getTeamRunResumeConfig": {
+            "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+            "isActive": true,
+            "executionTree": {
+              "schema_version": 2,
+              "created_at": "2026-08-26T03:35:45.550Z",
+              "archived_at": null,
+              "application_binding": null,
+              "handoffs": [
+                {
+                  "from": "/professor",
+                  "to": "/student",
+                  "rules": [
+                    "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+                    "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+                    "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+                    "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+                  ]
+                },
+                {
+                  "from": "/student",
+                  "to": "/professor",
+                  "rules": [
+                    "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+                    "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+                    "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+                  ]
+                }
+              ],
+              "root_team": {
+                "address": "/",
+                "team_definition_id": "classroom-simulation-team",
+                "team_definition_name": "Classroom Simulation Team",
+                "team_run_id": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+                "coordinator_address": "/professor",
+                "default_launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.4",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                },
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/professor",
+                    "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "professor_9a6d785f94d649619192302933493faa",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "codex_app_server",
+                      "llm_model_identifier": "gpt-5.4",
+                      "llm_config": null,
+                      "auto_execute_tools": false,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                    }
+                  },
+                  {
+                    "kind": "configured_agent",
+                    "address": "/student",
+                    "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "student_c51c3261decd4333996360c51ead76d1",
+                    "platform_agent_run_id": null,
+                    "launch_configuration": {
+                      "runtime_kind": "codex_app_server",
+                      "llm_model_identifier": "gpt-5.4",
+                      "llm_config": null,
+                      "auto_execute_tools": false,
+                      "skill_access_mode": "PRELOADED_ONLY",
+                      "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace"
+                    }
+                  }
+                ],
+                "task_executions": []
+              }
+            },
+            "modelConfigEditability": {
+              "editable": false,
+              "reason": "RUN_ACTIVE",
+              "__typename": "RunModelConfigEditabilityObject"
+            },
+            "__typename": "TeamRunResumeConfigPayload"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+        "agentRunId": "professor_9a6d785f94d649619192302933493faa"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+        "agentRunId": "student_c51c3261decd4333996360c51ead76d1"
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "TerminateAgentTeamRun",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "status": 200,
+      "response": {
+        "data": {
+          "terminateAgentTeamRun": {
+            "__typename": "TerminateAgentTeamRunResult",
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "status": 200,
+      "response": null
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      },
+      "status": 200,
+      "response": null
+    }
+  ],
+  "webSockets": [
+    {
+      "url": "ws://127.0.0.1:33123/_nuxt/?token=PAbvUCfIKn6k",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "errors": [],
+      "closedAt": null
+    },
+    {
+      "url": "ws://127.0.0.1:38123/ws/terminal/6b52976c-136a-4ba2-8e45-4b80002efe68",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "errors": [],
+      "closedAt": null
+    },
+    {
+      "url": "ws://127.0.0.1:38123/ws/agent-team/classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+      "framesSent": 1,
+      "framesReceived": 41,
+      "errors": [],
+      "closedAt": "2026-08-26T03:38:21.216Z"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "STOPPED-CLASSROOM-RUN-OPENED",
+      "pass": true,
+      "details": {
+        "runId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46"
+      },
+      "at": "2026-08-26T03:38:16.622Z"
+    },
+    {
+      "id": "REAL-CODEX-ASSISTANT-RESPONSE",
+      "pass": true,
+      "details": {
+        "responseText": "P professor Thinking CLASSROOM_E2E_OK"
+      },
+      "at": "2026-08-26T03:38:21.083Z"
+    },
+    {
+      "id": "REAL-TEAM-WEBSOCKET-TRAFFIC",
+      "pass": true,
+      "details": {
+        "teamSocket": {
+          "url": "ws://127.0.0.1:38123/ws/agent-team/classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+          "framesSent": 1,
+          "framesReceived": 41,
+          "errors": [],
+          "closedAt": "2026-08-26T03:38:21.216Z"
+        },
+        "webSockets": [
+          {
+            "url": "ws://127.0.0.1:33123/_nuxt/?token=PAbvUCfIKn6k",
+            "framesSent": 0,
+            "framesReceived": 1,
+            "errors": [],
+            "closedAt": null
+          },
+          {
+            "url": "ws://127.0.0.1:38123/ws/terminal/6b52976c-136a-4ba2-8e45-4b80002efe68",
+            "framesSent": 0,
+            "framesReceived": 1,
+            "errors": [],
+            "closedAt": null
+          },
+          {
+            "url": "ws://127.0.0.1:38123/ws/agent-team/classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+            "framesSent": 1,
+            "framesReceived": 41,
+            "errors": [],
+            "closedAt": "2026-08-26T03:38:21.216Z"
+          }
+        ]
+      },
+      "at": "2026-08-26T03:38:21.083Z"
+    }
+  ],
+  "failures": [],
+  "sentAt": "2026-08-26T03:38:16.738Z",
+  "responseText": "P professor Thinking CLASSROOM_E2E_OK",
+  "completedAt": "2026-08-26T03:38:23.195Z",
+  "result": "PASS"
+}

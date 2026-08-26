@@ -271,6 +271,8 @@ describe("token usage analytics GraphQL E2E", () => {
 
     expect(firstStart.toISOString()).toBe("2026-08-10T12:00:00.000Z");
     expect(retainedStart).toEqual(firstStart);
+    expect(july.errors).toBeUndefined();
+    expect(partialAugust.errors).toBeUndefined();
     expect((july.data as any).tokenUsageAnalytics).toMatchObject({
       coverage: { status: "UNAVAILABLE", coverageStart: "2026-08-10T12:00:00.000Z" },
       selectedAggregate: { totalTokens: 0, estimatedApiTotalCost: null, usageReportCount: 0 },

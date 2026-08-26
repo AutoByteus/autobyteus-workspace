@@ -56,6 +56,7 @@ import {
 import { getWorkspaceManager } from "../workspaces/workspace-manager.js";
 import { getRuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import { ModelConfigValidationService } from "../llm-management/services/model-config-validation-service.js";
 import { getModelAvailabilityService } from "../llm-management/services/model-availability-service.js";
 import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
@@ -244,6 +245,8 @@ export const startStandaloneApplicationHost = async (
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager,
     });
+    const modelCatalogService = getModelCatalogService();
+    const modelConfigValidator = new ModelConfigValidationService(modelCatalogService);
     const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
       scopeIdentity: "general-process",
     });
@@ -262,6 +265,7 @@ export const startStandaloneApplicationHost = async (
         workspaceManager,
         agentProviderFactoryBuilder,
         agentToolMcpSessionAuthority: generalProcessAuthority,
+        modelConfigValidator,
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -274,7 +278,8 @@ export const startStandaloneApplicationHost = async (
       agentProviderFactoryBuilder,
       workspaceManager,
       runtimeAvailabilityService: getRuntimeAvailabilityService(),
-      modelCatalogService: getModelCatalogService(),
+      modelCatalogService,
+      modelConfigValidator,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),
       codexClientManager: getCodexAppServerClientManager(),

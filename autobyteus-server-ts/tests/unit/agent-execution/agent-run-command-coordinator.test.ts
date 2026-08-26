@@ -35,7 +35,7 @@ const buildCoordinator = (input: {
   activeRun?: ReturnType<typeof createFakeRun> | null;
   restoredRun?: ReturnType<typeof createFakeRun>;
   restoreError?: Error;
-  restoreAgentRun?: () => Promise<{ run: ReturnType<typeof createFakeRun> }>;
+  resolveCommandReadyAgentRun?: () => Promise<ReturnType<typeof createFakeRun>>;
 } = {}) => {
   const registry = new AgentRunCommandRegistry();
   const overlayStore = new AgentRunCommandStatusOverlayStore();
@@ -44,11 +44,10 @@ const buildCoordinator = (input: {
   const agentRunService = {
     getAgentRun: vi.fn(() => input.activeRun ?? null),
     getRunMetadata: vi.fn(async () => ({ startedAt: "2026-08-13T00:00:00Z" })),
-    restoreAgentRun: vi.fn(input.restoreAgentRun ?? (async () => {
+    resolveCommandReadyAgentRun: vi.fn(input.resolveCommandReadyAgentRun ?? (async () => {
       if (input.restoreError) throw input.restoreError;
-      return { run: restoredRun };
+      return input.activeRun ?? restoredRun;
     })),
-    activatePreparedRun: vi.fn(),
     recordRunActivity: vi.fn(async () => undefined),
   };
   const projectionService = {
@@ -147,26 +146,26 @@ describe("AgentRunCommandCoordinator", () => {
     });
   });
 
-  it("shares one inactive-run activation across concurrent distinct commands", async () => {
+  it("admits concurrent distinct commands after the lifecycle owner resolves one shared activation", async () => {
     const run = createFakeRun();
-    const restored = createDeferred<{ run: typeof run }>();
+    const restored = createDeferred<typeof run>();
     const { coordinator, agentRunService } = buildCoordinator({
       restoredRun: run,
-      restoreAgentRun: () => restored.promise,
+      resolveCommandReadyAgentRun: () => restored.promise,
     });
 
     const first = coordinator.postUserMessage(command("msg-1"));
     const second = coordinator.postUserMessage(command("msg-2"));
-    await vi.waitFor(() => expect(agentRunService.restoreAgentRun).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledTimes(2));
 
-    restored.resolve({ run });
+    restored.resolve(run);
 
     await expect(Promise.all([first, second])).resolves.toEqual([
       expect.objectContaining({ ack: expect.objectContaining({ state: "accepted" }) }),
       expect.objectContaining({ ack: expect.objectContaining({ state: "accepted" }) }),
     ]);
     expect(run.postUserMessage).toHaveBeenCalledTimes(2);
-    expect(agentRunService.restoreAgentRun).toHaveBeenCalledOnce();
+    expect(agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledTimes(2);
   });
 
   it("keeps activation-only status overlay and clears it before live admission", async () => {

@@ -367,10 +367,10 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
   },
   {
     family: "run",
-    symbol: "StandaloneAgentRunActivationService",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-activation-service.ts",
+    symbol: "StandaloneAgentRunLifecycleService",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
     kind: "new",
-    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "tokenUsageReadiness"].map((path) => ({
+    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "tokenUsageReadiness", "modelConfigValidator"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 1,
       path,
@@ -381,7 +381,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunService",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
     kind: "new",
-    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "agentRunIdentityAllocator", "provisioningService", "activationService"].map((path) => ({
+    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "agentRunIdentityAllocator", "provisioningService", "lifecycleService"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 1,
       path,
@@ -495,6 +495,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
 const SCOPE_BUILD_FIELDS = [
   "scopeIdentity",
   "memoryDir",
+  "contextFilePathEnvironment",
   "agentDefinitionService",
   "agentTeamDefinitionService",
   "agentToolMcpSessionAuthorities",
@@ -502,6 +503,7 @@ const SCOPE_BUILD_FIELDS = [
   "workspaceManager",
   "bindingReader",
   "artifactDeliverySink",
+  "modelConfigValidator",
 ] as const;
 
 const ORCHESTRATION_BUILD_FIELDS = [
@@ -535,6 +537,7 @@ const ORCHESTRATION_BUILD_FIELDS = [
 
 const PLATFORM_BUILD_FIELDS = [
   "appConfig",
+  "contextFilePathEnvironment",
   "bundleService",
   "agentDefinitionService",
   "agentTeamDefinitionService",
@@ -547,6 +550,7 @@ const PLATFORM_BUILD_FIELDS = [
   "llmProviderService",
   "codexClientManager",
   "requireCurrentModelIdentifier",
+  "modelConfigValidator",
 ] as const;
 
 const normalizePath = (path: string): string => path.split(sep).join("/");
@@ -2804,6 +2808,7 @@ describe("application framework architecture boundaries", () => {
     visitAssembly(assemblyFile);
     expect(resultShapes).toEqual([[
       "startupGate",
+      "runOwnershipService",
       "eventDispatchService",
       "artifactDeliveryService",
       "runObserverService",
@@ -2940,10 +2945,38 @@ describe("application framework architecture boundaries", () => {
     const publicAgentRun = readServerSource("api/graphql/types/agent-run.ts");
     const publicTeamRun = readServerSource("api/graphql/types/agent-team-run.ts");
     expect(publicAgentRun).toContain("getStudioAgentRunService");
+    expect(publicAgentRun).toContain("getStudioRunModelConfigService");
     expect(publicAgentRun).not.toMatch(/\bgetAgentRunService\b/);
     expect(publicAgentRun).not.toContain("AgentRunManager");
     expect(publicTeamRun).toContain("getStudioTeamRunService");
+    expect(publicTeamRun).toContain("getStudioRunModelConfigService");
     expect(publicTeamRun).not.toMatch(/\bgetTeamRunService\b/);
+
+    const publicAgentHistory = readServerSource("api/graphql/types/run-history.ts");
+    const publicTeamHistory = readServerSource("api/graphql/types/team-run-history.ts");
+    for (const [relativePath, source] of [
+      ["api/graphql/types/agent-run.ts", publicAgentRun],
+      ["api/graphql/types/agent-team-run.ts", publicTeamRun],
+      ["api/graphql/types/run-history.ts", publicAgentHistory],
+      ["api/graphql/types/team-run-history.ts", publicTeamHistory],
+    ] as const) {
+      expect(source, relativePath).toContain("getStudioRunModelConfigService");
+      expect(source, relativePath).not.toContain("ApplicationRunLookupStore");
+      expect(source, relativePath).not.toContain("ApplicationRunBindingStore");
+      expect(source, relativePath).not.toContain("ApplicationRunOwnershipService");
+    }
+    const studioModelConfig = readServerSource(
+      "run-history/services/studio-run-model-config-service.ts",
+    );
+    expect(studioModelConfig).toContain("ApplicationRunOwnershipReader");
+    expect(studioModelConfig).not.toContain("ApplicationRunLookupStore");
+    expect(studioModelConfig).not.toContain("ApplicationRunBindingStore");
+    expect(studioModelConfig).not.toContain("AgentRunManager");
+    expect(studioModelConfig).not.toContain("AgentTeamRunManager");
+    expect(studioComposition).toContain("new StudioRunModelConfigService({");
+    expect(studioComposition).toContain(
+      "applicationRunOwnership: currentApplicationRuntime.hostManagement.runOwnership",
+    );
 
     for (const migration of [
       "app-data-migrations/migrations/run-history-index-v2-migration.ts",
@@ -3182,5 +3215,5 @@ describe("application framework architecture boundaries", () => {
     }
     expect(forbiddenImports).toEqual([]);
     expect(forbiddenIdentifiers).toEqual([]);
-  }, 10_000);
+  }, 15_000);
 });

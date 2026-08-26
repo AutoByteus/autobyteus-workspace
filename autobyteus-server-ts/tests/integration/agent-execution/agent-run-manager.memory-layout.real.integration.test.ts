@@ -8,6 +8,7 @@ import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/b
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
@@ -119,23 +120,32 @@ describe("AgentRunService real memory layout integration", () => {
       providerInputNormalizer: infrastructure.providerInputNormalizer,
       agentToolMcpRunSessionReleaser: releaser,
     });
+    const workspaceManager = {
+      ensureWorkspaceByRootPath: async (workspaceRootPath: string) => ({
+        workspaceId: "workspace-real-layout",
+        getName: () => "workspace-real-layout",
+        getBasePath: () => workspaceRootPath,
+      }),
+      getWorkspaceById: (workspaceId: string) =>
+        workspaceId === "workspace-real-layout"
+          ? {
+              workspaceId,
+              getName: () => "workspace-real-layout",
+              getBasePath: () => workspaceDir,
+            }
+          : null,
+    } as any;
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+      agentRunManager: manager,
+      workspaceManager,
+      modelConfigValidator: {
+        validate: async ({ llmConfig }) => ({ kind: "valid", config: llmConfig as Readonly<Record<string, unknown>> | null }),
+      },
+    });
     runService = new AgentRunService(memoryDir, {
       agentRunManager: manager,
-      workspaceManager: {
-        ensureWorkspaceByRootPath: async (workspaceRootPath: string) => ({
-          workspaceId: "workspace-real-layout",
-          getName: () => "workspace-real-layout",
-          getBasePath: () => workspaceRootPath,
-        }),
-        getWorkspaceById: (workspaceId: string) =>
-          workspaceId === "workspace-real-layout"
-            ? {
-                workspaceId,
-                getName: () => "workspace-real-layout",
-                getBasePath: () => workspaceDir,
-              }
-            : null,
-      } as any,
+      workspaceManager,
+      lifecycleService,
       agentRunIdentityAllocator: {
         allocateForAgentDefinition: async () =>
           "real_memory_layout_agent_00000000000000000000000000000001",

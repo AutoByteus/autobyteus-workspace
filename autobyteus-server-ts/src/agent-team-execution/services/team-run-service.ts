@@ -19,6 +19,9 @@ import {
   type TeamScopeLaunchInput,
 } from "./team-definition-topology-planner.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -204,6 +207,12 @@ export class TeamRunService {
     const success = await this.manager.terminateTeamRun(teamRunId);
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;
+  }
+  updateStoppedModelConfigs(input: {
+    teamRunId: string;
+    patches: readonly TeamRunModelConfigPatch[];
+  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
+    return this.manager.updateStoppedModelConfigs(input);
   }
   async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
     const root = await this.resolveActiveTeamRun(teamRunId);

@@ -1,0 +1,22 @@
+# DR-005 finalization attempt evidence
+timestamp_utc=2026-08-26T05:57:27Z
+user_acceptance=Hands-on Electron testing completed; task done; finalize without release.
+electron_shutdown=PASS; SIGINT received; embedded server stopped; port 29695 refused connections afterward.
+post_acceptance_fetch=PASS
+origin_personal=306de420ca8830478529b40bd6dfda6694b742a9
+ticket_head_before_archive=3ea5af9bfb53aa7150a75d5ca4beb60e5b22b484
+divergence_before_archive=0 behind / 18 ahead
+base_ancestor=yes
+ticket_archive=PASS; moved to tickets/done/live-agent-definition-refresh-analysis before final commit.
+ticket_final_commit=46899f483c59fe8a860ddde6a6de3c08bba58cde
+ticket_commit_message=chore(delivery): archive live agent definition refresh
+cached_diff_check=PASS
+ticket_push_command=git push -u origin codex/live-agent-definition-refresh-analysis
+ticket_push_result=FAIL
+ticket_push_error=fatal: could not read Username for 'https://github.com': No such device or address
+gh_auth_status=not logged into any GitHub hosts
+ssh_auth_status=git@github.com permission denied (publickey); no SSH_AUTH_SOCK
+target_update_merge_push=NOT STARTED; required ticket-branch push did not complete
+release=NOT REQUIRED; user explicitly declined new version/release
+cleanup=NOT STARTED; branch and worktree retained while finalization is blocked
+required_recovery=Authenticate GitHub for this environment, then resume ticket push -> refresh/update personal -> merge -> push personal -> delete remote/local ticket branch and worktree when safe.

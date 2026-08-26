@@ -9,6 +9,7 @@ import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/b
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
   parseAgentMd,
@@ -147,9 +148,18 @@ describe("AgentRunService fresh definition runtime integration", () => {
       providerInputNormalizer: infrastructure.providerInputNormalizer,
       agentToolMcpRunSessionReleaser: releaser,
     });
-    return new AgentRunService(appConfigProvider.config.getMemoryDir(), {
+    const memoryDir = appConfigProvider.config.getMemoryDir();
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
       agentRunManager: manager,
       workspaceManager: workspaceManager as never,
+      modelConfigValidator: {
+        validate: async ({ llmConfig }) => ({ kind: "valid", config: llmConfig as Readonly<Record<string, unknown>> | null }),
+      },
+    });
+    return new AgentRunService(memoryDir, {
+      agentRunManager: manager,
+      workspaceManager: workspaceManager as never,
+      lifecycleService,
       agentRunIdentityAllocator: {
         allocateForAgentDefinition: async (agentDefinitionId: string) =>
           `${agentDefinitionId}-run`,

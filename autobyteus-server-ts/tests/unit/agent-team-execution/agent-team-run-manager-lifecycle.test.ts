@@ -7,6 +7,12 @@ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team
 const taskExecutionIdentity = createTaskExecutionIdentityCapabilities({
   allocateForAgentDefinition: async () => "task-agent-run",
 });
+const modelConfigValidator = Object.freeze({
+  validate: async ({ llmConfig }: { llmConfig: unknown }) => ({
+    kind: "valid" as const,
+    config: llmConfig as Readonly<Record<string, unknown>> | null,
+  }),
+});
 
 const backendFactory = Object.freeze({
   createBackend: async () => {
@@ -21,6 +27,7 @@ const createManager = () => new AgentTeamRunManager({
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   mixedTeamRunBackendFactory: backendFactory,
   taskExecutionIdentity,
+  modelConfigValidator,
 });
 
 const createRoot = (input: {
@@ -49,6 +56,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         mixedTeamRunBackendFactory: backendFactory,
         taskExecutionIdentity,
+        modelConfigValidator,
       };
       if (value === "omitted") delete options.mixedTeamRunBackendFactory;
       else options.mixedTeamRunBackendFactory = value;
@@ -56,6 +64,20 @@ describe("AgentTeamRunManager root lifecycle", () => {
         () => Reflect.construct(AgentTeamRunManager, [options]),
         String(value),
       ).toThrow("mixedTeamRunBackendFactory is required.");
+    }
+    for (const value of ["omitted", null, undefined] as const) {
+      const options: Record<string, unknown> = {
+        memoryDir: "/tmp/api-e2e-agent-team-run-manager",
+        mixedTeamRunBackendFactory: backendFactory,
+        taskExecutionIdentity,
+        modelConfigValidator,
+      };
+      if (value === "omitted") delete options.modelConfigValidator;
+      else options.modelConfigValidator = value;
+      expect(
+        () => Reflect.construct(AgentTeamRunManager, [options]),
+        String(value),
+      ).toThrow("modelConfigValidator is required.");
     }
   });
 

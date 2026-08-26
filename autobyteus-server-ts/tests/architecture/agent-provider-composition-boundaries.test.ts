@@ -106,6 +106,18 @@ const AGENT_TEAM_MANAGER_FIELDS = [
   "memoryDir",
   "mixedTeamRunBackendFactory",
   "taskExecutionIdentity",
+  "modelConfigValidator",
+] as const;
+const AGENT_RUN_SERVICE_TESTS = [
+  "autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts",
+  "autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts",
+  "autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts",
+  "autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-execution/agent-run-create-service.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-execution/agent-run-restore-service.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-execution/agent-run-termination-service.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
 ] as const;
 const MIXED_MANAGER_TESTS = [
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts",
@@ -662,6 +674,80 @@ describe("agent provider composition boundaries", () => {
       .map(relativeRoot)).toEqual([
       "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     ]);
+
+    const expectedServiceRoots = [
+      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+    ];
+    const productionServiceRoots = typescriptFiles(SRC)
+      .filter((path) => directNewOccurrences(path, "AgentRunService").length > 0)
+      .map(relativeRoot)
+      .sort();
+    expect(productionServiceRoots).toEqual([...expectedServiceRoots].sort());
+    const directServiceTests = typescriptFiles(TESTS)
+      .filter((path) => path !== THIS_FILE && directNewOccurrences(path, "AgentRunService").length > 0)
+      .map(relativeRoot)
+      .sort();
+    expect(directServiceTests).toEqual([...AGENT_RUN_SERVICE_TESTS].sort());
+    for (const relativePath of [...productionServiceRoots, ...directServiceTests]) {
+      const path = join(ROOT, relativePath);
+      const sourceFile = parse(path);
+      for (const occurrence of directNewOccurrences(path, "AgentRunService")) {
+        expect(isExplicitNarrowInitializer(objectPropertyInitializer(
+          occurrence.arguments?.[1], "lifecycleService", sourceFile,
+        )), `${relativePath}:AgentRunService:lifecycleService`).toBe(true);
+      }
+    }
+  });
+
+  it("selects one host validator and propagates it to the two exact lifecycle roots", () => {
+    const hosts = [
+      "autobyteus-server-ts/src/compositions/build-studio-server.ts",
+      "autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts",
+    ];
+    expect(typescriptFiles(SRC)
+      .filter((path) => directNewOccurrences(path, "ModelConfigValidationService").length > 0)
+      .map(relativeRoot)
+      .sort()).toEqual([...hosts].sort());
+    for (const relativePath of hosts) {
+      const path = join(ROOT, relativePath);
+      const sourceFile = parse(path);
+      const constructions = directNewOccurrences(path, "ModelConfigValidationService");
+      expect(constructions, relativePath).toHaveLength(1);
+      expect(
+        isExplicitNarrowInitializer(constructions[0]?.arguments?.[0]?.getText(sourceFile) ?? null),
+        `${relativePath}:catalog`,
+      ).toBe(true);
+      const source = read(path);
+      expect(occurrences(source, "modelConfigValidator,"), relativePath).toBeGreaterThanOrEqual(2);
+    }
+
+    const expectedRoots = [
+      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+    ];
+    const lifecycleRoots = typescriptFiles(SRC)
+      .filter((path) => directNewOccurrences(path, "StandaloneAgentRunLifecycleService").length > 0)
+      .map(relativeRoot)
+      .sort();
+    expect(lifecycleRoots).toEqual([...expectedRoots].sort());
+    for (const relativePath of lifecycleRoots) {
+      const path = join(ROOT, relativePath);
+      const sourceFile = parse(path);
+      for (const occurrence of directNewOccurrences(path, "StandaloneAgentRunLifecycleService")) {
+        expect(isExplicitNarrowInitializer(objectPropertyInitializer(
+          occurrence.arguments?.[1], "modelConfigValidator", sourceFile,
+        )), `${relativePath}:modelConfigValidator`).toBe(true);
+      }
+    }
+    for (const relativePath of [
+      "autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts",
+      "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+      "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+      ...expectedRoots,
+    ]) {
+      expect(read(join(ROOT, relativePath)), relativePath).not.toContain("getModelCatalogService");
+    }
   });
 
   it("carries one explicit task-identity pair through every Team and task constructor", () => {
@@ -822,7 +908,7 @@ describe("agent provider composition boundaries", () => {
       "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: missing as any })",
     ]) expect(validateSyntheticTeamManagerOptions(invalid), invalid).toBe(false);
     expect(validateSyntheticTeamManagerOptions(
-      "new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory, taskExecutionIdentity })",
+      "new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory, taskExecutionIdentity, modelConfigValidator })",
     )).toBe(true);
   });
 });

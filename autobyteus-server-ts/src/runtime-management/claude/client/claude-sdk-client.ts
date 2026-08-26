@@ -70,6 +70,8 @@ export type ClaudeSdkStartQueryTurnOptions = {
   canUseTool?: ClaudeSdkCanUseTool;
   stderr?: ClaudeSdkStderrCallback;
   abortController?: AbortController;
+  thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
+  effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
@@ -405,6 +407,8 @@ export class ClaudeSdkClient {
       ...(options.abortController ? { abortController: options.abortController } : {}),
       ...(options.stderr ? { stderr: options.stderr } : {}),
       settingSources,
+      ...(options.thinking ? { thinking: options.thinking } : {}),
+      ...(options.effort ? { effort: options.effort } : {}),
       ...(options.canUseTool
         ? { canUseTool: options.canUseTool }
         : options.autoExecuteTools

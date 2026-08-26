@@ -1,0 +1,69 @@
+Delivery revision: DR-001
+Date: 2026-08-25 UTC
+Repository: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis
+Ticket branch: codex/live-agent-definition-refresh-analysis
+Bootstrap base: origin/personal@9d0fd7c570d58da1af2c7a40279327c8a20a8093
+
+1. Initial branch state
+
+Command:
+  git status --short --branch
+
+Result before the delivery checkpoint:
+  branch was ahead 6 of origin/personal and contained the reviewed CRR-005/API-REV-001 durable coverage package as uncommitted files.
+
+2. Tracked-base refresh
+
+Command:
+  git fetch origin personal --prune
+
+Result:
+  origin/personal advanced from 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+  to 306de420ca8830478529b40bd6dfda6694b742a9.
+  Before checkpointing, divergence was 6 ahead / 180 behind.
+
+3. Reviewed-state protection
+
+Commands:
+  git add --all
+  git commit -m "chore(delivery): checkpoint CRR-005 reviewed package"
+
+Result:
+  checkpoint commit 2eabf59af168e0375a1616bb3055c81200b8308c created successfully.
+  The worktree was clean before integration.
+
+4. Latest-base integration attempt
+
+Command:
+  git merge --no-edit origin/personal
+
+Result: BLOCKED. Git reported eight unmerged paths:
+  autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+  autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+  autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts
+  autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+  autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+  autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+  autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+
+Conflict kind detail:
+  Seven paths had content conflicts.
+  StoredTeamScopeHistoricalFields.spec.ts was deleted by the ticket branch and modified by origin/personal.
+
+Merge identities:
+  ticket checkpoint: 2eabf59af168e0375a1616bb3055c81200b8308c
+  MERGE_HEAD:        306de420ca8830478529b40bd6dfda6694b742a9
+  merge base:        9d0fd7c570d58da1af2c7a40279327c8a20a8093
+
+5. Safe restoration after evidence capture
+
+Command:
+  git merge --abort
+
+Result:
+  the reviewed checkpoint was restored cleanly at
+  2eabf59af168e0375a1616bb3055c81200b8308c.
+  Current divergence is 7 ahead / 180 behind origin/personal.
+  No conflict resolution, long-lived documentation edit, executable rerun,
+  push, archival, finalization, release, deployment, or cleanup was performed.
