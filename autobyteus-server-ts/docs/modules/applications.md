@@ -148,13 +148,15 @@ listens.
   bundle-owned package baseline is sufficient to start the same package.
 - Both hosts treat package bytes as immutable input; mutable storage, logs,
   credentials, and runtime state live outside the package root.
-- Each process owns one `AgentToolsMcpRuntime`. Application construction creates
-  an early `ApplicationAgentToolMcpSessionScope`, then its exact run-resource
-  manager/active-run registry and concrete `PublishedArtifactPublisher`, and
-  only then a `ScopedAgentToolMcpSessionManager`. This keeps run cleanup
-  synchronous and exact without deferred binding or process-global application
-  lookup. `/mcp/agent-tools/:sessionId` remains distinct from Studio-only
-  `/mcp/gateway`.
+- Each process owns one `AgentToolsMcpHost`. Every application platform runtime
+  creates one private `ApplicationExecutionScope` and begins a scoped Agent
+  Tools session-authority assembly before constructing its run resources. The
+  authority is completed only after the concrete publication capability and
+  readiness assertion exist. This keeps provider construction, run cleanup,
+  and session revocation explicit and graph-local without deferred binding or a
+  process-global application lookup. General Process execution uses a separate
+  authority/supervisor. `/mcp/agent-tools/:sessionId` remains distinct from
+  Studio-only `/mcp/gateway`.
 
 Server assembly and standalone-host ownership live under
 `src/compositions/build-studio-server.ts`,

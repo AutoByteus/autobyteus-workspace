@@ -109,14 +109,16 @@ no new work can enter while owned capabilities are being dismantled:
 3. stop artifact-delivery intake and drain every accepted command through
    launcher ensure plus controller invoke;
 4. dispose remaining run observers and stop application workers;
-5. use `ApplicationRunShutdownCoordinator` to stop runtime-owned team runs
+5. quiesce the runtime's `ApplicationExecutionScope`, then use
+   `ApplicationExecutionShutdownCoordinator` to stop runtime-owned team runs
    before remaining runtime-owned agent runs; exact run removal also revokes
    run sessions and detaches file/artifact/memory observers;
-6. close the runtime's scoped Agent Tools session manager/scope; and
+6. close the scope's `ScopedAgentToolMcpSessionAuthority`; and
 7. stop remaining streaming surfaces.
 
-The process-level `AgentToolsMcpRuntime` closes only after the application
-runtime has stopped. There is no deferred publisher or handler state.
+The process-level `AgentToolsMcpHost` closes only after the application runtime
+and separate General Process run supervisor have stopped. There is no deferred
+publisher or handler state.
 This ordering prevents a stopped application from retaining a publication
 capability, accepting new runtime-scoped work, or abandoning accepted artifact
 delivery after a worker exit.

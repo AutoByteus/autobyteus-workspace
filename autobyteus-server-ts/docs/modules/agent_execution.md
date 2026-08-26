@@ -14,6 +14,9 @@ Manages runtime agent runs and message execution flow.
 - `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
 - `src/agent-execution/services/agent-run-provisioning-service.ts`
 - `src/agent-execution/services/agent-run-status-projection-service.ts`
+- `src/agent-execution/providers/agent-provider-factory-builder.ts`
+- `src/agent-execution/input/agent-run-provider-input-normalizer.ts`
+- `src/agent-execution/runtime/general-process-run-supervisor.ts`
 - `src/api/graphql/types/agent-run.ts`
 - `src/services/agent-streaming/agent-stream-handler.ts`
 - `src/api/websocket/agent.ts`
@@ -21,6 +24,29 @@ Manages runtime agent runs and message execution flow.
 ## Notes
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
+
+## Execution Family Composition
+
+`AgentProviderFactoryBuilder` freezes process-wide provider primitives and
+creates AutoByteus, Codex, and Claude backend factories only from an explicit
+execution-family `AgentDefinitionService` and `AgentToolMcpSessionIssuer`.
+Provider construction does not read a process-global application manager or
+session scope. Codex and Claude materializers therefore receive the exact issuer
+owned by the General Process or Application execution family that created the
+run.
+
+`GeneralProcessRunSupervisor` owns the General Process Agent/Team managers,
+history services, task identity, context-file normalization, run resources, and
+its independent scoped Agent Tools authority. Application execution constructs
+the same provider backends beneath a private `ApplicationExecutionScope` with
+application-local definition services and publication capability. The families
+share provider implementation but not manager identity, active-run registries,
+session authority, definition graph, or publication authority.
+
+`AgentRunProviderInputNormalizer` is injected into each manager and resolves
+current-turn context-file locators against that family's explicit path
+environment before provider dispatch. This normalization is not a static or
+process-global provider lookup.
 
 ## Carpenter Runtime Instructions
 

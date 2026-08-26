@@ -25,6 +25,10 @@ registered `ToolOrigin.MCP` tools, not AutoByteus internal run tools.
 
 - `src/agent-tools/mcp`
 - `src/agent-tools/mcp/providers`
+- process host in `src/agent-tools/mcp/agent-tools-mcp-host.ts`
+- session authority contract and implementation in
+  `src/agent-tools/mcp/agent-tool-mcp-session-authority.ts` and
+  `src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts`
 - Claude runtime materializer in
   `src/agent-execution/backends/claude/agent-tools-mcp`
 - Codex runtime materializer in
@@ -58,8 +62,16 @@ MCP protocol versions recognized by the route dispatcher.
 
 ## Session And Descriptor Ownership
 
-`AgentToolMcpSessionService` creates session descriptors for runtime
-materializers. The descriptor includes:
+`AgentToolsMcpHost` owns the process-local registry, catalog, executor,
+dispatcher, route dependencies, and `AgentToolMcpSessionAuthorityFactory`.
+Every execution family begins a named authority assembly. The assembly is
+completed only after the family's exact publication capability and readiness
+assertion exist; aborting construction closes any partially assembled ledger.
+The completed `ScopedAgentToolMcpSessionAuthority` is the only issuer exposed to
+provider factories and the only owner allowed to revoke that scope's sessions.
+
+The authority delegates descriptor creation to `AgentToolMcpSessionService`.
+Each issued descriptor includes:
 
 - `name: "autobyteus_agent_tools"`
 - `transport: "streamable_http"`
@@ -80,8 +92,9 @@ only while the session is present in the current process-memory registry, is not
 revoked, and the bearer token matches the stored token hash.
 
 Sessions are revoked when their owning `AgentRun` is terminated or
-unregistered through `AgentRunManager` and when a mixed-team member handle is
-disposed. A server/process restart clears the in-memory registry, so descriptors
+unregistered through `AgentRunManager`, when a mixed-team member handle is
+disposed, when its execution scope closes, or when the process host closes. A
+server/process restart clears the in-memory registry, so descriptors
 from the previous process fail with the redacted `404 session_unavailable`
 route response. Restored, resumed, or newly started runtime owners must
 materialize a fresh descriptor in the current process before they use Agent
