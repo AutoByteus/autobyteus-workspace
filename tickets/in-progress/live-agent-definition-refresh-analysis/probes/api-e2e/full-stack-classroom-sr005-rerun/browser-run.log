@@ -1,0 +1,6 @@
+{
+  "result": "PASS",
+  "assertions": 22,
+  "graphqlOperations": 40,
+  "reportPath": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005-rerun/browser-evidence.json"
+}

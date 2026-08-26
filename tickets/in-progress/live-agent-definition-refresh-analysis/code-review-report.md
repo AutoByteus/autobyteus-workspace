@@ -2,160 +2,189 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
 - Solution Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-005` (preserving the SR-004 sequential browser workflow)
+- Relevant Solution Revision IDs: `SR-005` (preserving SR-004/SR-003)
 - Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-004`
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-005`
+- Relevant Implementation Revision IDs: `IR-006` (preserving IR-005/IR-003 behavior)
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-009`
-- Current Review Round: `1` for this failure-origin entry point; ninth recorded code-review result
-- Trigger: `/api_e2e_engineer` API-REV-003 Fail at `78.3%` confidence after the user-directed real-stack browser journey and canonical root E2E execution.
-- Prior Review Round Reviewed: `CRR-007` source Pass and `CRR-008` proportional test-code Pass
-- Latest Authoritative Round: `CRR-009`
-- Coverage Investigation Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md`
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: `7`
+- Trigger: `/implementation_engineer` IR-006 handoff; production/test commit `d8eb36f93`; handoff commit `3b07b2d97`; resolves `CR-F-004` from CRR-009.
+- Prior Review Round Reviewed: `CRR-009` API/E2E failure-origin review
+- Latest Authoritative Round: `CRR-010`
+- Coverage Investigation Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md` as concurrently updating API/E2E-owned work
 - Execution Coverage Report Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-003` (`API-REV-002` is retained historical Pass evidence only)
+- Relevant API/E2E Revision IDs: `API-REV-003` Fail; renewed execution required
 - Delivery Revision Record Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-002` (delivery readiness is superseded by this failure)
-- Failing Scenario IDs: `API-E2E-009-C`, `API-E2E-F-001`, `API-E2E-F-002`
-- Exact Failing Commands / Execution Mode:
-  - User-directed real stack: canonical `pnpm dev` build followed by the freshly built backend on `127.0.0.1:38123`, real Nuxt on `127.0.0.1:33123`, and system Chromium through Playwright Core; no GraphQL interception, fixture route, mocked catalog, or mocked provider.
-  - Canonical repository suite: `pnpm test:e2e` from the workspace root.
-  - Reviewer diagnostics: focused reruns of the file-explorer/workspaces/token-analytics/agent-team-definition group, private-skills suite, and first Team V1 migration scenario after `pnpm prepare:shared`.
-- Failure Evidence Paths:
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/browser-evidence.json`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/failure.png`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/enum-schema-reproduction.log`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/root-pnpm-test-e2e.log`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/real-turn-evidence.json`
+- Relevant Delivery Revision IDs: `DR-002` historical pre-failure delivery checkpoint
+- Failing Scenario IDs: prior `API-E2E-009-C` / `API-E2E-F-001`; implementation-owned origin reviewed here
+- Exact Review Commands: `pnpm test:nuxt --run utils/__tests__/llmConfigSchema.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts` in `autobyteus-web`; `git diff --check` on review artifacts/source delta.
+- Failure Evidence Paths: CRR-009/API-REV-003 real browser and enum reproduction evidence under `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005`.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: only the origins of API-REV-003's real Codex enum failure and root E2E failures.
-- Files / areas reviewed: the actual Codex catalog normalizer; shared web schema normalization/validation and its Settings Save gate; production Studio GraphQL composition; the smallest relevant failing E2E fixtures, queries, and full-run evidence.
-- Explicit exclusions: no repeated full source audit or scorecard; no reopening of unaffected CRR-007 source findings; no successful-test proportional review; no production or test-code fix by this reviewer.
+- Changed implementation and behavior reviewed: IR-006's parameter-list enum type adapter and exact shared-control regression coverage for launch and existing-run Settings.
+- Files / areas reviewed:
+  - `autobyteus-web/utils/llmConfigSchema.ts`
+  - `autobyteus-web/utils/__tests__/llmConfigSchema.spec.ts`
+  - `autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts`
+  - unchanged shared control and existing-run Save-gate path needed to confirm the fix reaches the reported behavior.
+- Explicit exclusions: CR-F-005 through CR-F-007 remain API/E2E-owned; no broad root E2E rerun, full-stack persistence/restore claim, or proportional API test-code review is performed in this source round.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: SR-005 retains the real sequential user journey `Stop completes -> Settings -> network-fresh read -> edit -> Save -> later message restores`. BEH-007 and REQ-004/010/011 require current catalog-advertised values, including Codex reasoning effort, to remain valid editable inputs.
-- Design-spec behavior map verified against the implementation: the stopped Team UI reaches the current runtime/model catalog through `normalizeModelConfigSchema`, renders the enum select, validates through `validateUiModelConfig`, and uses emitted schema state to gate Save.
-- Design review report and round confirmed: ARCH-REV-004 passed SR-005; the failed behavior needs no design change.
+- Approved requirements basis understood: Yes. The supported path remains the sequential `Stop -> Settings -> edit -> Save -> later restore` journey, and current catalog-advertised Codex values must be accepted.
+- Design-spec behavior map verified against the implementation: Yes. The current Codex producer emits `type: "enum"` plus string `enum_values`; shared normalization now adapts that transport shape to the UI's established `type: "string"` plus `enum` contract before validation/rendering.
+- Design review report and round confirmed: `ARCH-REV-004` Pass.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior: none. The failure is on an already approved and normally reachable product path.
-- Remaining material ambiguity: none that changes routing. The exact shared resource behind two root-suite-only failures remains to be isolated by API/E2E, but focused passing reruns are sufficient to reject production-defect attribution.
+- Changed or newly discovered behavior: None. IR-006 repairs an existing supported value path and adds no lifecycle policy.
+- Remaining material ambiguity: None for source approval. Real persistence and restored use remain API/E2E work.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-007` | `Contradicted by implementation` | Real user stops the Classroom Team, opens Settings, receives the actual Codex `gpt-5.4` catalog, selects `reasoning_effort=low`, and the shared client validator reports a type error before Save. | `browser-evidence.json` and `failure.png` show the real UI/backend path with no interception; `enum-schema-reproduction.log` localizes the mismatch. |
-| `BEH-002` | `Confirmed except for the blocked edit prerequisite` | The later real browser message restored the same Team and GPT-5.4 returned `CLASSROOM_E2E_OK`; the attempted new value could not be saved, so restored-use of that value was not reached. | No contrary restore evidence; the Save defect blocks completion of the intended change. |
-| `BEH-008` | `Confirmed for this round` | Real launch, Stop, network-fresh stopped read, later restore, response, and final Stop all succeeded. | None. API-REV-003 did not expose a General/Application ownership regression. |
+| `BEH-001` | Confirmed | Definition/launch and existing-run routes remain separate consumers of the same shared field component; no command boundary changed. | N/A |
+| `BEH-002` | Confirmed in source; execution pending | Valid normalized `llmConfig` continues through unchanged Save/persistence/restore paths. | Renewed API/E2E must prove the selected value is persisted and used. |
+| `BEH-003` | Confirmed | Active locking and `RUN_ACTIVE` ownership behavior are unchanged. | N/A |
+| `BEH-004` | Confirmed | Agent Settings still uses network-fresh owner-aware state; the shared schema no longer falsely blocks an advertised enum member. | N/A |
+| `BEH-005` | Confirmed | Team hierarchy/direct-edit/no-Reset behavior is untouched; the shared corrected schema reaches root and member controls. | N/A |
+| `BEH-006` | Confirmed | Narrow canonical reads/mutations and fixed identity remain unchanged. | N/A |
+| `BEH-007` | Confirmed | Non-empty all-string parameter-list enums normalize to string-enum UI fields; advertised values pass and unsupported values still fail membership validation. | N/A |
+| `BEH-008` | Confirmed | General/Application ownership and restore lanes are unchanged by this frontend normalization. | N/A |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-006 is the bounded shared-contract fix prescribed by CRR-009. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Existing controls, fixed identity, Save gate, feedback, and no-Reset behavior are preserved. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | `catalog producer -> shared normalization -> shared renderer/validator -> launch or Settings gate` is explicit and unchanged except at normalization. | None. |
+| Ownership boundary preservation and clarity | Pass | Transport-to-UI schema adaptation remains owned by `llmConfigSchema.ts`; consumers do not add local patches. | None. |
+| Off-spine concern clarity | Pass | Type adaptation remains a small concern inside the existing normalizer. | None. |
+| Existing capability/subsystem reuse check | Pass | The existing string-enum UI contract and membership validator are reused. | None. |
+| Reusable owned structures check | Pass | One shared adapter serves launch, Agent Settings, and Team Settings. | None. |
+| Shared-structure/data-model tightness check | Pass | No parallel enum type or duplicate schema hierarchy is added. | None. |
+| Repeated coordination ownership check | Pass | No policy is repeated across consumers. | None. |
+| Empty indirection check | Pass | `normalizeParameterType` performs the concrete transport-to-UI decision. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Normalization, validation, rendering, and Save gating remain separate. | None. |
+| Ownership-driven dependency check | Pass | No dependency direction changes. | None. |
+| Authoritative Boundary Rule check | Pass | Consumers continue to depend on the shared normalized schema rather than backend-specific details. | None. |
+| File placement check | Pass | The adapter belongs in the established schema-normalization utility. | None. |
+| Flat-vs-over-split layout judgment | Pass | A local helper is proportionate; a new module would be artificial. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | No public API changes; the internal normalized UI contract is clearer. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `normalizeParameterType` accurately names the bounded operation. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | One adapter and existing validator cover all consumers. | None. |
+| Patch-on-patch complexity control | Pass | The fix is 12 source lines and adds no compatibility, revision, or lifecycle state. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The invalid direct preservation of a valid current enum transport type is replaced, not retained as a second route. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Exact producer shape, valid/unsupported members, malformed mixed enums, and both launch/Settings shared consumers are explicit. | Renew real API/E2E. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing shared component/store fixtures are extended without a duplicate harness. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests target the current Codex producer contract, not an old-version branch. | None. |
+| API/E2E readiness for the next workflow stage | Pass | The implementation-owned source blocker is resolved and focused reviewer execution passes. | API/E2E must finish CR-F-005–007 and rerun the real journey/root suite. |
+
+## Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/llmConfigSchema.ts` | 244 | Pass | Assessed | Cohesive shared schema normalization, representability, defaults, and validation; the small adapter belongs here | Pass | Pass | None |
+
+No changed implementation source exceeds 500 effective non-empty lines. Test files are excluded from source thresholds.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | `type: "enum"` is the current Codex producer contract, not an old-version fallback. |
+| No legacy old-behavior retention in changed scope | Pass | The falsely invalid path is removed for exact supported string enums. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No alternate validator or dormant branch remains. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Transient catalog normalization changes no stored data. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | One current normalization path only. |
+| Approved transition mechanics match the reviewed design | Pass | Persisted-data decision remains `Not Affected`. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No` additional impact from IR-006.
+- Why: this is an internal correction to make the existing documented enum control work. The broader feature documentation already remains in the delivery package.
+- Files or areas likely affected: none beyond the already recorded delivery documentation set.
 
 ## Material Premise Validation
 
-### `MP-CR-003` — an actual Codex enum choice is a supported stopped-Team edit
+### Upstream Design-Review Material-Premise Decisions
 
-- Origin: `New` failure-origin confirmation
-- Related approved requirement or established contract: `BEH-007`, `REQ-004`, `REQ-010`, `REQ-011`, `AC-006`, `AC-009`, `AC-011`
-- Relevant behavior ID(s): `BEH-007`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: the existing Team Settings surface after the user has completed Stop.
-- Support evidence: the exposed Team Settings UI advertises `reasoning_effort` choices from the current Codex catalog and the approved requirements expressly include Codex reasoning effort.
-- Forward production path: Team Stop completes -> user opens Settings -> live GraphQL catalog/read -> `normalizeModelConfigSchema` -> `RuntimeModelConfigFields` / `ModelConfigSection` -> user selects `low` -> `validateUiModelConfig` -> schema state -> existing-run Save eligibility.
-- Lifecycle preconditions and material consequence: the root Team is stopped and the response is network-fresh/editable; the valid advertised value is rejected, Save remains disabled, and no update mutation is sent.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: confirmed bounded frontend implementation defect; Local Fix without new concurrency, revision, or lifecycle machinery.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-SR4-003` | Confirmed | General external-channel paths remain unchanged. |
+| `MP-SR4-004` | Confirmed | Application ownership behavior remains unchanged. |
+| `MP-SR4-006` | Confirmed | Direct active updates remain owner-aware and unchanged. |
+| `MP-SR5-001`–`MP-SR5-003` | Confirmed | Terminal release, startup readiness, and provenance reentry are untouched. |
+| `MP-CR-003` | Confirmed | The real stopped-Team Settings trigger and actual Codex catalog path remain independently supported; IR-006 now satisfies that path. |
 
-## Failure-Origin Matrix
+No new material premise is introduced. Unsupported browser concurrency remains absent and drives no finding, deduction, or machinery.
 
-| Failure / Group | Confirmed Origin | Evidence | Classification / Owner |
-| --- | --- | --- | --- |
-| `API-E2E-009-C` / `API-E2E-F-001` | Frontend schema contract mismatch. The server's Codex normalizer intentionally emits parameter-list rows with `type: "enum"`; web normalization preserves that type and maps `enum_values`, while client validation accepts only `string`, `boolean`, `number`, or `integer` before enum-membership validation. | `codex-app-server-model-normalizer.ts:31-67`; `llmConfigSchema.ts:113-155,176-199`; real browser evidence and focused reproduction. Existing focused fixtures use `type: "string"` with enum values and therefore miss the production shape. | `Local Fix` -> `/implementation_engineer` (`CR-F-004`) |
-| `API-E2E-F-002` — 33 test failures across nine E2E files | In-process GraphQL fixture/composition gap. Raw `buildGraphqlSchema()` fixtures do not install the complete Studio application services now required when Run/Team history resolvers are instantiated. Production `build-studio-server.ts` does configure those services and the real stack works. | Root log repeatedly reaches `requireConfiguredServices` through eager resolver initialization. Production composition and live GraphQL/browser execution passed. | `Local Fix` -> `/api_e2e_engineer` (`CR-F-005`) |
-| `API-E2E-F-002` — one failed suite plus six failed tests | Stale or internally inconsistent durable fixtures/queries: removed `ApplicationBundleService` singleton APIs; incomplete current Agent factory capabilities; old Team manager method names; removed `coordinatorMemberRouteKey`; and synthetic Application provenance without a corresponding package/binding despite SR-005's fail-closed contract. | Root log plus focused reruns reproduce the private-skills, workspace, and migration failures. The migration diagnostic returns `Application 'synthetic-migration-application' was not found`, which is correct for its inconsistent fixture. | `Local Fix` -> `/api_e2e_engineer` (`CR-F-006`) |
-| `API-E2E-F-002` — two root-run-only failures | Full-suite execution/isolation sensitivity, not a demonstrated product defect. File-explorer child-process output was empty and token analytics returned null only in the broad run; both complete files passed together in the reviewer-focused command. | Root log versus focused 2 files / 6 tests Pass. Precise shared resource/order remains for API/E2E to isolate. | `Local Fix` -> `/api_e2e_engineer` (`CR-F-007`) |
+## Review Scorecard
 
-## Prior Review Result Impact
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `95.5`
+- Score calculation note: Simple average, rounded; every category is `>= 9.0`. The decision remains based on findings and behavior, not the average.
 
-- `CRR-007` source Pass and `CRR-008` test-code Pass no longer establish delivery readiness; this CRR-009 failure-origin result is authoritative.
-- `CR-F-003` remains resolved. The real Application/General ownership path passed and is unrelated to the enum mismatch.
-- Exact prior source-review gap: `validateUiModelConfig` was added in the ticket implementation while the existing/current Codex normalizer visibly emits `type: "enum"`. Prior reviews asserted catalog compatibility without tracing that concrete producer shape through the new shared validator. That cross-boundary mismatch should have been caught.
-- The root-suite groups are not production-source review failures: the production composition passed through the built real stack. CRR-008 reviewed only API-REV-002's one changed durable file by design; it did not approve the entire pre-existing E2E harness.
-- The validator lives in shared `RuntimeModelConfigFields`. Initial launch and existing-run Settings render the same control; existing-run editing uniquely consumes the emitted invalid schema state as a Save gate. Thus the observed failure is not caused by the update mutation itself—the mutation is never sent—and implementation correction should verify all shared consumers rather than patching only Team Settings.
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The current producer-to-shared-consumer path is explicit and the prior owner-aware spines remain intact. | The full feature crosses established server/web subsystems. | Keep renewed evidence tied to exact spines. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Schema adaptation is centralized; Application/General owners remain encapsulated. | Host composition remains inherently multi-owner. | Preserve current boundaries. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Public APIs remain narrow; the UI receives one established string-enum shape. | Ownership failures retain generic existing vocabulary. | Preserve explicit outcome evidence. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | The fix is placed in the shared normalizer rather than consumer forms. | The utility is moderately sized. | Avoid unrelated growth. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | No parallel enum schema is introduced; all consumers reuse one shape. | Agent and Team canonical payloads remain necessarily distinct elsewhere. | Preserve specialization. |
+| `6` | `Naming Quality and Local Readability` | 9.6 | The predicate and tests make the exact all-string contract obvious. | Raw parameter types remain transport strings rather than a closed union. | Keep fail-closed tests if producer shapes expand. |
+| `7` | `API/E2E Readiness` | 9.0 | The source blocker is resolved and focused checks pass. | CR-F-005–007 and real persistence/restored-use execution remain open downstream. | Finish harness fixes and rerun the canonical real/root scenarios. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.6 | Advertised members pass, unsupported members fail, and malformed enum shapes fail closed across shared consumers. | Full-stack persisted-use proof remains downstream. | Complete renewed API/E2E. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | The current producer contract is normalized directly with no version branch. | None material. | Preserve. |
+| `10` | `Cleanup Completeness` | 9.7 | The fix, regressions, temporary route cleanup, and generated-output cleanup are complete. | Concurrent API/E2E artifact work remains uncommitted by its owner. | API/E2E should finalize its own artifacts. |
 
 ## Findings
 
-### `CR-F-004` — actual Codex enum values are rejected before stopped-run Save
+None in IR-006.
 
-- Severity: High; blocks a critical advertised edit-and-restore behavior.
-- Affected behavior: `BEH-007`, `REQ-004`, `REQ-010`, `REQ-011`; directly observed on the stopped Team path in `AC-006/009/011` and blocks API proof of the broader saved-value restore criteria.
-- Confirmed source evidence:
-  - `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts:44-66` emits `type: "enum"` with string `enum_values` for reasoning effort and service tier.
-  - `autobyteus-web/utils/llmConfigSchema.ts:179-199` preserves the raw type and enum values.
-  - `autobyteus-web/utils/llmConfigSchema.ts:126-133` rejects every `type: "enum"` candidate before the membership check at lines 135-137.
-  - Production evidence shows selecting the advertised string `low` yields `Enter a value of type enum.`, disables Save, and sends no update mutation.
-- Required action: align the shared parameter-list enum normalization/validation contract so an advertised enum member is accepted while unsupported members remain rejected. Add focused coverage using the exact backend `type: "enum"` shape and verify both the confirmed existing-run Save gate and any other shared form consumer affected by the same validator.
-- Classification: `Local Fix`
-- Owner: `/implementation_engineer`
+### Prior Finding Status
 
-### `CR-F-005` — current in-process GraphQL E2E fixtures omit required Studio services
+- `CR-F-004`: **Resolved**. Exact current Codex string enum parameters normalize to the existing UI string-enum contract; valid values reach shared controls, unsupported values remain invalid, and malformed mixed enums fail closed.
+- `CR-F-005` through `CR-F-007`: remain open and owned by `/api_e2e_engineer`; they are not implementation-source findings and do not block this source Pass.
+- `CR-F-003`: remains resolved; IR-006 changes no ownership/lifecycle path.
 
-- Severity: Medium; broad repository coverage cannot execute reliably.
-- Evidence: 33 failures across agent definition/package, external-channel, configured-skill, run-projection/history, archive, and workspace-history suites arise from incomplete test composition. `build-studio-server.ts` installs the complete current service object, and the real server path passed.
-- Required action: update/reuse the API/E2E GraphQL bootstrap so schema construction receives the same complete service contract required by current resolvers. Do not weaken production's fail-fast composition guard.
-- Classification: `Local Fix`
-- Owner: `/api_e2e_engineer`
+## Classification
 
-### `CR-F-006` — seven durable E2E failure entries use stale or inconsistent fixtures
+`N/A — Pass`
 
-- Severity: Medium.
-- Confirmed items:
-  1. `agent-team-definitions-graphql.e2e.test.ts` calls removed singleton APIs.
-  2. Two private-skills cases construct factories without current Agent Tools MCP / automatic-compaction capabilities.
-  3. `workspaces-graphql.e2e.test.ts` mocks old Team manager methods.
-  4. `workspace-run-history-graphql.e2e.test.ts` queries removed `coordinatorMemberRouteKey`.
-  5. Two Team V1 migration cases create Application provenance without the referenced Application package/binding; current SR-005 fail-closed behavior correctly rejects it.
-- Required action: bring these fixtures and assertions to current production contracts, preserving each scenario's intended subject rather than adding compatibility seams to production.
-- Classification: `Local Fix`
-- Owner: `/api_e2e_engineer`
+## Recommended Recipient
 
-### `CR-F-007` — two suites are sensitive to broad root execution
+`/api_e2e_engineer`
 
-- Severity: Medium.
-- Evidence: file-explorer and token-analytics each failed once in the root parallel run but both passed in the same reviewer-focused rerun (2 files / 6 tests). No production behavior failure accompanies them.
-- Required action: isolate the root-run resource/order sensitivity, stabilize the harness or suite isolation, and rerun the canonical root command. Do not attribute a production defect without a supported runtime reproduction.
-- Classification: `Local Fix`
-- Owner: `/api_e2e_engineer`
-
-## Classification And Routing
-
-- Review outcome: `Fail — Local Fix (split ownership)`.
-- `/implementation_engineer` owns `CR-F-004`. Its correction must return through source review and renewed API/E2E.
-- `/api_e2e_engineer` owns `CR-F-005` through `CR-F-007`. Durable test changes require renewed execution and, after a successful run, proportional test-code review.
-- No Design Impact, Requirement Gap, or Unclear product premise was found. No route to `/solution_designer` is warranted.
+Complete CR-F-005 through CR-F-007, refresh the investigation against SR-005 / IR-006 / CRR-010, and rerun the real Codex Save/persist/later-restore journey plus the canonical root suite. Any durable coverage changes must return for proportional test-code review after a successful run.
 
 ## Residual Risks
 
-- The real browser journey did not prove persistence/use of the selected Codex value because client validation prevented the mutation.
-- The shared validator may affect another form consumer; current runtime evidence confirms the stopped-Team failure, so other consumers must be verified rather than assumed.
-- The exact inter-suite resource behind the two broad-run-only failures is not yet identified, but the confirmed ownership is the API/E2E execution harness.
-- No configured Anthropic credential was available for a paid Claude response turn; prior direct pinned-adapter evidence remains bounded historical coverage.
+- Full-stack persistence and restored use of `reasoning_effort=low` remain unproved until renewed API/E2E.
+- CR-F-005 through CR-F-007 remain API/E2E fixture/execution work.
+- The paid-Claude response-turn credential residual remains unchanged.
+- No concurrency, revision, rebase, or lifecycle risk is introduced by this fix.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` — the source defect is traced from a supported user action; synthetic tests do not establish product reachability.
-- Score Summary: Not repeated for this focused failure-origin review. CRR-007's full source scorecard is superseded only for runtime correctness/API/E2E readiness by `CR-F-004`; unaffected categories were not reopened.
-- Failure Origin: one bounded frontend implementation defect; three bounded API/E2E fixture/execution groups.
-- Recommended Recipients: `/api_e2e_engineer` for `CR-F-005`–`CR-F-007`, then `/implementation_engineer` for `CR-F-004`, following applicable handoff-rule order.
-- Notes: production source and durable coverage were not modified by this review. The failure does not justify browser concurrency, revision, or lifecycle machinery.
+- Review Decision: **Pass**
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: **Pass** — the fix is grounded in the real Team Settings action and current Codex catalog producer; no synthetic edge case drives it.
+- Score Summary: `9.6/10` (`95.5/100`); every mandatory category is `>= 9.0`.
+- Failure Origin: prior `CR-F-004` bounded frontend schema mismatch is resolved by IR-006.
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: reviewer inspected the full three-file production/test diff and reran the exact two-file set successfully (`2 files / 15 tests`). The only worktree modification is the API/E2E owner's concurrent coverage-investigation update; no implementation dirtiness was attributed to IR-006.

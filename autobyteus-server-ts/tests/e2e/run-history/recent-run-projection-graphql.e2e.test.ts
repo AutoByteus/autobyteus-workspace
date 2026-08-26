@@ -22,6 +22,7 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -234,6 +235,7 @@ describe("recent run projection GraphQL e2e", () => {
   let testDataDir: string;
   let workspaceRootPath: string;
   let memoryDir: string;
+  let closeStudioServices: (() => void) | null = null;
 
   beforeAll(async () => {
     testDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-gql-"));
@@ -245,6 +247,7 @@ describe("recent run projection GraphQL e2e", () => {
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-workspace-"));
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     memoryDir = appConfigProvider.config.getMemoryDir();
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -259,6 +262,7 @@ describe("recent run projection GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    closeStudioServices?.();
     await fs.rm(workspaceRootPath, { recursive: true, force: true });
     await fs.rm(testDataDir, { recursive: true, force: true });
   });

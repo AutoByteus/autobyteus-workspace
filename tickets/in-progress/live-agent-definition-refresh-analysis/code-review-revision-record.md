@@ -15,6 +15,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | `CRR-007` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 6 / `IR-005` SR-005 owner-aware correction | Fail — Design Impact | Pass | `CR-F-003` resolved |
 | `CRR-008` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` | Proportional API/E2E test-code review / `API-REV-002` Pass | Pass — Implementation Review | Pass — Test-Code Review | None |
 | `CRR-009` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` Fail | Pass — Source and Test-Code Reviews | Fail — Local Fix (split ownership) | `CR-F-004`, `CR-F-005`, `CR-F-006`, `CR-F-007` |
+| `CRR-010` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` | Implementation Review round 7 / `IR-006` enum correction | Fail — Local Fix (split ownership) | Pass — Implementation Review; API/E2E fixes remain | `CR-F-004` resolved; `CR-F-005`–`CR-F-007` remain API/E2E-owned |
+| `CRR-011` | `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` | Proportional API/E2E test-code review / `API-REV-004` Pass | Pass — Implementation Review; API/E2E fixes pending | Pass — Test-Code Review | `CR-F-005`–`CR-F-007` resolved; `CR-F-004` execution-confirmed |
 
 ## Revision Entries
 
@@ -255,3 +257,63 @@ None. No proportional test-review finding was open. `CR-F-003` was already resol
 - Material score or classification changes: no full scorecard was repeated. CRR-007's source score is superseded only for affected runtime correctness/API/E2E readiness; review outcome changes from Pass to Fail with split `Local Fix` ownership.
 - Recommended recipients: `/api_e2e_engineer` for `CR-F-005`–`CR-F-007`; `/implementation_engineer` for `CR-F-004`.
 - Remaining risks or uncertainty: selected Codex value persistence/use remains unproved until the implementation fix. The exact shared resource behind the two broad-run-only failures remains to be isolated, but focused passing reruns exclude current production-defect attribution. Durable coverage edits must return for proportional test-code review after a successful renewed API/E2E run.
+
+
+### CRR-010 — Shared current-Codex enum correction passes source re-review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`; `IR-006`; `CR-F-004`; prior `API-E2E-009-C` / `API-E2E-F-001`
+- Relevant solution revision IDs: `SR-005` (preserving SR-004/SR-003)
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-006` (preserving IR-005/IR-003)
+- Relevant API/E2E revision IDs: `API-REV-003` Fail; renewed execution pending
+- Relevant delivery revision IDs: `DR-002` historical pre-failure checkpoint
+- Prior authoritative result: **Fail — Local Fix (split ownership)** (`CRR-009`)
+- Current authoritative result: **Pass — Implementation Review**; API/E2E-owned corrections and renewed execution remain required
+- What changed in the review result and why: IR-006 adds one bounded shared normalizer rule: a current parameter-list `type: "enum"` with a non-empty all-string `enum_values` list becomes the UI's established `type: "string"` plus `enum` shape. Advertised Codex members therefore validate and emit in both launch and existing-run Settings, unsupported members still fail membership validation, and malformed mixed enums remain fail-closed. No consumer-specific patch, public API change, persisted-data change, or lifecycle/concurrency machinery was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-004` | Open — Local Fix / implementation | Resolved | `IR-006`, `CRR-009`, `API-REV-003` | `llmConfigSchema.ts` adapts only non-empty all-string raw enums; utility tests prove valid/unsupported/malformed cases; shared component tests prove launch and existing-run Settings become ready and emit `low`. Reviewer rerun passed 2 files / 15 tests. |
+| `CR-F-005` | Open — Local Fix / API/E2E | Remains open with API/E2E owner | `CRR-009`, `API-REV-003` | No production/test-harness change for this finding appears in IR-006. |
+| `CR-F-006` | Open — Local Fix / API/E2E | Remains open with API/E2E owner | `CRR-009`, `API-REV-003` | No stale-fixture/query correction appears in IR-006. |
+| `CR-F-007` | Open — Local Fix / API/E2E | Remains open with API/E2E owner | `CRR-009`, `API-REV-003` | Root-run isolation remains downstream API/E2E work. |
+| `CR-F-003` | Resolved by SR-005/IR-005 | Remains resolved | `SR-005`, `IR-005`, `CRR-007`, `IR-006` | IR-006 changes only transient frontend schema normalization and shared unit/component tests. |
+
+- New or remaining finding IDs: no implementation finding remains. `CR-F-005` through `CR-F-007` remain API/E2E-owned.
+- Material score or classification changes: full source score is `9.6/10` (`95.5/100`) with every category `>=9.0`; source result changes from the CRR-009 implementation-owned failure to Pass. API/E2E readiness remains bounded at `9.0` until its owned corrections and renewed execution complete.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: real Save/persistence/later restored use of the selected Codex value is not yet re-executed. API/E2E must finish CR-F-005 through CR-F-007, rerun the real and root scenarios, and return any durable coverage changes for proportional review. The concurrent uncommitted coverage-investigation edit belongs to API/E2E and was not attributed to IR-006.
+
+
+### CRR-011 — Recovered root E2E coverage passes proportional test-code review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `3`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md`; `API-REV-004`; `API-E2E-009`; `CR-F-004` through `CR-F-007`
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-006` (preserving IR-005/IR-003)
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-002` historical pre-failure checkpoint
+- Prior authoritative result: **Pass — Implementation Review** (`CRR-010`); API/E2E-owned CR-F-005 through CR-F-007 and renewed execution remained pending
+- Current authoritative result: **Pass — Test-Code Review**
+- What changed in the review result and why: API-REV-004 added one typed reusable complete Studio E2E service-registration helper and updated fifteen durable E2E files to current definition/runtime/manager/query/migration contracts and deterministic process/error handling. The helper uses real definition authorities, requires explicit overrides for used non-definition boundaries, and fails loudly otherwise. Every registration is closed. Stale singleton/field/manager/provenance seams are removed; child stdio waits for `close`; token analytics asserts GraphQL success before data. The consolidated 15-file/78-test run and canonical root 201/201 executed-test run pass, and the real no-interception Codex journey proves Save/persist/restore/use.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-004` | Resolved in source by IR-006/CRR-010; real execution pending | Resolved and execution-confirmed | `IR-006`, `CRR-010`, `API-REV-004` | Real Chromium selected `medium -> low`, received `UPDATED` while stopped, reread canonical low, later restored and received `CLASSROOM_E2E_LOW_OK`. |
+| `CR-F-005` | Open — API/E2E composition Local Fix | Resolved | `CRR-009`, `API-REV-004`, `CRR-011` | One complete reusable registration helper is used across affected GraphQL suites; production fail-fast remains unchanged; focused and root runs pass. |
+| `CR-F-006` | Open — API/E2E stale/inconsistent fixture Local Fix | Resolved | `CRR-009`, `API-REV-004`, `CRR-011` | Current Agent Tools/compaction, definition caches, Team manager/query shapes, and truthful General migration provenance replace stale seams; focused/root runs pass. |
+| `CR-F-007` | Open — API/E2E root-run isolation Local Fix | Resolved | `CRR-009`, `API-REV-004`, `CRR-011` | Child-process completion waits for closed stdio and token analytics asserts GraphQL errors directly; focused pair, token folder, and canonical root pass. |
+| `CR-F-003` | Resolved by SR-005/IR-005 | Remains resolved | `SR-005`, `IR-005`, `API-REV-004` | Current root and real sequential lifecycle execute without an ownership failure. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no implementation scorecard was repeated or changed. API-REV-004 is Pass at `97.4%`; proportional test-code review is Pass.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: paid Claude remote-turn availability remains an unchanged bounded environment residual. Electron-shell-only behavior and excluded multi-tab/revision/rebase/cross-owner simultaneous-call scenarios remain outside SR-005. No material residual remains for the real Codex stopped-Team journey or canonical root E2E suite.

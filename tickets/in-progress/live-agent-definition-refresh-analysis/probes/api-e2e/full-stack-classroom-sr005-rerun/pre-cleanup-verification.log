@@ -1,0 +1,9 @@
+external package git status (read-only source):
+validation ports:
+33123 CLOSED
+38123 CLOSED
+codex app-server processes mentioning validation worktree:
+18655   787 /bin/bash -lc {   echo 'external package git status (read-only source):'; git -C /home/autobyteus/workspace/autobyteus-agents status --short;   echo 'validation ports:'; for p in 33123 38123; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/tmp/lsof-$p 2>/dev/null; then echo "$p OPEN"; cat /tmp/lsof-$p; else echo "$p CLOSED"; fi; done   echo 'codex app-server processes mentioning validation worktree:'; ps -eo pid=,ppid=,args= | grep -E 'codex.*app-server|app-server.*codex' | grep 'autobyteus-workspace-live-agent-definition-refresh-analysis' || true;   echo 'production package setting:'; grep -n '^AUTOBYTEUS_AGENT_PACKAGE_ROOTS' /home/autobyteus/data/.env 2>/dev/null || true; } | tee tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005-rerun/pre-cleanup-verification.log
+18658 18655 /bin/bash -lc {   echo 'external package git status (read-only source):'; git -C /home/autobyteus/workspace/autobyteus-agents status --short;   echo 'validation ports:'; for p in 33123 38123; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/tmp/lsof-$p 2>/dev/null; then echo "$p OPEN"; cat /tmp/lsof-$p; else echo "$p CLOSED"; fi; done   echo 'codex app-server processes mentioning validation worktree:'; ps -eo pid=,ppid=,args= | grep -E 'codex.*app-server|app-server.*codex' | grep 'autobyteus-workspace-live-agent-definition-refresh-analysis' || true;   echo 'production package setting:'; grep -n '^AUTOBYTEUS_AGENT_PACKAGE_ROOTS' /home/autobyteus/data/.env 2>/dev/null || true; } | tee tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005-rerun/pre-cleanup-verification.log
+production package setting:
+11:AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/home/autobyteus/data/agent-packages/github/autobyteus__autobyteus-agents

@@ -156,7 +156,9 @@ const assertChildProcessSpawnWorks = async (): Promise<void> => {
       stderr += chunk.toString();
     });
     child.on("error", reject);
-    child.on("exit", (code) => {
+    // `exit` can precede the final stdout read under full-suite process pressure.
+    // `close` is the child-process contract that waits for stdio streams to close.
+    child.on("close", (code) => {
       if (code === 0) {
         resolve(stdout.trim());
       } else {

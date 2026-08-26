@@ -1,0 +1,16 @@
+import { chromium } from '../../../../../../autobyteus-web/node_modules/playwright-core/index.mjs';
+const path = '/home/autobyteus/workspace/autobyteus-agents';
+const browser = await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const page = await browser.newPage({viewport:{width:1400,height:900}});
+page.setDefaultTimeout(60000);
+await page.goto('http://127.0.0.1:33123/settings?section=agent-packages',{waitUntil:'domcontentloaded'});
+const manager=page.locator('[data-testid="agent-packages-manager"]');
+await manager.waitFor();
+const row=page.locator('[data-testid="agent-package-row-local_path"]').filter({hasText:path});
+await row.waitFor();
+await row.getByRole('button',{name:/Remove/i}).click();
+const confirm=page.getByRole('button',{name:/Remove|Confirm|Delete/i}).filter({visible:true}).last();
+if (await confirm.count()) await confirm.click();
+await row.waitFor({state:'detached'});
+console.log(JSON.stringify({removed:path,remaining:await page.locator('[data-testid="agent-package-row-local_path"]').allInnerTexts()}));
+await browser.close();

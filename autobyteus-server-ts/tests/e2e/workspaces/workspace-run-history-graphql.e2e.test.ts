@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 
 const listWorkspaceRunHistoryMock = vi.fn();
@@ -36,12 +36,15 @@ vi.mock("../../../src/workspaces/workspace-manager.js", async () => {
 });
 
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 describe("Workspace run history GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let closeStudioServices: (() => void) | null = null;
 
   beforeAll(async () => {
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -49,6 +52,8 @@ describe("Workspace run history GraphQL e2e", () => {
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
+
+  afterAll(() => closeStudioServices?.());
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -112,19 +117,19 @@ describe("Workspace run history GraphQL e2e", () => {
                 teamRunId: "team-run-1",
                 teamDefinitionId: "team-def-1",
                 teamDefinitionName: "Software Engineering Team",
-                coordinatorMemberRouteKey: "coordinator",
+                coordinatorAddress: "/coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
                 isActive: true,
-                memberTree: [],
                 members: [
                   {
-                    memberRouteKey: "coordinator",
-                    memberName: "solution_designer",
-                    memberRunId: "member-run-1",
+                    memberAddress: "/coordinator",
+                    displayName: "solution_designer",
+                    agentRunId: "member-run-1",
+                    status: "idle",
                     runtimeKind: "AUTOBYTEUS",
                     workspaceRootPath: "/ws/a",
                   },
@@ -163,18 +168,18 @@ describe("Workspace run history GraphQL e2e", () => {
               teamRunId
               teamDefinitionId
               teamDefinitionName
-              coordinatorMemberRouteKey
+              coordinatorAddress
               workspaceRootPath
               summary
               createdAt
               archivedAt
               terminatedAt
               isActive
-              memberTree
               members {
-                memberRouteKey
-                memberName
-                memberRunId
+                memberAddress
+                displayName
+                agentRunId
+                status
                 runtimeKind
                 workspaceRootPath
               }
@@ -223,19 +228,19 @@ describe("Workspace run history GraphQL e2e", () => {
                 teamRunId: "team-run-1",
                 teamDefinitionId: "team-def-1",
                 teamDefinitionName: "Software Engineering Team",
-                coordinatorMemberRouteKey: "coordinator",
+                coordinatorAddress: "/coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
                 isActive: true,
-                memberTree: [],
                 members: [
                   {
-                    memberRouteKey: "coordinator",
-                    memberName: "solution_designer",
-                    memberRunId: "member-run-1",
+                    memberAddress: "/coordinator",
+                    displayName: "solution_designer",
+                    agentRunId: "member-run-1",
+                    status: "idle",
                     runtimeKind: "AUTOBYTEUS",
                     workspaceRootPath: "/ws/a",
                   },
@@ -474,14 +479,13 @@ describe("Workspace run history GraphQL e2e", () => {
                 teamRunId: "team-run-1",
                 teamDefinitionId: "team-def-1",
                 teamDefinitionName: "Software Engineering Team",
-                coordinatorMemberRouteKey: "coordinator",
+                coordinatorAddress: "/coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Team fields are intentionally retained",
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
                 isActive: true,
-                memberTree: [],
                 members: [],
               },
             ],

@@ -9,6 +9,7 @@ The canonical coverage investigation and execution coverage report remain author
 | API-REV-001 | `code_reviewer` / `CRR-004` / API-E2E round 1 | `SR-004`, `ARCH-REV-003`, `IR-003`, `CRR-004` | N/A | Pass / 96.4% |
 | API-REV-002 | `code_reviewer` / `CRR-007` / API/E2E round 2 | `SR-005`, `ARCH-REV-004`, `IR-005`, `CRR-007`, `DR-001` | Pass / 96.4% | Pass / 97.1% |
 | API-REV-003 | User real-stack correction / API/E2E round 3 | `SR-005`, `ARCH-REV-004`, `IR-005`, `CRR-007`, `API-REV-002` | Pass / 97.1% | **Fail / 78.3%** |
+| API-REV-004 | `code_reviewer` / `CRR-010` + `CRR-009` split Local Fix / API/E2E round 4 | `SR-005`, `ARCH-REV-004`, `IR-006`, `CRR-010`, `API-REV-003` | Fail / 78.3% | **Pass / 97.4%** |
 
 ## Revision Entries
 
@@ -94,3 +95,34 @@ None. No prior completed API/E2E result exists. In-round fixture corrections wer
   - `API-E2E-F-002`: root `pnpm test:e2e` reports 15 failed / 41 passed / 14 skipped files and 41 failed / 154 passed / 57 skipped tests; 29 failure occurrences show missing Studio Application API service composition, with other failures requiring separate triage.
 - Recommended recipient: `/code_reviewer` for focused failure-origin review; likely frontend source rework for F-001 and test/harness rework after origin confirmation for F-002.
 - Remaining risks, blocked evidence, or untested scope: Actual stopped Codex config persistence/later use is blocked by F-001. Root E2E is not clean. Electron shell and prohibited concurrency/revision scenarios remain out of scope. No validation resource remains running.
+
+
+### API-REV-004 — Codex stopped-Team Save and canonical root-suite recovery
+
+- Triggering role, report path, and round: `code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`; API/E2E round 4 after `CRR-010` passed `IR-006` and `CRR-009` assigned `CR-F-005`–`CR-F-007` to API/E2E.
+- Triggering finding/scenario IDs: prior `API-E2E-F-001`, `API-E2E-F-002`, `CR-F-004`–`CR-F-007`, and API-E2E-009.
+- Related revisions: `SR-005`, `ARCH-REV-004`, `IR-006` preserving `IR-005`, `CRR-010`, `CRR-009`, and prior `API-REV-003`.
+- Why recorded: This round closes the real user-visible Codex enum failure, repairs the current E2E harness/fixtures without weakening production, stabilizes the broad root execution, and re-proves the exact external-package Classroom Team journey through a real browser and provider.
+- Durable coverage delta: added `autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts`; updated fifteen E2E files covering Studio composition, current definition/runtime/manager/query/migration fixtures, child-process stdio synchronization, and token-analytics GraphQL diagnostics; removed no durable file.
+- Scenarios rechecked: API-E2E-001–008 remained valid; API-E2E-009 was rerun end-to-end; the canonical root E2E and both production builds were rerun.
+- Execution delta: consolidated changed coverage passed 15 files / 78 tests; canonical `pnpm test:e2e` passed 56 files with 14 skipped and 201 tests with 51 skipped; backend and Nuxt production builds passed. A real Chromium tab with no interception imported exact `/home/autobyteus/workspace/autobyteus-agents`, launched/stopped the Classroom Simulation Team on Codex App Server/GPT-5.4, selected `reasoning_effort=low`, saved an `UPDATED` canonical tree, reread low network-fresh, restored on a later message, received real assistant `CLASSROOM_E2E_LOW_OK`, and stopped again.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-E2E-F-001` / `CR-F-004`: real Codex enum was rendered but rejected and Save disabled | Implementation-owned Local Fix | Resolved by reviewed IR-006 and directly proven in the real UI: `medium -> low`, no validation error, Save enabled, exact mutation and persisted/restored low | `browser-evidence.json`, screenshots 07–10, `final-state-verification.json` |
+| `API-E2E-F-002` / `CR-F-005`: incomplete Studio service composition across nine GraphQL E2E files | API/E2E-owned Local Fix | One reusable complete registration helper added; real definition authorities used; unused services fail loudly; production fail-fast unchanged | focused 15 files / 78 tests and canonical root Pass |
+| `CR-F-006`: removed APIs/current-capability/query/provenance fixture drift | API/E2E-owned Local Fix | Fixtures now use current Agent Tools MCP/compaction capabilities, Team manager methods, workspace history fields, cache refresh, and valid General migration provenance | focused logs, migration 4/4, canonical root Pass |
+| `CR-F-007`: file-explorer/token analytics failed only in broad root run | API/E2E-owned resource/order isolation | Child probe now waits for stdio `close`; analytics asserts no GraphQL errors before data; focused pair, full token folder, and root all pass | `cr-f-007-focused.log`, `cr-f-007-token-folder.log`, root log |
+
+- Canonical artifacts updated:
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005-rerun`
+- Prior result/confidence: `Fail / 78.3%` (`API-REV-003`).
+- Current result/confidence: **`Pass / 97.4%`**.
+- New or remaining failure IDs: None.
+- Recommended recipient: `/code_reviewer` for proportional review of changed durable test code before delivery.
+- Remaining risks/untested scope: paid Claude remote-turn availability remains bounded and unchanged; Electron shell and explicitly excluded multi-tab/revision/rebase/cross-owner simultaneous-call behavior are out of scope. The real Codex/UI path has no material unresolved risk.

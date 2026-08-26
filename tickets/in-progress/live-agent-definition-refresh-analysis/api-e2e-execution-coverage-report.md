@@ -5,228 +5,234 @@
 - Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/requirements.md`
 - Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/investigation-notes.md`
 - Design Spec: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-spec.md`
-- Supplemental Task Artifacts: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
-- Solution Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md`
+- Supplemental Task Artifact: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
+- Solution Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md` (`SR-005`)
 - Design Review Report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
-- Architecture Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md`
+- Architecture Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md` (`ARCH-REV-004`)
 - Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md` (`IR-006`, preserving `IR-005`/`IR-003`)
 - Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`
-- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-001` historical integration rework; `DR-002` delivery artifacts were already present and were not modified by this validation.
+- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md` (`CRR-010`, with `CRR-009` failure-origin split)
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md` (`DR-002` historical)
 - Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md`
 - API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Execution Round: 3
-- Trigger: User-directed real-system correction: start frontend/backend, import `/home/autobyteus/workspace/autobyteus-agents`, and test the real Classroom Simulation Team in a browser tab.
-- Prior Round Reviewed: Yes — `API-REV-002 Pass / 97.1%`. Its SR-005 owner/lifecycle/API evidence remains historical valid evidence, but its renderer probe intercepted GraphQL and did not prove this composed journey.
-- Latest Authoritative Round: API-REV-003, `Fail / 78.3%`.
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Execution Round: `4`
+- Trigger: CRR-010 source Pass resolved `CR-F-004`; API/E2E then completed `CR-F-005`–`CR-F-007` and reran the user-requested real stack.
+- Prior Round Reviewed: `API-REV-003 — Fail / 78.3%`
+- Latest Authoritative Round: `API-REV-004`
 
 ## Investigation And Execution Basis
 
-- Investigation completed before durable coverage changes or final execution: `Yes`.
-- Investigation plan followed: `Yes, with one safe endpoint deviation` — canonical `pnpm dev` built successfully but refused fixed port 8000 because it was owned by unrelated PID 63. The fresh built server and Nuxt frontend were started on validation-owned ports 38123/33123 instead.
-- Existing coverage decisions revised during execution: `Yes` — client schema/form coverage and root in-process GraphQL E2E composition changed from `Still Valid` to `Needs Update`.
-- Reroute required: `Yes` — `API-E2E-F-001` critical real-browser Save failure and `API-E2E-F-002` supported root E2E suite regression.
-- No production source or repository-resident durable test was changed in this round.
+- Investigation completed before durable edits and final execution: `Yes`. The CRR-009 pre-edit section was written before test changes and refreshed against SR-005/IR-006/CRR-010 before renewed execution.
+- Investigation plan followed: `Yes`. Focused fixture/harness/resource checks preceded the canonical root suite; production builds preceded the composed browser run.
+- Coverage decisions revised during execution: the nine missing-service files and CR-F-006 fixtures moved from `Needs Update` to `Still Valid` after current-contract corrections; CR-F-007 expectations remained valid after deterministic synchronization/diagnostic improvements.
+- Reroute required during execution: `No`. An environment preflight inherited production variables; it was corrected and fully cleaned before the authoritative run, as detailed below.
+- Production source changed by API/E2E: `No`.
 
 ## Compatibility / Legacy Scope Check
 
-- Requirements/design introduce or tolerate backward compatibility: `No`.
-- Compatibility-only runtime behavior observed: `No`.
-- Approved persisted-data transition followed without unnecessary migration/fallback: `Yes`.
+- Reviewed requirements/design introduce backward compatibility: `No`.
+- Compatibility-only or legacy-retention implementation observed: `No`.
+- Approved persisted-data decision followed: `Yes — Not Affected` for IR-006.
 - Durable coverage retained only for compatibility behavior: `No`.
-- Reroute classification: `Local Fix` preliminarily; code reviewer must confirm failure origin.
-- Upstream recipient: `/code_reviewer` after artifact completion.
+- Removed APIs/fields were not reintroduced into production; test fixtures now use current contracts.
 
 ## Changed Boundary And Evidence Matrix
 
-| Scenario ID | Behavior / Requirements / ACs | Boundary | Execution Surface | Evidence | Result | Artifact |
-| --- | --- | --- | --- | --- | --- | --- |
-| API-E2E-001–008 | SR-005 General/API/Application ownership/lifecycle and prior sequential renderer behavior | Backend, GraphQL, lifecycle, renderer | Prior durable repository and browser evidence | Durable/Browser | Pass (historical, retained) | API-REV-002 artifacts |
-| API-E2E-009-A | Import exact external package and render real Classroom Team | Nuxt -> GraphQL -> backend registry/package readers -> filesystem | Real Chromium, no interception | Browser/Live | Pass | `02-settings-imported-real-package.png`, `03-classroom-team-card.png`, `browser-evidence.json` |
-| API-E2E-009-B | Launch and Stop real Team; network-fresh stopped Settings | Nuxt -> GraphQL -> Team manager/history | Real Chromium/backend/SQLite | Browser/Live | Pass | `06-classroom-team-running.png`, `browser-evidence.json` |
-| API-E2E-009-C / API-E2E-F-001 | Edit and Save an actual supported Codex model config | Catalog -> normalization -> form validation -> update mutation | Real Chromium/backend catalog | Browser/Live | **Fail** | `failure.png`, `enum-schema-reproduction.log` |
-| API-E2E-009-D | Later browser message restores same stopped run and applies real Codex provider | Browser -> Restore GraphQL -> Team WebSocket -> Codex App Server / GPT-5.4 -> trace | Real Chromium/provider | Browser/Live | Pass | `11-classroom-real-codex-response.png`, `real-turn-evidence.json`, `final-state-verification.json` |
-| API-E2E-F-002 | Project-supported broad server E2E command remains executable | Root script -> Vitest -> in-process GraphQL schemas and other E2E boundaries | Repository E2E | Durable | **Fail** | `root-pnpm-test-e2e.log` |
+| Scenario ID | Behavior / Requirements | Boundary | Surface / Evidence | Result | Artifact |
+| --- | --- | --- | --- | --- | --- |
+| API-E2E-001/002 | General standalone stopped read/update/restart and active lock; REQ-001–007, AC-001–004 | General lifecycle + GraphQL + persistence | Existing durable focused/root coverage | Pass | canonical root log and prior focused evidence retained |
+| API-E2E-003 | Exact supported General/external-channel restore lanes, no browser concurrency | Per-ID lifecycle ownership | Existing durable lane/caller coverage + root | Pass | `root-pnpm-test-e2e-rerun.log` |
+| API-E2E-004/005 | Team configured-scope persistence, validation, identity/fixed-field preservation, migration | Team tree/catalog/files | Corrected durable E2E + root | Pass | focused final, migration and root logs |
+| API-E2E-006 | AutoByteus/Codex/Claude runtime adapter configuration | Provider boundary | Durable adapter/bootstrap coverage; real Codex in API-E2E-009 | Pass | root log; browser/trace evidence |
+| API-E2E-007/008 | SR-005 Application Agent/Team lease, startup-ready owner read, live lock/no write, terminal release, provenance reentry | Application/Studio/General ownership | Existing focused integration and clean root | Pass | root log; CRR-007/previous focused evidence |
+| API-E2E-009-A | Import exact package and render actual Classroom Team | Frontend -> GraphQL -> filesystem catalogs | Real browser/live API | Pass | `browser-evidence.json`, screenshots 01–04 |
+| API-E2E-009-B | Launch real Classroom Team with Codex App Server/GPT-5.4, then Stop | Browser -> GraphQL -> process/lifecycle | Real browser/live API/process | Pass | assertions, operations, screenshots 05–06 |
+| API-E2E-009-C | Open network-fresh stopped Settings, select advertised `low`, no enum error, Save enabled | Dynamic catalog -> shared normalizer -> form | Real browser | Pass | assertions, `07-classroom-stopped-settings-edited.png` |
+| API-E2E-009-D | Save exact Team patches, return `UPDATED`, stay stopped, canonical tree low | Browser mutation -> Team lane/files | Real browser/live API | Pass | mutation variables/response and `08-...saved.png` |
+| API-E2E-009-E | Reopen Settings network-fresh and observe persisted low | GraphQL/file -> store/form | Real browser/live API | Pass | second `GetTeamRunResumeConfig`, `09-...reloaded.png` |
+| API-E2E-009-F | Later browser message restores same Team and real professor replies through GPT-5.4 using persisted tree | UI -> restore -> WebSocket -> Codex provider | Real browser/live external provider | Pass | assistant `CLASSROOM_E2E_LOW_OK`, 1 sent/37 received Team frames, screenshot 10 |
+| API-E2E-009-G | Final Stop and physical/current canonical verification | Lifecycle + GraphQL + files + raw trace | Live API/read-only verification | Pass | `final-state-verification.json` |
+| ROOT-E2E | Entire supported server E2E suite | Broad regression | Durable root suite | Pass — 56 passed/14 skipped files; 201 passed/51 skipped tests | `root-pnpm-test-e2e-rerun.log` |
 
 ## Additional Repository Coverage Execution
 
-| Order | Command | Working Directory / Configuration | Boundary | Result | Evidence |
+| Order | Command | Working Directory | Boundary | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm dev` | Workspace root | Full backend/shared-package/Prisma/TS build and canonical launcher | Build Pass; launcher Blocked safely by `DEV_PORT_OCCUPIED` | `dev-stack.log` |
-| 2 | Start freshly built `autobyteus-server-ts/dist/app.js` with host `127.0.0.1`, port `38123`, and validation-owned data dir | Workspace | Real production-composed backend | Pass | `backend.log` |
-| 3 | Start Nuxt dev server on `127.0.0.1:33123` with HTTP/WS endpoints set to 38123 | `autobyteus-web` | Real frontend/proxy/browser surface | Pass | `frontend.log` |
-| 4 | `node run-full-stack-classroom.mjs` | Evidence directory; system Chromium; no request interception | API-E2E-009 import/launch/Stop/Settings/Save | **Fail** at Save enablement | `browser-evidence.json`, `failure.png` |
-| 5 | Focused production-shape normalization probe | Web utility loaded with captured Codex legacy parameter payload | Failure localization | **Fail as expected**: valid `low` yields type issue `expected: enum` | `enum-schema-reproduction.log` |
-| 6 | `pnpm exec vitest run utils/__tests__/llmConfigSchema.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` | `autobyteus-web` | Existing regression inventory | Pass — 3 files / 25 tests; exposes fixture gap | `focused-web-tests.log` |
-| 7 | `node run-real-classroom-turn.mjs` | Evidence directory; new real Chromium tab; no interception | Real restore/WebSocket/provider turn | Pass | `real-turn-evidence.json` |
-| 8 | `pnpm test:e2e` | Workspace root; authoritative root script | Full server E2E | **Fail** — 15/70 files, 41/252 tests | `root-pnpm-test-e2e.log` |
+| 1 | Consolidated 15 changed E2E files with `pnpm exec vitest run ... --no-watch` | `autobyteus-server-ts` | CR-F-005–007 together | Pass — 15 files / 78 tests | `durable-coverage-focused-final.log` |
+| 2 | File-explorer + token analytics | server | Root-resource/order sensitivity | Pass — 2 files / 6 tests | `cr-f-007-focused.log` |
+| 3 | Complete token-usage folder | server | Predecessor/order isolation | Pass — 9 files / 24 tests | `cr-f-007-token-folder.log` |
+| 4 | Team V1 production upgrade | server | Current migration provenance | Pass — 1 file / 4 tests | `team-v1-migration-focused.log` |
+| 5 | `pnpm typecheck` | server | Repository typecheck script | Known TS6059 config failure for all tests outside `rootDir: src`; unchanged/pre-existing | `server-typecheck.log`; IR-005 documents the same limitation |
+| 6 | `pnpm test:e2e` | workspace root | Canonical complete E2E | Pass — 70 files total, 56 passed/14 skipped; 252 tests total, 201 passed/51 skipped | `root-pnpm-test-e2e-rerun.log` |
+| 7 | `pnpm -C autobyteus-server-ts build` | workspace root | Production TypeScript/assets/bootstrap | Pass | `backend-build.log` |
+| 8 | `pnpm -C autobyteus-web build` | workspace root | Production Nuxt renderer | Pass | `frontend-build.log` |
+| 9 | `git diff --check` | workspace root | Patch hygiene | Pass | final execution |
 
 ## Validation Confidence Scorecard
 
-| Category | Post-Repository | Final | Change | Final Evidence | Residual |
+| Confidence Category | Post-Repository | Final | Change | Final Evidence | Residual Uncertainty |
 | --- | ---: | ---: | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 50% | -25 | Real import/launch/Stop/restore/turn pass, but critical real Codex Save fails | AC-001/006/009/011/016 Save/use path not satisfied |
-| Changed-boundary execution directness | 93% | 98% | +5 | Production utility plus exact real browser/backend/catalog path | Source fix not yet executed |
-| Cross-boundary integration realism and mock gap | 90% | 98% | +8 | One composed Nuxt/GraphQL/SQLite/WebSocket/Codex execution without interception | Save never crossed transport due client rejection |
-| Environment/configuration/identity/fixture fidelity | 90% | 98% | +8 | Exact local package, real definition/run/member IDs, real Codex catalog/provider | Fixed canonical ports unavailable; safe isolated equivalent used |
-| Failure/edge/lifecycle/recovery evidence | 93% | 94% | +1 | Stop, network-fresh read, restore, later message, final Stop, and raw trace verified | Save recovery awaits fix |
-| User-surface/browser/desktop confidence | 75% | 50% | -25 | Real Chromium directly shows the critical validation error and disabled Save | User journey is broken; Electron shell not relevant |
-| Durable regression coverage quality/relevance | 60% | 60% | 0 | Exact gap identified; root suite fully executed | Exact Codex enum case absent; 41 broad failures |
+| Requirement and acceptance-criteria proof | 92% | 98% | +6 | Critical real Codex stopped-Team Save, persistence, restore/use, active lock and exact mutation/tree all pass; preserved AC suites/root pass | Paid Claude remote turn remains environment-limited and unchanged |
+| Changed-boundary execution directness | 95% | 98% | +3 | Actual producer catalog, normalizer, DOM select, Save mutation, canonical file and provider trace | None material |
+| Cross-boundary integration realism and mock gap | 91% | 98% | +7 | One no-interception stack crossed exact external package, Nuxt, built backend, SQLite/files, GraphQL, WebSocket and GPT-5.4 | Electron shell not exercised because no shell boundary changed |
+| Environment/configuration/identity/fixture fidelity | 90% | 97% | +7 | Exact source path/team/runtime/model, owned DB/data/ports, explicit endpoint isolation, production root restored/verified | Local Codex installation/auth is environment-specific by nature |
+| Failure/edge/lifecycle/recovery evidence | 95% | 96% | +1 | API-REV-003 failure directly rechecked; Stop/Save/fresh read/restore/final Stop; root and migration pass | Physical-indeterminate paths remain durable rather than live fault-injected |
+| User-surface/browser/desktop-shell confidence | 82% | 98% | +16 | Real user-style Chromium tab selected `low`, saw no error, clicked Save, reloaded and messaged; screenshots/semantic assertions | Shell-specific IPC/window behavior N/A to change |
+| Durable regression coverage quality/relevance | 97% | 97% | 0 | One reusable service helper, 15 current fixtures, focused 78/78 and clean root 201/201 executed tests | Live provider/package journey intentionally remains ticket evidence |
 
-- Overall post-repository confidence: `82.3%` (`576 / 7`).
-- Overall final confidence: `78.3%` (`548 / 7`).
-- Calculation: simple average; critical-acceptance and weak-category gates applied independently.
-- Confidence change: More realistic evidence decreased acceptance confidence by proving the user-visible failure rather than relying on passing synthetic fixtures.
-- Every critical acceptance criterion directly proven: `No`.
-- Categories below 90%: requirement proof, user-surface confidence, durable regression quality.
-- Default 95% target met: `No`.
-- Confidence-limiting risks: known disabled Save; missing exact schema regression; broad root E2E composition failures.
+- Overall post-repository confidence: `91.7%`.
+- Overall final confidence: **`97.4%`** (`682 / 7`).
+- Calculation: simple average, with independent critical-criterion and weak-category gates.
+- Confidence change from broader validation: `+5.7 percentage points`.
+- Every critical acceptance criterion directly proven: `Yes` for the changed/current scope through combined durable and live evidence.
+- Any final applicable category below 90%: `No`.
+- Default 95% target met: `Yes`.
+- Confidence-limiting residual risks: bounded paid-Claude remote-turn availability; no Electron-shell-specific run because no shell behavior changed. Neither affects the real Codex/UI acceptance path.
 
 ## Broader Validation Decision And Execution
 
-- Decision: `Required — completed as Browser + Live API + real provider`.
-- Material deviation: fixed ports 8000/3000 were not used because 8000 was unambiguously owned by an unrelated long-lived process. Fresh build artifacts and validation-owned data were used on 38123/33123.
-- Confidence gap addressed: prior renderer GraphQL interception, external package import, real Classroom Team rendering, real provider application.
-- Startup/readiness:
-  1. `pnpm dev` built shared packages, Prisma client, server TypeScript/assets, and sanitized built-in bootstrap.
-  2. Fresh built backend passed migrations and `/rest/health` on 38123.
-  3. Nuxt 3.21.1 became ready on 33123.
-  4. Chromium loaded the real Settings page and observed real GraphQL traffic.
-- Fixture/identity: validation-owned empty development data; exact external local package; Temp Workspace; Classroom Simulation Team; real Codex App Server / GPT-5.4.
+- Decision: `Required`; selected execution mode `Browser + Live API + lifecycle/process + real provider`.
+- Material deviation: none from the final isolated plan. The initial environment preflight was discarded and cleaned before authoritative execution.
+- Startup order: prepare/build shared and backend; build web; start built backend on `38123` with owned database/data; health-check; start Nuxt on `33123` with explicit HTTP/WS endpoints; load system Chromium.
+- Environment: Linux aarch64; isolated `.autobyteus/development/server-data`; exact external package remained read-only; no browser interception or synthetic data injection.
+- Readiness: backend `/rest/health` returned `status=ok`; Nuxt returned 200 and semantic DOM loaded; GraphQL operations returned 200; WebSockets had no errors.
 
 | Journey Step | Expected | Actual | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Import exact path | Package registry row with current counts | 7 shared, 50 team-local, 12 teams, 0 applications | screenshot/registry JSON | Pass |
-| Render Team | Classroom Team, professor/student | Exact team/coordinator/members rendered | screenshots/DOM JSON | Pass |
-| Launch | Real Team run and workspace | `CreateAgentTeamRun` success; run ID `classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46` | GraphQL capture/screenshot | Pass |
-| Stop -> Settings | Inactive network-fresh config, editable | `isActive:false`, editable true, stopped notice | GraphQL/DOM | Pass |
-| Edit `reasoning_effort` | `low` valid; Save enabled | Error `Enter a value of type enum.`; Save disabled | `failure.png` | **Fail** |
-| Save | Exact update mutation and UPDATED response | No `UpdateStoppedTeamRunModelConfigs` request sent | operation log | **Fail** |
-| Later message | Restore same run; real response | Restore success; 1 sent/41 received Team WS frames; `CLASSROOM_E2E_OK` | screenshot/WS/trace | Pass |
-| Final cleanup state | Team stopped | `isActive:false`, same runtime/model/members | final GraphQL JSON | Pass |
-
-The first browser attempt encountered one Vite dependency-optimization 504 while warming a dynamically loaded workspace module. Nuxt re-optimized/reloaded normally, and the authoritative rerun reached the product failure. This is environment warmup, not the reported source defect.
+| Import exact `/home/autobyteus/workspace/autobyteus-agents` | Package appears through real UI/API | 7 shared / 50 team-local / 12 teams / 0 applications | assertion + Import mutation + screenshot 02 | Pass |
+| Open Classroom Team | Real professor/student definition renders | Correct team/details/card rendered | screenshots 03–04 | Pass |
+| Launch Codex Team | Real `codex_app_server`, GPT-5.4 run created | run `classroom_simulation_team_5ae5...` created | Create mutation + screenshot 06 | Pass |
+| Stop | Team terminates before edit | terminate success, inactive fresh read | operation/assertion | Pass |
+| Select reasoning `low` | Accepted current enum, no error, Save enabled | value `medium -> low`, `aria-invalid=false`, zero error, enabled Save | DOM assertions + screenshot 07 | Pass |
+| Save | Narrow patches persisted while stopped | root/professor/student patches carried low; outcome `UPDATED`; `isActive=false`; no field errors | exact mutation/response + screenshot 08 | Pass |
+| Fresh Settings read | Canonical persisted low appears | second network-only resume query and select both low | GraphQL + DOM + screenshot 09 | Pass |
+| Later message | Same Team restores and real provider responds | professor assistant trace/UI text `CLASSROOM_E2E_LOW_OK` | Team WebSocket 1 sent/37 received, raw trace, screenshot 10 | Pass |
+| Final Stop/read | No live run remains; low persists physically | `isActive=false`; root + both members low; tree/trace hashes retained | final-state JSON | Pass |
 
 ## Desktop Application Validation
 
-- Approach: browser validation of the web-equivalent Nuxt renderer, per project guidance.
-- Browser-tested behavior: Settings import, Team list/detail, launch config, workspace, Stop, existing-run Settings, validation/Save control, history reopen, message input, and WebSocket-rendered response.
-- Shell-specific behavior: none changed; Electron shell execution was unnecessary.
-- Effect on running desktop/application: `None`. The unrelated server at port 8000 was not stopped or reused.
-- Not directly proven: native Electron preload/window/IPC behavior; inapplicable to the failed web validation boundary.
+- Framework: Electron wrapping the same Nuxt renderer.
+- Validation approach: browser-preferred real Nuxt tab against the real backend, per project skill and user intent.
+- Web-equivalent behavior proven: dynamic catalog, Settings controls, Save gate/feedback, navigation, GraphQL, WebSockets and provider response.
+- Shell-specific behavior: none changed; preload, IPC, window lifecycle and packaging were not exercised.
+- Effect on any running desktop application: `None`; validation used owned ports/data and did not stop unrelated services.
 
 ## Platform / Runtime Targets
 
-- Platform: Linux `6.12.54-linuxkit`, `aarch64`.
-- Runtime/framework: Node `v22.23.1`; pnpm `10.28.2`; server `0.1.1`; web `1.4.58`; Nuxt `3.21.1`; web Vitest `3.2.4`; server Vitest `4.0.18`.
-- Browser: system Chromium `149.0.7827.196` via Playwright Core.
-- Viewport/session: 1600x1000 screenshots; locale `en-US`; UTC; no GraphQL interception.
+- OS: Linux aarch64 (`6.12.54-linuxkit`).
+- Node: `v22.23.1`; pnpm `10.28.2`.
+- Vitest: `4.0.18`; Nuxt `3.21.1` runtime reported by build/dev.
+- Browser: system Chromium `149.0.7827.196`, Playwright Core, headless real tab.
+- Viewport: `1600x1000`; default locale/timezone; no route interception.
 
 ## Lifecycle / Persisted-Data Checks
 
-- Approved decision: SR-005 ownership data `Not Affected`; stopped config feature `Directly Usable — No Migration`.
-- Representative data: current local package registry, Team V2 execution tree, stopped history, actual Codex config schema, WebSocket traces.
-- Result: package/run/history were directly created/read; run stopped/restored/stopped; final run was inactive; no migration/fallback branch observed.
-- Version-specific runtime fallback: `No`.
-- Residual: model config remained `null` because UI Save failed before mutation.
+- Approved decision: `Not Affected` for IR-006; current packages remain directly usable.
+- Existing/current data: current V2 Team execution tree; current Team V1 production-upgrade fixture through the actual startup path.
+- Result: stopped Save returned and physically wrote a current tree with root/professor/student `reasoning_effort=low`; network-fresh stopped and restored-active queries both returned low; final query returned inactive/low.
+- Provider application: final professor raw trace contains the user token and assistant `CLASSROOM_E2E_LOW_OK`; Team member received a platform provider run ID after restore.
+- Version-specific fallback/dual path: `No`.
+- Residual persisted-data risk: none material; transport/physical indeterminate failure behavior remains covered durably rather than by destructive live fault injection.
 
 ## Tests Implemented Or Updated
 
-None in API-REV-003.
+| Path / Group | Change | Boundary | Result |
+| --- | --- | --- | --- |
+| `tests/e2e/helpers/studio-application-api-services.ts` | Added | Complete in-process Studio registration with fail-loud unused boundaries | Focused/root pass |
+| Agent definitions: definitions, packages, JSON persistence | Updated | Studio composition | Focused/root pass |
+| Agent package private skills | Updated | Current Agent Tools MCP and compaction capability | Focused/root pass |
+| Agent-Team definitions | Updated | Current authorities/cache refresh; removed obsolete singleton use | Focused/root pass |
+| Team V1 production upgrade | Updated | Internally consistent General provenance | 4/4 + root pass |
+| External channel setup | Updated | Studio composition | Focused/root pass |
+| Recent/tool-call run projections | Updated | Studio composition | Focused/root pass |
+| Configured skill on-demand loading | Updated | Studio composition | Focused/root pass |
+| Archive/workspace run history | Updated | Studio composition and current query/member fields | Focused/root pass |
+| Workspaces GraphQL | Updated | Current Team manager methods | Focused/root pass |
+| File-explorer WebSocket lifecycle | Updated | Child stdio completion waits for `close` | 3/3 + root pass |
+| Token analytics GraphQL | Updated | Explicit no-GraphQL-error gate before data assertions | 3/3, token folder, root pass |
 
-## Tests Removed As Stale Or Obsolete
-
-None.
+No durable file was removed.
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `No`.
-- Paths added/updated/removed: none.
-- Proportional test-code review attachment: `Not Applicable`.
-- Temporary scripts and retained evidence are ticket artifacts, not durable test-suite changes.
+- Repository-resident durable coverage changed: `Yes`.
+- Added: `autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts`.
+- Updated: fifteen files listed in the coverage investigation and current Git diff.
+- Removed: none.
+- Required next action: attach every changed durable path and return to `/code_reviewer` for proportional test-code review before delivery.
 
 ## Other Execution Artifacts
 
-All paths below are under:
-`/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005`.
+All paths are under `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005-rerun`.
 
-| Artifact | Purpose | Status |
+| Artifact | Purpose | Retention |
 | --- | --- | --- |
-| `dev-stack.log` | Canonical build/launcher evidence | Retained |
-| `backend.log`, `frontend.log` | Real service startup/runtime evidence | Retained |
-| `browser-evidence.json`, `failure.png` | Primary composed journey and product failure | Retained |
-| `real-turn-evidence.json`, `11-classroom-real-codex-response.png` | Real restore/WebSocket/provider response | Retained |
-| `final-state-verification.json` | Health, registry, final stopped config, raw trace projection/hashes | Retained |
-| `enum-schema-reproduction.log` | Focused source-boundary reproduction | Retained |
-| `focused-web-tests.log` | Existing web test result | Retained |
-| `root-pnpm-test-e2e.log` | Complete supported root E2E result | Retained |
-| `cleanup-verification.log` | Port/data/process cleanup proof | Retained |
-| `01-06*.png`, `10*.png` | Supporting UI sequence | Retained |
-| `run-full-stack-classroom.mjs`, `run-real-classroom-turn.mjs` | Temporary no-interception browser probes | Retained as evidence only |
+| `durable-coverage-focused-final.log` | Consolidated 15-file/78-test result | Retained |
+| `root-pnpm-test-e2e-rerun.log` | Canonical root 70-file/252-test result | Retained |
+| `backend-build.log`, `frontend-build.log` | Production builds | Retained |
+| `browser-evidence.json` | 22 semantic assertions, 40 GraphQL operations, WebSockets, snapshots | Retained |
+| `01-...png` through `10-...png` | User-journey screenshots | Retained |
+| `backend.log`, `frontend.log`, `browser-run.log` | Composed runtime evidence | Retained |
+| `final-state-verification.json` | Final inactive canonical tree + provider trace hashes/content | Retained |
+| `cleanup-verification.log` | Port/data/generated-output/external-source cleanup | Retained |
+| `accidental-production-package-cleanup.log`, `production-package-setting-restored.log` | Transparent preflight correction/restoration evidence | Retained |
+| `server-typecheck.log` | Known repository TS6059 script limitation | Retained |
 
 ## Temporary Execution Methods / Scaffolding
 
-| Method | Why | Result | Cleanup |
+| Path / Method | Why | Result | Cleanup |
 | --- | --- | --- | --- |
-| Isolated 38123/33123 real stack | Avoid unrelated port 8000/user data | Real stack and provider exercised | Both processes/ports stopped |
-| Validation-owned `.autobyteus/development` | Avoid user/shared data | Registry, SQLite, history, traces captured | Removed |
-| Playwright Core system Chromium scripts | No literal open-tab tool was exposed; this is the real browser-tab surface | Real DOM/network/WebSocket evidence | Browser contexts closed |
-| External package local-path import | User-requested exact fixture | Imported/read successfully | Source repo unchanged; registry data removed |
-| Generated shared SDK `dist` outputs | Required by fresh full build | Build/tests ran | Removed |
+| `run-full-stack-classroom-rerun.mjs` | Real browser/provider journey inappropriate as stable CI due external local package/provider | Pass | browser closed; script retained as evidence |
+| `verify-final-state.mjs` | Correlate read-only API/file/raw-trace state | Pass | owned data removed after hashes/content retained |
+| Owned backend/Nuxt on 38123/33123 | Real composed boundary | Pass | both stopped, ports closed |
 
 ## Dependencies Mocked Or Emulated
 
-None in API-E2E-009. The browser used the real frontend, backend, filesystem package, GraphQL, SQLite, WebSockets, Codex App Server, and GPT-5.4. The prior API-REV-002 complementary fixtures remain historical evidence only.
+- Real browser journey: none. No GraphQL interception, request routing, database injection, catalog substitution, fake provider, or fake WebSocket.
+- Durable in-process GraphQL tests: the new helper uses current real Agent/Team definition authorities; service boundaries unused by a scenario are fail-loud proxies rather than silent partial objects. Exact scenario-specific services/fakes remain explicit.
+- Private-skills E2E: deterministic Agent Tools MCP/compaction collaborators are supplied because the scenario validates package-private skill materialization, not external MCP/provider behavior.
 
 ## Result Summary
 
 | Result | Scenario IDs | Summary |
 | --- | --- | --- |
-| Pass | API-E2E-009-A/B/D | Exact import/render/launch/Stop/network-fresh read/restore/provider/final Stop worked |
-| **Fail** | API-E2E-009-C / API-E2E-F-001 | Real Codex enum choice is rejected by client validation, disabling Save and preventing mutation |
-| **Fail** | API-E2E-F-002 | Supported root `pnpm test:e2e` has 15 failing files / 41 failing tests; dominant service-composition error plus other failures |
-| Pass (historical retained) | API-E2E-001–008 | Prior SR-005 owner/API/lifecycle evidence remains valid but cannot override the current critical failure |
+| **Pass** | API-E2E-001–009; ROOT-E2E | Prior real enum failure resolved; API/E2E harness/fixture/root-order findings resolved; complete root suite, production builds, exact no-interception Classroom Team Save/persist/restore/use journey, real provider response, final inactive state and cleanup all pass. |
 
 ## Cleanup Performed
 
 | Resource | Ownership | Action | Result |
 | --- | --- | --- | --- |
-| Chromium contexts | Validation | Closed by scripts | Pass |
-| Nuxt 33123 | Validation | SIGINT; port verified closed | Pass |
-| Built backend 38123 | Validation | SIGINT; port verified closed | Pass |
-| `.autobyteus/development` | Validation | Removed after final evidence | Pass |
-| Generated shared SDK `dist` | Validation | Removed | Pass |
-| PID 63 / port 8000 / `/home/autobyteus/data` | Unrelated | Left untouched | Pass |
-| `/home/autobyteus/workspace/autobyteus-agents` | External fixture | Read-only; not removed/modified | Pass |
-| Ticket evidence | Ticket-owned | Retained | Pass |
+| Chromium tab/process | Validation | closed in probe | Pass |
+| Nuxt 33123 / backend 38123 | Validation | stopped via owned sessions | Ports closed |
+| Classroom runs/SQLite/files | Validation | final Stop, evidence read, removed `.autobyteus/development` | Removed |
+| Generated SDK/Nuxt caches | Validation build | removed exact generated outputs | Removed |
+| External package source | User/local source | read-only import; no files changed | Git clean |
+| Initial production-env preflight package root | Accidental validation preflight | removed through real UI before any run; verified original `/home/autobyteus/data/.env` package root restored | Restored; evidence retained |
+| Unrelated server/data | Not owned | not stopped or deleted | Preserved |
 
 ## Preliminary Classification
 
-- **API-E2E-F-001 — Local Fix, likely frontend implementation.** The backend returns the supported Codex parameter-list schema with `type: "enum"`. `normalizeModelConfigSchema` preserves that type, while `validateUiModelConfig` accepts only string/boolean/number/integer. The renderer can display the enum select but rejects its string choice. Candidate owner after confirmation: `/implementation_engineer`. Candidate source: `autobyteus-web/utils/llmConfigSchema.ts` and its form consumers.
-- **API-E2E-F-002 — Local Fix / Unclear split.** Production composition works, but many in-process E2E schemas do not configure the newly required Studio `runModelConfigService`; 29 failure occurrences show that message. This is preliminarily a durable test/harness composition gap, likely API/E2E-owned after source rework. Remaining non-Studio failures require individual review and must not be blanket-updated.
-- On Fail, `/code_reviewer` must confirm origin and final owner.
+`N/A — Pass`. `CR-F-004` through `CR-F-007` are resolved. No new production or test failure remains.
 
 ## Recommended Recipient
 
-`/code_reviewer` for focused failure-origin review. Do not route to delivery.
+`/code_reviewer` for proportional review of the added/updated durable E2E code. After that review passes, delivery may resume with the cumulative package.
 
 ## Evidence / Notes
 
-- The user-requested “real test” was completed: real built services, real browser tab, real import, real Classroom Team, and real GPT-5.4 response.
-- The literal tool name `open_tab` was not available. System Chromium via Playwright Core provided the actual browser-tab execution; no route interception was used.
-- The full root E2E suite ran for 435.23 seconds: 70 files total, 252 tests total.
-- The critical result is `Fail` even though most composed journey steps passed, because Save is a required acceptance behavior.
+- The user-requested action was performed like a real user: a real browser tab imported the exact package, clicked Run and Stop, opened Settings, selected the actual `low` option, clicked Save, reopened Settings, then sent a later message. The test did not manually inject run/catalog/config data.
+- API-REV-003 was valuable but insufficient: it found the real bug. API-REV-004 demonstrates why the renewed evidence is materially stronger than mocked/component-only checks.
+- Browser proof covers the web-equivalent Electron renderer. It is not represented as Electron-shell proof.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Final validation confidence: `78.3%`
-- Default 95% target met: `No`
-- Applicable categories below 90%: requirement proof (50%), user surface (50%), durable regression quality (60%)
-- Broader validation decision: `Required — completed through real Browser + Live API + provider`
-- Critical acceptance criteria lacking direct proof: stopped-run actual Codex config Save/persistence/later use (AC-001/006/009/011/016)
-- Required next recipient: `/code_reviewer` for focused failure-origin review
-- Notes: no durable coverage or production source changed in API-REV-003; cleanup complete.
+- Result: **Pass**
+- Final validation confidence: **97.4%**
+- Default 95% target met: `Yes`
+- Any applicable category below 90%: `No`
+- Broader validation decision: `Required — completed successfully`
+- Critical acceptance criteria lacking direct proof: `None in the changed/current scope`
+- Required next recipient: `/code_reviewer` for proportional test-code review
+- Notes: durable coverage changed, so delivery must not proceed until that proportional review passes.

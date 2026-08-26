@@ -2,17 +2,17 @@ import "reflect-metadata";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
 } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -119,25 +119,20 @@ async function writeLocalAgentFixture(input: {
 describe("Agent team definitions GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let agentDefinitionService: AgentDefinitionService;
+  let agentTeamDefinitionService: AgentTeamDefinitionService;
+  let closeStudioServices: (() => void) | null = null;
   const cleanupPaths = new Set<string>();
-  const emptyApplicationBundleProvider = {
-    listBundles: async () => [],
-    validatePackageRoot: async () => undefined,
-    buildApplicationOwnedAgentSources: () => [],
-    buildApplicationOwnedTeamSources: () => [],
-  };
 
   beforeAll(async () => {
-    ApplicationBundleService.resetInstance();
-    ApplicationBundleService.getInstance({
-      provider: emptyApplicationBundleProvider,
-      builtInMaterializer: {
-        ensureMaterialized: async () => undefined,
-        getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
-      },
+    agentDefinitionService = AgentDefinitionService.getInstance();
+    agentTeamDefinitionService = AgentTeamDefinitionService.getInstance({
+      agentDefinitionService,
     });
-    (AgentDefinitionService as unknown as { instance: AgentDefinitionService | null }).instance = null;
-    (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
+    closeStudioServices = configureE2eStudioApplicationApiServices({
+      agentDefinitionService,
+      agentTeamDefinitionService,
+    }).close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -146,21 +141,15 @@ describe("Agent team definitions GraphQL e2e", () => {
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
 
+  afterAll(() => closeStudioServices?.());
+
   afterEach(async () => {
     for (const filePath of cleanupPaths) {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
     cleanupPaths.clear();
-    ApplicationBundleService.resetInstance();
-    ApplicationBundleService.getInstance({
-      provider: emptyApplicationBundleProvider,
-      builtInMaterializer: {
-        ensureMaterialized: async () => undefined,
-        getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
-      },
-    });
-    (AgentDefinitionService as unknown as { instance: AgentDefinitionService | null }).instance = null;
-    (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
+    await agentDefinitionService.refreshCache();
+    await agentTeamDefinitionService.refreshCache();
   });
 
   const execGraphql = async <T>(
@@ -721,6 +710,9 @@ describe("Agent team definitions GraphQL e2e", () => {
       ],
     });
 
+    await agentDefinitionService.refreshCache();
+    await agentTeamDefinitionService.refreshCache();
+
     const getQuery = `
       query TeamById($id: String!) {
         agentTeamDefinition(id: $id) {
@@ -947,6 +939,9 @@ describe("Agent team definitions GraphQL e2e", () => {
       agentId: "planner",
       name: `Department Planner ${unique}`,
     });
+
+    await agentDefinitionService.refreshCache();
+    await agentTeamDefinitionService.refreshCache();
 
     const result = await execGraphql<{
       agentTeamDefinitions: Array<{
@@ -1178,6 +1173,9 @@ describe("Agent team definitions GraphQL e2e", () => {
         });
       }
     }
+
+    await agentDefinitionService.refreshCache();
+    await agentTeamDefinitionService.refreshCache();
 
     const result = await execGraphql<{
       agentTeamDefinitions: Array<{
