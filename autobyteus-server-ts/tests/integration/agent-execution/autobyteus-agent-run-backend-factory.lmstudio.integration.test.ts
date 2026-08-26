@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -480,6 +481,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       });
 
       const runManager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
         autoByteusBackendFactory: publishBackendFactory,
         runFileChangeService: {
           attachToRun: () => () => undefined,

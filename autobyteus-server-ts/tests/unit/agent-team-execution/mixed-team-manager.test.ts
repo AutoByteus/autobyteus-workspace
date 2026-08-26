@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
@@ -138,6 +139,7 @@ const buildManager = () => {
     return run;
   });
   const manager = new MixedTeamManager(context, {
+    agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
     subTeamRunFactory: { materializeConfiguredChild, prepareFreshTaskTeam } as never,
     agentRunManager: { createAgentRun: vi.fn() } as never,
     taskRootResolver: testMemberTaskRootResolver(),

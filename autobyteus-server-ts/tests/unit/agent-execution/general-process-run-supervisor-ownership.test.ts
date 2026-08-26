@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { AgentToolMcpSessionManager } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { GeneralProcessRunSupervisor } from "../../../src/agent-execution/runtime/general-process-run-supervisor.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
@@ -14,14 +15,27 @@ import {
   releaseProcessAgentRunService,
 } from "../../../src/agent-execution/services/agent-run-service.js";
 import { getTeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
+import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
-const sessionManager = {
-  createAgentToolMcpSession: vi.fn(),
-  revokeAgentToolMcpSession: vi.fn(() => false),
-  revokeAgentToolMcpSessionsForRun: vi.fn(() => 0),
-  revokeAgentToolMcpSessionsForOwner: vi.fn(() => 0),
-  redactAgentToolMcpDescriptor: vi.fn(),
-} as unknown as AgentToolMcpSessionManager;
+const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
+  scopeIdentity: "general-process",
+  issuer: Object.freeze({ issueForRun: vi.fn() }),
+  runSessions: Object.freeze({
+    revokeForRun: vi.fn(() => 0),
+    revokeForOwner: vi.fn(() => 0),
+  }),
+  assertReady: vi.fn(),
+  blockNewSessions: vi.fn(),
+  close: vi.fn(),
+});
+
+const createProviderBuilder = (): AgentProviderFactoryBuilder => ({
+  createForExecution: vi.fn(() => ({
+    autoByteus: {} as never,
+    codex: {} as never,
+    claude: {} as never,
+  })),
+});
 
 const createSupervisorInput = () => {
   const agentDefinitionService = new AgentDefinitionService();
@@ -34,7 +48,9 @@ const createSupervisorInput = () => {
     } as AppConfig,
     agentDefinitionService,
     agentTeamDefinitionService,
-    agentToolsSessionManager: sessionManager,
+    workspaceManager: WorkspaceManager.getInstance(),
+    agentProviderFactoryBuilder: createProviderBuilder(),
+    agentToolMcpSessionAuthority: createAuthority(),
   };
 };
 
@@ -59,21 +75,13 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(getDefaultTeamManager).not.toHaveBeenCalled();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
     expect(getTeamRunService()).toBe(supervisor.teamRunService);
+    expect(input.agentProviderFactoryBuilder.createForExecution).toHaveBeenCalledWith({
+      agentDefinitionService: input.agentDefinitionService,
+      agentToolMcpSessionIssuer: input.agentToolMcpSessionAuthority.issuer,
+    });
 
     const owned = supervisor as unknown as {
-      agentRunManager: {
-        autoByteusBackendFactory: { agentDefinitionService: AgentDefinitionService };
-        codexBackendFactory: {
-          threadBootstrapper: {
-            agentDefinitionService: AgentDefinitionService;
-            agentToolMcpSessionService: AgentToolMcpSessionManager;
-          };
-        };
-        claudeBackendFactory: {
-          sessionManager: { agentToolMcpSessionService: AgentToolMcpSessionManager };
-          sessionBootstrapper: { agentDefinitionService: AgentDefinitionService };
-        };
-      };
+      agentRunManager: AgentRunManager;
       agentTeamRunManager: AgentTeamRunManager;
       agentRunService: { agentRunManager: AgentRunManager };
       teamRunService: {
@@ -82,24 +90,25 @@ describe("GeneralProcessRunSupervisor ownership", () => {
         agentIdentityAllocator: { agentDefinitionService: AgentDefinitionService };
       };
     };
-    expect(owned.agentRunManager.autoByteusBackendFactory.agentDefinitionService)
-      .toBe(input.agentDefinitionService);
-    expect(owned.agentRunManager.codexBackendFactory.threadBootstrapper.agentDefinitionService)
-      .toBe(input.agentDefinitionService);
-    expect(owned.agentRunManager.codexBackendFactory.threadBootstrapper.agentToolMcpSessionService)
-      .toBe(input.agentToolsSessionManager);
-    expect(owned.agentRunManager.claudeBackendFactory.sessionBootstrapper.agentDefinitionService)
-      .toBe(input.agentDefinitionService);
-    expect(owned.agentRunManager.claudeBackendFactory.sessionManager.agentToolMcpSessionService)
-      .toBe(input.agentToolsSessionManager);
     expect(owned.agentRunService.agentRunManager).toBe(owned.agentRunManager);
     expect(owned.teamRunService.definitions).toBe(input.agentTeamDefinitionService);
     expect(owned.teamRunService.manager).toBe(owned.agentTeamRunManager);
     expect(owned.teamRunService.agentIdentityAllocator.agentDefinitionService)
       .toBe(input.agentDefinitionService);
 
+    const order: string[] = [];
+    vi.spyOn(owned.agentTeamRunManager, "stopAllTeamRuns").mockImplementation(async () => {
+      order.push("teams");
+    });
+    vi.spyOn(owned.agentRunManager, "stopAllAgentRuns").mockImplementation(async () => {
+      order.push("agents");
+    });
+    vi.mocked(input.agentToolMcpSessionAuthority.close).mockImplementation(() => {
+      order.push("authority");
+    });
     await supervisor.close();
     await supervisor.close();
+    expect(order).toEqual(["teams", "agents", "authority"]);
 
     const restartedSupervisor = new GeneralProcessRunSupervisor(createSupervisorInput());
     expect(initializeAgentManager).toHaveBeenCalledTimes(2);
@@ -141,7 +150,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       "appConfig",
       "agentDefinitionService",
       "agentTeamDefinitionService",
-      "agentToolsSessionManager",
+      "workspaceManager",
+      "agentProviderFactoryBuilder",
+      "agentToolMcpSessionAuthority",
     ] as const) {
       for (const value of ["omitted", null, undefined] as const) {
         const invalid = { ...createSupervisorInput() } as Record<string, unknown>;

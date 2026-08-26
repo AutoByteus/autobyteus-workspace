@@ -2,13 +2,8 @@ import type { AppConfig } from "../../config/app-config.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
-import type { AgentToolMcpSessionManager } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
-import { AutoByteusAgentRunBackendFactory } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
-import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
-import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
-import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
-import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-agent-run-backend-factory.js";
-import { CodexThreadBootstrapper } from "../backends/codex/backend/codex-thread-bootstrapper.js";
+import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
+import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunProvisioningService } from "../services/agent-run-provisioning-service.js";
@@ -37,13 +32,15 @@ import {
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
-import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   appConfig: AppConfig;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionManager: AgentToolMcpSessionManager;
+  workspaceManager: WorkspaceManager;
+  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
+  agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -55,7 +52,9 @@ const requireGeneralProcessRunSupervisorInput = (
     || typeof input.appConfig.getMemoryDir !== "function"
     || !input.agentDefinitionService
     || !input.agentTeamDefinitionService
-    || !input.agentToolsSessionManager
+    || !input.workspaceManager
+    || !input.agentProviderFactoryBuilder
+    || !input.agentToolMcpSessionAuthority
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -67,12 +66,13 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunService: TeamRunService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
+  private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private closePromise: Promise<void> | null = null;
 
   constructor(input: GeneralProcessRunSupervisorInput) {
     input = requireGeneralProcessRunSupervisorInput(input);
     const memoryDir = input.appConfig.getMemoryDir();
-    const workspaceManager = getWorkspaceManager();
+    const workspaceManager = input.workspaceManager;
     const storedTeamLocations = createStoredTeamRunExecutionTreeLocationService(memoryDir);
     let agentRunManager: AgentRunManager | null = null;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
@@ -82,42 +82,21 @@ export class GeneralProcessRunSupervisor {
     let teamRunServiceBound = false;
 
     try {
-      const codexThreadBootstrapper = new CodexThreadBootstrapper(
-        undefined,
-        undefined,
-        input.agentDefinitionService,
-        undefined,
-        undefined,
-        input.agentToolsSessionManager,
-      );
-      const claudeSessionManager = new ClaudeSessionManager(
-        undefined,
-        undefined,
-        input.agentToolsSessionManager,
-      );
-      const claudeSessionBootstrapper = new ClaudeSessionBootstrapper(
-        undefined,
-        undefined,
-        input.agentDefinitionService,
-      );
+      const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
+        agentDefinitionService: input.agentDefinitionService,
+        agentToolMcpSessionIssuer: input.agentToolMcpSessionAuthority.issuer,
+      });
       agentRunManager = AgentRunManager.initializeProcessInstance({
-        autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
-          agentDefinitionService: input.agentDefinitionService,
-        }),
-        codexBackendFactory: new CodexAgentRunBackendFactory(
-          undefined,
-          codexThreadBootstrapper,
-        ),
-        claudeBackendFactory: new ClaudeAgentRunBackendFactory(
-          claudeSessionManager,
-          claudeSessionBootstrapper,
-        ),
+        autoByteusBackendFactory: providerFactories.autoByteus,
+        codexBackendFactory: providerFactories.codex,
+        claudeBackendFactory: providerFactories.claude,
         runFileChangeService: new RunFileChangeService({
           memoryDir,
           workspaceManager,
           teamLocations: storedTeamLocations,
         }),
-        agentToolMcpSessionManager: input.agentToolsSessionManager,
+        agentToolMcpRunSessionReleaser:
+          input.agentToolMcpSessionAuthority.runSessions,
       });
 
       const memberTeamContextBuilder = new MemberTeamContextBuilder(
@@ -132,7 +111,8 @@ export class GeneralProcessRunSupervisor {
               subTeamRunFactory,
               taskRootResolver: callbacks.taskRootResolver,
               agentRunManager: generalAgentRunManager,
-              agentToolMcpSessionManager: input.agentToolsSessionManager,
+              agentToolMcpRunSessionReleaser:
+                input.agentToolMcpSessionAuthority.runSessions,
               memberTeamContextBuilder,
               workspaceManager,
               publish: callbacks.publish,
@@ -208,6 +188,7 @@ export class GeneralProcessRunSupervisor {
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
+      this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
     } catch (error) {
       if (teamRunServiceBound && teamRunService) {
         releaseProcessTeamRunService(teamRunService);
@@ -231,19 +212,35 @@ export class GeneralProcessRunSupervisor {
   }
 
   private async closeInternal(): Promise<void> {
+    const errors: unknown[] = [];
     try {
       await this.agentTeamRunManager.stopAllTeamRuns();
-    } finally {
-      try {
-        await this.agentRunManager.stopAllAgentRuns();
-      } finally {
-        releaseProcessTeamRunService(this.teamRunService);
-        releaseProcessAgentRunService(this.agentRunService);
-        AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
-        AgentRunManager.releaseProcessInstance(this.agentRunManager);
-      }
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      await this.agentRunManager.stopAllAgentRuns();
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      releaseProcessTeamRunService(this.teamRunService);
+      releaseProcessAgentRunService(this.agentRunService);
+      AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
+      AgentRunManager.releaseProcessInstance(this.agentRunManager);
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      this.agentToolMcpSessionAuthority.close();
+    } catch (error) {
+      errors.push(error);
+    }
+    if (errors.length) {
+      throw new AggregateError(errors, "General process run supervisor close failed.");
     }
   }
+
 }
 
 export const createGeneralProcessRunSupervisor = (

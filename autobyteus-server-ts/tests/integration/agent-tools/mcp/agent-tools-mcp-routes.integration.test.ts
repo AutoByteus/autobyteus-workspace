@@ -345,7 +345,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
 
     const post = (payload: unknown) => app.inject({
       method: "POST",
-      url: `/mcp/agent-tools/${created.session.sessionId}`,
+      url: `/mcp/agent-tools/${created.sessionId}`,
       headers: {
         authorization: `Bearer ${token}`,
         "content-type": "application/json",
@@ -406,7 +406,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
       const unconfiguredToken = unconfigured.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
       const rejected = await app.inject({
         method: "POST",
-        url: `/mcp/agent-tools/${unconfigured.session.sessionId}`,
+        url: `/mcp/agent-tools/${unconfigured.sessionId}`,
         headers: {
           authorization: `Bearer ${unconfiguredToken}`,
           "content-type": "application/json",
@@ -431,7 +431,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
         rejected: rejected.json(),
       });
       expect(serializedAppFacingData).not.toContain(token);
-      expect(serializedAppFacingData).not.toContain(created.session.sessionId);
+      expect(serializedAppFacingData).not.toContain(created.sessionId);
       expect(serializedAppFacingData).not.toContain("Bearer");
       expect(serializedAppFacingData).not.toContain("Authorization");
     } finally {

@@ -18,7 +18,7 @@ export type CodexAgentToolsMcpServerConfig = {
   startup_timeout_sec: 5;
 };
 
-export type CodexAgentToolsMcpThreadConfig = JsonObject & {
+export type CodexAgentToolsMcpConfig = JsonObject & {
   mcp_servers: {
     [AGENT_TOOLS_MCP_SERVER_NAME]: CodexAgentToolsMcpServerConfig;
   };
@@ -29,7 +29,7 @@ export const CODEX_AGENT_TOOLS_SEND_MESSAGE_MCP_TOOL_NAME =
 
 export const materializeCodexAgentToolsMcpThreadConfig = (
   descriptor: AgentToolMcpDescriptor,
-): CodexAgentToolsMcpThreadConfig => ({
+): CodexAgentToolsMcpConfig => ({
   mcp_servers: {
     [AGENT_TOOLS_MCP_SERVER_NAME]: {
       url: descriptor.serverUrl,

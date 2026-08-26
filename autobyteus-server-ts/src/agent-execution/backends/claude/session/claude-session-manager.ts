@@ -18,9 +18,17 @@ import {
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import {
-  getAgentToolMcpSessionService,
-  type AgentToolMcpSessionManager,
+  getAgentToolMcpSessionIssuer,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type {
+  AgentToolMcpSessionIssuer,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import {
+  getClaudeWorkspaceSkillMaterializer,
+} from "../claude-workspace-skill-materializer.js";
+import type {
+  WorkspaceSkillMaterializer,
+} from "../../shared/workspace-skill-materializer.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
@@ -30,7 +38,7 @@ export class ClaudeSessionManager {
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
   private readonly activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
   private readonly sdkClient: ClaudeSdkClient;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionManager;
+  private readonly agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
     new Map(),
     new Map(),
@@ -41,12 +49,17 @@ export class ClaudeSessionManager {
   constructor(
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    agentToolMcpSessionService: AgentToolMcpSessionManager = getAgentToolMcpSessionService(),
+    agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer = getAgentToolMcpSessionIssuer(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer =
+      getClaudeWorkspaceSkillMaterializer(),
   ) {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
-    this.agentToolMcpSessionService = agentToolMcpSessionService;
-    this.sessionCleanup = new ClaudeSessionCleanup(this.toolingCoordinator);
+    this.agentToolMcpSessionIssuer = agentToolMcpSessionIssuer;
+    this.sessionCleanup = new ClaudeSessionCleanup(
+      this.toolingCoordinator,
+      workspaceSkillMaterializer,
+    );
   }
 
   async createRunSession(
@@ -159,7 +172,7 @@ export class ClaudeSessionManager {
       sdkClient: this.sdkClient,
       activeQueriesByRunId: this.activeQueriesByRunId,
       toolingCoordinator: this.toolingCoordinator,
-      agentToolMcpSessionService: this.agentToolMcpSessionService,
+      agentToolMcpSessionIssuer: this.agentToolMcpSessionIssuer,
       isRunSessionActive: () => this.sessions.has(runId),
       terminateRunSession: () => this.terminateRun(runId),
     };

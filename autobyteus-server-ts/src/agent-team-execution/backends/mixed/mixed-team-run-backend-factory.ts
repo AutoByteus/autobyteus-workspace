@@ -24,8 +24,15 @@ import {
   requireMemberTaskRootResolver,
   type MemberTaskRootResolver,
 } from "../../task-delegation/member-task-root-resolver.js";
+import {
+  getAgentToolMcpRunSessionReleaser,
+} from "../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type {
+  AgentToolMcpRunSessionReleaser,
+} from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
+  agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
   createTeamManager?: (
     context: TeamRunContext<MixedTeamRunContext>,
     subTeamRunFactory: MixedSubTeamRunFactory,
@@ -103,6 +110,9 @@ export class MixedTeamRunBackendFactory {
       (this.options.createTeamManager?.(context, subTeamRunFactory, input.callbacks)
         ?? new MixedTeamManager(context, {
           subTeamRunFactory,
+          agentToolMcpRunSessionReleaser:
+            this.options.agentToolMcpRunSessionReleaser ??
+            getAgentToolMcpRunSessionReleaser(),
           taskRootResolver: input.callbacks.taskRootResolver,
           publish: input.callbacks.publish,
           deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,

@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
@@ -136,6 +137,7 @@ const buildHandle = () => {
     };
   });
   const handle = new MixedAgentMemberHandle({
+    agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
     teamContext,
     context: memberContext,
     config,

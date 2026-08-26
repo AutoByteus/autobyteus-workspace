@@ -285,17 +285,6 @@ const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
   },
   {
-    symbol: "AgentToolMcpSessionService.getInstance",
-    exportName: "AgentToolMcpSessionService",
-    member: "getInstance",
-    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
-  },
-  {
-    symbol: "getAgentToolMcpSessionService",
-    exportName: "getAgentToolMcpSessionService",
-    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
-  },
-  {
     symbol: "getGeneralProcessPublishedArtifactPublisher",
     exportName: "getGeneralProcessPublishedArtifactPublisher",
     moduleSuffix: "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts",
@@ -318,7 +307,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunResourceManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
     kind: "new",
-    requiredInputs: ["sessionScope", "runFileChangeService", "publishedArtifactRelayService", "memoryRecorder"].map(
+    requiredInputs: ["runSessions", "runFileChangeService", "publishedArtifactRelayService", "memoryRecorder"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -352,7 +341,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     kind: "new",
-    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder"].map(
+    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder", "agentToolMcpRunSessionReleaser"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -399,67 +388,6 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     })),
   },
   {
-    family: "session-provider",
-    symbol: "ApplicationAgentToolsSessionFactory.createApplicationSessionManager",
-    kind: "method",
-    requiredInputs: [
-      { kind: "object-property", argumentIndex: 0, path: "scope" },
-      { kind: "object-property", argumentIndex: 0, path: "executionCapabilities.publishedArtifactPublisher" },
-      { kind: "object-property", argumentIndex: 0, path: "assertExecutionCapabilitiesReady" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "AutoByteusAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "object-property", argumentIndex: 0, path: "agentDefinitionService" }],
-  },
-  {
-    family: "session-provider",
-    symbol: "CodexAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "positional", argumentIndex: 1, label: "codexThreadBootstrapper" }],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [
-      { kind: "positional", argumentIndex: 0, label: "claudeSessionManager" },
-      { kind: "positional", argumentIndex: 1, label: "claudeSessionBootstrapper" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "CodexThreadBootstrapper",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
-    kind: "new",
-    requiredInputs: [
-      { kind: "positional", argumentIndex: 2, label: "agentDefinitionService" },
-      { kind: "positional", argumentIndex: 5, label: "agentToolsSessionManager" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeSessionManager",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
-    kind: "new",
-    requiredInputs: [
-      { kind: "positional", argumentIndex: 0, label: "workspaceManager" },
-      { kind: "positional", argumentIndex: 2, label: "agentToolsSessionManager" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeSessionBootstrapper",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "positional", argumentIndex: 2, label: "agentDefinitionService" }],
-  },
-  {
     family: "team-context",
     symbol: "MemberTeamContextBuilder",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
@@ -485,7 +413,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     requiredInputs: [
       "subTeamRunFactory",
       "agentRunManager",
-      "agentToolMcpSessionManager",
+      "agentToolMcpRunSessionReleaser",
       "memoryLocationService",
       "activityInspector",
       "memberTeamContextBuilder",
@@ -569,7 +497,8 @@ const SCOPE_BUILD_FIELDS = [
   "memoryDir",
   "agentDefinitionService",
   "agentTeamDefinitionService",
-  "agentToolsSessionFactory",
+  "agentToolMcpSessionAuthorities",
+  "agentProviderFactoryBuilder",
   "workspaceManager",
   "bindingReader",
   "artifactDeliverySink",
@@ -609,7 +538,8 @@ const PLATFORM_BUILD_FIELDS = [
   "bundleService",
   "agentDefinitionService",
   "agentTeamDefinitionService",
-  "agentToolsSessionFactory",
+  "agentToolMcpSessionAuthorities",
+  "agentProviderFactoryBuilder",
   "workspaceManager",
   "runtimeAvailabilityService",
   "modelCatalogService",
@@ -1942,10 +1872,7 @@ const constructionSnippet = (
     }
   }
 
-  const call = obligation.kind === "method"
-    ? `input.agentToolsSessionFactory.createApplicationSessionManager(${args.join(", ")});`
-    : `new Target(${args.join(", ")});`;
-  return `const opaque = {}; const input = { agentToolsSessionFactory: { createApplicationSessionManager: (_value: unknown) => ({}) } };\n${call}\n`;
+  return `const opaque = {};\nnew Target(${args.join(", ")});\n`;
 };
 
 const installConstructionTarget = (
@@ -1953,7 +1880,6 @@ const installConstructionTarget = (
   obligation: ConstructionObligation,
 ): { importer: string; importLine: string } => {
   const importer = join(root, "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts");
-  if (obligation.kind === "method") return { importer, importLine: "" };
   const target = join(root, obligation.moduleSuffix!);
   writeFixture(root, normalizePath(relative(root, target)), `export class ${obligation.symbol} {}\n`);
   return {
@@ -2850,7 +2776,6 @@ describe("application framework architecture boundaries", () => {
     );
     expect(lifecycleContracts).toContain("executionReadiness");
     expect(lifecycleContracts).toContain("executionLifecycle");
-    expect(lifecycleContracts).not.toContain("agentToolsSessionManager");
     expect(lifecycleContracts).not.toContain("runShutdownCoordinator");
 
     const assemblySource = readSource(
@@ -2894,7 +2819,6 @@ describe("application framework architecture boundaries", () => {
     for (const removedLeaf of [
       "agentRunManager",
       "teamRunManager",
-      "agentToolsSessionManager",
       "publicationService",
       "memoryLocationService",
       "runShutdownCoordinator",
@@ -2937,19 +2861,6 @@ describe("application framework architecture boundaries", () => {
     }
   });
 
-  it("preserves deliberately process-scoped Codex positions zero and two", () => {
-    const root = createFixtureRepository();
-    const obligation = CONSTRUCTION_OBLIGATIONS.find((candidate) => candidate.symbol === "CodexAgentRunBackendFactory")!;
-    const { importer, importLine } = installConstructionTarget(root, obligation);
-    const checker = new ApplicationFrameworkBoundaryChecker(root);
-    for (const expression of [
-      "new Target(undefined, codexThreadBootstrapper);",
-      "new Target(undefined, codexThreadBootstrapper, undefined);",
-    ]) {
-      writeFixture(root, normalizePath(relative(root, importer)), `${importLine}const codexThreadBootstrapper = {};\n${expression}\n`);
-      expect(checker.checkOneFile(importer, "AFB-004").map(formatViolation)).toEqual([]);
-    }
-  });
 
   it("guards the exact SR-011 host definition and public/general run authority", () => {
     const serverSourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
@@ -2981,7 +2892,7 @@ describe("application framework architecture boundaries", () => {
     ]) {
       const source = readServerSource(relativePath);
       const hostDefinitions = source.indexOf("createHostDefinitionServices({");
-      const agentTools = source.indexOf("createAgentToolsMcpRuntime({", hostDefinitions);
+      const agentTools = source.indexOf("createAgentToolsMcpHost()", hostDefinitions);
       const generalRuns = source.indexOf("createGeneralProcessRunSupervisor({", agentTools);
       const applicationAssembly = relativePath.startsWith("compositions/")
         ? source.indexOf("createStudioApplicationServices({", generalRuns)
@@ -2994,7 +2905,7 @@ describe("application framework architecture boundaries", () => {
       expect(supervisorInput).toContain("appConfig:");
       expect(supervisorInput).toContain("agentDefinitionService:");
       expect(supervisorInput).toContain("agentTeamDefinitionService:");
-      expect(supervisorInput).toContain("agentToolsSessionManager:");
+      expect(supervisorInput).toContain("agentToolMcpSessionAuthority:");
     }
     const studioComposition = readServerSource("compositions/build-studio-server.ts");
     const studioApplicationAssembly = studioComposition.slice(
@@ -3016,22 +2927,13 @@ describe("application framework architecture boundaries", () => {
       "new MemberTeamContextBuilder(\n        input.agentTeamDefinitionService",
       "teamDefinitionService: input.agentTeamDefinitionService",
       "agentRunIdentityAllocator,",
-      "agentToolMcpSessionManager: input.agentToolsSessionManager",
+      "agentToolMcpRunSessionReleaser:",
       "taskRootResolver: callbacks.taskRootResolver",
       "bindProcessAgentRunService(agentRunService)",
       "bindProcessTeamRunService(teamRunService)",
     ]) {
       expect(generalSupervisor).toContain(requiredConstruction);
     }
-    expect(generalSupervisor).toMatch(
-      /new CodexThreadBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
-    );
-    expect(generalSupervisor).toMatch(
-      /new ClaudeSessionManager\([\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
-    );
-    expect(generalSupervisor).toMatch(
-      /new ClaudeSessionBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?\)/,
-    );
 
     const publicAgentRun = readServerSource("api/graphql/types/agent-run.ts");
     const publicTeamRun = readServerSource("api/graphql/types/agent-team-run.ts");
@@ -3135,7 +3037,7 @@ describe("application framework architecture boundaries", () => {
     expect(sr013OccurrencePaths(managerOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
@@ -3150,7 +3052,7 @@ describe("application framework architecture boundaries", () => {
         "callbacks.taskRootResolver",
       ],
       [
-        "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts",
+        "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
         "callbacks.taskRootResolver",
       ],
     ]);
@@ -3168,7 +3070,7 @@ describe("application framework architecture boundaries", () => {
     expect(sr013OccurrencePaths(factoryOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",

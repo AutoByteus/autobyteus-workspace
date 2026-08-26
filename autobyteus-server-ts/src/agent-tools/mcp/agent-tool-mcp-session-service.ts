@@ -2,6 +2,7 @@ import { getInternalServerBaseUrlOrThrow } from "../../config/server-runtime-end
 import {
   AGENT_TOOLS_MCP_SERVER_NAME,
   AGENT_TOOLS_MCP_TRANSPORT,
+  cloneAgentToolMcpSessionOwnerIdentity,
   redactAgentToolMcpDescriptor,
   type AgentToolMcpCreateSessionInput,
   type AgentToolMcpDescriptor,
@@ -11,6 +12,12 @@ import {
   type AgentToolMcpSessionOwnerIdentity,
   type RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
+import type {
+  AgentToolMcpRunSessionReleaser,
+  AgentToolMcpSessionIssueInput,
+  AgentToolMcpSessionIssuer,
+  IssuedAgentToolMcpSession,
+} from "./agent-tool-mcp-session-authority.js";
 import {
   AgentToolMcpCatalog,
   getAgentToolMcpCatalog,
@@ -19,31 +26,6 @@ import {
   AgentToolMcpSessionRegistry,
   getAgentToolMcpSessionRegistry,
 } from "./agent-tool-mcp-session-registry.js";
-
-export type CreateAgentToolMcpSessionResult = {
-  session: AgentToolMcpSession;
-  descriptor: AgentToolMcpDescriptor;
-  redactedDescriptor: RedactedAgentToolMcpDescriptor;
-};
-
-export type AgentToolMcpSessionIssueInput = Omit<
-  AgentToolMcpCreateSessionInput,
-  "enabledTools" | "toolRoutes" | "configuredMcpToolSources" | "executionCapabilities"
->;
-
-export type AgentToolMcpSessionManager = {
-  createAgentToolMcpSession(
-    input: AgentToolMcpSessionIssueInput,
-  ): CreateAgentToolMcpSessionResult;
-  revokeAgentToolMcpSession(sessionId: string): boolean;
-  revokeAgentToolMcpSessionsForRun(runId: string): number;
-  revokeAgentToolMcpSessionsForOwner(
-    owner: Partial<AgentToolMcpSessionOwnerIdentity>,
-  ): number;
-  redactAgentToolMcpDescriptor(
-    descriptor: AgentToolMcpDescriptor,
-  ): RedactedAgentToolMcpDescriptor;
-};
 
 type AgentToolMcpSessionServiceDeps = {
   registry?: AgentToolMcpSessionRegistry;
@@ -84,7 +66,7 @@ export class AgentToolMcpSessionService {
 
   createAgentToolMcpSession(
     input: AgentToolMcpSessionIssueInput,
-  ): CreateAgentToolMcpSessionResult {
+  ): IssuedAgentToolMcpSession {
     const executionCapabilities = this.buildExecutionCapabilities(input);
     const exposure = this.catalog.resolveRuntimeSessionToolExposure({
       runtimeExposure: input.runtimeExposure,
@@ -99,11 +81,27 @@ export class AgentToolMcpSessionService {
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     });
     const descriptor = this.buildDescriptor(session, capabilityToken);
-    return {
-      session,
-      descriptor,
-      redactedDescriptor: redactAgentToolMcpDescriptor(descriptor),
+    const frozenDescriptor: AgentToolMcpDescriptor = {
+      ...descriptor,
+      headers: { ...descriptor.headers },
+      enabledTools: [...descriptor.enabledTools],
     };
+    Object.freeze(frozenDescriptor.headers);
+    Object.freeze(frozenDescriptor.enabledTools);
+    Object.freeze(frozenDescriptor);
+    const redactedDescriptor = redactAgentToolMcpDescriptor(descriptor);
+    Object.freeze(redactedDescriptor.headers);
+    Object.freeze(redactedDescriptor.enabledTools);
+    Object.freeze(redactedDescriptor);
+    const owner = cloneAgentToolMcpSessionOwnerIdentity(session.owner);
+    if (owner.teamIdentity) Object.freeze(owner.teamIdentity);
+    Object.freeze(owner);
+    return Object.freeze<IssuedAgentToolMcpSession>({
+      sessionId: session.sessionId,
+      owner,
+      descriptor: frozenDescriptor,
+      redactedDescriptor,
+    });
   }
 
   private buildExecutionCapabilities(
@@ -189,6 +187,20 @@ export class AgentToolMcpSessionService {
 
 export const getAgentToolMcpSessionService = (): AgentToolMcpSessionService =>
   AgentToolMcpSessionService.getInstance();
+
+export const getAgentToolMcpSessionIssuer = (): AgentToolMcpSessionIssuer =>
+  Object.freeze({
+    issueForRun: (input: AgentToolMcpSessionIssueInput) =>
+      getAgentToolMcpSessionService().createAgentToolMcpSession(input),
+  });
+
+export const getAgentToolMcpRunSessionReleaser =
+(): AgentToolMcpRunSessionReleaser => Object.freeze({
+  revokeForRun: (runId: string) =>
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId),
+  revokeForOwner: (owner: Partial<AgentToolMcpSessionOwnerIdentity>) =>
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForOwner(owner),
+});
 
 export const resetAgentToolMcpSessionServiceForTests = (): void => {
   AgentToolMcpSessionService.resetInstance();

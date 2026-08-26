@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -20,6 +20,12 @@ import type { ClaudeSessionEvent } from "../../../src/agent-execution/backends/c
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
+import type { ClaudeSdkStartQueryTurnOptions } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import type { AgentToolMcpSessionIssueInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -75,6 +81,7 @@ const createRunContext = (input: {
   modelIdentifier: string;
   workspaceRoot: string;
   autoExecuteTools: boolean;
+  toolNames?: string[];
 }) =>
   new AgentRunContext({
     runId: input.runId,
@@ -102,7 +109,7 @@ const createRunContext = (input: {
         "",
         `- Agent workspace: \`${input.workspaceRoot}\``,
       ].join("\n"),
-      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
+      runtimeToolExposure: buildRuntimeAgentToolExposure(input.toolNames ?? []),
     }),
   });
 
@@ -140,6 +147,14 @@ const buildExactWriteToolPrompt = (input: {
 
 const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u, "");
 
+const createExplicitSessionManager = (): ClaudeSessionManager =>
+  new ClaudeSessionManager(
+    getWorkspaceManager(),
+    getClaudeSdkClient(),
+    getAgentToolMcpSessionIssuer(),
+    getClaudeWorkspaceSkillMaterializer(),
+  );
+
 const waitForTurnSettlement = async (events: ClaudeSessionEvent[]): Promise<void> =>
   waitFor(() =>
     events.some(
@@ -160,6 +175,73 @@ const bootstrapClaudeSession = async (
   await waitForTurnSettlement(events);
   events.length = 0;
 };
+
+describe("ClaudeSessionManager explicit Agent Tools issuer", () => {
+  it("materializes an issued provider-neutral descriptor into the Claude query config", async () => {
+    const startQueryTurn = vi.fn(async (options: ClaudeSdkStartQueryTurnOptions) => ({
+      async *[Symbol.asyncIterator]() {
+        yield {
+          type: "result",
+          session_id: options.sessionBinding.sessionId,
+          result: "done",
+        };
+      },
+      interrupt: vi.fn(async () => undefined),
+      close: vi.fn(() => undefined),
+    }));
+    const issuer = {
+      issueForRun: vi.fn((input: AgentToolMcpSessionIssueInput) => ({
+        sessionId: "claude-manager-integration",
+        owner: input.owner,
+        descriptor: {
+          name: "autobyteus_agent_tools",
+          transport: "streamable_http",
+          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/claude-manager-integration",
+          headers: { Authorization: "Bearer integration-only" },
+          enabledTools: ["send_message_to"],
+        },
+        redactedDescriptor: {} as never,
+      })),
+    };
+    const manager = new ClaudeSessionManager(
+      getWorkspaceManager(),
+      {
+        startQueryTurn,
+        closeQuery: vi.fn((query) => query?.close()),
+      } as never,
+      issuer as never,
+      {
+        cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined),
+      } as never,
+    );
+    const runId = `claude-manager-issuer-${randomUUID()}`;
+    const session = await manager.createRunSession(createRunContext({
+      runId,
+      modelIdentifier: "haiku",
+      workspaceRoot: "/tmp",
+      autoExecuteTools: false,
+      toolNames: ["send_message_to"],
+    }));
+    const events: ClaudeSessionEvent[] = [];
+    session.subscribeRuntimeEvents((event) => events.push(event));
+
+    await session.startTurn(new AgentInputUserMessage("exercise explicit issuer"));
+    await waitForTurnSettlement(events);
+
+    expect(issuer.issueForRun).toHaveBeenCalledTimes(1);
+    expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
+      mcpServers: {
+        autobyteus_agent_tools: {
+          type: "http",
+          url: "http://127.0.0.1:3000/mcp/agent-tools/claude-manager-integration",
+          headers: { Authorization: "Bearer integration-only" },
+          alwaysLoad: true,
+        },
+      },
+    }));
+    await manager.terminateRun(runId);
+  });
+});
 
 describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude SDK)", () => {
   let sessionManager: ClaudeSessionManager | null = null;
@@ -193,7 +275,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-create");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
 
       const runId = `run-claude-session-${randomUUID()}`;
       createdRunIds.add(runId);
@@ -248,7 +330,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-restore");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
 
       const runId = `run-claude-restore-${randomUUID()}`;
       createdRunIds.add(runId);
@@ -336,7 +418,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-approval");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
       const attemptTraces: Array<{
         attempt: number;
         eventMethods: string[];
@@ -481,7 +563,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-deny");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
       const attemptTraces: Array<{
         attempt: number;
         eventMethods: string[];
@@ -616,7 +698,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-autoexec");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
       const attemptTraces: Array<{
         attempt: number;
         eventMethods: string[];
@@ -727,7 +809,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-interrupt");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
       const attemptTraces: Array<{
         attempt: number;
         eventMethods: string[];
@@ -823,7 +905,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-terminate");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
       const attemptTraces: Array<{
         attempt: number;
         eventMethods: string[];
@@ -912,7 +994,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-session-tool-resume");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
+      sessionManager = createExplicitSessionManager();
 
       const runId = `run-claude-tool-resume-${randomUUID()}`;
       createdRunIds.add(runId);

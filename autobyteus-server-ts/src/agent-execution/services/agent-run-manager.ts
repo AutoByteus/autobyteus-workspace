@@ -25,8 +25,13 @@ import {
   createGeneralProcessPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { AgentRunMemoryRecorder, getAgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
-import { getAgentToolMcpSessionService, type AgentToolMcpSessionManager } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
-import { AgentRunResourceManager } from "./agent-run-resource-manager.js";
+import type {
+  AgentToolMcpRunSessionReleaser,
+} from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import {
+  AgentRunResourceAttachmentError,
+  AgentRunResourceManager,
+} from "./agent-run-resource-manager.js";
 import {
   AgentRunActivationRegistry,
   AgentRunRemovalCleanupError,
@@ -42,7 +47,7 @@ const normalizeRequiredRunId = (runId: string): string => {
   return normalized;
 };
 
-type AgentRunManagerOptions = {
+export type AgentRunManagerOptions = {
   autoByteusBackendFactory?: AgentRunBackendFactory;
   codexBackendFactory?: AgentRunBackendFactory;
   claudeBackendFactory?: AgentRunBackendFactory;
@@ -50,7 +55,7 @@ type AgentRunManagerOptions = {
   runFileChangeService?: RunFileChangeService;
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
   memoryRecorder?: AgentRunMemoryRecorder;
-  agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
 };
 
 export class AgentRunManager {
@@ -60,10 +65,14 @@ export class AgentRunManager {
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
+  private readonly agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
   private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
 
-  static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
-    return AgentRunManager.instance ??= new AgentRunManager(options);
+  static getInstance(): AgentRunManager {
+    if (!AgentRunManager.instance) {
+      throw new Error("The process AgentRunManager is not initialized.");
+    }
+    return AgentRunManager.instance;
   }
 
   static initializeProcessInstance(options: AgentRunManagerOptions): AgentRunManager {
@@ -78,17 +87,19 @@ export class AgentRunManager {
     if (AgentRunManager.instance === instance) AgentRunManager.instance = null;
   }
 
-  constructor(options: AgentRunManagerOptions = {}) {
+  constructor(options: AgentRunManagerOptions) {
+    if (!options?.agentToolMcpRunSessionReleaser) {
+      throw new Error("AgentRunManager requires an Agent Tools MCP run-session releaser.");
+    }
     this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
     this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
     this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
     this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    this.agentToolMcpRunSessionReleaser =
+      options.agentToolMcpRunSessionReleaser;
     this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
       new AgentRunResourceManager({
-        sessionScope: {
-          revokeForRun: (runId) => (options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService())
-            .revokeAgentToolMcpSessionsForRun(runId),
-        },
+        runSessions: this.agentToolMcpRunSessionReleaser,
         runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
         publishedArtifactRelayService: options.publishedArtifactRelayService
           ?? createGeneralProcessPublishedArtifactRelayService(),
@@ -242,6 +253,7 @@ export class AgentRunManager {
 
     let backend: AgentRunBackend | null = null;
     let run: AgentRun | null = null;
+    let resourcesAttached = false;
     try {
       backend = await input.createBackend(factory);
       run = new AgentRun({ context: backend.getContext(), backend, commandObservers: [this.memoryRecorder] });
@@ -249,6 +261,7 @@ export class AgentRunManager {
         throw new AgentCreationError("The runtime backend returned a different local run identity.");
       }
       this.activationRegistry.markPrepared(claim, run);
+      resourcesAttached = true;
       const exactRun = run;
       return new AgentRunActivationCandidate({
         runId: exactRun.runId,
@@ -268,7 +281,13 @@ export class AgentRunManager {
           error,
         );
       }
-      const cleanup = await this.cleanupFailedPreparation(claim, run, backend);
+      const cleanup = await this.cleanupFailedPreparation(
+        claim,
+        run,
+        backend,
+        error,
+        resourcesAttached,
+      );
       if (cleanup.kind === "quarantined") throw this.cleanupError(input.runId, cleanup.error);
       if (error instanceof AgentCreationError || error instanceof AgentRunActivationError) throw error;
       const failure = new AgentCreationError(`Failed to prepare agent run '${input.runId}'.`);
@@ -296,22 +315,49 @@ export class AgentRunManager {
     claim: AgentRunActivationClaim,
     run: AgentRun | null,
     backend: AgentRunBackend | null,
+    primaryError: unknown,
+    resourcesAttached: boolean,
   ): Promise<AgentRunCandidateAbortResult> {
-    const release = run
-      ? this.activationRegistry.releasePrepared(claim, run)
-      : null;
-    if (!run && !backend) {
-      this.activationRegistry.releaseClaim(claim);
-      return { kind: "aborted" };
+    const errors: Error[] = [];
+    if (run || backend) {
+      const termination = run
+        ? await this.terminatePrivate(run)
+        : await this.terminateBackend(backend!);
+      if (termination.kind === "quarantined") errors.push(termination.error);
     }
-    const termination = run
-      ? await this.terminatePrivate(run)
-      : await this.terminateBackend(backend!);
-    const errors = [...(release?.errors ?? [])];
-    if (termination.kind === "quarantined") errors.push(termination.error);
+    if (run) {
+      const release = this.activationRegistry.releasePrepared(claim, run);
+      errors.push(...release.errors);
+      if (
+        !resourcesAttached
+        && !(primaryError instanceof AgentRunResourceAttachmentError)
+      ) {
+        try {
+          this.agentToolMcpRunSessionReleaser.revokeForRun(claim.runId);
+        } catch (error) {
+          errors.push(error instanceof Error ? error : new Error(String(error)));
+        }
+      }
+      if (primaryError instanceof AgentRunResourceAttachmentError) {
+        errors.push(...primaryError.errors.slice(1).map((error) =>
+          error instanceof Error ? error : new Error(String(error))));
+      }
+    } else {
+      try {
+        this.agentToolMcpRunSessionReleaser.revokeForRun(claim.runId);
+      } catch (error) {
+        errors.push(error instanceof Error ? error : new Error(String(error)));
+      }
+    }
     const result: AgentRunCandidateAbortResult = errors.length === 0
       ? { kind: "aborted" }
-      : { kind: "quarantined", error: new AggregateError(errors, `Agent run '${claim.runId}' cleanup failed.`) };
+      : {
+          kind: "quarantined",
+          error: new AggregateError(
+            [primaryError, ...errors],
+            `Agent run '${claim.runId}' preparation and cleanup failed.`,
+          ),
+        };
     this.activationRegistry.completeAbort(claim, run, result);
     return result;
   }

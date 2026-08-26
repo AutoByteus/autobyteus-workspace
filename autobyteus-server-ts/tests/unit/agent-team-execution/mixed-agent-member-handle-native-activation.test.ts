@@ -1,3 +1,4 @@
+import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import {
@@ -70,7 +71,9 @@ const createHandle = (input: {
   const activityInspector = {
     inspect: vi.fn(() => ({ kind: input.activityKind })),
   };
+  const runSessions = createRecordingAgentToolMcpRunSessionReleaser();
   const handle = new MixedAgentMemberHandle({
+    agentToolMcpRunSessionReleaser: runSessions.releaser,
     teamContext,
     context,
     config: nativeNode,
@@ -89,6 +92,7 @@ const createHandle = (input: {
     activityInspector,
     acceptPlatformBinding,
     ensureWorkspaceByRootPath,
+    runSessions,
   };
 };
 
@@ -134,6 +138,7 @@ describe("MixedAgentMemberHandle native activation", () => {
     expect(fixture.acceptPlatformBinding).not.toHaveBeenCalled();
     expect(fixture.context.getPlatformAgentRunId()).toBeNull();
     expect(candidate.commitPublication).toHaveBeenCalledOnce();
+    expect(fixture.runSessions.getRevokedRunIds()).toEqual([]);
   });
 
   it("freshly creates a restored native member with no local activity", async () => {
@@ -154,6 +159,7 @@ describe("MixedAgentMemberHandle native activation", () => {
     expect(manager.prepareRestoreAgentRun).not.toHaveBeenCalled();
     expect(fixture.acceptPlatformBinding).not.toHaveBeenCalled();
     expect(fixture.context.getPlatformAgentRunId()).toBeNull();
+    expect(fixture.runSessions.getRevokedRunIds()).toEqual([]);
   });
 
   it("keeps a fresh direct-task native candidate binding-neutral through durability publication", async () => {
@@ -174,6 +180,7 @@ describe("MixedAgentMemberHandle native activation", () => {
     prepared.commitAfterDurability();
     expect(candidate.commitPublication).toHaveBeenCalledOnce();
     expect(fixture.context.getPlatformAgentRunId()).toBeNull();
+    expect(fixture.runSessions.getRevokedRunIds()).toEqual([]);
   });
 
   it("stages a fresh direct-task external binding without root adoption and publishes only after durability", async () => {
@@ -213,7 +220,9 @@ describe("MixedAgentMemberHandle native activation", () => {
       abort: vi.fn(async () => ({ kind: "aborted" as const })),
     };
     const acceptPlatformBinding = vi.fn(async () => undefined);
+    const runSessions = createRecordingAgentToolMcpRunSessionReleaser();
     const handle = new MixedAgentMemberHandle({
+      agentToolMcpRunSessionReleaser: runSessions.releaser,
       teamContext,
       context,
       config: externalNode,
@@ -245,6 +254,7 @@ describe("MixedAgentMemberHandle native activation", () => {
     expect(candidate.commitPublication).not.toHaveBeenCalled();
     prepared.commitAfterDurability();
     expect(candidate.commitPublication).toHaveBeenCalledOnce();
+    expect(runSessions.getRevokedRunIds()).toEqual([]);
   });
 
   it("never falls back to fresh creation when a native restore fails", async () => {
@@ -262,6 +272,7 @@ describe("MixedAgentMemberHandle native activation", () => {
     } satisfies Partial<TeamAgentActivationError>);
     expect(manager.prepareRestoreAgentRun).toHaveBeenCalledOnce();
     expect(manager.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(fixture.runSessions.getRevokedRunIds()).toEqual([]);
   });
 
   it("keeps restored external members on strict platform restore and root binding acceptance", async () => {
@@ -311,7 +322,9 @@ describe("MixedAgentMemberHandle native activation", () => {
     };
     const acceptPlatformBinding = vi.fn(async () => undefined);
     const activityInspector = { inspect: vi.fn(() => { throw new Error("not expected"); }) };
+    const runSessions = createRecordingAgentToolMcpRunSessionReleaser();
     const handle = new MixedAgentMemberHandle({
+      agentToolMcpRunSessionReleaser: runSessions.releaser,
       teamContext,
       context,
       config: externalNode,
@@ -340,5 +353,6 @@ describe("MixedAgentMemberHandle native activation", () => {
     expect(acceptPlatformBinding).toHaveBeenCalledWith(expect.objectContaining({
       platformAgentRunId: "codex-thread",
     }));
+    expect(runSessions.getRevokedRunIds()).toEqual([]);
   });
 });

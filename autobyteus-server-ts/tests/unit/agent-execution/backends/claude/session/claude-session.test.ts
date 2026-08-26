@@ -181,6 +181,11 @@ const createSession = (input: {
   );
   toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
   const activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
+  const agentToolMcpSessionIssuer = {
+    issueForRun: vi.fn(() => {
+      throw new Error("Non-MCP ClaudeSession coverage must not issue Agent Tools.");
+    }),
+  };
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -220,6 +225,7 @@ const createSession = (input: {
       } as never,
       activeQueriesByRunId,
       toolingCoordinator,
+      agentToolMcpSessionIssuer,
       contextFileLocalPathResolver: input.contextFileLocalPathResolver,
       systemInstructionCaptureService: input.systemInstructionCaptureService,
       isRunSessionActive: () => true,

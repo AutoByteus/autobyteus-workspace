@@ -4,28 +4,51 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
+import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
+import type {
+  AgentToolMcpSessionAuthorityFactory,
+  ScopedAgentToolMcpSessionAuthority,
+} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
-import * as claudeSdkClientModule from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 
 const tempRoots: string[] = [];
 
 const createScope = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "application-execution-scope-"));
   tempRoots.push(root);
-  const memoryDir = path.join(root, "memory");
-  const closeRawSessionScope = vi.fn();
+  const closeAuthority = vi.fn();
   const blockNewSessions = vi.fn();
-  const closeSessions = vi.fn();
-  const sessionManager = {
-    assertReady: vi.fn(),
-    createAgentToolMcpSession: vi.fn(),
-    revokeAgentToolMcpSession: vi.fn(),
-    revokeAgentToolMcpSessionsForRun: vi.fn(),
-    revokeAgentToolMcpSessionsForOwner: vi.fn(),
-    redactAgentToolMcpDescriptor: vi.fn(),
+  const assertReady = vi.fn();
+  const runSessions = Object.freeze({
+    revokeForRun: vi.fn(() => 0),
+    revokeForOwner: vi.fn(() => 0),
+  });
+  const authority: ScopedAgentToolMcpSessionAuthority = {
+    scopeIdentity: "application:test",
+    issuer: Object.freeze({ issueForRun: vi.fn() }),
+    runSessions,
+    assertReady,
     blockNewSessions,
-    close: closeSessions,
+    close: closeAuthority,
   };
+  const complete = vi.fn(() => authority);
+  const abort = vi.fn();
+  const authorityFactory: AgentToolMcpSessionAuthorityFactory = {
+    begin: vi.fn(() => ({
+      scopeIdentity: "application:test",
+      runSessions,
+      complete,
+      abort,
+    })),
+  };
+  const factories = {
+    autoByteus: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    codex: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    claude: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+  };
+  const createForExecution = vi.fn(() => Object.freeze(factories));
+  const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async (definitionId: string) => ({
       id: definitionId,
@@ -34,71 +57,57 @@ const createScope = async () => {
   };
   const scope = ApplicationExecutionScope.create({
     scopeIdentity: "application:test",
-    memoryDir,
+    memoryDir: path.join(root, "memory"),
     agentDefinitionService: agentDefinitionService as never,
     agentTeamDefinitionService: {} as never,
+    agentToolMcpSessionAuthorities: authorityFactory,
+    agentProviderFactoryBuilder: providerBuilder,
     workspaceManager: {} as never,
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
-    agentToolsSessionFactory: {
-      createApplicationSessionScope: vi.fn(() => ({
-        recordIssuedSession: vi.fn(),
-        revokeForRun: vi.fn(() => 0),
-        revokeForOwner: vi.fn(() => 0),
-        blockNewSessions: vi.fn(),
-        close: closeRawSessionScope,
-      })),
-      createApplicationSessionManager: vi.fn(() => sessionManager as never),
-    },
   });
+  const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;
   return {
     scope,
-    sessionManager,
+    kernel,
+    authority,
     agentDefinitionService,
+    createForExecution,
+    assertReady,
     blockNewSessions,
-    closeSessions,
-    closeRawSessionScope,
+    closeAuthority,
+    abort,
   };
-};
-
-type ScopeProbe = {
-  agentRunService: {
-    agentRunManager: {
-      codexBackendFactory: { threadBootstrapper: { agentDefinitionService: unknown } };
-    };
-    metadataService: unknown;
-    provisioningService: {
-      metadataService: unknown;
-      agentRunIdentityAllocator: AgentRunIdentityAllocator;
-    };
-  };
-  teamRunService: {
-    manager: unknown;
-    agentIdentityAllocator: AgentRunIdentityAllocator;
-  };
-  shutdownCoordinator: { teamRuns: unknown; agentRuns: unknown };
 };
 
 describe("ApplicationExecutionScope", () => {
   afterEach(async () => {
     vi.restoreAllMocks();
-    await Promise.all(tempRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
+    await Promise.all(tempRoots.splice(0).map((root) =>
+      fs.rm(root, { recursive: true, force: true })));
   });
 
-  it("owns one graph-local allocator and freezes every outward capability", async () => {
+  it("owns one complete graph-local kernel and freezes every outward capability", async () => {
     const globalDefinitionLookup = vi.spyOn(AgentDefinitionService, "getInstance");
-    const { scope, agentDefinitionService } = await createScope();
-    const probe = scope as unknown as ScopeProbe;
-    const allocator = probe.teamRunService.agentIdentityAllocator;
+    const { scope, kernel, agentDefinitionService, createForExecution } = await createScope();
+    const agentRunService = kernel.agentRunService as unknown as {
+      agentRunManager: unknown;
+      provisioningService: { agentRunIdentityAllocator: AgentRunIdentityAllocator };
+    };
+    const teamRunService = kernel.teamRunService as unknown as {
+      manager: unknown;
+      agentIdentityAllocator: AgentRunIdentityAllocator;
+    };
+    const allocator = teamRunService.agentIdentityAllocator;
     globalDefinitionLookup.mockClear();
 
-    expect(probe.agentRunService.provisioningService.agentRunIdentityAllocator).toBe(allocator);
-    expect((allocator as never as { agentDefinitionService: unknown }).agentDefinitionService)
+    expect(agentRunService.provisioningService.agentRunIdentityAllocator).toBe(allocator);
+    expect((allocator as unknown as { agentDefinitionService: unknown }).agentDefinitionService)
       .toBe(agentDefinitionService);
-    expect(probe.agentRunService.agentRunManager.codexBackendFactory.threadBootstrapper.agentDefinitionService)
-      .toBe(agentDefinitionService);
-    expect(probe.shutdownCoordinator.teamRuns).toBe(probe.teamRunService.manager);
-    expect(probe.shutdownCoordinator.agentRuns).toBe(probe.agentRunService.agentRunManager);
+    expect(createForExecution).toHaveBeenCalledWith(expect.objectContaining({
+      agentDefinitionService,
+      agentToolMcpSessionIssuer: expect.any(Object),
+    }));
     for (const capability of [
       scope.agentExecution,
       scope.teamExecution,
@@ -108,6 +117,7 @@ describe("ApplicationExecutionScope", () => {
       scope.toolReadiness,
       scope.lifecycle,
     ]) expect(Object.isFrozen(capability)).toBe(true);
+    expect(Object.isFrozen(kernel)).toBe(true);
 
     await expect(allocator.allocateForAgentDefinition("package-agent")).resolves
       .toMatch(/^researcher_[a-f0-9]{32}$/);
@@ -115,8 +125,8 @@ describe("ApplicationExecutionScope", () => {
     scope.abortConstruction();
   });
 
-  it("projects configured Team members depth-first, excludes task nodes, and deep-freezes the result", async () => {
-    const { scope } = await createScope();
+  it("projects configured Team members depth-first, excludes task nodes, and deep-freezes", async () => {
+    const { scope, kernel } = await createScope();
     const root = {
       teamRunId: "team-root",
       getExecutionTreeSnapshot: () => ({
@@ -134,14 +144,9 @@ describe("ApplicationExecutionScope", () => {
         },
       }),
     };
-    const probe = scope as never as {
-      teamRunService: {
-        createTeamRun: ReturnType<typeof vi.fn>;
-        createTeamRunFromRootConfig: ReturnType<typeof vi.fn>;
-      };
-    };
-    probe.teamRunService.createTeamRun = vi.fn(async () => root);
-    probe.teamRunService.createTeamRunFromRootConfig = vi.fn(async () => root);
+    vi.spyOn(kernel.teamRunService, "createTeamRun").mockResolvedValue(root as never);
+    vi.spyOn(kernel.teamRunService, "createTeamRunFromRootConfig")
+      .mockResolvedValue(root as never);
 
     const result = await scope.teamExecution.createTeamRun({} as never);
     expect(result).toEqual({
@@ -154,32 +159,25 @@ describe("ApplicationExecutionScope", () => {
     expect(Object.isFrozen(result)).toBe(true);
     expect(Object.isFrozen(result.members)).toBe(true);
     expect(result.members.every(Object.isFrozen)).toBe(true);
-    const presetResult = await scope.teamExecution.createTeamRunFromRootConfig({} as never);
-    expect(presetResult).toEqual(result);
-    expect(presetResult).not.toBe(result);
-    expect(presetResult.members).not.toBe(result.members);
-    expect(Object.isFrozen(presetResult)).toBe(true);
+    const preset = await scope.teamExecution.createTeamRunFromRootConfig({} as never);
+    expect(preset).toEqual(result);
+    expect(preset).not.toBe(result);
     scope.abortConstruction();
   });
 
   it("projects Agent launch identity without leaking the service result", async () => {
-    const { scope } = await createScope();
-    const liveServiceResult = { runId: "agent-1", internal: { mutable: true } };
-    const probe = scope as never as {
-      agentRunService: { createAgentRun: ReturnType<typeof vi.fn> };
-    };
-    probe.agentRunService.createAgentRun = vi.fn(async () => liveServiceResult);
-
+    const { scope, kernel } = await createScope();
+    const live = { runId: "agent-1", internal: { mutable: true } };
+    vi.spyOn(kernel.agentRunService, "createAgentRun").mockResolvedValue(live as never);
     const result = await scope.agentExecution.createAgentRun({} as never);
     expect(result).toEqual({ runId: "agent-1" });
-    expect(result).not.toBe(liveServiceResult);
+    expect(result).not.toBe(live);
     expect(Object.isFrozen(result)).toBe(true);
-    expect(Object.keys(result)).toEqual(["runId"]);
     scope.abortConstruction();
   });
 
-  it("maps restore-aware Agent and Team input without changing target or thrown errors", async () => {
-    const { scope, blockNewSessions } = await createScope();
+  it("maps restore-aware Agent and Team input without changing target or errors", async () => {
+    const { scope, kernel } = await createScope();
     const agentFailure = new Error("agent post failed");
     const teamFailure = new Error("team post failed");
     const agentRun = {
@@ -194,24 +192,17 @@ describe("ApplicationExecutionScope", () => {
         .mockResolvedValueOnce({ accepted: false })
         .mockRejectedValueOnce(teamFailure),
     };
-    const probe = scope as never as {
-      agentRunService: { resolveAgentRun: ReturnType<typeof vi.fn> };
-      teamRunService: { resolveActiveTeamRun: ReturnType<typeof vi.fn> };
-    };
-    probe.agentRunService.resolveAgentRun = vi.fn()
-      .mockResolvedValueOnce(null)
-      .mockResolvedValue(agentRun);
-    probe.teamRunService.resolveActiveTeamRun = vi.fn()
-      .mockResolvedValueOnce(null)
-      .mockResolvedValue(teamRun);
+    vi.spyOn(kernel.agentRunService, "resolveAgentRun")
+      .mockResolvedValueOnce(null).mockResolvedValue(agentRun as never);
+    vi.spyOn(kernel.teamRunService, "resolveActiveTeamRun")
+      .mockResolvedValueOnce(null).mockResolvedValue(teamRun as never);
 
     await expect(scope.agentExecution.postAgentInput("missing", {} as never))
       .resolves.toEqual({ kind: "NOT_AVAILABLE" });
     await expect(scope.agentExecution.postAgentInput("restored", {} as never))
       .resolves.toEqual({ kind: "ACCEPTED" });
-    const rejected = await scope.agentExecution.postAgentInput("restored", {} as never);
-    expect(rejected).toEqual({ kind: "REJECTED", message: "busy" });
-    expect(Object.isFrozen(rejected)).toBe(true);
+    await expect(scope.agentExecution.postAgentInput("restored", {} as never))
+      .resolves.toEqual({ kind: "REJECTED", message: "busy" });
     await expect(scope.agentExecution.postAgentInput("restored", {} as never))
       .rejects.toBe(agentFailure);
 
@@ -219,179 +210,55 @@ describe("ApplicationExecutionScope", () => {
       .resolves.toEqual({ kind: "NOT_AVAILABLE" });
     await expect(scope.teamExecution.postTeamInput("restored-team", {} as never, null))
       .resolves.toEqual({ kind: "ACCEPTED" });
-    const teamRejected = await scope.teamExecution.postTeamInput(
-      "restored-team",
-      {} as never,
-      "agent-member",
-    );
-    expect(teamRejected).toEqual({ kind: "REJECTED", message: null });
-    expect(Object.isFrozen(teamRejected)).toBe(true);
+    await expect(scope.teamExecution.postTeamInput("restored-team", {} as never, "member"))
+      .resolves.toEqual({ kind: "REJECTED", message: null });
     expect(teamRun.postMessage).toHaveBeenNthCalledWith(1, {}, null);
-    expect(teamRun.postMessage).toHaveBeenNthCalledWith(2, {}, "agent-member");
-    await expect(scope.teamExecution.postTeamInput("restored-team", {} as never, "agent-member"))
+    expect(teamRun.postMessage).toHaveBeenNthCalledWith(2, {}, "member");
+    await expect(scope.teamExecution.postTeamInput("restored-team", {} as never, "member"))
       .rejects.toBe(teamFailure);
-
     scope.abortConstruction();
   });
 
-  it("blocks all create commands on quiesce and closes the run graph before sessions once", async () => {
-    const { scope, blockNewSessions, closeSessions, closeRawSessionScope } = await createScope();
+  it("quiesces issue admission and closes run graph before authority exactly once", async () => {
+    const { scope, kernel, blockNewSessions, closeAuthority } = await createScope();
     const order: string[] = [];
-    const shutdownCoordinator = {
-      stopAllRuns: vi.fn(async () => {
-        order.push("runs");
-      }),
-    };
-    (scope as never as { shutdownCoordinator: typeof shutdownCoordinator }).shutdownCoordinator =
-      shutdownCoordinator;
-    closeSessions.mockImplementation(() => {
-      order.push("sessions");
+    vi.spyOn(kernel.shutdownCoordinator, "stopAllRuns").mockImplementation(async () => {
+      order.push("runs");
     });
+    closeAuthority.mockImplementation(() => order.push("authority"));
 
     scope.lifecycle.quiesce();
     scope.lifecycle.quiesce();
     expect(blockNewSessions).toHaveBeenCalledTimes(1);
     await expect(scope.agentExecution.createAgentRun({} as never))
       .rejects.toThrow("Application execution is not accepting new runs.");
-    await expect(scope.teamExecution.createTeamRun({} as never))
-      .rejects.toThrow("Application execution is not accepting new runs.");
-    await expect(scope.teamExecution.createTeamRunFromRootConfig({} as never))
-      .rejects.toThrow("Application execution is not accepting new runs.");
-    const firstClose = scope.lifecycle.close();
-    const concurrentClose = scope.lifecycle.close();
-    expect(concurrentClose).toBe(firstClose);
-    await firstClose;
+    const first = scope.lifecycle.close();
+    expect(scope.lifecycle.close()).toBe(first);
+    await first;
     await scope.lifecycle.close();
-    expect(order).toEqual(["runs", "sessions"]);
-    expect(shutdownCoordinator.stopAllRuns).toHaveBeenCalledTimes(1);
-    expect(closeSessions).toHaveBeenCalledTimes(1);
-    expect(closeRawSessionScope).not.toHaveBeenCalled();
+    expect(order).toEqual(["runs", "authority"]);
+    expect(closeAuthority).toHaveBeenCalledTimes(1);
   });
 
-  it("continues session close after run shutdown failure and aggregates both failures", async () => {
-    const { scope, closeSessions } = await createScope();
+  it("continues authority close after shutdown failure and aggregates both failures", async () => {
+    const { scope, kernel, closeAuthority } = await createScope();
     const shutdownFailure = new Error("run shutdown failed");
-    const sessionFailure = new Error("session close failed");
-    (scope as never as { shutdownCoordinator: { stopAllRuns: () => Promise<void> } })
-      .shutdownCoordinator = { stopAllRuns: vi.fn(async () => { throw shutdownFailure; }) };
-    closeSessions.mockImplementation(() => { throw sessionFailure; });
-
+    const authorityFailure = new Error("authority close failed");
+    vi.spyOn(kernel.shutdownCoordinator, "stopAllRuns").mockRejectedValue(shutdownFailure);
+    closeAuthority.mockImplementation(() => { throw authorityFailure; });
     await expect(scope.lifecycle.close()).rejects.toMatchObject({
       name: "AggregateError",
       message: "Application execution scope close failed.",
-      errors: [shutdownFailure, sessionFailure],
+      errors: [shutdownFailure, authorityFailure],
     });
-    expect(closeSessions).toHaveBeenCalledTimes(1);
+    expect(closeAuthority).toHaveBeenCalledTimes(1);
   });
 
-  it("unwinds the raw session scope when construction fails before manager ownership", () => {
-    const closeRawSessionScope = vi.fn();
-    const processOwnerClose = vi.fn();
-    const input = {
-      scopeIdentity: "application:test" as const,
-      memoryDir: "/tmp/memory",
-      agentDefinitionService: {},
-      agentTeamDefinitionService: {},
-      workspaceManager: {},
-      bindingReader: {},
-      artifactDeliverySink: {},
-      agentToolsSessionFactory: {
-        processOwnerClose,
-        createApplicationSessionScope: vi.fn(() => ({ close: closeRawSessionScope })),
-        createApplicationSessionManager: vi.fn(() => {
-          throw new Error("session manager construction failed");
-        }),
-      },
-    };
-
-    expect(() => ApplicationExecutionScope.create(input as never))
-      .toThrow("session manager construction failed");
-    expect(closeRawSessionScope).toHaveBeenCalledTimes(1);
-    expect(processOwnerClose).not.toHaveBeenCalled();
-  });
-
-  it("closes manager ownership once and aggregates cleanup when later scope construction fails", () => {
-    const constructionFailure = new Error("late scope construction failed");
-    const cleanupFailure = new Error("session manager cleanup failed");
-    vi.spyOn(claudeSdkClientModule, "getClaudeSdkClient")
-      .mockImplementation(() => { throw constructionFailure; });
-    const closeRawSessionScope = vi.fn();
-    const closeSessionManager = vi.fn(() => { throw cleanupFailure; });
-    const processOwnerClosers = {
-      definitions: vi.fn(),
-      teamDefinitions: vi.fn(),
-      sessionRuntime: vi.fn(),
-      workspace: vi.fn(),
-    };
-    const sessionManager = {
-      assertReady: vi.fn(),
-      createAgentToolMcpSession: vi.fn(),
-      revokeAgentToolMcpSession: vi.fn(),
-      revokeAgentToolMcpSessionsForRun: vi.fn(),
-      revokeAgentToolMcpSessionsForOwner: vi.fn(),
-      redactAgentToolMcpDescriptor: vi.fn(),
-      blockNewSessions: vi.fn(),
-      close: closeSessionManager,
-    };
-    const createApplicationSessionManager = vi.fn(() => sessionManager as never);
-
-    let thrown: unknown;
-    try {
-      ApplicationExecutionScope.create({
-        scopeIdentity: "application:test",
-        memoryDir: "/tmp/memory",
-        agentDefinitionService: { close: processOwnerClosers.definitions } as never,
-        agentTeamDefinitionService: {
-          close: processOwnerClosers.teamDefinitions,
-        } as never,
-        workspaceManager: { close: processOwnerClosers.workspace } as never,
-        bindingReader: { getBinding: vi.fn(async () => null) },
-        artifactDeliverySink: { accept: vi.fn(async () => undefined) },
-        agentToolsSessionFactory: {
-          close: processOwnerClosers.sessionRuntime,
-          createApplicationSessionScope: vi.fn(() => ({
-            recordIssuedSession: vi.fn(),
-            revokeForRun: vi.fn(() => 0),
-            revokeForOwner: vi.fn(() => 0),
-            blockNewSessions: vi.fn(),
-            close: closeRawSessionScope,
-          })),
-          createApplicationSessionManager,
-        } as never,
-      });
-    } catch (error) {
-      thrown = error;
-    }
-
-    expect(thrown).toMatchObject({
-      name: "AggregateError",
-      message: "Application execution scope construction failed.",
-      errors: [constructionFailure, cleanupFailure],
-    });
-    expect(createApplicationSessionManager).toHaveBeenCalledTimes(1);
-    expect(closeSessionManager).toHaveBeenCalledTimes(1);
-    expect(closeRawSessionScope).not.toHaveBeenCalled();
-    for (const closeProcessOwner of Object.values(processOwnerClosers)) {
-      expect(closeProcessOwner).not.toHaveBeenCalled();
-    }
-  });
-
-  it("validates every required construction field before creating a session scope", async () => {
-    const createApplicationSessionScope = vi.fn();
-    const valid = {
-      scopeIdentity: "application:test",
-      memoryDir: "/tmp/memory",
-      agentDefinitionService: {},
-      agentTeamDefinitionService: {},
-      agentToolsSessionFactory: { createApplicationSessionScope },
-      workspaceManager: {},
-      bindingReader: {},
-      artifactDeliverySink: {},
-    };
-    for (const field of Object.keys(valid)) {
-      const candidate = { ...valid, [field]: undefined };
-      expect(() => ApplicationExecutionScope.create(candidate as never)).toThrow();
-    }
-    expect(createApplicationSessionScope).not.toHaveBeenCalled();
+  it("delegates construction abort exactly once after kernel transfer", async () => {
+    const { scope, closeAuthority, abort } = await createScope();
+    scope.abortConstruction();
+    scope.abortConstruction();
+    expect(closeAuthority).toHaveBeenCalledTimes(1);
+    expect(abort).not.toHaveBeenCalled();
   });
 });

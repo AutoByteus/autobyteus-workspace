@@ -26,7 +26,8 @@ import { ApplicationCatalogReconciliationService } from "./application-catalog-r
 import { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
 import type { ApplicationPlatformRuntime } from "./application-platform-runtime.js";
 import { createApplicationOrchestrationServices } from "./create-application-orchestration-services.js";
-import type { ApplicationAgentToolsSessionFactory } from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
+import type { AgentToolMcpSessionAuthorityFactory } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentProviderFactoryBuilder } from "../../agent-execution/providers/agent-provider-factory-builder.js";
 import { ApplicationExecutionScope } from "../execution/application-execution-scope.js";
 import type { ApplicationExecutionScopeIdentity } from "../execution/application-execution-scope-contracts.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
@@ -40,7 +41,8 @@ export type ApplicationPlatformBuildInput = Readonly<{
   bundleService: ApplicationBundleService;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionFactory: ApplicationAgentToolsSessionFactory;
+  agentToolMcpSessionAuthorities: AgentToolMcpSessionAuthorityFactory;
+  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   workspaceManager: WorkspaceManager;
   runtimeAvailabilityService: RuntimeAvailabilityService;
   modelCatalogService: ModelCatalogService;
@@ -81,7 +83,8 @@ export const buildApplicationPlatformRuntime = (
     memoryDir: input.appConfig.getMemoryDir(),
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
-    agentToolsSessionFactory: input.agentToolsSessionFactory,
+    agentToolMcpSessionAuthorities: input.agentToolMcpSessionAuthorities,
+    agentProviderFactoryBuilder: input.agentProviderFactoryBuilder,
     workspaceManager: input.workspaceManager,
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,

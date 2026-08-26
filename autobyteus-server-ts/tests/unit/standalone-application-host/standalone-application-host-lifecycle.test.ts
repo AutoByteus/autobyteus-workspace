@@ -28,11 +28,26 @@ const mocks = vi.hoisted(() => {
       databaseUrl: "file:/tmp/standalone-lifecycle/operational.db",
     }),
   };
-  const mcpRuntime = {
-    generalProcessSessionManager: {},
+  const generalAuthority = {
+    scopeIdentity: "general-process",
+    issuer: {},
+    runSessions: {},
+    assertReady: vi.fn(),
+    blockNewSessions: vi.fn(),
+    close: vi.fn(),
+  };
+  const generalAssembly = {
+    scopeIdentity: "general-process",
+    runSessions: generalAuthority.runSessions,
+    complete: vi.fn(() => generalAuthority),
+    abort: vi.fn(),
+  };
+  const mcpHost = {
+    sessionAuthorities: { begin: vi.fn(() => generalAssembly) },
     routeDependencies: {},
     close: vi.fn(),
   };
+  const providerFactoryBuilder = {};
   const generalProcessRunSupervisor = { close: vi.fn(async () => undefined) };
   const hostDefinitionServices = {
     agentDefinitionService: {},
@@ -49,7 +64,10 @@ const mocks = vi.hoisted(() => {
     app,
     appConfig,
     applicationLifecycle,
-    mcpRuntime,
+    mcpHost,
+    generalAuthority,
+    generalAssembly,
+    providerFactoryBuilder,
     generalProcessRunSupervisor,
     hostDefinitionServices,
     workspaceManager,
@@ -76,7 +94,8 @@ const mocks = vi.hoisted(() => {
     resetEventPipeline: vi.fn(async () => undefined),
     stopEventPipeline: vi.fn(async () => undefined),
     createHostDefinitionServices: vi.fn(() => hostDefinitionServices),
-    createMcpRuntime: vi.fn(() => mcpRuntime),
+    createMcpHost: vi.fn(() => mcpHost),
+    createProviderFactoryBuilder: vi.fn(() => providerFactoryBuilder),
     createGeneralProcessRunSupervisor: vi.fn(() => generalProcessRunSupervisor),
     buildApplicationPlatformRuntime: vi.fn(() => ({ lifecycle: applicationLifecycle })),
     buildStandaloneApplicationServer: vi.fn(async () => app),
@@ -158,8 +177,11 @@ vi.mock("../../../src/application-platform/launch-configuration/application-stan
 vi.mock("../../../src/compositions/host-definition-services.js", () => ({
   createHostDefinitionServices: mocks.createHostDefinitionServices,
 }));
-vi.mock("../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js", () => ({
-  createAgentToolsMcpRuntime: mocks.createMcpRuntime,
+vi.mock("../../../src/agent-tools/mcp/agent-tools-mcp-host.js", () => ({
+  createAgentToolsMcpHost: mocks.createMcpHost,
+}));
+vi.mock("../../../src/compositions/create-process-agent-provider-factory-builder.js", () => ({
+  createProcessAgentProviderFactoryBuilder: mocks.createProviderFactoryBuilder,
 }));
 vi.mock("../../../src/services/published-artifacts/published-artifact-publication-service.js", () => ({
   getGeneralProcessPublishedArtifactPublisher: vi.fn(() => ({})),
@@ -256,8 +278,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.resetEventPipeline.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.createHostDefinitionServices.mock.invocationCallOrder[0]!);
     expect(mocks.createHostDefinitionServices.mock.invocationCallOrder[0])
-      .toBeLessThan(mocks.createMcpRuntime.mock.invocationCallOrder[0]!);
-    expect(mocks.createMcpRuntime.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.createMcpHost.mock.invocationCallOrder[0]!);
+    expect(mocks.createMcpHost.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0]!);
     expect(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.buildApplicationPlatformRuntime.mock.invocationCallOrder[0]!);
@@ -269,11 +291,15 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       appConfig: mocks.appConfig,
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
-      agentToolsSessionManager: mocks.mcpRuntime.generalProcessSessionManager,
+      workspaceManager: mocks.workspaceManager,
+      agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
+      agentToolMcpSessionAuthority: mocks.generalAuthority,
     });
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+      agentToolMcpSessionAuthorities: mocks.mcpHost.sessionAuthorities,
+      agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       workspaceManager: mocks.workspaceManager,
       runtimeAvailabilityService: mocks.runtimeAvailabilityService,
       modelCatalogService: mocks.modelCatalogService,
@@ -291,7 +317,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
 
     await handle.close();
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.closeSecretVault.mock.invocationCallOrder[0]!);
@@ -401,7 +427,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       .rejects.toThrow("general run assembly failed");
 
     expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
@@ -417,7 +443,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       .rejects.toThrow("application assembly failed");
 
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);

@@ -12,13 +12,13 @@ export type ClaudeAgentToolsMcpHttpServerConfig = {
   alwaysLoad: true;
 };
 
-export type ClaudeAgentToolsMcpServerMap = {
+export type ClaudeAgentToolsMcpConfig = {
   [AGENT_TOOLS_MCP_SERVER_NAME]: ClaudeAgentToolsMcpHttpServerConfig;
 };
 
 export const materializeClaudeAgentToolsMcpServers = (
   descriptor: AgentToolMcpDescriptor,
-): ClaudeAgentToolsMcpServerMap => ({
+): ClaudeAgentToolsMcpConfig => ({
   [AGENT_TOOLS_MCP_SERVER_NAME]: {
     type: "http",
     url: descriptor.serverUrl,

@@ -5,9 +5,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildApplicationPlatformRuntime } from "../../../src/application-platform/runtime/build-application-platform-runtime.js";
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import {
-  createAgentToolsMcpRuntime,
-  type AgentToolsMcpRuntime,
-} from "../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
+  createAgentToolsMcpHost,
+  type AgentToolsMcpHost,
+} from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 
@@ -23,13 +24,13 @@ const createCatalogSnapshot = (applicationId: string) => ({
 
 describe("application platform runtime isolation", () => {
   const tempRoots: string[] = [];
-  const mcpRuntimes: AgentToolsMcpRuntime[] = [];
+  const mcpHosts: AgentToolsMcpHost[] = [];
 
   afterEach(async () => {
     await Promise.all(tempRoots.splice(0).map((root) =>
       fs.rm(root, { recursive: true, force: true })));
-    for (const mcpRuntime of mcpRuntimes.splice(0)) {
-      mcpRuntime.close();
+    for (const mcpHost of mcpHosts.splice(0)) {
+      mcpHost.close();
     }
     vi.restoreAllMocks();
   });
@@ -43,12 +44,15 @@ describe("application platform runtime isolation", () => {
       AgentTeamRunManager.prototype,
       "createTeamRun",
     );
-    const agentToolsMcpRuntime = createAgentToolsMcpRuntime({
-      generalProcessPublisher: {
-        publishManyForRun: vi.fn(async () => []),
-      },
-    });
-    mcpRuntimes.push(agentToolsMcpRuntime);
+    const agentToolsMcpHost = createAgentToolsMcpHost();
+    mcpHosts.push(agentToolsMcpHost);
+    const agentProviderFactoryBuilder: AgentProviderFactoryBuilder = {
+      createForExecution: vi.fn(() => ({
+        autoByteus: {} as never,
+        codex: {} as never,
+        claude: {} as never,
+      })),
+    };
     const buildRuntime = async (applicationId: string) => {
       const root = await fs.mkdtemp(
         path.join(os.tmpdir(), `autobyteus-runtime-${applicationId}-`),
@@ -70,8 +74,9 @@ describe("application platform runtime isolation", () => {
         bundleService: bundleService as never,
         agentDefinitionService: {} as never,
         agentTeamDefinitionService: {} as never,
-        agentToolsSessionFactory:
-          agentToolsMcpRuntime,
+        agentToolMcpSessionAuthorities:
+          agentToolsMcpHost.sessionAuthorities,
+        agentProviderFactoryBuilder,
         workspaceManager: {
           getOrCreateTempWorkspace: vi.fn(async () => ({ id: `workspace-${applicationId}` })),
         } as never,
@@ -121,29 +126,35 @@ describe("application platform runtime isolation", () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-runtime-unwind-"));
     tempRoots.push(root);
     const assemblyFailure = new Error("platform assembly failed");
-    const closeRawSessionScope = vi.fn();
-    const closeSessionManager = vi.fn();
-    const closeProcessMcpRuntime = vi.fn();
-    const sessionManager = {
+    const closeAuthority = vi.fn();
+    const abortAssembly = vi.fn();
+    const runSessions = Object.freeze({
+      revokeForRun: vi.fn(() => 0),
+      revokeForOwner: vi.fn(() => 0),
+    });
+    const authority = {
+      scopeIdentity: "application:app-a",
+      issuer: Object.freeze({ issueForRun: vi.fn() }),
+      runSessions,
       assertReady: vi.fn(),
-      createAgentToolMcpSession: vi.fn(),
-      revokeAgentToolMcpSession: vi.fn(),
-      revokeAgentToolMcpSessionsForRun: vi.fn(),
-      revokeAgentToolMcpSessionsForOwner: vi.fn(),
-      redactAgentToolMcpDescriptor: vi.fn(),
       blockNewSessions: vi.fn(),
-      close: closeSessionManager,
+      close: closeAuthority,
     };
-    const agentToolsSessionFactory = {
-      close: closeProcessMcpRuntime,
-      createApplicationSessionScope: vi.fn(() => ({
-        recordIssuedSession: vi.fn(),
-        revokeForRun: vi.fn(() => 0),
-        revokeForOwner: vi.fn(() => 0),
-        blockNewSessions: vi.fn(),
-        close: closeRawSessionScope,
+    const complete = vi.fn(() => authority);
+    const agentToolMcpSessionAuthorities = {
+      begin: vi.fn(() => ({
+        scopeIdentity: "application:app-a",
+        runSessions,
+        complete,
+        abort: abortAssembly,
       })),
-      createApplicationSessionManager: vi.fn(() => sessionManager as never),
+    };
+    const agentProviderFactoryBuilder: AgentProviderFactoryBuilder = {
+      createForExecution: vi.fn(() => ({
+        autoByteus: {} as never,
+        codex: {} as never,
+        claude: {} as never,
+      })),
     };
     const processOwners = {
       agentDefinitions: { close: vi.fn() },
@@ -171,7 +182,8 @@ describe("application platform runtime isolation", () => {
         bundleService: {} as never,
         agentDefinitionService: processOwners.agentDefinitions as never,
         agentTeamDefinitionService: processOwners.teamDefinitions as never,
-        agentToolsSessionFactory: agentToolsSessionFactory as never,
+        agentToolMcpSessionAuthorities: agentToolMcpSessionAuthorities as never,
+        agentProviderFactoryBuilder,
         workspaceManager: processOwners.workspace as never,
         runtimeAvailabilityService: processOwners.runtimeAvailability as never,
         modelCatalogService: processOwners.modelCatalog as never,
@@ -185,11 +197,10 @@ describe("application platform runtime isolation", () => {
 
     expect(publishedRuntime).toBeUndefined();
     expect(abortConstruction).toHaveBeenCalledTimes(1);
-    expect(agentToolsSessionFactory.createApplicationSessionManager)
-      .toHaveBeenCalledTimes(1);
-    expect(closeSessionManager).toHaveBeenCalledTimes(1);
-    expect(closeRawSessionScope).not.toHaveBeenCalled();
-    expect(closeProcessMcpRuntime).not.toHaveBeenCalled();
+    expect(agentToolMcpSessionAuthorities.begin).toHaveBeenCalledTimes(1);
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(closeAuthority).toHaveBeenCalledTimes(1);
+    expect(abortAssembly).not.toHaveBeenCalled();
     for (const owner of Object.values(processOwners)) {
       expect(owner.close).not.toHaveBeenCalled();
     }

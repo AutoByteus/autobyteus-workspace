@@ -23,7 +23,7 @@ import type { CodexWorkspaceResolver } from "../../../../../../src/agent-executi
 import type { AgentDefinitionService } from "../../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import type { AgentToolMcpSessionService } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentToolMcpSessionIssuer } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
@@ -141,8 +141,14 @@ const createBootstrapper = (input: {
   requestImplementation: () => Promise<unknown>;
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
+  materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
+  if (input.materializeImplementation) {
+    workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills = vi.fn(
+      input.materializeImplementation,
+    );
+  }
   const workspaceResolver = {
     resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY),
   } as unknown as CodexWorkspaceResolver;
@@ -167,22 +173,23 @@ const createBootstrapper = (input: {
     acquireClient: vi.fn(async () => client),
     releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
-  const agentToolMcpSessionService = {
-    createAgentToolMcpSession: vi.fn(() => ({
-      session: {},
+  const agentToolMcpSessionIssuer = {
+    issueForRun: vi.fn((issueInput) => ({
+      sessionId: "session-codex",
+      owner: issueInput.owner,
       descriptor: input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
         (input.toolNames ?? []).filter((toolName) => SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES.has(toolName)),
       ),
-      redactedDescriptor: null,
+      redactedDescriptor: {} as never,
     })),
-  } as unknown as AgentToolMcpSessionService;
+  } as AgentToolMcpSessionIssuer;
   const bootstrapper = new CodexThreadBootstrapper(
     workspaceSkillMaterializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
     clientManager,
-    agentToolMcpSessionService,
+    agentToolMcpSessionIssuer,
   );
 
   return {
@@ -190,7 +197,7 @@ const createBootstrapper = (input: {
     workspaceSkillMaterializer,
     client,
     clientManager,
-    agentToolMcpSessionService,
+    agentToolMcpSessionIssuer,
   };
 };
 
@@ -555,7 +562,7 @@ describe("CodexThreadBootstrapper", () => {
   });
 
   it("materializes standalone send_message_to through Agent Tools MCP thread config", async () => {
-    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
+    const { bootstrapper, agentToolMcpSessionIssuer } = createBootstrapper({
       skills: [],
       toolNames: ["send_message_to"],
       requestImplementation: async () => ({ data: [] }),
@@ -576,7 +583,7 @@ describe("CodexThreadBootstrapper", () => {
         },
       },
     });
-    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledWith(
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: { runId: "run-1" },
         sender: expect.objectContaining({
@@ -590,7 +597,7 @@ describe("CodexThreadBootstrapper", () => {
   });
 
   it("recreates Agent Tools MCP thread config on restore instead of reusing persisted descriptors", async () => {
-    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
+    const { bootstrapper, agentToolMcpSessionIssuer } = createBootstrapper({
       skills: [],
       toolNames: ["send_message_to"],
       agentToolsDescriptor: {
@@ -603,7 +610,7 @@ describe("CodexThreadBootstrapper", () => {
     const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext());
 
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
-    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledTimes(1);
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledTimes(1);
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
         autobyteus_agent_tools: {
@@ -614,8 +621,28 @@ describe("CodexThreadBootstrapper", () => {
     });
   });
 
+  it("leaves the issued run resource for the run owner when later workspace preparation fails", async () => {
+    const skill = createSkill("post_issue_failure");
+    const { bootstrapper, agentToolMcpSessionIssuer } = createBootstrapper({
+      skills: [skill],
+      toolNames: ["send_message_to"],
+      requestImplementation: async () => ({ data: [] }),
+      materializeImplementation: async () => {
+        throw new Error("workspace materialization failed after issue");
+      },
+    });
+
+    await expect(bootstrapper.bootstrapForCreate(createRunContext())).rejects.toThrow(
+      "workspace materialization failed after issue",
+    );
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledTimes(1);
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledWith(
+      expect.objectContaining({ owner: { runId: "run-1" } }),
+    );
+  });
+
   it("does not materialize Agent Tools MCP config when no configured tool is available", async () => {
-    const { bootstrapper, agentToolMcpSessionService } = createBootstrapper({
+    const { bootstrapper, agentToolMcpSessionIssuer } = createBootstrapper({
       skills: [],
       toolNames: ["open_tab"],
       agentToolsDescriptor: createAgentToolMcpDescriptor([]),
@@ -625,7 +652,7 @@ describe("CodexThreadBootstrapper", () => {
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
 
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
-    expect(agentToolMcpSessionService.createAgentToolMcpSession).toHaveBeenCalledTimes(1);
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledTimes(1);
   });
 
   it("exposes configured browser tools only through Agent Tools MCP when allowed", async () => {

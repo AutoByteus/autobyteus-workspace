@@ -1,3 +1,4 @@
+import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -55,7 +56,10 @@ const createBackend = (input: {
     postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-    terminate: vi.fn().mockResolvedValue({ accepted: true }),
+    terminate: vi.fn().mockImplementation(async () => {
+      state.active = false;
+      return { accepted: true };
+    }),
   };
 
   return {
@@ -83,6 +87,7 @@ describe("AgentRunManager integration", () => {
     const codex = createFactory(createBackend({ runId: "run-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend);
     const claude = createFactory(createBackend({ runId: "run-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend);
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: auto,
       codexBackendFactory: codex,
       claudeBackendFactory: claude,
@@ -94,7 +99,11 @@ describe("AgentRunManager integration", () => {
         : runtimeKind === RuntimeKind.CODEX_APP_SERVER
           ? "run-codex"
           : "run-claude";
-    const run = await manager.createAgentRun(createConfig(runtimeKind), expectedRunId);
+    const candidate = await manager.prepareNewAgentRun({
+      config: createConfig(runtimeKind),
+      runId: expectedRunId,
+    });
+    const run = candidate.commitPublication();
 
     expect(run.runtimeKind).toBe(runtimeKind);
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
@@ -128,12 +137,14 @@ describe("AgentRunManager integration", () => {
     const codex = createFactory(backend);
     const claude = createFactory(backend);
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: auto,
       codexBackendFactory: codex,
       claudeBackendFactory: claude,
     });
 
-    const run = await manager.restoreAgentRun(restoredContext);
+    const candidate = await manager.prepareRestoreAgentRun(restoredContext);
+    const run = candidate.commitPublication();
 
     expect(run.runId).toBe(restoredContext.runId);
     expect(run.context).toBe(restoredContext);
@@ -150,20 +161,23 @@ describe("AgentRunManager integration", () => {
           runId: context.runId,
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           context,
+          platformAgentRunId: "claude-session-restored",
         }).backend,
       ),
     };
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: claude,
     });
 
-    await manager.restoreAgentRunFromPlatformState({
+    const candidate = await manager.prepareRestoreAgentRunFromPlatformState({
       runId: "run-restore-claude-platform",
       config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
       platformAgentRunId: "claude-session-restored",
     });
+    candidate.commitPublication();
 
     const restoredContext = claude.restoreBackend.mock.calls[0]?.[0] as AgentRunContext<any>;
     expect(restoredContext.runtimeContext.sessionConfig.permissionMode).toBe("default");
@@ -174,15 +188,17 @@ describe("AgentRunManager integration", () => {
   it("evicts inactive runs when queried or listed", async () => {
     const active = createBackend({ runId: "run-active", runtimeKind: RuntimeKind.AUTOBYTEUS });
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(active.backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(
-      createConfig(RuntimeKind.AUTOBYTEUS),
-      "run-active",
-    );
+    const candidate = await manager.prepareNewAgentRun({
+      config: createConfig(RuntimeKind.AUTOBYTEUS),
+      runId: "run-active",
+    });
+    const run = candidate.commitPublication();
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     active.state.active = false;
@@ -196,15 +212,17 @@ describe("AgentRunManager integration", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(created.backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(
-      createConfig(RuntimeKind.CODEX_APP_SERVER),
-      "run-terminate-ok",
-    );
+    const candidate = await manager.prepareNewAgentRun({
+      config: createConfig(RuntimeKind.CODEX_APP_SERVER),
+      runId: "run-terminate-ok",
+    });
+    const run = candidate.commitPublication();
     const success = await manager.terminateAgentRun(run.runId);
 
     expect(success).toBe(true);
@@ -223,15 +241,17 @@ describe("AgentRunManager integration", () => {
       message: "still active",
     });
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(created.backend),
     });
 
-    const run = await manager.createAgentRun(
-      createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
-      "run-terminate-no",
-    );
+    const candidate = await manager.prepareNewAgentRun({
+      config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
+      runId: "run-terminate-no",
+    });
+    const run = candidate.commitPublication();
 
     await expect(manager.terminateAgentRun("missing-run")).resolves.toBe(false);
     await expect(manager.terminateAgentRun(run.runId)).resolves.toBe(false);
@@ -245,21 +265,24 @@ describe("AgentRunManager integration", () => {
     });
     created.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(created.backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(
-      createConfig(RuntimeKind.AUTOBYTEUS),
-      "run-terminate-error",
-    );
+    const candidate = await manager.prepareNewAgentRun({
+      config: createConfig(RuntimeKind.AUTOBYTEUS),
+      runId: "run-terminate-error",
+    });
+    const run = candidate.commitPublication();
 
     await expect(manager.terminateAgentRun(run.runId)).rejects.toThrow(AgentTerminationError);
   });
 
   it("rejects unsupported runtime kinds for create and restore", async () => {
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
@@ -272,7 +295,7 @@ describe("AgentRunManager integration", () => {
       runtimeContext: null,
     });
 
-    await expect(manager.createAgentRun(config, "unsupported-run")).rejects.toThrow(AgentCreationError);
-    await expect(manager.restoreAgentRun(context)).rejects.toThrow(AgentCreationError);
+    await expect(manager.prepareNewAgentRun({ config, runId: "unsupported-run" })).rejects.toThrow(AgentCreationError);
+    await expect(manager.prepareRestoreAgentRun(context)).rejects.toThrow(AgentCreationError);
   });
 });

@@ -34,9 +34,10 @@ import { getManagedMessagingGatewayService } from "../managed-capabilities/messa
 import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import {
-  createAgentToolsMcpRuntime,
-  type AgentToolsMcpRuntime,
-} from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
+  createAgentToolsMcpHost,
+  type AgentToolsMcpHost,
+} from "../agent-tools/mcp/agent-tools-mcp-host.js";
+import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
   createGeneralProcessRunSupervisor,
@@ -53,6 +54,9 @@ import { getModelAvailabilityService } from "../llm-management/services/model-av
 import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
+import type { WorkspaceManager } from "../workspaces/workspace-manager.js";
+import type { AgentProviderFactoryBuilder } from "../agent-execution/providers/agent-provider-factory-builder.js";
+import { createProcessAgentProviderFactoryBuilder } from "./create-process-agent-provider-factory-builder.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -64,7 +68,8 @@ type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
 
 const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
-  agentToolsMcpRuntime: AgentToolsMcpRuntime | null;
+  agentToolsMcpHost: AgentToolsMcpHost | null;
+  generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   studioApiHandle: StudioApiHandle | null;
 }): Promise<void> => {
@@ -73,30 +78,34 @@ const closeStudioProcessResources = async (input: {
     await input.generalProcessRunSupervisor?.close();
   } finally {
     try {
-      input.agentToolsMcpRuntime?.close();
+      input.generalProcessAuthority?.close();
     } finally {
       try {
-        input.studioApiHandle?.close();
+        input.agentToolsMcpHost?.close();
       } finally {
         try {
-          await stopChannelRunOutputDeliveryRuntime();
+          input.studioApiHandle?.close();
         } finally {
           try {
-            await stopGatewayCallbackDeliveryRuntime();
+            await stopChannelRunOutputDeliveryRuntime();
           } finally {
             try {
-              await getManagedMessagingGatewayService().close();
+              await stopGatewayCallbackDeliveryRuntime();
             } finally {
               try {
-                await stopDefaultAgentRunEventPipeline();
+                await getManagedMessagingGatewayService().close();
               } finally {
                 try {
-                  input.hostDefinitionServices.close();
+                  await stopDefaultAgentRunEventPipeline();
                 } finally {
                   try {
-                    await getSecretVaultRuntime().close();
+                    input.hostDefinitionServices.close();
                   } finally {
-                    await shutdownPrisma();
+                    try {
+                      await getSecretVaultRuntime().close();
+                    } finally {
+                      await shutdownPrisma();
+                    }
                   }
                 }
               }
@@ -126,15 +135,18 @@ const createStudioApplicationServices = (input: {
   appConfig: AppConfig;
   packages: ReturnType<typeof createStudioPackageServices>;
   definitions: HostDefinitionServices;
-  agentToolsMcpRuntime: AgentToolsMcpRuntime;
+  agentToolsMcpHost: AgentToolsMcpHost;
+  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
+  workspaceManager: WorkspaceManager;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig,
     bundleService: input.packages.bundleService,
     agentDefinitionService: input.definitions.agentDefinitionService,
     agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
-    agentToolsSessionFactory: input.agentToolsMcpRuntime,
-    workspaceManager: getWorkspaceManager(),
+    agentToolMcpSessionAuthorities: input.agentToolsMcpHost.sessionAuthorities,
+    agentProviderFactoryBuilder: input.agentProviderFactoryBuilder,
+    workspaceManager: input.workspaceManager,
     runtimeAvailabilityService: getRuntimeAvailabilityService(),
     modelCatalogService: getModelCatalogService(),
     modelAvailabilityService: getModelAvailabilityService(),
@@ -166,7 +178,8 @@ export const buildStudioServer = async (input: {
     appConfig: input.appConfig,
     bundleService: packages.bundleService,
   });
-  let agentToolsMcpRuntime: AgentToolsMcpRuntime | null = null;
+  let agentToolsMcpHost: AgentToolsMcpHost | null = null;
+  let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
@@ -176,27 +189,44 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await closeStudioProcessResources({
       hostDefinitionServices,
-      agentToolsMcpRuntime,
+      agentToolsMcpHost,
+      generalProcessAuthority,
       generalProcessRunSupervisor,
       studioApiHandle,
     });
   };
 
   try {
-    agentToolsMcpRuntime = createAgentToolsMcpRuntime({
-      generalProcessPublisher: getGeneralProcessPublishedArtifactPublisher(),
+    const workspaceManager = getWorkspaceManager();
+    agentToolsMcpHost = createAgentToolsMcpHost();
+    const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
+      workspaceManager,
+    });
+    const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
+      scopeIdentity: "general-process",
+    });
+    generalProcessAuthority = generalAssembly.complete({
+      executionCapabilities: {
+        publishedArtifactPublisher: getGeneralProcessPublishedArtifactPublisher(),
+      },
+      assertExecutionCapabilitiesReady: () => undefined,
     });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       appConfig: input.appConfig,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
-      agentToolsSessionManager: agentToolsMcpRuntime.generalProcessSessionManager,
+      workspaceManager,
+      agentProviderFactoryBuilder,
+      agentToolMcpSessionAuthority: generalProcessAuthority,
     });
+    generalProcessAuthority = null;
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig,
       packages,
       definitions: hostDefinitionServices,
-      agentToolsMcpRuntime,
+      agentToolsMcpHost,
+      agentProviderFactoryBuilder,
+      workspaceManager,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;
@@ -230,7 +260,7 @@ export const buildStudioServer = async (input: {
         mode: input.loggingConfig.httpAccessLogMode,
         includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
       });
-      await registerAgentToolsMcpRoutes(app, agentToolsMcpRuntime.routeDependencies);
+      await registerAgentToolsMcpRoutes(app, agentToolsMcpHost.routeDependencies);
       await registerMcpGatewayRoutes(app);
       await app.register(cors, {
         origin: true,

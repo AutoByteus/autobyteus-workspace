@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -261,6 +262,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     }
     const recorder = new AgentRunMemoryRecorder();
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: createCodexFactory({
         clientManager,
@@ -459,6 +461,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const recorder = new AgentRunMemoryRecorder();
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: createCodexFactory({
         clientManager,

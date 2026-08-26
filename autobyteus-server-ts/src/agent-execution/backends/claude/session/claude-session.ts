@@ -25,7 +25,6 @@ import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-c
 import { emitClaudeTokenUsageEvent } from "./claude-session-token-usage.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
-import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSessionDependencies, ClaudeSessionStateInput } from "./claude-session-state-input.js";
 
@@ -61,7 +60,7 @@ export class ClaudeSession {
     this.contextFileLocalPathResolver =
       input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
     this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
-      input.dependencies.agentToolMcpSessionService ?? getAgentToolMcpSessionService(),
+      input.dependencies.agentToolMcpSessionIssuer,
     );
   }
 

@@ -8,7 +8,8 @@ import type {
   CreateTeamRunFromRootConfigInput,
   CreateTeamRunInput,
 } from "../../agent-team-execution/services/team-run-service.js";
-import type { ApplicationAgentToolsSessionFactory } from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
+import type { AgentProviderFactoryBuilder } from "../../agent-execution/providers/agent-provider-factory-builder.js";
+import type { AgentToolMcpSessionAuthorityFactory } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ApplicationAgentStreamSourceEvent } from "../../application-agent-streaming/domain/application-agent-streaming-models.js";
 import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type {
@@ -27,7 +28,8 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   memoryDir: string;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionFactory: ApplicationAgentToolsSessionFactory;
+  agentToolMcpSessionAuthorities: AgentToolMcpSessionAuthorityFactory;
+  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   workspaceManager: WorkspaceManager;
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;

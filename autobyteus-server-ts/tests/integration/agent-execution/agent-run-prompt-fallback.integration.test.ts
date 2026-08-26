@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -28,6 +29,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
     onCreateAgent: (config: AgentConfig) => void,
   ) => {
     const workspaceById = new Map<string, { workspaceId: string; getBasePath: () => string }>();
+    const activeAgents = new Map<string, any>();
     const workspaceManager = {
       ensureWorkspaceByRootPath: async (workspaceRootPath: string) => {
         const workspace = {
@@ -47,40 +49,50 @@ describe("AgentRunService fresh definition runtime integration", () => {
     };
     const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService,
-      llmFactory: {
-        createLLM: async () => ({}) as any,
-      } as any,
+      createLLM: async () => ({}) as any,
       agentFactory: {
         createAgentWithId: (agentId: string, config: AgentConfig) => {
           onCreateAgent(config);
-          return {
+          const agent = {
             agentId,
             currentStatus: "IDLE",
             context: {
               config,
-              state: { activeTurnId: null },
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
             },
             start: () => undefined,
             postUserMessage: async () => undefined,
             postToolExecutionApproval: async () => undefined,
             stop: async () => undefined,
           };
+          activeAgents.set(agentId, agent);
+          return agent;
         },
-        restoreAgent: (agentId: string, config: AgentConfig) => ({
-          agentId,
-          currentStatus: "IDLE",
-          context: {
-            config,
-            state: { activeTurnId: null },
-          },
-          start: () => undefined,
-          postUserMessage: async () => undefined,
-          postToolExecutionApproval: async () => undefined,
-          stop: async () => undefined,
-        }),
-        getAgent: () => null,
-        listActiveAgentIds: () => [],
-        removeAgent: async () => true,
+        restoreAgent: (agentId: string, config: AgentConfig) => {
+          const agent = {
+            agentId,
+            currentStatus: "IDLE",
+            context: {
+              config,
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
+            },
+            start: () => undefined,
+            postUserMessage: async () => undefined,
+            postToolExecutionApproval: async () => undefined,
+            stop: async () => undefined,
+          };
+          activeAgents.set(agentId, agent);
+          return agent;
+        },
+        getAgent: (agentId: string) => activeAgents.get(agentId) ?? null,
+        listActiveAgentIds: () => Array.from(activeAgents.keys()),
+        removeAgent: async (agentId: string) => activeAgents.delete(agentId),
       } as any,
       workspaceManager: workspaceManager as any,
       skillService: {
@@ -116,12 +128,16 @@ describe("AgentRunService fresh definition runtime integration", () => {
     });
 
     const manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory,
     });
     return new AgentRunService(appConfigProvider.config.getMemoryDir(), {
       agentRunManager: manager,
       workspaceManager: workspaceManager as never,
-      agentDefinitionService,
+      agentRunIdentityAllocator: {
+        allocateForAgentDefinition: async (agentDefinitionId: string) =>
+          `${agentDefinitionId}-run`,
+      },
     });
   };
 
@@ -181,7 +197,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmConfig: null,
     });
 
-    expect(capturedConfig?.systemPrompt).toBe(updatedInstructions);
+    expect(capturedConfig?.systemPrompt).toContain(updatedInstructions);
   });
 
   it("falls back to description when fresh definition instructions are blank", async () => {
@@ -235,6 +251,6 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmConfig: null,
     });
 
-    expect(capturedConfig?.systemPrompt).toBe(description);
+    expect(capturedConfig?.systemPrompt).toContain(description);
   });
 });

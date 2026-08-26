@@ -8,9 +8,9 @@ import { buildStandaloneApplicationServer } from "../../../src/compositions/buil
 import { resolveStandaloneApplicationHostConfig } from "../../../src/standalone-application-host/config/standalone-application-host-config.js";
 import { StandaloneApplicationSelectionService } from "../../../src/standalone-application-host/services/standalone-application-selection-service.js";
 import {
-  createAgentToolsMcpRuntime,
-  type AgentToolsMcpRuntime,
-} from "../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
+  createAgentToolsMcpHost,
+  type AgentToolsMcpHost,
+} from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 
 const BRIEF_PACKAGE_ROOT = path.resolve(
   process.cwd(),
@@ -62,12 +62,12 @@ const waitForSocketMessage = async (socket: WebSocket): Promise<unknown> =>
 
 describe("standalone application server", () => {
   const apps: Array<Awaited<ReturnType<typeof buildStandaloneApplicationServer>>> = [];
-  const mcpRuntimes: AgentToolsMcpRuntime[] = [];
+  const mcpHosts: AgentToolsMcpHost[] = [];
 
   afterEach(async () => {
     await Promise.allSettled(apps.splice(0).map((app) => app.close()));
-    for (const mcpRuntime of mcpRuntimes.splice(0)) {
-      mcpRuntime.close();
+    for (const mcpHost of mcpHosts.splice(0)) {
+      mcpHost.close();
     }
   });
 
@@ -113,12 +113,8 @@ describe("standalone application server", () => {
       connectApplicationWebSocket: vi.fn(),
     };
     const notificationHub = new ApplicationBackendNotificationHub();
-    const agentToolsMcpRuntime = createAgentToolsMcpRuntime({
-      generalProcessPublisher: {
-        publishManyForRun: vi.fn(async () => []),
-      },
-    });
-    mcpRuntimes.push(agentToolsMcpRuntime);
+    const agentToolsMcpHost = createAgentToolsMcpHost();
+    mcpHosts.push(agentToolsMcpHost);
     const app = await buildStandaloneApplicationServer({
       selection,
       applicationRuntime: {
@@ -145,7 +141,7 @@ describe("standalone application server", () => {
         scopedLogLevelOverrides: [],
       },
       agentToolsRouteDependencies:
-        agentToolsMcpRuntime.routeDependencies,
+        agentToolsMcpHost.routeDependencies,
     });
     apps.push(app);
 

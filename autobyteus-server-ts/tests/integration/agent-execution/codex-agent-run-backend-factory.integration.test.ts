@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -9,11 +10,9 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
@@ -25,6 +24,8 @@ import {
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
+import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -184,30 +185,54 @@ const createFactory = (input: {
   instructions?: string;
   toolNames?: string[];
 }) => {
-  const threadBootstrapper = new CodexThreadBootstrapper(
-    undefined,
-    {
-      resolveWorkingDirectory: async () => input.workspaceRoot,
-    } as any,
-    {
+  const inert = Object.freeze({}) as never;
+  const builder = createAgentProviderFactoryBuilder({
+    workspaceManager: getWorkspaceManager(),
+    skillService: {
+      resolveConfiguredSkillBindingsForAgent: () => [],
+    } as never,
+    autoByteus: {
+      agentFactory: inert,
+      createLlm: inert,
+      processorRegistries: {
+        input: inert,
+        llmResponse: inert,
+        toolExecutionResult: inert,
+        toolInvocationPreprocessor: inert,
+        lifecycle: inert,
+      },
+      waitForIdle: inert,
+      compactionAgentRunnerFactory: inert,
+    },
+    codex: {
+      workspaceSkillMaterializer: {
+        materializeConfiguredWorkspaceSkills: async () => [],
+        cleanupMaterializedWorkspaceSkills: async () => undefined,
+      } as never,
+      workspaceResolver: {
+        resolveWorkingDirectory: async () => input.workspaceRoot,
+      } as never,
+      clientManager: input.clientManager,
+      threadManager: input.threadManager,
+      threadCleanup: new CodexThreadCleanup(undefined, input.clientManager),
+    },
+    claude: {
+      workspaceResolver: inert,
+      workspaceSkillMaterializer: inert,
+      sdkClient: inert,
+    },
+  });
+  return builder.createForExecution({
+    agentDefinitionService: {
       getAgentDefinitionById: async () => ({
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
         toolNames: input.toolNames ?? [],
       }),
-    } as any,
-    {
-      resolveConfiguredSkillBindingsForAgent: () => [],
-    } as any,
-  );
-
-  return new CodexAgentRunBackendFactory(
-    input.threadManager,
-    threadBootstrapper,
-    new CodexThreadCleanup(undefined, input.clientManager),
-    () => input.runId,
-  );
+    } as never,
+    agentToolMcpSessionIssuer: getAgentToolMcpSessionIssuer(),
+  }).codex;
 };
 
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
@@ -1106,6 +1131,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
 
     const runManager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory: {} as any,
       codexBackendFactory: factory,
       claudeBackendFactory: {} as any,

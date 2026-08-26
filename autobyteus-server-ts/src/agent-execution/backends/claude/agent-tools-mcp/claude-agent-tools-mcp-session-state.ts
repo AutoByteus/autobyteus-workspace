@@ -1,33 +1,27 @@
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import type {
   AgentToolMcpDescriptor,
-  AgentToolMcpSession,
+  AgentToolMcpSessionOwnerIdentity,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import type { AgentToolMcpSessionManager } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type {
+  AgentToolMcpSessionIssuer,
+  IssuedAgentToolMcpSession,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
-export type ClaudeAgentToolsMcpSessionServiceLike = Pick<
-  AgentToolMcpSessionManager,
-  "createAgentToolMcpSession"
->;
-
-type LiveClaudeAgentToolsMcpDescriptor = {
-  descriptor: AgentToolMcpDescriptor;
-};
-
 export class ClaudeAgentToolsMcpSessionState {
-  private liveDescriptor: LiveClaudeAgentToolsMcpDescriptor | null = null;
+  private issuedSession: IssuedAgentToolMcpSession | null = null;
 
-  constructor(private readonly sessionService: ClaudeAgentToolsMcpSessionServiceLike) {}
+  constructor(private readonly sessionIssuer: AgentToolMcpSessionIssuer) {}
 
   ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
-    const existing = this.liveDescriptor;
+    const existing = this.issuedSession;
     if (existing) {
       return existing.descriptor.enabledTools.length > 0 ? existing.descriptor : null;
     }
 
-    const result = this.sessionService.createAgentToolMcpSession({
+    const result = this.sessionIssuer.issueForRun({
       owner: buildAgentToolsMcpOwnerIdentity(runContext),
       sender: buildAgentRunMessageSenderContext({
         senderRunId: runContext.runId,
@@ -47,16 +41,14 @@ export class ClaudeAgentToolsMcpSessionState {
       },
       runtimeKind: runContext.config.runtimeKind,
     });
-    this.liveDescriptor = {
-      descriptor: result.descriptor,
-    };
+    this.issuedSession = result;
     return result.descriptor.enabledTools.length > 0 ? result.descriptor : null;
   }
 }
 
 const buildAgentToolsMcpOwnerIdentity = (
   runContext: ClaudeRunContext,
-): AgentToolMcpSession["owner"] => {
+): AgentToolMcpSessionOwnerIdentity => {
   const memberTeamContext = runContext.config.memberTeamContext;
   if (!memberTeamContext) {
     return { runId: runContext.runId };

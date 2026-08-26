@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
@@ -77,9 +78,8 @@ describe("AgentRunService real memory layout integration", () => {
             description: "real integration for memory layout",
           }),
       } as any,
-      llmFactory: {
-        createLLM: async () => new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
-      } as any,
+      createLLM: async () =>
+        new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
       workspaceManager: {
         getWorkspaceById: (workspaceId: string) =>
           workspaceId === "workspace-real-layout"
@@ -100,6 +100,7 @@ describe("AgentRunService real memory layout integration", () => {
       } as any,
     });
     manager = new AgentRunManager({
+      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory,
     });
     runService = new AgentRunService(memoryDir, {
