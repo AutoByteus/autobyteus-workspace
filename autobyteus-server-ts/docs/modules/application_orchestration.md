@@ -177,6 +177,39 @@ Global run lookup state lives separately under:
 
 That global lookup maps observed runtime `runId` values back to `{ applicationId, bindingId }` so runtime-originated events can be routed to the correct application binding without scanning every app.
 
+## Application Run Ownership Lease
+
+Application and General Process runtime owners remain separate. Studio must not
+infer that a persisted run is editable merely because the General manager does
+not currently own it. `ApplicationRunOwnershipService` exposes one read-only
+`hasLiveRunOwnership(...)` port through
+`ApplicationPlatformRuntime.hostManagement.runOwnership`; it exposes no
+Application manager or mutation method.
+
+The ownership read waits for `ApplicationOrchestrationStartupGate` readiness,
+then reconciles the exact run ID with the global lookup and immutable
+`applicationId`/`bindingId` provenance stored in Agent metadata or the Team V2
+execution tree. It loads the referenced binding, verifies application/binding
+identity, and proves that the binding contains the requested Agent, Team root,
+or Team member ID. Lookup/provenance disagreement, a missing binding, an
+unreadable record, or an unsupported status is an error rather than permission
+to edit.
+
+`ATTACHED`, `TERMINATING`, and `FAILED` bindings retain the Application lease,
+even when the worker/runtime is temporarily not materialized. `TERMINATED` and
+`ORPHANED` release it. Terminal transition persists the binding state before
+removing the global lookup, and normal Application input rejects terminal
+bindings. Provenance therefore preserves the lock during startup recovery or
+lookup rebuild, while a durable terminal state permits later General restore.
+
+`StudioRunModelConfigService` consumes this port for exactly four operations:
+Agent/Team resume reads and Agent/Team stopped model-setting updates. It reads
+canonical General state first, overlays the active/editability lock for a live
+Application lease, and returns `RUN_ACTIVE` with canonical data and no General
+write for direct updates. Once the lease is terminal or absent, the unchanged
+General per-identity transition lane decides final eligibility. Ownership
+failures remain fail-closed as a query error or mutation `INTERNAL_ERROR`.
+
 ## Event Ingress, Dispatch, And Published Artifacts
 
 Runtime-visible lifecycle events use the application-owned orchestration journal, not the removed application-session journal. Published artifacts use the shared published-artifact subsystem and only cross the application boundary through best-effort live relay plus app-owned query/reconciliation.

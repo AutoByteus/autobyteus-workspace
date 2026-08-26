@@ -4,6 +4,7 @@ import {
   normalizeModelConfigSchema,
   resolveEffectiveConfigValue,
   sanitizeModelConfigAgainstSchema,
+  validateUiModelConfig,
 } from '~/utils/llmConfigSchema';
 
 describe('normalizeModelConfigSchema', () => {
@@ -43,6 +44,42 @@ describe('normalizeModelConfigSchema', () => {
       enum: ['balanced', 'creative'],
       required: true,
     });
+  });
+
+  it('normalizes the exact Codex enum parameter shape and validates enum membership', () => {
+    const result = normalizeModelConfigSchema({
+      parameters: [{
+        name: 'reasoning_effort',
+        type: 'enum',
+        default_value: 'medium',
+        enum_values: ['low', 'medium', 'high', 'xhigh'],
+      }],
+    });
+
+    expect(result?.reasoning_effort).toMatchObject({
+      type: 'string',
+      default: 'medium',
+      enum: ['low', 'medium', 'high', 'xhigh'],
+    });
+    expect(validateUiModelConfig(result, { reasoning_effort: 'low' })).toEqual([]);
+    expect(validateUiModelConfig(result, { reasoning_effort: 'ultra' })).toEqual([
+      { key: 'reasoning_effort', code: 'enum' },
+    ]);
+  });
+
+  it('keeps malformed non-string enum parameter schemas fail-closed', () => {
+    const result = normalizeModelConfigSchema({
+      parameters: [{
+        name: 'mixed_mode',
+        type: 'enum',
+        enum_values: ['safe', 1],
+      }],
+    });
+
+    expect(result?.mixed_mode?.type).toBe('enum');
+    expect(validateUiModelConfig(result, { mixed_mode: 'safe' })).toEqual([
+      { key: 'mixed_mode', code: 'type', expected: 'enum' },
+    ]);
   });
 
   it('normalizes json schema to UI schema', () => {
@@ -175,5 +212,25 @@ describe('sanitizeModelConfigAgainstSchema', () => {
     });
 
     expect(result).toBeNull();
+  });
+
+  it('reports required, range, pattern, enum, and type issues without changing the draft', () => {
+    const config = { budget: 0, mode: 'turbo', code: 'lower', enabled: 'yes' };
+    const issues = validateUiModelConfig({
+      required_value: { type: 'string', required: true },
+      budget: { type: 'integer', minimum: 1 },
+      mode: { type: 'string', enum: ['default', 'fast'] },
+      code: { type: 'string', pattern: '^[A-Z]+$' },
+      enabled: { type: 'boolean' },
+    }, config);
+
+    expect(issues).toEqual([
+      { key: 'required_value', code: 'required' },
+      { key: 'budget', code: 'minimum', expected: 1 },
+      { key: 'mode', code: 'enum' },
+      { key: 'code', code: 'pattern' },
+      { key: 'enabled', code: 'type', expected: 'boolean' },
+    ]);
+    expect(config).toEqual({ budget: 0, mode: 'turbo', code: 'lower', enabled: 'yes' });
   });
 });

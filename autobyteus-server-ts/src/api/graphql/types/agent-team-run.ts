@@ -9,7 +9,15 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { getStudioTeamRunService } from "../studio-application-api-services.js";
+import {
+  getStudioRunModelConfigService,
+  getStudioTeamRunService,
+} from "../studio-application-api-services.js";
+import {
+  RunModelConfigEditabilityObject,
+  RunModelConfigFieldErrorObject,
+} from "./run-model-config.js";
+import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
 
 registerEnumType(SkillAccessMode, {
   name: "SkillAccessModeEnum",
@@ -117,9 +125,55 @@ export class CreateAgentTeamRunInput {
   memberConfigs!: TeamMemberConfigInput[];
 }
 
+@InputType()
+export class TeamRunModelConfigPatchInput {
+  @Field(() => String)
+  scopeKind!: "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
+
+  @Field(() => String)
+  scopeAddress!: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig!: Record<string, unknown> | null;
+}
+
+@InputType()
+export class UpdateStoppedTeamRunModelConfigsInput {
+  @Field(() => String)
+  teamRunId!: string;
+
+  @Field(() => [TeamRunModelConfigPatchInput])
+  patches!: TeamRunModelConfigPatchInput[];
+}
+
+@ObjectType()
+export class UpdateStoppedTeamRunModelConfigsResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  outcome!: string;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  editability!: RunModelConfigEditabilityObject;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  canonicalExecutionTree?: unknown | null;
+
+  @Field(() => [RunModelConfigFieldErrorObject])
+  fieldErrors!: RunModelConfigFieldErrorObject[];
+}
+
 @Resolver()
 export class AgentTeamRunResolver {
   private readonly teamRunService = getStudioTeamRunService();
+  private readonly runModelConfigService = getStudioRunModelConfigService();
 
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(
@@ -178,6 +232,42 @@ export class AgentTeamRunResolver {
         success: false,
         message: String(error),
         teamRunId: null,
+      };
+    }
+  }
+
+  @Mutation(() => UpdateStoppedTeamRunModelConfigsResult)
+  async updateStoppedTeamRunModelConfigs(
+    @Arg("input", () => UpdateStoppedTeamRunModelConfigsInput)
+    input: UpdateStoppedTeamRunModelConfigsInput,
+  ): Promise<UpdateStoppedTeamRunModelConfigsResult> {
+    try {
+      if (input.patches.some((patch) => !Object.hasOwn(patch, "llmConfig"))) {
+        throw new Error("Every Team patch must contain llmConfig and it may be null.");
+      }
+      const result = await this.runModelConfigService.updateStoppedTeamRunModelConfigs({
+        teamRunId: input.teamRunId,
+        patches: input.patches,
+      });
+      return {
+        success: result.success,
+        outcome: result.outcome,
+        message: result.message,
+        isActive: result.isActive,
+        editability: result.editability,
+        canonicalExecutionTree: result.canonical ? projectExecutionTree(result.canonical) : null,
+        fieldErrors: [...result.fieldErrors],
+      };
+    } catch (error) {
+      console.error("Stopped Team model-config update failed unexpectedly.", error);
+      return {
+        success: false,
+        outcome: "INTERNAL_ERROR",
+        message: "Team model settings could not be updated.",
+        isActive: false,
+        editability: { editable: false, reason: "INTERNAL_ERROR" },
+        canonicalExecutionTree: null,
+        fieldErrors: [],
       };
     }
   }

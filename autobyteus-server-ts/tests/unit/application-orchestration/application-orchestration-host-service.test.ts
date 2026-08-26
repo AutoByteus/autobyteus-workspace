@@ -449,4 +449,38 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     ).rejects.toThrow("targetMemberName is not supported");
     expect(postMessage).not.toHaveBeenCalled();
   });
+
+  it.each(["TERMINATED", "ORPHANED"] as const)(
+    "rejects normal input for a %s binding before runtime resolution",
+    async (status) => {
+      const terminalBinding = {
+        ...buildBinding(),
+        status,
+        terminatedAt: "2026-08-25T10:05:00.000Z",
+      };
+      const resolveAgentRun = vi.fn();
+      const hostService = new ApplicationOrchestrationHostService({
+        startupGate: { awaitReady: vi.fn(async () => undefined) } as never,
+        bindingStore: {
+          getBinding: vi.fn(async () => cloneBinding(terminalBinding)),
+        } as never,
+        agentRunService: { resolveAgentRun } as never,
+        agentTargetAuthorizationService: {
+          authorizeTarget: vi.fn(async (_applicationId, address) => ({
+            applicationId,
+            address,
+            runtimeSubject: "AGENT_RUN",
+            runtimeRunId: runId,
+            producers: [],
+          })),
+        } as never,
+      });
+
+      await expect(hostService.sendRunInput(applicationId, {
+        address: { bindingId, target: { kind: "AGENT_RUN" } },
+        input: { text: "must not dispatch" },
+      })).rejects.toThrow("is not live");
+      expect(resolveAgentRun).not.toHaveBeenCalled();
+    },
+  );
 });

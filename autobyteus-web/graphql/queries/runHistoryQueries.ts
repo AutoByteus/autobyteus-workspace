@@ -193,6 +193,10 @@ export const GetTeamRunResumeConfig = gql`
       teamRunId
       isActive
       executionTree
+      modelConfigEditability {
+        editable
+        reason
+      }
     }
   }
 `;
@@ -302,13 +306,9 @@ export const GetAgentRunResumeConfig = gql`
           metadata
         }
       }
-      editableFields {
-        llmModelIdentifier
-        llmConfig
-        autoExecuteTools
-        skillAccessMode
-        workspaceRootPath
-        runtimeKind
+      modelConfigEditability {
+        editable
+        reason
       }
     }
   }

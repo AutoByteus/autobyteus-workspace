@@ -30,7 +30,7 @@ type AgentRunServiceProbe = {
 
 type TeamRunServiceProbe = {
   manager: unknown;
-  identityAllocator: AllocatorProbe;
+  agentIdentityAllocator: AllocatorProbe;
 };
 
 type ProjectionServiceProbe = {
@@ -96,7 +96,7 @@ describe("application run services", () => {
       services.publishedArtifactProjectionService as unknown as ProjectionServiceProbe;
     const runShutdownCoordinator =
       services.runShutdownCoordinator as unknown as RunShutdownCoordinatorProbe;
-    const allocator = teamRunService.identityAllocator;
+    const allocator = teamRunService.agentIdentityAllocator;
     globalDefinitionLookup.mockClear();
 
     expect(agentRunService.provisioningService.agentRunIdentityAllocator).toBe(allocator);

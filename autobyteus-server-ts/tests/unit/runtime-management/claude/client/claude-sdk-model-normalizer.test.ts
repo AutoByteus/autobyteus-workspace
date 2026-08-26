@@ -109,7 +109,7 @@ describe("claude-sdk-model-normalizer", () => {
     });
   });
 
-  it("falls back to medium reasoning_effort when thinking is supported without explicit levels", () => {
+  it("keeps adaptive-thinking and effort capabilities independent", () => {
     const model = toModelInfo({
       identifier: "default",
       displayName: "Default",
@@ -121,12 +121,10 @@ describe("claude-sdk-model-normalizer", () => {
 
     expect(model.config_schema).toMatchObject({
       properties: {
-        reasoning_effort: expect.objectContaining({
-          default: "medium",
-          enum: ["medium"],
-        }),
+        thinking_enabled: expect.objectContaining({ type: "boolean" }),
       },
     });
+    expect(model.config_schema).not.toHaveProperty("properties.reasoning_effort");
     expect(model.description).toBeNull();
   });
 

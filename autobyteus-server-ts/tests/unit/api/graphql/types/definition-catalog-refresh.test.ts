@@ -26,6 +26,7 @@ describe("definition catalog refresh GraphQL boundary", () => {
       agentTeamDefinitionService,
       agentRunService: {} as never,
       teamRunService: {} as never,
+      runModelConfigService: {} as never,
       bundleService: {} as ApplicationBundleService,
       capabilityService: {} as never,
       packageQueries: {} as ApplicationPackageRegistryService,

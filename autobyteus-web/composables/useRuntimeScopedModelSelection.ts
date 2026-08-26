@@ -82,6 +82,7 @@ export const useRuntimeScopedModelSelection = (params: {
   const providerGroupsByRuntime = ref<Record<string, ProviderWithModels[]>>({})
   const providerSourceStatusesByRuntime = ref<Record<string, RuntimeProviderSourceStatus[]>>({})
   const isLoadingModels = ref(false)
+  const modelLoadError = ref<string | null>(null)
 
   void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
     console.error('Failed to fetch runtime availabilities:', error)
@@ -104,6 +105,7 @@ export const useRuntimeScopedModelSelection = (params: {
     }
 
     isLoadingModels.value = true
+    modelLoadError.value = null
     try {
       await llmStore.fetchProvidersWithModels(normalizedRuntimeKind)
       const publishRuntimeCatalogState = (): void => {
@@ -124,6 +126,26 @@ export const useRuntimeScopedModelSelection = (params: {
           console.error(`Failed to discover dynamic models for '${normalizedRuntimeKind}'.`, error)
           publishRuntimeCatalogState()
         })
+    } catch (error) {
+      modelLoadError.value = error instanceof Error ? error.message : String(error)
+      throw error
+    } finally {
+      isLoadingModels.value = false
+    }
+  }
+
+  const reloadModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
+    const normalizedRuntimeKind = resolveEffectiveScopedRuntimeKind(runtimeKind)
+    providerGroupsByRuntime.value = Object.fromEntries(
+      Object.entries(providerGroupsByRuntime.value).filter(([key]) => key !== normalizedRuntimeKind),
+    )
+    isLoadingModels.value = true
+    modelLoadError.value = null
+    try {
+      await llmStore.refreshLocalCatalog(normalizedRuntimeKind)
+      await ensureModelsForRuntime(normalizedRuntimeKind)
+    } catch (error) {
+      modelLoadError.value = error instanceof Error ? error.message : String(error)
     } finally {
       isLoadingModels.value = false
     }
@@ -132,7 +154,7 @@ export const useRuntimeScopedModelSelection = (params: {
   watch(
     () => effectiveRuntimeKind.value,
     (runtimeKind) => {
-      if (runtimeKind) void ensureModelsForRuntime(runtimeKind)
+      if (runtimeKind) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
     },
     { immediate: true },
   )
@@ -269,9 +291,11 @@ export const useRuntimeScopedModelSelection = (params: {
     groupedModelOptions,
     hasModelIdentifier,
     isLoadingModels,
+    modelLoadError,
     modelConfigSchemaByIdentifier,
     modelIdentifiers,
     normalizedStoredRuntimeKind,
+    reloadModelsForRuntime,
     providerSourceStatuses,
     runtimeOptions,
     selectedRuntimeUnavailableReason,

@@ -5,21 +5,27 @@
         v-if="node.kind === 'agent_team'"
         :scope="node.scope"
         :disabled="disabled"
+        :model-config-field-errors="modelConfigFieldErrorsByAddress[node.address]"
         @update-override="emit('update-team', node.address, $event)"
         @reset="emit('reset-team', node.address)"
         @update:workspace-selection="forwardWorkspaceSelection"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
+        @update-existing-model-config="forwardExistingModelConfig"
+        @schema-state="forwardSchemaState"
       >
         <div v-if="node.children.length" class="mt-3">
           <TeamMemberConfigTree
             :member-nodes="node.children"
             :disabled="disabled"
             :nested="true"
+            :model-config-field-errors-by-address="modelConfigFieldErrorsByAddress"
             @update-team="forwardTeamUpdate"
             @reset-team="forwardTeamReset"
             @update-agent="forwardAgentUpdate"
             @update:workspace-selection="forwardWorkspaceSelection"
             @retry-runtime-catalog="forwardRetryRuntimeCatalog"
+            @update-existing-model-config="forwardExistingModelConfig"
+            @schema-state="forwardSchemaState"
           />
         </div>
       </TeamScopeConfigEditor>
@@ -29,8 +35,11 @@
         :node="node"
         :member-breadcrumb="breadcrumb(node.address)"
         :disabled="disabled"
+        :model-config-field-errors="modelConfigFieldErrorsByAddress[node.address]"
         @update:override="forwardAgentUpdate"
         @retry-runtime-catalog="forwardRetryRuntimeCatalog"
+        @update-existing-model-config="forwardExistingModelConfig"
+        @schema-state="forwardSchemaState"
       />
     </template>
   </div>
@@ -49,6 +58,7 @@ const props = withDefaults(defineProps<{
   memberNodes: readonly TeamRunFormMemberNode[]
   disabled: boolean
   nested?: boolean
+  modelConfigFieldErrorsByAddress?: Readonly<Record<string, Readonly<Record<string, string>>>>
 }>(), { nested: false })
 const emit = defineEmits<{
   (e: 'update-team', address: AgentTeamAddress, override: TeamScopeConfigOverride | null): void
@@ -56,7 +66,10 @@ const emit = defineEmits<{
   (e: 'update-agent', address: AgentTeamAddress, override: AgentConfigOverride | null): void
   (e: 'update:workspace-selection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
+  (e: 'update-existing-model-config', address: string, config: Record<string, unknown> | null): void
+  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
 }>()
+const modelConfigFieldErrorsByAddress = computed(() => props.modelConfigFieldErrorsByAddress ?? {})
 
 const treeClass = computed(() => [
   'divide-y divide-slate-300',
@@ -71,4 +84,8 @@ const forwardAgentUpdate = (address: AgentTeamAddress, override: AgentConfigOver
 const forwardWorkspaceSelection = (address: AgentTeamAddress, selection: WorkspaceSelectionState) =>
   emit('update:workspace-selection', address, selection)
 const forwardRetryRuntimeCatalog = (runtimeKind: string) => emit('retry-runtime-catalog', runtimeKind)
+const forwardExistingModelConfig = (address: string, config: Record<string, unknown> | null) =>
+  emit('update-existing-model-config', address, config)
+const forwardSchemaState = (address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }) =>
+  emit('schema-state', address, state)
 </script>

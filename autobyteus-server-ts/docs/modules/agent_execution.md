@@ -8,7 +8,7 @@ Manages runtime agent runs and message execution flow.
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
 - `src/agent-execution/services/agent-run-activation-candidate.ts`
-- `src/agent-execution/services/standalone-agent-run-activation-service.ts`
+- `src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
 - `src/agent-execution/services/agent-run-command-coordinator.ts`
 - `src/agent-execution/services/agent-run-command-registry.ts`
 - `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
@@ -135,7 +135,7 @@ publish events until its governing owner has durably committed the metadata or
 Team execution-tree state that makes the run discoverable. Cleanup uncertainty
 quarantines the run ID in-process instead of permitting a replacement runtime.
 
-`StandaloneAgentRunActivationService` owns one activation attempt per run ID
+`StandaloneAgentRunLifecycleService` owns one activation attempt per run ID
 across command, prepared-run activation, and history restore callers. It
 reactivates the persisted workspace, reconstructs the exact stored run config,
 prepares the private candidate, commits `startedAt` and the external provider ID
@@ -149,6 +149,28 @@ falls back to `thread/start`. Claude reserves one valid UUID before first input:
 the first SDK query receives only `sessionId`, later and restored queries receive
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
+
+## Stopped Model Configuration And Restore Serialization
+
+`StandaloneAgentRunLifecycleService` also owns the narrow stopped-run
+`llmConfig` update. Update and restore share the same per-run transition lane,
+so the supported General Process orders are deterministic: Save can commit
+before restore reads the config, or restore can make the run active before Save
+rechecks and returns `RUN_ACTIVE`. This lane is not a browser multi-writer or
+revision protocol.
+
+The update keeps runtime kind, model identifier, workspace, provider
+conversation identity, tool policy, and local run ID fixed. It requires a
+current, cataloged, unarchived, manager-inactive run; validates the submitted
+`llmConfig` against the current schema for the persisted runtime/model; and
+writes/rereads only the metadata configuration. A successful value is consumed
+when the same run is next prepared or restored. It does not mutate a live
+backend or replace its provider conversation.
+
+Studio adds a separate owner-aware guard before this General lane. A live
+Application binding locks configuration without exposing Application managers
+to General execution. See [Run History](./run_history.md) and
+[Application Orchestration](./application_orchestration.md).
 
 ## Standalone Command Lifecycle
 

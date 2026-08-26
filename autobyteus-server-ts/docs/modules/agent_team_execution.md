@@ -125,6 +125,36 @@ only after cleanup is confirmed. An indeterminate durable write, publication
 failure after durability, or uncertain candidate cleanup fail-stops/quarantines
 the owning root or run instead of admitting duplicate work.
 
+## Stopped Team Model Configuration
+
+`AgentTeamRunManager.updateStoppedModelConfigs(...)` owns General Process
+updates to persisted Team `llmConfig`. It runs inside the same root transition
+lane as restore, rechecks that no root remains manager-owned, rejects archived
+or non-cataloged packages, and writes the current V2 execution tree through the
+existing atomic tree store. Save-first therefore makes the new values visible
+to the next restore; restore-first returns `RUN_ACTIVE` without writing.
+
+Each patch targets one exact configured Team or configured Agent address.
+`TeamRunModelConfigMutator` resolves that address in the immutable stored
+topology and replaces only `defaultLaunchConfiguration.llmConfig` or
+`launchConfiguration.llmConfig`. It cannot change runtime/model identity,
+workspace, automatic-tool policy, concrete run IDs, provider bindings, task
+nodes, hierarchy, or addresses. Every scope validates against its own fixed
+runtime/model schema before the tree is written.
+
+The browser may plan bounded propagation from a parent edit, but the server
+receives the resulting exact-scope patches rather than inheritance intent. The
+planner preserves descendants that started divergent or were edited directly,
+and stopped-run editing exposes no Reset-to-definition action because the V2
+snapshot does not preserve original override provenance. No configuration
+revision, rebase, or cross-client merge protocol is part of this boundary.
+
+Studio checks the separate Application ownership lease before delegating to the
+General root lane. A nonterminal Application binding keeps both Agent and Team
+resume reads locked and direct stopped updates at `RUN_ACTIVE`; terminal release
+restores ordinary General eligibility. See [Run History](./run_history.md) and
+[Application Orchestration](./application_orchestration.md).
+
 ## Nested Member Identity And Commands
 
 The root ID must match the bound TeamRun. The member address must exist in the

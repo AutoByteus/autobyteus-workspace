@@ -4,6 +4,7 @@ import type { ApplicationBackendNotificationHub } from "../../application-backen
 import type { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
 import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import type { ApplicationReentryService } from "../../application-orchestration/services/application-reentry-service.js";
+import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
 import type { ApplicationCatalogReconciliationService } from "./application-catalog-reconciliation-service.js";
 import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
 
@@ -66,4 +67,5 @@ export type ApplicationPlatformRealtimeContracts = Readonly<{
 
 export type ApplicationPlatformHostManagementContracts = Readonly<{
   catalogReconciliation: ApplicationCatalogReconciliationService;
+  runOwnership: ApplicationRunOwnershipReader;
 }>;

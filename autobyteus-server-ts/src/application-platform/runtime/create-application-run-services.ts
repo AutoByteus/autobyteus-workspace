@@ -16,7 +16,7 @@ import { AgentRunManager } from "../../agent-execution/services/agent-run-manage
 import { AgentRunProvisioningService } from "../../agent-execution/services/agent-run-provisioning-service.js";
 import { AgentRunResourceManager } from "../../agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { StandaloneAgentRunActivationService } from "../../agent-execution/services/standalone-agent-run-activation-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -168,7 +168,7 @@ export const createApplicationRunServices = (input: {
     workspaceManager,
     agentRunIdentityAllocator,
   });
-  const activationService = new StandaloneAgentRunActivationService(memoryDir, {
+  const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
     agentRunManager,
     metadataService: agentRunMetadataService,
     historyCatalogService: agentRunHistoryCatalogService,
@@ -182,7 +182,7 @@ export const createApplicationRunServices = (input: {
     workspaceManager,
     agentRunIdentityAllocator,
     provisioningService,
-    activationService,
+    lifecycleService,
   });
   const teamRunService = new TeamRunService({
     agentTeamRunManager,

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const store = vi.hoisted(() => ({
   fetchProvidersWithModels: vi.fn(),
+  refreshLocalCatalog: vi.fn(),
   ensureMissingDynamicProviders: vi.fn(),
   providersWithModelsForSelection: vi.fn(),
   providerSnapshots: vi.fn(),
@@ -69,6 +70,7 @@ describe('useRuntimeScopedModelSelection', () => {
     vi.clearAllMocks()
     runtimeAvailabilityStore.fetchRuntimeAvailabilities.mockResolvedValue(undefined)
     store.fetchProvidersWithModels.mockResolvedValue(undefined)
+    store.refreshLocalCatalog.mockResolvedValue(undefined)
     store.ensureMissingDynamicProviders.mockResolvedValue(undefined)
     store.providersWithModelsForSelection.mockReturnValue([])
     store.providerSnapshots.mockReturnValue([])

@@ -14,19 +14,22 @@ const flushPromises = async () => {
 }
 
 describe('RuntimeModelConfigFields stored historical values', () => {
+  let providers: any[]
   beforeEach(() => {
     setActivePinia(createPinia())
+    providers = []
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
+      refreshLocalCatalog: vi.fn().mockResolvedValue([]),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       providerSnapshots: vi.fn().mockReturnValue([]),
-      providersWithModelsForSelection: vi.fn().mockReturnValue([]),
+      providersWithModelsForSelection: vi.fn(() => providers),
     })
     ;(useRuntimeAvailabilityStore as any).mockReturnValue({
       availabilities: [],
       fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn().mockReturnValue(null),
-      isRuntimeEnabled: vi.fn().mockReturnValue(false),
+      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind !== 'removed-runtime'),
       runtimeReason: vi.fn().mockReturnValue(null),
     })
   })
@@ -63,5 +66,94 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
     expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     expect(wrapper.emitted('update:llmConfig')).toBeUndefined()
+  })
+
+  it('keeps an editable numeric draft rendered while reporting current-schema validation errors', async () => {
+    providers = [{
+      provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
+      models: [{
+        modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4',
+        providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api',
+        configSchema: {
+          type: 'object',
+          properties: { budget: { type: 'integer', minimum: 1, maximum: 10 } },
+        },
+      }],
+    }]
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'gpt-4',
+        llmConfig: { budget: 0 },
+        runtimeSelectionLocked: true,
+        modelSelectionLocked: true,
+        historicalModelConfig: true,
+      },
+    })
+    await flushPromises()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('input[type="number"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Value must be at least 1.')
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
+      status: 'invalid',
+      message: 'Value must be at least 1.',
+    }])
+  })
+
+  it.each([
+    { consumer: 'launch', historicalModelConfig: false },
+    { consumer: 'existing-run Settings', historicalModelConfig: true },
+  ])('accepts and emits exact Codex enum members for the $consumer consumer', async ({ historicalModelConfig }) => {
+    providers = [{
+      provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
+      models: [{
+        modelIdentifier: 'gpt-5.6-codex',
+        name: 'GPT-5.6 Codex',
+        value: 'gpt-5.6-codex',
+        canonicalName: 'gpt-5.6-codex',
+        providerId: 'OPENAI',
+        providerName: 'OpenAI',
+        providerType: 'OPENAI',
+        runtime: 'api',
+        configSchema: {
+          parameters: [{
+            name: 'reasoning_effort',
+            type: 'enum',
+            default_value: 'medium',
+            enum_values: ['low', 'medium', 'high', 'xhigh'],
+          }],
+        },
+      }],
+    }]
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'codex_app_server',
+        llmModelIdentifier: 'gpt-5.6-codex',
+        llmConfig: { reasoning_effort: 'medium' },
+        runtimeSelectionLocked: historicalModelConfig,
+        modelSelectionLocked: historicalModelConfig,
+        historicalModelConfig,
+        advancedInitiallyExpanded: true,
+        idPrefix: historicalModelConfig ? 'existing-codex' : 'launch-codex',
+      },
+    })
+    await flushPromises()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
+      status: 'ready',
+      message: null,
+    }])
+    expect(wrapper.text()).not.toContain('Enter a value of type enum.')
+
+    const fieldId = historicalModelConfig
+      ? '#existing-codex-reasoning_effort'
+      : '#launch-codex-reasoning_effort'
+    await wrapper.get(fieldId).setValue('low')
+
+    expect(wrapper.emitted('update:llmConfig')?.at(-1)).toEqual([
+      { reasoning_effort: 'low' },
+    ])
   })
 })

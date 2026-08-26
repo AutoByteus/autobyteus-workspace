@@ -38,6 +38,7 @@ import {
   type AgentToolsMcpRuntime,
 } from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
+import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import {
   createGeneralProcessRunSupervisor,
   type GeneralProcessRunSupervisor,
@@ -185,6 +186,13 @@ export const buildStudioServer = async (input: {
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;
+    const runModelConfigService = new StudioRunModelConfigService({
+      applicationRunOwnership: currentApplicationRuntime.hostManagement.runOwnership,
+      agentResumeConfigService: generalProcessRunSupervisor.agentRunResumeConfigService,
+      teamResumeConfigService: generalProcessRunSupervisor.teamRunHistoryService,
+      agentRunService: generalProcessRunSupervisor.agentRunService,
+      teamRunService: generalProcessRunSupervisor.teamRunService,
+    });
     studioApiHandle = configureStudioApplicationApiServices({
       bundleService: packages.bundleService,
       capabilityService: new ApplicationCapabilityService({
@@ -196,6 +204,7 @@ export const buildStudioServer = async (input: {
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
       agentRunService: generalProcessRunSupervisor.agentRunService,
       teamRunService: generalProcessRunSupervisor.teamRunService,
+      runModelConfigService,
     });
 
     const app = fastify({

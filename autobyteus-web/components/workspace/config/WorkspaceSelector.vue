@@ -137,7 +137,7 @@ import type {
   WorkspaceSelectionMode,
   WorkspaceSelectionState,
 } from '~/types/workspace/WorkspaceSelectionState';
-import type { StoredWorkspaceDisplay } from '~/types/agent/StoredTeamRunFormModel';
+import type { ExistingWorkspaceDisplay } from '~/types/agent/ExistingTeamRunFormModel';
 
 const props = withDefaults(defineProps<{
   model:
@@ -149,7 +149,7 @@ const props = withDefaults(defineProps<{
       }>
     | Readonly<{
         mode: 'stored';
-        workspace: StoredWorkspaceDisplay | null;
+        workspace: ExistingWorkspaceDisplay | null;
       }>;
   disabled?: boolean;
   workspaceLocked?: boolean;

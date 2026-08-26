@@ -99,6 +99,9 @@ describe("application platform runtime isolation", () => {
     expect(runtimeA.hostManagement.catalogReconciliation).not.toBe(
       runtimeB.hostManagement.catalogReconciliation,
     );
+    expect(runtimeA.hostManagement.runOwnership).not.toBe(
+      runtimeB.hostManagement.runOwnership,
+    );
 
     await runtimeA.lifecycle.stop();
     expect(runtimeA.lifecycle.getState()).toBe("stopped");
