@@ -20,6 +20,8 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
+    getAppDataDir: () => "/tmp/standalone-lifecycle",
+    getBaseUrl: () => "http://localhost:8000",
     getAppRootDir: () => "/tmp/standalone-lifecycle",
     getOperationalDatabaseUrl: () => "file:/tmp/standalone-lifecycle/operational.db",
     getOperationalDatabaseLocation: () => ({
@@ -288,7 +290,11 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       bundleService: {},
     });
     expect(mocks.createGeneralProcessRunSupervisor).toHaveBeenCalledWith({
-      appConfig: mocks.appConfig,
+      memoryDir: "/tmp/standalone-lifecycle/memory",
+      contextFilePathEnvironment: {
+        appDataDir: "/tmp/standalone-lifecycle",
+        baseUrl: "http://localhost:8000",
+      },
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
       workspaceManager: mocks.workspaceManager,
@@ -309,6 +315,9 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       requireCurrentModelIdentifier: expect.any(Function),
     }));
     const platformInput = mocks.buildApplicationPlatformRuntime.mock.calls[0]![0];
+    const supervisorInput = mocks.createGeneralProcessRunSupervisor.mock.calls[0]![0];
+    expect(platformInput.contextFilePathEnvironment)
+      .toBe(supervisorInput.contextFilePathEnvironment);
     await platformInput.requireCurrentModelIdentifier("model-1");
     expect(mocks.requireCurrentModelIdentifier).toHaveBeenCalledWith("model-1");
     expect(mocks.applicationLifecycle.prepareBeforeListen.mock.invocationCallOrder[0])

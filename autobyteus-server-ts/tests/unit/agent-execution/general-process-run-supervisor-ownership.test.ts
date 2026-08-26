@@ -3,6 +3,7 @@ import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/p
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { GeneralProcessRunSupervisor } from "../../../src/agent-execution/runtime/general-process-run-supervisor.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -57,9 +58,11 @@ const createSupervisorInput = () => {
     agentDefinitionService,
   });
   return {
-    appConfig: {
-      getMemoryDir: () => "/tmp/general-process-run-supervisor",
-    } as AppConfig,
+    memoryDir: "/tmp/general-process-run-supervisor",
+    contextFilePathEnvironment: {
+      appDataDir: "/tmp/general-process-run-supervisor/app-data",
+      baseUrl: "http://localhost:8000",
+    },
     agentDefinitionService,
     agentTeamDefinitionService,
     workspaceManager: WorkspaceManager.getInstance(),
@@ -186,7 +189,11 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases the agent manager when exclusive team-manager initialization fails", async () => {
     const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({
+      memoryDir: "/tmp/general-process-run-supervisor-conflict",
       mixedTeamRunBackendFactory: createBackendFactory(),
+      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+        allocateForAgentDefinition: async () => "task-agent-run",
+      }),
     });
     try {
       expect(() => new GeneralProcessRunSupervisor(createSupervisorInput())).toThrow(
@@ -217,7 +224,8 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("rejects every omitted, null, or undefined required input before manager mutation", async () => {
     for (const property of [
-      "appConfig",
+      "memoryDir",
+      "contextFilePathEnvironment",
       "agentDefinitionService",
       "agentTeamDefinitionService",
       "workspaceManager",
@@ -228,6 +236,21 @@ describe("GeneralProcessRunSupervisor ownership", () => {
         const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
         if (value === "omitted") delete invalid[property];
         else invalid[property] = value;
+        expect(() => new GeneralProcessRunSupervisor(invalid as never)).toThrow(
+          "Complete GeneralProcessRunSupervisor input is required.",
+        );
+      }
+    }
+
+    for (const property of ["appDataDir", "baseUrl"] as const) {
+      for (const value of ["omitted", null, undefined] as const) {
+        const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
+        const environment = {
+          ...(invalid.contextFilePathEnvironment as Record<string, unknown>),
+        };
+        if (value === "omitted") delete environment[property];
+        else environment[property] = value;
+        invalid.contextFilePathEnvironment = environment;
         expect(() => new GeneralProcessRunSupervisor(invalid as never)).toThrow(
           "Complete GeneralProcessRunSupervisor input is required.",
         );

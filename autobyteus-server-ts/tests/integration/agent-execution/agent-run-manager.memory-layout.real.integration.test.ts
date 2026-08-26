@@ -1,9 +1,11 @@
 import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
@@ -15,6 +17,11 @@ import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { Message } from "autobyteus-ts/llm/utils/messages.js";
+
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -99,9 +106,18 @@ describe("AgentRunService real memory layout integration", () => {
         getSkill: () => null,
       } as any,
     });
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionReleaser: releaser,
+    });
     manager = new AgentRunManager({
-      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory,
+      codexBackendFactory: unavailableBackendFactory,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionReleaser: releaser,
     });
     runService = new AgentRunService(memoryDir, {
       agentRunManager: manager,

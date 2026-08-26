@@ -2,124 +2,123 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-spec.md`
-- Supplemental task artifacts:
+- Normative supplemental artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-and-agent-tools-authority-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-transition-inventory.md`
+- Referenced prior boundary analysis:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/future-architecture-simplification-review.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/future-architecture-simplification-source-audit.log`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md`
+- Solution revisions: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`
+- Architecture review:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` (`ARCH-REV-006`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md`
 - Triggering rework package:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` (`CRR-001`, `CR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` (`CRR-003`; `CR-002`, `CR-003`, `CR-004`)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-001-source-audit.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-001-focused-validation.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-001-build-config-typecheck.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md` (`API-REV-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-003-failure-origin-focused.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-affected-server.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-failures-isolated.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-source-correlation.log`
 
 ## Current Implementation Summary
 
-IR-002 implements the reviewed SR-005 clean cut over the IR-001 provider-composition baseline. `MixedTeamRunBackendFactory` now requires one exact run-session releaser and one typed `createTeamManager(MixedTeamManagerConstructionInput)` capability. The factory owns the recursive sub-Team factory, forwards the same releaser and complete callbacks for every concrete Team context, and has no built-in manager, cache, getter, or ambient fallback. General and application roots construct complete, non-identical execution families; application assembly never reads process managers or process-scoped service getters. `AgentTeamRunManager` construction now requires the explicit backend factory, process initialization remains exclusive, and `getInstance()` is lookup-only.
+IR-003 implements the reviewed SR-006 execution-family closure over the IR-002 source baseline. Each maintained host now creates one frozen `ContextFilePathEnvironment`, passes the same exact object to its general and application execution roots, and leaves broad `AppConfig` selection at the host edge. Each root builds its own explicit stored-Team owner/path graph and one provider-neutral `AgentRunProviderInputNormalizer`. `AgentRun` copies and normalizes provider dispatch immediately before backend dispatch, so admitted/observed messages retain their original identity and providers only format already-normalized context inputs.
 
-The implementation also closes two hidden pre-manager ambient reads exposed by that fail-closed change: process/application `AgentMemoryLocationService` and `RunFileChangeService` receive the existing stored-only Team location reader during acyclic construction, while post-manager application history resolution receives the exact graph-local Team manager. No product, route, wire, SDK, package, schema, migration, or persisted-data contract changed.
+The general supervisor and application kernel now each build a complete seven-field `AgentRunManager` input: activation registry, memory recorder, provider-input normalizer, AutoByteus/Codex/Claude backend factories, and run-session releaser. No manager sidecar/default path remains. Each root also creates one exact Agent identity allocator, derives one immutable task Agent/task Team capability pair from it, and forwards that same pair through `AgentTeamRunManager -> RootTeamRun -> TaskDelegationService`. General and application task identities remain non-identical; no task/provider path reads process execution getters.
 
-- Implementation cycle: `Design-impact rework`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-001`–`SR-005`
-- Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-005`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `AR-004`
+Process context-file REST composition now explicitly builds its layout, stored-Team owner, local-path resolver, read service, and finalization service. AutoByteus, Codex, and Claude no longer construct local context owner/path resolvers. Public routes, runtime semantics, wire/package/database schemas, persisted data, and migration behavior are unchanged.
+
+- Implementation cycle: `Design Impact Rework`
+- Current implementation revision: `IR-003`
+- Related solution revisions: `SR-001`–`SR-006`
+- Current architecture authority: `ARCH-REV-006`
+- Triggering review/API revisions: `CRR-003`, `API-REV-001`
+- Triggering findings: `CR-002`, `CR-003`, `CR-004`
+- Prior `CR-001`: remains resolved
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| Behavior | Approved Outcome | Implemented Production Path | Result |
 | --- | --- | --- | --- |
-| BEH-001 | Preserve one process Host and separate general/application execution families through Studio/standalone lifecycle. | `general-process-run-supervisor.ts`; `application-execution-scope-kernel-builder.ts`; existing Host/Authority composition. | Preserved. Each root supplies its own exact Agent manager, Team manager, MCP authority/releaser, memory, activity, context, workspace, and callback identities. |
-| BEH-002 | Both roots use the fixed provider builder and complete Mixed Team family; configured/task Agent and child/task Team execution reuse that root family. | `mixed-team-run-backend-factory.ts`; both production root callbacks; recursive `MixedSubTeamRunFactory`. | Implemented. Required immutable construction input forwards one factory-owned releaser, exact context, recursive factory, and complete callbacks. |
-| BEH-003 | Provider internals retain narrow issuer/resource/materializer inputs. | IR-001 provider builder/materializer implementation; unchanged by IR-002. | Preserved; no Host or broad MCP manager was reintroduced. |
-| BEH-004 | Failed preparation and Team/member cleanup revoke the exact execution-family sessions. | `agent-run-manager.ts` baseline plus required factory-owned releaser propagation through `MixedTeamManager`. | Preserved and structurally guarded across general/application roots and recursive Team paths. |
-| BEH-005 | Application K0–K8 construction remains acyclic with local unwind and no process fallback. | `application-execution-scope-kernel-builder.ts`; stored-only pre-manager location reader; graph-local post-manager history reader. | Implemented. The application callback uses only application-owned manager/service/callback identities. |
-| BEH-006 | Behavior-neutral clean cut; no public or persisted-state change. | Required constructor changes, retired getter removal, focused architecture/unit/integration proof. | Implemented at source level; independent API/E2E remains required after source Pass. |
+| BEH-001 | One process Agent Tools host with distinct general/application authorities and lifecycles. | Existing Host/Authority composition; explicit environment passed into both execution roots. | Preserved. |
+| BEH-002 | Complete, non-identical general/application execution families, including task identity. | `createTaskExecutionIdentityCapabilities`; `GeneralProcessRunSupervisor`; `ApplicationExecutionScopeKernelBuilder`; exact Team manager/root/task propagation. | Implemented without process getters or manager unification. |
+| BEH-003 | Normalize provider context input once at the AgentRun boundary; preserve provider formatting and message observation. | `AgentRunProviderInputNormalizer`; `AgentRun.executeInputDispatch`; simplified AutoByteus/Codex/Claude adapters. | Implemented with copied dispatch/message/context files and unchanged admitted message identity. |
+| BEH-004 | Preserve exact failed-preparation/session cleanup and quarantine behavior. | Complete explicit activation/resource graph and existing IR-001 cleanup owner. | Preserved. |
+| BEH-005 | Both roots construct complete manager infrastructure; manager infers nothing. | Required seven-field `AgentRunManagerInput`; general and application root composition. | Implemented; omission/null/undefined/unsafe-cast cases fail closed. |
+| BEH-006 | Behavior-neutral structural replacement with no public or persisted-state change. | Internal composition, context translation, task identity, tests, and architecture guards only. | Implemented; API/E2E remains downstream-owned. |
 
-## Key Files Or Areas
+## Key Files And Areas
 
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
+- `autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts`
+- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
+- `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts`
 - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
+- `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts`
+- `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
 - `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts`
-- `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts`
+- `autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts`
+- explicit context-file layout/owner/path/read/finalization and host/REST composition files
 - `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts`
-- Affected Team factory/manager, general ownership, application kernel, recursive child/task, exact identity, omission/null/undefined, and lookup-before-initialize tests.
+- focused task-identity, provider-normalization, context-path-environment, manager, provider, root, and dual-host tests
 
-## Important Assumptions
+## Implementation Constraints And Assumptions
 
-- The passed IR-001 Host/Authority/provider/K0–K8 behavior remains authoritative except where SR-004/SR-005 explicitly replace Mixed Team construction.
-- Stored-only Team history lookup is the existing non-owning capability for pre-manager composition; it must not construct or claim the process Team manager.
-- Process `AgentTeamRunManager` initialization is owned solely by `GeneralProcessRunSupervisor`; application construction uses its private graph-local instance.
+- The stored-only current Team V2 projection is the approved non-owning reader at Agent-before-Team composition boundaries.
+- `RootTeamRun` remains the sole task lifecycle/state/persistence/event owner; only identity allocation capability is propagated.
+- Provider-neutral normalization occurs after AgentRun admission and immediately before provider dispatch. Provider errors and provider-specific formatting remain unchanged.
+- General and application execution roots receive the same provider-builder identity but create distinct factories, managers, identity allocators, task capabilities, resources, and session authorities.
 
-## Known Risks
+## Local Implementation Checks
 
-- Live credential-gated Codex/Claude execution, realistic dual-host journeys, package parity, recovery/reentry, and Electron validation remain downstream-owned.
-- Local checks prove construction identity and recursive reuse at source/test scope; API/E2E must still exercise real provider and lifecycle behavior after source review passes.
+- `pnpm -C autobyteus-application-sdk-contracts build` — passed.
+- Backend SDK, frontend SDK, server, devkit, and Brief package prerequisite builds — passed.
+- `pnpm -C autobyteus-server-ts build` — passed, including build-config TypeScript, built-in bootstrap smoke, and sanitized built-module smoke.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed after final source/test reconciliation.
+- Exact CRR-003 affected selection — 8 files; 64 passed, 8 environment-gated skips.
+- Complete changed-test selection — 36 files; 32 passed, 4 environment-gated files skipped; 225 passed, 19 skipped.
+- Retained no-planned-production-change selection — 20 files; 18 passed, 2 environment-gated files skipped; 106 passed, 11 skipped.
+- Final architecture plus `AgentRun` regression — 3 files, 55 passed.
+- Provider normalizer real stored-tree/path matrix — 3 passed.
+- Current task-delegation invariants — 9 passed.
+- `git diff --check`, retired/ambient getter scan, exact construction occurrence guards, and source-size audit — passed.
+- Changed production sources are at or below 500 effective non-empty lines; `agent-run.ts` is exactly 500.
 
-## Task Design Health Assessment Implementation Check
+The repository-wide `pnpm exec tsc -p tsconfig.json --noEmit` form is not an authoritative check in this package: that config declares `rootDir: src` while including tests and reports existing `TS6059` paths for the test tree. The build config and full server build both pass.
 
-- Reviewed change posture: `Refactor`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `File Placement Or Responsibility Drift`
-- Reviewed refactor decision: `Refactor Needed Now`
-- Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as Design Impact: `Yes — CRR-001 was returned upstream; SR-004/SR-005 and ARCH-REV-005 supplied the exact transition before this implementation.`
-- Evidence / notes: No pass-through layer, generic locator, late-bound proxy, broad manager, compatibility path, or second execution-family owner was introduced.
+## Environment / Dependency Notes
 
-## Legacy / Compatibility Removal Check
-
-- Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code and dormant replaced paths removed: `Yes — cached/default Mixed Team factory and ambient releaser getter removed.`
-- Shared structures remain tight: `Yes`
-- Changed production files stayed within the 500-effective-line guardrail: `Yes — 173, 182, 244, 290, and 320 non-empty lines.`
-
-## Persisted Data Transition Check
-
-- Approved decision: `Not Affected`
-- Implementation follows the approved decision without migration/fallback: `Yes`
-- Evidence: No DTO, wire, schema, store, migration, package format, or persisted data changed.
-
-## Environment Or Dependency Notes
-
-- Existing frozen-lockfile dependencies were used; no manifest or lockfile changed.
-- SDK/devkit/server prerequisite builds and the Brief package were generated only for validation. Generated output was removed before handoff.
+- No manifest or lockfile changed.
+- Generated SDK/devkit/server/Brief package output was used only as prerequisite validation and removed before handoff.
+- Live Codex/Claude/LM Studio tests remain credential/environment gated and were skipped by their existing gates.
 - No frontend/rendered-result change is present.
 
-## Local Implementation Checks Run
+## Compatibility / Persisted Data Check
 
-- Shared application SDK prerequisite builds — passed.
-- `pnpm -C autobyteus-server-ts build:full` — passed, including build-config TypeScript and both bootstrap smoke checks.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed after the final test changes.
-- Focused SR-005 construction/ownership selection — 9 files, 54 tests passed.
-- Former reviewer affected selection — 8 files, 82 tests passed.
-- Complete affected Mixed Team selection — 9 files, 31 tests passed.
-- Architecture boundaries — 2 files, 27 tests passed.
-- Brief package prompt and standalone application server — 2 files, 3 tests passed after prerequisite package generation.
-- `git diff --check`, conflict-marker scan, retired-getter scan, exact two-production-factory occurrence check, and production source-size audit — passed.
+- Compatibility mechanisms added: `None`.
+- Old provider-local context owner or task allocator fallbacks retained: `No`.
+- Public API, routes, GraphQL/REST/WS, SDK contracts, package format, database/schema, migration, and stored-data changes: `None`.
+- Approved persisted-data decision: `Directly Usable — No Migration`; preserved.
+
+## Known Risks And Downstream Coverage Hints
+
+- API/E2E must first rerun the exact API-REV-001 failures without initializing unrelated process managers.
+- Then prove real Studio/standalone task Agent/task Team delegation use non-identical family allocators and exact scoped MCP authorities.
+- Exercise AutoByteus, Codex, and Claude context-file inputs, including configured-origin, loopback, relative, absolute, finalized, remote, data, missing, and provider error behavior.
+- Retain package parity, recovery/reentry, nested Team, publication, streaming, cleanup, and shutdown-order coverage.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable — backend composition and lifecycle ownership only.
+Not Applicable — internal backend composition and execution-boundary work only.
 
-## Downstream Coverage Hints / Suggested Scenarios
+## API / E2E Status
 
-- Prove real Studio and standalone boot each use the correct general/application Team family and scoped MCP releaser.
-- Exercise configured Agent, delegated task Agent, configured child Team, and task Team create/restore/cleanup with real provider execution.
-- Confirm application close cannot revoke general sessions and process close does not depend on an application manager.
-- Re-run package parity, recovery/reentry, provider restore, nested cleanup, and shutdown-order coverage.
-
-## API / E2E / Executable Coverage Investigation And Execution Still Required
-
-Yes. IR-002 is ready for complete implementation-source re-review. API/E2E must not begin until that review passes.
+Implementation-scoped source and executable checks are complete. IR-003 is ready for complete implementation-source re-review. API/E2E must not resume until source review passes.

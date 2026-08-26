@@ -7,7 +7,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` / `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`–`SR-003`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Superseded by design-impact rework |
-| IR-002 | `code_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` / `CRR-001`, followed by `architecture_reviewer` / `ARCH-REV-005` | `CR-001`, `AR-004` | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-001`; `API-REV/DR: N/A` | Ready for implementation-source re-review |
+| IR-002 | `code_reviewer` / `code-review-report.md` / `CRR-001`, followed by `architecture_reviewer` / `ARCH-REV-005` | `CR-001`, `AR-004` | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-001` | Superseded by SR-006 design-impact rework |
+| IR-003 | `code_reviewer` / `code-review-report.md` / `CRR-003`, followed by `architecture_reviewer` / `ARCH-REV-006` | `CR-002`, `CR-003`, `CR-004` | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-003`, `API-REV-001` | Ready for complete implementation-source re-review |
 
 ## Revision Entries
 
@@ -45,3 +46,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `build:full` and build-config TypeScript passed; focused 9-file/54-test and former reviewer 8-file/82-test selections passed; 9-file/31-test Mixed Team selection passed; architecture 2-file/27-test selection passed; Brief/standalone 2-file/3-test selection passed; structural scans and source-size checks passed.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: Real credentialed provider execution, complete dual-host/API/E2E, package parity, recovery/reentry, and Electron verification remain downstream-owned after source Pass.
+
+
+### IR-003 — Complete task identity, provider-input, and Agent-manager execution-family closure
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md`; `CRR-003`, followed by `solution_designer` `SR-006` and `architecture_reviewer` `ARCH-REV-006`.
+- Triggering finding IDs: `CR-002`, `CR-003`, `CR-004`; `CR-001` remains resolved.
+- Classification: `Design Impact Rework`
+- Prior authoritative result: `CRR-003 Fail — Design Impact`; `ARCH-REV-006 Pass` approved the complete correction.
+- Current authoritative result: Implementation complete and locally validated; ready for complete implementation-source re-review.
+- Related solution revision IDs: `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
+- Why recorded: Closes the remaining task allocator, provider context-owner, and direct manager-construction paths without restoring ambient process state.
+- Approved behavior / requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-005`, `BEH-006`; `REQ-004`, `REQ-005`, `REQ-007`, `REQ-008`; `AC-004`, `AC-005`, `AC-012`.
+- Implementation delta: Added exact root-derived task Agent/task Team capabilities and propagated them through Team manager/root/task service; added one provider-neutral copied-dispatch normalizer per execution family; removed provider-local context owner/path construction; required exact seven-field AgentRunManager infrastructure; added frozen host context-path environments and explicit REST context composition; closed every governed production/test constructor with fail-closed architecture guards.
+- Changed areas: AgentRun/provider input, AgentRunManager and both roots, task identity/delegation, Team manager/root construction, context-file layout/owner/path/read/finalization, Studio/standalone hosts, REST composition, provider adapters, architecture guards, and focused fixtures/tests.
+- Local validation and result: Server full build and build-config TypeScript passed; exact CRR-003 selection passed 64 tests with 8 gated skips; complete changed selection passed 225 tests with 19 gated skips; retained selection passed 106 tests with 11 gated skips; final architecture/AgentRun selection passed 55 tests; structural, retired-symbol, diff, and source-size audits passed.
+- Next recipient: `/code_reviewer`
+- Remaining limitations / risks: Real credentialed provider execution and the complete dual-host/context/task/package/recovery/cleanup matrix remain API/E2E-owned after source Pass.

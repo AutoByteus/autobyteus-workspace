@@ -66,6 +66,10 @@ describe("application platform runtime isolation", () => {
         getDiagnosticByApplicationId: vi.fn(async () => null),
       };
       return buildApplicationPlatformRuntime({
+        contextFilePathEnvironment: {
+          appDataDir: root,
+          baseUrl: "http://localhost:8000",
+        },
         appConfig: {
           getAppDataDir: () => root,
           getMemoryDir: () => path.join(root, "memory"),
@@ -174,6 +178,10 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
+        contextFilePathEnvironment: {
+          appDataDir: root,
+          baseUrl: "http://localhost:8000",
+        },
         appConfig: {
           getAppDataDir: () => root,
           getMemoryDir: () => path.join(root, "memory"),

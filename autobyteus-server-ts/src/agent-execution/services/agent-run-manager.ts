@@ -1,11 +1,8 @@
-import { AutoByteusAgentRunBackendFactory } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
-import { getClaudeAgentRunBackendFactory } from "../backends/claude/index.js";
-import { getCodexAgentRunBackendFactory } from "../backends/codex/index.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig, DEFAULT_CLAUDE_PERMISSION_MODE } from "../backends/claude/session/claude-session-config.js";
@@ -19,25 +16,18 @@ import {
   AgentTerminationError,
   PlatformAgentRunRestoreError,
 } from "../errors.js";
-import { RunFileChangeService, getRunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
-import {
-  ApplicationPublishedArtifactRelayService,
-  createGeneralProcessPublishedArtifactRelayService,
-} from "../../application-orchestration/services/application-published-artifact-relay-service.js";
-import { AgentRunMemoryRecorder, getAgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type {
   AgentToolMcpRunSessionReleaser,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import {
-  AgentRunResourceAttachmentError,
-  AgentRunResourceManager,
-} from "./agent-run-resource-manager.js";
+import { AgentRunResourceAttachmentError } from "./agent-run-resource-manager.js";
 import {
   AgentRunActivationRegistry,
   AgentRunRemovalCleanupError,
   type AgentRunActivationClaim,
 } from "../runtime/agent-run-activation-registry.js";
 import { AgentRunActivationCandidate, type AgentRunCandidateAbortResult } from "./agent-run-activation-candidate.js";
+import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
 
 const logger = console;
 
@@ -47,16 +37,15 @@ const normalizeRequiredRunId = (runId: string): string => {
   return normalized;
 };
 
-export type AgentRunManagerOptions = {
-  autoByteusBackendFactory?: AgentRunBackendFactory;
-  codexBackendFactory?: AgentRunBackendFactory;
-  claudeBackendFactory?: AgentRunBackendFactory;
-  activationRegistry?: AgentRunActivationRegistry;
-  runFileChangeService?: RunFileChangeService;
-  publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
-  memoryRecorder?: AgentRunMemoryRecorder;
+export type AgentRunManagerOptions = Readonly<{
+  autoByteusBackendFactory: AgentRunBackendFactory;
+  codexBackendFactory: AgentRunBackendFactory;
+  claudeBackendFactory: AgentRunBackendFactory;
+  activationRegistry: AgentRunActivationRegistry;
+  memoryRecorder: AgentRunMemoryRecorder;
+  providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
-};
+}>;
 
 export class AgentRunManager {
   private static instance: AgentRunManager | null = null;
@@ -65,6 +54,7 @@ export class AgentRunManager {
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
+  private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
   private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
 
@@ -88,24 +78,29 @@ export class AgentRunManager {
   }
 
   constructor(options: AgentRunManagerOptions) {
-    if (!options?.agentToolMcpRunSessionReleaser) {
-      throw new Error("AgentRunManager requires an Agent Tools MCP run-session releaser.");
+    const required = [
+      options?.autoByteusBackendFactory,
+      options?.codexBackendFactory,
+      options?.claudeBackendFactory,
+      options?.activationRegistry,
+      options?.memoryRecorder,
+      options?.providerInputNormalizer,
+      options?.agentToolMcpRunSessionReleaser,
+    ];
+    if (required.some((value) => !value)) {
+      throw new Error("AgentRunManager requires all seven execution-family dependencies.");
     }
-    this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
-    this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
-    this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
-    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    if (typeof options.providerInputNormalizer.normalizeForProvider !== "function") {
+      throw new Error("AgentRunManager provider input normalizer is invalid.");
+    }
+    this.autoByteusBackendFactory = options.autoByteusBackendFactory;
+    this.codexBackendFactory = options.codexBackendFactory;
+    this.claudeBackendFactory = options.claudeBackendFactory;
+    this.memoryRecorder = options.memoryRecorder;
+    this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionReleaser =
       options.agentToolMcpRunSessionReleaser;
-    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
-      new AgentRunResourceManager({
-        runSessions: this.agentToolMcpRunSessionReleaser,
-        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
-        publishedArtifactRelayService: options.publishedArtifactRelayService
-          ?? createGeneralProcessPublishedArtifactRelayService(),
-        memoryRecorder: this.memoryRecorder,
-      }),
-    );
+    this.activationRegistry = options.activationRegistry;
     logger.info("AgentRunManager initialized.");
   }
 
@@ -256,7 +251,12 @@ export class AgentRunManager {
     let resourcesAttached = false;
     try {
       backend = await input.createBackend(factory);
-      run = new AgentRun({ context: backend.getContext(), backend, commandObservers: [this.memoryRecorder] });
+      run = new AgentRun({
+        context: backend.getContext(),
+        backend,
+        commandObservers: [this.memoryRecorder],
+        providerInputNormalizer: this.providerInputNormalizer,
+      });
       if (run.runId !== input.runId) {
         throw new AgentCreationError("The runtime backend returned a different local run identity.");
       }

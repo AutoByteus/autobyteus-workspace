@@ -58,6 +58,10 @@ const createScope = async () => {
   const scope = ApplicationExecutionScope.create({
     scopeIdentity: "application:test",
     memoryDir: path.join(root, "memory"),
+    contextFilePathEnvironment: {
+      appDataDir: root,
+      baseUrl: "http://localhost:8000",
+    },
     agentDefinitionService: agentDefinitionService as never,
     agentTeamDefinitionService: {} as never,
     agentToolMcpSessionAuthorities: authorityFactory,

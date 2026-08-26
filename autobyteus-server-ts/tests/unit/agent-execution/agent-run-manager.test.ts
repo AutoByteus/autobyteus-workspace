@@ -2,7 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
+import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentToolMcpRunSessionReleaser } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   createRecordingAgentToolMcpRunSessionReleaser,
@@ -52,29 +55,53 @@ const createBackend = (input: {
   return backend;
 };
 
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
+
 const createManager = (input: {
-  autoByteusBackendFactory?: unknown;
-  codexBackendFactory?: unknown;
-  claudeBackendFactory?: unknown;
+  autoByteusBackendFactory?: AgentRunBackendFactory;
+  codexBackendFactory?: AgentRunBackendFactory;
+  claudeBackendFactory?: AgentRunBackendFactory;
   runFileChangeService?: unknown;
   publishedArtifactRelayService?: unknown;
   memoryRecorder?: unknown;
   agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
-}) => new AgentRunManager({
-  ...input,
-  runFileChangeService: (input.runFileChangeService ?? {
+}) => {
+  const runSessions = input.agentToolMcpRunSessionReleaser
+    ?? createRecordingAgentToolMcpRunSessionReleaser().releaser;
+  const runFileChangeService = (input.runFileChangeService ?? {
     attachToRun: vi.fn(() => vi.fn()),
-  }) as never,
-  publishedArtifactRelayService: (input.publishedArtifactRelayService ?? {
+  }) as never;
+  const publishedArtifactRelayService = (input.publishedArtifactRelayService ?? {
     attachToRun: vi.fn(() => vi.fn()),
-  }) as never,
-  memoryRecorder: (input.memoryRecorder ?? {
+  }) as never;
+  const memoryRecorder = (input.memoryRecorder ?? {
     attachToRun: vi.fn(() => vi.fn()),
     onUserMessageForwarded: vi.fn(),
-  }) as never,
-  agentToolMcpRunSessionReleaser: input.agentToolMcpRunSessionReleaser
-    ?? createRecordingAgentToolMcpRunSessionReleaser().releaser,
-});
+  }) as never;
+  const activationRegistry = new AgentRunActivationRegistry(
+    new AgentRunResourceManager({
+      runSessions,
+      runFileChangeService,
+      publishedArtifactRelayService,
+      memoryRecorder,
+    }),
+  );
+  const autoByteusBackendFactory = input.autoByteusBackendFactory ?? unavailableBackendFactory;
+  const codexBackendFactory = input.codexBackendFactory ?? unavailableBackendFactory;
+  const claudeBackendFactory = input.claudeBackendFactory ?? unavailableBackendFactory;
+  return new AgentRunManager({
+    autoByteusBackendFactory,
+    codexBackendFactory,
+    claudeBackendFactory,
+    activationRegistry,
+    memoryRecorder,
+    providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+    agentToolMcpRunSessionReleaser: runSessions,
+  });
+};
 
 describe("AgentRunManager candidate lifecycle", () => {
   beforeEach(() => undefined);

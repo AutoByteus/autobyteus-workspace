@@ -25,6 +25,8 @@ import {
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
+import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent-run-memory-recorder.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
@@ -261,8 +263,16 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       expect(modelIdentifier).toBe(process.env.CODEX_MEMORY_E2E_MODEL.trim());
     }
     const recorder = new AgentRunMemoryRecorder();
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const activationRegistry = new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        runSessions: releaser,
+        runFileChangeService: createNoopSidecar() as never,
+        publishedArtifactRelayService: createNoopSidecar() as never,
+        memoryRecorder: recorder,
+      }),
+    );
     const manager = new AgentRunManager({
-      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: createCodexFactory({
         clientManager,
@@ -271,9 +281,10 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runId,
       }),
       claudeBackendFactory: unusedBackendFactory,
-      runFileChangeService: createNoopSidecar() as never,
-      publishedArtifactRelayService: createNoopSidecar() as never,
+      activationRegistry,
       memoryRecorder: recorder,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionReleaser: releaser,
     });
 
     const config = new AgentRunConfig({
@@ -460,8 +471,16 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const recorder = new AgentRunMemoryRecorder();
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const activationRegistry = new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        runSessions: releaser,
+        runFileChangeService: createNoopSidecar() as never,
+        publishedArtifactRelayService: createNoopSidecar() as never,
+        memoryRecorder: recorder,
+      }),
+    );
     const manager = new AgentRunManager({
-      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: createCodexFactory({
         clientManager,
@@ -470,9 +489,10 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runId,
       }),
       claudeBackendFactory: unusedBackendFactory,
-      runFileChangeService: createNoopSidecar() as never,
-      publishedArtifactRelayService: createNoopSidecar() as never,
+      activationRegistry,
       memoryRecorder: recorder,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionReleaser: releaser,
     });
     const config = new AgentRunConfig({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,

@@ -1,40 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 
-const { ContextFileLocalPathResolverMock, resolverResolveMock } = vi.hoisted(() => {
-  const resolverResolveMock = vi.fn<(uri: string) => string | null>();
-  const ContextFileLocalPathResolverMock = vi.fn(
-    function ContextFileLocalPathResolverMock(this: { resolve: typeof resolverResolveMock }) {
-      this.resolve = resolverResolveMock;
-    },
-  );
-  return { ContextFileLocalPathResolverMock, resolverResolveMock };
-});
-
-vi.mock("../../../../../../src/context-files/services/context-file-local-path-resolver.js", () => ({
-  ContextFileLocalPathResolver: ContextFileLocalPathResolverMock,
-}));
-
 import { toCodexUserInput } from "../../../../../../src/agent-execution/backends/codex/thread/codex-user-input-mapper.js";
 
-const contextFileResolverConstructorCallsAfterImport =
-  ContextFileLocalPathResolverMock.mock.calls.length;
-
 describe("toCodexUserInput", () => {
-  beforeEach(() => {
-    ContextFileLocalPathResolverMock.mockClear();
-    resolverResolveMock.mockReset();
-    resolverResolveMock.mockReturnValue(null);
-  });
-
-  it("defers context-file resolver construction until input conversion", () => {
-    expect(contextFileResolverConstructorCallsAfterImport).toBe(0);
-
-    toCodexUserInput(new AgentInputUserMessage("Review"));
-
-    expect(ContextFileLocalPathResolverMock).toHaveBeenCalledTimes(1);
+  it("formats an input without context files without provider-local path setup", () => {
+    expect(toCodexUserInput(new AgentInputUserMessage("Review"))).toEqual([{
+      type: "text",
+      text: "Review",
+      text_elements: [],
+    }]);
   });
 
   it("emits both localImage input and Reference files text for an image context file", () => {
@@ -89,15 +66,11 @@ describe("toCodexUserInput", () => {
     });
   });
 
-  it("uses ContextFileLocalPathResolver for finalized REST context-file locators", () => {
-    resolverResolveMock.mockImplementation((uri) =>
-      uri === "/rest/runs/run-1/context-files/proof.png" ? "/resolved/proof.png" : null,
-    );
-
+  it("formats an already-normalized finalized image path without resolving it again", () => {
     const inputs = toCodexUserInput(
       new AgentInputUserMessage("Analyze", undefined, [
         new ContextFile(
-          "/rest/runs/run-1/context-files/proof.png",
+          "/resolved/proof.png",
           ContextFileType.IMAGE,
         ),
       ]),
@@ -114,6 +87,5 @@ describe("toCodexUserInput", () => {
         path: "/resolved/proof.png",
       },
     ]);
-    expect(resolverResolveMock).toHaveBeenCalledWith("/rest/runs/run-1/context-files/proof.png");
   });
 });

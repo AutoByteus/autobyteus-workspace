@@ -2902,7 +2902,9 @@ describe("application framework architecture boundaries", () => {
       expect(generalRuns, relativePath).toBeGreaterThan(agentTools);
       expect(applicationAssembly, relativePath).toBeGreaterThan(generalRuns);
       const supervisorInput = source.slice(generalRuns, applicationAssembly);
-      expect(supervisorInput).toContain("appConfig:");
+      expect(supervisorInput).toContain("memoryDir:");
+      expect(supervisorInput).toContain("contextFilePathEnvironment,");
+      expect(supervisorInput).not.toContain("appConfig:");
       expect(supervisorInput).toContain("agentDefinitionService:");
       expect(supervisorInput).toContain("agentTeamDefinitionService:");
       expect(supervisorInput).toContain("agentToolMcpSessionAuthority:");

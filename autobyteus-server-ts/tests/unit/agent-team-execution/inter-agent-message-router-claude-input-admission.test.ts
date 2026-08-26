@@ -144,7 +144,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     await vi.waitFor(() => expect(startQueryTurn).toHaveBeenCalledTimes(1));
 
     const backend = new ClaudeAgentRunBackend(runContext as never, session);
-    const run = new AgentRun({ context: runContext, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: runContext, backend });
     const request = buildRequest();
     const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
 

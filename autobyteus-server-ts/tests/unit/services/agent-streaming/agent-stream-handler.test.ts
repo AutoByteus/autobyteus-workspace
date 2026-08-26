@@ -386,7 +386,7 @@ describe("AgentStreamHandler", () => {
         return { accepted: true };
       }),
     };
-    const activeRun = new AgentRun({
+    const activeRun = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       context,
       backend: backend as any,
     });

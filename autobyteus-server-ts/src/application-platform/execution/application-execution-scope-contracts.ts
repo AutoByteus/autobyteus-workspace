@@ -20,12 +20,14 @@ import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/
 import type { PublishedArtifactPublisher } from "../../services/published-artifacts/published-artifact-publisher.js";
 import type { PublishedArtifactSummary } from "../../services/published-artifacts/published-artifact-types.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
+import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 
 export type ApplicationExecutionScopeIdentity = `application:${string}`;
 
 export type ApplicationExecutionScopeBuildInput = Readonly<{
   scopeIdentity: ApplicationExecutionScopeIdentity;
   memoryDir: string;
+  contextFilePathEnvironment: ContextFilePathEnvironment;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   agentToolMcpSessionAuthorities: AgentToolMcpSessionAuthorityFactory;

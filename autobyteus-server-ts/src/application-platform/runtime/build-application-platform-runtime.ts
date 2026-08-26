@@ -35,9 +35,11 @@ import type { ModelCatalogService } from "../../llm-management/services/model-ca
 import type { ModelAvailabilityService } from "../../llm-management/services/model-availability-service.js";
 import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
 import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
+import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 
 export type ApplicationPlatformBuildInput = Readonly<{
   appConfig: AppConfig;
+  contextFilePathEnvironment: ContextFilePathEnvironment;
   bundleService: ApplicationBundleService;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
@@ -81,6 +83,7 @@ export const buildApplicationPlatformRuntime = (
   const executionScope = ApplicationExecutionScope.create({
     scopeIdentity,
     memoryDir: input.appConfig.getMemoryDir(),
+    contextFilePathEnvironment: input.contextFilePathEnvironment,
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
     agentToolMcpSessionAuthorities: input.agentToolMcpSessionAuthorities,

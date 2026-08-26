@@ -1,4 +1,5 @@
 import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -8,6 +9,7 @@ import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -42,6 +44,10 @@ const describeCodexBackendIntegration =
 const FLOW_TEST_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_FLOW_TIMEOUT_MS || 120_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_EVENT_TIMEOUT_MS || 90_000);
 const BACKEND_EVENT_LOG_DIR = process.env.CODEX_BACKEND_EVENT_LOG_DIR?.trim() || null;
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 const createWorkspace = async (label: string): Promise<string> =>
   fsPromises.mkdtemp(path.join(os.tmpdir(), `${label}-`));
@@ -1130,17 +1136,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionReleaser: releaser,
+    });
     const runManager = new AgentRunManager({
-      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
-      autoByteusBackendFactory: {} as any,
+      autoByteusBackendFactory: unavailableBackendFactory,
       codexBackendFactory: factory,
-      claudeBackendFactory: {} as any,
-      runFileChangeService: {
-        attachToRun: () => () => undefined,
-      } as any,
-      publishedArtifactRelayService: {
-        attachToRun: () => () => undefined,
-      } as any,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionReleaser: releaser,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;

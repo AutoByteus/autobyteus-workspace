@@ -57,6 +57,10 @@ import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import type { WorkspaceManager } from "../workspaces/workspace-manager.js";
 import type { AgentProviderFactoryBuilder } from "../agent-execution/providers/agent-provider-factory-builder.js";
 import { createProcessAgentProviderFactoryBuilder } from "./create-process-agent-provider-factory-builder.js";
+import {
+  createContextFilePathEnvironment,
+  type ContextFilePathEnvironment,
+} from "../context-files/domain/context-file-path-environment.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -138,9 +142,11 @@ const createStudioApplicationServices = (input: {
   agentToolsMcpHost: AgentToolsMcpHost;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   workspaceManager: WorkspaceManager;
+  contextFilePathEnvironment: ContextFilePathEnvironment;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig,
+    contextFilePathEnvironment: input.contextFilePathEnvironment,
     bundleService: input.packages.bundleService,
     agentDefinitionService: input.definitions.agentDefinitionService,
     agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
@@ -198,6 +204,10 @@ export const buildStudioServer = async (input: {
 
   try {
     const workspaceManager = getWorkspaceManager();
+    const contextFilePathEnvironment = createContextFilePathEnvironment({
+      appDataDir: input.appConfig.getAppDataDir(),
+      baseUrl: input.appConfig.getBaseUrl(),
+    });
     agentToolsMcpHost = createAgentToolsMcpHost();
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager,
@@ -212,7 +222,8 @@ export const buildStudioServer = async (input: {
       assertExecutionCapabilitiesReady: () => undefined,
     });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
-      appConfig: input.appConfig,
+      memoryDir: input.appConfig.getMemoryDir(),
+      contextFilePathEnvironment,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
       workspaceManager,
@@ -227,6 +238,7 @@ export const buildStudioServer = async (input: {
       agentToolsMcpHost,
       agentProviderFactoryBuilder,
       workspaceManager,
+      contextFilePathEnvironment,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;

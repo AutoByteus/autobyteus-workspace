@@ -6,19 +6,15 @@ import type {
   ClaudeSdkClient,
   ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
-import type { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 import type { AgentToolMcpSessionIssuer } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import type { SystemInstructionCaptureService } from "../../../../agent-memory/services/system-instruction-capture-service.js";
-
-type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
 
 export type ClaudeSessionDependencies = {
   sessionMessageCache: ClaudeSessionMessageCache;
   sdkClient: ClaudeSdkClient;
   activeQueriesByRunId: Map<string, ClaudeSdkQueryLike>;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
-  contextFileLocalPathResolver?: ContextFilePathResolverLike;
   agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
   systemInstructionCaptureService?: SystemInstructionCaptureService;
   isRunSessionActive: () => boolean;

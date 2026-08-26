@@ -43,6 +43,7 @@ import {
   type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
 import { assertTokenUsageCurrentSchema } from "../startup/token-usage-current-schema-readiness.js";
+import { createContextFilePathEnvironment } from "../context-files/domain/context-file-path-environment.js";
 import {
   TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
   configureTokenUsageMigrationReadiness,
@@ -235,6 +236,10 @@ export const startStandaloneApplicationHost = async (
       bundleService,
     });
     const workspaceManager = getWorkspaceManager();
+    const contextFilePathEnvironment = createContextFilePathEnvironment({
+      appDataDir: processResources.appConfig.getAppDataDir(),
+      baseUrl: processResources.appConfig.getBaseUrl(),
+    });
     agentToolsMcpHost = createAgentToolsMcpHost();
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager,
@@ -250,7 +255,8 @@ export const startStandaloneApplicationHost = async (
     });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
-        appConfig: processResources.appConfig,
+        memoryDir: processResources.appConfig.getMemoryDir(),
+        contextFilePathEnvironment,
         agentDefinitionService: hostDefinitionServices.agentDefinitionService,
         agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
         workspaceManager,
@@ -260,6 +266,7 @@ export const startStandaloneApplicationHost = async (
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
+      contextFilePathEnvironment,
       bundleService,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,

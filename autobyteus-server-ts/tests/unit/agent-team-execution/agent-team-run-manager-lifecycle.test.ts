@@ -2,6 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import type { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+
+const taskExecutionIdentity = createTaskExecutionIdentityCapabilities({
+  allocateForAgentDefinition: async () => "task-agent-run",
+});
 
 const backendFactory = Object.freeze({
   createBackend: async () => {
@@ -15,6 +20,7 @@ const backendFactory = Object.freeze({
 const createManager = () => new AgentTeamRunManager({
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   mixedTeamRunBackendFactory: backendFactory,
+  taskExecutionIdentity,
 });
 
 const createRoot = (input: {
@@ -42,6 +48,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
       const options: Record<string, unknown> = {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         mixedTeamRunBackendFactory: backendFactory,
+        taskExecutionIdentity,
       };
       if (value === "omitted") delete options.mixedTeamRunBackendFactory;
       else options.mixedTeamRunBackendFactory = value;

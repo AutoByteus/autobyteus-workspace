@@ -16,6 +16,7 @@ import {
   type TeamRunPhysicalScope,
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import {
   testAgentNode,
   testAgentTeamNode,
@@ -103,8 +104,10 @@ const createHandle = (input: {
       configuredMemberActivationMode: "fresh",
     }),
   });
+  const memoryDir = appConfigProvider.config.getMemoryDir();
   const memoryLocationService = new AgentMemoryLocationService({
-    memoryDir: appConfigProvider.config.getMemoryDir(),
+    memoryDir,
+    locationService: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   });
   const getTeamAgentRunLocation = vi.spyOn(
     memoryLocationService,

@@ -23,7 +23,11 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-team-execution/task-delegation/task-delegation-system-message-visibility.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import {
+  testAgentNode,
+  testMemberTaskRootResolver,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 class FakeAgentRunBackend implements AgentRunBackend {
   readonly runId = "worker-run-1";
@@ -124,7 +128,7 @@ const buildHandle = () => {
   }) => {
     const backend = new FakeAgentRunBackend(agentRunConfig);
     backends.push(backend);
-    const run = new AgentRun({
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       context: new AgentRunContext({ runId, config: agentRunConfig, runtimeContext: null }),
       backend,
     });
@@ -141,8 +145,13 @@ const buildHandle = () => {
     teamContext,
     context: memberContext,
     config,
+    activationMode: "fresh",
     agentRunManager: { prepareNewAgentRun } as never,
+    memoryLocationService: {
+      getTeamAgentRunLocation: () => ({ memoryDir: "/tmp/worker-run-1" }),
+    } as never,
     memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+    taskRootResolver: testMemberTaskRootResolver(),
     activityInspector: { inspect: vi.fn(() => ({ kind: "none" as const })) } as never,
     publish: (event) => publishedEvents.push(event),
     acceptPlatformBinding: vi.fn(async () => undefined),

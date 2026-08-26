@@ -1,10 +1,12 @@
 import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -13,6 +15,11 @@ import {
   serializeAgentMd,
 } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 describe("AgentRunService fresh definition runtime integration", () => {
   const cleanupPaths = new Set<string>();
@@ -127,9 +134,18 @@ describe("AgentRunService fresh definition runtime integration", () => {
       waitForIdle: async () => undefined,
     });
 
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionReleaser: releaser,
+    });
     const manager = new AgentRunManager({
-      agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
       autoByteusBackendFactory,
+      codexBackendFactory: unavailableBackendFactory,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionReleaser: releaser,
     });
     return new AgentRunService(appConfigProvider.config.getMemoryDir(), {
       agentRunManager: manager,

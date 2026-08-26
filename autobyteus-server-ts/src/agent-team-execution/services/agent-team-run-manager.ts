@@ -1,4 +1,3 @@
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -21,6 +20,7 @@ import type { TeamCommunicationMessagesSnapshot } from "../../services/team-comm
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
 import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
+import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -29,8 +29,9 @@ const required = (value: string, field: string): string => {
 };
 
 export type AgentTeamRunManagerOptions = Readonly<{
-  memoryDir?: string;
+  memoryDir: string;
   mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
@@ -45,6 +46,7 @@ export class AgentTeamRunManager {
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
+  private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
@@ -72,10 +74,16 @@ export class AgentTeamRunManager {
     if (!options?.mixedTeamRunBackendFactory) {
       throw new Error("mixedTeamRunBackendFactory is required.");
     }
-    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    if (!options.taskExecutionIdentity ||
+        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
+        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
+      throw new Error("taskExecutionIdentity is required.");
+    }
+    const memoryDir = required(options.memoryDir, "memoryDir");
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
     this.factory = options.mixedTeamRunBackendFactory;
+    this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
@@ -288,6 +296,7 @@ export class AgentTeamRunManager {
       messages: input.messages,
       persistence,
       publisher,
+      taskExecutionIdentity: this.taskExecutionIdentity,
       onTerminated: () => {
         if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
       },

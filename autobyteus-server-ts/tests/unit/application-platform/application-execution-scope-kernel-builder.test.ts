@@ -126,6 +126,10 @@ const createHarness = (input: {
   const buildInput = {
     scopeIdentity: "application:test" as const,
     memoryDir: "/tmp/application-kernel-builder",
+    contextFilePathEnvironment: {
+      appDataDir: "/tmp/application-kernel-builder/app-data",
+      baseUrl: "http://localhost:8000",
+    },
     agentDefinitionService: {} as never,
     agentTeamDefinitionService: {} as never,
     agentToolMcpSessionAuthorities: authorityFactory,

@@ -14,6 +14,7 @@ import type { PreparedLocalExecutionTermination } from "../../../src/agent-team-
 import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import type { PreparedTaskSettlement } from "../../../src/agent-team-execution/domain/prepared-task-settlement.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
 import type { PrepareTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -258,6 +259,7 @@ const createHarness = async () => {
     currentConfig,
   );
   const publisher = new TeamRunEventPublisher();
+  let allocatedTaskAgentOrdinal = 0;
   let root: RootTeamRun | null = null;
   const persistence = new TeamRunPersistenceCoordinator({
     rootTeamRunId,
@@ -268,6 +270,10 @@ const createHarness = async () => {
     enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
   });
   root = new RootTeamRun({
+    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+      allocateForAgentDefinition: async (agentDefinitionId) =>
+        `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
+    }),
     rootRun: new TeamRun(backend.context, backend),
     config: currentConfig,
     tree,
