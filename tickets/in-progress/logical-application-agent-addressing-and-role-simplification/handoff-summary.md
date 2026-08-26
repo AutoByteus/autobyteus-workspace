@@ -11,16 +11,16 @@
 - Proportional durable-test review: `CRR-005` Not Applicable; API/E2E changed no repository-resident durable test.
 - Reviewed production/test HEAD: `31c674d0c31181c96d2198ed2b2f7a9996f2f4cb`.
 - Delivery checkpoint: `0a55b013ad6250b5ffe02609aa43cfc7e465463d` (cumulative artifacts only).
-- Current delivery revision: `DR-001`.
+- Current delivery revision: `DR-002`.
 
 ## Latest-Base Integrated State
 
 - Latest checked `origin/personal`: `4108786f4058ca83fd036df84666a2c846fd6401`.
 - Integration method: already current; latest Personal is the branch merge base/ancestor.
-- Divergence at checkpoint: `7 ahead / 0 behind`.
+- Divergence before the fresh rebuild: `8 ahead / 0 behind`.
 - No new base commit, conflict, or post-review production/test delta was introduced.
 - Corrected delivery-focused rerun: six files / 38 tests Pass after building the required `@autobyteus/application-sdk-contracts` workspace entry. The initial prerequisite miss changed no source and is retained transparently in evidence.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-base-refresh-and-integration.log` and `dr-001-post-integration-check-corrected.log`.
+- Fresh-build base evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-base-refresh-and-integration.log`. DR-001's focused source evidence remains `dr-001-post-integration-check-corrected.log` because no production/test source changed.
 
 ## Delivered Behavior
 
@@ -40,9 +40,9 @@
 
 - Platform/flavor/version: macOS arm64, Personal, `1.4.58`.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg`.
-- DMG SHA-256: `2117bb8d59769de166f72388ef4674bdb575797b7c20c74a5f07d7a68f767657`.
+- DMG SHA-256: `2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587`.
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip`.
-- ZIP SHA-256: `46263931bead47e12010b680e5df3a3c826ff8e3ff772f2df37256a3fff328a4`.
+- ZIP SHA-256: `d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d`.
 - Result: build, package architecture, terminal spawn, ZIP/DMG integrity, renderer/API/WebSocket/provider settings, updater suppression, isolation/fail-closed/ownership/cleanup checks all passed.
 - Ordinary AutoByteus PID `94487` and listener `29695` were preserved.
 - Signing: intentionally unsigned local test artifact; not a release/notarization build.

@@ -9,13 +9,13 @@ Delivery currently includes latest-base verification, durable docs synchronizati
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/handoff-summary.md`.
 - Handoff summary status: `Updated`.
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/delivery-revision-record.md`.
-- Current delivery revision ID: `DR-001`.
-- Notes: integrated/docs/Electron gates passed; explicit user verification is pending.
+- Current delivery revision ID: `DR-002`.
+- Notes: integrated/docs gates remain passed; DR-002 freshly rebuilt and reverified Electron; explicit user verification is pending.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
-- Latest tracked remote base reference checked: `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
+- Latest tracked remote base reference checked for DR-002: `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
 - Base advanced since bootstrap or previous refresh: `No`.
 - New base commits integrated into the ticket branch: `No`.
 - Local checkpoint commit result: `Completed` (`0a55b013ad6250b5ffe02609aa43cfc7e465463d`, cumulative artifacts only).
@@ -56,7 +56,7 @@ None. Application version remains `1.4.58`; no release commit or tag has been cr
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/investigation-notes.md`.
 - Ticket branch: `codex/logical-application-agent-addressing-and-role-simplification`.
-- Ticket branch commit result: local delivery checkpoint only; final delivery docs/evidence remain subject to the verification hold.
+- Ticket branch commit result: local delivery checkpoint `4bd09395d792db17531a7f6c288f74d17132e60b` before DR-002; fresh delivery docs/evidence remain subject to the verification hold.
 - Ticket branch push result: not started.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
@@ -118,8 +118,8 @@ None.
 - ZIP and DMG integrity: `Pass`.
 - Electron isolation `E2E-PKG-001`–`E2E-PKG-005`: `Pass`; ordinary PID/listener preserved and owned cleanup passed.
 - Local signing: intentionally unsigned; strict verification nonzero as expected.
-- DMG SHA-256: `2117bb8d59769de166f72388ef4674bdb575797b7c20c74a5f07d7a68f767657`.
-- ZIP SHA-256: `46263931bead47e12010b680e5df3a3c826ff8e3ff772f2df37256a3fff328a4`.
+- DMG SHA-256: `2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587`.
+- ZIP SHA-256: `d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d`.
 
 ## Rollback Criteria
 

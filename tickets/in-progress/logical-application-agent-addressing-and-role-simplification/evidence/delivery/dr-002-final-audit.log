@@ -1,0 +1,38 @@
+DR-002 final delivery audit
+UTC: 2026-08-26T18:11:34Z
+
+== Revision and base ==
+HEAD=4bd09395d792db17531a7f6c288f74d17132e60b
+origin/personal=4108786f4058ca83fd036df84666a2c846fd6401
+PASS latest origin/personal is an ancestor of HEAD
+divergence HEAD...origin/personal=8	0
+
+== Artifact hashes ==
+PASS DMG sha256=2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587
+PASS ZIP sha256=d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d
+
+== Isolation evidence ==
+PASS scenarios=E2E-PKG-001,E2E-PKG-002,E2E-PKG-003,E2E-PKG-004,E2E-PKG-005
+PASS failures=0 ordinary_identity_preserved=true cleanup_entries=9
+
+== Artifact hygiene ==
+PASS no symlinks in delivery evidence
+PASS no delivery evidence file exceeds 25 MiB
+
+== Secret material scan ==
+PASS no credential-shaped secret material found in delivery evidence
+
+== Worktree scope ==
+ M tickets/in-progress/logical-application-agent-addressing-and-role-simplification/delivery-revision-record.md
+ M tickets/in-progress/logical-application-agent-addressing-and-role-simplification/docs-sync-report.md
+ M tickets/in-progress/logical-application-agent-addressing-and-role-simplification/electron-test-build-report.md
+ M tickets/in-progress/logical-application-agent-addressing-and-role-simplification/handoff-summary.md
+ M tickets/in-progress/logical-application-agent-addressing-and-role-simplification/release-deployment-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-base-refresh-and-integration.log
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation.log
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-build.log
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-verification.log
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-final-audit.log
+
+RESULT: PASS

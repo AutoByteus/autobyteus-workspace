@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | `DR-001` | `CRR-004` Pass / 97, `API-REV-002` Pass / 98, `CRR-005` N/A | N/A | `Pass — Ready for explicit user verification` | `docs-sync-report.md`; `electron-test-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-001 evidence |
+| `DR-002` | User requested a fresh README-guided Electron build | `DR-001` Pass | `Pass — Fresh package ready for explicit user verification` | `electron-test-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-002 evidence |
 
 ## Revision Entries
 
@@ -22,5 +23,22 @@
 - Persisted-data decision: `Directly Usable — No Migration`; no database migration, destructive reset, rewrite, or package-format transition is required.
 - User verification/finalization state: pending explicit user verification. No ticket move to `done`, push, target merge, release, deployment, tag, or ticket-worktree/branch cleanup has occurred.
 - Why this revision was recorded: mandatory initial delivery baseline and authoritative record of integrated-state/docs/Electron readiness.
+- Next action: user tests `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
+- Remaining risks or untested scope: the package is intentionally unsigned/not notarized; provider latency remains externally variable; historical broad repository fixture debt remains separate and unattributed.
+
+### DR-002 — Fresh README-guided Electron rebuild and package verification
+
+- Delivery round and trigger: user explicitly requested that the Electron build instructions be read and the package rebuilt for hands-on testing.
+- Prior authoritative result: `DR-001` Pass — ready for explicit user verification.
+- Current authoritative result: `Pass — a fresh unsigned macOS arm64 Personal package is ready for explicit user verification.`
+- Latest-base refresh: fetched `origin/personal=4108786f4058ca83fd036df84666a2c846fd6401`; it remains the exact merge base/ancestor of ticket HEAD `4bd09395d792db17531a7f6c288f74d17132e60b`. Divergence was `8 ahead / 0 behind`; no merge, conflict, source change, or renewed upstream gate was required. Evidence: `evidence/delivery/dr-002-base-refresh-and-integration.log`.
+- README instruction check: re-read the root packaged Electron API/E2E section and `autobyteus-web/README.md` desktop-build and packaged-E2E sections before executing the documented macOS build path.
+- Electron result: fresh unsigned local Personal `1.4.58` macOS arm64 app/DMG/ZIP built successfully. DMG SHA-256 `2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587`; ZIP SHA-256 `d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d`.
+- Package verification: app bundle metadata, arm64 executable, terminal helper permissions and packaged Electron `node-pty` spawn, ZIP integrity, and DMG integrity all passed. Strict signing verification was nonzero as expected for the intentionally unsigned local build.
+- Isolation verification: `E2E-PKG-001` through `E2E-PKG-005` all passed; the ordinary AutoByteus PID `94487` and listener `29695` were healthy and identity-preserved before and after; all probe-owned processes, listeners, and temporary roots were cleaned.
+- Durable docs impact: none beyond refreshing delivery-owned records. The final integrated source and long-lived behavior documentation did not change since DR-001.
+- Persisted-data decision: unchanged at `Directly Usable — No Migration`; isolation used temporary roots and preserved the ordinary application/data path.
+- User verification/finalization state: pending explicit testing of the fresh DMG. No push, target merge, ticket archive, release, deployment, tag, or ticket-worktree/branch cleanup has occurred.
+- Why this revision was recorded: every completed delivery-stage result requires an authoritative revision entry; this entry distinguishes the fresh artifact and hashes from DR-001.
 - Next action: user tests `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
 - Remaining risks or untested scope: the package is intentionally unsigned/not notarized; provider latency remains externally variable; historical broad repository fixture debt remains separate and unattributed.
