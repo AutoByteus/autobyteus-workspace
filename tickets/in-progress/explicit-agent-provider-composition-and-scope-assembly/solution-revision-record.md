@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | SR-001 | User-approved bootstrap from CRR-006 future architecture assessment | N/A | Initial Baseline | Design-ready package produced |
 | SR-002 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-001 | AR-001, AR-002, AR-003 | Design Impact Rework | Exact construction and transition contracts completed; ready for re-review |
+| SR-003 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-002 | AR-003 | Design Impact Rework | Governed durable-test constructor transition closed; ready for re-review |
 
 ## Revision Entries
 
@@ -38,3 +39,18 @@
 - Downstream and architecture-review impact: implementation remains paused pending architecture Pass. The separate logical-addressing package remains untouched and second in the user-approved order.
 - Next recipient: `/architecture_reviewer` with the cumulative SR-002 package and ARCH-REV-001 artifacts.
 - Remaining gaps or risks: downstream must implement/prove the exact occurrence closure, provider timing, K0–K8 cuts, scoped revocation, dual-host parity, and unchanged public/persisted behavior; any additional occurrence or closeable is Design Impact rather than an escape-hatch justification.
+
+### SR-003 — Governed direct-constructor test transition closure
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`; ARCH-REV-002.
+- Triggering finding IDs: AR-003. AR-001 and AR-002 were explicitly resolved by ARCH-REV-002 and remain unchanged.
+- Prior authoritative result: `Fail — Design Impact`, narrowed to ten omitted durable-test constructor sites.
+- Current authoritative result: solution-owned design package revised and ready for architecture re-review; the accepted production architecture is unchanged.
+- Why recorded: old-symbol occurrence closure did not discover every maintained test that directly constructs a newly governed manager or member handle, so the required releaser transition was not implementation-complete.
+- Resolution: added the ten exact omitted test paths and their preserved behaviors to the Modify inventory; defined one test-only narrow no-op/recording `AgentToolMcpRunSessionReleaser` fixture; made fixture choice explicit for all fifteen governed direct-constructor test files; and required the focused architecture test to derive and compare exact seven/three/five constructor sets while rejecting omission, null, undefined, unsafe-cast, ambient-getter, and broad-manager substitutes.
+- Approved behavior or requirement IDs affected: BEH-003, BEH-006; REQ-005, REQ-008; AC-005–AC-007, AC-012. Their approved meaning is unchanged.
+- Canonical artifacts updated: `investigation-notes.md`, `design-spec.md`, `provider-composition-transition-inventory.md`, `solution-revision-record.md`.
+- Requirements and normative production-contract disposition: `requirements.md` and `provider-composition-and-agent-tools-authority-contract.md` remain unchanged; ARCH-REV-002 already accepted their production architecture.
+- Downstream and architecture-review impact: implementation remains paused pending architecture Pass. No production file, product behavior, migration, compatibility path, or logical-addressing scope was added.
+- Next recipient: `/architecture_reviewer` with the cumulative SR-003 package and ARCH-REV-002 artifacts.
+- Remaining gaps or risks: downstream must implement the exact fixtures and all production/test occurrence guards, then prove the accepted provider, authority, kernel, dual-host, cleanup, and no-contract-change baseline. Any newly matching direct constructor remains Design Impact rather than permission to make the releaser optional.

@@ -52,6 +52,8 @@ The user authorized continued design improvements, specifically required the Age
 | 2026-08-26 | Code | AutoByteus factory, Codex factory/bootstrap/thread owners, Claude factory/bootstrap/session owners, workspace/skill/process getter sources | close builder input | exact nineteen process leaves, six constructor mappings, and shared/fresh identity policy established | Normative contract sections 3–6 |
 | 2026-08-26 | Code | scope build input plus publication/resource/session construction in `application-execution-scope.ts` | prove actual construction cycle | publication requires activation/resource graph; scoped capabilities require publication; typed construction-only authority assembly resolves it without generic deferred binding | Normative K0–K8 contract |
 | 2026-08-26 | Command | exact `rg -l` audit for old Runtime/scope/manager symbols and direct Codex/Claude/Mixed/session constructions across `autobyteus-server-ts/src` and `tests` | close occurrences | twenty governed production old-symbol paths and eleven durable-test old-symbol paths; three SR-001 paths were corrected; Claude session and state-input consumers added | Exact transition inventory and allowlist guards |
+| 2026-08-26 | Review | `design-review-report.md` and `architecture-review-revision-record.md`, ARCH-REV-002 | receive narrowed Design Impact | AR-001 and AR-002 resolved; AR-003 remained only because ten direct durable-test constructors were absent from the closed transition inventory | Resolve without production redesign in SR-003 |
+| 2026-08-26 | Command | separate `rg -l` searches for `new AgentRunManager(`, `AgentRunManager.initializeProcessInstance(`, `new MixedTeamManager(`, and `new MixedAgentMemberHandle(` under `autobyteus-server-ts/tests` | close required releaser constructor surface | exact sets are seven Agent-manager, three Team-manager, and five member-handle test files; ten were absent from SR-002 Modify rows | Add exact fixture/behavior rows and derived occurrence guards |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -126,6 +128,7 @@ None. This is repository-internal architecture and no current external contract 
 6. The current publication/resource/session cycle justifies one typed authority assembly with one completion shape. A generic deferred container is unnecessary and forbidden.
 7. K0–K8 has exactly one construction closeable: incomplete assembly abort, atomically replaced by full authority close. Plain graph objects do not start resources during construction; successful transfer moves the sole disposer to the scope.
 8. The corrected transition inventory maps every current broad-symbol path, including the three corrected mixed-member files and omitted Claude session/state-input consumers, and makes any newly matching file fail closed.
+9. Direct-constructor discovery is a distinct surface from old-symbol discovery: seven tests construct `AgentRunManager`, three construct `MixedTeamManager`, and five construct `MixedAgentMemberHandle`. Ten of those fifteen did not mention the old symbols and were therefore omitted from SR-002. SR-003 closes them with one narrow no-op/recording releaser fixture, an explicit preserved-behavior row for every site, and source-derived exact-set guards.
 
 ## Persisted Data Transition Evidence
 
@@ -145,9 +148,9 @@ None. This is repository-internal architecture and no current external contract 
 
 ## Open Unknowns / Risks
 
-- No design unknown remains for AR-001–AR-003. Downstream must prove the exact process input/mapping, K0–K8 ownership cuts, and current-tree occurrence allowlists rather than reinterpret them.
+- No design unknown remains for AR-001–AR-003. Downstream must prove the exact process input/mapping, K0–K8 ownership cuts, old-symbol allowlists, and all fifteen direct-constructor fixture obligations rather than reinterpret them.
 - Any newly discovered production/test occurrence, construction closeable, or proposed issuer broadening is Design Impact and requires re-review; it is not permission to add a generic escape hatch.
 
 ## Notes For Architecture Reviewer
 
-Review the SR-002 contract and transition supplements as normative. AR-001 is closed by the exact nineteen-leaf provenance and six-object constructor/identity map; AR-002 by the construction-only authority assembly plus K0–K8 ownership/error contract; AR-003 by the corrected exact production/test inventory and fail-closed occurrence rules. The Host/Authority split, `AgentRunManager` failure ownership, passed outer scope capabilities, no-migration result, and separate logical-addressing ticket remain unchanged.
+Review SR-003 as the bounded ARCH-REV-002 closure. AR-001 remains closed by the exact nineteen-leaf provenance and six-object constructor/identity map; AR-002 remains closed by the construction-only authority assembly plus K0–K8 ownership/error contract. AR-003 now has the ten omitted Modify rows, an exact narrow no-op/recording fixture contract, and source-derived allowlists covering all seven direct Agent-manager, three direct Team-manager, and five direct member-handle tests. No production architecture, requirement, product behavior, migration, or logical-addressing scope changed.

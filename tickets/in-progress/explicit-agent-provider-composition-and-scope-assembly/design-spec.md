@@ -207,6 +207,14 @@ No K2/K4–K7 constructor starts a listener, run, session, worker, or background
 
 Before the platform runtime is returned, a scope-constructor or later platform-assembly failure invokes the fixed idempotent construction abort once. After return, only normal quiesce/close is legal. Cleanup preserves the original error if it succeeds; if cleanup also fails, all reverse disposers still run and `AggregateError` contains the primary at index 0 followed by cleanup errors in actual reverse order.
 
+## Durable Direct-Constructor Boundary Proof
+
+The accepted production architecture is unchanged by the SR-003 correction. The transition must, however, keep the new required releaser boundary explicit in every maintained test that directly constructs `AgentRunManager`, `MixedTeamManager`, or `MixedAgentMemberHandle`; making the production parameter optional would recreate the ambient authority bypass this design removes.
+
+One test-only fixture file owns two least-privilege choices: a frozen no-op `AgentToolMcpRunSessionReleaser` for tests where MCP cleanup is outside the test subject, and a fresh recording releaser for tests that assert cleanup or the deliberate absence of cleanup. The fixture exposes no Host, Authority, registry, broad session manager, or process getter. The normative transition inventory maps the preserved behavior and chosen fixture for each site and closes the current constructor surface as exactly seven direct Agent-manager tests, three direct Team-manager tests, and five direct member-handle tests.
+
+The focused architecture test derives those three occurrence sets from source, compares them to the exact normative path lists, and requires a non-null `agentToolMcpRunSessionReleaser` at every governed construction. Omission, null, explicit `undefined`, unsafe casts that hide omission, ambient getter sourcing, and broad-manager fakes are rejected by positive occurrence guards plus synthetic negative fixtures. New direct-constructor tests fail closed until their fixture purpose and preserved assertion are designed; removed constructor sites make the allowlist fail as stale.
+
 ## Dependency Rules
 
 Allowed: composition -> Host/builder/execution owners; platform -> scope; execution owner -> builder and Authority ports; builder -> provider adapters/factories; provider -> issuer -> descriptor -> adapter; run cleanup -> releaser.
@@ -353,7 +361,7 @@ Composition -> execution owners -> run manager -> provider factory/backend -> pr
 5. Implement K0–K8 kernel builder and switch `ApplicationExecutionScope` atomically to the one-kernel constructor.
 6. Switch the general supervisor and both host roots to the same builder identity and distinct completed authorities.
 7. Remove old runtime/scope/manager/partial assembly symbols and all direct root provider construction; do not leave an intermediate alias/default path.
-8. Run exact occurrence allowlists, omission/null/undefined fixtures, kernel cut points, focused tests, full source review, API/E2E, durable-test review, and delivery verification.
+8. Cut over all fifteen governed direct-constructor test files to the exact no-op or recording releaser fixtures, then run the derived constructor-set guards, old-symbol allowlists, omission/null/undefined fixtures, kernel cut points, focused tests, full source review, API/E2E, durable-test review, and delivery verification.
 
 No temporary compatibility alias or dual public path may survive any committed implementation state.
 
@@ -372,4 +380,4 @@ No temporary compatibility alias or dual public path may survive any committed i
 
 ## Guidance For Implementation
 
-Implement the exact normative contract before changing callers. Keep all new input objects recursively `Readonly`, runtime-validated, and complete. Use private fields and frozen outward projections. Do not expose the dependency record, construction assembly, or kernel. Preserve provider error semantics and existing retry. Aggregate cleanup errors in the defined order. Treat the exact transition inventory, current-tree occurrence allowlists, per-field omission fixtures, and K0–K8 cut points as completion criteria, not optional cleanup.
+Implement the exact normative contract before changing callers. Keep all new input objects recursively `Readonly`, runtime-validated, and complete. Use private fields and frozen outward projections. Do not expose the dependency record, construction assembly, or kernel. Preserve provider error semantics and existing retry. Aggregate cleanup errors in the defined order. Use only the normative narrow releaser fixtures at governed direct test constructors; do not make the production releaser optional to accommodate tests. Treat the exact transition inventory, derived constructor occurrence sets, current-tree old-symbol allowlists, per-field omission fixtures, and K0–K8 cut points as completion criteria, not optional cleanup.
