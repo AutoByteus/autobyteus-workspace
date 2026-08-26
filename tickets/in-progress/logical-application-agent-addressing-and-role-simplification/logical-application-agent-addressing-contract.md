@@ -1,6 +1,6 @@
 # Logical Application-Agent Addressing Contract
 
-Status: Normative design supplement. Approved with requirements.
+Status: Normative design supplement, SR-002; approved behavior revalidated against `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
 
 ## 1. Target Current Contract
 
@@ -38,12 +38,12 @@ export type ApplicationExecutionProducer = Readonly<{
 }>;
 ```
 
-Application-role `runtimeKind` is removed. The enclosing binding/event subject owns classification:
+Application-role `runtimeKind` is removed. Where classification is required, the enclosing binding/event subject owns it:
 
 - Agent binding or event subject `AGENT_RUN` -> producer is the bound standalone Agent.
 - Team binding or event subject `TEAM_RUN` -> producer is one Team member.
 
-Provider launch/runtime `runtimeKind` fields remain unchanged and are a different concept.
+Context-only publication/run-metadata consumers use producer identity/display and do not require role classification. Provider launch/runtime `runtimeKind` fields remain unchanged and are a different concept.
 
 ## 3. Backend Builders
 
@@ -63,37 +63,40 @@ The root builder validates binding identity/subject shape and returns `memberAdd
 ## 4. Private Authorized Descriptor
 
 ```ts
-type ResolvedApplicationAgentRuntimeTarget =
+export type ResolvedApplicationAgentExecutionTarget =
   | Readonly<{
       subject: "AGENT_RUN";
       agentRunId: string;
+      producer: ApplicationExecutionProducer;
     }>
   | Readonly<{
       subject: "TEAM_RUN";
       teamRunId: string;
       targetAgentRunId: string | null;
+      producers: readonly ApplicationExecutionProducer[];
     }>;
 
 type AuthorizedApplicationAgentTargetDescriptor = Readonly<{
   applicationId: string;
   address: ApplicationAgentTargetAddress;
   binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
-  runtime: ResolvedApplicationAgentRuntimeTarget;
-  producers: readonly ApplicationExecutionProducer[];
+  runtime: ResolvedApplicationAgentExecutionTarget;
 }>;
 ```
 
+`ResolvedApplicationAgentExecutionTarget` is owned by `application-execution-scope-contracts.ts`, the boundary that accepts it for stream attachment. `AuthorizedApplicationAgentTargetDescriptor` is owned by `ApplicationAgentTargetAuthorizationService`, which imports the resolved-target contract and adds authorization evidence. Host input discriminates this same value and passes its exact IDs to the existing subject-specific Agent/Team commands. The scope contract never imports the authorization service or its complete descriptor.
+
 Exact descriptor rules:
 
-- Agent binding + null -> Agent runtime with one producer.
+- Agent binding + null -> Agent runtime with one `producer`.
 - Agent binding + non-null -> `INVALID_TARGET`.
-- Team binding + null -> Team runtime, `targetAgentRunId:null`, all configured producers.
-- Team binding + exact non-null -> Team runtime, exact matching `targetAgentRunId`, one producer.
+- Team binding + null -> Team runtime, `targetAgentRunId:null`, all configured `producers`.
+- Team binding + exact non-null -> Team runtime, exact matching `targetAgentRunId`, exactly the matching producer in `producers`.
 - unknown member -> `INVALID_TARGET`.
 - missing, terminal, orphaned, or cross-application binding retains current failure mapping.
-- descriptor/address/binding/producers are cloned/frozen so downstream cannot mutate authorization evidence.
+- descriptor/address/binding/runtime/producer collections are cloned/frozen so downstream cannot mutate authorization evidence or scope input.
 
-The descriptor is the one translation output. Input uses `runtime`; streaming uses `runtime`; event creation uses `address` and `runtime.subject`; input response uses `binding`. None reloads or reinterprets the public address.
+The descriptor is the one translation output. Host input discriminates `runtime` and passes only its exact IDs to the existing Agent/Team commands; stream subscription passes `runtime` to scope streaming; event creation uses `address` and `runtime.subject`; input response uses `binding`. None reloads or reinterprets the public address. The full descriptor never crosses into `ApplicationExecutionScope`.
 
 ## 5. Input Spine
 
@@ -115,14 +118,14 @@ Agent command receives `runtime.agentRunId`. Team command receives `runtime.team
 frontend/backend connect logical address
   -> canonical URL / worker subscription
   -> authorization lease
-  -> descriptor
+  -> descriptor.runtime
   -> ApplicationAgentStreamRuntimeSource
   -> exact Agent run or Team run/member filter
   -> mapped event with original logical address
   -> READY/event equality
 ```
 
-The stream source must not branch on `descriptor.address`. Team root attaches without a member filter; member target filters by `runtime.targetAgentRunId`.
+The stream source receives `ResolvedApplicationAgentExecutionTarget`, not the full descriptor. Team root attaches without a member filter; member target filters by `runtime.targetAgentRunId`. The source cannot see the public address or binding snapshot.
 
 ## 7. URL Contract
 
@@ -160,14 +163,18 @@ Allowed:
 - URL/IPC transport -> same public address;
 - orchestration -> authorization service;
 - authorization -> binding store/current projector;
-- input/stream -> private descriptor only;
+- authorization -> scope-owned resolved execution target type;
+- host/stream subscription -> complete private descriptor;
+- host input dispatch -> resolved execution target fields only;
+- scope stream source -> resolved execution target only;
 - persistence stores -> current-schema codecs/projectors.
 
 Forbidden:
 
 - public address -> target kind or run ID;
 - application code -> logical-member-to-run-ID addressing projection;
-- input/stream -> descriptor plus binding store/public address interpretation;
+- input/stream -> resolved result plus binding store/public address interpretation;
+- scope contracts/source -> authorization-service type, complete descriptor, public address, or binding snapshot;
 - producer/member -> application-role runtimeKind;
 - current readers -> version-specific branches, compatibility fields, or dual shapes;
 - SDK/server -> ambiguous generic ID or task-agent lookup.

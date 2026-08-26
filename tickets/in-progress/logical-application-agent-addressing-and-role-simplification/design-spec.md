@@ -2,13 +2,13 @@
 
 ## Current-State Read
 
-The current execution ownership design is healthy and remains fixed: `ApplicationExecutionScope` owns the graph-local application run family, and `GeneralProcessRunSupervisor` remains separate. The remaining problem is at the application-agent addressing boundary. A public caller must currently name a binding, repeat whether that binding represents an Agent or Team, and—for a Team member—supply the physical `agentRunId`. The binding is already the authority for Agent-versus-Team subject and the configured member-address-to-run-ID mapping. `ApplicationAgentTargetAuthorizationService` loads that binding, yet `ApplicationOrchestrationHostService` reloads and reinterprets the public selector and `ApplicationAgentStreamRuntimeSource` interprets it again. The same boundary also carries application-role `runtimeKind` attributes that are constant or derivable from the enclosing binding/event subject.
+The exact current source authority is `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`. Its execution ownership design is healthy and remains fixed: `ApplicationExecutionScope` owns the graph-local application run family and exactly seven outward capabilities; `GeneralProcessRunSupervisor` remains a separate execution family; finalized provider/session composition, stopped-run model validation, and application-run ownership remain explicit. The remaining problem is at the application-agent addressing boundary. A public caller must currently name a binding, repeat whether that binding represents an Agent or Team, and—for a Team member—supply the physical `agentRunId`. The binding is already the authority for Agent-versus-Team subject and the configured member-address-to-run-ID mapping. `ApplicationAgentTargetAuthorizationService` loads that binding, yet `ApplicationOrchestrationHostService` reloads and reinterprets the public selector and `ApplicationAgentStreamRuntimeSource` interprets it again. The scope contract additionally imports the complete higher-level authorization descriptor merely to type streaming. The same boundary carries application-role `runtimeKind` attributes that are constant or derivable from the enclosing binding/event subject.
 
 Persistence analysis found JSON supersets containing the redundant role field, one physical NOT NULL member-role column, and no durable application-agent target address. The retained identity and display fields are already present. The target must therefore contract the current schema without introducing a migration or a compatibility path.
 
 ## Intended Change
 
-Replace the three-way public physical target union with one exact logical address `{ bindingId, memberAddress }`. Make binding authorization the sole logical-to-physical translator and return an immutable private resolved descriptor that input and streaming consume directly. Remove application-role `runtimeKind` from binding members and producers, preserve provider/launch `runtimeKind`, and introduce current-schema projectors that read existing JSON supersets directly while new writers emit only the current shape.
+Replace the three-way public physical target union with one exact logical address `{ bindingId, memberAddress }`. Make binding authorization the sole logical-to-physical translator. It returns one immutable orchestration-owned authorization descriptor whose `runtime` field is the scope-owned `ResolvedApplicationAgentExecutionTarget`. The host and subscription use the complete descriptor. Host input discriminates only `descriptor.runtime` and calls the existing subject-specific scope commands; scope streaming receives `descriptor.runtime`. The scope never depends upward on authorization evidence. Remove application-role `runtimeKind` from binding members and producers, preserve provider/launch `runtimeKind`, and introduce current-schema projectors that read existing JSON supersets directly while new writers emit only the current shape.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -28,6 +28,7 @@ Replace the three-way public physical target union with one exact logical addres
 | --- | --- | --- | --- | --- |
 | `logical-application-agent-addressing-contract.md` | exact public/private/address/producer/persistence contract | REQ-001–007; AC-001–016 | normative interface and data contract | Approved with requirements |
 | `logical-application-agent-addressing-transition-inventory.md` | exact Add/Modify/Remove/test/package inventory | REQ-001–008; AC-001–018 | normative transition completeness | Current; approval N/A |
+| `current-personal-refresh-analysis.md` | exact current-base/source-spine/intersection/persistence revalidation | REQ-001–008; AC-001–018 | current source evidence for SR-002 | Current; approval N/A |
 | upstream `future-architecture-simplification-review.md` | source-grounded trigger and six-spine assessment | all | read-only design evidence | N/A |
 
 ## Task Design Health Assessment (Mandatory)
@@ -36,16 +37,17 @@ Replace the three-way public physical target union with one exact logical addres
 - Current design issue found: `Yes`.
 - Root cause classification: `Boundary Or Ownership Issue`, `Shared Structure Looseness`, and `Duplicated Policy Or Coordination`.
 - Refactor needed now: `Yes`.
-- Evidence: the public address repeats binding-owned subject and physical member identity; three downstream locations interpret the same selector; application-role fields are constant or derivable; application code manually maps logical member address to physical run ID.
-- Design response: one logical public shape, one authoritative translator, one exact private descriptor, two current-schema projectors, and clean removal of redundant fields/paths.
+- Evidence: the public address repeats binding-owned subject and physical member identity; three downstream locations interpret the same selector; the scope contract imports a higher-level complete authorization descriptor; application-role fields are constant or derivable; application code manually maps logical member address to physical run ID.
+- Design response: one logical public shape, one authoritative translator, one complete orchestration descriptor containing one scope-owned exact runtime target, two current-schema projectors, and clean removal of redundant fields/paths.
 - Refactor rationale: each target concern has one concrete owner and the data-flow spines no longer cross both an outer boundary and its internals.
-- Intentional deferrals: provider composition is the preceding ticket; dynamic task-agent addressing is not a current supported product surface; removing physical IDs from binding/event correlation is outside scope. None is required by this design.
+- Intentional deferrals: dynamic task-agent addressing is not a current supported product surface; removing physical IDs from binding/event correlation is outside scope. Finalized provider/session composition and execution-scope lifecycle are preserved current baselines rather than deferred work. None requires change for this design.
 
 ## Terminology
 
 - **Logical target:** a binding ID plus either root (`memberAddress:null`) or one canonical configured Team member address.
 - **Physical target:** the exact Agent/Team run identity resolved from a currently authorized binding.
-- **Authorized descriptor:** immutable private translation result containing the public address/binding snapshot and exact physical runtime target.
+- **Resolved execution target:** the narrow immutable private discriminated value produced by authorization, used by host input dispatch, and accepted by execution-scope streaming; it contains only exact subject/run identity and the producer projection needed by streaming.
+- **Authorized descriptor:** immutable orchestration-owned translation result containing the public address, binding snapshot, and one resolved execution target in `runtime`.
 - **Application-role runtime kind:** the redundant `AGENT | AGENT_TEAM_MEMBER` classification removed here; it is distinct from provider launch `runtimeKind`.
 - **Current-schema projector:** version-agnostic reconstruction of recognized current fields from persisted JSON; it is not a legacy decoder.
 
@@ -75,8 +77,8 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 
 | Spine ID | Scope | Behaviors | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | 001–004,007 | application backend input command | exact Agent/Team input result and binding snapshot | authorization service + scope command boundary | proves logical-to-physical input flow |
-| DS-002 | Primary End-to-End | 001,003–004,007 | frontend/backend logical stream connection | application Agent event at caller | authorization lease + streaming service | proves one descriptor drives root/member filtering |
+| DS-001 | Primary End-to-End | 001–004,007 | application backend input command | exact Agent/Team input result and binding snapshot | authorization service + scope command boundary | proves logical address becomes one resolved basis for subject-specific command arguments |
+| DS-002 | Primary End-to-End | 001,003–004,007 | frontend/backend logical stream connection | application Agent event at caller | authorization lease + streaming service + scope streaming capability | proves one resolved target drives root/member filtering without leaking authorization evidence into scope |
 | DS-003 | Primary End-to-End | 004,007 | worker/backend communication open | READY, input/subscription, reconnect/close | communication session | proves wire/worker parity |
 | DS-004 | Primary End-to-End | 005,007 | application run launch | current binding/member projection | binding launch service/store | removes role at its origin |
 | DS-005 | Return-Event | 005,007 | Agent/Team runtime event or artifact | worker/frontend/application projection | event ingress/stream mapper/publication relay | preserves physical correlation without role field |
@@ -87,8 +89,8 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 
 ## Primary Execution Spine(s)
 
-- DS-001: `application business code -> backend SDK logical target -> worker capability protocol -> ApplicationOrchestrationHostService -> ApplicationAgentTargetAuthorizationService -> binding store/current projection -> AuthorizedApplicationAgentTargetDescriptor -> ApplicationExecutionScope Agent/Team command -> run input outcome`.
-- DS-002: `frontend/backend connection -> canonical target URL or worker subscription -> communication/streaming service -> authorization lease -> AuthorizedApplicationAgentTargetDescriptor -> scope-owned runtime event source -> exact root/member filter -> READY/event -> caller`.
+- DS-001: `application business code -> backend SDK logical target -> worker capability protocol -> ApplicationOrchestrationHostService -> ApplicationAgentTargetAuthorizationService -> binding store/current projection -> AuthorizedApplicationAgentTargetDescriptor -> descriptor.runtime -> ApplicationExecutionScope Agent/Team command -> run input outcome`; the host returns `descriptor.binding`.
+- DS-002: `frontend/backend connection -> canonical target URL or worker subscription -> communication/streaming service -> authorization lease -> AuthorizedApplicationAgentTargetDescriptor -> descriptor.runtime -> scope-owned runtime event source -> exact root/member filter -> READY/event -> caller`; the stream source never receives the complete descriptor.
 - DS-003: `application worker -> engine protocol -> communication session -> authorization -> input/subscription -> READY/event/response -> worker`.
 - DS-004: `application launch request -> launch configuration/authorization -> scope Agent/Team creation -> binding launch service -> binding store -> role-free public binding`.
 - DS-006: `host lifecycle recovery -> binding/event/metadata store -> current-schema projector -> application recovery/reentry -> resumed exact binding/run/event state`.
@@ -97,11 +99,11 @@ Behavior -> public logical contract -> authorization spine -> input/stream consu
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | Caller chooses root or logical member. Authorization loads one binding, derives subject/exact IDs, and scope commands receive only the private exact union. | logical address, binding, descriptor, run command | authorization + scope | member parser, binding store |
-| DS-002 | The same logical address crosses URL or worker protocol. One authorization result governs lease, source selection, member filtering, and returned event identity. | address, descriptor, stream source, event | streaming service/lease | URL codec, event validator |
+| DS-001 | Caller chooses root or logical member. Authorization loads one binding, derives subject/exact IDs, and host dispatch derives the existing scope-command arguments only from `descriptor.runtime`. | logical address, binding, descriptor, resolved target, run command | authorization + scope | member parser, binding store |
+| DS-002 | The same logical address crosses URL or worker protocol. One authorization result governs lease and event address; only its resolved target crosses the scope boundary for source selection/member filtering. | address, descriptor, resolved target, stream source, event | streaming service/lease + scope | URL codec, event validator |
 | DS-003 | Worker transport changes schema only; queue limits, READY sequencing, reconnect, and terminal errors remain owned by the existing communication session. | frame, session, descriptor, response | communication session | protocol validator |
 | DS-004 | Launch constructs smaller current bindings at the source; Team members retain logical/physical identity but not a redundant role. | launch, scope creation, binding | binding launch service | current model policy |
-| DS-005 | Runtime subject remains on the event/binding and physical run ID remains on producer; mapper/relay no longer duplicate role classification. | runtime event, producer, application event | event ingress/mapper/relay | journal, artifact projection |
+| DS-005 | Runtime subject remains on the event/binding where classification is required and physical run ID remains on producer; mapper/relay/context consumers no longer carry an unused duplicate role. | runtime event, producer, application event | event ingress/mapper/relay | journal, artifact projection |
 | DS-006 | Current-schema owners reconstruct recognized fields from existing supersets before normal recovery. No historical type reaches orchestration. | stored JSON, current object, recovery | each store/projector | SQLite/file I/O |
 | DS-007–009 | Canonical parsing, authorization resolution, and persisted projection are bounded transformations under their owning boundaries. | address/URL, binding/descriptor, JSON/current object | codec/auth/projector | validation errors |
 
@@ -114,10 +116,10 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 - SDK contracts own the one public address/member/producer schemas and canonical URL grammar.
 - Backend SDK owns ergonomic logical target construction against a supplied binding; it does not translate to physical identity.
 - Binding store owns persisted/current binding projection and physical member-role storage constant.
-- Authorization service owns application/status validation and the only logical-to-physical translation.
-- Orchestration host owns input sequencing and consumes the descriptor; it does not reload binding state.
-- Streaming/communication services own lease/session/event flow and consume the descriptor; they do not interpret the public selector.
-- `ApplicationExecutionScope` remains the authoritative graph-local command/event boundary; raw managers remain encapsulated.
+- Authorization service owns application/status validation, the complete immutable descriptor, and the only logical-to-physical translation.
+- Orchestration host owns input sequencing, uses `descriptor.runtime` for the scope command, and returns `descriptor.binding`; it does not reload binding state.
+- Streaming/communication services own lease/session/event flow. Subscription uses the complete descriptor for authorization/address evidence but passes only `descriptor.runtime` to the scope; neither layer reinterprets the public selector.
+- `ApplicationExecutionScope` remains the authoritative graph-local command/event boundary, owns the narrow `ResolvedApplicationAgentExecutionTarget` streaming input type, and never imports the higher-level authorization service; raw managers remain encapsulated.
 - Event/metadata stores own current-schema projection at their persistence boundaries.
 - Maintained applications own logical member choice such as `/tutor`, never physical address translation.
 
@@ -170,7 +172,7 @@ Application business caller, SDK target builder, worker/frontend transport, orch
 
 ## Ownership Boundaries
 
-The binding is authoritative for Agent-versus-Team subject and configured member-to-run identity. The public caller names only root/member intent. Authorization is the sole boundary that may cross from logical intent to physical execution identity. Above it, no public API carries member run IDs. Below it, input and streaming receive the private resolved union and may not reload the binding or reinterpret the public address. Persistence stores expose current objects only; historical extra attributes do not cross their boundary. `ApplicationExecutionScope` remains authoritative for mutable execution and is not widened by this change.
+The binding is authoritative for Agent-versus-Team subject and configured member-to-run identity. The public caller names only root/member intent. Authorization is the sole boundary that may cross from logical intent to physical execution identity. Above it, no public API carries member run IDs. At the boundary, the complete descriptor owns authorization evidence and embeds the scope-owned resolved execution target. Below it, host input derives the existing subject-specific command arguments only from that target, and scope streaming receives that target directly. Neither can reload the binding, inspect the public address, or depend on the authorization service. Persistence stores expose current objects only; historical extra attributes do not cross their boundary. `ApplicationExecutionScope` remains authoritative for mutable execution and is not widened beyond changing one existing capability input value.
 
 ## Boundary Encapsulation Map
 
@@ -178,15 +180,15 @@ The binding is authoritative for Agent-versus-Team subject and configured member
 | --- | --- | --- | --- | --- |
 | SDK logical address contract | member grammar/URL representation | app backend/frontend/worker | custom kind/run-ID selector | add exact logical operation |
 | binding store/current codec | SQLite rows/JSON/physical constant | launch/auth/recovery | raw JSON cast/spread | extend current projection |
-| authorization service | binding lookup/member map/physical union | host/streaming/communication | reload/re-resolve downstream | extend descriptor |
-| `ApplicationExecutionScope` capabilities | managers/runs/event sources | host/stream source | raw manager plus scope | add narrow capability operation |
+| authorization service | binding lookup/member map/complete descriptor | host/streaming/communication | reload/re-resolve downstream | extend descriptor |
+| `ApplicationExecutionScope` capabilities | resolved-target type/managers/runs/event sources | host/stream subscription | raw manager plus scope or full authorization descriptor into scope | adjust existing narrow capability input |
 | event/metadata projectors | stored producer/context JSON | journal/metadata/auth | version branch/raw object spread | extend current projector |
 
 ## Dependency Rules
 
-Allowed: application -> logical SDK target; transport -> the same public address; host/stream -> authorization; authorization -> binding store/current codec; host/stream -> descriptor runtime and scope capabilities; stores -> current codecs/projector; event subject -> role derivation.
+Allowed: application -> logical SDK target; transport -> the same public address; host/stream subscription -> authorization; authorization -> binding store/current codec and scope-owned resolved-target type; host/subscription -> descriptor runtime and scope capabilities; scope runtime source -> resolved target only; stores -> current codecs/projector; event/binding subject -> role classification where required; context-only consumers -> role-free producer identity.
 
-Forbidden: public address -> run kind or member run ID; application -> logical-to-physical target projection; authorization caller -> both descriptor and binding store; input/stream -> public selector interpretation; caller -> scope plus raw manager; producer/member -> application-role runtime kind; current runtime -> old schema version branch; generic ID, service locator, manager router, compatibility adapter, or dual protocol.
+Forbidden: public address -> run kind or member run ID; application -> logical-to-physical target projection; authorization caller -> both descriptor and binding store; input/stream -> public selector interpretation; scope contracts/source -> authorization-service import, complete descriptor, public address, or binding snapshot; caller -> scope plus raw manager; producer/member -> application-role runtime kind; current runtime -> old schema version branch; generic ID, service locator, manager router, compatibility adapter, or dual protocol.
 
 ## Interface Boundary Mapping
 
@@ -197,8 +199,10 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | `createApplicationAgentTeamMemberTargetAddress` | configured member target | early exact logical membership check | Team binding + memberAddress | never accepts run ID |
 | URL encode/decode | address wire form | canonical translation | exact public address | old segments rejected |
 | `authorize` | authorized runtime target | validate/resolve/freeze | applicationId + public address | one binding read |
+| `ResolvedApplicationAgentExecutionTarget` | authorized execution selection / scope stream input | exact private Agent/Team identity plus applicable producer projection | authorization-produced immutable union | defined at scope contract boundary because streaming accepts it |
 | scope Agent input command | exact Agent target | input | agentRunId | private only |
 | scope Team input command | exact Team/root/member target | input | teamRunId plus nullable targetAgentRunId | private only |
+| scope streaming `attach` | exact stream target | attach/filter | resolved execution target | no complete descriptor/address/binding |
 | binding codec | current binding record | persisted projection | unknown JSON | retained fields required |
 | producer projector | current producer/context | persisted projection | unknown JSON | no role output |
 
@@ -218,7 +222,7 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | --- | --- | --- | --- | --- |
 | logical member path | `ApplicationAgentMemberAddress` | Yes | Low | distinguish from internal Team address type |
 | public target | `ApplicationAgentTargetAddress` | Yes | Low | exact two-field shape |
-| private target | `ResolvedApplicationAgentRuntimeTarget` | Yes | Low | discriminated physical identity |
+| private target | `ResolvedApplicationAgentExecutionTarget` | Yes | Low | scope-owned discriminated physical identity and producer projection |
 | authorization result | `AuthorizedApplicationAgentTargetDescriptor` | Yes | Low | immutable complete result |
 | stored binding projection | `ApplicationRunBindingRecordCodec` | Yes | Low | store-owned current schema |
 | producer projection | `ApplicationExecutionProducerProjector` | Yes | Low | role-free current output |
@@ -241,8 +245,8 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | --- | --- | --- | --- | --- | --- |
 | SDK contracts | public address/member/producer/URL | 001–003,005,007 | contract package | Extend | clean versioned cut |
 | application orchestration | binding, authorization, input, projection | 001,004–006,008–009 | auth/store/host | Extend | logical/physical boundary lives here |
-| application streaming/communication | lease/session/event transport | 002–003,005 | existing services | Modify | descriptor consumer only |
-| application execution scope | exact commands/events | 001–002 | scope | Reuse | no ownership change |
+| application streaming/communication | lease/session/event transport | 002–003,005 | existing services | Modify | subscription consumes descriptor; scope source consumes resolved target only |
+| application execution scope | exact commands/events and resolved-target contract | 001–002 | scope | Modify contract only | no owner/lifecycle/capability-count change |
 | run metadata/history | current execution-context read/write | 005–006,009 | metadata store | Extend | uses shared projector |
 | maintained applications | logical choice/business behavior | 001–005 | Brief/Socratic | Modify | no physical targeting |
 
@@ -262,7 +266,7 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 | Repeated Structure / Logic | Shared File | Owner | Why Shared | Redundant Removed? | Overlap Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
 | canonical member validation | contract member file | contracts | URL/helper/auth share one syntax | Yes | Yes | internal Team-domain dump |
-| authorized physical union | authorization service/domain | authorization | input/stream share exact result | Yes | Yes | public wire type |
+| resolved execution union | scope contracts | execution boundary | host dispatch and stream attach share one exact value | Yes | Yes | public wire type or authorization aggregate |
 | producer current projection | producer projector | orchestration domain | journal/metadata/auth share transform | Yes | Yes | old-schema version adapter |
 | binding current projection | binding codec | binding store | all binding reads share invariants | Yes | Yes | generic JSON codec registry |
 
@@ -278,7 +282,7 @@ Forbidden: public address -> run kind or member run ID; application -> logical-t
 
 ## Final File Responsibility Mapping
 
-The exact path-level Add/Modify/Remove and durable-test list in `logical-application-agent-addressing-transition-inventory.md` is authoritative. The important final responsibilities are: contract package owns public schemas/codec; backend SDK owns logical builders; authorization owns translation; stores/projectors own current persistence projection; host/streaming consume descriptors; applications select logical members. No generic target resolver, codec registry, compatibility package, or shared optional-field base is added.
+The exact path-level Add/Modify/Remove and durable-test list in `logical-application-agent-addressing-transition-inventory.md` is authoritative. The important final responsibilities are: contract package owns public schemas/codec; backend SDK owns logical builders; authorization owns translation and the complete descriptor; scope contracts own the resolved execution target; stores/projectors own current persistence projection; host/subscription consume the complete descriptor while host commands derive exact arguments from its runtime value and the scope source consumes that runtime value; applications select logical members. No generic target resolver, codec registry, compatibility package, or shared optional-field base is added.
 
 ## Applied Patterns (If Any)
 
@@ -297,9 +301,10 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | `autobyteus-application-sdk-contracts/src/application-agent-target-url.ts` | File | public contracts | canonical URL codec | wire contract | authorization |
 | `autobyteus-application-backend-sdk/src/application-agent-target-address.ts` | File | backend SDK | logical builders | developer-facing target subject | physical resolver |
 | `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts` | File | authorization | logical-to-exact resolution | existing authoritative boundary | raw manager/transport |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | File | scope capability contract | own exact resolved-target union and streaming input | accepted value belongs to scope boundary | orchestration authorization service import/full descriptor |
 | `autobyteus-server-ts/src/application-orchestration/domain/application-run-binding-record-codec.ts` | File | persistence boundary | current binding decode/projection | orchestration owns binding | version branches |
 | `autobyteus-server-ts/src/application-orchestration/domain/application-execution-producer-projector.ts` | File | orchestration domain | current producer/context projection | shared subject owner | provider runtime kinds |
-| communication/streaming service files | Files | existing transport owners | descriptor-only transport/event flow | lifecycle remains local | binding reload/address interpretation |
+| communication/streaming service files | Files | existing transport owners | complete descriptor until subscription; resolved target at scope attach | lifecycle/evidence remains local | binding reload/address interpretation/full descriptor in source |
 
 ## Folder Boundary Check
 
@@ -317,7 +322,7 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 | --- | --- | --- | --- |
 | public target | `{bindingId, memberAddress:"/tutor"}` | `{bindingId,target:{kind:"AGENT_TEAM_MEMBER",agentRunId}}` | caller states intent, not physical identity |
 | root | `{bindingId,memberAddress:null}` | separate Agent-root/Team-root kinds | binding owns subject |
-| resolution | `authorize -> {runtime:{subject:"TEAM_RUN",teamRunId,targetAgentRunId}}` | host reloads binding and reinterprets address | one authority |
+| resolution | `authorize -> descriptor -> descriptor.runtime -> scope` | host reloads binding or scope receives full descriptor | one authority and downward-only dependency |
 | role | event subject + `{agentRunId,displayName}` | duplicate producer `runtimeKind` | one classification source |
 | persistence | explicit recognized-field projection | spread raw JSON or `if (version===old)` | directly usable current schema |
 
@@ -334,14 +339,14 @@ The exact path-level Add/Modify/Remove and durable-test list in `logical-applica
 
 ## Derived Layering (If Useful)
 
-Application business caller -> public logical contract/SDK -> transport -> authorization -> private exact target -> `ApplicationExecutionScope` capability -> run. Persistence sits behind binding/event/metadata owners; provider execution remains below the scope and unchanged. The layering is explanatory and follows the authoritative boundary rather than defining it.
+Application business caller -> public logical contract/SDK -> transport -> authorization -> orchestration descriptor -> scope-owned resolved target -> `ApplicationExecutionScope` capability -> run. Persistence sits behind binding/event/metadata owners; provider execution remains below the scope and unchanged. The scope defines the value it accepts but does not perform authorization. The layering is explanatory and follows the authoritative boundary rather than defining it.
 
 ## Change / Refactor Sequence
 
 1. Add canonical member-address and new public address/producer/member contracts plus URL tests.
 2. Add current binding/producer projectors and representative old-superset direct-use tests.
-3. Implement the exact private descriptor and change authorization to be the sole translator.
-4. Change host input and stream/communication consumers to descriptor-only flow while preserving lease/session behavior.
+3. Define `ResolvedApplicationAgentExecutionTarget` in the scope contracts; implement the exact complete descriptor in authorization and make authorization the sole translator.
+4. Change host input to use `descriptor.runtime`/`descriptor.binding`; change stream subscription to pass only `descriptor.runtime` into scope while preserving lease/session behavior.
 5. Contract launch, event, artifact, metadata, and journal models/writers to the role-free shapes; retain the physical role constant.
 6. Update backend/frontend SDKs and maintained Brief/Socratic callers; Socratic selects `/tutor` directly.
 7. Regenerate all owned application/package copies atomically.
@@ -366,4 +371,4 @@ No committed target state may retain dual public contracts or a downstream physi
 
 ## Guidance For Implementation
 
-Implement the contract and projectors before consumers. Keep public/private structures `Readonly`; clone/freeze the descriptor and binding snapshot. Read each binding exactly once per authorization. Do not derive a physical target anywhere else. Preserve current error mapping, lease/reconnect, queue limits, run command results, event ordering, and recovery. Keep provider `runtimeKind` occurrence guards positively scoped so the architecture test cannot delete legitimate provider configuration. Treat the transition inventory, generated-output parity, and old-superset direct-read cases as completion conditions.
+Implement the contract and projectors before consumers. Keep public/private structures `Readonly`; clone/freeze the descriptor, resolved target, producers, and binding snapshot. Read each binding exactly once per authorization. Define the resolved target in the scope contract and prohibit the inverse import from scope to authorization. Do not derive a physical target anywhere else. Preserve current error mapping, lease/reconnect, queue limits, run command results, event ordering, application-run ownership/stopped-model-config behavior, provider/session composition, and recovery. Keep provider `runtimeKind` occurrence guards positively scoped so the architecture test cannot delete legitimate provider configuration. Treat the transition inventory, generated-output parity, and old-superset direct-read cases as completion conditions.

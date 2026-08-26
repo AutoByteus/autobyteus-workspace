@@ -1,6 +1,6 @@
 # Logical Application-Agent Addressing Transition Inventory
 
-Status: Normative implementation and proof supplement.
+Status: Normative SR-002 implementation and proof supplement, revalidated against `origin/personal@4108786f4058ca83fd036df84666a2c846fd6401`.
 
 ## Add
 
@@ -41,11 +41,11 @@ Status: Normative implementation and proof supplement.
 
 | Path | Exact Change |
 | --- | --- |
-| `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts` | sole logical resolver; exact private union, binding snapshot, producers |
+| `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts` | sole logical resolver; import scope-owned resolved target; own/freeze complete descriptor with address and binding evidence |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | consume descriptor for input and result; remove reload/public reinterpretation |
-| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts` | consume descriptor runtime union/member filter |
+| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts` | consume only scope-owned `ResolvedApplicationAgentExecutionTarget`; no complete descriptor/public address/binding; exact member filter |
 | `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-streaming-service.ts` | carry public address/descriptor without interpretation |
-| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts` | emit new address/producer/event shape |
+| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts` | retain complete descriptor for authorization/event evidence, pass only `descriptor.runtime` to scope attach, emit new address/producer/event shape |
 | `autobyteus-server-ts/src/application-agent-streaming/domain/application-agent-streaming-models.ts` and `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-mapper.ts` | smaller producer type |
 | `autobyteus-server-ts/src/application-agent-communication/services/application-agent-communication-service.ts` | new address contract |
 | `autobyteus-server-ts/src/application-agent-communication/services/application-agent-communication-session.ts` | READY/input exact address shape |
@@ -64,7 +64,7 @@ Status: Normative implementation and proof supplement.
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | construct smaller producer/context from exact Team member |
 | `autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts` | exact smaller execution-context projection/use |
 | `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publisher.ts` and `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts` | aligned smaller execution-context type only; no addressing interpretation |
-| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | private descriptor type reference; outward behavior fixed |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | define/export exact readonly `ResolvedApplicationAgentExecutionTarget`; streaming attach accepts it; remove authorization-service import; seven-capability count and all other capability/lifecycle contracts fixed |
 | `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts` | exact service type wiring only |
 | `autobyteus-server-ts/docs/modules/application_orchestration.md` | document logical/public vs exact/private boundary |
 
@@ -130,6 +130,9 @@ Named existing paths include:
 - `autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts`
 - `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
 - `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
+- `autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts` — update binding/context/address fixtures; preserve active Application ownership lock, recovery, terminal release, and no post-terminal dispatch.
+- `autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts` — remove only redundant Team-member role fixture; preserve startup gate, evidence agreement, nonterminal ownership, and terminal release.
+- `autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts` — remove only redundant Agent producer role fixture; preserve Application-owned active-run rejection and stopped-run edit behavior.
 
 ## Current-Data Proof Fixtures
 
@@ -149,9 +152,11 @@ Fail if supported source/package copies contain:
 - application member/producer `runtimeKind` fields or values outside the one physical-store constant;
 - input/stream consumers reading `descriptor.address.memberAddress` to decide runtime dispatch after authorization;
 - host input reloading the binding after descriptor authorization;
+- `application-execution-scope-contracts.ts` importing `application-agent-target-authorization-service.ts` or naming `AuthorizedApplicationAgentTargetDescriptor`;
+- scope streaming source/attach receiving a complete authorization descriptor, public address, or binding snapshot instead of `ResolvedApplicationAgentExecutionTarget`;
 - old URL literals/decoders, compatibility aliases, dual validators, version branches, or old/new address unions.
 
-Positive guards require the exact address, descriptor union, SDK helper signatures, current-schema projectors, and physical constant writer.
+Positive guards require the exact address, scope-owned resolved-target union, orchestration-owned descriptor containing that union, SDK helper signatures, current-schema projectors, and physical constant writer. Governed current production and durable-test constructor/literal occurrence sets must be enumerated from the current source tree; an old-symbol-only search is not sufficient.
 
 ## Verification Matrix
 
@@ -159,7 +164,7 @@ Positive guards require the exact address, descriptor union, SDK helper signatur
 | --- | --- |
 | Contracts | typecheck/unit for exact schema, nested address parser, URL round-trip/rejection |
 | Backend/frontend SDK | helper, READY/event equality, transport/reconnect tests |
-| Server unit | authorization, descriptor-only input/stream, producer projection, current-data direct read |
+| Server unit | authorization, runtime-only host input dispatch/scope stream attach, producer projection, current-data direct read |
 | Server integration | worker capability and actual websocket root/member cases |
 | Maintained apps | Socratic tutor logical selection/session; Brief/Socratic publication reconciliation |
 | Recovery | binding/event/run metadata restart/reentry with representative old supersets |
@@ -168,7 +173,8 @@ Positive guards require the exact address, descriptor union, SDK helper signatur
 
 ## No-Impact Inventory
 
-- provider composition and execution-scope owner stay unchanged;
+- provider composition, scoped Agent Tools MCP authorities, execution-scope owner/lifecycle, seven-capability count, and general/application separation stay unchanged;
+- `ApplicationRunOwnershipService`, `StudioRunModelConfigService`, stopped-run validator selection, and terminal ownership release stay unchanged apart from smaller fixtures/projections;
 - provider launch/runtime kind, model selection, configuration, worker lifecycle stay unchanged;
 - `applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts`, `frontend-src/socratic-tutor-session.js`, and `frontend-src/socratic-runtime.js` already forward/key the target opaquely and require behavior/fixture proof but no production edit;
 - maintained application manifests and GraphQL schema/client files retain JSON target fields and do not change;
