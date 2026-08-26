@@ -1,0 +1,31 @@
+=== final cleanup UTC
+Wed Aug 26 11:56:35 UTC 2026
+=== listeners
+PORT 43551 CLOSED
+PORT 43560 CLOSED
+PORT 31560 CLOSED
+=== owned processes
+=== generated output baseline
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-application-backend-sdk/dist
+ABSENT autobyteus-application-devkit/.tmp-tests
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT autobyteus-application-sdk-contracts/dist
+ABSENT autobyteus-web/.nuxt
+ABSENT autobyteus-web/.output
+PRESENT preexisting autobyteus-server-ts/dist
+=== isolated root
+ABSENT
+=== git diff check
+DIFF_CHECK_EXIT 0
+=== git status
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/

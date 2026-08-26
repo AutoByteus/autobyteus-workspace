@@ -1,0 +1,181 @@
+CONFIG Team Definition
+Nested Classroom Test Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+OpenAI / GPT-5.6-Luna (default reasoning: medium)
+
+This model will be used by all members unless overridden.
+
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+Reasoning Effort ⓘ
+low
+medium
+high
+xhigh
+max
+Fast mode ⓘ
+Default
+fast
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (3)
+Teacher
+Coordinator
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+StudentStudyGroup
+TEAM
+/StudentStudyGroup
+Customized
+Reset
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Runtime used by this Team scope.
+
+Default LLM Model
+DeepSeek / deepseek-v4-flash
+
+Nested Teams and Agents inherit this value unless customized.
+
+Thinking
+Use setting
+Advanced
+Reasoning Effort ⓘ
+high
+max
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Inherited by descendant scopes without an override.
+
+Auto approve tools
+student_one
+Coordinator
+
+StudentStudyGroup / student_one
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+Use setting
+Advanced
+student_two
+
+StudentStudyGroup / student_two
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+Use setting
+Advanced
+RUN_ENABLED true
+LAUNCHED_AT 0 URL http://127.0.0.1:31560/workspace
+PROMPT_SENT
+POLL 0 {"team":true,"direct":true,"task":true,"accepted":true}
+PASSED true
+FINAL_URL http://127.0.0.1:31560/workspace
+FINAL_BODY Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+runtime
+Temp Workspace
+TEAMS
+NC
+Nested Classroom Test Team
+(1)
+Please execute all three Nested Classroom routes exactly. First send an ordinary message to /Stud...
+now
+T
+Teacher
+now
+S
+StudentStudyGroup
+TEAM
+now
+Settings
+T
+Teacher
+Running
+You
+Please execute all three Nested Classroom routes exactly. First send an ordinary message to /StudentStudyGroup containing TEAM_ROUTE_API_REV_002 and ask its coordinator to reply to /Teacher with TEAM_ACK_API_REV_002. Second send an ordinary direct-member message to /StudentStudyGroup/student_one containing DIRECT_ROUTE_API_REV_002 and ask Student One to reply to /Teacher with DIRECT_ACK_API_REV_002. Third test nested delegation by delegating one bounded task to /StudentStudyGroup and ask the students to submit exactly NESTED_CLASSROOM_API_REV_002_OK; accept the task result if it matches. Finish with a short summary only after all three routes complete.
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
+
+Tasks
+0 tasks

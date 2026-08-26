@@ -1,0 +1,286 @@
+### devkit full suite
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# AgentFactory (Singleton) initialized.
+# (node:40491) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 36.333459
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.810Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 137.965708
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.857Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.857Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+# [2026-08-26T08:22:54.858Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.899Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.899Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+# [2026-08-26T08:22:54.900Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+# Subtest: standalone pack requires complete Team-scope defaults in addition to Agent leaves
+ok 3 - standalone pack requires complete Team-scope defaults in addition to Agent leaves
+  ---
+  duration_ms: 89.403666
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.950Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: atomic development pack keeps generated package metadata canonical after staging rename
+ok 4 - atomic development pack keeps generated package metadata canonical after staging rename
+  ---
+  duration_ms: 48.918042
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:54.986Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 37.094208
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:55.024Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 38.146
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:55.060Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 35.149625
+      type: 'test'
+      ...
+    1..3
+ok 5 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 110.996458
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:55.093Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 6 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 32.576958
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:55.127Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 7 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 33.719084
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 13.182917
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 7.486917
+      type: 'test'
+      ...
+    1..2
+ok 8 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 21.099958
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 9 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 7.575167
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 8.049958
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 7.329917
+      type: 'test'
+      ...
+    1..2
+ok 10 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 15.683541
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-08-26T08:22:55.200Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 11 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 28.899083
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 12 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 314.026167
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 13 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 352.553375
+  type: 'test'
+  ...
+# Subtest: Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+ok 14 - Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+  ---
+  duration_ms: 3.965792
+  type: 'test'
+  ...
+1..14
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3353.382833
+### Brief build
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> autobyteus-app pack
+
+sh: autobyteus-app: command not found
+ ELIFECYCLE  Command failed.
+### Brief validate
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+sh: autobyteus-app: command not found
+ ELIFECYCLE  Command failed.
+### Brief backend typecheck
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+### Socratic build
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> autobyteus-app pack
+
+sh: autobyteus-app: command not found
+ ELIFECYCLE  Command failed.
+### Socratic validate
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+sh: autobyteus-app: command not found
+ ELIFECYCLE  Command failed.
+### Socratic backend typecheck
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+### environment correction: relink workspace bin after devkit build
+Scope: all 12 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 1.6s using pnpm v10.28.2
+### corrected Brief build
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:41059) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:13.581Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:13.581Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T08:23:13.582Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package/applications/brief-studio
+### corrected Brief validate
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:41083) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:15.022Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:15.022Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T08:23:15.023Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package
+### corrected Brief backend typecheck
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+### corrected Socratic build
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:41129) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:18.271Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:18.271Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T08:23:18.272Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher
+### corrected Socratic validate
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:41157) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:20.138Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:23:20.139Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T08:23:20.140Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/dist/importable-package
+### corrected Socratic backend typecheck
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+

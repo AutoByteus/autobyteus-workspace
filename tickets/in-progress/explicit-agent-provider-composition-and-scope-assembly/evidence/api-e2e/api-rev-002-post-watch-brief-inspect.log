@@ -1,0 +1,217 @@
+count 1
+URL http://127.0.0.1:31560/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+runtime
+runtime
+Temp Workspace
+Settings
+← Back to applications
+Launch setup
+Brief Studio
+
+External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.
+
+The generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.
+
+Enter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.
+
+Show technical details
+Launch setup
+Saved resource and launch defaults
+
+Choose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.
+
+Refresh setup
+Drafting Team
+Required
+
+Team resource used when Brief Studio launches a new drafting run.
+
+CURRENT SELECTION
+
+Brief Studio Team · Bundled · Agent team
+
+Saved 26.8.2026, 13:30:54
+
+PACKAGE BASELINE
+
+/researcher · codex_app_server · gpt-5.6-luna
+
+/writer · codex_app_server · gpt-5.6-luna
+
+SELECTED RESOURCE BASELINE
+
+/researcher · codex_app_server · gpt-5.6-luna
+
+/writer · codex_app_server · gpt-5.6-luna
+
+SAVED HOST OVERRIDE
+
+VALID
+
+Brief Studio Team · Bundled · Agent team
+
+EFFECTIVE CONFIGURATION
+
+/researcher · codex_app_server · gpt-5.6-luna
+PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d · PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d
+llmConfig: none · workspace: APPLICATION_RUNTIME
+
+/writer · codex_app_server · gpt-5.6-luna
+PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d · PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d
+llmConfig: none · workspace: APPLICATION_RUNTIME
+
+Execution resource
+Use manifest default · Brief Studio Team · Bundled · Agent team
+Brief Studio Team · Bundled · Agent team
+Article Writing Team · Shared · Agent team
+Classroom Simulation Team · Shared · Agent team
+Evidence-Driven Delivery Team · Shared · Agent team
+Kids Coloring Story Team · Shared · Agent team
+Kids Picture Story Team · Shared · Agent team
+Manga Video Studio Team · Shared · Agent team
+Narrated Presentation Video Team · Shared · Agent team
+Northstar Operating Company · Shared · Agent team
+Product Design & Prototyping Team · Shared · Agent team
+Requirements Engineering Team · Shared · Agent team
+Research To Deck Team · Shared · Agent team
+Software Development Department · Shared · Agent team
+Software Engineering Team · Shared · Agent team
+Software Product Promo Video Team · Shared · Agent team
+STORM Team · Shared · Agent team
+Bible Study Group · Shared · Agent team
+Clara Ocean Friends · Shared · Agent team
+Job Search Application Team · Shared · Agent team
+Marketing Team · Shared · Agent team
+Movie Maker · Shared · Agent team
+Nested Classroom Test Team · Shared · Agent team
+Presentation_Chemie · Shared · Agent team
+Socratic Math Team · Shared · Agent team
+Tutorial Video Creation Team · Shared · Agent team
+Default runtime
+Use application default runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Optional: save a preferred runtime for later launches from inside the application.
+
+Default model
+Select a default model
+
+Optional: save a preferred model for later application-owned launches.
+
+Default workspace root
+Loaded workspaces
+Custom path
+
+Enter or browse for an absolute workspace root path to reuse during application-owned launches.
+
+Optional: save a workspace root path for later launches from inside the application.
+
+Team member overrides
+
+Each member inherits the shared defaults unless you set a runtime or model override here.
+
+researcher
+
+/researcher
+
+RUNTIME OVERRIDE
+Inherit global runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+MODEL OVERRIDE
+Inherit global model
+
+writer
+
+/writer
+
+RUNTIME OVERRIDE
+Inherit global runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+MODEL OVERRIDE
+Inherit global model
+Save setup
+Cancel draft changes
+Reset to package defaults
+Confirm launch setup before opening the app
+
+Review or save the host-managed resource and launch defaults below, then enter the application. This gate never starts a run by itself.
+
+Enter application
+BUTTONS [
+  'Agents',
+  '',
+  'Agent Teams',
+  'Applications',
+  'Skills',
+  'Memory',
+  'Nodes',
+  '',
+  'runtime',
+  '',
+  'runtime',
+  '',
+  'Temp Workspace',
+  'Settings',
+  '← Back to applications',
+  'Show technical details',
+  'Refresh setup',
+  'Select a default model',
+  'Loaded workspaces',
+  'Custom path',
+  'Inherit global model',
+  'Inherit global model',
+  'Save setup',
+  'Cancel draft changes',
+  'Reset to package defaults',
+  'Enter application'
+]
+INPUTS [
+  {
+    tag: 'SELECT',
+    type: 'select-one',
+    name: null,
+    placeholder: null,
+    value: '__manifest_default__'
+  },
+  {
+    tag: 'SELECT',
+    type: 'select-one',
+    name: null,
+    placeholder: null,
+    value: ''
+  },
+  {
+    tag: 'INPUT',
+    type: 'text',
+    name: null,
+    placeholder: '/path/to/workspace',
+    value: ''
+  },
+  {
+    tag: 'SELECT',
+    type: 'select-one',
+    name: null,
+    placeholder: null,
+    value: ''
+  },
+  {
+    tag: 'SELECT',
+    type: 'select-one',
+    name: null,
+    placeholder: null,
+    value: ''
+  }
+]

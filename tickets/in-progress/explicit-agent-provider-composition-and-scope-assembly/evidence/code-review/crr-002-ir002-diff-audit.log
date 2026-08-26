@@ -1,0 +1,439 @@
+=== IR-002 COMMITS ===
+26db55987 docs(ticket): close mixed team authority fallback
+ .../design-spec.md                                 | 72 ++++++++++++++++------
+ .../investigation-notes.md                         | 13 +++-
+ ...mposition-and-agent-tools-authority-contract.md | 25 ++++++--
+ .../provider-composition-transition-inventory.md   | 67 +++++++++++++++-----
+ .../requirements.md                                |  2 +-
+ .../solution-revision-record.md                    | 16 +++++
+ 6 files changed, 152 insertions(+), 43 deletions(-)
+406684685 docs(ticket): preserve mixed team execution family
+ .../design-spec.md                                 | 81 +++++++++++++---------
+ .../investigation-notes.md                         | 12 ++--
+ ...mposition-and-agent-tools-authority-contract.md | 45 +++++++++---
+ .../provider-composition-transition-inventory.md   | 52 ++++++++------
+ .../requirements.md                                |  4 +-
+ .../solution-revision-record.md                    | 17 +++++
+ 6 files changed, 140 insertions(+), 71 deletions(-)
+3806ca36e refactor(team): require explicit mixed execution family
+ .../runtime/general-process-run-supervisor.ts      |  32 +-
+ .../mixed/mixed-team-run-backend-factory.ts        |  70 +++--
+ .../services/agent-team-run-manager.ts             |  20 +-
+ .../mcp/agent-tool-mcp-session-service.ts          |   9 -
+ .../application-execution-scope-kernel-builder.ts  |  34 +-
+ .../agent-provider-composition-boundaries.test.ts  | 341 ++++++++++++++++++++-
+ .../application-framework-boundaries.test.ts       |  18 +-
+ ...ed-team-run-backend-factory.integration.test.ts |  55 +++-
+ ...eneral-process-run-supervisor-ownership.test.ts |  72 ++++-
+ .../agent-team-run-manager-lifecycle.test.ts       |  30 +-
+ .../mixed-sub-team-run-factory.test.ts             |  13 +-
+ ...-team-member-registry-task-agent-memory.test.ts |   4 +
+ .../mixed-team-run-backend-factory.test.ts         |  65 +++-
+ .../team-manager-member-interrupt.test.ts          |  22 +-
+ .../team-run-resolver-configured-overlap.test.ts   |  32 +-
+ ...lication-execution-scope-kernel-builder.test.ts |  51 +++
+ .../implementation-handoff.md                      | 129 ++++----
+ .../implementation-revision-record.md              |  36 ++-
+ 18 files changed, 828 insertions(+), 205 deletions(-)
+
+=== DIFF NAME STATUS IR-001..IR-002 ===
+M	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+M	autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+M	autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+M	autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts
+M	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts
+M	autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-spec.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/implementation-handoff.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/implementation-revision-record.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/investigation-notes.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-and-agent-tools-authority-contract.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-transition-inventory.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md
+M	tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md
+
+=== DIFF STAT ===
+ .../runtime/general-process-run-supervisor.ts      |  32 +-
+ .../mixed/mixed-team-run-backend-factory.ts        |  70 +++--
+ .../services/agent-team-run-manager.ts             |  20 +-
+ .../mcp/agent-tool-mcp-session-service.ts          |   9 -
+ .../application-execution-scope-kernel-builder.ts  |  34 +-
+ .../agent-provider-composition-boundaries.test.ts  | 341 ++++++++++++++++++++-
+ .../application-framework-boundaries.test.ts       |  18 +-
+ ...ed-team-run-backend-factory.integration.test.ts |  55 +++-
+ ...eneral-process-run-supervisor-ownership.test.ts |  72 ++++-
+ .../agent-team-run-manager-lifecycle.test.ts       |  30 +-
+ .../mixed-sub-team-run-factory.test.ts             |  13 +-
+ ...-team-member-registry-task-agent-memory.test.ts |   4 +
+ .../mixed-team-run-backend-factory.test.ts         |  65 +++-
+ .../team-manager-member-interrupt.test.ts          |  22 +-
+ .../team-run-resolver-configured-overlap.test.ts   |  32 +-
+ ...lication-execution-scope-kernel-builder.test.ts |  51 +++
+ .../design-spec.md                                 |  89 ++++--
+ .../implementation-handoff.md                      | 129 ++++----
+ .../implementation-revision-record.md              |  36 ++-
+ .../investigation-notes.md                         |  17 +-
+ ...mposition-and-agent-tools-authority-contract.md |  48 ++-
+ .../provider-composition-transition-inventory.md   |  89 ++++--
+ .../requirements.md                                |   4 +-
+ .../solution-revision-record.md                    |  33 ++
+ 24 files changed, 1057 insertions(+), 256 deletions(-)
+
+=== PRODUCTION DIFF ===
+diff --git a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+index 0a89a2cb6..edfacce63 100644
+--- a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
++++ b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+@@ -2,6 +2,7 @@ import type { AppConfig } from "../../config/app-config.js";
+ import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+ import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+ import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
++import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+ import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
+ import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+ import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
+@@ -102,22 +103,33 @@ export class GeneralProcessRunSupervisor {
+       const memberTeamContextBuilder = new MemberTeamContextBuilder(
+         input.agentTeamDefinitionService,
+       );
++      const memoryLocationService = new AgentMemoryLocationService({
++        memoryDir,
++        locationService: storedTeamLocations,
++      });
++      const activityInspector = new AgentConversationActivityInspector();
+       const generalAgentRunManager = agentRunManager;
+       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+         memoryDir,
+         mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+-          createTeamManager: (context, subTeamRunFactory, callbacks) =>
+-            new MixedTeamManager(context, {
+-              subTeamRunFactory,
+-              taskRootResolver: callbacks.taskRootResolver,
++          agentToolMcpRunSessionReleaser:
++            input.agentToolMcpSessionAuthority.runSessions,
++          createTeamManager: (managerInput) =>
++            new MixedTeamManager(managerInput.context, {
++              subTeamRunFactory: managerInput.subTeamRunFactory,
++              taskRootResolver: managerInput.callbacks.taskRootResolver,
+               agentRunManager: generalAgentRunManager,
+               agentToolMcpRunSessionReleaser:
+-                input.agentToolMcpSessionAuthority.runSessions,
++                managerInput.agentToolMcpRunSessionReleaser,
++              memoryLocationService,
++              activityInspector,
+               memberTeamContextBuilder,
+               workspaceManager,
+-              publish: callbacks.publish,
+-              deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
+-              acceptPlatformBinding: callbacks.acceptPlatformBinding,
++              publish: managerInput.callbacks.publish,
++              deliverInterAgentMessage:
++                managerInput.callbacks.deliverInterAgentMessage,
++              acceptPlatformBinding:
++                managerInput.callbacks.acceptPlatformBinding,
+             }),
+         }),
+       });
+@@ -161,10 +173,6 @@ export class GeneralProcessRunSupervisor {
+         provisioningService,
+         activationService,
+       });
+-      const memoryLocationService = new AgentMemoryLocationService({
+-        memoryDir,
+-        locationService: teamLocations,
+-      });
+       teamRunService = new TeamRunService({
+         agentTeamRunManager,
+         teamDefinitionService: input.agentTeamDefinitionService,
+diff --git a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+index 8f994399a..001437c45 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+@@ -5,7 +5,7 @@ import type { TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../dom
+ import { TeamRunContext } from "../../domain/team-run-context.js";
+ import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+ import { isExternalProviderRuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+-import { MixedTeamManager } from "./mixed-team-manager.js";
++import type { MixedTeamManager } from "./mixed-team-manager.js";
+ import {
+   MixedAgentMemberContext,
+   type MixedConfiguredMemberActivationMode,
+@@ -24,22 +24,10 @@ import {
+   requireMemberTaskRootResolver,
+   type MemberTaskRootResolver,
+ } from "../../task-delegation/member-task-root-resolver.js";
+-import {
+-  getAgentToolMcpRunSessionReleaser,
+-} from "../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+ import type {
+   AgentToolMcpRunSessionReleaser,
+ } from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+ 
+-export type MixedTeamRunBackendFactoryOptions = {
+-  agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
+-  createTeamManager?: (
+-    context: TeamRunContext<MixedTeamRunContext>,
+-    subTeamRunFactory: MixedSubTeamRunFactory,
+-    callbacks: MixedTeamRunCallbacks,
+-  ) => MixedTeamManager;
+-};
+-
+ export type MixedTeamRunCallbacks = Readonly<{
+   taskRootResolver: MemberTaskRootResolver;
+   publish: (event: TeamRunEvent) => void;
+@@ -47,6 +35,20 @@ export type MixedTeamRunCallbacks = Readonly<{
+   acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
+ }>;
+ 
++export type MixedTeamManagerConstructionInput = Readonly<{
++  context: TeamRunContext<MixedTeamRunContext>;
++  subTeamRunFactory: MixedSubTeamRunFactory;
++  callbacks: MixedTeamRunCallbacks;
++  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
++}>;
++
++export type MixedTeamRunBackendFactoryOptions = Readonly<{
++  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
++  createTeamManager: (
++    input: MixedTeamManagerConstructionInput,
++  ) => MixedTeamManager;
++}>;
++
+ const requireCallbacks = (
+   callbacks: MixedTeamRunCallbacks | null | undefined,
+ ): MixedTeamRunCallbacks => {
+@@ -62,8 +64,27 @@ const requireCallbacks = (
+   return callbacks;
+ };
+ 
++const requireOptions = (
++  options: MixedTeamRunBackendFactoryOptions | null | undefined,
++): MixedTeamRunBackendFactoryOptions => {
++  if (
++    !options
++    || !options.agentToolMcpRunSessionReleaser
++    || typeof options.agentToolMcpRunSessionReleaser.revokeForRun !== "function"
++    || typeof options.agentToolMcpRunSessionReleaser.revokeForOwner !== "function"
++    || typeof options.createTeamManager !== "function"
++  ) {
++    throw new Error("Complete MixedTeamRunBackendFactory options are required.");
++  }
++  return options;
++};
++
+ export class MixedTeamRunBackendFactory {
+-  constructor(private readonly options: MixedTeamRunBackendFactoryOptions = {}) {}
++  private readonly options: MixedTeamRunBackendFactoryOptions;
++
++  constructor(options: MixedTeamRunBackendFactoryOptions) {
++    this.options = requireOptions(options);
++  }
+ 
+   async createBackend(
+     config: TeamRunConfig,
+@@ -107,17 +128,13 @@ export class MixedTeamRunBackendFactory {
+     requireCallbacks(input.callbacks);
+     let subTeamRunFactory!: MixedSubTeamRunFactory;
+     const createManager = (context: TeamRunContext<MixedTeamRunContext>): MixedTeamManager =>
+-      (this.options.createTeamManager?.(context, subTeamRunFactory, input.callbacks)
+-        ?? new MixedTeamManager(context, {
+-          subTeamRunFactory,
+-          agentToolMcpRunSessionReleaser:
+-            this.options.agentToolMcpRunSessionReleaser ??
+-            getAgentToolMcpRunSessionReleaser(),
+-          taskRootResolver: input.callbacks.taskRootResolver,
+-          publish: input.callbacks.publish,
+-          deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
+-          acceptPlatformBinding: input.callbacks.acceptPlatformBinding,
+-        }));
++      this.options.createTeamManager(Object.freeze({
++        context,
++        subTeamRunFactory,
++        callbacks: input.callbacks,
++        agentToolMcpRunSessionReleaser:
++          this.options.agentToolMcpRunSessionReleaser,
++      }));
+     subTeamRunFactory = new MixedSubTeamRunFactory({
+       buildContext: (child) => this.buildTeamRunContext(child),
+       createTeamManager: createManager,
+@@ -166,6 +183,3 @@ export class MixedTeamRunBackendFactory {
+         });
+   }
+ }
+-
+-let cached: MixedTeamRunBackendFactory | null = null;
+-export const getMixedTeamRunBackendFactory = (): MixedTeamRunBackendFactory => cached ??= new MixedTeamRunBackendFactory();
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+index ea107b1c3..582a932d7 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+@@ -5,7 +5,7 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
+ import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
+ import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+ import { AgentTeamTerminationError } from "../errors.js";
+-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
++import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+ import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
+ import { RootTeamRun } from "../domain/root-team-run.js";
+ import { TeamRun } from "../domain/team-run.js";
+@@ -28,9 +28,9 @@ const required = (value: string, field: string): string => {
+   return normalized;
+ };
+ 
+-type AgentTeamRunManagerOptions = Readonly<{
++export type AgentTeamRunManagerOptions = Readonly<{
+   memoryDir?: string;
+-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
++  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+   executionTreeStore?: TeamRunExecutionTreeStore;
+   taskRecordsStore?: TaskDelegationRecordsV1Store;
+   communicationStore?: TeamCommunicationV1Store;
+@@ -49,8 +49,11 @@ export class AgentTeamRunManager {
+   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
+   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
+ 
+-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
+-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
++  static getInstance(): AgentTeamRunManager {
++    if (!AgentTeamRunManager.instance) {
++      throw new Error("The process AgentTeamRunManager is not initialized.");
++    }
++    return AgentTeamRunManager.instance;
+   }
+ 
+   static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+@@ -65,11 +68,14 @@ export class AgentTeamRunManager {
+     if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+   }
+ 
+-  constructor(options: AgentTeamRunManagerOptions = {}) {
++  constructor(options: AgentTeamRunManagerOptions) {
++    if (!options?.mixedTeamRunBackendFactory) {
++      throw new Error("mixedTeamRunBackendFactory is required.");
++    }
+     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+     this.memoryLayout = new AgentMemoryLayout(memoryDir);
+     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
+-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
++    this.factory = options.mixedTeamRunBackendFactory;
+     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
+     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
+     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+diff --git a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+index 4e5cc9006..1d7897517 100644
+--- a/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
++++ b/autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+@@ -13,7 +13,6 @@ import {
+   type RedactedAgentToolMcpDescriptor,
+ } from "./agent-tool-mcp-session.js";
+ import type {
+-  AgentToolMcpRunSessionReleaser,
+   AgentToolMcpSessionIssueInput,
+   AgentToolMcpSessionIssuer,
+   IssuedAgentToolMcpSession,
+@@ -194,14 +193,6 @@ export const getAgentToolMcpSessionIssuer = (): AgentToolMcpSessionIssuer =>
+       getAgentToolMcpSessionService().createAgentToolMcpSession(input),
+   });
+ 
+-export const getAgentToolMcpRunSessionReleaser =
+-(): AgentToolMcpRunSessionReleaser => Object.freeze({
+-  revokeForRun: (runId: string) =>
+-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId),
+-  revokeForOwner: (owner: Partial<AgentToolMcpSessionOwnerIdentity>) =>
+-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForOwner(owner),
+-});
+-
+ export const resetAgentToolMcpSessionServiceForTests = (): void => {
+   AgentToolMcpSessionService.resetInstance();
+ };
+diff --git a/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts b/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+index cb2956578..aa95de3dd 100644
+--- a/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
++++ b/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+@@ -21,7 +21,10 @@ import { ApplicationPublishedArtifactRelayService } from "../../application-orch
+ import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
+ import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
+ import { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
+-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
++import {
++  TeamRunExecutionTreeLocationService,
++  createStoredTeamRunExecutionTreeLocationService,
++} from "../../run-history/services/team-run-execution-tree-location-service.js";
+ import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
+ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+ import { PublishedArtifactProjectionStore } from "../../services/published-artifacts/published-artifact-projection-store.js";
+@@ -62,12 +65,16 @@ export const buildApplicationExecutionScopeKernel = (
+   };
+ 
+   try {
++    const storedTeamLocations =
++      createStoredTeamRunExecutionTreeLocationService(input.memoryDir);
+     const memoryLocationService = new AgentMemoryLocationService({
+       memoryDir: input.memoryDir,
++      locationService: storedTeamLocations,
+     });
+     const runFileChangeService = new RunFileChangeService({
+       memoryDir: input.memoryDir,
+       workspaceManager: input.workspaceManager,
++      teamLocations: storedTeamLocations,
+     });
+     const relay = new ApplicationPublishedArtifactRelayService({
+       bindingReader: input.bindingReader,
+@@ -113,24 +120,26 @@ export const buildApplicationExecutionScopeKernel = (
+       input.agentTeamDefinitionService,
+     );
+     const activityInspector = new AgentConversationActivityInspector();
+-    const sessionAuthority = authority;
+     const teamRunManager = new AgentTeamRunManager({
+       memoryDir: input.memoryDir,
+       mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+         agentToolMcpRunSessionReleaser: authority.runSessions,
+-        createTeamManager: (context, subTeamRunFactory, callbacks) =>
+-          new MixedTeamManager(context, {
+-            subTeamRunFactory,
+-            taskRootResolver: callbacks.taskRootResolver,
++        createTeamManager: (managerInput) =>
++          new MixedTeamManager(managerInput.context, {
++            subTeamRunFactory: managerInput.subTeamRunFactory,
++            taskRootResolver: managerInput.callbacks.taskRootResolver,
+             agentRunManager,
+-            agentToolMcpRunSessionReleaser: sessionAuthority.runSessions,
++            agentToolMcpRunSessionReleaser:
++              managerInput.agentToolMcpRunSessionReleaser,
+             memoryLocationService,
+             activityInspector,
+             memberTeamContextBuilder,
+             workspaceManager: input.workspaceManager,
+-            publish: callbacks.publish,
+-            deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
+-            acceptPlatformBinding: callbacks.acceptPlatformBinding,
++            publish: managerInput.callbacks.publish,
++            deliverInterAgentMessage:
++              managerInput.callbacks.deliverInterAgentMessage,
++            acceptPlatformBinding:
++              managerInput.callbacks.acceptPlatformBinding,
+           }),
+       }),
+       executionTreeStore: new TeamRunExecutionTreeStore(),
+@@ -207,7 +216,10 @@ const buildRunServices = (
+     agentRunManager: kernel.agentRunManager,
+     agentRunMetadataService: metadataService,
+     teamRunExecutionTreeLocationService:
+-      new TeamRunExecutionTreeLocationService({ memoryDir: input.memoryDir }),
++      new TeamRunExecutionTreeLocationService({
++        memoryDir: input.memoryDir,
++        manager: kernel.teamRunManager,
++      }),
+     memoryDir: input.memoryDir,
+   });
+   const tokenUsageReadiness = new TokenUsageMigrationReadiness();

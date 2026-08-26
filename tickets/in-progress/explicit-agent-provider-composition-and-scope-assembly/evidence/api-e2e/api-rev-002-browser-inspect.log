@@ -1,0 +1,853 @@
+standalone console_error Failed to load resource: the server responded with a status of 404 (Not Found)
+
+=== standalone http://127.0.0.1:43551/ ===
+BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+No lessons yet. Start one lesson to begin the tutoring conversation.
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Select a lesson to continue the tutoring conversation and review past guidance.
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+No notifications yet.
+BUTTONS [ 'Start lesson', 'Refresh' ]
+LINKS []
+
+=== studio http://127.0.0.1:31560/applications ===
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Applications
+
+Browse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.
+
+Refresh catalog
+Brief Studio
+
+External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.
+
+Open app →
+Socratic Math Teacher
+
+Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.
+
+Open app →
+BUTTONS [
+  'Agents',
+  '',
+  'Agent Teams',
+  'Applications',
+  'Skills',
+  'Memory',
+  'Nodes',
+  '',
+  'Temp Workspace',
+  'Settings',
+  'Refresh catalog',
+  'Brief StudioExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.Open app →',
+  'Socratic Math TeacherBuilt-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.Open app →'
+]
+LINKS []
+
+=== teams http://127.0.0.1:31560/agent-teams ===
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Reload
+Create Team
+AW
+Article Writing Team
+
+A two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.
+
+writing-and-editing
+Run
+View Details
+→
+A
+article_writer
+A
+article_reviewer
+
+Coordinator
+
+article_writer
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+CS
+Classroom Simulation Team
+
+A teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.
+
+education-simulation
+Run
+View Details
+→
+P
+professor
+S
+student
+
+Coordinator
+
+professor
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+ED
+Evidence-Driven Delivery Team
+
+A canonical example of incremental investigation, planning, micro-task execution, validation, and result-based iteration.
+
+example
+Run
+View Details
+→
+I
+investigator
+P
+planner
+I
+implementer
+V
+validator
+
+Coordinator
+
+planner
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+KC
+Kids Coloring Story Team
+
+A child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.
+
+creative-media
+Run
+View Details
+→
+S
+story_activity_designer
+C
+coloring_page_illustrator
+C
+child_experience_reviewer
+P
+printable_pack_producer
+
+Coordinator
+
+story_activity_designer
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+KP
+Kids Picture Story Team
+
+A child-friendly creative production team for illustrated picture books with approved text composed into each text-bearing page image.
+
+creative-media
+Run
+View Details
+→
+S
+story_picture_book_author
+P
+picture_book_illustrator
+P
+picture_book_reviewer
+B
+book_production_editor
+
+Coordinator
+
+story_picture_book_author
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+MV
+Manga Video Studio Team
+
+A story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.
+
+creative-media
+Run
+View Details
+→
+M
+manga_showrunner
+S
+storyboard_director
+M
+manga_illustrator
+V
+voice_video_producer
+
+Coordinator
+
+manga_showrunner
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+NP
+Narrated Presentation Video Team
+
+A slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.
+
+creative-media
+Run
+View Details
+→
+P
+presentation_director
+N
+narration_script_reviewer
+S
+slide_video_producer
+
+Coordinator
+
+presentation_director
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+NO
+Northstar Operating Company
+
+A realistic fictional SaaS company simulation with an executive leadership team and nested department organizations.
+
+business-simulation
+Run
+View Details
+→
+C
+ceo
+C
+chief_of_staff
+C
+cto
+C
+cpo
++11 more
+
+Coordinator
+
+ceo
+
+Members
+
+15
+
+Nested Teams
+
+6
+
+PD
+Product Design & Prototyping Team
+
+An independent product-design team that maintains a separate prototype repository, visualizes unclear requirements, resolves UI/UX decisions, and delivers implementation-ready experience specifications.
+
+product-development
+Run
+View Details
+→
+P
+product_prototyper
+P
+prototype_bootstrapper
+
+Coordinator
+
+product_prototyper
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+RE
+Requirements Engineering Team
+
+A focused team for codebase-informed requirements engineering, explicit product decisions, user approval, and an architecture-ready requirements result.
+
+software-engineering
+Run
+View Details
+→
+R
+requirements_engineer
+
+Coordinator
+
+requirements_engineer
+
+Members
+
+1
+
+Nested Teams
+
+0
+
+RT
+Research To Deck Team
+
+A three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.
+
+content-and-presentations
+Run
+View Details
+→
+D
+deep_researcher
+I
+infographic_powerpoint_designer
+D
+deck_reviewer
+
+Coordinator
+
+deep_researcher
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+SD
+Software Development Department
+
+An end-to-end software delivery department that connects independent Requirements Engineering, Product Design & Prototyping, and Software Engineering teams through message-based handoffs.
+
+software-engineering
+Run
+View Details
+→
+H
+head_of_software_development
+R
+requirements_engineering_team
+TEAM
+P
+product_design_prototyping_team
+TEAM
+S
+software_engineering_team
+TEAM
+
+Coordinator
+
+head_of_software_development
+
+Members
+
+4
+
+Nested Teams
+
+3
+
+SE
+Software Engineering Team
+
+A lightweight self-operating software engineering team for upstream solution design, implementation, API/E2E coverage investigation and execution, review, documentation sync, and final handoff.
+
+software-engineering
+Run
+View Details
+→
+S
+solution_designer
+A
+architecture_reviewer
+I
+implementation_engineer
+C
+code_reviewer
++2 more
+
+Coordinator
+
+solution_designer
+
+Members
+
+6
+
+Nested Teams
+
+0
+
+SP
+Software Product Promo Video Team
+
+A product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.
+
+creative-media
+Run
+View Details
+→
+P
+promo_director
+V
+visual_director
+V
+visual_reviewer
+P
+promo_video_producer
+
+Coordinator
+
+promo_director
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+ST
+STORM Team
+
+A Stanford STORM-inspired knowledge curation team for researching a topic, mining perspectives, asking retrieval-grounded questions, synthesizing an outline, and writing a cited article.
+
+research-writing
+Run
+View Details
+→
+T
+topic_research_coordinator
+P
+perspective_miner
+E
+expert_interviewer
+O
+outline_architect
++2 more
+
+Coordinator
+
+topic_research_coordinator
+
+Members
+
+6
+
+Nested Teams
+
+0
+
+BS
+Bible Study Group
+
+一个中文优先的三人查经小组，围绕单节或短段经文进行真实的小组式来回讨论，直到形成更深入的共同理解。
+
+faith-and-teaching
+Run
+View Details
+→
+S
+study_leader
+C
+careful_reader
+C
+context_guide
+
+Coordinator
+
+study_leader
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+CO
+Clara Ocean Friends
+
+Clara Ocean Friends story creation team
+
+children-storybook-production
+Run
+View Details
+→
+C
+ClaraStoryOrchestrator
+C
+ClaraStorybookBuilder
+
+Coordinator
+
+ClaraStoryOrchestrator
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+JS
+Job Search Application Team
+
+A three-specialist team for resume-led job discovery, candidate tracking, user-approved application preparation, and approved job application submission.
+
+career-and-jobs
+Run
+View Details
+→
+C
+career_profile_strategist
+J
+job_opportunity_scout
+A
+application_specialist
+
+Coordinator
+
+career_profile_strategist
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+MT
+Marketing Team
+
+Coordinates platform-native drafting, review, publishing, and research across LinkedIn, X, Xiaohongshu, Weixin Official Account, and Weixin Channels.
+
+marketing-and-publishing
+Run
+View Details
+→
+M
+marketing_coordinator
+L
+linkedin_marketer
+X
+x_marketer
+X
+xiaohongshu_marketer
++2 more
+
+Coordinator
+
+marketing_coordinator
+
+Members
+
+6
+
+Nested Teams
+
+0
+
+Movie Maker
+
+cinematic stage play generation team
+
+cinematic stage play generation team
+Run
+View Details
+→
+S
+storyboard_designer
+I
+image_generator
+A
+audio_generator
+V
+video_assembler
+
+Coordinator
+
+storyboard_designer
+
+Members
+
+4
+
+Nested Teams
+
+0
+
+NC
+Nested Classroom Test Team
+
+Minimal nested-team fixture for independently testing team messaging, direct-member messaging, and task-team delegation.
+
+testing
+Run
+View Details
+→
+T
+Teacher
+S
+StudentStudyGroup
+TEAM
+
+Coordinator
+
+Teacher
+
+Members
+
+2
+
+Nested Teams
+
+1
+
+PR
+Presentation_Chemie
+
+Presentation
+
+Presentation
+Run
+View Details
+→
+S
+SlideDesigner Agent
+S
+SlideNarrator Agent
+S
+SlideImageGenerator Agent
+
+Coordinator
+
+SlideNarrator Agent
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+SM
+Socratic Math Team
+
+Socratic Math Team
+
+Socratic Math Team
+Run
+View Details
+→
+S
+SocraticMathTeacher
+G
+GeniusMathResolver
+A
+AnimationDeveloper
+
+Coordinator
+
+SocraticMathTeacher
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+TV
+Tutorial Video Creation Team
+
+Create narrated tutorial videos from screen recordings plus optional source-code, image, document, or product context.
+
+TutorialVideoCreationTeam
+Run
+View Details
+→
+T
+TutorialVideoProducer
+T
+TutorialVoiceoverWriter
+T
+TutorialVideoAssembler
+
+Coordinator
+
+TutorialVideoProducer
+
+Members
+
+3
+
+Nested Teams
+
+0
+
+BS
+Brief Studio Team
+
+Coordinates a researcher and writer to produce one reviewable brief.
+
+Writing
+Application-owned
+
+Application: Brief Studio · application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fexplicit-agent-provider-composition-and-scope-assembly%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+
+Run
+View Details
+→
+R
+researcher
+W
+writer
+
+Coordinator
+
+researcher
+
+Members
+
+2
+
+Nested Teams
+
+0
+
+SM
+Socratic Math Team
+
+Coordinates the bundled Socratic Math Tutor agent for the Socratic Math Teacher application.
+
+Education
+Application-owned
+
+Application: Socratic Math Teacher · application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fexplicit-agent-provider-composition-and-scope-assembly%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package
+
+Run
+View Details
+→
+T
+tutor
+
+Coordinator
+
+tutor
+
+Members
+
+1
+
+Nested Teams
+
+0
+BUTTONS [
+  'Agents',         '',              'Agent Teams', 'Applications',
+  'Skills',         'Memory',        'Nodes',       '',
+  'Temp Workspace', 'Settings',      ' Reload',     'Create Team',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→',
+  'Run',            'View Details→', 'Run',         'View Details→'
+]
+LINKS []
