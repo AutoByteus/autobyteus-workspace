@@ -2,161 +2,154 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/requirements.md`
+- Requirements: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/requirements.md`
 - Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/investigation-notes.md`
 - Design spec: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-spec.md`
-- Supplemental UI/UX spec: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
+- UI/UX spec: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/ui-ux-spec.md`
 - Solution revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/solution-revision-record.md`
 - Design review report: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/design-review-report.md`
 - Architecture review revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/architecture-review-revision-record.md`
-- Triggering code-review report and revision record:
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` (`CRR-006` / `CR-F-003`)
+- Triggering focused failure-origin review:
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md` (`CRR-009`, `CR-F-004`)
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-revision-record.md`
-- Historical downstream context that predates SR-005 and is not current approval:
+- Current downstream failure evidence and context:
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-coverage-investigation.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-execution-coverage-report.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/docs-sync-report.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/release-deployment-report.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/handoff-summary.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/release-notes.md`
   - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-002-base-refresh-and-docs-sync.log`
+  - `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/probes/api-e2e/full-stack-classroom-sr005/`
 
 ## Current Implementation Summary
 
-IR-005 implements SR-005's bounded owner-aware configuration correction on the integrated base. Application orchestration now exposes a read-only `ApplicationRunOwnershipService` through `ApplicationPlatformRuntime.hostManagement.runOwnership`. It waits for startup recovery, reconciles the exact run ID with global lookup evidence and immutable Agent/Team binding provenance, verifies the referenced binding and contained root/member identity, and treats `ATTACHED`, `TERMINATING`, and `FAILED` as live Application ownership. `TERMINATED` and `ORPHANED` release the identity; missing or inconsistent referenced evidence throws rather than falsely unlocking.
+IR-006 retains the integrated SR-005 implementation and corrects only `CR-F-004`, the shared frontend schema-contract mismatch exposed by the real stopped-Team Codex journey. Parameter-list catalog rows with `type: "enum"` and a non-empty all-string `enum_values` list now normalize to the UI's existing `type: "string"` plus `enum` contract. The validator therefore accepts advertised string members such as `reasoning_effort=low` and still rejects values outside the advertised set. Malformed or mixed-type enum lists remain unnormalized and fail closed.
 
-A focused `StudioRunModelConfigService` now owns only the two resume reads and two stopped model-config updates. It reads canonical General history first, asks the Application ownership port for a lease decision, overlays the existing active lock or returns `RUN_ACTIVE` with canonical state and no General write for live Application ownership, and otherwise delegates unchanged to the existing General Agent/Team services and their per-identity lanes. Ownership failures use the existing query-error or mutation `INTERNAL_ERROR` fail-closed behavior. GraphQL vocabulary, UI behavior, Application and General managers, Stop/message/archive/delete routes, narrow persistence, validation, Team propagation/no-Reset rules, revision-free contracts, and AutoByteus/Codex/Claude runtime mapping remain unchanged.
+The correction is made once in `normalizeModelConfigSchema`, upstream of the shared `RuntimeModelConfigFields` validation and schema-state gate. It consequently covers initial launch and existing Agent/Team Settings without a Team-only exception. No GraphQL mutation, lifecycle owner, Application lease, stopped-run persistence, model adapter, revision/concurrency behavior, labels, or layout changed.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
+- Current implementation revision ID: `IR-006`
 - Related solution revision IDs: `SR-005` (preserving SR-004 and SR-003 outcomes)
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-006`
-- Related API/E2E revision IDs: `API-REV-001` is historical pre-SR-005 context only
-- Related delivery revision IDs: `DR-001` is historical integrated-base context
-- Triggering finding IDs: `CR-F-003`, with `MP-CR-003`, `MP-CR-004`, and reclassified `MP-SR4-004`
+- Related code-review revision IDs: `CRR-009` (with prior SR-005 source Pass `CRR-007` and test-code Pass `CRR-008` as context)
+- Related API/E2E revision IDs: `API-REV-003`
+- Related delivery revision IDs: `DR-002`
+- Triggering finding IDs: `CR-F-004`; `CR-F-005` through `CR-F-007` remain separately owned by `/api_e2e_engineer`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Definition/launch saving remains separate from existing-run configuration. | Existing definition and launch routes are untouched; only four existing-run resolver methods are rewired. | Preserved. |
-| BEH-002 | Eligible later General restore consumes the same persisted Agent/Team identity and model config. | Existing `StandaloneAgentRunLifecycleService`, `AgentTeamRunManager`, and provider adapters remain unchanged. | Preserved after terminal Application lease release. |
-| BEH-003 | General-active or nonterminal Application-owned runs remain immutable. | General lanes keep their active checks; `StudioRunModelConfigService` asks `ApplicationRunOwnershipService` before General delegation. | Live Application reads are locked; direct updates return `RUN_ACTIVE` with zero General write. |
-| BEH-004 | Agent Settings performs a fresh canonical read and unlocks only when owner-aware state permits. | `RunHistoryResolver.getAgentRunResumeConfig` -> Studio service -> General canonical read -> Application ownership port. | Cached/UI rules are unchanged; ownership can lock but never supplies a false unlock. |
-| BEH-005 | Team Settings retains root/nested/leaf edits, bounded propagation, and no stopped-run Reset. | `TeamRunHistoryResolver.getTeamRunResumeConfig` and Team update use Studio guard, then the unchanged Team manager/mutator path after release. | Team editing semantics and fixed identities are preserved. |
-| BEH-006 | Four exact-ID config operations are owner-aware without new transport vocabulary. | Agent/Team resume resolvers and stopped-update resolvers call `getStudioRunModelConfigService()`; unrelated methods keep their current services. | Existing canonical/editability/outcome shapes are reused. |
-| BEH-007 | Server validation and AutoByteus/Codex/Claude application remain authoritative. | Released updates delegate unchanged to General validators/persistence; runtime/provider files are untouched. | Preserved. |
-| BEH-008 | General external ingress remains lane-ordered; Application input remains within its owner while a durable lease excludes Save. | General lifecycle/root lanes remain distinct; Application startup/lookup/binding ownership is read through the new host-management port. | No cross-owner mutex or manager merge was introduced. Terminal input rejection and terminal-before-lookup-release ordering are covered. |
+| BEH-001 | Definition/launch saving remains separate from existing-run configuration. | Definition and launch routes remain separate; both render shared `RuntimeModelConfigFields`. | Preserved; shared enum normalization now validates the exact current Codex producer shape in launch too. |
+| BEH-002 | A later restore consumes the persisted Agent/Team model config. | Existing stopped-update persistence and AutoByteus/Codex/Claude restore paths are unchanged. | Preserved; renewed API/E2E must prove the newly selectable Codex value is persisted and used. |
+| BEH-003 | General-active or nonterminal Application-owned runs remain immutable. | Existing General lanes and SR-005 `StudioRunModelConfigService` ownership guard are unchanged. | Preserved. |
+| BEH-004 | Agent Settings performs a fresh canonical read and unlocks only when owner-aware state permits. | Existing editor/store/service route remains; `RuntimeModelConfigFields` consumes the corrected shared normalized schema. | Preserved; exact enum members no longer create a false schema error or Save gate. |
+| BEH-005 | Team Settings retains bounded propagation, direct-edit precedence, and no stopped-run Reset. | Team editor/planner/update paths are unchanged; the shared field component receives the corrected schema. | Preserved; the observed stopped-Team Codex edit can now become dirty/valid without a Team-specific patch. |
+| BEH-006 | Four exact-ID config operations remain owner-aware without new transport vocabulary. | Agent/Team resume reads and stopped updates continue through the SR-005 Studio service. | Preserved; no server or GraphQL change. |
+| BEH-007 | Current catalog-advertised values and server validation/runtime adapters remain authoritative. | `autobyteus-web/utils/llmConfigSchema.ts` adapts valid parameter-list enums to the existing UI string-enum contract; unsupported members are rejected by the existing enum-membership check. | Corrected for the exact backend `type: "enum"` + string `enum_values` shape. |
+| BEH-008 | General external ingress and Application ownership remain correctly ordered. | Existing lifecycle lanes, startup-ready ownership lease, and terminal release ordering are unchanged. | Preserved; no concurrency or ownership machinery was added. |
 
 ## Key Files Or Areas
 
-- Application ownership:
+- CR-F-004 production correction:
+  - `autobyteus-web/utils/llmConfigSchema.ts`
+- Exact producer-shape and shared-consumer regression coverage:
+  - `autobyteus-web/utils/__tests__/llmConfigSchema.spec.ts`
+  - `autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts`
+- Shared rendered consumers verified, unchanged in this round:
+  - `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue`
+  - `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue`
+  - `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
+  - `autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue`
+- Preserved SR-005 owner-aware server paths:
   - `autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts`
-- Studio/General composition:
   - `autobyteus-server-ts/src/run-history/services/studio-run-model-config-service.ts`
-  - `autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts`
-  - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
   - `autobyteus-server-ts/src/compositions/build-studio-server.ts`
-  - `autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts`
-- Four resolver entries:
-  - `autobyteus-server-ts/src/api/graphql/types/agent-run.ts`
-  - `autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts`
-  - `autobyteus-server-ts/src/api/graphql/types/run-history.ts`
-  - `autobyteus-server-ts/src/api/graphql/types/team-run-history.ts`
-- Focused implementation regressions:
-  - `autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts`
-  - `autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-terminal-transition-service.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts`
-  - Resolver, composition, runtime-isolation, and architecture boundary tests in the corresponding `tests/unit` and `tests/architecture` paths.
 
 ## Important Assumptions
 
-- Canonical Agent metadata and Team execution trees retain immutable `applicationId` / `bindingId` provenance for Application-launched identities.
-- Startup recovery owns global lookup reconstruction and completes behind the shared startup gate.
-- A nonterminal binding is the conservative Application ownership lease even if its runtime is temporarily not materialized.
-- Terminal status is durably persisted before lookup removal; normal Application input is invalid for terminal bindings.
-- Once Application ownership is terminal or absent with no canonical provenance, the unchanged General lifecycle owner determines final stopped/active eligibility inside its existing lane.
+- A parameter-list schema whose type is `enum` and whose non-empty members are all strings describes a string-valued UI field. This is the exact current Codex catalog producer contract for reasoning effort and service tier.
+- Empty, missing, or mixed-type enum lists are not enough evidence to coerce a transport type; those schemas remain unsupported and fail closed.
+- Server-side validation remains the final authority even after client-side representability and membership validation succeeds.
+- SR-005 Application ownership provenance, startup recovery, binding status, and General delegation assumptions remain unchanged from IR-005.
 
 ## Known Risks
 
-- Ownership evidence is deliberately fail-closed. An unavailable startup gate or unreadable/inconsistent binding can temporarily prevent configuration edits rather than risk mutating an Application-owned live identity.
-- The existing API/E2E investigation and execution evidence predate SR-005. Real Application Agent/Team launch, terminal release, startup recovery, and post-start reentry need refreshed downstream execution.
+- `API-REV-003` did not prove persistence/use of the selected Codex value because the pre-fix client prevented the mutation. Renewed real-stack execution is required after source review.
+- `CR-F-005` through `CR-F-007` are separate API/E2E harness/fixture/isolation fixes owned by `/api_e2e_engineer`; this production correction neither masks nor resolves them.
 - Dynamic catalog drift, Team post-rename persistence indeterminacy, unavailable historical Team override intent, and the bounded paid-Claude credential residual remain as previously recorded.
-- No cross-owner simultaneous-operation protocol is added or claimed; SR-005 excludes Save through the durable Application lease instead.
+- SR-005 ownership evidence remains deliberately fail-closed on unreadable or inconsistent Application evidence.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Feature/behavior correction with a narrow ownership-boundary refactor.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue` exposed by distinct integrated General Process and Application Engine runtime owners.
-- Reviewed refactor decision: `Refactor Needed Now`, bounded to one Application reader, one Studio use-case service, and four resolver routes.
-- Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `N/A`; SR-005 and ARCH-REV-004 resolved CR-F-003 before this implementation round.
-- Evidence / notes: Stores and managers remain encapsulated. The Studio service receives only the Application read port plus General read/update facades; no cross-owner lock or unrelated routing was added.
+- Reviewed change posture: bounded frontend implementation correction on an approved shared catalog/editing path.
+- Reviewed root-cause classification: `Local Fix`; shared normalization preserved a backend transport-only enum type that the UI validator did not support.
+- Reviewed refactor decision: no design revision or lifecycle/concurrency refactor required.
+- Implementation matched the reviewed assessment: `Yes`.
+- Evidence: one transport-normalization helper fixes the shared boundary before every consumer; no Team-only condition, mutation bypass, compatibility wrapper, or server contract broadening was introduced.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; the four General-only resolver paths were cleanly replaced, with no fallback or dual route.
-- Shared structures remain tight: `Yes`; Agent and Team inputs/results stay subject-specific, and the ownership port carries only exact identity plus optional provenance.
-- Canonical shared design guidance was reapplied: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; no changed production file exceeds 500 effective non-empty lines.
-- Notes: No revision, stale-writer, rebase, ownership-specific GraphQL field, manager exposure, or store bypass was introduced.
+- Backward-compatibility mechanisms introduced: `None`.
+- Legacy old behavior retained in scope: `No`; valid advertised enums no longer take the invalid-schema path.
+- Dead/obsolete code added or retained: `No`.
+- Shared structures remain tight: `Yes`; the normalized UI shape continues to use the existing string-plus-enum representation.
+- Canonical shared design guidance was reapplied: `Yes`.
+- Changed production source stayed within size-pressure guardrails: `Yes`; the production delta is 12 lines and the file remains below 500 effective non-empty lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Not Affected`
-- Design-spec decision reference: SR-005 persisted-data/state transition section in `design-spec.md`.
-- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence: Existing current-schema Application lookup/binding tables and Agent/Team provenance are read as-is. Existing narrow `llmConfig` writers are unchanged.
-- Migration implementation: `N/A`
-- Deviation from the reviewed transition decision: `None`
+- Approved decision: `Not Affected`.
+- This round changes transient catalog-schema normalization only. No persisted data shape, migration, compatibility reader, database write, or runtime config representation changed.
+- Deviation from reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
 - Worktree: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis`
 - Branch: `codex/live-agent-definition-refresh-analysis`
-- Approved starting implementation HEAD: `c3b2466489e81d74930582f76016540480345020`
-- SR-005 / ARCH-REV-004 artifact commit: `af4ce2e93166c859526dbcc3007a8c65ac049043`
-- IR-005 implementation commit: `370f1f5fa` (`fix(studio): guard application-owned run configuration`)
-- Integrated base merge remains `7e3f4e97c3e58951daa21070e46cb8c71246197a`, containing `origin/personal@306de420ca8830478529b40bd6dfda6694b742a9`.
-- Normal shared-package builds create ignored/untracked `dist` outputs; they were removed before the implementation commit.
-- Non-blocking test output: Node's SQLite experimental warning and expected lifecycle-listener isolation logging.
+- Protected CRR-009 evidence checkpoint: `1399437f013b` (`chore: checkpoint CRR-009 failure evidence`)
+- IR-006 production/test commit: `d8eb36f93` (`fix(web): normalize Codex enum parameter schemas`)
+- Preserved SR-005 implementation commit: `370f1f5fa`; integrated base merge: `7e3f4e97c3e58951daa21070e46cb8c71246197a`.
+- The web production build initially needed the local shared SDK package output; `pnpm -C .. --filter @autobyteus/application-sdk-contracts build` generated it, the subsequent Nuxt build passed, and generated `dist` output was removed afterward.
+- Non-blocking output remained limited to existing Browserslist, chunk-size, and KaTeX test-environment warnings.
 
 ## Local Implementation Checks Run
 
-Implementation-scoped checks only; these are not API/E2E sign-off.
+Implementation-scoped checks only; these are not renewed API/E2E sign-off.
 
-- `pnpm build` in `autobyteus-server-ts` — passed, including shared packages, Prisma generation, TypeScript production build, asset copy, and sanitized built-in-agent bootstrap smoke.
-- Focused owner/routing/recovery/composition set — 14 files / 78 tests passed.
-- Preserved General Agent/Team lane and Claude configuration set — 4 files / 31 tests passed.
-- General Process supervisor and standalone host lifecycle set — 2 files / 15 tests passed after normal `pnpm prepare:shared`.
-- `git diff --check` — passed before commit.
-- Production source-size check — passed; largest changed production file is below 500 effective non-empty lines.
-- Repository `pnpm typecheck` script — blocked by the pre-existing `tsconfig.json` combination of `rootDir: src` with `include: tests`, producing TS6059 for repository tests. The production `tsconfig.build.json` path executed by `pnpm build` passed.
+- Exact normalizer/shared-control regressions — 2 files / 15 tests passed.
+- Wider shared schema and Agent/Team form coverage — 6 files / 55 tests passed.
+- `pnpm guard:web-boundary` — passed.
+- `pnpm guard:localization-boundary` — passed.
+- `pnpm audit:localization-literals` — passed with zero unresolved findings.
+- `pnpm -C .. --filter @autobyteus/application-sdk-contracts build` followed by `pnpm build` in `autobyteus-web` — passed.
+- `git diff --check` for the production/test delta — passed before commit.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable. IR-005 changes backend ownership classification and server composition only; it does not change Vue code, GraphQL schema/vocabulary, labels, layout, styling, or the approved interaction states.
+Applicable and completed. A temporary Nuxt development route used the actual `RuntimeModelConfigFields` component and real Pinia catalog/runtime stores with the exact raw Codex parameter-list schema (`type: "enum"`, `enum_values: ["low", "medium", "high", "xhigh"]`). It rendered the shared control in both launch and stopped-Team Settings modes.
+
+- Both consumers normalized to `Schema: ready`; neither displayed `Enter a value of type enum.`.
+- Both rendered the advertised Reasoning Effort select.
+- Selecting `low` in each consumer produced the expected changed state and enabled the respective Launch/Save gate.
+- Desktop visual inspection confirmed consistent existing layout, fixed runtime/model controls for Settings, readable hierarchy, aligned fields, and no visual regression.
+- The temporary route and generated build output were removed before commit. This was implementation self-validation, not independent API/E2E proof.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Replace pre-SR-005 Application same-owner assertions with normal Application Agent and Team launch -> owner-aware locked read -> direct update `RUN_ACTIVE`/canonical/no-write -> terminal transition -> later General eligibility.
-- Exercise `ATTACHED`, `TERMINATING`, and `FAILED` as locked; `TERMINATED` and `ORPHANED` as released after durable terminal state.
-- Exercise startup recovery gating and failure. No config read/update may classify ownership before recovery completes.
-- Exercise post-start `reloadAndReenter` while lookup is temporarily absent but canonical provenance and a nonterminal binding remain; the result must stay locked.
-- Exercise disagreement, missing binding, or unreadable evidence as query error / mutation `INTERNAL_ERROR` with no General write.
-- Retain General external-channel Save-first/restore-first checks and the sequential browser Stop -> fresh Settings read -> edit/Save -> later restore journey.
-- Do not add revision/rebase/multi-browser writer cases or a cross-owner simultaneous-call protocol.
+- Re-run the real sequential Team path: launch Codex Team -> Stop -> Settings/network-fresh read -> select advertised `reasoning_effort=low` -> Save -> later message/restore -> verify the persisted value is applied.
+- Verify one shared launch or Agent Settings consumer receives the same real `type: "enum"` catalog without a schema-state error.
+- Retain unsupported-member coverage; a value outside the advertised enum must remain rejected.
+- Continue API/E2E-owned `CR-F-005`–`CR-F-007` composition, stale-fixture, and root-suite-isolation corrections without production compatibility seams.
+- Do not introduce revision/rebase/multi-browser writer, cross-owner simultaneous-call, or unrelated lifecycle cases for this fix.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `api_e2e_engineer` must refresh the coverage investigation against IR-005 only after renewed source review passes, then execute proportionate API/E2E coverage. Any repository-resident durable coverage added, changed, or removed must return through proportional code review before delivery resumes.
+Yes. `/code_reviewer` must first re-review IR-006 source. On Pass, `/api_e2e_engineer` must refresh and execute the current coverage package, including the real Codex Save/persist/restore journey and its separately owned `CR-F-005`–`CR-F-007` corrections. Any repository-resident durable coverage added, changed, or removed must return through proportional code review before delivery resumes.

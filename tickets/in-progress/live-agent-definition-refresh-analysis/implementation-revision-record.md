@@ -11,6 +11,7 @@ The current code and implementation-handoff.md remain authoritative. This record
 | IR-003 | architecture_reviewer; design-review-report.md; ARCH-REV-003 / round 3, following code-review CRR-003 | CR-F-002 | Requirement Gap | SR-004, ARCH-REV-003, CRR-003; API-REV-* N/A, DR-* N/A | Superseded SR-003 concurrency policy removed; sequential Settings freshness and independently justified restore lanes implemented; ready for source re-review. |
 | IR-004 | delivery_engineer; latest-base-integration-conflict-report.md; DR-001 | DR-001 eight-path conflict inventory | Local Fix | SR-004, ARCH-REV-003, CRR-004/CRR-005, API-REV-001, DR-001 | Exact latest base merged; runtime/API/UI conflicts resolved against SR-004; integrated implementation checks pass; ready for renewed source review. |
 | IR-005 | architecture_reviewer; design-review-report.md; ARCH-REV-004 / round 4, following code-review CRR-006 | CR-F-003 | Design Impact | SR-005, ARCH-REV-004, CRR-006; API-REV-001 and DR-001 historical | Application ownership lease and four-operation Studio guard implemented; focused checks pass; ready for source re-review. |
+| IR-006 | code_reviewer; code-review-report.md; CRR-009 / API/E2E failure-origin round 1 | CR-F-004 | Local Fix | SR-005, ARCH-REV-004, CRR-009, API-REV-003, DR-002 | Exact Codex parameter-list enum shape normalized for all shared frontend consumers; advertised members pass and unsupported members remain rejected; ready for source re-review. |
 
 ## Revision Entries
 
@@ -140,3 +141,27 @@ The current code and implementation-handoff.md remain authoritative. This record
 - Local validation and result: Server production build passed. Focused owner/routing/recovery/composition coverage passed (14 files / 78 tests); preserved General lane/Claude coverage passed (4 files / 31 tests); General supervisor/host lifecycle coverage passed (2 files / 15 tests). `git diff --check` and production source-size checks passed. Repository `pnpm typecheck` remains blocked by the pre-existing `rootDir: src` plus `include: tests` TS6059 configuration; the production build TypeScript path passed.
 - Next recipient or routing: `/code_reviewer` for renewed source review. On Pass, `/api_e2e_engineer` must refresh its pre-SR-005 coverage investigation and execution; durable coverage changes must return through proportional code review before delivery.
 - Remaining limitations or risks: Real Application Agent/Team launch-to-terminal-release, startup recovery, post-start reentry, and browser/API execution remain downstream. Dynamic catalog drift, Team post-rename persistence indeterminacy, unavailable historical Team override intent, and the bounded paid-Claude credential residual remain unchanged. No multi-writer or cross-owner simultaneous-call protocol is claimed.
+
+### IR-006 — Shared Codex enum schema-contract correction
+
+- Triggering role, report path, and round: code_reviewer; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/code-review-report.md`; `CRR-009` / API/E2E failure-origin review round 1.
+- Triggering finding IDs: `CR-F-004`.
+- Classification: Local Fix.
+- Prior authoritative result: `CRR-009` Fail — Local Fix with split ownership. The real stopped-Team Settings journey received Codex parameter-list rows with `type: "enum"` plus string `enum_values`; shared web normalization preserved the transport type, and `validateUiModelConfig` rejected an advertised `low` value before enum-membership validation, leaving Save disabled and sending no update mutation.
+- Current authoritative result: Development commit `d8eb36f93` adapts a non-empty all-string parameter-list enum to the existing UI `type: "string"` plus `enum` contract before shared validation. Exact advertised members now validate and emit from the common launch/Settings control, unsupported members remain rejected, and malformed mixed-type enums remain fail-closed. The implementation is ready for source re-review.
+- Related solution revision IDs: `SR-005` (preserving SR-004 and SR-003 outcomes).
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-009` (prior `CRR-007` source Pass and `CRR-008` test-code Pass are retained context).
+- Related API/E2E revision IDs: `API-REV-003`.
+- Related delivery revision IDs: `DR-002`.
+- Why this implementation revision is recorded: Records the implementation-owned half of CRR-009's split Local Fix and traces the exact current Codex producer shape through the shared client boundary without patching only Team Settings or changing server/lifecycle contracts.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-004`, `BEH-005`, `BEH-007`; `REQ-004`, `REQ-010`, `REQ-011`; `AC-006`, `AC-009`, `AC-011`.
+- Implementation delta:
+  - Added a narrow parameter-list type adapter in `normalizeModelConfigSchema`: `type: "enum"` becomes UI `type: "string"` only when `enum_values` is non-empty and every member is a string. Empty/missing/mixed enums stay unrecognized and fail closed.
+  - Reused the existing enum-membership validator, so `reasoning_effort=low` is valid while an unsupported value such as `ultra` still reports the enum issue.
+  - Added exact backend-shape utility coverage plus malformed-enum coverage.
+  - Added shared `RuntimeModelConfigFields` coverage for both launch and existing-run Settings modes, proving the schema becomes ready and selecting `low` emits the expected config. No Team-only form exception was introduced.
+- Changed files or areas: `autobyteus-web/utils/llmConfigSchema.ts`; `autobyteus-web/utils/__tests__/llmConfigSchema.spec.ts`; `autobyteus-web/components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts`.
+- Local validation and result: Exact normalizer/shared-control regressions passed (2 files / 15 tests); wider schema and Agent/Team shared-form coverage passed (6 files / 55 tests); web boundary and localization guards passed; localization audit reported zero unresolved findings; shared SDK build plus Nuxt production build passed; `git diff --check` passed. A temporary Nuxt route using the actual shared component and exact raw Codex enum schema rendered launch and stopped-Team Settings as ready, and selecting `low` enabled both gates with no enum type error; the route was removed before commit.
+- Next recipient or routing: `/code_reviewer` for source re-review. On Pass, route `/api_e2e_engineer` for renewed investigation/execution; any durable coverage changes return through proportional code review before delivery.
+- Remaining limitations or risks: Full-stack Save/persistence/restored-use of the selected Codex value remains unproved until renewed API/E2E. `CR-F-005` through `CR-F-007` remain separately owned API/E2E fixture/composition/isolation work. Dynamic catalog drift, Team persistence/provenance residuals, and the bounded paid-Claude credential residual remain unchanged. No revision, browser concurrency, or lifecycle machinery is claimed or added.
