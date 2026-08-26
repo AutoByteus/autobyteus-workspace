@@ -145,7 +145,10 @@ rl.on("line", async (line) => {
 });
 
 rl.on("close", () => {
-  void runtime.stop().finally(() => {
+  hostBridgeClient.close(new Error("Application worker host input closed."));
+  void runtime.stop().catch(() => {
+    // The host bridge is intentionally unavailable during best-effort teardown.
+  }).finally(() => {
     process.exit(0);
   });
 });

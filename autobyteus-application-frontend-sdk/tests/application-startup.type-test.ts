@@ -52,7 +52,7 @@ startApplication({
     applicationClient.notifications.subscribe(() => undefined);
     applicationClient.agentCommunication.connect({
       bindingId: 'binding-1',
-      target: { kind: 'AGENT_RUN' },
+      memberAddress: null,
     });
     // @ts-expect-error the current notification capability exposes only subscribe
     applicationClient.notifications.subscribeNotifications(() => undefined);

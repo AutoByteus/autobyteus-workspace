@@ -1,0 +1,274 @@
+=== API-REV-001 changed server unit/architecture selection ===
+FILES=25
+tests/architecture/application-agent-addressing-boundaries.test.ts
+tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts
+tests/unit/application-agent-communication/application-agent-communication-session.test.ts
+tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts
+tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+tests/unit/application-backend/brief-artifact-startup-catchup.test.ts
+tests/unit/application-backend/socratic-lesson-target-address.test.ts
+tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+tests/unit/application-backend/socratic-live-tutor-session.test.ts
+tests/unit/application-backend/socratic-runtime-lifecycle.test.ts
+tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts
+tests/unit/application-engine/application-handler-context-factory.test.ts
+tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts
+tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts
+tests/unit/application-orchestration/application-run-binding-store.test.ts
+tests/unit/application-orchestration/application-run-ownership-service.test.ts
+tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+tests/unit/run-history/services/studio-run-model-config-service.test.ts
+tests/unit/run-history/store/agent-run-metadata-store.test.ts
+tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts (12 tests) 1300ms
+(node:98303) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts (6 tests) 295ms
+(node:98304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-run-binding-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-run-binding-store.test.ts (3 tests) 131ms
+(node:98305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts (0 test)
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts > PublishedArtifactPublicationService > serves revision text from the snapshot after the outside source file is deleted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+
+ ✓ tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts (18 tests) 112ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (8 tests) 61ms
+ ✓ tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts (2 tests) 59ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 55ms
+(node:98310) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-kTcnjN
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-3hI5ea
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-zAI1pd
+
+ ✓ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts (3 tests) 33ms
+(node:98311) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/application-backend/brief-artifact-startup-catchup.test.ts (0 test)
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (3 tests) 32ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts (7 tests) 15ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 9ms
+ ✓ tests/unit/application-backend/socratic-live-tutor-session.test.ts (8 tests) 8ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts (4 tests) 8ms
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > describes one-item artifact arrays and workspace-relative or absolute paths
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Overwriting existing tool definition for name: 'publish_artifacts'
+Invalid arguments for tool 'publish_artifacts': Required parameter 'artifacts' is missing.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+ ✓ tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts (7 tests) 6ms
+ ✓ tests/unit/application-agent-communication/application-agent-communication-session.test.ts (6 tests) 7ms
+ ✓ tests/unit/run-history/services/studio-run-model-config-service.test.ts (5 tests) 5ms
+ ✓ tests/unit/application-engine/application-handler-context-factory.test.ts (2 tests) 5ms
+ ✓ tests/unit/application-orchestration/application-run-ownership-service.test.ts (10 tests) 6ms
+ ✓ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts (3 tests) 5ms
+ ✓ tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts (1 test) 4ms
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (0 test)
+ ✓ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests) 2ms
+ ❯ tests/unit/application-backend/socratic-lesson-target-address.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts [ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-backend-sdk". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio/backend-src/services/brief-run-launch-service.ts:5:7
+  2  |  import {
+  3  |    buildEffectiveTeamRunLaunch
+  4  |  } from "@autobyteus/application-backend-sdk";
+     |          ^
+  5  |  import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
+  6  |  import { createArtifactRepository } from "../repositories/artifact-repository.js";
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/application-backend/brief-artifact-startup-catchup.test.ts [ tests/unit/application-backend/brief-artifact-startup-catchup.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-lesson-target-address.test.ts [ tests/unit/application-backend/socratic-lesson-target-address.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts [ tests/unit/application-backend/socratic-lesson-target-projection.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-backend-sdk". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio/backend-src/index.ts:1:34
+  1  |  import { defineApplication } from "@autobyteus/application-backend-sdk";
+     |                                     ^
+  2  |  import { onArtifact } from "./event-handlers/on-artifact.js";
+  3  |  import { onRunFailed } from "./event-handlers/on-run-failed.js";
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  4 failed | 21 passed (25)
+      Tests  118 passed (118)
+   Start at  17:55:00
+   Duration  10.37s (transform 2.31s, setup 109ms, import 5.35s, tests 2.16s, environment 322ms)
+
+RESULT=PASS

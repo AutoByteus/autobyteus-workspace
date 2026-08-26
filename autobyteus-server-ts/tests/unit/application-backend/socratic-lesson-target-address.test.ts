@@ -8,7 +8,7 @@ const activeLesson = {
   latestBindingStatus: "ATTACHED",
 };
 
-const buildBinding = (memberAddress = "/tutor"): ApplicationAgentTeamBinding => ({
+const buildBinding = (memberAddress: `/${string}` = "/tutor"): ApplicationAgentTeamBinding => ({
   bindingId: "binding-lesson-1",
   applicationId: "socratic-math-teacher",
   launchRequestId: "lesson-launch-request-1",
@@ -26,7 +26,6 @@ const buildBinding = (memberAddress = "/tutor"): ApplicationAgentTeamBinding => 
       memberAddress,
       displayName: "Tutor",
       agentRunId: "team-run-lesson-1::tutor-current-identity",
-      runtimeKind: "AGENT_TEAM_MEMBER",
     }],
   },
   createdAt: "2026-08-22T12:00:00.000Z",
@@ -36,19 +35,16 @@ const buildBinding = (memberAddress = "/tutor"): ApplicationAgentTeamBinding => 
 });
 
 describe("Socratic tutor target address", () => {
-  it("resolves the configured /tutor member and forwards its exact agentRunId", () => {
+  it("selects the configured /tutor member without exposing its physical Agent run ID", () => {
     expect(deriveTutorTargetAddress(activeLesson, buildBinding())).toEqual({
       bindingId: "binding-lesson-1",
-      target: {
-        kind: "AGENT_TEAM_MEMBER",
-        agentRunId: "team-run-lesson-1::tutor-current-identity",
-      },
+      memberAddress: "/tutor",
     });
   });
 
   it("rejects an attached team binding that lacks the configured /tutor member", () => {
     expect(() => deriveTutorTargetAddress(activeLesson, buildBinding("/other-member"))).toThrow(
-      "Socratic tutor binding must contain configured memberAddress '/tutor'.",
+      "Application agent-team binding 'binding-lesson-1' does not contain memberAddress '/tutor'.",
     );
   });
 });

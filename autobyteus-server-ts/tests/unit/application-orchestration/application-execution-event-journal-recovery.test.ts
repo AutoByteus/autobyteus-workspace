@@ -33,16 +33,9 @@ const buildEvent = (): Omit<ApplicationExecutionEventJournalEvent, "journalSeque
     },
     runtime: {
       subject: "AGENT_RUN",
-      runId: "run-1",
+      agentRunId: "run-1",
       definitionId: "researcher-definition",
-      members: [{
-        memberName: "Researcher",
-        memberRouteKey: "researcher",
-        displayName: "Researcher",
-        teamPath: [],
-        runId: "run-1",
-        runtimeKind: "AGENT" as const,
-      }],
+      members: [],
     },
     createdAt: "2026-08-22T09:00:00.000Z",
     updatedAt: "2026-08-22T09:00:00.000Z",
@@ -154,6 +147,92 @@ describe("application execution-event journal recovery", () => {
     });
 
     expect(await fs.readFile(databasePath)).toEqual(before);
+  });
+
+  it("projects old binding and producer supersets, then dispatches and acknowledges them", async () => {
+    const event = buildEvent();
+    await journalStore.appendEventAwaitable(APPLICATION_ID, {
+      ...event,
+      binding: {
+        ...event.binding,
+        executionResourceRef: {
+          source: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "research-team",
+        },
+        runtime: {
+          subject: "TEAM_RUN",
+          teamRunId: "team-run-1",
+          definitionId: "research-team-definition",
+          members: [{
+            memberAddress: "/researcher",
+            displayName: "Researcher",
+            agentRunId: "researcher-run-1",
+          }],
+        },
+      },
+      producer: {
+        agentRunId: "researcher-run-1",
+        displayName: "Researcher",
+      },
+    });
+    const databasePath = storageLifecycle.getStorageLayout(APPLICATION_ID).platformDatabasePath;
+    const db = new DatabaseSync(databasePath);
+    try {
+      const row = db.prepare(
+        `SELECT journal_sequence, binding_json, producer_json
+           FROM __autobyteus_execution_event_journal
+          WHERE event_id = ?`,
+      ).get(event.eventId) as {
+        journal_sequence: number;
+        binding_json: string;
+        producer_json: string;
+      };
+      const binding = JSON.parse(row.binding_json) as {
+        runtime: { members: Array<Record<string, unknown>> };
+      } & Record<string, unknown>;
+      binding.runtime.members[0]!.runtimeKind = "AGENT_TEAM_MEMBER";
+      binding.runtime.members[0]!.ignoredLegacyAttribute = true;
+      binding.ignoredLegacyAttribute = "retained-on-disk";
+      const producer = JSON.parse(row.producer_json) as Record<string, unknown>;
+      producer.runtimeKind = "AGENT_TEAM_MEMBER";
+      producer.ignoredLegacyAttribute = true;
+      db.prepare(
+        `UPDATE __autobyteus_execution_event_journal
+            SET binding_json = ?, producer_json = ?
+          WHERE journal_sequence = ?`,
+      ).run(JSON.stringify(binding), JSON.stringify(producer), row.journal_sequence);
+    } finally {
+      db.close();
+    }
+
+    await expect(journalStore.getNextPendingRecordIfPresent(APPLICATION_ID)).resolves.toMatchObject({
+      event: {
+        binding: {
+          runtime: {
+            members: [{
+              memberAddress: "/researcher",
+              displayName: "Researcher",
+              agentRunId: "researcher-run-1",
+            }],
+          },
+        },
+        producer: {
+          agentRunId: "researcher-run-1",
+          displayName: "Researcher",
+        },
+      },
+    });
+
+    const { service, engineController } = createDispatchService();
+    await service.resumePendingEventsForApplication(APPLICATION_ID);
+    await vi.waitFor(() => expect(engineController.invokeApplicationEventHandler).toHaveBeenCalledOnce());
+    const envelope = engineController.invokeApplicationEventHandler.mock.calls[0]![1].envelope;
+    expect(envelope.event.binding.runtime.members[0]).not.toHaveProperty("runtimeKind");
+    expect(envelope.event.producer).not.toHaveProperty("runtimeKind");
+    await vi.waitFor(async () => {
+      await expect(journalStore.getNextPendingRecordIfPresent(APPLICATION_ID)).resolves.toBeNull();
+    });
   });
 
   it("lets lifecycle restart recovery reach ready and dispatch an existing pending event", async () => {

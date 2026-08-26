@@ -93,6 +93,10 @@ New external custom applications should start with `@autobyteus/application-devk
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
+`ApplicationAgentTargetAddress` is the public logical address `{ bindingId, memberAddress }`. A `null` `memberAddress` selects the bound Agent or Team root. A canonical rooted member address such as `/reviewer` or `/research/reviewer` selects that configured Team member. Physical Agent/Team run identifiers remain private runtime correlation data and are not accepted as public target selectors. Application Orchestration authorizes the binding and is the sole logical-to-physical translator.
+
+Team binding members and execution producers expose their logical/member identity and correlation fields without an application-role `runtimeKind`; the enclosing Agent/Team subject already supplies that role. Provider and launch `runtimeKind` contracts are unchanged.
+
 `ApplicationAgentStreamEvent` is the closed provider-neutral live stream: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, or safe `ERROR`. The `ERROR` variant preserves the original provider/runtime `message` after secret redaction and does not expose native transport/provider metadata. It excludes reasoning, tools, native/provider records, credentials, stacks/causes, and accumulated whole responses. Missing API-key configuration may use the local actionable setup message; other provider messages are not semantically rewritten.
 
 `ApplicationPublishedArtifacts` includes durable reads through `list(runId)` and `readRevision({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.

@@ -17,23 +17,33 @@ import {
 
 const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
 
-test('application agent target URL codec round-trips encoded binding and run identities', () => {
+test('application agent target URL codec round-trips logical root and nested member identities', () => {
   const address = {
     bindingId: 'binding/one',
-    target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer/run two' },
+    memberAddress: '/research/reviewer two',
   };
   const encoded = encodeApplicationAgentTargetUrl(address);
-  assert.equal(encoded, '/binding%2Fone/targets/agent-team-member/reviewer%2Frun%20two');
+  assert.equal(encoded, '/binding%2Fone/targets/member/%2Fresearch%2Freviewer%20two');
   assert.deepEqual(decodeApplicationAgentTargetUrl(encoded), address);
+  assert.deepEqual(
+    decodeApplicationAgentTargetUrl(encodeApplicationAgentTargetUrl({ bindingId: 'binding/one', memberAddress: null })),
+    { bindingId: 'binding/one', memberAddress: null },
+  );
 });
 
 test('application agent target URL decoder rejects non-canonical and incomplete paths', () => {
   for (const pathValue of [
     '/binding//targets/agent-run',
-    '/binding/targets/agent-run/',
-    '/binding/targets/agent-team-member',
+    '/binding/targets/root/',
+    '/binding/targets/member',
+    '/binding/targets/member/%2F',
+    '/binding/targets/member/%2Freviewer%2F',
+    '/binding/targets/member/%2Freviewer%2F..%2Fwriter',
     '/binding/targets/unknown',
-    '/binding/targets/agent-run?view=compact',
+    '/binding/targets/root?view=compact',
+    '/binding/targets/agent-run',
+    '/binding/targets/agent-team-run',
+    '/binding/targets/agent-team-member/reviewer',
   ]) {
     assert.equal(decodeApplicationAgentTargetUrl(pathValue), null);
   }

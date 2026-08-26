@@ -49,13 +49,5 @@ export const deriveTutorTargetAddress = (lesson: Pick<
   if (!isApplicationAgentTeamBinding(binding)) {
     throw new Error("Socratic tutor binding must be an agent-team binding.");
   }
-  const tutorMember = binding.runtime.members.find(
-    (member) => member.memberAddress === TUTOR_MEMBER_ADDRESS,
-  );
-  if (!tutorMember) {
-    throw new Error(
-      `Socratic tutor binding must contain configured memberAddress '${TUTOR_MEMBER_ADDRESS}'.`,
-    );
-  }
-  return createApplicationAgentTeamMemberTargetAddress(binding, tutorMember.agentRunId);
+  return createApplicationAgentTeamMemberTargetAddress(binding, TUTOR_MEMBER_ADDRESS);
 };

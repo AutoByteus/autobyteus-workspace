@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentRunTerminationResult, CreateAgentRunInput } from "../../agent-execution/services/agent-run-service.js";
@@ -11,7 +12,6 @@ import type {
 import type { AgentProviderFactoryBuilder } from "../../agent-execution/providers/agent-provider-factory-builder.js";
 import type { AgentToolMcpSessionAuthorityFactory } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ApplicationAgentStreamSourceEvent } from "../../application-agent-streaming/domain/application-agent-streaming-models.js";
-import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type {
   ApplicationPublishedArtifactBindingReader,
   ApplicationPublishedArtifactDeliverySink,
@@ -58,6 +58,19 @@ export type ApplicationExecutionInputDisposition =
   | Readonly<{ kind: "REJECTED"; message: string | null }>
   | Readonly<{ kind: "NOT_AVAILABLE" }>;
 
+export type ResolvedApplicationAgentExecutionTarget =
+  | Readonly<{
+      subject: "AGENT_RUN";
+      agentRunId: string;
+      producer: ApplicationExecutionProducer;
+    }>
+  | Readonly<{
+      subject: "TEAM_RUN";
+      teamRunId: string;
+      targetAgentRunId: string | null;
+      producers: readonly ApplicationExecutionProducer[];
+    }>;
+
 export interface ApplicationAgentExecution {
   createAgentRun(input: CreateAgentRunInput): Promise<ApplicationAgentLaunchResult>;
   postAgentInput(
@@ -92,7 +105,7 @@ export interface ApplicationTeamExecution {
 
 export interface ApplicationExecutionStreaming {
   attach(
-    descriptor: AuthorizedApplicationAgentTargetDescriptor,
+    target: ResolvedApplicationAgentExecutionTarget,
     listener: (event: ApplicationAgentStreamSourceEvent) => void,
   ): () => void;
 }

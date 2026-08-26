@@ -468,7 +468,6 @@ export class MixedAgentMemberHandle {
       producer: Object.freeze({
         agentRunId: this.context.agentRunId,
         displayName: this.displayName(),
-        runtimeKind: "AGENT_TEAM_MEMBER" as const,
       }),
     });
   }

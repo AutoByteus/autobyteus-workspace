@@ -48,6 +48,7 @@ startApplication({
 - `runtimeBootstrap.transport` supplies absolute browser-visible bases for backend request/response, notifications, optional custom backend WebSockets, and standard agent communication.
 - GraphQL, routes, query, and command URLs derive from that base instead of becoming parallel sources of truth.
 - `applicationClient.agentCommunication.connect(address)` is the standard provider-neutral bidirectional path for a bound agent, whole team, or static team member. It does not require an application backend proxy route.
+- The public target address is exactly `{ bindingId, memberAddress }`: use `memberAddress: null` for the bound Agent or Team root and a canonical rooted value such as `/reviewer` or `/research/reviewer` for one configured Team member. Physical run IDs are not public selectors; Application Orchestration authorizes the binding and performs the sole logical-to-physical translation.
 - Standard agent events are intentionally minimal: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and safe `ERROR`. Applications may append live text locally; complete structured business output belongs in published artifacts.
 - `applicationClient.backend.connectWebSocket(path, options)` is a separate optional escape hatch for custom realtime business protocols.
 - The client exposes no raw browser socket, runtime-id API, or application authentication surface.

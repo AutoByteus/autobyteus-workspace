@@ -64,7 +64,6 @@ const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
         memberAddress: "/Researcher",
         displayName: "Researcher",
         agentRunId: "researcher-member-run-1",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -335,7 +334,6 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
           memberAddress: "/ReviewSquad/Reviewer",
           displayName: "Reviewer",
           agentRunId: "reviewer-member-run-1",
-          runtimeKind: "AGENT_TEAM_MEMBER",
         }],
       },
     };
@@ -393,9 +391,13 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         authorizeTarget: vi.fn(async (_applicationId, address) => ({
           applicationId,
           address,
-          runtimeSubject: "TEAM_RUN",
-          runtimeRunId: binding.runtime.runId,
-          producers: [],
+          binding,
+          runtime: {
+            subject: "TEAM_RUN",
+            teamRunId: "team-run-1",
+            targetAgentRunId: "researcher-member-run-1",
+            producers: [{ agentRunId: "researcher-member-run-1", displayName: "Researcher" }],
+          },
         })),
       } as never,
     });
@@ -403,7 +405,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     await hostService.sendRunInput(applicationId, {
       address: {
         bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-member-run-1" },
+        memberAddress: "/Researcher",
       },
       input: { text: "please research" },
     });
@@ -437,9 +439,13 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         authorizeTarget: vi.fn(async (_applicationId, address) => ({
           applicationId,
           address,
-          runtimeSubject: "TEAM_RUN",
-          runtimeRunId: binding.runtime.runId,
-          producers: [],
+          binding,
+          runtime: {
+            subject: "TEAM_RUN",
+            teamRunId: "team-run-1",
+            targetAgentRunId: "researcher-member-run-1",
+            producers: [{ agentRunId: "researcher-member-run-1", displayName: "Researcher" }],
+          },
         })),
       } as never,
     });
@@ -448,7 +454,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       hostService.sendRunInput(applicationId, {
         address: {
           bindingId,
-          target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+          memberAddress: "/Researcher",
         },
         input: {
           text: "please research",
@@ -475,18 +481,14 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         } as never,
         agentRunService: { resolveAgentRun } as never,
         agentTargetAuthorizationService: {
-          authorizeTarget: vi.fn(async (_applicationId, address) => ({
-            applicationId,
-            address,
-            runtimeSubject: "AGENT_RUN",
-            runtimeRunId: runId,
-            producers: [],
-          })),
+          authorizeTarget: vi.fn(async () => {
+            throw new Error(`Application binding '${bindingId}' is not live.`);
+          }),
         } as never,
       });
 
       await expect(hostService.sendRunInput(applicationId, {
-        address: { bindingId, target: { kind: "AGENT_RUN" } },
+        address: { bindingId, memberAddress: null },
         input: { text: "must not dispatch" },
       })).rejects.toThrow("is not live");
       expect(resolveAgentRun).not.toHaveBeenCalled();

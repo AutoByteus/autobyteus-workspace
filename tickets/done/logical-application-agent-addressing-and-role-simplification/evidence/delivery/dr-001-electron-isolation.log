@@ -1,0 +1,15 @@
+timestamp_utc=2026-08-26T17:50:36Z
+head=0a55b013ad6250b5ffe02609aa43cfc7e465463d
+=== ordinary listener before ===
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94487 normy   26u  IPv4 0xc0597f8d50338a75      0t0  TCP *:29695 (LISTEN)
+command=env -u ELECTRON_RUN_AS_NODE pnpm -C autobyteus-web test:e2e:electron:isolation --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation
+
+> autobyteus@1.4.58 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation
+
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation/electron-launch-profile-evidence.json
+test_exit=0
+=== ordinary listener after ===
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94487 normy   26u  IPv4 0xc0597f8d50338a75      0t0  TCP *:29695 (LISTEN)

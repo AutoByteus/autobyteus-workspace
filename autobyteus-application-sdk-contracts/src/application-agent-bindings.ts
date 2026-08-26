@@ -1,4 +1,5 @@
 import type { ApplicationExecutionResourceRef } from "./execution-resources.js";
+import type { ApplicationAgentMemberAddress } from "./application-agent-member-address.js";
 
 export type ApplicationAgentBindingStatus =
   | "ATTACHED"
@@ -28,12 +29,11 @@ export type ApplicationAgentBinding = ApplicationAgentBindingFields & {
   };
 };
 
-export type ApplicationAgentTeamBindingMember = {
-  memberAddress: string;
+export type ApplicationAgentTeamBindingMember = Readonly<{
+  memberAddress: ApplicationAgentMemberAddress;
   displayName: string;
   agentRunId: string;
-  runtimeKind: "AGENT" | "AGENT_TEAM_MEMBER";
-};
+}>;
 
 export type ApplicationAgentTeamBinding = ApplicationAgentBindingFields & {
   runtime: {
@@ -48,15 +48,10 @@ export type ApplicationAgentBindingListFilter = {
   status?: ApplicationAgentBindingStatus | null;
 };
 
-export type ApplicationAgentTarget =
-  | { kind: "AGENT_RUN" }
-  | { kind: "AGENT_TEAM_RUN" }
-  | { kind: "AGENT_TEAM_MEMBER"; agentRunId: string };
-
-export type ApplicationAgentTargetAddress = {
+export type ApplicationAgentTargetAddress = Readonly<{
   bindingId: string;
-  target: ApplicationAgentTarget;
-};
+  memberAddress: ApplicationAgentMemberAddress | null;
+}>;
 
 export type ApplicationRuntimeInputContextFile = {
   uri: string;
@@ -71,13 +66,10 @@ export type ApplicationAgentInput = {
   metadata?: Record<string, unknown> | null;
 };
 
-export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
-
-export type ApplicationExecutionProducer = {
+export type ApplicationExecutionProducer = Readonly<{
   agentRunId: string;
   displayName: string | null;
-  runtimeKind: ApplicationExecutionProducerRuntimeKind;
-};
+}>;
 
 export type ApplicationExecutionContext = Readonly<{
   applicationId: string;

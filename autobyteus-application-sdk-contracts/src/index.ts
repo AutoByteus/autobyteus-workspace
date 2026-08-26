@@ -25,6 +25,7 @@ export * from "./manifests.js";
 export * from "./execution-resources.js";
 export * from "./application-iframe-contract.js";
 export * from "./application-agent-bindings.js";
+export * from "./application-agent-member-address.js";
 export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
 export * from "./application-agent-target-url.js";

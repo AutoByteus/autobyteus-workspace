@@ -1,0 +1,100 @@
+=== API-REV-002 environment/build 2026-08-26T17:19:23Z ===
+HEAD=31c674d0c31181c96d2198ed2b2f7a9996f2f4cb
+v22.23.1
+10.28.2
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 99ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:79036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Build failed with 1 error:
+frontend-src/app.js:1:33: ERROR: Could not resolve "@autobyteus/application-frontend-sdk"
+ ELIFECYCLE  Command failed with exit code 1.
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:79072) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[ERROR] MISSING_PACKAGE_FILE backend/bundle.json: backend.bundleManifest file does not exist at backend/bundle.json.
+ ELIFECYCLE  Command failed with exit code 1.
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:79129) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Build failed with 1 error:
+frontend-src/app.js:1:33: ERROR: Could not resolve "@autobyteus/application-frontend-sdk"
+ ELIFECYCLE  Command failed with exit code 1.
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:79167) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[ERROR] MISSING_PACKAGE_FILE backend/bundle.json: backend.bundleManifest file does not exist at backend/bundle.json.
+ ELIFECYCLE  Command failed with exit code 1.
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit

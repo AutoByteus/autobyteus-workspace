@@ -3,11 +3,13 @@ import {
   APPLICATION_EVENT_DELIVERY_SEMANTICS,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
-import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
+import { toPublicApplicationAgentBinding } from "../domain/models.js";
 import type {
   ApplicationExecutionEventJournalEvent,
   ApplicationExecutionEventJournalRecord,
 } from "../domain/models.js";
+import { ApplicationRunBindingRecordCodec } from "../domain/application-run-binding-record-codec.js";
+import { ApplicationExecutionProducerProjector } from "../domain/application-execution-producer-projector.js";
 
 const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
@@ -66,9 +68,11 @@ const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutio
     family: row.family as ApplicationExecutionEventJournalEvent["family"],
     publishedAt: String(row.published_at),
     binding: toPublicApplicationAgentBinding(
-      JSON.parse(String(row.binding_json)) as ApplicationAgentBindingRecord,
+      ApplicationRunBindingRecordCodec.decode(JSON.parse(String(row.binding_json))),
     ),
-    producer: row.producer_json ? JSON.parse(String(row.producer_json)) as ApplicationExecutionEventJournalEvent["producer"] : null,
+    producer: row.producer_json
+      ? ApplicationExecutionProducerProjector.project(JSON.parse(String(row.producer_json)))
+      : null,
     payload: JSON.parse(String(row.payload_json)) as ApplicationExecutionEventJournalEvent["payload"],
   },
   ackedAt: row.acked_at ? String(row.acked_at) : null,
@@ -117,6 +121,12 @@ export class ApplicationExecutionEventJournalStore {
     event: Omit<ApplicationExecutionEventJournalEvent, "journalSequence">,
   ): ApplicationExecutionEventJournalRecord {
     ensureTables(db);
+    const binding = toPublicApplicationAgentBinding(
+      ApplicationRunBindingRecordCodec.decode(event.binding),
+    );
+    const producer = event.producer
+      ? ApplicationExecutionProducerProjector.project(event.producer)
+      : null;
     const result = db.prepare(
       `INSERT INTO __autobyteus_execution_event_journal (
          event_id,
@@ -134,14 +144,16 @@ export class ApplicationExecutionEventJournalStore {
       event.binding.launchRequestId,
       event.family,
       event.publishedAt,
-      JSON.stringify(event.binding),
-      event.producer ? JSON.stringify(event.producer) : null,
+      JSON.stringify(binding),
+      producer ? JSON.stringify(producer) : null,
       JSON.stringify(event.payload),
     ) as { lastInsertRowid?: number | bigint };
 
     return {
       event: {
         ...event,
+        binding,
+        producer,
         journalSequence: Number(result.lastInsertRowid ?? 0),
       },
       ackedAt: null,

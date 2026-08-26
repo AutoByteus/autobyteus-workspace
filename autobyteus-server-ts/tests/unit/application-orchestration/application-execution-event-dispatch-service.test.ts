@@ -30,18 +30,9 @@ const buildRecord = (journalSequence: number): ApplicationExecutionEventJournalR
       },
       runtime: {
         subject: "AGENT_RUN",
-        runId: `run-${journalSequence}`,
+        agentRunId: `run-${journalSequence}`,
         definitionId: "agent-def-1",
-        members: [
-          {
-            memberName: "Sample Agent",
-            memberRouteKey: "sample-agent",
-            displayName: "Sample Agent",
-            teamPath: [],
-            runId: `run-${journalSequence}`,
-            runtimeKind: "AGENT",
-          },
-        ],
+        members: [],
       },
       createdAt: new Date("2026-04-19T09:00:00.000Z").toISOString(),
       updatedAt: new Date("2026-04-19T09:00:00.000Z").toISOString(),

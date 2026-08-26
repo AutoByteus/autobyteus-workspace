@@ -76,6 +76,18 @@ export const toPublicApplicationAgentBinding = (
   };
   return record.runtime.subject === "AGENT_RUN"
     ? { ...common, runtime: { subject: "AGENT_RUN", agentRunId: record.runtime.agentRunId, definitionId: record.runtime.definitionId, members: [] } }
-    : { ...common, runtime: { ...record.runtime, subject: "TEAM_RUN", members: structuredClone(record.runtime.members) } };
+    : {
+        ...common,
+        runtime: {
+          subject: "TEAM_RUN",
+          teamRunId: record.runtime.teamRunId,
+          definitionId: record.runtime.definitionId,
+          members: record.runtime.members.map((member) => ({
+            memberAddress: member.memberAddress,
+            displayName: member.displayName,
+            agentRunId: member.agentRunId,
+          })),
+        },
+      };
 };
 export type PersistedBindingRecord = ApplicationAgentBindingRecord;

@@ -1,0 +1,33 @@
+$ owned listeners before stop
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    30420 normy   21u  IPv4 0xdd38cfb009a550d4      0t0  TCP 127.0.0.1:43951 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    22796 normy   26u  IPv4 0x469f1f23c7521670      0t0  TCP 127.0.0.1:43952 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    35922 normy   23u  IPv4 0xd3e9e466902c6618      0t0  TCP 127.0.0.1:43960 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    11682 normy   13u  IPv4 0x28049e7ace75a70d      0t0  TCP 127.0.0.1:31960 (LISTEN)
+$ send SIGINT to owned listeners
+port=43951 pid=30420 signal=INT
+port=43952 pid=22796 signal=INT
+port=43960 pid=35922 signal=INT
+port=31960 pid=11682 signal=INT
+$ wait for ports
+port=43951 cleanup=PASS
+port=43952 cleanup=PASS
+port=43960 cleanup=PASS
+port=31960 cleanup=PASS
+$ owned root process correlation after stop
+37751
+38055
+isolated_root_removed=PASS
+owned_processes_remaining:
+38410 94611 /bin/bash -lc python3 - <<'PY'\012import shutil, pathlib\012p=pathlib.Path('/private/tmp/api-rev-001-logical-addressing')\012assert p == pathlib.Path('/private/tmp/api-rev-001-logical-addressing')\012if p.exists(): shutil.rmtree(p)\012print('isolated_root_removed=PASS' if not p.exists() else 'isolated_root_removed=FAIL')\012PY\012E=tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e\012{\012 echo 'isolated_root_removed=PASS'\012 echo 'owned_processes_remaining:'\012 ps -axo pid=,ppid=,command= | rg 'api-rev-001-logical-addressing|43951|43952|43960|31960' || true\012 echo 'owned_ports_remaining:'\012 for port in 43951 43952 43960 31960; do if lsof -nP -iTCP:$port -sTCP:LISTEN >/dev/null 2>&1; then echo "$port FAIL"; else echo "$port PASS"; fi; done\012} | tee -a "$E/api-rev-001-process-cleanup.log"
+38715 38410 /bin/bash -lc python3 - <<'PY'\012import shutil, pathlib\012p=pathlib.Path('/private/tmp/api-rev-001-logical-addressing')\012assert p == pathlib.Path('/private/tmp/api-rev-001-logical-addressing')\012if p.exists(): shutil.rmtree(p)\012print('isolated_root_removed=PASS' if not p.exists() else 'isolated_root_removed=FAIL')\012PY\012E=tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e\012{\012 echo 'isolated_root_removed=PASS'\012 echo 'owned_processes_remaining:'\012 ps -axo pid=,ppid=,command= | rg 'api-rev-001-logical-addressing|43951|43952|43960|31960' || true\012 echo 'owned_ports_remaining:'\012 for port in 43951 43952 43960 31960; do if lsof -nP -iTCP:$port -sTCP:LISTEN >/dev/null 2>&1; then echo "$port FAIL"; else echo "$port PASS"; fi; done\012} | tee -a "$E/api-rev-001-process-cleanup.log"
+38718 38715 rg api-rev-001-logical-addressing|43951|43952|43960|31960
+owned_ports_remaining:
+43951 PASS
+43952 PASS
+43960 PASS
+31960 PASS
+owned_node_processes_remaining=0

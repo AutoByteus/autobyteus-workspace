@@ -3067,6 +3067,62 @@ describe("application framework architecture boundaries", () => {
     ].sort());
   });
 
+  it("guards SR-003 completion-only correlation and the two lifecycle control callsites", () => {
+    const serverSourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
+    const readServerSource = (relativePath: string): string =>
+      readFileSync(join(serverSourceRoot, relativePath), "utf8");
+    const client = readServerSource("application-engine/runtime/application-engine-client.ts");
+    const bridge = readServerSource("application-engine/worker/application-worker-host-bridge-client.ts");
+    const control = readServerSource("application-engine/services/application-engine-control-request.ts");
+    const controller = readServerSource("application-engine/services/application-engine-controller.ts");
+    const launcher = readServerSource("application-engine/services/application-engine-launcher.ts");
+    const workerEntry = readServerSource("application-engine/worker/application-worker-entry.ts");
+
+    for (const [relativePath, source] of [
+      ["application-engine/runtime/application-engine-client.ts", client],
+      ["application-engine/worker/application-worker-host-bridge-client.ts", bridge],
+    ] as const) {
+      expect(source, relativePath).not.toMatch(/\b(?:setTimeout|timeoutMs|timeoutHandle)\b|30_000/);
+    }
+    expect(client).toMatch(/request<T = unknown>\(method: string, params\?: Record<string, unknown>\): Promise<T>/);
+    expect(bridge).toContain("close(error: Error): void");
+    expect(bridge).toContain("this.pendingRequests.delete(id);");
+    expect(control).toContain("const APPLICATION_ENGINE_CONTROL_REQUEST_DEADLINE_MS = 30_000");
+    expect(control).toContain("await handle.client.close()");
+    expect(control).toContain("await handle.supervisor.stop()");
+
+    const controlImporters = walkSourceFiles(serverSourceRoot)
+      .filter((file) => readFileSync(file, "utf8").includes("application-engine-control-request.js"))
+      .map((file) => normalizePath(relative(REPOSITORY_ROOT, file)))
+      .sort();
+    expect(controlImporters).toEqual([
+      "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts",
+      "autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts",
+    ]);
+    expect(controller.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
+    expect(launcher.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
+    const stopController = controller.slice(
+      controller.indexOf("  async stopAttachedEngine("),
+      controller.indexOf("  clearListeners(): void"),
+    );
+    expect(stopController).toContain("APPLICATION_ENGINE_METHOD_STOP");
+    expect(launcher).toMatch(/runApplicationEngineControlRequest<ApplicationWorkerLoadDefinitionResult>\([\s\S]*APPLICATION_ENGINE_METHOD_LOAD_DEFINITION/);
+    const applicationWorkRequest = controller.slice(controller.indexOf("  private request<T>("));
+    expect(applicationWorkRequest).not.toContain("runApplicationEngineControlRequest");
+
+    const hostInputTeardown = workerEntry.slice(workerEntry.indexOf('rl.on("close"'));
+    expect(hostInputTeardown.indexOf("hostBridgeClient.close(")).toBeGreaterThanOrEqual(0);
+    expect(hostInputTeardown.indexOf("hostBridgeClient.close(")).toBeLessThan(
+      hostInputTeardown.indexOf("runtime.stop()"),
+    );
+    const normalStop = workerEntry.slice(
+      workerEntry.indexOf("case APPLICATION_ENGINE_METHOD_STOP:"),
+      workerEntry.indexOf("default:"),
+    );
+    expect(normalStop).not.toContain("hostBridgeClient.close(");
+    expect(normalStop.indexOf("runtime.stop()")).toBeLessThan(normalStop.indexOf("respondSuccess"));
+  });
+
   it("guards the exact SR-013 root-bound task construction inventory", () => {
     const managerOccurrences = sr013NewOccurrences("MixedTeamManager");
     expect(sr013OccurrencePaths(managerOccurrences)).toEqual([

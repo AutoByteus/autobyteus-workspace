@@ -1,0 +1,31 @@
+=== API-REV-001 environment/prerequisite build ===
+2026-08-26T15:54:14Z
+$ pnpm install --frozen-lockfile
+Scope: all 12 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 1.1s using pnpm v10.28.2
+$ pnpm --filter autobyteus-ts build
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+$ pnpm --filter @autobyteus/application-sdk-contracts build
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+RESULT=PASS
+$ pnpm --filter @autobyteus/application-backend-sdk build
+
+> @autobyteus/application-backend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json

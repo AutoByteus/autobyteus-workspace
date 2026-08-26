@@ -58,11 +58,10 @@ When backend business code already owns a precise binding and needs a reusable o
 import {
   createApplicationAgentTargetAddress,
   createApplicationAgentTeamMemberTargetAddress,
-  createApplicationAgentTeamTargetAddress,
 } from '@autobyteus/application-backend-sdk'
 
 const agentAddress = createApplicationAgentTargetAddress(agentBinding)
-const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+const wholeTeamAddress = createApplicationAgentTargetAddress(teamBinding)
 const reviewer = teamBinding.runtime.members.find(
   (member) => member.memberAddress === '/reviewer',
 )
@@ -70,11 +69,11 @@ if (!reviewer) throw new Error('Reviewer is not part of this binding')
 
 const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
   teamBinding,
-  reviewer.agentRunId,
+  reviewer.memberAddress,
 )
 ```
 
-The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. The team-member builder accepts the exact binding-owned `agentRunId`, not the logical `memberAddress`; application code may select a configured role by `memberAddress` and must then project the matching member's `agentRunId`. The builders do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. The root builder accepts either an Agent or Team binding. The team-member builder accepts an exact canonical rooted `memberAddress` that is present in the Team binding. The builders do not expose or accept physical run IDs and do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks and is the sole logical-to-physical translator whenever an address is connected, observed, or sent to.
 
 The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
 
@@ -82,7 +81,7 @@ The shared address DTO remains directly constructible. Code that owns only a `bi
 await context.agentExecution.sendInput({
   address: {
     bindingId,
-    target: { kind: 'AGENT_TEAM_RUN' },
+    memberAddress: null,
   },
   input: { text: 'Continue the team task.' },
 })

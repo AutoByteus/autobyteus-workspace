@@ -405,6 +405,7 @@ describe("PublishedArtifactPublicationService", () => {
       snapshotStore,
     });
     const projectionService = new PublishedArtifactProjectionService({
+      activeRunReader: { getActiveRun: vi.fn(() => null) } as never,
       projectionStore,
       snapshotStore,
     });
@@ -587,12 +588,8 @@ describe("PublishedArtifactPublicationService", () => {
       applicationId: "app-1",
       bindingId: "binding-1",
       producer: {
-        runId: "team-run-1",
-        memberRouteKey: "researcher",
-        memberName: "Researcher",
+        agentRunId: "researcher_member_run",
         displayName: "Researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
-        teamPath: [],
       },
     } as const;
 
@@ -652,12 +649,8 @@ describe("PublishedArtifactPublicationService", () => {
       applicationId: "app-1",
       bindingId: "binding-1",
       producer: {
-        runId: "team-run-1",
-        memberRouteKey: "researcher",
-        memberName: "Researcher",
+        agentRunId: "researcher_member_run",
         displayName: "Researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
-        teamPath: [],
       },
     } as const;
 

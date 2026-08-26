@@ -16,6 +16,13 @@ import { observePendingWebSocketState } from "./pending-websocket-state.js";
 
 type Params = { applicationId: string; "*": string };
 
+const readEncodedTargetPath = (req: FastifyRequest<{ Params: Params }>): string => {
+  const rawPath = new URL(req.raw.url ?? "/", "http://localhost").pathname;
+  const marker = "/agent-communication/";
+  const markerIndex = rawPath.lastIndexOf(marker);
+  return markerIndex < 0 ? "" : rawPath.slice(markerIndex + marker.length);
+};
+
 export async function registerApplicationAgentCommunicationWebsocket(
   app: FastifyInstance,
   dependencies: {
@@ -32,7 +39,10 @@ export async function registerApplicationAgentCommunicationWebsocket(
       const pendingSocket = observePendingWebSocketState(socket);
       void authorizeRemoteAccessWebSocket(req).then(() => dependencies.lifecycle.awaitReady()).then(() => {
         if (pendingSocket.isClosed()) return;
-        const address = decodeApplicationAgentTargetUrl(`/${req.params["*"] ?? ""}`);
+        // Fastify decodes wildcard parameters, including the encoded leading slash
+        // in a rooted member address. Decode from the raw URL so the shared codec
+        // remains the sole canonical path parser.
+        const address = decodeApplicationAgentTargetUrl(`/${readEncodedTargetPath(req)}`);
         if (!address) {
           socket.send(JSON.stringify({
             protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,

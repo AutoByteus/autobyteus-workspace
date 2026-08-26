@@ -1,15 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
+import type { ApplicationAgentTargetAddress } from "@autobyteus/application-sdk-contracts";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { ApplicationAgentStreamSubscription } from "../../../src/application-agent-streaming/services/application-agent-stream-subscription.js";
 import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 import { APPLICATION_AGENT_EVENT_QUEUE_LIMIT } from "../../../src/application-communication-limits.js";
 
-const address = { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } };
-const producer = { runId: "run-1", memberRouteKey: "root", memberName: "Root", displayName: "Root", runtimeKind: "AGENT" as const, teamPath: [] };
+const address = { bindingId: "binding-1", memberAddress: null };
+const producer = { agentRunId: "run-1", displayName: "Root" };
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({ eventType, payload, runId: "run-1", statusHint: null });
 const flush = async () => { await new Promise((resolve) => setTimeout(resolve, 0)); };
 
-const setup = () => {
+const setup = (addresses: {
+  input?: ApplicationAgentTargetAddress;
+  descriptor?: ApplicationAgentTargetAddress;
+} = {}) => {
+  const inputAddress = addresses.input ?? address;
+  const descriptorAddress = addresses.descriptor ?? inputAddress;
   let sourceListener!: (source: never) => void;
   let terminal!: () => void;
   const released = vi.fn();
@@ -18,12 +24,12 @@ const setup = () => {
   const emitted: Array<{ kind: string; value: unknown }> = [];
   const subscription = new ApplicationAgentStreamSubscription({
     applicationId: "app-1",
-    address,
+    address: inputAddress,
     orchestration: {
       openAgentEventStreamLease: vi.fn(async (_app, _address, onTerminal) => {
         terminal = onTerminal;
         return {
-          descriptor: { applicationId: "app-1", address, runtimeSubject: "AGENT_RUN", runtimeRunId: "run-1", producers: [producer] },
+          descriptor: { applicationId: "app-1", address: descriptorAddress, binding: {}, runtime: { subject: "AGENT_RUN", agentRunId: "run-1", producer } },
           release: released,
         };
       }),
@@ -45,6 +51,22 @@ const setup = () => {
 };
 
 describe("ApplicationAgentStreamSubscription", () => {
+  it("uses descriptor-owned address evidence after authorization even if the caller address changes", async () => {
+    const callerAddress = { bindingId: " binding-1 ", memberAddress: null };
+    const descriptorAddress = Object.freeze({ bindingId: "binding-1", memberAddress: null });
+    const harness = setup({ input: callerAddress, descriptor: descriptorAddress });
+
+    await harness.subscription.establishPaused();
+    callerAddress.bindingId = "mutated-after-authorization";
+    harness.emit({ source: "AGENT", producer, event: event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }) });
+    expect(harness.subscription.beginReadyCommit()).toBe(true);
+    expect(harness.subscription.enableDrain()).toBe(true);
+    await flush();
+
+    expect(harness.emitted[0]?.value).toMatchObject({ address: descriptorAddress });
+    expect(harness.emitted[0]?.value).not.toMatchObject({ address: callerAddress });
+  });
+
   it("retains accepted events while paused, drops excluded events without sequence, then drains FIFO", async () => {
     const harness = setup();
     await harness.subscription.establishPaused();

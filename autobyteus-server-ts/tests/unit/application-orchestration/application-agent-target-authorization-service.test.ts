@@ -22,6 +22,20 @@ const agentBinding = {
   lastErrorMessage: null,
 } as const;
 
+const teamBinding = {
+  ...agentBinding,
+  executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team-1" },
+  runtime: {
+    subject: "TEAM_RUN",
+    teamRunId: "team-run-1",
+    definitionId: "team-1",
+    members: [
+      { memberAddress: "/research/reviewer", displayName: "Reviewer", agentRunId: "reviewer-run-1" },
+      { memberAddress: "/writer", displayName: "Writer", agentRunId: "writer-run-1" },
+    ],
+  },
+} as const;
+
 const createService = (binding: unknown = agentBinding, lifecycleHub = new ApplicationRunBindingLifecycleHub()) =>
   new ApplicationAgentTargetAuthorizationService({
     startupGate: { awaitReady: vi.fn(async () => undefined) } as never,
@@ -31,20 +45,68 @@ const createService = (binding: unknown = agentBinding, lifecycleHub = new Appli
   });
 
 describe("ApplicationAgentTargetAuthorizationService", () => {
-  it("accepts the exact matching address and rejects extra address or target fields", async () => {
-    await expect(createService().authorizeTarget("app-1", {
+  it("resolves one frozen Agent root descriptor and rejects non-exact public addresses", async () => {
+    const descriptor = await createService().authorizeTarget("app-1", {
       bindingId: "binding-1",
-      target: { kind: "AGENT_RUN" },
-    })).resolves.toMatchObject({ runtimeSubject: "AGENT_RUN", runtimeRunId: "run-1" });
-    await expect(createService().authorizeTarget("app-1", {
+      memberAddress: null,
+    });
+    expect(descriptor).toEqual({
+      applicationId: "app-1",
+      address: { bindingId: "binding-1", memberAddress: null },
+      binding: agentBinding,
+      runtime: {
+        subject: "AGENT_RUN",
+        agentRunId: "run-1",
+        producer: { agentRunId: "run-1", displayName: null },
+      },
+    });
+    expect(Object.isFrozen(descriptor)).toBe(true);
+    expect(Object.isFrozen(descriptor.binding.runtime)).toBe(true);
+    expect(Object.isFrozen(descriptor.runtime)).toBe(true);
+
+    for (const address of [
+      { bindingId: "binding-1", memberAddress: null, applicationId: "other-app" },
+      { bindingId: "binding-1", memberAddress: null, target: { kind: "AGENT_RUN" } },
+      { bindingId: "binding-1", target: { kind: "AGENT_RUN" } },
+    ]) {
+      await expect(createService().authorizeTarget("app-1", address as never))
+        .rejects.toMatchObject({ code: "INVALID_TARGET" });
+    }
+  });
+
+  it("derives Team root and exact nested-member runtime projections from one binding read", async () => {
+    const service = createService(teamBinding);
+    await expect(service.authorizeTarget("app-1", {
       bindingId: "binding-1",
-      target: { kind: "AGENT_RUN", rawRunId: "run-1" },
-    } as never)).rejects.toMatchObject({ code: "INVALID_TARGET" });
-    await expect(createService().authorizeTarget("app-1", {
+      memberAddress: null,
+    })).resolves.toMatchObject({
+      runtime: {
+        subject: "TEAM_RUN",
+        teamRunId: "team-run-1",
+        targetAgentRunId: null,
+        producers: [
+          { agentRunId: "reviewer-run-1", displayName: "Reviewer" },
+          { agentRunId: "writer-run-1", displayName: "Writer" },
+        ],
+      },
+    });
+    await expect(createService(teamBinding).authorizeTarget("app-1", {
       bindingId: "binding-1",
-      target: { kind: "AGENT_RUN" },
-      applicationId: "other-app",
-    } as never)).rejects.toMatchObject({ code: "TARGET_NOT_AVAILABLE" });
+      memberAddress: "/research/reviewer",
+    })).resolves.toMatchObject({
+      runtime: {
+        subject: "TEAM_RUN",
+        teamRunId: "team-run-1",
+        targetAgentRunId: "reviewer-run-1",
+        producers: [{ agentRunId: "reviewer-run-1", displayName: "Reviewer" }],
+      },
+    });
+    for (const memberAddress of ["/missing", "/reviewer-run-1", "reviewer-run-1"]) {
+      await expect(createService(teamBinding).authorizeTarget("app-1", {
+        bindingId: "binding-1",
+        memberAddress,
+      } as never)).rejects.toMatchObject({ code: "INVALID_TARGET" });
+    }
   });
 
   it("installs the terminal listener before the final binding read", async () => {
@@ -63,7 +125,7 @@ describe("ApplicationAgentTargetAuthorizationService", () => {
     });
     const lease = await service.openLease("app-1", {
       bindingId: "binding-1",
-      target: { kind: "AGENT_RUN" },
+      memberAddress: null,
     }, ended);
     expect(ended).toHaveBeenCalledOnce();
     lease.release();

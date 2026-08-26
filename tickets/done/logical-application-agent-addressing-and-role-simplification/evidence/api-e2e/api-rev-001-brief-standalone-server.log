@@ -1,0 +1,153 @@
+AgentFactory (Singleton) initialized.
+(node:22796) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T16:11:07.439Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T16:11:07.439Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T16:11:07.440Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /private/tmp/api-rev-001-logical-addressing/brief-standalone
+Config file path: /private/tmp/api-rev-001-logical-addressing/brief-standalone/.env
+Loading environment from: /private/tmp/api-rev-001-logical-addressing/brief-standalone/.env
+[dotenv@17.3.1] injecting env (6) from ../../../../../private/tmp/api-rev-001-logical-addressing/brief-standalone/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:43952
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:43952
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev-001-logical-addressing/brief-standalone
+DB DIRECTORY: /private/tmp/api-rev-001-logical-addressing/brief-standalone/db
+LOGS DIRECTORY: /private/tmp/api-rev-001-logical-addressing/brief-standalone/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev-001-logical-addressing/brief-standalone/download
+MEMORY DIRECTORY: /private/tmp/api-rev-001-logical-addressing/brief-standalone/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev-001-logical-addressing/brief-standalone/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T16:11:07.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev-001-logical-addressing/brief-standalone/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-26T16:11:07.824Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T16:11:07.835Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1787760668114,"pid":22796,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:43952"}
+Standalone application ready: http://127.0.0.1:43952
+{"level":40,"time":1787760693784,"pid":22796,"hostname":"MacBookPro","reqId":"req-5","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.8237080574035645,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Created and registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+{"level":50,"time":1787760724441,"pid":22796,"hostname":"MacBookPro","reqId":"req-f","method":"POST","url":"/_autobyteus/backend/graphql","statusCode":500,"elapsedMs":30002.820457935333,"msg":"http request completed"}
+Published codex_app_server agent run 'brief_studio_researcher_a351629016a24a739ef07f0c8ed18d63'.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Published codex_app_server agent run 'brief_studio_writer_a02fad1f06ee4ee3aca93779316d68b7'.
+{"level":40,"time":1787760856350,"pid":22796,"hostname":"MacBookPro","reqId":"req-1i","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.38933277130126953,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'brief_studio_researcher_679b5adc62764c5ab1c52d067135c236'.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Published codex_app_server agent run 'brief_studio_writer_2fc80c7ee97c4c1989c27538609eec28'.
+{"level":40,"time":1787761023342,"pid":22796,"hostname":"MacBookPro","reqId":"req-2c","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":1.5074162483215332,"msg":"http request completed"}
+{"level":40,"time":1787761046907,"pid":22796,"hostname":"MacBookPro","reqId":"req-2l","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.984917163848877,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'brief_studio_researcher_2e3f2a1e6b7446f095a1a2670ada0be0'.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime.
+Reusing registered workspace ID: agent_ws_d284f6aede0f6212cbf08c4c96b33b27eecbcabbed10187f12981a7c702af938
+Published codex_app_server agent run 'brief_studio_writer_e52081a776254e20a08c6316d217cbbb'.
+{"level":40,"time":1787761423380,"pid":22796,"hostname":"MacBookPro","reqId":"req-3f","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.8019170761108398,"msg":"http request completed"}

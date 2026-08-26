@@ -12,12 +12,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
           applicationId: "app-1",
           bindingId: "binding-1",
           producer: {
-            runId: "run-1",
-            memberRouteKey: "writer",
-            memberName: "writer",
+            agentRunId: "run-1",
             displayName: "Writer",
-            runtimeKind: "AGENT_TEAM_MEMBER",
-            teamPath: [],
           },
         },
       },
@@ -40,16 +36,13 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         },
         runtime: {
           subject: "TEAM_RUN",
-          runId: "team-run-1",
+          teamRunId: "team-run-1",
           definitionId: "team-def-1",
           members: [
             {
-              memberName: "writer",
-              memberRouteKey: "writer",
+              memberAddress: "/writer",
               displayName: "Writer",
-              teamPath: [],
-              runId: "run-1",
-              runtimeKind: "AGENT_TEAM_MEMBER",
+              agentRunId: "run-1",
             },
           ],
         },
@@ -107,12 +100,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
             applicationId: "app-1",
           }),
           producer: {
-            runId: "run-1",
-            memberRouteKey: "writer",
-            memberName: "writer",
+            agentRunId: "run-1",
             displayName: "Writer",
-            runtimeKind: "AGENT_TEAM_MEMBER",
-            teamPath: [],
           },
         },
       });
@@ -133,16 +122,13 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         },
         runtime: {
           subject: "TEAM_RUN",
-          runId: "team-run-1",
+          teamRunId: "team-run-1",
           definitionId: "team-def-1",
           members: [
             {
-              memberName: "researcher",
-              memberRouteKey: "researcher",
+              memberAddress: "/researcher",
               displayName: "Researcher",
-              teamPath: [],
-              runId: "researcher_member_run",
-              runtimeKind: "AGENT_TEAM_MEMBER",
+              agentRunId: "researcher_member_run",
             },
           ],
         },
@@ -166,12 +152,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         applicationId: "app-1",
         bindingId: "binding-1",
         producer: {
-          runId: "team-run-1",
-          memberRouteKey: "researcher",
-          memberName: "researcher",
+          agentRunId: "researcher_member_run",
           displayName: "Researcher",
-          runtimeKind: "AGENT_TEAM_MEMBER",
-          teamPath: [],
         },
       },
       artifact: {
@@ -205,12 +187,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
           applicationId: "app-1",
         }),
         producer: {
-          runId: "team-run-1",
-          memberRouteKey: "researcher",
-          memberName: "researcher",
+          agentRunId: "researcher_member_run",
           displayName: "Researcher",
-          runtimeKind: "AGENT_TEAM_MEMBER",
-          teamPath: [],
         },
       },
     });

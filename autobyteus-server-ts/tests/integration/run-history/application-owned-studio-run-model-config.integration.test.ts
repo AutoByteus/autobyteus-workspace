@@ -12,6 +12,7 @@ import { ApplicationOrchestrationHostService } from "../../../src/application-or
 import { ApplicationOrchestrationStartupGate } from "../../../src/application-orchestration/services/application-orchestration-startup-gate.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
+import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
 import { ApplicationRunOwnershipService } from "../../../src/application-orchestration/services/application-run-ownership-service.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
@@ -104,7 +105,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
           applicationId: string;
           bindingId: string;
           displayName: string | null;
-          runtimeKind: "AGENT";
         };
       }) => {
         const runId = "application-agent-run-1";
@@ -128,7 +128,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
               producer: {
                 agentRunId: runId,
                 displayName: input.applicationBinding.displayName,
-                runtimeKind: input.applicationBinding.runtimeKind,
               },
             },
             runtimeReference: {
@@ -203,6 +202,13 @@ describe("Application-owned Studio run-model configuration integration", () => {
     const startupGate = new ApplicationOrchestrationStartupGate();
     await startupGate.runStartupRecovery(async () => undefined);
     const lifecycleHub = new ApplicationRunBindingLifecycleHub();
+    const availabilityService = { requireApplicationActive: vi.fn(async () => undefined) };
+    const agentTargetAuthorizationService = new ApplicationAgentTargetAuthorizationService({
+      startupGate,
+      availabilityService: availabilityService as never,
+      bindingStore,
+      lifecycleHub,
+    });
     const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
       bindingStore,
       lookupStore,
@@ -211,7 +217,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
     });
     const host = new ApplicationOrchestrationHostService({
       startupGate,
-      availabilityService: { requireApplicationActive: vi.fn(async () => undefined) },
+      availabilityService,
       executionResourceResolver,
       launchConfigurationService: {},
       runBindingLaunchService,
@@ -226,9 +232,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
       ingressService: {},
       artifacts: {},
       memory: {},
-      agentTargetAuthorizationService: {
-        authorizeTarget: vi.fn(async (_applicationId: string, address: unknown) => ({ address })),
-      },
+      agentTargetAuthorizationService,
       terminalTransitionService,
     } as never);
 
@@ -371,7 +375,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
             applicationExecutionContext: {
               applicationId: APPLICATION_ID,
               bindingId: binding.bindingId,
-              producer: { agentRunId: runId, runtimeKind: "AGENT" },
+              producer: { agentRunId: runId },
             },
           },
         });
@@ -429,15 +433,15 @@ describe("Application-owned Studio run-model configuration integration", () => {
       expect(generalUpdate).toHaveBeenCalledWith(updateInput);
 
       const address = binding.runtime.subject === "AGENT_RUN"
-        ? { bindingId: binding.bindingId, target: { kind: "AGENT_RUN" as const } }
+        ? { bindingId: binding.bindingId, memberAddress: null }
         : {
             bindingId: binding.bindingId,
-            target: { kind: "AGENT_TEAM_MEMBER" as const, agentRunId: binding.runtime.members[0]!.agentRunId },
+            memberAddress: binding.runtime.members[0]!.memberAddress,
           };
       await expect(harness.host.sendRunInput(APPLICATION_ID, {
         address,
         input: { text: "must not dispatch" },
-      })).rejects.toThrow("is not live");
+      })).rejects.toThrow("target is not available");
     },
   );
 

@@ -20,7 +20,7 @@ class TestSocket {
   }
 }
 
-const address = { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } };
+const address = { bindingId: "binding-1", memberAddress: null };
 const parse = (socket: TestSocket) => socket.sent.map((value) => JSON.parse(value));
 const flush = async () => { await new Promise((resolve) => setTimeout(resolve, 0)); };
 

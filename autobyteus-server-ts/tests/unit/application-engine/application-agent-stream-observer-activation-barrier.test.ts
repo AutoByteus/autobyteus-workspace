@@ -15,15 +15,11 @@ describe("application agent stream observer activation barrier", () => {
       sequence: 1,
       observedAt: "2026-07-21T00:00:00.000Z",
       applicationId: "app-1",
-      address: { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } },
+      address: { bindingId: "binding-1", memberAddress: null },
       runtimeSubject: "AGENT_RUN" as const,
       producer: {
-        runId: "run-1",
-        memberRouteKey: "",
-        memberName: null,
+        agentRunId: "run-1",
         displayName: null,
-        runtimeKind: "AGENT" as const,
-        teamPath: [],
       },
       event: { type: "TEXT_DELTA" as const, delta: "hello" },
     };

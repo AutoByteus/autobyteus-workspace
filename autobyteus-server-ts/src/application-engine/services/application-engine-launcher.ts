@@ -22,6 +22,7 @@ import {
   type ApplicationEngineRuntimeHandle,
 } from "./application-engine-state-registry.js";
 import { ApplicationEngineContextCapabilityHandler } from "./application-engine-context-capability-handler.js";
+import { runApplicationEngineControlRequest } from "./application-engine-control-request.js";
 
 export class ApplicationEngineLauncher {
   private readonly startupPromiseByApplicationId =
@@ -168,7 +169,8 @@ export class ApplicationEngineLauncher {
     this.dependencies.controller.attach(applicationId, handle);
 
     try {
-      const definition = await client.request<ApplicationWorkerLoadDefinitionResult>(
+      const definition = await runApplicationEngineControlRequest<ApplicationWorkerLoadDefinitionResult>(
+        handle,
         APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
         {
           applicationId,

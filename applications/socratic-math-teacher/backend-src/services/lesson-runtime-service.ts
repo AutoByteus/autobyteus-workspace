@@ -208,7 +208,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     });
 
     await context.agentExecution.sendInput({
-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+      address: { bindingId, memberAddress: null },
       input: {
         text,
         metadata: { lessonId },
@@ -253,7 +253,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     });
 
     await context.agentExecution.sendInput({
-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+      address: { bindingId, memberAddress: null },
       input: {
         text: `The student requests a hint. ${detail}`,
         metadata: { lessonId, requestKind: "hint" },

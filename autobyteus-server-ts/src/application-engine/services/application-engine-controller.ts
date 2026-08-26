@@ -33,6 +33,7 @@ import {
   createApplicationEngineBaseStatus,
   type ApplicationEngineRuntimeHandle,
 } from "./application-engine-state-registry.js";
+import { runApplicationEngineControlRequest } from "./application-engine-control-request.js";
 
 export class ApplicationEngineController {
   private readonly state = new ApplicationEngineStateRegistry();
@@ -199,7 +200,11 @@ export class ApplicationEngineController {
       ready: false,
     });
     try {
-      await handle.client.request(APPLICATION_ENGINE_METHOD_STOP, {});
+      await runApplicationEngineControlRequest(
+        handle,
+        APPLICATION_ENGINE_METHOD_STOP,
+        {},
+      );
     } catch {
       // The worker may already have exited.
     }

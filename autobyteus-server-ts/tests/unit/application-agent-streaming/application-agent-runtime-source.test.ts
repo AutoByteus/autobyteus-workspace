@@ -15,11 +15,10 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
     });
     const captured: any[] = [];
     runtimeSource.attach({
-      applicationId: "app-1",
-      address: { bindingId: "binding-1", target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "task-run-1" } },
-      runtimeSubject: "TEAM_RUN",
-      runtimeRunId: "team-run-1",
-      producers: [{ agentRunId: "task-run-1", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" }],
+      subject: "TEAM_RUN",
+      teamRunId: "team-run-1",
+      targetAgentRunId: "task-run-1",
+      producers: [{ agentRunId: "task-run-1", displayName: "Researcher" }],
     }, (event) => captured.push(event));
 
     listener({
@@ -58,7 +57,7 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
     expect(captured).toHaveLength(1);
     const mapped = new ApplicationAgentEventMapper().map(captured[0]);
     expect(mapped).toEqual({
-      producer: { agentRunId: "task-run-1", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" },
+      producer: { agentRunId: "task-run-1", displayName: "Researcher" },
       event: { type: "TURN_STARTED" },
     });
   });
